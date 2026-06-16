@@ -18,17 +18,15 @@
     <div class="msg" id="msg">Vous pouvez fermer cette fenêtre</div>
   </div>
   <script>
-    // Récupérer le token depuis le hash de l'URL
-    const hash   = window.location.hash.slice(1);
-    const params = new URLSearchParams(hash);
-    const token  = params.get('access_token');
-    const state  = params.get('state');
-    const error  = params.get('error');
+    // Authorization Code flow — code dans les query params
+    const urlParams = new URLSearchParams(window.location.search);
+    const code  = urlParams.get('code');
+    const state = urlParams.get('state');
+    const error = urlParams.get('error');
 
-    if(token){
-      // Envoyer le token à la fenêtre parente
+    if(code){
       if(window.opener){
-        window.opener.postMessage({ type:'kyf-oauth-callback', access_token:token, state }, '*');
+        window.opener.postMessage({ type:'kyf-oauth-callback', code, state }, '*');
       }
       document.getElementById('icon').textContent  = '✅';
       document.getElementById('title').textContent = 'Connecté !';
