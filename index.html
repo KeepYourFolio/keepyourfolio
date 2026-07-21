@@ -8,20 +8,47 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap');
     *{ margin:0; padding:0; box-sizing:border-box; }
+    :root{
+      /* Échelle de profondeur — même logique que le dashboard KYF
+         (bg → bg2 → bg3 → bg4, chaque niveau un peu plus clair),
+         proportionnée au fond quasi-noir de cette page */
+      --bg:      #080f1e;
+      --bg2:     #111931;  /* cartes / pastilles posées sur le fond */
+      --bg3:     #162039;  /* survol */
+      --bg4:     #1d2846;  /* état actif */
+      --border:  #1e2a3a;
+      --border2: #28364a;
+    }
     body{
       font-family:'IBM Plex Mono','Courier New',monospace;
-      background:#080f1e; color:#e6edf3;
+      background:
+        radial-gradient(ellipse 70% 55% at 50% 0%,   rgba(30,58,138,0.10) 0%, transparent 100%),
+        radial-gradient(ellipse 60% 50% at 95% 10%, rgba(99,102,241,0.09) 0%, transparent 100%),
+        radial-gradient(ellipse 55% 45% at 0% 90%,  rgba(14,165,233,0.07) 0%, transparent 100%),
+        radial-gradient(ellipse 40% 40% at 55% 55%, rgba(0,212,136,0.05)  0%, transparent 100%),
+        radial-gradient(ellipse 35% 35% at 90% 80%, rgba(240,180,41,0.04) 0%, transparent 100%),
+        var(--bg);
+      background-attachment:fixed;
+      color:#e6edf3;
       min-height:100vh; overflow-x:hidden;
     }
+
+    /* ── Icônes SVG ── */
+    .icon{ display:inline-block; flex-shrink:0; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; vertical-align:middle; }
+    .icon-filled{ fill:currentColor; stroke:none; }
+    .icon-12{ width:12px; height:12px; }
+    .icon-14{ width:14px; height:14px; }
+    .icon-16{ width:16px; height:16px; }
+    .icon-22{ width:22px; height:22px; }
 
     /* ── Topbar ── */
     nav{
       display:flex; align-items:center; justify-content:space-between;
-      padding:16px 40px; border-bottom:1px solid #1e2a3a;
+      padding:16px 40px; border-bottom:1px solid var(--border);
       position:sticky; top:0; background:#080f1eee; backdrop-filter:blur(8px); z-index:10;
     }
     .nav-logo{ display:flex; align-items:center; gap:8px; }
-    .nav-logo-text{ font-size:16px; font-weight:700; }
+    .nav-logo-text{ font-size:16px; font-weight:700; color:#e6edf3; }
     .nav-logo-text span{ color:#f0b429; }
     .badge{ font-size:9px; font-weight:700; background:#f0b429; color:#000; padding:2px 7px; border-radius:4px; letter-spacing:.5px; }
     .nav-links{ display:flex; gap:24px; }
@@ -34,14 +61,17 @@
       text-align:center;
     }
     .hero-tag{
-      display:inline-block; font-size:10px; font-weight:700;
+      display:inline-flex; align-items:center; gap:7px;
+      font-size:10px; font-weight:700;
       color:#f0b429; border:1px solid rgba(240,180,41,.3);
-      padding:4px 14px; border-radius:20px; letter-spacing:.5px;
-      margin-bottom:24px;
+      padding:5px 14px; border-radius:20px; letter-spacing:.5px;
+      margin-bottom:24px; text-decoration:none;
+      transition:background .2s, border-color .2s;
     }
+    .hero-tag:hover{ background:rgba(240,180,41,.08); border-color:rgba(240,180,41,.55); }
     h1{
       font-size:clamp(28px,5vw,52px); font-weight:700; line-height:1.2;
-      margin-bottom:20px;
+      margin-bottom:20px; color:#e6edf3;
     }
     h1 em{ color:#f0b429; font-style:normal; }
     .hero-sub{
@@ -61,7 +91,7 @@
       display:inline-flex; align-items:center; gap:8px;
       font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:700;
       padding:14px 28px; border-radius:10px;
-      border:1px solid #1e2a3a; color:#8b949e; text-decoration:none;
+      border:1px solid var(--border); color:#8b949e; text-decoration:none;
       transition:border-color .2s, color .2s;
     }
     .btn-secondary:hover{ border-color:#4d9fff; color:#4d9fff; }
@@ -79,11 +109,11 @@
     }
     .feature-card{
       padding:20px; border-radius:12px;
-      background:rgba(255,255,255,0.03); border:1px solid #1e2a3a;
-      transition:border-color .2s;
+      background:var(--bg2); border:1px solid var(--border);
+      transition:border-color .2s, background .2s;
     }
-    .feature-card:hover{ border-color:#4d9fff33; }
-    .feature-icon{ font-size:22px; margin-bottom:10px; }
+    .feature-card:hover{ border-color:#4d9fff; background:var(--bg3); }
+    .feature-icon{ margin-bottom:10px; color:#f0b429; }
     .feature-title{ font-size:12px; font-weight:700; color:#e6edf3; margin-bottom:6px; }
     .feature-desc{ font-size:11px; color:#8b949e; line-height:1.7; }
 
@@ -95,16 +125,20 @@
     .modules-title{ font-size:11px; font-weight:700; color:#4d9fff; letter-spacing:.5px; margin-bottom:20px; }
     .modules-pills{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
     .pill{
-      font-size:10px; padding:5px 14px; border-radius:20px;
-      background:rgba(255,255,255,0.04); border:1px solid #1e2a3a; color:#8b949e;
+      display:inline-flex; align-items:center; gap:6px;
+      font-size:10px; padding:6px 14px; border-radius:20px;
+      background:var(--bg2); border:1px solid var(--border); color:#8b949e;
+      transition:background .2s, border-color .2s;
     }
+    .pill:hover{ background:var(--bg3); border-color:var(--border2); }
+    .pill .icon{ color:#f0b429; }
 
     /* ── Privacy highlight ── */
     .privacy-band{
       background:rgba(0,212,136,0.05); border-top:1px solid rgba(0,212,136,0.15);
       border-bottom:1px solid rgba(0,212,136,0.15); padding:24px 40px; text-align:center;
     }
-    .privacy-band p{ font-size:12px; color:#00d4aa; }
+    .privacy-band p{ font-size:12px; color:#00d4aa; display:inline-flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:center; }
     .privacy-band strong{ color:#e6edf3; }
 
     /* ── CTA ── */
@@ -112,15 +146,15 @@
       max-width:600px; margin:0 auto; padding:80px 40px;
       text-align:center;
     }
-    .cta h2{ font-size:24px; font-weight:700; margin-bottom:12px; }
+    .cta h2{ font-size:24px; font-weight:700; margin-bottom:12px; color:#e6edf3; }
     .cta p{ font-size:12px; color:#8b949e; margin-bottom:32px; line-height:1.8; }
 
     /* ── Footer ── */
     footer{
-      border-top:1px solid #1e2a3a; padding:24px 40px;
+      border-top:1px solid var(--border); padding:24px 40px;
       display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;
     }
-    footer p{ font-size:11px; color:#4d5568; }
+    footer p{ font-size:11px; color:#8b949e; }
     footer a{ color:#4d9fff; text-decoration:none; font-size:11px; }
     footer a:hover{ text-decoration:underline; }
     .footer-links{ display:flex; gap:20px; }
@@ -136,6 +170,110 @@
 </head>
 <body>
 
+  <!-- ── Sprite SVG centralisé (équivalent KYF_ICONS du dashboard) ── -->
+  <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+    <defs>
+      <symbol id="icon-rocket" viewBox="0 0 24 24">
+        <path d="M12 2c2.2 2 4 6.2 4 10 0 2.1-1 4-2 5l-2 2-2-2c-1-1-2-2.9-2-5 0-3.8 1.8-8 4-10z"/>
+        <circle cx="12" cy="9.5" r="1.4"/>
+        <path d="M8.2 15.2l-2.9 2.9.7 2.9 2.9-2.9"/>
+        <path d="M15.8 15.2l2.9 2.9-.7 2.9-2.9-2.9"/>
+      </symbol>
+      <symbol id="icon-play" viewBox="0 0 24 24">
+        <polygon points="6,4 20,12 6,20" style="fill:currentColor;stroke:none"/>
+      </symbol>
+      <symbol id="icon-lock" viewBox="0 0 24 24">
+        <rect x="5" y="11" width="14" height="9" rx="2"/>
+        <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+      </symbol>
+      <symbol id="icon-home" viewBox="0 0 24 24">
+        <path d="M4 11.5l8-7.5 8 7.5"/>
+        <path d="M6 10.5V19a1 1 0 0 0 1 1h4v-6h2v6h4a1 1 0 0 0 1-1v-8.5"/>
+      </symbol>
+      <symbol id="icon-cloud" viewBox="0 0 24 24">
+        <path d="M7 18h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.1 12.06 3.5 3.5 0 0 0 7 18z"/>
+      </symbol>
+      <symbol id="icon-bar-chart" viewBox="0 0 24 24">
+        <line x1="4" y1="20" x2="4" y2="12"/>
+        <line x1="10" y1="20" x2="10" y2="4"/>
+        <line x1="16" y1="20" x2="16" y2="9"/>
+        <line x1="3" y1="20" x2="21" y2="20"/>
+      </symbol>
+      <symbol id="icon-tag" viewBox="0 0 24 24">
+        <path d="M20 12.5L11.5 21 3 12.5V4h8.5z"/>
+        <circle cx="7.5" cy="7.5" r="1.2" style="fill:currentColor;stroke:none"/>
+      </symbol>
+      <symbol id="icon-bell" viewBox="0 0 24 24">
+        <path d="M18 16v-5a6 6 0 0 0-12 0v5l-2 3h16z"/>
+        <path d="M9 19a3 3 0 0 0 6 0"/>
+      </symbol>
+      <symbol id="icon-smartphone" viewBox="0 0 24 24">
+        <rect x="7" y="2" width="10" height="20" rx="2"/>
+        <line x1="11" y1="18" x2="13" y2="18"/>
+      </symbol>
+      <symbol id="icon-trending-up" viewBox="0 0 24 24">
+        <polyline points="3,17 9,11 13,15 21,7"/>
+        <polyline points="15,7 21,7 21,13"/>
+      </symbol>
+      <symbol id="icon-coin" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="8.5"/>
+        <path d="M12 7.5v9"/>
+        <path d="M9.3 9.8c0-1.1 1.2-1.9 2.7-1.9s2.7.8 2.7 1.7c0 1-1.2 1.4-2.7 1.9-1.5.5-2.7.9-2.7 1.9 0 .9 1.2 1.7 2.7 1.7s2.7-.8 2.7-1.9"/>
+      </symbol>
+      <symbol id="icon-shield" viewBox="0 0 24 24">
+        <path d="M12 2.5l7.5 2.8v6.2c0 5-3.3 8.2-7.5 10-4.2-1.8-7.5-5-7.5-10V5.3z"/>
+      </symbol>
+      <symbol id="icon-clipboard" viewBox="0 0 24 24">
+        <rect x="6" y="4" width="12" height="17" rx="2"/>
+        <rect x="9" y="2" width="6" height="4" rx="1"/>
+        <line x1="9" y1="11" x2="15" y2="11"/>
+        <line x1="9" y1="15" x2="15" y2="15"/>
+      </symbol>
+      <symbol id="icon-building" viewBox="0 0 24 24">
+        <rect x="5" y="3" width="14" height="18" rx="1"/>
+        <rect x="8" y="6.5" width="2" height="2" style="fill:currentColor;stroke:none"/>
+        <rect x="14" y="6.5" width="2" height="2" style="fill:currentColor;stroke:none"/>
+        <rect x="8" y="10.5" width="2" height="2" style="fill:currentColor;stroke:none"/>
+        <rect x="14" y="10.5" width="2" height="2" style="fill:currentColor;stroke:none"/>
+        <rect x="8" y="14.5" width="2" height="2" style="fill:currentColor;stroke:none"/>
+        <rect x="14" y="14.5" width="2" height="2" style="fill:currentColor;stroke:none"/>
+      </symbol>
+      <symbol id="icon-award" viewBox="0 0 24 24">
+        <circle cx="12" cy="8" r="5"/>
+        <polyline points="8.5,12.7 7,21 12,18 17,21 15.5,12.7"/>
+      </symbol>
+      <symbol id="icon-refresh" viewBox="0 0 24 24">
+        <path d="M21 12a9 9 0 1 1-3-6.7"/>
+        <polyline points="21,3 21,9 15,9"/>
+      </symbol>
+      <symbol id="icon-dollar" viewBox="0 0 24 24">
+        <line x1="12" y1="2" x2="12" y2="22"/>
+        <path d="M17 6.5c0-1.5-2.2-2.5-5-2.5s-5 1-5 3 2.2 2.4 5 3 5 1.5 5 3-2.2 3-5 3-5-1-5-2.5"/>
+      </symbol>
+      <symbol id="icon-globe" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <path d="M12 3a13.5 13.5 0 0 1 0 18"/>
+        <path d="M12 3a13.5 13.5 0 0 0 0 18"/>
+      </symbol>
+      <symbol id="icon-flame" viewBox="0 0 24 24">
+        <path d="M12 2c1.3 3-1.8 4.3-1.8 7.2a3.8 3.8 0 0 0 7.6 0c0-1-.4-2-1-2.8 1.3.2 2.7 2.3 2.7 5.6a6.5 6.5 0 0 1-13 0c0-5.3 3.5-7.4 5.5-10z"/>
+      </symbol>
+      <symbol id="icon-history" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9"/>
+        <polyline points="12,7 12,12 16,14"/>
+      </symbol>
+      <symbol id="icon-piggybank" viewBox="0 0 24 24">
+        <ellipse cx="11.5" cy="13" rx="8" ry="6"/>
+        <line x1="9" y1="7.5" x2="12.5" y2="7.5"/>
+        <circle cx="17" cy="11.5" r="1" style="fill:currentColor;stroke:none"/>
+        <line x1="6.5" y1="19" x2="6.5" y2="21"/>
+        <line x1="15.5" y1="19" x2="15.5" y2="21"/>
+        <path d="M19.5 12l2-1v3l-2-1"/>
+      </symbol>
+    </defs>
+  </svg>
+
   <nav>
     <div class="nav-logo">
       <div class="nav-logo-text">Keep<span>·</span>Your<span>·</span>Folio</div>
@@ -149,7 +287,10 @@
   </nav>
 
   <section class="hero">
-    <div class="hero-tag">🚀 Beta publique disponible</div>
+    <a class="hero-tag" href="https://docs.google.com/forms/d/e/1FAIpQLSdN2Nghi6fPZGJKZIKgoG6eReN3YeAhbGa3nNx4nUngWHxheA/viewform?usp=sharing&ouid=100340881114809847283" target="_blank" rel="noopener">
+      <svg class="icon icon-14"><use href="#icon-rocket"/></svg>
+      Bêta Fermée 1 en cours — inscription ici
+    </a>
     <h1>Votre patrimoine,<br><em>enfin clair</em></h1>
     <p class="hero-sub">
       KYF est un dashboard patrimonial personnel gratuit — ETF, crypto, immobilier, livrets, assurance vie.
@@ -157,10 +298,12 @@
     </p>
     <div class="hero-btns">
       <a href="https://keepyourfolio.github.io/kyf-beta/#portfolio" class="btn-primary">
-        ▶ Ouvrir KYF Beta
+        <svg class="icon icon-filled icon-14"><use href="#icon-play"/></svg>
+        Ouvrir KYF Beta
       </a>
       <a href="privacy.html" class="btn-secondary">
-        🔒 Confidentialité
+        <svg class="icon icon-14"><use href="#icon-lock"/></svg>
+        Confidentialité
       </a>
     </div>
   </section>
@@ -169,32 +312,32 @@
     <div class="features-title">POURQUOI KYF ?</div>
     <div class="features-grid">
       <div class="feature-card">
-        <div class="feature-icon">🏠</div>
+        <div class="feature-icon"><svg class="icon icon-22"><use href="#icon-home"/></svg></div>
         <div class="feature-title">Zéro serveur</div>
         <div class="feature-desc">Un seul fichier HTML. Aucune inscription. Aucune donnée envoyée à KYF. Vos données restent sur votre appareil.</div>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">☁️</div>
+        <div class="feature-icon"><svg class="icon icon-22"><use href="#icon-cloud"/></svg></div>
         <div class="feature-title">Sync Google Sheets</div>
         <div class="feature-desc">Connectez votre Google Sheets en 1 clic pour synchroniser vos données entre vos appareils. Votre Drive, vos règles.</div>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">📊</div>
+        <div class="feature-icon"><svg class="icon icon-22"><use href="#icon-bar-chart"/></svg></div>
         <div class="feature-title">Vue complète</div>
         <div class="feature-desc">Tous vos actifs en un tableau de bord : valorisation, performance, allocation, historique illimité.</div>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">🆓</div>
+        <div class="feature-icon"><svg class="icon icon-22"><use href="#icon-tag"/></svg></div>
         <div class="feature-title">Gratuit</div>
         <div class="feature-desc">Aucun abonnement. Aucune publicité. KYF est distribué gratuitement pendant toute la phase beta.</div>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">🔔</div>
+        <div class="feature-icon"><svg class="icon icon-22"><use href="#icon-bell"/></svg></div>
         <div class="feature-title">Alertes prix</div>
         <div class="feature-desc">Configurez des alertes sur vos actifs. Recevez une notification dès qu'un seuil est atteint.</div>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">📱</div>
+        <div class="feature-icon"><svg class="icon icon-22"><use href="#icon-smartphone"/></svg></div>
         <div class="feature-title">Multi-appareils</div>
         <div class="feature-desc">PC, mobile, tablette. Via Google Sheets, vos données se synchronisent automatiquement partout.</div>
       </div>
@@ -204,33 +347,34 @@
   <section class="modules" id="modules">
     <div class="modules-title">MODULES DISPONIBLES</div>
     <div class="modules-pills">
-      <span class="pill">📈 ETF / Actions</span>
-      <span class="pill">₿ Cryptomonnaies</span>
-      <span class="pill">🏠 Immobilier</span>
-      <span class="pill">💰 Livrets d'épargne</span>
-      <span class="pill">🛡️ Assurance Vie</span>
-      <span class="pill">📋 PER</span>
-      <span class="pill">🏢 SCPI</span>
-      <span class="pill">🥇 Or & Métaux</span>
-      <span class="pill">🔄 DCA automatique</span>
-      <span class="pill">💸 Dividendes</span>
-      <span class="pill">📊 Bilan annuel</span>
-      <span class="pill">🌍 Zones géographiques</span>
-      <span class="pill">🔥 Heatmap</span>
-      <span class="pill">🔔 Alertes prix</span>
-      <span class="pill">📜 Historique illimité</span>
+      <span class="pill"><svg class="icon icon-12"><use href="#icon-trending-up"/></svg> ETF / Actions</span>
+      <span class="pill"><svg class="icon icon-12"><use href="#icon-coin"/></svg> Cryptomonnaies</span>
+      <span class="pill"><svg class="icon icon-12"><use href="#icon-home"/></svg> Immobilier</span>
+      <span class="pill"><svg class="icon icon-12"><use href="#icon-piggybank"/></svg> Livrets d'épargne</span>
+      <span class="pill"><svg class="icon icon-12"><use href="#icon-shield"/></svg> Assurance Vie</span>
+      <span class="pill"><svg class="icon icon-12"><use href="#icon-clipboard"/></svg> PER</span>
+      <span class="pill"><svg class="icon icon-12"><use href="#icon-building"/></svg> SCPI</span>
+      <span class="pill"><svg class="icon icon-12"><use href="#icon-award"/></svg> Or & Métaux</span>
+      <span class="pill"><svg class="icon icon-12"><use href="#icon-refresh"/></svg> DCA automatique</span>
+      <span class="pill"><svg class="icon icon-12"><use href="#icon-dollar"/></svg> Dividendes</span>
+      <span class="pill"><svg class="icon icon-12"><use href="#icon-bar-chart"/></svg> Bilan annuel</span>
+      <span class="pill"><svg class="icon icon-12"><use href="#icon-globe"/></svg> Zones géographiques</span>
+      <span class="pill"><svg class="icon icon-12"><use href="#icon-flame"/></svg> Heatmap</span>
+      <span class="pill"><svg class="icon icon-12"><use href="#icon-bell"/></svg> Alertes prix</span>
+      <span class="pill"><svg class="icon icon-12"><use href="#icon-history"/></svg> Historique illimité</span>
     </div>
   </section>
 
   <div class="privacy-band">
-    <p>🔒 <strong>Confidentialité totale</strong> — KYF ne collecte aucune donnée. Zéro tracking. Zéro publicité. Vos données financières restent sur votre appareil.</p>
+    <p><svg class="icon icon-14"><use href="#icon-lock"/></svg> <strong>Confidentialité totale</strong> — KYF ne collecte aucune donnée. Zéro tracking. Zéro publicité. Vos données financières restent sur votre appareil.</p>
   </div>
 
   <section class="cta">
     <h2>Prêt à commencer ?</h2>
     <p>KYF s'ouvre directement dans votre navigateur.<br>Aucune installation. Aucune inscription.</p>
     <a href="https://keepyourfolio.github.io/kyf-beta/#portfolio" class="btn-primary">
-      ▶ Ouvrir KYF Beta gratuitement
+      <svg class="icon icon-filled icon-14"><use href="#icon-play"/></svg>
+      Ouvrir KYF Beta gratuitement
     </a>
   </section>
 
