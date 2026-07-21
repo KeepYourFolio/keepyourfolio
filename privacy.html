@@ -6,6 +6,7 @@
   <title>Politique de confidentialité — KYF Keep Your Folio</title>
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
+    :root{ --blue: #38bdf8; }
     body {
       font-family: 'IBM Plex Mono', 'Courier New', monospace;
       background: #080f1e;
@@ -13,6 +14,9 @@
       line-height: 1.8;
       padding: 40px 20px;
     }
+    .icon{ display:inline-block; flex-shrink:0; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; vertical-align:middle; }
+    .icon-14{ width:14px; height:14px; }
+    .icon-16{ width:16px; height:16px; }
     .container { max-width: 720px; margin: 0 auto; }
     header { margin-bottom: 48px; padding-bottom: 24px; border-bottom: 1px solid #1e2a3a; }
     .logo {
@@ -26,10 +30,11 @@
     }
     h1 { font-size: 22px; font-weight: 700; color: #f0b429; margin-bottom: 8px; }
     .subtitle { font-size: 12px; color: #8b949e; }
-    .last-update { font-size: 11px; color: #4d9fff; margin-top: 8px; }
+    .last-update { font-size: 11px; color: var(--blue); margin-top: 8px; }
 
     h2 {
-      font-size: 13px; font-weight: 700; color: #4d9fff;
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 700; color: var(--blue);
       letter-spacing: .5px; margin: 36px 0 12px;
       padding-bottom: 6px; border-bottom: 1px solid #1e2a3a;
     }
@@ -39,26 +44,30 @@
     li strong { color: #e6edf3; }
 
     .highlight {
+      display: flex; align-items: flex-start; gap: 10px;
       background: rgba(0,212,136,0.06);
       border: 1px solid rgba(0,212,136,0.2);
       border-radius: 8px;
       padding: 16px 20px;
       margin: 20px 0;
     }
+    .highlight .icon{ color:#00d4aa; margin-top:2px; }
     .highlight p { color: #00d4aa; margin: 0; font-weight: 700; }
 
     .warning {
+      display: flex; align-items: flex-start; gap: 10px;
       background: rgba(240,180,41,0.06);
       border: 1px solid rgba(240,180,41,0.2);
       border-radius: 8px;
       padding: 16px 20px;
       margin: 20px 0;
     }
+    .warning .icon{ color:#f0b429; margin-top:2px; }
     .warning p { color: #f0b429; margin: 0; }
 
     .scope-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 11px; }
     .scope-table th {
-      background: #0d1117; color: #4d9fff; padding: 8px 12px;
+      background: #0d1117; color: var(--blue); padding: 8px 12px;
       text-align: left; border: 1px solid #1e2a3a; font-weight: 700;
     }
     .scope-table td { padding: 8px 12px; border: 1px solid #1e2a3a; color: #c9d1d9; }
@@ -69,17 +78,37 @@
       background: rgba(77,159,255,0.06); border: 1px solid rgba(77,159,255,0.2);
     }
     .contact h2 { border: none; margin: 0 0 8px; }
-    .contact a { color: #4d9fff; text-decoration: none; }
+    .contact a { color: var(--blue); text-decoration: none; }
     .contact a:hover { text-decoration: underline; }
 
     footer {
       margin-top: 48px; padding-top: 24px; border-top: 1px solid #1e2a3a;
-      font-size: 11px; color: #4d5568; text-align: center;
+      font-size: 11px; color: #8b949e; text-align: center;
     }
-    a { color: #4d9fff; }
+    a { color: var(--blue); }
   </style>
 </head>
 <body>
+
+  <!-- ── Sprite SVG centralisé ── -->
+  <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+    <defs>
+      <symbol id="icon-lock" viewBox="0 0 24 24">
+        <rect x="5" y="11" width="14" height="9" rx="2"/>
+        <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+      </symbol>
+      <symbol id="icon-alert" viewBox="0 0 24 24">
+        <path d="M12 3.5l9.5 16.5H2.5z"/>
+        <line x1="12" y1="9.5" x2="12" y2="14"/>
+        <circle cx="12" cy="17" r="0.9" style="fill:currentColor;stroke:none"/>
+      </symbol>
+      <symbol id="icon-mail" viewBox="0 0 24 24">
+        <rect x="3" y="5" width="18" height="14" rx="2"/>
+        <path d="M3 6.5l9 7 9-7"/>
+      </symbol>
+    </defs>
+  </svg>
+
   <div class="container">
 
     <header>
@@ -93,7 +122,8 @@
     </header>
 
     <div class="highlight">
-      <p>🔒 KYF ne collecte, ne stocke et ne transmet aucune donnée personnelle sur ses propres serveurs. KYF n'a pas de serveur.</p>
+      <svg class="icon icon-16"><use href="#icon-lock"/></svg>
+      <p>KYF ne collecte, ne stocke et ne transmet aucune donnée personnelle sur ses propres serveurs. KYF n'a pas de serveur.</p>
     </div>
 
     <h2>1. QUI SOMMES-NOUS</h2>
@@ -145,7 +175,8 @@
     </table>
 
     <div class="warning">
-      <p>⚠️ Le scope <code>drive.file</code> limite strictement l'accès de KYF au seul fichier qu'il a créé. KYF ne peut pas accéder à vos photos, documents ou autres fichiers Drive.</p>
+      <svg class="icon icon-16"><use href="#icon-alert"/></svg>
+      <p>Le scope <code>drive.file</code> limite strictement l'accès de KYF au seul fichier qu'il a créé. KYF ne peut pas accéder à vos photos, documents ou autres fichiers Drive.</p>
     </div>
 
     <h2>4. STOCKAGE DES DONNÉES</h2>
@@ -201,7 +232,7 @@
     </p>
 
     <div class="contact">
-      <h2>📧 CONTACT</h2>
+      <h2><svg class="icon icon-14"><use href="#icon-mail"/></svg> CONTACT</h2>
       <p>Pour toute question relative à la confidentialité :</p>
       <p style="margin-top:8px"><a href="mailto:kyf.data@gmail.com">kyf.data@gmail.com</a></p>
     </div>
