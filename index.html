@@ -110,10 +110,39 @@
     .feature-card{
       padding:20px; border-radius:12px;
       background:var(--bg2); border:1px solid var(--border);
-      transition:border-color .2s, background .2s;
+      position:relative; overflow:hidden;
+      opacity:0; transform:translateY(18px);
+      transition:
+        opacity .6s ease var(--d,0s),
+        transform .6s cubic-bezier(.22,1,.36,1) var(--d,0s),
+        border-color .25s ease, background .25s ease, box-shadow .25s ease;
     }
-    .feature-card:hover{ border-color:#4d9fff; background:var(--bg3); }
-    .feature-icon{ margin-bottom:10px; color:#f0b429; }
+    .feature-card:nth-child(1){ --d:.00s; }
+    .feature-card:nth-child(2){ --d:.07s; }
+    .feature-card:nth-child(3){ --d:.14s; }
+    .feature-card:nth-child(4){ --d:.21s; }
+    .feature-card:nth-child(5){ --d:.28s; }
+    .feature-card:nth-child(6){ --d:.35s; }
+    .feature-card.is-visible{ opacity:1; transform:translateY(0); }
+    .feature-card::before{
+      content:''; position:absolute; inset:0; pointer-events:none;
+      background:linear-gradient(115deg, transparent 42%, rgba(77,159,255,0.14) 50%, transparent 58%);
+      transform:translateX(-130%);
+      transition:transform .7s ease;
+    }
+    .feature-card.is-visible:hover{
+      border-color:#4d9fff; background:var(--bg3); transform:translateY(-4px);
+      box-shadow:0 10px 26px rgba(77,159,255,0.14), 0 2px 10px rgba(0,0,0,0.35);
+    }
+    .feature-card:hover::before{ transform:translateX(130%); }
+    .feature-icon{ margin-bottom:10px; color:#f0b429; transition:transform .35s cubic-bezier(.34,1.56,.64,1); transform-origin:center; }
+    .feature-card:hover .feature-icon{ transform:scale(1.08) rotate(-3deg); }
+    @media (prefers-reduced-motion: reduce){
+      .feature-card{ transition:border-color .25s ease, background .25s ease; opacity:1; transform:none; }
+      .feature-card::before{ display:none; }
+      .feature-icon{ transition:none; }
+      .feature-card:hover .feature-icon{ transform:none; }
+    }
     .feature-title{ font-size:12px; font-weight:700; color:#e6edf3; margin-bottom:6px; }
     .feature-desc{ font-size:11px; color:#8b949e; line-height:1.7; }
 
@@ -386,6 +415,26 @@
       <a href="https://github.com/KeepYourFolio" target="_blank">GitHub</a>
     </div>
   </footer>
+
+  <script>
+    (function(){
+      var cards = document.querySelectorAll('.feature-card');
+      if(!cards.length) return;
+      if('IntersectionObserver' in window){
+        var io = new IntersectionObserver(function(entries){
+          entries.forEach(function(entry){
+            if(entry.isIntersecting){
+              entry.target.classList.add('is-visible');
+              io.unobserve(entry.target);
+            }
+          });
+        }, { threshold:0.15 });
+        cards.forEach(function(c){ io.observe(c); });
+      } else {
+        cards.forEach(function(c){ c.classList.add('is-visible'); });
+      }
+    })();
+  </script>
 
 </body>
 </html>
