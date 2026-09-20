@@ -65,6 +65,22 @@ KYF est en développement actif. Les retours, suggestions et signalements de bug
 - 📧 Contact : keep.your.folio@gmail.com
 - 💬 [Forum Linxea](https://forum.linxea.com/t/kyf-keep-your-folio-dashboard-patrimonial-100-local-open-source-gratuit/261217)
 
+## Soutenir le projet
+
+KYF est gratuit et sans publicité. Si le projet vous est utile, vous pouvez le soutenir :
+
+- ☕ [Cagnotte Ko-fi](https://ko-fi.com/keepyourfolio)
+- 🪙 Don en crypto (USDC), adresses de réception ci-dessous
+
+| Réseau | Adresse USDC |
+|---|---|
+| Ethereum | `0x7f2AefD7dAb80dA03388B2016D2E0BEB9dFB8c56` |
+| Solana | `ETV2nUcNrwdTwanTaCDgQ9TapTDxjk25k9i4yjTB2LKm` |
+
+Envoyez uniquement des USDC sur le réseau indiqué : un envoi depuis un autre réseau risque d'être perdu définitivement. Avant d'envoyer, vérifiez que les premiers et derniers caractères de l'adresse correspondent.
+
+Ces adresses sont aussi proposées dans l'application (popup Soutenir KYF, avec QR code). En cas de doute, par exemple avec une copie modifiée du fichier, cette page fait référence.
+
 ## Remerciements
 
 KYF s'appuie sur plusieurs sources et contributions communautaires (Yahoo Finance, CoinGecko, StatsAVie, OpenFIGI, BittyTax, dali-rp2, et plusieurs contributeurs bénévoles). La liste complète est disponible directement dans l'application, section **Crédits & Remerciements** du guide d'utilisation.
