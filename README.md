@@ -87,7 +87,13 @@ KYF s'appuie sur plusieurs sources et contributions communautaires (Yahoo Financ
 
 ## Licence
 
-À définir.
+KYF est un logiciel libre, publié sous licence **GNU Affero General Public License v3 ou ultérieure** (AGPL-3.0-or-later). Voir [LICENSE](LICENSE).
+
+En pratique : vous pouvez utiliser, étudier, modifier et relier KYF à d'autres outils. Si vous publiez ou mettez en ligne une version modifiée, vous devez en publier le code source sous la même licence et conserver la mention d'auteur.
+
+- Composants tiers et crédits : [NOTICE](NOTICE)
+- Nom et logo : [TRADEMARKS.md](TRADEMARKS.md)
+- Contribuer : [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ---
 
