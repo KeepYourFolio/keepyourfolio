@@ -1,4 +1,4 @@
-# 💼 Keep Your Folio (KYF)
+# Keep Your Folio (KYF)
 
 **Un tableau de bord patrimonial 100% gratuit, local et open source.**
 
