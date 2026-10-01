@@ -12,7 +12,8 @@ Keep Your Folio (KYF) is a free, open-source personal wealth dashboard. It track
 
 KYF permet de regrouper et suivre son patrimoine au même endroit :
 
-📈 Actions et ETF · 🪙 Crypto-actifs · 🥇 Or et métaux précieux · 🏠 Immobilier · 📄 Assurance vie et PER · 💰 Livrets et comptes · 📅 Calendrier financier
+📈 Actions et ETF · 🪙 Crypto-actifs · 🥇 Or et métaux précieux · 🏠 Immobilier
+📄 Assurance vie et PER · 💰 Livrets et comptes · 📅 Calendrier financier
 
 L'objectif : suivre son propre patrimoine avec une approche centrée sur la confidentialité et la simplicité. Pas d'inscription obligatoire, pas de serveur central qui collecte vos données financières.
 
@@ -79,3 +80,4 @@ En pratique : vous pouvez utiliser, étudier, modifier et relier KYF à d'autres
 
 - Composants tiers et crédits : [NOTICE](NOTICE)
 - Nom et logo : [TRADEMARKS.md](TRADEMARKS.md)
+- Contribuer : [CONTRIBUTING.md](CONTRIBUTING.md)
