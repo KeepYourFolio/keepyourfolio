@@ -1,76 +1,60 @@
 # Keep Your Folio (KYF)
 
-**Un tableau de bord patrimonial 100% gratuit, local et open source.**
+**Un tableau de bord patrimonial gratuit, local et open source.**
 
 🔗 [keepyourfolio.fr](https://keepyourfolio.fr)
 
----
-
 ## 🇬🇧 English summary
 
-Keep Your Folio (KYF) is a free, open-source personal wealth dashboard. It lets you track stocks, ETFs, crypto, precious metals, real estate, life insurance (assurance vie/PER), savings accounts and more, all in a single self-contained HTML file. Your data stays in your browser by default (local-first) — no mandatory account, no backend server. Optional, opt-in encrypted cloud sync (Google Sheets or GitHub) is available if you want to access your data across devices. KYF is currently in public beta and under active development.
-
----
+Keep Your Folio (KYF) is a free, open-source personal wealth dashboard. It tracks stocks, ETFs, crypto, precious metals, real estate, life insurance, savings and more, all in a single self-contained HTML file. Your data stays in your browser by default (local-first): no mandatory account, no backend server. Optional, opt-in encrypted cloud sync is available if you want to access your data across devices. KYF is in public beta and under active development.
 
 ## À propos
 
-Keep Your Folio (KYF) est un tableau de bord patrimonial destiné à permettre à chacun de regrouper et suivre différents types d'actifs au même endroit :
+KYF permet de regrouper et suivre son patrimoine au même endroit : actions et ETF, crypto-actifs, métaux précieux, immobilier, assurance vie et PER, livrets et comptes, avec un calendrier financier et des outils d'analyse.
 
-- 📈 Actions & ETF
-- 🪙 Crypto-actifs (import direct depuis 11 exchanges + wallets Ledger/Trezor/Exodus)
-- 🥇 Or & métaux précieux
-- 🏠 Immobilier (biens, SCI, SCPI, crédits)
-- 📄 Assurance Vie & PER
-- 💰 Livrets & comptes courants
-- 📅 Calendrier financier (flux, versements programmés, DCA)
-
-L'objectif de KYF est de permettre à chacun de suivre son propre patrimoine, avec une approche orientée vers la confidentialité et la simplicité : pas d'inscription obligatoire, pas de serveur central qui collecte vos données financières.
+L'objectif : suivre son propre patrimoine avec une approche centrée sur la confidentialité et la simplicité. Pas d'inscription obligatoire, pas de serveur central qui collecte vos données financières.
 
 ## Philosophie
 
-- **Local-first par défaut** : vos données sont stockées dans le stockage local de votre navigateur. Rien n'est envoyé sur un serveur sans votre action explicite.
-- **Synchronisation cloud optionnelle** : si vous souhaitez retrouver vos données sur plusieurs appareils, une synchronisation chiffrée est disponible, au choix via Google Sheets ou GitHub (sous votre propre compte, sous votre contrôle).
-- **Sans backend propriétaire** : KYF est un fichier HTML unique, sans base de données ni serveur d'application dédié. Certaines fonctionnalités (résolution de tickers, cours en direct, base communautaire ISIN/ETF) s'appuient sur des scripts complémentaires ouverts, dont le contenu n'est jamais une donnée personnelle.
+- **Local-first par défaut** : vos données sont stockées dans le navigateur. Rien n'est envoyé sur un serveur sans votre action explicite.
+- **Synchronisation optionnelle** : pour retrouver vos données sur plusieurs appareils, une synchronisation chiffrée est disponible, sous votre propre compte et sous votre contrôle.
+- **Sans backend propriétaire** : KYF est un fichier HTML unique, sans base de données ni serveur d'application dédié. Quelques fonctions (cours en direct, résolution de tickers, base communautaire) s'appuient sur des scripts complémentaires ouverts, qui ne manipulent jamais de données personnelles.
 - **Gratuit et sans publicité.**
 
-## Fonctionnalités principales
+## Ce que fait KYF
 
-- Import CSV depuis les principaux brokers, exchanges crypto et wallets (Binance, Coinbase, Kraken, Bybit, KuCoin, OKX, Bitpanda, Crypto.com, Gate.io, Revolut, SwissBorg, Ledger, Trezor, Exodus...)
-- Import direct depuis Finary et Portfolio Performance
-- Lecture automatique des avis d'imposition (cases fiscales Assurance Vie/PER)
-- Suivi de plans DCA (investissement programmé)
-- Calendrier financier avec flux récurrents et liaisons automatiques
-- Historique et snapshots patrimoniaux
-- Alertes personnalisées et détection d'anomalies
-- Recherche globale (Ctrl+K)
-- Thème clair/sombre, personnalisable
-- Guide d'utilisation intégré complet (15 chapitres)
+- Imports depuis de nombreux brokers, exchanges et outils de suivi
+- Suivi des positions, transactions, plans d'investissement programmés et flux récurrents
+- Historique du patrimoine, alertes personnalisées, recherche globale
+- Thèmes et affichage personnalisables
+- Guide d'utilisation et FAQ intégrés dans l'application
+
+Le détail complet des fonctionnalités est dans le guide de l'application, toujours à jour.
 
 ## Démarrer
 
-KYF est accessible directement en ligne, sans installation :
+KYF est accessible en ligne, sans installation : **[keepyourfolio.fr](https://keepyourfolio.fr)**
 
-👉 **[keepyourfolio.fr](https://keepyourfolio.fr)**
-
-Aucune inscription n'est nécessaire pour commencer à l'utiliser.
+Aucune inscription n'est nécessaire.
 
 ## Stack technique
 
-KYF est un fichier HTML unique (HTML/CSS/JavaScript vanilla, sans framework ni étape de build), hébergé via GitHub Pages. Certains modules (résolution de tickers, cours en direct, base communautaire ISIN/ETF) s'appuient sur des scripts Google Apps Script complémentaires et ouverts.
+Fichier HTML unique (HTML, CSS et JavaScript natifs, sans framework ni étape de build), hébergé via GitHub Pages. Les modules complémentaires reposent sur des scripts Google Apps Script ouverts.
 
 ## Contribuer
 
-KYF est en développement actif. Les retours, suggestions et signalements de bugs sont les bienvenus.
+KYF est en développement actif. Retours, suggestions et signalements de bugs sont les bienvenus.
 
-- 📧 Contact : keep.your.folio@gmail.com
-- 💬 [Forum Linxea](https://forum.linxea.com/t/kyf-keep-your-folio-dashboard-patrimonial-100-local-open-source-gratuit/261217)
+- 📧 keep.your.folio@gmail.com
+- 💬 Forum Linxea
+- Voir [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Soutenir le projet
 
-KYF est gratuit et sans publicité. Si le projet vous est utile, vous pouvez le soutenir :
+KYF est gratuit et sans publicité. Si le projet vous est utile :
 
-- ☕ [Cagnotte Ko-fi](https://ko-fi.com/keepyourfolio)
-- 🪙 Don en crypto (USDC), adresses de réception ci-dessous
+- ☕ Cagnotte Ko-fi
+- 🪙 Don en crypto (USDC), adresses ci-dessous
 
 | Réseau | Adresse USDC |
 |---|---|
@@ -79,11 +63,11 @@ KYF est gratuit et sans publicité. Si le projet vous est utile, vous pouvez le 
 
 Envoyez uniquement des USDC sur le réseau indiqué : un envoi depuis un autre réseau risque d'être perdu définitivement. Avant d'envoyer, vérifiez que les premiers et derniers caractères de l'adresse correspondent.
 
-Ces adresses sont aussi proposées dans l'application (popup Soutenir KYF, avec QR code). En cas de doute, par exemple avec une copie modifiée du fichier, cette page fait référence.
+Ces adresses sont aussi proposées dans l'application (popup « Soutenir KYF », avec QR code). En cas de doute, par exemple avec une copie modifiée du fichier, cette page fait référence.
 
 ## Remerciements
 
-KYF s'appuie sur plusieurs sources et contributions communautaires (Yahoo Finance, CoinGecko, StatsAVie, OpenFIGI, BittyTax, dali-rp2, et plusieurs contributeurs bénévoles). La liste complète est disponible directement dans l'application, section **Crédits & Remerciements** du guide d'utilisation.
+KYF s'appuie sur des sources de données et des contributions communautaires (Yahoo Finance, CoinGecko, StatsAVie, OpenFIGI, BittyTax, dali-rp2, et plusieurs contributeurs bénévoles). La liste complète est dans l'application, section « Crédits & Remerciements » du guide.
 
 ## Licence
 
@@ -93,8 +77,3 @@ En pratique : vous pouvez utiliser, étudier, modifier et relier KYF à d'autres
 
 - Composants tiers et crédits : [NOTICE](NOTICE)
 - Nom et logo : [TRADEMARKS.md](TRADEMARKS.md)
-- Contribuer : [CONTRIBUTING.md](CONTRIBUTING.md)
-
----
-
-*KYF est actuellement en bêta publique et évolue régulièrement.*
