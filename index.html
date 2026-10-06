@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2.8.2.128.html
+  @file        : KYF_SHARE_beta_2_8_2_130.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.2.128
+  @version     : Beta 2.8.2.130
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -178,16 +178,18 @@ function kyfParisWall(d){
         la masquer. Quand masquée, les indices boursiers reprennent
         leur place automatiquement - rien d'autre à faire.
      2. KYF_ANNONCE_TEXTE : ton message, en texte simple (pas de HTML).
-        Limite confortable : 140 caractères. Au-delà, coupé proprement
-        avec "…" à l'affichage - jamais de mise en page cassée, quelle
-        que soit la longueur que tu mets ici.
+        Pour aller à la ligne, écris \n à l'endroit voulu (sans espace
+        autour, ex. "Première phrase.\nDeuxième phrase.").
+        Un message court tient sur une ligne ; plus long, il s'affiche
+        sur plusieurs lignes dans un encadré, sans déborder.
+        Limite : 320 caractères. Au-delà, coupé proprement avec "…".
 
      Ne touche à rien d'autre dans ce bloc - c'est le seul endroit à
      modifier pour publier/retirer une annonce.
      ══════════════════════════════════════════════════════════════════ -->
 <script>
-  const KYF_ANNONCE_ACTIVE = false;
-  const KYF_ANNONCE_TEXTE  = "Nouveauté : le dividende réel des SCPI est désormais affiché automatiquement !";
+  const KYF_ANNONCE_ACTIVE = true;
+  const KYF_ANNONCE_TEXTE  = "Bienvenue à tous ! KYF est en version bêta : des bugs peuvent être présents, pensez à faire des sauvegardes régulièrement.\nBug corrigé : sur un 2e appareil, vos données pouvaient ne pas s'afficher. Rouvrez KYF sur l'appareil qui les contient.";
   // Couleurs gains / pertes des graphiques : remplace les teintes vert / rouge d'origine par celles du schéma choisi (Paramètres > Couleurs).
   // Sans schéma personnalisé, la couleur d'origine est renvoyée telle quelle. Utilisable dans les fonctions de dessin des graphiques.
   const KYF_SC_FAM = {
@@ -6445,7 +6447,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.2.128</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.2.130</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -25098,6 +25100,39 @@ const KYF_QUEUE_KEY  = 'kyf-sync-queue';
 const KYF_TS_KEY     = 'kyf-sync-timestamps'; // {clé: timestamp dernière sync}
 let   _saveDebounce  = null;
 let   _retryTimer    = null;
+// ── Porte de démarrage (multi-appareils) ─────────────────────────────
+// À l'ouverture, KYF charge ses modules AVANT que la lecture du Google Sheet ne soit terminée.
+// Sur un appareil qui n'a pas encore les données (2e PC, site hébergé…), un module vide
+// (ex. crypto) s'enregistrait aussitôt, partait vers le Sheet et écrasait la vraie sauvegarde,
+// pendant que l'écran restait vide. Tant que la lecture de démarrage n'est pas finie :
+//   - aucune écriture ne part vers le Sheet ;
+//   - les clés écrites localement pendant ce temps sont notées : si le Sheet en a une
+//     version plus récente, c'est elle qui gagne (l'écriture locale n'était qu'un chargement).
+window._kyfStartupPull = { pending: !!localStorage.getItem('kyf-oauth-sheetid'), changed: new Set() };
+// Filet : la porte s'ouvre quoi qu'il arrive au bout de 30 s (réseau très lent, script interrompu…)
+setTimeout(()=>{ try{ kyfStartupPullDone(); }catch(e){} }, 30000);
+function kyfStartupPullDone(){
+  if(!window._kyfStartupPull.pending) return;
+  window._kyfStartupPull.pending = false;
+  window._kyfStartupPull.changed.clear();
+  if(Object.keys(kyfQueueLoad()).length){
+    if(_saveDebounce) clearTimeout(_saveDebounce);
+    _saveDebounce = setTimeout(()=>{ kyfFlushQueue(); }, 1500);
+  }
+}
+// Valeur « vide » (aucune donnée réelle) : jamais utilisée pour écraser des données locales
+// non vides au démarrage. Protège aussi des sauvegardes vides déjà envoyées par erreur.
+function kyfIsEmptyData(key, raw){
+  let v; try{ v = JSON.parse(raw); }catch(e){ return false; }
+  if(v === null) return true;
+  if(Array.isArray(v)) return v.length === 0;
+  if(typeof v !== 'object') return false;
+  if(key === 'pea-crypto-v1'){
+    const n = a => Array.isArray(a) ? a.length : 0;
+    return !n(v.positions) && !n(v.operations) && !n(v.stables);
+  }
+  return Object.keys(v).length === 0;
+}
 let   _isSyncing     = false;
 
 // ── Retry avec backoff exponentiel + jitter (lot 2/3) ──────────────
@@ -25246,6 +25281,7 @@ localStorage.setItem = function(key, value){
 
 // Appelé à chaque modification d'une clé synchronisée
 function kyfOnDataChanged(key, value){
+  if(window._kyfStartupPull && window._kyfStartupPull.pending) window._kyfStartupPull.changed.add(key);
   // Ajouter à la queue
   const queue = kyfQueueLoad();
   queue[key]  = { data: value, ts: Date.now() };
@@ -25473,6 +25509,7 @@ async function kyfFlushQueue(){
   const sheetId  = localStorage.getItem('kyf-oauth-sheetid');
   if(!hasOAuth && !KYF_SHEETS_URL){ return; } // Pas connecté
   if(_isSyncing) return;
+  if(window._kyfStartupPull && window._kyfStartupPull.pending) return; // relancé à la fin de la lecture de démarrage
 
   const queue = kyfQueueLoad();
   if(!Object.keys(queue).length) return;
@@ -25960,7 +25997,8 @@ async function kyfPullOnStartup(){
   // plus que sur l'absence de session ou de sheetId.
   const hasOAuth = !!(window._kyfOAuthCache.token || window._kyfOAuthCache.refresh);
   const sheetId  = localStorage.getItem('kyf-oauth-sheetid');
-  if(!hasOAuth || !sheetId) return;
+  if(!hasOAuth || !sheetId){ kyfStartupPullDone(); return; }
+  let reloadNeeded = false;
 
   try {
     const sid = kyfSafeSheetId_(sheetId);
@@ -25976,6 +26014,9 @@ async function kyfPullOnStartup(){
     window._kyfSheetDataRowsTs = Date.now();
     const ts   = kyfTsLoad();
     let   count = 0;
+    const queue = kyfQueueLoad();
+    const changedAtStart = (window._kyfStartupPull && window._kyfStartupPull.changed) || new Set();
+    let   queueTouched = false;
 
     rows.forEach(row=>{
       const [key, rawData, timestamp] = row;
@@ -25985,16 +26026,39 @@ async function kyfPullOnStartup(){
       const localTs  = ts[key]  || 0;
       // Option C : le plus récent gagne
       if(sheetsTs > localTs){
+        const localRaw = localStorage.getItem(key);
+        // Une sauvegarde vide n'écrase jamais des données locales réelles : on garde le local,
+        // qui repartira vers le Sheet et réparera la sauvegarde.
+        if(localRaw && kyfIsEmptyData(key, jsonData) && !kyfIsEmptyData(key, localRaw)){
+          console.warn('[KYF Sync] Sauvegarde vide ignorée pour', key, ': les données de cet appareil sont conservées et renvoyées');
+          if(!queue[key]){ queue[key] = { data: localRaw, ts: Date.now() }; queueTouched = true; }
+          return;
+        }
         _origSetItem(key, kyfSanitizeImported(key, jsonData)); // setItem sans déclencher la queue
         ts[key] = sheetsTs;
         count++;
+        // L'écriture locale faite pendant le chargement (module vide) ne doit pas repartir vers le Sheet
+        if(changedAtStart.has(key) && queue[key]){ delete queue[key]; queueTouched = true; }
+        if(changedAtStart.has(key) || localRaw !== null) reloadNeeded = true;
       }
     });
+    if(queueTouched) kyfQueueSave(queue);
 
     kyfLogQuota(window._kyfOAuthCache.token, sheetId, 'SYNC_PULL', rows.length, 0, 0, 'OK', count+' clés restaurées');
     if(count > 0){
       kyfTsSave(ts);
       console.log(`[KYF Sync] Pull démarrage : ${count} clés restaurées depuis Sheets`);
+    }
+    // Les modules ont déjà été chargés avec les anciennes données : un seul rechargement pour
+    // afficher celles du Sheet (jamais deux de suite, au cas où).
+    if(reloadNeeded){
+      let last = 0; try{ last = parseInt(sessionStorage.getItem('kyf-pull-reload')||'0'); }catch(e){}
+      if(Date.now() - last > 60000){
+        try{ sessionStorage.setItem('kyf-pull-reload', String(Date.now())); sessionStorage.setItem('kyf-pull-reload-toast','1'); }catch(e){}
+        window._kyfStartupPull.pending = false;
+        location.reload();
+        return;
+      }
     }
     // Raccord Intraday : l'URL vient peut-etre d'arriver dans le localStorage,
     // la variable en memoire et l'UI ne le savent pas encore (voir
@@ -26013,6 +26077,7 @@ async function kyfPullOnStartup(){
     }
     console.warn('[KYF Sync] Pull démarrage échoué:', e.message, KYF_LOG_SELF_HEAL_NOTE);
   }
+  kyfStartupPullDone();
 }
 
 // ══ SNAPSHOTS OAUTH ══════════════════════════════════════════════
@@ -26883,7 +26948,7 @@ function setIdxBandMode(mode){
 // Voir la config tout en haut du fichier (KYF_ANNONCE_ACTIVE/TEXTE).
 // N'a besoin d'aucune donnée externe - s'affiche immédiatement au
 // chargement, indépendamment du chargement des indices.
-const KYF_ANNONCE_LIMITE = 140;
+const KYF_ANNONCE_LIMITE = 320;
 
 function kyfInitAnnonce(){
   if(!KYF_ANNONCE_ACTIVE) return;
@@ -26899,6 +26964,20 @@ function kyfInitAnnonce(){
   if(!textEl || !bandEl) return;
 
   textEl.textContent = texte;
+  // Message sur plusieurs lignes (\n) ou long : encadré qui s'agrandit en hauteur au lieu d'une pilule d'une ligne
+  if(texte.indexOf('\n') >= 0 || texte.length > 110){
+    textEl.style.whiteSpace = 'pre-line';
+    textEl.style.overflow = 'visible';
+    textEl.style.lineHeight = '1.55';
+    bandEl.style.height = 'auto';
+    bandEl.style.padding = '6px 14px';
+    bandEl.style.borderRadius = '12px';
+    bandEl.style.alignItems = 'flex-start';
+    bandEl.style.maxWidth = 'min(760px,92vw)';
+    const wrap = document.getElementById('idxBandWrap');
+    if(wrap){ wrap.style.height = 'auto'; wrap.style.minHeight = '30px'; wrap.style.padding = '5px 0'; }
+    bandEl.querySelectorAll('svg').forEach(sv => { sv.style.marginTop = '2px'; });
+  }
   bandEl.style.display = 'flex';
   requestAnimationFrame(()=>{ bandEl.style.opacity='1'; bandEl.style.transform='translateY(0) scale(1)'; });
 }
@@ -40133,7 +40212,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.128\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.130\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -41046,6 +41125,8 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   // kyfPullSnapshotsMissing lit KYF_Snapshots, indépendant de KYF_Data lu par
   // kyfPullOnStartup - lancé en parallèle au lieu d'attendre la fin du pull.
   if(typeof kyfPullSnapshotsMissing==='function') kyfPullSnapshotsMissing();
+  try{ if(sessionStorage.getItem('kyf-pull-reload-toast')){ sessionStorage.removeItem('kyf-pull-reload-toast'); setTimeout(()=>{ if(typeof showToast==='function') showToast('Données mises à jour depuis votre sauvegarde Google'); }, 1200); } }catch(e){}
+  if(typeof kyfPullOnStartup!=='function') kyfStartupPullDone();
   if(typeof kyfPullOnStartup==='function') kyfPullOnStartup().then(()=>{
     console.log('[KYF Sync] Pull démarrage terminé');
     if(typeof kyfInitialPush==='function') kyfInitialPush();
@@ -61349,6 +61430,10 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.130 · 06/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Annonce (bandeau en haut, réglage manuel en début de fichier) : un message peut maintenant aller à la ligne (\n) et s'afficher sur plusieurs lignes sans déborder. Annonce de bienvenue bêta et du 1er bug corrigé activée.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.129 · 06/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Correctif important, synchronisation Google entre appareils : à l'ouverture sur un appareil qui n'avait pas encore les données (2e PC, site keepyourfolio.fr…), un portefeuille vide (crypto notamment) pouvait partir vers le Sheet et écraser la sauvegarde, et l'écran restait vide. Désormais rien n'est envoyé avant la fin de la lecture du Sheet, les données reçues s'affichent (un rechargement automatique), et une sauvegarde vide n'écrase jamais des données réelles : elle est réparée automatiquement.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.128 · 06/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre de bienvenue : encart « Conçu pour ordinateur » (KYF pas encore optimisé pour smartphone et tablette, une version mobile est prévue).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.127 · 06/10/2026</div>
