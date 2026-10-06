@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_2_130.html
+  @file        : KYF_SHARE_beta_2.8.2.140.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.2.130
+  @version     : Beta 2.8.2.140
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -2955,6 +2955,14 @@ html.kyf-boot #sidebar, html.kyf-boot #mainContent, html.kyf-boot #mainContent .
   transform:scale(1.08);
 }
 .immo-photo-zone:hover .immo-photo-edit-overlay{ opacity:1!important; }
+/* Ligne de titre d'enveloppe (PEA, CTO…) : fond sur toute la ligne + sous-totaux discrets */
+#etfTbody tr.kyf-env-row > td{background:rgba(255,255,255,0.03);border-top:1px solid var(--border);border-bottom:1px solid rgba(255,255,255,0.06)}
+#etfTbody tr.kyf-env-row > td.kyf-env-sub{font-size:10px;font-weight:600;color:var(--text3);white-space:nowrap;padding-top:6px;padding-bottom:4px}
+#etfTbody tr.kyf-env-row > td.kyf-env-sub.up{color:var(--green);opacity:.8}
+#etfTbody tr.kyf-env-row > td.kyf-env-sub.dn{color:var(--red);opacity:.8}
+/* Séparation nette entre deux enveloppes (fin du PEA / début du CTO…) : trait plus épais, sauf au tout début du tableau */
+#etfTbody tr.kyf-env-row:not(:first-child) > td{border-top:2px solid color-mix(in srgb, var(--text3) 55%, transparent)}
+#etfTbody tr.kyf-env-row:hover > td{background:var(--hov-bg-soft, rgba(255,255,255,0.05))}
 /* POSITIONS ETF & ACTIONS : VAR.J €, G/P €, G/P % en rouge → gras pour plus de visibilité */
 #etfTbody td.dn{ font-weight:700!important; }
 /* POSITIONS CRYPTO : G/P €, G/P % en rouge → même renfort */
@@ -5099,7 +5107,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 <!-- ETF VUE MODAL -->
 <div id="etfSettingsOverlay" onclick="closeETFSettings()" style="display:none;position:fixed;inset:0;z-index:9993;background:rgba(0,0,0,0.6)"></div>
 <div id="etfSettingsModal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
-  width:min(420px,94vw);max-height:90vh;overflow-y:auto;z-index:9994;background:var(--bg2);border:1px solid var(--border2);
+  width:min(820px,94vw);max-height:90vh;overflow-y:auto;z-index:9994;background:var(--bg2);border:1px solid var(--border2);
   border-radius:16px;padding:22px;font-family:'Inter',sans-serif;box-shadow:0 12px 48px rgba(0,0,0,0.4)">
 
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
@@ -5107,6 +5115,16 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
     <button type="button" onclick="closeETFSettings()" class="kyf-modal-close" title="Fermer" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
 
+  <style>
+    #etfSettingsModal .kyf-vue-cols{display:grid;grid-template-columns:1fr 1fr;gap:0 26px;align-items:start}
+    #etfSettingsModal .kyf-vue-col + .kyf-vue-col{border-left:1px solid var(--border);padding-left:26px}
+    @media (max-width:760px){
+      #etfSettingsModal .kyf-vue-cols{grid-template-columns:1fr}
+      #etfSettingsModal .kyf-vue-col + .kyf-vue-col{border-left:none;padding-left:0;border-top:1px solid var(--border);padding-top:11px}
+    }
+  </style>
+  <div class="kyf-vue-cols">
+  <div class="kyf-vue-col">
   <!-- Logos -->
   <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border);user-select:none">
     <div>
@@ -5155,6 +5173,52 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
       <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;color:var(--text3)"><input type="checkbox" value="gpp" checked style="accent-color:var(--accent)"> G/P %</label>
       <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;color:var(--text3)"><input type="checkbox" value="repartition" checked style="accent-color:var(--accent)"> RÉPART.</label>
     </div>
+  </div>
+
+  </div>
+  <div class="kyf-vue-col">
+  <!-- Sous-totaux par enveloppe -->
+  <div style="padding:11px 0;margin-bottom:6px">
+    <div style="font-size:11px;color:var(--text2);font-weight:600">Sous-totaux par enveloppe</div>
+    <div style="font-size:10px;color:var(--text3);margin:2px 0 8px">Montants affichés sur la ligne de titre de chaque enveloppe. Décochez pour un tableau plus léger.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px" id="etfSubOptions">
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;color:var(--text3)"><input type="checkbox" value="PEA" checked style="accent-color:var(--accent)"> PEA</label>
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;color:var(--text3)"><input type="checkbox" value="CTO" checked style="accent-color:var(--accent)"> CTO</label>
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;color:var(--text3)"><input type="checkbox" value="AV" checked style="accent-color:var(--accent)"> Assurance Vie</label>
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;color:var(--text3)"><input type="checkbox" value="PER" checked style="accent-color:var(--accent)"> PER</label>
+    </div>
+  </div>
+
+  <!-- Clôture d'hier : source de la variation du jour -->
+  <style>
+    .kyf-ref-card{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:background .15s,border-color .15s}
+    .kyf-ref-card:hover{background:var(--hov-bg)}
+    .kyf-ref-card.on{border-color:var(--accent)}
+    .kyf-ref-t{display:block;font-size:11px;font-weight:700;color:var(--text2);margin-bottom:3px}
+    .kyf-ref-l{display:block;font-size:10px;line-height:1.55;color:var(--text3)}
+    .kyf-ref-p{color:var(--green);font-weight:700}.kyf-ref-m{color:var(--red);font-weight:700}
+  </style>
+  <div style="padding:11px 0 14px;border-top:1px solid var(--border);margin-bottom:6px">
+    <div style="font-size:11px;color:var(--text2);font-weight:600">Clôture d'hier (variation du jour)</div>
+    <div style="font-size:10px;color:var(--text3);margin:2px 0 8px">Le cours en direct vient toujours de Yahoo. Seule la référence d'hier change.</div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <label class="kyf-ref-card" onclick="kyfSetRefVeille('yahoo')">
+        <input type="radio" name="etfRefVeille" value="yahoo" style="accent-color:var(--accent);margin-top:2px">
+        <span><span class="kyf-ref-t">Yahoo Finance (par défaut)</span>
+          <span class="kyf-ref-l"><b class="kyf-ref-p">+</b> Toutes les places (Paris, US, Londres, Stuttgart…), même source que le cours.</span>
+          <span class="kyf-ref-l"><b class="kyf-ref-m">&minus;</b> Peut différer de quelques centimes de la clôture officielle.</span></span>
+      </label>
+      <label class="kyf-ref-card" onclick="kyfSetRefVeille('google')">
+        <input type="radio" name="etfRefVeille" value="google" style="accent-color:var(--accent);margin-top:2px">
+        <span><span class="kyf-ref-t">Google Finance</span>
+          <span class="kyf-ref-l"><b class="kyf-ref-p">+</b> Identique à un Google Sheet GOOGLEFINANCE « closeyest », proche des courtiers.</span>
+          <span class="kyf-ref-l"><b class="kyf-ref-m">&minus;</b> Seulement les places connues de Google (sinon Yahoo prend le relais). Avant l'ouverture : 0 % au lieu de la dernière séance.</span></span>
+      </label>
+    </div>
+    <div id="kyfRefVeilleMsg" class="kyf-ok-green" role="status" aria-live="polite" style="display:flex;align-items:center;gap:5px;min-height:16px;margin-top:6px;font-size:10px;font-weight:700;opacity:0;transition:opacity .3s"></div>
+  </div>
+
+  </div>
   </div>
 
   <div style="display:flex;gap:10px">
@@ -6447,7 +6511,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.2.130</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.2.140</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -17092,7 +17156,7 @@ async function fetchAllPrices(force=false){
         let tickers = ETF.map(e => e.ticker).join(',');
         if(needOrRefresh) tickers = tickers ? tickers+','+OR_TICKERS : OR_TICKERS;
         const r = await fetch(
-          KYF_PRICE_URL + '?action=bulk&tickers=' + encodeURIComponent(tickers),
+          KYF_PRICE_URL + '?action=bulk&tickers=' + encodeURIComponent(tickers) + (kyfRefVeille() === 'google' ? '&ref=google' : ''),
           { signal: AbortSignal.timeout(12000), redirect: 'follow', mode: 'cors' }
         );
         if(r.ok){
@@ -21266,6 +21330,11 @@ function etfSettingsSave(){
   document.querySelectorAll('#etfColOptions input[type=checkbox]').forEach(cb => {
     s.cols[cb.value] = cb.checked;
   });
+  // Sous-totaux par enveloppe (PEA, CTO, AV, PER)
+  s.subtot = {};
+  document.querySelectorAll('#etfSubOptions input[type=checkbox]').forEach(cb => {
+    s.subtot[cb.value] = cb.checked;
+  });
   localStorage.setItem(ETF_SETTINGS_KEY, JSON.stringify(s));
   closeETFSettings();
   renderETFTable(window._lp || {});
@@ -21276,8 +21345,34 @@ function etfSettingsReset(){
   openETFSettings(); // recharger avec valeurs par défaut
 }
 
+// ── Source de la « clôture d'hier » (variation du jour) : Yahoo (défaut) ou Google Finance ──
+// Choix de l'utilisateur dans VUE. Le cours en direct reste Yahoo dans les deux cas ; avec Google,
+// le script de prix (v2.7 et +) remplace la clôture d'hier par celle de Google quand il la connaît.
+function kyfRefVeille(){ try{ return localStorage.getItem('kyf-ref-veille') === 'google' ? 'google' : 'yahoo'; }catch(e){ return 'yahoo'; } }
+function kyfRefVeilleSync(){
+  const v = kyfRefVeille();
+  document.querySelectorAll('input[name="etfRefVeille"]').forEach(r => {
+    r.checked = (r.value === v);
+    const card = r.closest('.kyf-ref-card'); if(card) card.classList.toggle('on', r.checked);
+  });
+}
+function kyfSetRefVeille(v){
+  v = v === 'google' ? 'google' : 'yahoo';
+  if(v === kyfRefVeille()){ kyfRefVeilleSync(); return; }
+  localStorage.setItem('kyf-ref-veille', v);
+  kyfRefVeilleSync();
+  try{ fetchAllPrices(true); }catch(e){}
+  // Confirmation dans la fenêtre elle-même (un message flottant cachait les boutons du bas)
+  const st = document.getElementById('kyfRefVeilleMsg');
+  if(st){
+    st.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Clôture d\'hier : ' + (v === 'google' ? 'Google Finance' : 'Yahoo Finance') + ', prix rechargés';
+    st.style.opacity = '1';
+    clearTimeout(st._t); st._t = setTimeout(() => { st.style.opacity = '0'; }, 3000);
+  }
+}
 function openETFSettings(){
   const s = etfSettingsLoad();
+  kyfRefVeilleSync();
   // Logos
   const logoOn = s.showLogo !== false;
   const btn  = document.getElementById('etfLogoToggle');
@@ -21290,6 +21385,10 @@ function openETFSettings(){
   const cols = s.cols || {};
   document.querySelectorAll('#etfColOptions input[type=checkbox]').forEach(cb => {
     cb.checked = cols[cb.value] !== false;
+  });
+  const subt = s.subtot || {};
+  document.querySelectorAll('#etfSubOptions input[type=checkbox]').forEach(cb => {
+    cb.checked = subt[cb.value] !== false;
   });
   document.getElementById('etfSettingsModal').style.display = 'block';
   document.getElementById('etfSettingsOverlay').style.display = 'block';
@@ -34947,6 +35046,12 @@ function kyfFavBar(kind, total, favCount){
   }
   const mSel = document.getElementById(kind+'FavMin'); if(mSel){ mSel.value = String(kyfFavLoad().min[kind]); if(typeof kyfPgInit === 'function'){ kyfPgInit(mSel); if(typeof kyfPgLabel === 'function') kyfPgLabel(mSel); } }   // menu KYF au lieu de la liste native
   const b = document.getElementById(kind+'FavOnly');
+  // Bouton « Favoris » caché tant qu'aucune position n'est en favori (même comportement pour ETF et crypto)
+  if(b && !(favCount > 0)){
+    b.style.display = 'none';
+    if(ui.only){ ui.only = false; setTimeout(() => kyfFavRefresh(kind), 0); }
+    return;
+  }
   if(b){
     b.style.display = 'inline-flex';
     b.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="${ui.only?'#f0b429':'none'}" stroke="${ui.only?'#f0b429':'currentColor'}" stroke-width="2" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Favoris (${favCount})`;
@@ -35023,14 +35128,34 @@ function renderETFTable(lp){
       lastEnv = env;
       const label = envLabels[env] || env;
       const isCollapsed = collapsedEnvs.includes(env);
-      rows += `<tr class="kyf-env-row"><td colspan="${colCount}" style="padding:6px 10px 4px;background:rgba(255,255,255,0.03);border-top:1px solid var(--border);border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer" onclick="etfToggleEnvCollapse('${escJsAttr(String(env))}')" title="${isCollapsed?'Déplier':'Replier'}">
+      // Sous-total de l'enveloppe, posé sur sa ligne de titre (aucune ligne en plus). Mêmes règles que la ligne TOTAL :
+      // conversion en euros, parts détenues à l'ouverture pour VAR.J, lignes sans cours exclues du G/P.
+      const _envList = ETF.filter(x => (x.enveloppe||'PEA') === env);
+      const _sInv = _envList.reduce((t,x)=>t+(x.montant!==undefined?x.montant:x.pru*x.qty),0);
+      const _sEval = _envList.reduce((t,x)=>t+getEval(x,lp[x.ticker]),0);
+      const _sVjAny = _envList.some(x=>lp[x.ticker]&&lp[x.ticker].change!==undefined);
+      const _sVj = _envList.reduce((t,x)=>{const q=lp[x.ticker];return t+(q&&q.change!==undefined?toEUR(q.change*kyfEtfHeldQty(x),q.currency||getTickerCurrency(x.ticker,q)):0);},0);
+      const _sGp = _envList.reduce((t,x)=>t+(kyfEtfNoPrice(x,lp)?0:getEval(x,lp[x.ticker])-(x.montant!==undefined?x.montant:x.pru*x.qty)),0);
+      const _sGpInv = _envList.reduce((t,x)=>t+(kyfEtfNoPrice(x,lp)?0:(x.montant!==undefined?x.montant:x.pru*x.qty)),0);
+      const _sc = v => v>=0?'up':'dn';
+      const _sOn = (_s.subtot || {})[env] !== false;   // choix dans VUE → Sous-totaux par enveloppe
+      const _sTd = (k, html, cls) => showCol(k) ? `<td class="kyf-env-sub ${_sOn?(cls||''):''}">${_sOn?html:''}</td>` : '';
+      const _sCells = _sTd('investi', fmt(_sInv,2)+' €')
+        + _sTd('pru','') + _sTd('qte','')
+        + _sTd('eval', fmt(_sEval,2)+' €')
+        + _sTd('cours','')
+        + _sTd('varje', _sVjAny ? (_sVj>=0?'+':'')+fmt(_sVj,2)+' €' : '', _sVjAny ? _sc(_sVj) : '')
+        + _sTd('gpe', (_sGp>=0?'+':'')+fmt(_sGp,2)+' €', _sc(_sGp))
+        + _sTd('gpp', _sGpInv>0 ? (_sGp>=0?'+':'')+(_sGp/_sGpInv*100).toFixed(2)+' %' : '-', _sGpInv>0?_sc(_sGp):'')
+        + _sTd('repartition', _totalEval>0 ? (_sEval/_totalEval*100).toFixed(2)+'%' : '');
+      rows += `<tr class="kyf-env-row" style="cursor:pointer" onclick="etfToggleEnvCollapse('${escJsAttr(String(env))}')" title="${isCollapsed?'Déplier':'Replier'}"><td colspan="2" style="padding:6px 10px 4px">
         <div style="display:flex;align-items:center;gap:8px">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" style="transition:transform .25s ease;transform:rotate(${isCollapsed?'-90deg':'0deg'})"><polyline points="6 9 12 15 18 9"/></svg>
           <span style="display:flex;align-items:center;gap:5px;font-size:9px;font-weight:700;color:var(--text);letter-spacing:1.5px"><span style="opacity:.85">${envIcons[env]||''}</span>${escapeHtml(label)}</span>
           <div style="flex:1;height:1px;background:linear-gradient(to right,var(--border2),transparent)"></div>
           <span style="font-size:9px;color:var(--text3)">${_fa.counted.filter(x=>(x.enveloppe||'PEA')===env).length} actif${_fa.counted.filter(x=>(x.enveloppe||'PEA')===env).length>1?'s':''}</span>
         </div>
-      </td></tr>`;
+      </td>${_sCells}<td></td></tr>`;
     }
     if(collapsedEnvs.includes(env)) return;
     const p       = lp[e.ticker];
@@ -40212,7 +40337,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.130\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.140\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -45791,6 +45916,7 @@ const KYF_STORAGE_KEYS = [
   'kyf-avfisc-2ch',
   'kyf-avfisc-total-override',
   'kyf-avfisc-cloud-consent',
+  'kyf-ref-veille',
   // Déjà sauvegardées sur Google Sheets, mais oubliées par l'export fichier, le dossier local, GitHub et WebDAV :
   // barre latérale réduite, groupes de la barre latérale, date de première connexion (« Mon histoire »).
   'kyf-sidebar-mini',
@@ -52593,7 +52719,7 @@ const GUIDE_PAGES = [
     icon: '',
     body: `
       <div style="background:rgba(77,159,255,0.05);border:1px solid rgba(77,159,255,0.2);border-radius:10px;padding:14px 16px;margin-bottom:14px">
-        <div style="font-size:13px;color:var(--text2);line-height:1.8">Le bouton <strong style="color:var(--accent)">MODIFIER LA VUE</strong> ouvre trois réglages : logos, tri, et colonnes visibles.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.8">Le bouton <strong style="color:var(--accent)">MODIFIER LA VUE</strong> ouvre quatre réglages : logos, tri, colonnes visibles et source de la clôture d'hier.</div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
         <div style="padding:12px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px">
@@ -52608,6 +52734,21 @@ const GUIDE_PAGES = [
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Colonnes visibles</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9">9 colonnes activables indépendamment : Investi, PRU, Quantité, Évaluation, Cours, Variation du jour en euros, G/P en euros, G/P en pourcentage, Répartition. Masquez celles qui ne vous intéressent pas pour un tableau plus lisible.</div>
+      </div>
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Clôture d'hier : Yahoo ou Google</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">La variation du jour (VAR.J et le % sous le cours) compare le cours du moment à la <strong style="color:var(--text)">clôture d'hier</strong>. En bas de la fenêtre, vous choisissez d'où elle vient. Le cours en direct, lui, vient toujours de Yahoo.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+          <div style="padding:10px 12px;border:1px solid var(--border);border-radius:8px">
+            <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px">Yahoo Finance (par défaut)</div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.7"><span style="color:var(--green);font-weight:700">+</span> Toutes les places (Paris, US, Londres, Stuttgart…).<br><span style="color:var(--red);font-weight:700">&minus;</span> Peut différer de quelques centimes de la clôture officielle.</div>
+          </div>
+          <div style="padding:10px 12px;border:1px solid var(--border);border-radius:8px">
+            <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px">Google Finance</div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.7"><span style="color:var(--green);font-weight:700">+</span> Identique à un Google Sheet GOOGLEFINANCE, proche des courtiers.<br><span style="color:var(--red);font-weight:700">&minus;</span> Seulement les places connues de Google (sinon Yahoo prend le relais). Avant l'ouverture : 0 % au lieu de la dernière séance.</div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--text3);line-height:1.8;margin-top:8px">Comme deux balances de boulangerie qui ne pèsent pas tout à fait pareil : le total de la journée reste très proche, mais une ligne peut varier de quelques euros selon la source.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Favoris, recherche et longs tableaux</div>
@@ -59862,7 +60003,7 @@ const FAQ_DATA = [
   },
   {
     q: "Comment est calculée la variation du jour de mes ETF et actions ?",
-    a: "La carte <strong style='color:var(--faq-strong);font-weight:700'>VAR. JOURNALIÈRE</strong>, la colonne <strong style='color:var(--faq-strong);font-weight:700'>VAR.J</strong> du tableau POSITIONS ETF &amp; ACTIONS et sa ligne TOTAL donnent toujours le même montant :<br>• chaque ligne est <strong style='color:var(--faq-strong);font-weight:700'>convertie en euros</strong> (dollars, livres, pence…) avant d'être additionnée ;<br>• seules les parts détenues à la clôture d'hier comptent : <strong style='color:var(--faq-strong);font-weight:700'>un achat fait aujourd'hui</strong> n'entre pas dans la variation du jour (une ligne entièrement achetée aujourd'hui affiche « — ») ;<br>• le « % ce jour » est calculé sur la valeur de vos ETF et actions à la clôture d'hier, pas sur tout votre patrimoine ;<br>• un titre au <strong style='color:var(--faq-strong);font-weight:700'>cours non à jour</strong> (petite horloge grise) affiche « — » et n'entre pas dans le calcul.<br><br>Une ligne <strong style='color:var(--faq-strong);font-weight:700'>sans aucun cours</strong> (ni prix, ni valeur saisie) n'est pas comptée dans le GAIN NET, au lieu d'y apparaître comme une perte de tout son investi : la mention « 1 ligne sans cours non comptée » le rappelle sous le gain. L'INVESTI NET, lui, reste complet."
+    a: "La carte <strong style='color:var(--faq-strong);font-weight:700'>VAR. JOURNALIÈRE</strong>, la colonne <strong style='color:var(--faq-strong);font-weight:700'>VAR.J</strong> du tableau POSITIONS ETF &amp; ACTIONS et sa ligne TOTAL donnent toujours le même montant :<br>• chaque ligne est <strong style='color:var(--faq-strong);font-weight:700'>convertie en euros</strong> (dollars, livres, pence…) avant d'être additionnée ;<br>• seules les parts détenues à la clôture d'hier comptent : <strong style='color:var(--faq-strong);font-weight:700'>un achat fait aujourd'hui</strong> n'entre pas dans la variation du jour (une ligne entièrement achetée aujourd'hui affiche « — ») ;<br>• le « % ce jour » est calculé sur la valeur de vos ETF et actions à la clôture d'hier, pas sur tout votre patrimoine ;<br>• un titre au <strong style='color:var(--faq-strong);font-weight:700'>cours non à jour</strong> (petite horloge grise) affiche « — » et n'entre pas dans le calcul.<br><br><strong style='color:var(--faq-strong);font-weight:700'>Clôture d'hier : Yahoo ou Google ?</strong> La variation compare le cours du moment à la clôture d'hier. Vous choisissez sa source dans le Portefeuille, bouton <strong style='color:var(--faq-strong);font-weight:700'>VUE</strong>, en bas : <strong style='color:var(--faq-strong);font-weight:700'>Yahoo Finance</strong> (par défaut, toutes les places, peut différer de quelques centimes de la clôture officielle) ou <strong style='color:var(--faq-strong);font-weight:700'>Google Finance</strong> (identique à un Google Sheet GOOGLEFINANCE, seulement les places connues de Google, Yahoo prend le relais sinon). Le cours en direct reste Yahoo dans les deux cas. Si votre variation diffère un peu de celle d'un autre outil, c'est presque toujours cette clôture d'hier.<br><br>Une ligne <strong style='color:var(--faq-strong);font-weight:700'>sans aucun cours</strong> (ni prix, ni valeur saisie) n'est pas comptée dans le GAIN NET, au lieu d'y apparaître comme une perte de tout son investi : la mention « 1 ligne sans cours non comptée » le rappelle sous le gain. L'INVESTI NET, lui, reste complet."
   },
   {
     q: "Pourquoi un achat de crypto fait aujourd'hui ne change-t-il pas la variation du jour ?",
@@ -61430,6 +61571,26 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.140 · 06/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Portefeuille : le bouton « Favoris » (n'afficher que les favoris) est caché tant qu'aucune position n'est en favori, comme en Crypto. Il apparaît dès la première étoile.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.139 · 06/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Portefeuille, VUE : fenêtre en deux volets (à gauche logos, tri et colonnes ; à droite sous-totaux et clôture d'hier), plus lisible. Sur petit écran, les volets s'empilent.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.138 · 06/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Portefeuille, VUE : nouveau réglage « Sous-totaux par enveloppe » pour afficher ou non les montants sur la ligne de titre de chaque enveloppe (ex. PEA et CTO oui, PER non).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.137 · 06/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Portefeuille, POSITIONS ETF &amp; ACTIONS : trait plus marqué entre deux enveloppes (fin du PEA / début du CTO…), pour bien séparer les groupes.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.136 · 06/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Portefeuille, POSITIONS ETF &amp; ACTIONS : sous-total par enveloppe (PEA, CTO, Assurance Vie, PER) posé sur sa ligne de titre, sans ligne en plus : investi, évaluation, VAR.J, G/P € et %, répartition. Visible aussi groupe replié, suit les colonnes choisies dans VUE, et les sous-totaux additionnés donnent exactement le TOTAL.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.135 · 06/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Portefeuille, VUE : la confirmation du choix Yahoo / Google s'affiche en vert dans la fenêtre, sous les deux cartes, au lieu d'un message flottant qui cachait les boutons.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.134 · 06/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Guide, Personnaliser la Vue : nouveau bloc « Clôture d'hier : Yahoo ou Google » (avantages et limites de chaque source).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.133 · 06/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">FAQ « Comment est calculée la variation du jour de mes ETF et actions ? » : explication du choix Yahoo / Google pour la clôture d'hier (bouton VUE).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.132 · 06/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Portefeuille, VUE : le choix « Clôture d'hier » est placé en bas, sous Colonnes visibles.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.131 · 06/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Portefeuille, VUE : nouveau choix « Clôture d'hier (variation du jour) » : Yahoo Finance (par défaut) ou Google Finance (comme un Google Sheet GOOGLEFINANCE), avec avantages et limites de chacun. Le cours en direct reste Yahoo. Nécessite le script de prix v2.7.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.130 · 06/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Annonce (bandeau en haut, réglage manuel en début de fichier) : un message peut maintenant aller à la ligne (\n) et s'afficher sur plusieurs lignes sans déborder. Annonce de bienvenue bêta et du 1er bug corrigé activée.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.129 · 06/10/2026</div>
