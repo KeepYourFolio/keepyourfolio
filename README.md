@@ -4,7 +4,7 @@
 
 🔗 [keepyourfolio.fr](https://keepyourfolio.fr)
 
-## 🇬🇧 English summary
+## English summary
 
 Keep Your Folio (KYF) is a free, open-source personal wealth dashboard. It tracks stocks, ETFs, crypto, precious metals, real estate, life insurance, savings and more, all in a single self-contained HTML file. Your data stays in your browser by default (local-first): no mandatory account, no backend server. Optional, opt-in encrypted cloud sync is available if you want to access your data across devices. KYF is in public beta and under active development.
 
