@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2.8.2.140.html
+  @file        : KYF_SHARE_beta_2.8.2.143.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.2.140
+  @version     : Beta 2.8.2.143
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6511,7 +6511,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.2.140</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.2.143</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -38518,16 +38518,9 @@ function toggleNotifPanel(){
     const priorityTab = logs.errors.length > 0 ? 'errors'
                       : logs.warnings.length > 0 ? 'warnings'
                       : 'infos';
-    activeNotifTab = priorityTab;
-    // Mettre à jour l'apparence des onglets
-    document.querySelectorAll('.notif-tab').forEach(b => {
-      b.style.borderBottomColor = 'transparent';
-      b.style.color = 'var(--text3)';
-    });
-    const cols = {errors:'var(--red)', warnings:'#b07800', infos:'#4d9fff'};
-    const activeBtn = document.getElementById('ntab-'+priorityTab);
-    if(activeBtn){ activeBtn.style.borderBottomColor = cols[priorityTab]; activeBtn.style.color = cols[priorityTab]; }
-    renderNotifContent();
+    // Même mise à jour que le clic sur un onglet : le soulignement (classe active) suit l'onglet ouvert.
+    // Avant, Erreurs gardait la classe active et affichait un trait sombre alors qu'un autre onglet était ouvert.
+    showNotifTab(priorityTab, document.getElementById('ntab-'+priorityTab));
   }
 }
 
@@ -38771,6 +38764,15 @@ function kyfSelfHealPill(color){
     + 'font-size:8px;font-weight:700;letter-spacing:.4px;line-height:1.5;opacity:.8;cursor:help;color:' + color + '">'
     + '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>AUTO</span>';
 }
+// Texte affiché d'une notification : on retire seulement le préfixe technique « source: » (ex. « io: »),
+// jamais le début du message lui-même. Avant, tout ce qui précédait le premier « : » disparaissait
+// (« Pull démarrage échoué : timeout » devenait « timeout »).
+function kyfNotifShownMsg(e){
+  const m = String(e.msg || '');
+  const src = String(e.source || '');
+  if(src && /^[a-zA-Z_]+$/.test(src) && m.startsWith(src + ':')) return m.slice(src.length + 1).replace(/^\s+/, '');
+  return m;
+}
 function renderNotifContent(){
   const el = document.getElementById('notifContent'); if(!el) return;
   if(activeNotifTab === 'anomalies'){ renderAnomaliesTab(el); return; }
@@ -38781,12 +38783,13 @@ function renderNotifContent(){
     return;
   }
   const styles = {
-    errors:   { border:'#ff4560', bg:'#2d0a0e',              text:'#ff9aa5', tsColor:'#ffffff',              swipeBg:kyfSc('rgba(255,69,96,0.30)')   },
+    errors:   { border:'#ff4560', bg:'rgba(255,69,96,0.10)', text:'#7a0f1e', tsColor:'#a3142a',          swipeBg:kyfSc('rgba(255,69,96,0.30)')   },
     warnings: { border:'#f0b429', bg:'rgba(240,180,41,0.28)', text:'#1a1200', tsColor:'rgba(0,0,0,0.85)',     swipeBg:'rgba(240,180,41,0.35)'  },
     infos:    { border:'#4d9fff', bg:'rgba(77,159,255,0.10)', text:'#2C3E50', tsColor:'#5A7DA1', sourceColor:'#1A3A5A', swipeBg:'rgba(77,159,255,0.30)'  },
   };
   // Thème sombre : les couleurs de texte ci-dessus sont pensées pour le thème clair (illisibles sur fond sombre)
   if(document.documentElement.getAttribute('data-theme') !== 'light'){
+    styles.errors   = { border:'#ff4560', bg:'#2d0a0e', text:'#ff9aa5', tsColor:'#ffffff', swipeBg:kyfSc('rgba(255,69,96,0.30)') };
     styles.warnings = { border:'#f0b429', bg:'rgba(240,180,41,0.14)', text:'#ffe19a', tsColor:'#f5cf72', swipeBg:'rgba(240,180,41,0.35)' };
     styles.infos    = { border:'#4d9fff', bg:'rgba(77,159,255,0.12)', text:'#e4eefb', tsColor:'#8fb8e8', sourceColor:'#b5d2f4', swipeBg:'rgba(77,159,255,0.30)' };
   }
@@ -38833,7 +38836,7 @@ function renderNotifContent(){
       <div class="notif-item-inner" style="position:relative;border-left:2px solid ${s.border};padding:8px 12px;background:${s.bg};border-top:1px solid ${s.border}22;border-bottom:1px solid ${s.border}22;border-right:1px solid ${s.border}22;transition:transform .2s ease;cursor:grab;user-select:none;-webkit-user-select:none">
         <div style="font-family:'Inter',sans-serif;font-size:9px;color:${s.tsColor};margin-bottom:4px;letter-spacing:.4px;font-weight:${activeNotifTab==='errors'||activeNotifTab==='warnings'?'700':'400'}">${escapeHtml(e.ts)}${e.source?` · <span style="color:${s.sourceColor||s.tsColor};font-weight:700">${escapeHtml(e.source)}</span>`:''}</div>
         <div style="font-family:'Inter',sans-serif;font-size:12px;color:${s.text};word-break:break-word;line-height:1.6;display:flex;align-items:flex-start;gap:4px">
-          ${e.icon && KYF_NOTIF_ICONS[e.icon] ? '<span style="display:inline-flex;flex-shrink:0;margin-top:3px;color:'+(e.icon==='ok'?'var(--kyf-sync-ok)':s.text)+'">'+kyfNotifIconSvg(e.icon)+'</span>' : ''}<span style="flex:1">${escapeHtml((activeNotifTab==='errors'||activeNotifTab==='warnings' ? e.msg.replace(/^[^:]+:\s*/,'') : e.msg).replace(KYF_SELF_HEAL_RE,''))}</span>${kyfIsSelfHeal(e.msg) ? kyfSelfHealPill(s.text) : ''}${infoIcon}
+          ${e.icon && KYF_NOTIF_ICONS[e.icon] ? '<span style="display:inline-flex;flex-shrink:0;margin-top:3px;color:'+(e.icon==='ok'?'var(--kyf-sync-ok)':s.text)+'">'+kyfNotifIconSvg(e.icon)+'</span>' : ''}<span style="flex:1">${escapeHtml(kyfNotifShownMsg(e).replace(KYF_SELF_HEAL_RE,''))}</span>${kyfIsSelfHeal(e.msg) ? kyfSelfHealPill(s.text) : ''}${infoIcon}
         </div>
       </div>
     </div>`;
@@ -40337,7 +40340,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.140\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.143\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -61571,6 +61574,12 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.143 · 06/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Notifications, thème clair : les cartes d'erreur ne sont plus presque noires ; fond rouge léger et texte rouge foncé, comme les warnings et infos. Le thème sombre garde son rendu.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.142 · 06/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Notifications : les erreurs et warnings s'affichent en entier. Avant, tout ce qui précédait le premier « : » était coupé (« Pull démarrage échoué : timeout » devenait « timeout »).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.141 · 06/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Notifications : à l'ouverture, le trait sombre sous ERREURS ne reste plus quand un autre onglet est ouvert ; le soulignement suit l'onglet affiché, dans sa couleur.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.140 · 06/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Portefeuille : le bouton « Favoris » (n'afficher que les favoris) est caché tant qu'aucune position n'est en favori, comme en Crypto. Il apparaît dès la première étoile.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.139 · 06/10/2026</div>
