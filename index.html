@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2.8.2.143.html
+  @file        : KYF_SHARE_beta_2.8.2.149.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.2.143
+  @version     : Beta 2.8.2.149
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6511,7 +6511,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.2.143</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.2.149</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -40340,7 +40340,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.143\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.149\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -49203,6 +49203,89 @@ function kyfCloseOpTypeForm(){
   if(wrap) wrap.style.display = 'none';
 }
 
+// ── Devise des opérations crypto (€ / $) ─────────────────────────────
+// KYF range tous les montants crypto en euros. Une opération saisie en dollars garde ses montants d'origine
+// (op.orig) et sa devise (op.devise = 'usd') ; ses montants en euros sont calculés au taux EUR/USD du jour
+// de l'opération (op.fx, op.fxOk = taux définitif). En attendant ce taux, le taux actuel sert de repli.
+const KYF_FXH_KEY = 'kyf-fx-hist-v1';
+const KYF_OP_CUR_FIELDS = ['montant','cours','investi','valeur'];
+function kyfFxHistLoad(){ try{ return JSON.parse(localStorage.getItem(KYF_FXH_KEY) || '{}') || {}; }catch(e){ return {}; } }
+function kyfOpDateISO(d){ const p = String(d||'').split('/'); return p.length === 3 ? p[2] + '-' + p[1].padStart(2,'0') + '-' + p[0].padStart(2,'0') : String(d||'').slice(0,10); }
+function kyfOpConvertUsd(op, rate, ok){
+  if(!op.orig || !(rate > 0)) return;
+  KYF_OP_CUR_FIELDS.forEach(f => {
+    if(op.orig[f] !== undefined) op[f] = f === 'cours' ? Math.round(op.orig[f] / rate * 1e6) / 1e6 : Math.round(op.orig[f] / rate * 100) / 100;
+  });
+  op.fx = rate; op.fxOk = !!ok;
+}
+// Les montants actuels de l'opération sont des dollars : on les garde comme origine et on les convertit
+function kyfOpMarkUsd(op){
+  op.devise = 'usd'; op.orig = {};
+  KYF_OP_CUR_FIELDS.forEach(f => { const v = parseFloat(op[f]); if(v > 0) op.orig[f] = v; });
+  const cached = kyfFxHistLoad()[kyfOpDateISO(op.date)];
+  kyfOpConvertUsd(op, cached || getEurUsdRate(), !!cached);
+}
+// Taux EUR/USD (dollars pour 1 euro) d'une date, demandé au script de prix puis gardé sur l'appareil
+async function kyfFxHistRate(iso){
+  const cache = kyfFxHistLoad();
+  if(cache[iso] > 0) return cache[iso];
+  if(typeof KYF_PRICE_URL === 'undefined' || !KYF_PRICE_URL || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return null;
+  try{
+    const r = await fetch(KYF_PRICE_URL + '?ticker=' + encodeURIComponent('EURUSD=X') + '&date=' + iso, { signal: AbortSignal.timeout(10000), redirect: 'follow' });
+    const d = await r.json();
+    const v = parseFloat(d && d.price);
+    if(v > 0.5 && v < 2){
+      const c2 = kyfFxHistLoad(); c2[iso] = v;
+      try{ localStorage.setItem(KYF_FXH_KEY, JSON.stringify(c2)); }catch(e){}
+      return v;
+    }
+  }catch(e){}
+  return null;
+}
+// Remplace le taux provisoire des opérations en dollars par le taux de leur date, puis recalcule les positions.
+// Relancé à chaque validation d'opérations, à chaque changement de devise et à l'ouverture (taux encore manquants).
+let _kyfFxResolving = false;
+async function kyfCryptoFxResolve(){
+  if(_kyfFxResolving || typeof cryptoState === 'undefined' || !cryptoState) return;
+  _kyfFxResolving = true;
+  try{
+    const todo = (cryptoState.operations || []).filter(o => o.devise === 'usd' && o.orig && !o.fxOk);
+    if(!todo.length) return;
+    let changed = false;
+    for(const iso of [...new Set(todo.map(o => kyfOpDateISO(o.date)))]){
+      const rate = await kyfFxHistRate(iso);
+      if(!rate) continue;
+      todo.filter(o => kyfOpDateISO(o.date) === iso).forEach(o => {
+        const before = parseFloat(o.montant) || 0;
+        kyfOpConvertUsd(o, rate, true);
+        if(o.type === 'frais' && cryptoState.frais && o.plateforme)
+          cryptoState.frais[o.plateforme] = (parseFloat(cryptoState.frais[o.plateforme]) || 0) + ((parseFloat(o.montant) || 0) - before);
+        changed = true;
+      });
+    }
+    if(changed){
+      recalcPositionsFromOps();
+      cryptoSave();
+      try{ renderCryptoAll(); }catch(e){}
+    }
+  } finally { _kyfFxResolving = false; }
+}
+document.addEventListener('DOMContentLoaded', () => setTimeout(() => { try{ kyfCryptoFxResolve(); }catch(e){} }, 6000));
+function kyfOpSetCur(c){
+  c = c === 'usd' ? 'usd' : 'eur';
+  window._kyfOpCur = c;
+  const h = document.getElementById('op-devise'); if(h) h.value = c;
+  document.querySelectorAll('.op-cur-btn').forEach(b => b.classList.toggle('on', b.dataset.cur === c));
+  document.querySelectorAll('.op-cur-sym').forEach(x => { x.textContent = c === 'usd' ? '($)' : '(€)'; });
+  const note = document.getElementById('op-cur-note'); if(note) note.style.display = c === 'usd' ? '' : 'none';
+}
+(function(){
+  const st = document.createElement('style');
+  st.textContent = '.op-cur-btn{font-family:Inter,sans-serif;font-size:9px;font-weight:700;letter-spacing:.4px;padding:6px 12px;border:none;cursor:pointer;background:var(--btn-secondary-bg);color:var(--text2);transition:background .15s,color .15s}'
+    + '.op-cur-btn:not(.on):hover{background:var(--hov-bg);color:var(--text)}.op-cur-btn.on{background:#f0b429;color:#000}'
+    + '.op-cur-btn:focus,.op-cur-btn:focus-visible{outline:none!important;box-shadow:none!important}';
+  document.head.appendChild(st);
+})();
 function renderOpsForm(){
   const type = document.getElementById('op-type')?.value;
   const el   = document.getElementById('op-fields'); if(!el) return;
@@ -49213,6 +49296,17 @@ function renderOpsForm(){
     <label style="font-family:'Inter',sans-serif;font-size:9px;color:var(--text3);display:block;margin-bottom:4px;letter-spacing:.5px">DATE</label>
     <input type="hidden" id="op-date" value="${today}">
     <button type="button" id="op-dateBtn" class="kyf-csel-btn" data-kyf-date="op-date" aria-haspopup="dialog" aria-expanded="false" style="padding:8px 10px"><span id="op-dateBtnLabel">${todayFR}</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>
+  </div>`;
+  // Devise des montants de l'opération (KYF range tout en euros : un montant en $ est converti au taux du jour de l'opération)
+  const _opCur = window._kyfOpCur || (window._cryptoDevise === 'usd' ? 'usd' : 'eur');
+  html += `<div style="margin-bottom:10px">
+    <label style="font-family:'Inter',sans-serif;font-size:9px;color:var(--text3);display:block;margin-bottom:4px;letter-spacing:.5px">DEVISE DES MONTANTS</label>
+    <div style="display:flex;gap:2px;border:1px solid var(--border2);border-radius:6px;overflow:hidden;width:max-content">
+      <button type="button" class="op-cur-btn${_opCur==='eur'?' on':''}" data-cur="eur" onclick="kyfOpSetCur('eur')">€ EURO</button>
+      <button type="button" class="op-cur-btn${_opCur==='usd'?' on':''}" data-cur="usd" onclick="kyfOpSetCur('usd')">$ DOLLAR</button>
+    </div>
+    <input type="hidden" id="op-devise" value="${_opCur}">
+    <div id="op-cur-note" style="font-family:'Inter',sans-serif;font-size:9px;color:var(--text3);margin-top:5px;line-height:1.5;${_opCur==='usd'?'':'display:none'}">Converti en euros au taux EUR/USD du jour de l'opération.</div>
   </div>`;
 
   if(type==='achat'){
@@ -49228,7 +49322,7 @@ function renderOpsForm(){
     </div>`;
     html += kyfPortfolioButtonHtml('op-nom','op-ticker','op-ticker-search','op-portfolio-suggestions');
     html += `<div style="height:1px;background:var(--border);margin:16px 0 14px"></div>`;
-    html += `<div style="font-size:9px;font-weight:700;color:var(--text3);letter-spacing:.5px;margin-bottom:14px">COMBIEN (€ OU $)</div>`;
+    html += `<div style="font-size:9px;font-weight:700;color:var(--text3);letter-spacing:.5px;margin-bottom:14px">COMBIEN <span class="op-cur-sym">(${_opCur==='usd'?'$':'€'})</span></div>`;
     html += `<div style="margin-bottom:16px">
       <label style="font-family:'Inter',sans-serif;font-size:9px;color:var(--text);display:block;margin-bottom:4px;letter-spacing:.5px">MONTANT</label>
       <input id="op-montant" type="text" inputmode="decimal" placeholder="ex: 100" onfocus="kyfUnformatAmountInput(this)" onblur="kyfFormatAmountInput(this)"
@@ -49258,7 +49352,7 @@ function renderOpsForm(){
     </div>`;
     html += kyfPortfolioButtonHtml('op-nom','op-ticker','op-ticker-search','op-portfolio-suggestions');
     html += `<div style="height:1px;background:var(--border);margin:16px 0 14px"></div>`;
-    html += `<div style="font-size:9px;font-weight:700;color:var(--text3);letter-spacing:.5px;margin-bottom:14px">COMBIEN (€ OU $)</div>`;
+    html += `<div style="font-size:9px;font-weight:700;color:var(--text3);letter-spacing:.5px;margin-bottom:14px">COMBIEN <span class="op-cur-sym">(${_opCur==='usd'?'$':'€'})</span></div>`;
     html += `<div style="margin-bottom:16px">
       <label style="font-family:'Inter',sans-serif;font-size:9px;color:var(--text);display:block;margin-bottom:4px;letter-spacing:.5px">QUANTITÉ VENDUE <span style="color:var(--text3);font-size:9px">- optionnel si vous indiquez le montant investi</span></label>
       <input id="op-qte" type="number" placeholder="ex: 0.00107" oninput="autoCalcMontantVente();kyfUpdateHeldBalanceDisplay('op-nom')"
@@ -49467,6 +49561,7 @@ function saveOperation(){
   }
 
   op.historique = isHistorique;
+  if((document.getElementById('op-devise')?.value || 'eur') === 'usd') kyfOpMarkUsd(op);
   window._cryptoOpSessionAdded.push(op);
   // Un transfert change juste d'endroit dans le patrimoine : sorti d'un côté = entré de l'autre, pour la
   // même quantité. Plutôt que de faire saisir les deux jambes séparément, cette case en crée une seconde
@@ -49478,6 +49573,7 @@ function saveOperation(){
       id: op.id + '_inv',
       sens: autreSens,
       valeur: autreSens === 'entrant' ? op.valeur : 0,
+      ...(op.orig ? { orig: autreSens === 'entrant' ? { ...op.orig } : (({valeur, ...r}) => r)(op.orig) } : {}),
     });
   }
   cryptoOpSessionRender();
@@ -49545,10 +49641,55 @@ function validateCryptoOpsBatch(){
   window._cryptoOpSessionAdded = [];
   cryptoOpSessionRender();
   kyfCloseOpTypeForm(); // retour à l'état de départ (5 boutons, rien d'ouvert), prêt pour une autre saisie plus tard
+  kyfCryptoFxResolve();   // opérations en dollars : taux EUR/USD du jour de chaque opération
   kyfConfirmPopup(kyfImportSummaryHTML(n + ' opération' + (n > 1 ? 's' : '') + ' enregistrée' + (n > 1 ? 's' : '') + '.', null));
 }
 
 
+// Montant affiché dans le carnet : une opération saisie en dollars montre ses dollars d'origine, avec l'équivalent en euros
+function kyfOpAmountCell(op, f, sign){
+  const v = parseFloat(op[f]) || 0;
+  if(!v) return '-';
+  if(op.devise === 'usd' && op.orig && op.orig[f] > 0){
+    const approx = !op.fxOk;
+    return sign + fmt(op.orig[f], 2) + ' $'
+      + '<div style="font-size:9px;color:var(--text3);margin-top:1px;white-space:nowrap"' + (approx ? ' title="Taux EUR/USD du jour de l\'opération pas encore récupéré : taux actuel utilisé en attendant, corrigé automatiquement"' : ' title="Converti au taux EUR/USD du ' + escapeHtml(op.date) + ' (' + fmt(op.fx, 4) + ')"') + '>≈ ' + fmt(v, 2) + ' €' + (approx ? ' · taux approximatif' : '') + '</div>';
+  }
+  return sign + fmt(convertToDevise(v), 2) + ' ' + getCryptoSymbol();
+}
+// Pastille € / $ d'une opération du carnet : corrige la devise d'une opération déjà enregistrée
+// (ex. des montants tapés en dollars avant l'arrivée du choix de devise). Recalcule tout aussitôt.
+function kyfOpCurChip(op){
+  const has = KYF_OP_CUR_FIELDS.some(f => parseFloat(op[f]) > 0);
+  if(!has) return '';
+  const usd = op.devise === 'usd';
+  const tip = usd ? 'Montants saisis en dollars. Cliquer s\'ils étaient en euros' : 'Montants en euros. Cliquer s\'ils étaient en dollars : conversion au taux du jour de l\'opération';
+  return '<button onclick="kyfOpToggleCur(\'' + escJsAttr(String(op.id)) + '\')" class="kyf-op-cur-chip' + (usd ? ' on' : '') + '" title="' + tip + '">' + (usd ? '$' : '€') + '</button>';
+}
+function kyfOpToggleCur(id){
+  const op = (cryptoState.operations || []).find(o => o.id === id);
+  if(!op) return;
+  const before = parseFloat(op.montant) || 0;
+  if(op.devise === 'usd' && op.orig){
+    KYF_OP_CUR_FIELDS.forEach(f => { if(op.orig[f] !== undefined) op[f] = op.orig[f]; });
+    delete op.devise; delete op.orig; delete op.fx; delete op.fxOk;
+  } else {
+    kyfOpMarkUsd(op);
+  }
+  if(op.type === 'frais' && cryptoState.frais && op.plateforme)
+    cryptoState.frais[op.plateforme] = (parseFloat(cryptoState.frais[op.plateforme]) || 0) + ((parseFloat(op.montant) || 0) - before);
+  recalcPositionsFromOps();
+  cryptoSave();
+  try{ renderCryptoAll(); }catch(e){ renderCryptoOps(); }
+  kyfCryptoFxResolve();
+}
+(function(){
+  const st = document.createElement('style');
+  st.textContent = '.kyf-op-cur-chip{font-family:Inter,sans-serif;font-size:9px;font-weight:700;min-width:20px;padding:2px 6px;margin-right:4px;border-radius:5px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text3);cursor:pointer;transition:background .15s,color .15s}'
+    + '.kyf-op-cur-chip:hover{background:var(--hov-bg);color:var(--text)}.kyf-op-cur-chip.on{border-color:#f0b429;color:#b07800}'
+    + '.kyf-op-cur-chip:focus,.kyf-op-cur-chip:focus-visible{outline:none!important;box-shadow:none!important}';
+  document.head.appendChild(st);
+})();
 function renderCryptoOps(){
   const tb = document.getElementById('cryptoOpsTbody'); if(!tb) return;
   const parseDateFR = d => { if(!d||d==='-'||d==='\u2014') return 0; const p=d.split('/'); return p.length===3 ? new Date(p[2],p[1]-1,p[0]).getTime() : new Date(d).getTime()||0; };
@@ -49611,10 +49752,10 @@ function renderCryptoOpsPage(){
       <td style="color:var(--text3)">${escapeHtml(op.date)}</td>
     <td><span style="display:inline-flex;align-items:center;gap:5px">${typeIcons[op.type]||''}${escapeHtml(typeNames[op.type]||op.type)}</span></td>
     <td style="font-weight:600">${op.type==='frais' ? escapeHtml(op.plateforme||'-') : escapeHtml(cryptoResolveName(op.ticker, op.nom))}${op.fraisNatif ? ' <span title="Frais : '+fmtCryptoQty(op.fraisNatif.qte)+' '+escapeHtml(op.fraisNatif.symbol)+' (non déduits de la quantité ci-contre)" style="display:inline-flex;vertical-align:middle;cursor:help"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>' : ''}</td>
-    <td>${op.montant ? (op.type==='achat'?'+':op.type==='vente'?'-':'') + fmt(convertToDevise(op.montant),2)+' '+getCryptoSymbol() : '-'}</td>
+    <td>${kyfOpAmountCell(op, 'montant', op.type==='achat'?'+':op.type==='vente'?'-':'')}</td>
     <td style="color:var(--text2)">${op.qte ? fmtCryptoQty(op.qte) : '-'}</td>
-    <td>${op.cours ? fmt(convertToDevise(op.cours),2)+' '+getCryptoSymbol() : '-'}</td>
-    <td><button onclick="deleteOperation('${op.id}')" class="kyf-icon-btn" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;padding:2px 4px;transition:color .15s" title="Supprimer" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text3)'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg></button></td>
+    <td>${kyfOpAmountCell(op, 'cours', '')}</td>
+    <td style="white-space:nowrap">${kyfOpCurChip(op)}<button onclick="deleteOperation('${op.id}')" class="kyf-icon-btn" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;padding:2px 4px;transition:color .15s" title="Supprimer" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text3)'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg></button></td>
   </tr>`).join('');
   }
 
@@ -61574,6 +61715,18 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.149 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto, CARNET D'ORDRES : pastille € / $ sur chaque opération pour corriger la devise d'une opération déjà enregistrée (ex. pertes tapées en dollars) ; conversion au taux du jour de l'opération et positions recalculées aussitôt.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.148 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto, CARNET D'ORDRES : une opération saisie en dollars affiche ses montants d'origine en $, avec l'équivalent en euros en dessous (et « taux approximatif » tant que le taux du jour de l'opération n'est pas récupéré).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.147 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto : une opération en dollars est convertie au taux EUR/USD du jour de l'opération (week-end : dernier jour coté), demandé au script de prix et mémorisé. Sans réponse, le taux actuel sert en attendant et KYF réessaie à l'ouverture suivante.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.146 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto, NOUVELLE OPÉRATION : choix de la devise des montants (€ / $). Un montant en dollars est converti en euros (KYF compte tout en euros) et l'opération garde le montant d'origine.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.145 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance Vie / PER importés : les lignes du contrat tenues dans Portefeuille ETF &amp; Actions restent alignées sur le détail du contrat (quantité et PRU recalculés à chaque modification, ligne retirée si le support est supprimé du contrat), et le patrimoine total ne compte plus deux fois un support recatégorisé. Les données existantes sont réparées automatiquement à l'ouverture.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.144 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Correctif Assurance Vie / PER importés : la valeur en haut du contrat comptait parfois deux fois des supports (lignes en double du relevé additionnées, support recatégorisé ou supprimé encore compté). Elle correspond maintenant exactement au détail du contrat, au cours du jour.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.143 · 06/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Notifications, thème clair : les cartes d'erreur ne sont plus presque noires ; fond rouge léger et texte rouge foncé, comme les warnings et infos. Le thème sombre garde son rendu.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.142 · 06/10/2026</div>
@@ -68380,17 +68533,22 @@ function avSourceInit(){
 function avContratFullValue(d){
   try{
     const pos = avPosLoad(d.id);
-    // Lignes du contrat tenues dans ETF & Actions (rattachées par contratId) : elles font foi, au cours du jour
-    const linked = (typeof ETF !== 'undefined') ? ETF.filter(e => e.contratId && String(e.contratId) === String(d.id)) : [];
-    if(linked.length){
-      const lp = window._lp || {};
-      const live = linked.reduce((sm, e) => sm + (getEval(e, lp[e.ticker]) || 0), 0);
-      if(live > 0){
-        const other = pos.filter(p => p.type !== 'etf' && p.type !== 'action' && p.type !== 'fe').reduce((sm, p) => sm + (parseFloat(p.valeur) || 0), 0);
-        const feP = pos.filter(p => p.type === 'fe').reduce((sm, p) => sm + (parseFloat(p.valeur) || 0), 0);
-        return live + other + (feP > 0 ? feP : (parseFloat(d.fondsEuros) || 0));
-      }
-    } const t = pos.reduce((s,p)=>s+(parseFloat(p.valeur)||0),0);
+    const lp = window._lp || {};
+    const up = x => String(x||'').trim().toUpperCase();
+    // Tickers de ce contrat tenus dans ETF & Actions (rattachés par contratId)
+    const linkedTk = new Set((typeof ETF !== 'undefined' ? ETF : []).filter(e => e.contratId && String(e.contratId) === String(d.id)).map(e => up(e.ticker)).filter(Boolean));
+    // Chaque ligne du DÉTAIL est comptée une seule fois : au cours du jour (avec SA quantité) si c'est un support
+    // suivi en direct, sinon à sa valeur du relevé. Avant, la valeur prenait la quantité de la ligne ETF & Actions,
+    // qui pouvait additionner des lignes en double du relevé ou garder un support recatégorisé / supprimé :
+    // le haut du contrat dépassait alors la somme du détail.
+    let t = 0;
+    pos.forEach(p => {
+      const v = parseFloat(p.valeur) || 0;
+      const q = p.ticker ? lp[p.ticker] : null, qty = parseFloat(p.qty) || 0;
+      if(p.type !== 'fe' && p.type !== 'immo' && p.ticker && linkedTk.has(up(p.ticker)) && q && q.price > 0 && qty > 0){
+        t += getEval({ ticker: p.ticker, qty }, q) || v;
+      } else t += v;
+    });
     // Le fonds en euros s'ajoute aux positions détaillées (sauf s'il y figure déjà comme position « fe »)
     const feExtra = pos.some(p=>p.type==='fe') ? 0 : (parseFloat(d.fondsEuros)||0);
     return t > 0 ? t + feExtra : (parseFloat(d.fondsEuros)||0) + (parseFloat(d.uc)||0);
@@ -68405,9 +68563,11 @@ function avContratValue(d){
     let v = 0, anyListed = false;
     pos.forEach(p => {
       const isLine = (p.type === 'etf' || p.type === 'action');
-      const listed = isLine && (d.ucDansETF || linked
+      const linkedLine = p.ticker && p.type !== 'immo' && p.type !== 'fe'
+        && ETF.some(e => e.contratId && String(e.contratId) === String(d.id) && String(e.ticker||'').toUpperCase() === String(p.ticker).toUpperCase());
+      const listed = linkedLine || (isLine && (d.ucDansETF || linked
         || (p.ticker && ETF.some(e => e.ticker === p.ticker))
-        || (p.isin && ETF.some(e => e.isin && e.isin === p.isin)));
+        || (p.isin && ETF.some(e => e.isin && e.isin === p.isin))));
       if(listed) anyListed = true; else v += parseFloat(p.valeur) || 0;
     });
     const feExtra = pos.some(p=>p.type==='fe') ? 0 : (parseFloat(d.fondsEuros)||0);
@@ -75980,6 +76140,32 @@ function avPosSave(contratId, positions){
   const all = avPosLoadAll();
   all[contratId] = positions;
   localStorage.setItem(AV_POS_KEY, JSON.stringify(all));
+  try{ kyfAvEtfResync(contratId); }catch(e){}
+}
+// Garde les lignes ETF & Actions d'un contrat (rattachées par contratId) alignées sur le détail du contrat,
+// à chaque modification : quantité et PRU recalculés, ligne retirée si le support n'est plus dans le contrat.
+// Sans ça, une ligne en double supprimée ou un support recatégorisé restait compté dans le Portefeuille.
+// Ne crée jamais de ligne (c'est le rôle de l'import) et ne touche pas une ligne dont le détail n'a pas de quantité.
+function kyfAvEtfResync(contratId){
+  if(typeof ETF === 'undefined' || !contratId) return;
+  const up = x => String(x||'').trim().toUpperCase();
+  const pos = avPosLoad(contratId).filter(p => p.type !== 'immo' && p.type !== 'fe' && p.ticker);
+  let changed = false;
+  for(let i = ETF.length - 1; i >= 0; i--){
+    const e = ETF[i];
+    if(!e.contratId || String(e.contratId) !== String(contratId)) continue;
+    const g = pos.filter(p => up(p.ticker) === up(e.ticker));
+    if(!g.length){ ETF.splice(i, 1); changed = true; continue; }
+    const qty = g.reduce((a,p) => a + (Number(p.qty)||0), 0);
+    if(!(qty > 0)) continue;
+    const cost = g.reduce((a,p) => a + (Number(p.qty)||0) * (Number(p.pru)||0), 0);
+    const nq = Math.round(qty*1e6)/1e6, np = Math.round((cost/qty)*1e4)/1e4, nm = Math.round(cost*100)/100;
+    if(e.qty !== nq || e.pru !== np || e.montant !== nm){ e.qty = nq; e.pru = np; e.montant = nm; changed = true; }
+  }
+  if(changed){
+    try{ etfSave(); }catch(e){}
+    try{ renderETFTable(window._lp || {}); renderDonut(); }catch(e){}
+  }
 }
 
 // ── Arbitrage entre supports d'un même contrat ──────────────────
@@ -76663,6 +76849,11 @@ function kyfAvEtfSync(contratId, enveloppe, tickers){
     e.contratId = contratId; e.qty = Math.round(qty*1e6)/1e6; e.pru = Math.round(pru*1e4)/1e4; e.montant = Math.round(cost*100)/100; delete e.compartiment;
   });
 }
+// Au démarrage : réaligne une fois les lignes ETF & Actions de chaque contrat sur son détail (répare les données
+// créées avant ce correctif, ex. lignes en double du relevé additionnées dans le Portefeuille).
+document.addEventListener('DOMContentLoaded', () => setTimeout(() => {
+  try{ if(typeof avLoad === 'function') avLoad().forEach(c => kyfAvEtfResync(c.id)); }catch(e){}
+}, 1500));
 // Change l'enveloppe (AV <-> PER) des lignes ETF & Actions d'un contrat dont le type vient d'être corrigé
 function kyfAvRetypeEtf(contratId, type){
   const env = ['per','per-col','per-ob'].includes(type) ? 'PER' : 'AV';
