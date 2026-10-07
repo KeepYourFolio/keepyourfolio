@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <!--
   ============================================================
-  @file        : KYF_PDF_to_CSV_v2.477.html
+  @file        : KYF_PDF_to_CSV_v2_478.html
   @application : Keep Your Folio (KYF) · Convertisseur PDF → CSV
   @description : Lit les relevés de courtier PDF entièrement dans le
                  navigateur (aucun envoi) et produit le fichier que le
                  Dashboard KYF importe.
-  @version     : v2.477
+  @version     : v2.478
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -20,7 +20,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs; worker-src 'self' blob: https://cdnjs.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none';">
-<title>KYF Convertisseur PDF v2.477</title>
+<title>KYF Convertisseur PDF v2.478</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1370,7 +1370,7 @@
   <div class="hero">
     <div class="hero-title">
     <h1>Convertisseur PDF <span>→ CSV</span> <span style="display:inline-block;background:#c99a06;color:#000;font-size:12px;font-weight:800;letter-spacing:.5px;padding:2px 8px;border-radius:6px;vertical-align:middle;">Bêta</span></h1>
-    <p>Détection automatique · v2.477 · Multi PDF en mode Portefeuille</p>
+    <p>Détection automatique · v2.478 · Multi PDF en mode Portefeuille</p>
     </div>
   </div>
 
@@ -2396,7 +2396,7 @@
 <script>
   /**
    * @file        KYF PDF to CSV — Convertisseur PDF intelligent
-   * @version     v2.477
+   * @version     v2.478
    * @description Convertisseur PDF → CSV pour KYF Dashboard.
    *              Détection automatique multi-courtiers, biffage pour les
    *              documents non reconnus (voir kyf_biffer_backend.gs).
@@ -2404,7 +2404,7 @@
    * @copyright   © 2026 Keep Your Folio (KYF) — keepyourfolio.fr
    * @license     AGPL-3.0-or-later
    */
-  console.log('%c Keep Your Folio %c PDF → CSV v2.477 %c keepyourfolio.fr ',
+  console.log('%c Keep Your Folio %c PDF → CSV v2.478 %c keepyourfolio.fr ',
     'background:#1a1f2e;color:#f0b429;font-weight:700;padding:4px 8px;border-radius:4px 0 0 4px',
     'background:#2563eb;color:#fff;font-weight:700;padding:4px 8px',
     'background:#1a1f2e;color:#aaa;padding:4px 8px;border-radius:0 4px 4px 0'
@@ -4251,7 +4251,13 @@
     const allLineGroups = [];
 
     for (const { page, dataStartY } of tablePages) {
-      const pageEls = elements.filter(e => e.page === page && e.yTop >= dataStartY);
+      // v2.477 — La 1re ligne de données peut commencer moins de 15px sous l'en-tête (ex. Spirica : en-têtes sur
+      // 2 lignes, puis « Fonds Euro » juste dessous) : elle était sautée. On reprend donc aussi la bande des 12px
+      // au-dessus de dataStartY, mais seulement les lignes qui portent un vrai montant (jamais un mot d'en-tête).
+      const _amt = t => /^[\d\s.,]+\s*(€|EUR|%)?$/i.test(t.trim()) && /\d/.test(t);
+      const bandEls = elements.filter(e => e.page === page && e.yTop >= dataStartY - 12 && e.yTop < dataStartY);
+      const bandOk = bandEls.filter(e => bandEls.some(o => Math.abs(o.yTop - e.yTop) <= ROW_TOL && _amt(o.text)));
+      const pageEls = bandOk.concat(elements.filter(e => e.page === page && e.yTop >= dataStartY));
 
       // Détecter la fin du tableau sur cette page
       const byY = {};
