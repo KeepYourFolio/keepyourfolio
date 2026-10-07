@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2.8.2.149.html
+  @file        : KYF_SHARE_beta_2_8_2_152.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.2.149
+  @version     : Beta 2.8.2.152
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6511,7 +6511,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.2.149</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.2.152</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -40340,7 +40340,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.149\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.152\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -49755,7 +49755,13 @@ function renderCryptoOpsPage(){
     <td>${kyfOpAmountCell(op, 'montant', op.type==='achat'?'+':op.type==='vente'?'-':'')}</td>
     <td style="color:var(--text2)">${op.qte ? fmtCryptoQty(op.qte) : '-'}</td>
     <td>${kyfOpAmountCell(op, 'cours', '')}</td>
-    <td style="white-space:nowrap">${kyfOpCurChip(op)}<button onclick="deleteOperation('${op.id}')" class="kyf-icon-btn" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;padding:2px 4px;transition:color .15s" title="Supprimer" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text3)'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg></button></td>
+    <td style="white-space:nowrap">${kyfOpCurChip(op)}<span style="position:relative;display:inline-block;vertical-align:middle">
+          <button onclick="event.stopPropagation();avToggleActionsMenu('op-${escJsAttr(String(op.id))}')" class="kyf-op-dots" title="Actions">⋯</button>
+          <div id="avActionsMenu-op-${escapeHtml(String(op.id))}" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:130px">
+            <div onclick="avCloseActionsMenu('op-${escJsAttr(String(op.id))}');kyfOpEditOpen('${escJsAttr(String(op.id))}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.edit} Modifier</div>
+            <div onclick="avCloseActionsMenu('op-${escJsAttr(String(op.id))}');deleteOperation('${escJsAttr(String(op.id))}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:#ff4560;cursor:pointer;display:flex;align-items:center;gap:6px;border-top:1px solid var(--border)" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg> Supprimer</div>
+          </div>
+        </span></td>
   </tr>`).join('');
   }
 
@@ -49798,6 +49804,185 @@ function deleteOperation(id){
   const corbId = kyfCorbeillePush('cryptoOperation', id, idx, item, 'Opération crypto');
   kyfShowUndoToast('Opération supprimée', () => kyfCorbeilleRestore(corbId), corbId);
 }
+
+// ── Modifier une opération du CARNET D'ORDRES (menu ⋯ de la ligne) ──
+// La crypto reste celle de l'opération (pour en changer : supprimer puis ressaisir). Tout est recalculé
+// depuis l'historique complet après l'enregistrement, comme pour une suppression.
+function kyfOpFindPair(op){
+  if(!op || op.type !== 'transfert') return null;
+  const pid = /_inv$/.test(op.id) ? op.id.replace(/_inv$/, '') : op.id + '_inv';
+  return (cryptoState.operations || []).find(o => o.id === pid) || null;
+}
+function kyfOpEditClose(){
+  const m = document.getElementById('kyfOpEditModal'); if(m) m.remove();
+  const o = document.getElementById('kyfOpEditOverlay'); if(o) o.remove();
+  document.removeEventListener('keydown', kyfOpEditKey, true);
+  document.body.style.overflow = '';
+}
+function kyfOpEditKey(e){
+  if(e.key === 'Escape' && !(typeof _kyfDate !== 'undefined' && _kyfDate)){ e.preventDefault(); kyfOpEditClose(); }
+  else if(e.key === 'Enter' && e.target && e.target.tagName === 'INPUT'){ e.preventDefault(); kyfOpEditSave(); }
+}
+function kyfOpEditOpen(id){
+  const op = (cryptoState.operations || []).find(o => o.id === id);
+  if(!op) return;
+  kyfOpEditClose();
+  const usd = op.devise === 'usd' && op.orig;
+  const cur = '<span class="opEdit-sym">' + (usd ? '$' : '€') + '</span>';
+  const val = f => { const v = usd && KYF_OP_CUR_FIELDS.includes(f) ? (op.orig[f] || 0) : (parseFloat(op[f]) || 0); return v > 0 ? String(v) : ''; };
+  const inSt = "width:100%;font-family:'Inter',sans-serif;font-size:11px;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);padding:8px 10px;border-radius:6px;outline:none;box-sizing:border-box";
+  const lbSt = "font-family:'Inter',sans-serif;font-size:9px;color:var(--text);display:block;margin-bottom:4px;letter-spacing:.5px";
+  const field = (fid, lbl, f, opt) => `<div style="margin-bottom:12px"><label for="${fid}" style="${lbSt}">${lbl}${opt ? ' <span style="color:var(--text3)">- optionnel</span>' : ''}</label><input id="${fid}" type="text" inputmode="decimal" value="${escapeHtml(val(f))}" style="${inSt}"></div>`;
+  const textField = (fid, lbl, v) => `<div style="margin-bottom:12px"><label for="${fid}" style="${lbSt}">${lbl}</label><input id="${fid}" type="text" value="${escapeHtml(v || '')}" style="${inSt}"></div>`;
+  const iso = kyfOpDateISO(op.date);
+  const typeNames = {achat:'ACHAT', vente:'VENTE', swap:'SWAP', transfert:'TRANSFERT', frais:'FRAIS'};
+  const quoi = op.type === 'frais' ? '' : op.type === 'swap'
+    ? escapeHtml(cryptoResolveName(op.ticker, op.nom)) + ' → ' + escapeHtml(cryptoResolveName(op.ticker2, op.nom2))
+    : escapeHtml(cryptoResolveName(op.ticker, op.nom));
+  let body = `<div style="margin-bottom:12px"><label style="${lbSt}">DATE</label>
+      <input type="hidden" id="opEdit-date" value="${escapeHtml(iso)}">
+      <button type="button" id="opEdit-dateBtn" class="kyf-csel-btn" data-kyf-date="opEdit-date" aria-haspopup="dialog" aria-expanded="false" style="padding:8px 10px"><span id="opEdit-dateBtnLabel">${escapeHtml(op.date)}</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button></div>`;
+  if(op.type !== 'transfert' || op.sens === 'entrant'){
+    body += `<div style="margin-bottom:12px"><label style="${lbSt}">DEVISE DES MONTANTS</label>
+      <div style="display:flex;gap:2px;border:1px solid var(--border2);border-radius:6px;overflow:hidden;width:max-content">
+        <button type="button" class="op-cur-btn opEdit-cur${usd ? '' : ' on'}" data-cur="eur" onclick="kyfOpEditSetCur('eur')">€ EURO</button>
+        <button type="button" class="op-cur-btn opEdit-cur${usd ? ' on' : ''}" data-cur="usd" onclick="kyfOpEditSetCur('usd')">$ DOLLAR</button>
+      </div>
+      <input type="hidden" id="opEdit-devise" value="${usd ? 'usd' : 'eur'}">
+      <div id="opEdit-cur-note" style="font-size:9px;color:var(--text3);margin-top:5px;line-height:1.5">${usd ? 'Converti en euros au taux EUR/USD du jour de l\'opération.' : 'Les montants ci-dessous sont en euros.'}</div></div>`;
+  }
+  if(op.type === 'achat'){
+    body += field('opEdit-montant', 'MONTANT (' + cur + ')', 'montant') + field('opEdit-qte', 'QUANTITÉ', 'qte') + field('opEdit-cours', 'COURS (' + cur + ')', 'cours');
+  } else if(op.type === 'vente'){
+    body += field('opEdit-qte', 'QUANTITÉ VENDUE', 'qte') + field('opEdit-cours', 'COURS (' + cur + ')', 'cours', true) + field('opEdit-montant', 'MONTANT RÉCUPÉRÉ (' + cur + ')', 'montant') + field('opEdit-investi', 'MONTANT INVESTI (' + cur + ')', 'investi', true);
+  } else if(op.type === 'swap'){
+    body += field('opEdit-qte', 'QTÉ SOURCE', 'qte') + field('opEdit-qte2', 'QTÉ DEST', 'qte2') + field('opEdit-valeur', 'VALEUR DE L\'OPÉRATION (' + cur + ')', 'valeur', true);
+  } else if(op.type === 'transfert'){
+    body += field('opEdit-qte', 'QUANTITÉ', 'qte');
+    if(op.sens === 'entrant') body += field('opEdit-valeur', 'VALEUR (' + cur + ')', 'valeur', true);
+    body += textField('opEdit-from', 'DE', op.from) + textField('opEdit-to', 'VERS', op.to);
+    if(kyfOpFindPair(op)) body += `<div style="font-size:9px;color:var(--text3);line-height:1.6;margin:-4px 0 10px">Le mouvement inverse de ce transfert suit automatiquement (date, quantité, DE et VERS).</div>`;
+  } else if(op.type === 'frais'){
+    body += textField('opEdit-plateforme', 'PLATEFORME', op.plateforme) + field('opEdit-montant', 'MONTANT (' + cur + ')', 'montant');
+  }
+  const ov = document.createElement('div');
+  ov.id = 'kyfOpEditOverlay';
+  ov.style.cssText = 'position:fixed;inset:0;z-index:999994;background:rgba(0,0,0,0.6)';
+  ov.onclick = kyfOpEditClose;
+  const m = document.createElement('div');
+  m.id = 'kyfOpEditModal';
+  m.dataset.opId = id;
+  m.setAttribute('role', 'dialog');
+  m.style.cssText = "position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(380px,94vw);max-height:90vh;overflow:auto;z-index:999995;background:var(--bg2);border:1px solid var(--border2);border-radius:14px;box-shadow:0 12px 48px rgba(0,0,0,0.4);font-family:'Inter',sans-serif;color:var(--text)";
+  m.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border)">
+      <span style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:1px">${KYF_ICONS.edit} MODIFIER L'OPÉRATION</span>
+      <button type="button" class="kyf-opedit-x" onclick="kyfOpEditClose()" title="Fermer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div style="padding:16px 18px 6px">
+      <div style="font-size:10px;color:var(--text3);letter-spacing:.5px;margin-bottom:14px">${typeNames[op.type] || escapeHtml(op.type)}${quoi ? ' · <span style="color:var(--text);font-weight:700">' + quoi + '</span>' : ''}${op.type === 'transfert' ? ' · ' + (op.sens === 'sortant' ? 'SORTANT' : 'ENTRANT') : ''}</div>
+      ${body}
+      <div id="opEdit-err" style="display:none;font-size:10px;color:var(--red);margin:0 0 10px"></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;padding:12px 18px 16px;border-top:1px solid var(--border)">
+      <button type="button" class="kyf-opedit-sec" onclick="kyfOpEditClose()">ANNULER</button>
+      <button type="button" class="kyf-opedit-pri" onclick="kyfOpEditSave()">ENREGISTRER</button>
+    </div>`;
+  document.body.appendChild(ov);
+  document.body.appendChild(m);
+  document.body.style.overflow = 'hidden';
+  document.addEventListener('keydown', kyfOpEditKey, true);
+  const first = m.querySelector('input[type=text]'); if(first) setTimeout(() => first.focus(), 30);
+}
+function kyfOpEditSetCur(c){
+  c = c === 'usd' ? 'usd' : 'eur';
+  const m = document.getElementById('kyfOpEditModal'); if(!m) return;
+  const h = document.getElementById('opEdit-devise'); if(h) h.value = c;
+  m.querySelectorAll('.opEdit-cur').forEach(b => b.classList.toggle('on', b.dataset.cur === c));
+  m.querySelectorAll('.opEdit-sym').forEach(x => { x.textContent = c === 'usd' ? '$' : '€'; });
+  const n = document.getElementById('opEdit-cur-note'); if(n) n.textContent = c === 'usd' ? 'Converti en euros au taux EUR/USD du jour de l\'opération.' : 'Les montants ci-dessous sont en euros.';
+}
+function kyfOpEditSave(){
+  const m = document.getElementById('kyfOpEditModal'); if(!m) return;
+  const op = (cryptoState.operations || []).find(o => o.id === m.dataset.opId);
+  if(!op){ kyfOpEditClose(); return; }
+  const err = t => { const e = document.getElementById('opEdit-err'); if(e){ e.textContent = t; e.style.display = 'block'; } };
+  const has = fid => !!document.getElementById(fid);
+  const num = fid => { const raw = (document.getElementById(fid)?.value || '').replace(/[\s ]/g, '').replace(',', '.'); const v = parseFloat(raw); return v > 0 ? v : 0; };
+  const txt = fid => (document.getElementById(fid)?.value || '').trim();
+  const iso = document.getElementById('opEdit-date')?.value || '';
+  const dp = iso.split('-');
+  if(dp.length !== 3){ err('Date invalide.'); return; }
+  const newDate = dp[2] + '/' + dp[1] + '/' + dp[0];
+  const nv = {};
+  ['montant','qte','cours','investi','qte2','valeur'].forEach(f => { if(has('opEdit-' + f)) nv[f] = num('opEdit-' + f); });
+  if(op.type === 'achat' && !nv.qte){ err('La quantité est requise.'); return; }
+  if(op.type === 'vente' && !nv.qte && !(nv.investi > 0 && nv.montant > 0)){ err('Indiquez la quantité vendue, ou à défaut le montant investi ET le montant récupéré.'); return; }
+  if(op.type === 'swap' && !nv.qte){ err('La quantité source est requise.'); return; }
+  if(op.type === 'transfert' && !nv.qte){ err('La quantité est requise.'); return; }
+  if(op.type === 'frais' && (!txt('opEdit-plateforme') || !nv.montant)){ err('Plateforme et montant requis.'); return; }
+
+  const pair = kyfOpFindPair(op);
+  const snap = { op: JSON.parse(JSON.stringify(op)), pair: pair ? JSON.parse(JSON.stringify(pair)) : null, frais: cryptoState.frais ? JSON.parse(JSON.stringify(cryptoState.frais)) : null };
+  const oldPlat = op.plateforme, oldMontant = parseFloat(op.montant) || 0;
+  const wasUsd = !!(op.devise === 'usd' && op.orig);
+  const devEl = document.getElementById('opEdit-devise');
+  const usd = devEl ? devEl.value === 'usd' : wasUsd;
+  // On repart des montants d'origine (dollars s'ils l'étaient), on applique la saisie, puis on reconvertit si besoin
+  if(wasUsd){
+    KYF_OP_CUR_FIELDS.forEach(f => { if(op.orig[f] !== undefined) op[f] = op.orig[f]; });
+    delete op.devise; delete op.orig; delete op.fx; delete op.fxOk;
+  }
+  op.date = newDate;
+  Object.keys(nv).forEach(f => {
+    const v = nv[f];
+    if(v > 0) op[f] = v;
+    else if(f === 'investi' || f === 'valeur') delete op[f];
+    else op[f] = 0;
+  });
+  if(usd) kyfOpMarkUsd(op);   // taux du jour de l'opération s'il est connu, sinon provisoire puis corrigé tout seul
+  if(op.type === 'transfert'){
+    op.from = txt('opEdit-from'); op.to = txt('opEdit-to');
+    if(pair){ pair.date = op.date; pair.qte = op.qte; pair.from = op.from; pair.to = op.to; }
+  }
+  if(op.type === 'frais'){
+    op.plateforme = txt('opEdit-plateforme');
+    if(cryptoState.frais){
+      if(oldPlat) cryptoState.frais[oldPlat] = Math.round(((parseFloat(cryptoState.frais[oldPlat]) || 0) - oldMontant) * 100) / 100;
+      cryptoState.frais[op.plateforme] = Math.round(((parseFloat(cryptoState.frais[op.plateforme]) || 0) + (parseFloat(op.montant) || 0)) * 100) / 100;
+      if(oldPlat && oldPlat !== op.plateforme && Math.abs(cryptoState.frais[oldPlat]) < 0.005) delete cryptoState.frais[oldPlat];
+    }
+  }
+  kyfOpEditClose();
+  kyfOpEditRefresh();
+  if(usd && !op.fxOk) kyfCryptoFxResolve();
+  kyfShowUndoToast('Opération modifiée', () => {
+    const ops = cryptoState.operations || [];
+    const i = ops.findIndex(o => o.id === snap.op.id); if(i >= 0) ops[i] = snap.op;
+    if(snap.pair){ const j = ops.findIndex(o => o.id === snap.pair.id); if(j >= 0) ops[j] = snap.pair; }
+    if(snap.frais) cryptoState.frais = snap.frais;
+    kyfOpEditRefresh();
+  });
+}
+// Recalcule et réaffiche en restant sur la même page du carnet
+function kyfOpEditRefresh(){
+  const pg = window._cryptoOpsPage || 0;
+  recalcPositionsFromOps();
+  cryptoSave();
+  try{ renderCryptoAll(); }catch(e){ renderCryptoOps(); }
+  const per = window._cryptoOpsPerPage || 10;
+  window._cryptoOpsPage = Math.max(0, Math.min(pg, Math.ceil((window._cryptoOpsData || []).length / per) - 1));
+  renderCryptoOpsPage();
+}
+(function(){
+  const st = document.createElement('style');
+  st.textContent = '.kyf-opedit-pri{font-family:Inter,sans-serif;font-size:9px;font-weight:700;letter-spacing:.5px;padding:8px 18px;border-radius:7px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:opacity .15s}.kyf-opedit-pri:hover{opacity:.85}'
+    + '.kyf-opedit-sec{font-family:Inter,sans-serif;font-size:9px;font-weight:400;letter-spacing:.5px;padding:8px 18px;border-radius:7px;border:1px solid var(--border2);background:none;color:var(--text3);cursor:pointer;transition:background .15s}.kyf-opedit-sec:hover{background:var(--hov-bg)}'
+    + '.kyf-opedit-x{background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;border-radius:6px;display:inline-flex;transition:background .15s,color .15s}.kyf-opedit-x:hover{background:var(--hov-bg);color:var(--text)}'
+    + '.kyf-op-dots{background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 6px;display:inline-flex;align-items:center;font-size:16px;letter-spacing:1px;border-radius:5px;vertical-align:middle;transition:background .15s,color .15s}.kyf-op-dots:hover{background:var(--hov-bg);color:var(--text)}'
+    + '.kyf-opedit-pri:focus,.kyf-opedit-pri:focus-visible,.kyf-opedit-sec:focus,.kyf-opedit-sec:focus-visible,.kyf-opedit-x:focus,.kyf-opedit-x:focus-visible,.kyf-op-dots:focus,.kyf-op-dots:focus-visible{outline:none!important;box-shadow:none!important}'
+    + '#kyfOpEditModal input[type=text]:focus{border-color:var(--accent)!important}';
+  document.head.appendChild(st);
+})();
 
 // Init form on load
 document.addEventListener('DOMContentLoaded', ()=>{ setTimeout(renderOpsForm, 100); });
@@ -61715,6 +61900,12 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.152 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto, CARNET D'ORDRES : la fenêtre Modifier a son choix € EURO / $ DOLLAR, pour corriger une opération saisie dans la mauvaise devise (conversion au taux du jour de l'opération, ou retour aux euros).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.151 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto, CARNET D'ORDRES : menu ⋯ sur chaque opération (Modifier / Supprimer), comme dans PORTEFEUILLE. Modifier ouvre une fenêtre pour corriger date, quantités et montants (en $ si l'opération est en dollars) ; positions recalculées aussitôt, bouton Annuler dans le message de confirmation ; le mouvement inverse d'un transfert suit automatiquement.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.150 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Infobulles : près du bord droit de l'écran (ex. pastille € / $ du CARNET D'ORDRES), la bulle ne rétrécit plus en colonne étroite quand la souris bouge ; elle garde sa largeur et passe à gauche de la souris s'il manque de place.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.149 · 07/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto, CARNET D'ORDRES : pastille € / $ sur chaque opération pour corriger la devise d'une opération déjà enregistrée (ex. pertes tapées en dollars) ; conversion au taux du jour de l'opération et positions recalculées aussitôt.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.148 · 07/10/2026</div>
@@ -83505,7 +83696,9 @@ window.KYF_PERECOL_REPO = { PerecolRepository };
     if(tip) return tip;
     tip = document.createElement('div');
     tip.id = 'kyfTip'; tip.setAttribute('role','tooltip');
-    tip.style.cssText = 'position:fixed;left:0;top:0;display:none;pointer-events:none;z-index:2147483647;max-width:280px;'
+    // width:max-content : la largeur de la bulle ne dépend plus de sa position. Avant, près du bord droit de
+    // l'écran, le navigateur la rétrécissait au fur et à mesure que la souris avançait (texte en colonne étroite).
+    tip.style.cssText = 'position:fixed;left:0;top:0;display:none;pointer-events:none;z-index:2147483647;width:max-content;max-width:280px;'
       + "font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:.2px;line-height:1.45;padding:6px 10px;white-space:pre-line;"
       + 'box-shadow:0 6px 24px rgba(0,0,0,0.35)';
     document.body.appendChild(tip);
@@ -83536,6 +83729,15 @@ window.KYF_PERECOL_REPO = { PerecolRepository };
     }
     return '';
   }
+  // Place la bulle à droite de la souris, ou à gauche s'il n'y a pas la place (jamais tronquée ni rétrécie)
+  function place(t){
+    var w = t.offsetWidth, h = t.offsetHeight, vw = window.innerWidth, vh = window.innerHeight;
+    var x = mx + 12;
+    if(x + w > vw - 6) x = mx - w - 12;
+    x = Math.min(Math.max(x, 6), vw - w - 6);
+    var y = my + 20; if(y + h > vh - 6) y = Math.max(my - h - 12, 6);
+    t.style.left = x + 'px'; t.style.top = y + 'px';
+  }
   function show(){
     if(!cur || !document.body.contains(cur)){ hide(); return; }
     var txt = cur.getAttribute('data-kyf-tip') || labelOf(cur); if(!txt){ return; }
@@ -83549,10 +83751,7 @@ window.KYF_PERECOL_REPO = { PerecolRepository };
     { var zf = (typeof kyfTipFactor === 'function') ? kyfTipFactor() : 1; t.style.fontSize = (Math.round(11 * zf * 10) / 10) + 'px'; t.style.padding = Math.round(6 * zf) + 'px ' + Math.round(10 * zf) + 'px'; }
     if(t.parentNode !== document.body || document.body.lastElementChild !== t) document.body.appendChild(t);   // toujours au-dessus des popups
     t.style.display = 'block';
-    var w = t.offsetWidth, h = t.offsetHeight, vw = window.innerWidth, vh = window.innerHeight;
-    var x = Math.min(Math.max(mx + 12, 6), vw - w - 6);
-    var y = my + 20; if(y + h > vh - 6) y = Math.max(my - h - 12, 6);
-    t.style.left = x + 'px'; t.style.top = y + 'px';
+    place(t);
     t.style.opacity = '1';
   }
   document.addEventListener('mouseover', function(e){
@@ -83591,11 +83790,7 @@ window.KYF_PERECOL_REPO = { PerecolRepository };
   }, true);
   document.addEventListener('mousemove', function(e){
     mx = e.clientX; my = e.clientY;
-    if(tip && cur && tip.style.display === 'block'){   // la bulle suit légèrement la souris
-      var w = tip.offsetWidth, h = tip.offsetHeight, x = Math.min(Math.max(mx + 12, 6), window.innerWidth - w - 6), y = my + 20;
-      if(y + h > window.innerHeight - 6) y = Math.max(my - h - 12, 6);
-      tip.style.left = x + 'px'; tip.style.top = y + 'px';
-    }
+    if(tip && cur && tip.style.display === 'block') place(tip);   // la bulle suit légèrement la souris
   }, true);
   document.addEventListener('mouseout', function(e){
     if(cur && !(e.relatedTarget && cur.contains(e.relatedTarget))) hide();
