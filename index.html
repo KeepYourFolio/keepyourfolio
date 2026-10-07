@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_2_152.html
+  @file        : KYF_SHARE_beta_2_8_2_155.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.2.152
+  @version     : Beta 2.8.2.155
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -1668,7 +1668,7 @@ input[type=checkbox][style*="accent-color:var(--accent)"]:focus-visible,input.gr
 input[type=checkbox][style*="accent-color:var(--accent)"]:disabled,input.grp-chk:disabled,input.kyf-sel-check:not(.kyf-sel-check-all):disabled{opacity:.5;cursor:default}
 
 .kyf-csel-btn{width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none;cursor:pointer;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:6px;transition:border-color .15s}
-.kyf-csel-btn:hover,.kyf-csel-btn:focus-visible{border-color:var(--accent)}
+.kyf-csel-btn:hover,.kyf-csel-btn:focus-visible,.kyf-csel-btn[aria-expanded="true"]{border-color:var(--accent)}.kyf-csel-btn:focus,.kyf-csel-btn:focus-visible,.kyf-opvalid-btn:focus,.kyf-opvalid-btn:focus-visible{outline:none!important;box-shadow:none!important}
 .kyf-csel-btn > span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .kyf-csel-btn.kyf-csel-sm{font-size:9px;padding:7px 8px;border-radius:8px;color:var(--text2)}
 .kyf-csel-btn.kyf-date-future{border-color:var(--red,var(--red))!important}
@@ -6511,7 +6511,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.2.152</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.2.155</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -34169,6 +34169,7 @@ function etfSessionRender(){
         renderAssetLogo(s.entry.ticker, s.entry.name, 16) +
         '<span style="flex:1;font-weight:600;color:var(--text);font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(s.entry.name) + '</span>' +
         '<span style="font-size:9px;color:var(--text3)">' + escapeHtml(s.entry.enveloppe) + ' · ' + s.entry.qty + '</span>' +
+        '<button type="button" onclick="etfSessionEdit(' + i + ')" class="kyf-sess-edit" title="Modifier">' + KYF_ICONS.edit + '</button>' +
         '<button onclick="etfSessionRemove(' + i + ')" title="Annuler cet ajout" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px;display:inline-flex" onmouseover="this.style.color=\'#ff4560\'" onmouseout="this.style.color=\'var(--text3)\'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' +
       '</div>'
     ).join('');
@@ -40340,7 +40341,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.152\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.155\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -45666,7 +45667,7 @@ document.addEventListener('DOMContentLoaded', function(){
           + AJOUTER À LA LISTE
         </button>
         </div>
-        <button id="cryptoOpValidateBtn" onclick="validateCryptoOpsBatch()" style="display:none;width:100%;box-sizing:border-box;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:10px;border-radius:8px;border:1px solid var(--accent);background:var(--btn-secondary-bg);color:var(--accent);cursor:pointer;margin-top:8px;letter-spacing:0.5px;transition:background .2s,box-shadow .2s,transform .2s" onmouseover="this.style.background='#f0b429';this.style.color='#000';this.style.boxShadow='0 2px 8px rgba(240,180,41,0.35)';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='var(--btn-secondary-bg)';this.style.color='var(--accent)';this.style.boxShadow='none';this.style.transform='translateY(0)'">
+        <button id="cryptoOpValidateBtn" class="kyf-opvalid-btn" onclick="validateCryptoOpsBatch()" style="display:none;width:100%;box-sizing:border-box;font-family:'Inter',sans-serif;font-size:10px;padding:10px;border-radius:8px;border:none;background:#f0b429;color:#000;cursor:pointer;font-weight:700;margin-top:8px;letter-spacing:.5px;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
         </button>
       </div>
 
@@ -47534,6 +47535,7 @@ function cryptoSessionRender(){
       '<div style="display:flex;align-items:center;gap:6px;padding:4px 0' + (i>0 ? ';border-top:1px solid var(--border)' : '') + '">' +
         '<span style="flex:1;font-weight:600;color:var(--text);font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(s.entry.nom) + '</span>' +
         '<span style="font-size:9px;color:var(--text3)">' + s.entry.symbol.toUpperCase() + ' · ' + s.entry.qte + '</span>' +
+        '<button type="button" onclick="cryptoSessionEdit(' + i + ')" class="kyf-sess-edit" title="Modifier">' + KYF_ICONS.edit + '</button>' +
         '<button onclick="cryptoSessionRemove(' + i + ')" title="Annuler cet ajout" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px;display:inline-flex" onmouseover="this.style.color=\'#ff4560\'" onmouseout="this.style.color=\'var(--text3)\'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' +
       '</div>'
     ).join('');
@@ -49129,7 +49131,8 @@ function kyfVenteResumePerte(){
   const box = document.getElementById('op-vente-resume'); if(!box) return;
   const num = id => parseFloat((document.getElementById(id)?.value||'').replace(/[\s\u00A0]/g,'').replace(',','.')) || 0;
   const inv = num('op-investi'), rec = num('op-montant');
-  if(inv > 0 && rec > 0){
+  const recSaisi = (document.getElementById('op-montant')?.value || '').trim() !== '';
+  if(inv > 0 && (rec > 0 || recSaisi)){
     const r = rec - inv, pct = r / inv * 100, up = r >= 0;
     box.style.display = 'block';
     box.innerHTML = 'Résultat : <b style="color:' + (up ? 'var(--green)' : 'var(--red)') + '">' + (up ? '+' : '') + fmt(r,2) + ' (' + (up ? '+' : '') + pct.toFixed(2) + ' %)</b>';
@@ -49281,7 +49284,7 @@ function kyfOpSetCur(c){
 }
 (function(){
   const st = document.createElement('style');
-  st.textContent = '.op-cur-btn{font-family:Inter,sans-serif;font-size:9px;font-weight:700;letter-spacing:.4px;padding:6px 12px;border:none;cursor:pointer;background:var(--btn-secondary-bg);color:var(--text2);transition:background .15s,color .15s}'
+  st.textContent = '.op-cur-btn{font-family:Inter,sans-serif;font-size:9px;font-weight:700;letter-spacing:.4px;padding:6px 12px;min-width:84px;text-align:center;border:none;cursor:pointer;background:var(--btn-secondary-bg);color:var(--text2);transition:background .15s,color .15s}'
     + '.op-cur-btn:not(.on):hover{background:var(--hov-bg);color:var(--text)}.op-cur-btn.on{background:#f0b429;color:#000}'
     + '.op-cur-btn:focus,.op-cur-btn:focus-visible{outline:none!important;box-shadow:none!important}';
   document.head.appendChild(st);
@@ -49301,12 +49304,12 @@ function renderOpsForm(){
   const _opCur = window._kyfOpCur || (window._cryptoDevise === 'usd' ? 'usd' : 'eur');
   html += `<div style="margin-bottom:10px">
     <label style="font-family:'Inter',sans-serif;font-size:9px;color:var(--text3);display:block;margin-bottom:4px;letter-spacing:.5px">DEVISE DES MONTANTS</label>
-    <div style="display:flex;gap:2px;border:1px solid var(--border2);border-radius:6px;overflow:hidden;width:max-content">
+    <div style="display:flex;gap:2px;border:1px solid var(--border2);border-radius:6px;overflow:hidden;width:max-content;margin:0 auto">
       <button type="button" class="op-cur-btn${_opCur==='eur'?' on':''}" data-cur="eur" onclick="kyfOpSetCur('eur')">€ EURO</button>
       <button type="button" class="op-cur-btn${_opCur==='usd'?' on':''}" data-cur="usd" onclick="kyfOpSetCur('usd')">$ DOLLAR</button>
     </div>
     <input type="hidden" id="op-devise" value="${_opCur}">
-    <div id="op-cur-note" style="font-family:'Inter',sans-serif;font-size:9px;color:var(--text3);margin-top:5px;line-height:1.5;${_opCur==='usd'?'':'display:none'}">Converti en euros au taux EUR/USD du jour de l'opération.</div>
+    <div id="op-cur-note" style="font-family:'Inter',sans-serif;font-size:9px;color:var(--text3);margin-top:5px;line-height:1.5;text-align:center;${_opCur==='usd'?'':'display:none'}">Converti en euros au taux EUR/USD du jour de l'opération.</div>
   </div>`;
 
   if(type==='achat'){
@@ -49366,7 +49369,7 @@ function renderOpsForm(){
     </div>`;
     html += `<div style="margin-bottom:14px">
       <label style="font-family:'Inter',sans-serif;font-size:9px;color:var(--text);display:block;margin-bottom:4px;letter-spacing:.5px">MONTANT RÉCUPÉRÉ</label>
-      <input id="op-montant" type="text" inputmode="decimal" placeholder="ex: 3 400,50 ou 3400.5" oninput="this.dataset.manual='1';kyfVenteResumePerte()" onfocus="kyfUnformatAmountInput(this)" onblur="kyfFormatAmountInput(this)"
+      <input id="op-montant" type="text" inputmode="decimal" placeholder="ex: 3 400,50 (0 si la crypto ne vaut plus rien)" oninput="this.dataset.manual='1';kyfVenteResumePerte()" onfocus="kyfUnformatAmountInput(this)" onblur="kyfFormatAmountInput(this)"
         style="width:100%;font-family:'Inter',sans-serif;font-size:11px;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);padding:8px 10px;border-radius:6px;outline:none;box-sizing:border-box">
     </div>`;
     html += `<div style="margin-bottom:8px">
@@ -49516,7 +49519,9 @@ function saveOperation(){
     const nom=g('op-nom'), ticker=g('op-ticker'), montant=n('op-montant'), qte=n('op-qte'), cours=n('op-cours'), investi=n('op-investi');
     // Quantité facultative si l'on connaît ce qui a été mis et ce qui a été récupéré (ex : 100 € investis, 99 € récupérés).
     if(!nom){ alert('Nom de la crypto requis'); return; }
-    if(!qte && !(investi > 0 && montant > 0)){ alert('Indiquez la quantité vendue, ou à défaut le montant investi ET le montant récupéré.'); return; }
+    // 0 € récupéré est accepté s'il est tapé (crypto tombée à zéro, ex. LUNA) : la perte vaut alors tout le montant investi
+    const montantSaisi = (document.getElementById('op-montant')?.value || '').trim() !== '';
+    if(!qte && !(investi > 0 && (montant > 0 || montantSaisi))){ alert('Indiquez la quantité vendue, ou à défaut le montant investi ET le montant récupéré (0 si la crypto ne vaut plus rien).'); return; }
     // Avertir (sans bloquer : une correction de position déjà erronée reste possible) quand la vente dépasse
     // ce que KYF sait détenir actuellement - une faute de frappe sur la quantité passait inaperçue jusqu'ici.
     // Vérifié contre les positions déjà enregistrées : si une autre vente du même actif est déjà dans la
@@ -49584,7 +49589,7 @@ function saveOperation(){
 function kyfOpSummaryLabel(op){
   const q = v => fmtCryptoQty(v);
   if(op.type === 'achat') return 'Achat ' + q(op.qte) + ' ' + (op.nom || op.ticker);
-  if(op.type === 'vente') return 'Vente ' + (op.qte > 0 ? q(op.qte) + ' ' : '') + (op.nom || op.ticker) + (!(op.qte > 0) && op.montant ? ' · ' + fmt(op.montant,2) + ' ' + getCryptoSymbol() : '');
+  if(op.type === 'vente') return 'Vente ' + (op.qte > 0 ? q(op.qte) + ' ' : '') + (op.nom || op.ticker) + (!(op.qte > 0) && (op.montant || op.investi > 0) ? ' · ' + fmt(op.montant || 0,2) + ' ' + getCryptoSymbol() : '');
   if(op.type === 'swap') return 'Swap ' + q(op.qte) + ' ' + op.nom + ' → ' + q(op.qte2) + ' ' + op.nom2;
   if(op.type === 'transfert') return 'Transfert ' + q(op.qte) + ' ' + op.nom;
   if(op.type === 'frais') return 'Frais ' + op.plateforme + ' · ' + fmt(op.montant,2) + ' ' + getCryptoSymbol();
@@ -49604,6 +49609,7 @@ function cryptoOpSessionRender(){
       '<div style="display:flex;align-items:center;gap:6px;padding:4px 0' + (i>0 ? ';border-top:1px solid var(--border)' : '') + '">' +
         '<span style="flex:1;font-size:10px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(kyfOpSummaryLabel(op)) + '</span>' +
         '<span style="font-size:9px;color:var(--text3)">' + escapeHtml(op.date) + '</span>' +
+        '<button onclick="kyfOpEditOpen(\'' + escJsAttr(String(op.id)) + '\', true)" class="kyf-sess-edit" title="Modifier">' + KYF_ICONS.edit + '</button>' +
         '<button onclick="cryptoOpSessionRemove(' + i + ')" class="kyf-icon-btn" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;padding:2px 4px;transition:color .15s" title="Retirer de la liste" onmouseover="this.style.color=\'var(--red)\'" onmouseout="this.style.color=\'var(--text3)\'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg></button>' +
       '</div>'
     ).join('');
@@ -49808,10 +49814,12 @@ function deleteOperation(id){
 // ── Modifier une opération du CARNET D'ORDRES (menu ⋯ de la ligne) ──
 // La crypto reste celle de l'opération (pour en changer : supprimer puis ressaisir). Tout est recalculé
 // depuis l'historique complet après l'enregistrement, comme pour une suppression.
-function kyfOpFindPair(op){
+// Opérations enregistrées, ou liste EN ATTENTE DE VALIDATION (pending) : même fenêtre Modifier
+function kyfOpEditList(pending){ return pending ? (window._cryptoOpSessionAdded || []) : (cryptoState.operations || []); }
+function kyfOpFindPair(op, pending){
   if(!op || op.type !== 'transfert') return null;
   const pid = /_inv$/.test(op.id) ? op.id.replace(/_inv$/, '') : op.id + '_inv';
-  return (cryptoState.operations || []).find(o => o.id === pid) || null;
+  return kyfOpEditList(pending).find(o => o.id === pid) || null;
 }
 function kyfOpEditClose(){
   const m = document.getElementById('kyfOpEditModal'); if(m) m.remove();
@@ -49823,13 +49831,14 @@ function kyfOpEditKey(e){
   if(e.key === 'Escape' && !(typeof _kyfDate !== 'undefined' && _kyfDate)){ e.preventDefault(); kyfOpEditClose(); }
   else if(e.key === 'Enter' && e.target && e.target.tagName === 'INPUT'){ e.preventDefault(); kyfOpEditSave(); }
 }
-function kyfOpEditOpen(id){
-  const op = (cryptoState.operations || []).find(o => o.id === id);
+function kyfOpEditOpen(id, pending){
+  pending = !!pending;
+  const op = kyfOpEditList(pending).find(o => o.id === id);
   if(!op) return;
   kyfOpEditClose();
   const usd = op.devise === 'usd' && op.orig;
   const cur = '<span class="opEdit-sym">' + (usd ? '$' : '€') + '</span>';
-  const val = f => { const v = usd && KYF_OP_CUR_FIELDS.includes(f) ? (op.orig[f] || 0) : (parseFloat(op[f]) || 0); return v > 0 ? String(v) : ''; };
+  const val = f => { const v = usd && KYF_OP_CUR_FIELDS.includes(f) ? (op.orig[f] || 0) : (parseFloat(op[f]) || 0); return v > 0 ? String(v) : (f === 'montant' && op.type === 'vente' && parseFloat(op.investi) > 0 ? '0' : ''); };
   const inSt = "width:100%;font-family:'Inter',sans-serif;font-size:11px;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);padding:8px 10px;border-radius:6px;outline:none;box-sizing:border-box";
   const lbSt = "font-family:'Inter',sans-serif;font-size:9px;color:var(--text);display:block;margin-bottom:4px;letter-spacing:.5px";
   const field = (fid, lbl, f, opt) => `<div style="margin-bottom:12px"><label for="${fid}" style="${lbSt}">${lbl}${opt ? ' <span style="color:var(--text3)">- optionnel</span>' : ''}</label><input id="${fid}" type="text" inputmode="decimal" value="${escapeHtml(val(f))}" style="${inSt}"></div>`;
@@ -49844,12 +49853,12 @@ function kyfOpEditOpen(id){
       <button type="button" id="opEdit-dateBtn" class="kyf-csel-btn" data-kyf-date="opEdit-date" aria-haspopup="dialog" aria-expanded="false" style="padding:8px 10px"><span id="opEdit-dateBtnLabel">${escapeHtml(op.date)}</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button></div>`;
   if(op.type !== 'transfert' || op.sens === 'entrant'){
     body += `<div style="margin-bottom:12px"><label style="${lbSt}">DEVISE DES MONTANTS</label>
-      <div style="display:flex;gap:2px;border:1px solid var(--border2);border-radius:6px;overflow:hidden;width:max-content">
+      <div style="display:flex;gap:2px;border:1px solid var(--border2);border-radius:6px;overflow:hidden;width:max-content;margin:0 auto">
         <button type="button" class="op-cur-btn opEdit-cur${usd ? '' : ' on'}" data-cur="eur" onclick="kyfOpEditSetCur('eur')">€ EURO</button>
         <button type="button" class="op-cur-btn opEdit-cur${usd ? ' on' : ''}" data-cur="usd" onclick="kyfOpEditSetCur('usd')">$ DOLLAR</button>
       </div>
       <input type="hidden" id="opEdit-devise" value="${usd ? 'usd' : 'eur'}">
-      <div id="opEdit-cur-note" style="font-size:9px;color:var(--text3);margin-top:5px;line-height:1.5">${usd ? 'Converti en euros au taux EUR/USD du jour de l\'opération.' : 'Les montants ci-dessous sont en euros.'}</div></div>`;
+      <div id="opEdit-cur-note" style="font-size:9px;color:var(--text3);margin-top:5px;line-height:1.5;text-align:center">${usd ? 'Converti en euros au taux EUR/USD du jour de l\'opération.' : 'Les montants ci-dessous sont en euros.'}</div></div>`;
   }
   if(op.type === 'achat'){
     body += field('opEdit-montant', 'MONTANT (' + cur + ')', 'montant') + field('opEdit-qte', 'QUANTITÉ', 'qte') + field('opEdit-cours', 'COURS (' + cur + ')', 'cours');
@@ -49861,7 +49870,7 @@ function kyfOpEditOpen(id){
     body += field('opEdit-qte', 'QUANTITÉ', 'qte');
     if(op.sens === 'entrant') body += field('opEdit-valeur', 'VALEUR (' + cur + ')', 'valeur', true);
     body += textField('opEdit-from', 'DE', op.from) + textField('opEdit-to', 'VERS', op.to);
-    if(kyfOpFindPair(op)) body += `<div style="font-size:9px;color:var(--text3);line-height:1.6;margin:-4px 0 10px">Le mouvement inverse de ce transfert suit automatiquement (date, quantité, DE et VERS).</div>`;
+    if(kyfOpFindPair(op, pending)) body += `<div style="font-size:9px;color:var(--text3);line-height:1.6;margin:-4px 0 10px">Le mouvement inverse de ce transfert suit automatiquement (date, quantité, DE et VERS).</div>`;
   } else if(op.type === 'frais'){
     body += textField('opEdit-plateforme', 'PLATEFORME', op.plateforme) + field('opEdit-montant', 'MONTANT (' + cur + ')', 'montant');
   }
@@ -49872,6 +49881,7 @@ function kyfOpEditOpen(id){
   const m = document.createElement('div');
   m.id = 'kyfOpEditModal';
   m.dataset.opId = id;
+  if(pending) m.dataset.pending = '1';
   m.setAttribute('role', 'dialog');
   m.style.cssText = "position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(380px,94vw);max-height:90vh;overflow:auto;z-index:999995;background:var(--bg2);border:1px solid var(--border2);border-radius:14px;box-shadow:0 12px 48px rgba(0,0,0,0.4);font-family:'Inter',sans-serif;color:var(--text)";
   m.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border)">
@@ -49903,7 +49913,8 @@ function kyfOpEditSetCur(c){
 }
 function kyfOpEditSave(){
   const m = document.getElementById('kyfOpEditModal'); if(!m) return;
-  const op = (cryptoState.operations || []).find(o => o.id === m.dataset.opId);
+  const pending = m.dataset.pending === '1';
+  const op = kyfOpEditList(pending).find(o => o.id === m.dataset.opId);
   if(!op){ kyfOpEditClose(); return; }
   const err = t => { const e = document.getElementById('opEdit-err'); if(e){ e.textContent = t; e.style.display = 'block'; } };
   const has = fid => !!document.getElementById(fid);
@@ -49916,12 +49927,12 @@ function kyfOpEditSave(){
   const nv = {};
   ['montant','qte','cours','investi','qte2','valeur'].forEach(f => { if(has('opEdit-' + f)) nv[f] = num('opEdit-' + f); });
   if(op.type === 'achat' && !nv.qte){ err('La quantité est requise.'); return; }
-  if(op.type === 'vente' && !nv.qte && !(nv.investi > 0 && nv.montant > 0)){ err('Indiquez la quantité vendue, ou à défaut le montant investi ET le montant récupéré.'); return; }
+  if(op.type === 'vente' && !nv.qte && !(nv.investi > 0 && (nv.montant > 0 || txt('opEdit-montant') !== ''))){ err('Indiquez la quantité vendue, ou à défaut le montant investi ET le montant récupéré (0 si la crypto ne vaut plus rien).'); return; }
   if(op.type === 'swap' && !nv.qte){ err('La quantité source est requise.'); return; }
   if(op.type === 'transfert' && !nv.qte){ err('La quantité est requise.'); return; }
   if(op.type === 'frais' && (!txt('opEdit-plateforme') || !nv.montant)){ err('Plateforme et montant requis.'); return; }
 
-  const pair = kyfOpFindPair(op);
+  const pair = kyfOpFindPair(op, pending);
   const snap = { op: JSON.parse(JSON.stringify(op)), pair: pair ? JSON.parse(JSON.stringify(pair)) : null, frais: cryptoState.frais ? JSON.parse(JSON.stringify(cryptoState.frais)) : null };
   const oldPlat = op.plateforme, oldMontant = parseFloat(op.montant) || 0;
   const wasUsd = !!(op.devise === 'usd' && op.orig);
@@ -49946,13 +49957,14 @@ function kyfOpEditSave(){
   }
   if(op.type === 'frais'){
     op.plateforme = txt('opEdit-plateforme');
-    if(cryptoState.frais){
+    if(cryptoState.frais && !pending){   // en attente : les frais ne sont comptés qu'à la validation
       if(oldPlat) cryptoState.frais[oldPlat] = Math.round(((parseFloat(cryptoState.frais[oldPlat]) || 0) - oldMontant) * 100) / 100;
       cryptoState.frais[op.plateforme] = Math.round(((parseFloat(cryptoState.frais[op.plateforme]) || 0) + (parseFloat(op.montant) || 0)) * 100) / 100;
       if(oldPlat && oldPlat !== op.plateforme && Math.abs(cryptoState.frais[oldPlat]) < 0.005) delete cryptoState.frais[oldPlat];
     }
   }
   kyfOpEditClose();
+  if(pending){ cryptoOpSessionRender(); return; }   // rien n'est encore enregistré : simple mise à jour de la liste
   kyfOpEditRefresh();
   if(usd && !op.fxOk) kyfCryptoFxResolve();
   kyfShowUndoToast('Opération modifiée', () => {
@@ -49978,11 +49990,37 @@ function kyfOpEditRefresh(){
   st.textContent = '.kyf-opedit-pri{font-family:Inter,sans-serif;font-size:9px;font-weight:700;letter-spacing:.5px;padding:8px 18px;border-radius:7px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:opacity .15s}.kyf-opedit-pri:hover{opacity:.85}'
     + '.kyf-opedit-sec{font-family:Inter,sans-serif;font-size:9px;font-weight:400;letter-spacing:.5px;padding:8px 18px;border-radius:7px;border:1px solid var(--border2);background:none;color:var(--text3);cursor:pointer;transition:background .15s}.kyf-opedit-sec:hover{background:var(--hov-bg)}'
     + '.kyf-opedit-x{background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;border-radius:6px;display:inline-flex;transition:background .15s,color .15s}.kyf-opedit-x:hover{background:var(--hov-bg);color:var(--text)}'
+    + '.kyf-sess-edit{background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 4px;display:inline-flex;align-items:center;border-radius:4px;transition:color .15s,background .15s}.kyf-sess-edit:hover{color:var(--text);background:var(--hov-bg)}.kyf-sess-edit svg{width:12px;height:12px}.kyf-sess-edit:focus,.kyf-sess-edit:focus-visible{outline:none!important;box-shadow:none!important}'
     + '.kyf-op-dots{background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 6px;display:inline-flex;align-items:center;font-size:16px;letter-spacing:1px;border-radius:5px;vertical-align:middle;transition:background .15s,color .15s}.kyf-op-dots:hover{background:var(--hov-bg);color:var(--text)}'
     + '.kyf-opedit-pri:focus,.kyf-opedit-pri:focus-visible,.kyf-opedit-sec:focus,.kyf-opedit-sec:focus-visible,.kyf-opedit-x:focus,.kyf-opedit-x:focus-visible,.kyf-op-dots:focus,.kyf-op-dots:focus-visible{outline:none!important;box-shadow:none!important}'
     + '#kyfOpEditModal input[type=text]:focus{border-color:var(--accent)!important}';
   document.head.appendChild(st);
 })();
+
+// ── Listes « AJOUTÉS CETTE SESSION » : crayon Modifier sur chaque ligne ──
+// Ces ajouts sont déjà enregistrés : Modifier ferme le popup d'ajout et rouvre la ligne dans le popup de
+// modification habituel (mêmes contrôles, même calcul du cash), comme le ⋯ > Modifier du tableau.
+function etfSessionEdit(i){
+  const s = _etfSessionAdded[i]; if(!s) return;
+  let idx = ETF.indexOf(s.entry);
+  if(idx < 0) idx = ETF.findIndex(e => e.ticker === s.entry.ticker && e.enveloppe === s.entry.enveloppe);
+  closeAddETF();
+  if(idx > -1) openEditETF(idx);
+}
+function cryptoSessionEdit(i){
+  const s = _cryptoSessionAdded[i]; if(!s) return;
+  const sIdx = s.isStable ? (cryptoState.stables || []).indexOf(s.entry) : -1, tk = s.entry.ticker;
+  closeAddCryptoPosition();
+  if(s.isStable){ if(sIdx > -1) openEditStable(sIdx); } else openEditCrypto(tk);
+}
+function livSessionEdit(i){ const x = _livSessionAdded[i]; if(!x) return; closeLivretModal(); editLivret(x.id); }
+function scpiSessionEdit(i){
+  const x = _scpiSessionAdded[i]; if(!x) return;
+  closeSCPI();
+  if(x.contratId) editAVPos(x.contratId, x.id); else editSCPI(x.id);
+}
+function cfSessionEdit(i){ const x = _cfSessionAdded[i]; if(!x) return; closeCrowdfunding(); editCrowdfunding(x.id); }
+function orSessionEdit(i){ const x = _orSessionAdded[i]; if(!x) return; closeOrModal(); editOr(x.id); }
 
 // Init form on load
 document.addEventListener('DOMContentLoaded', ()=>{ setTimeout(renderOpsForm, 100); });
@@ -61900,6 +61938,12 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.155 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crayon Modifier sur chaque ligne « AJOUTÉS CETTE SESSION » des popups d'ajout (ETF &amp; Actions, Crypto, Livrets, SCPI, Crowdfunding, Or) : la ligne, déjà enregistrée, se rouvre dans le popup de modification habituel.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.154 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto, NOUVELLE OPÉRATION : crayon Modifier sur chaque ligne EN ATTENTE DE VALIDATION (même fenêtre que le CARNET D'ORDRES, rien n'est enregistré avant VALIDER). Vente : MONTANT RÉCUPÉRÉ à 0 accepté avec un montant investi (crypto tombée à zéro, ex. LUNA) ; la perte vaut tout le montant investi.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.153 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto, NOUVELLE OPÉRATION et fenêtre Modifier : sélecteur € EURO / $ DOLLAR centré (boutons de même largeur) ; bouton VALIDER X OPÉRATIONS au même design que + AJOUTER À LA LISTE (fond jaune, sans contour orange) ; champs DATE et listes déroulantes : un seul cadre orange au focus (plus de double contour).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.152 · 07/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto, CARNET D'ORDRES : la fenêtre Modifier a son choix € EURO / $ DOLLAR, pour corriger une opération saisie dans la mauvaise devise (conversion au taux du jour de l'opération, ou retour aux euros).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.151 · 07/10/2026</div>
@@ -67301,6 +67345,7 @@ function livSessionRender(){
       '<div style="display:flex;align-items:center;gap:6px;padding:4px 0' + (i>0 ? ';border-top:1px solid var(--border)' : '') + '">' +
         '<span style="flex:1;font-weight:600;color:var(--text);font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(item.banque) + '</span>' +
         '<span style="font-size:9px;color:var(--text3)">' + item.type + ' &middot; ' + fmt(item.solde,0) + ' €</span>' +
+        '<button type="button" onclick="livSessionEdit(' + i + ')" class="kyf-sess-edit" title="Modifier">' + KYF_ICONS.edit + '</button>' +
         '<button onclick="livSessionRemove(' + i + ')" title="Annuler cet ajout" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px;display:inline-flex" onmouseover="this.style.color=\'#ff4560\'" onmouseout="this.style.color=\'var(--text3)\'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' +
       '</div>'
     ).join('');
@@ -70205,6 +70250,7 @@ function scpiSessionRender(){
       '<div style="display:flex;align-items:center;gap:6px;padding:4px 0' + (i>0?';border-top:1px solid var(--border)':'') + '">' +
         '<span style="flex:1;font-weight:600;color:var(--text);font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(s.nom) + '</span>' +
         '<span style="font-size:9px;color:var(--text3)">' + escapeHtml(s.label) + ' · ' + s.parts + '</span>' +
+        '<button type="button" onclick="scpiSessionEdit(' + i + ')" class="kyf-sess-edit" title="Modifier">' + KYF_ICONS.edit + '</button>' +
         '<button type="button" onclick="scpiSessionRemove(' + i + ')" title="Annuler cet ajout" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px;display:inline-flex" onmouseover="this.style.color=\'#ff4560\'" onmouseout="this.style.color=\'var(--text3)\'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' +
       '</div>').join('');
   const cb=document.getElementById('scpiCancelBtn'); if(cb) cb.textContent = 'TERMINER';
@@ -71260,6 +71306,7 @@ function cfSessionRender(){
       '<div style="display:flex;align-items:center;gap:6px;padding:4px 0' + (i>0?';border-top:1px solid var(--border)':'') + '">' +
         '<span style="flex:1;font-weight:600;color:var(--text);font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(x.nom) + '</span>' +
         '<span style="font-size:9px;color:var(--text3)">' + fmt(x.montant||0,0) + ' €</span>' +
+        '<button type="button" onclick="cfSessionEdit(' + i + ')" class="kyf-sess-edit" title="Modifier">' + KYF_ICONS.edit + '</button>' +
         '<button type="button" onclick="cfSessionRemove(' + i + ')" title="Annuler cet ajout" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px;display:inline-flex" onmouseover="this.style.color=\'#ff4560\'" onmouseout="this.style.color=\'var(--text3)\'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' +
       '</div>').join('');
   if(cb) cb.textContent = 'TERMINER';
@@ -78891,6 +78938,7 @@ function orSessionRender(){
       '<div style="display:flex;align-items:center;gap:6px;padding:4px 0' + (i>0 ? ';border-top:1px solid var(--border)' : '') + '">' +
         '<span style="flex:1;font-weight:600;color:var(--text);font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(item.produitLbl) + '</span>' +
         '<span style="font-size:9px;color:var(--text3)">' + item.qty + ' &middot; ' + fmt(item.prixAchat,0) + ' €</span>' +
+        '<button type="button" onclick="orSessionEdit(' + i + ')" class="kyf-sess-edit" title="Modifier">' + KYF_ICONS.edit + '</button>' +
         '<button onclick="orSessionRemove(' + i + ')" title="Annuler cet ajout" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px;display:inline-flex" onmouseover="this.style.color=\'#ff4560\'" onmouseout="this.style.color=\'var(--text3)\'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' +
       '</div>'
     ).join('');
