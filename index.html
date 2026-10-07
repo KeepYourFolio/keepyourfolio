@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2.8.2.161.html
+  @file        : KYF_SHARE_beta_2_8_2_167.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.2.161
+  @version     : Beta 2.8.2.167
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6303,7 +6303,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
     <span id="kyfAnnonceText" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text2);font-weight:500"></span>
     <button onclick="kyfCloseAnnonce()" title="Fermer" aria-label="Fermer l'annonce"
       style="background:none;border:none;color:var(--text3);cursor:pointer;padding:0;margin-left:2px;display:flex;align-items:center;flex-shrink:0;transition:color .15s"
-      onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">
+      onmouseover="this.style.color='#ff4560'" onmouseout="this.style.color='var(--text3)'">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </div>
@@ -6511,7 +6511,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.2.161</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.2.167</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -26946,7 +26946,7 @@ function showIdxBandLoading(){
   if(typeof kyfIsIndicesBarHidden === 'function' && kyfIsIndicesBarHidden()) return; // masquée par préférence utilisateur
   const band = document.getElementById('idxBand');
   const vals = document.getElementById('idxBandValues');
-  if(!band || !vals || typeof KYF_ANNONCE_ACTIVE !== 'undefined' && KYF_ANNONCE_ACTIVE) return;
+  if(!band || !vals || kyfAnnonceAffichee()) return;
   vals.innerHTML = [1,2,3].map(() => `
     <div style="display:flex;align-items:center;gap:5px;white-space:nowrap">
       <span style="width:34px;height:8px;border-radius:4px;background:var(--border2);animation:idxBlink 1.2s ease-in-out infinite"></span>
@@ -27023,7 +27023,7 @@ function renderIdxBand(idxData){
       : `<div style="display:flex;align-items:center;gap:5px;white-space:nowrap">${inner}</div>`;
   }).join('<span style="color:var(--border2);margin:0 2px">│</span>');
 
-  if(!KYF_ANNONCE_ACTIVE){
+  if(!kyfAnnonceAffichee()){
     band.style.display = 'flex';
     requestAnimationFrame(()=>{ band.style.opacity='1'; band.style.transform='translateY(0) scale(1)'; });
   }
@@ -27048,11 +27048,24 @@ function setIdxBandMode(mode){
 // N'a besoin d'aucune donnée externe - s'affiche immédiatement au
 // chargement, indépendamment du chargement des indices.
 const KYF_ANNONCE_LIMITE = 320;
+// Annonce fermée : on retient l'empreinte de SON texte. Tant que le texte ne change pas, elle ne revient plus ;
+// un nouveau texte a une autre empreinte et réapparaît chez tout le monde.
+const KYF_ANNONCE_CLOSED_KEY = 'kyf-annonce-fermee';
+// L'annonce occupe-t-elle le bandeau ? (active, avec un texte, et pas déjà fermée pour ce texte)
+function kyfAnnonceAffichee(){
+  if(typeof KYF_ANNONCE_ACTIVE === 'undefined' || !KYF_ANNONCE_ACTIVE) return false;
+  const t = (KYF_ANNONCE_TEXTE || '').trim();
+  if(!t) return false;
+  try{ if(localStorage.getItem('kyf-annonce-fermee') === kyfAnnonceEmpreinte(t)) return false; }catch(e){}
+  return true;
+}
+function kyfAnnonceEmpreinte(t){ let h = 5381; for(let i = 0; i < t.length; i++) h = ((h << 5) + h + t.charCodeAt(i)) | 0; return 'a' + (h >>> 0).toString(36) + '.' + t.length; }
 
 function kyfInitAnnonce(){
   if(!KYF_ANNONCE_ACTIVE) return;
   const texteBrut = (KYF_ANNONCE_TEXTE||'').trim();
   if(!texteBrut) return;
+  try{ if(localStorage.getItem(KYF_ANNONCE_CLOSED_KEY) === kyfAnnonceEmpreinte(texteBrut)) return; }catch(e){}
 
   const texte = texteBrut.length > KYF_ANNONCE_LIMITE
     ? texteBrut.slice(0, KYF_ANNONCE_LIMITE).trim() + '…'
@@ -27082,6 +27095,7 @@ function kyfInitAnnonce(){
 }
 
 function kyfCloseAnnonce(){
+  try{ localStorage.setItem(KYF_ANNONCE_CLOSED_KEY, kyfAnnonceEmpreinte((KYF_ANNONCE_TEXTE||'').trim())); }catch(e){}
   const bandEl = document.getElementById('kyfAnnonceBand');
   const idxEl  = document.getElementById('idxBand');
   if(bandEl){
@@ -40343,7 +40357,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.161\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.167\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -48061,7 +48075,13 @@ function renderCryptoKPIs(){
     if(el){ el.textContent=val; if(col) el.style.color=col; }
   };
   animateKpi('ck-total',     fmt(totalBrut,2)+' '+getCryptoSymbol());
-  set('ck-total-sub', 'Latent : '+fmt(g.patrimoineLatent||totalBrut,2)+' '+getCryptoSymbol());
+  // Latent = ce qu'il resterait en revendant tout aujourd'hui : valeur brute moins l'impôt estimé sur la plus-value
+  // latente (PFU des paramètres fiscaux, 31,4 % par défaut). Estimation simple : pas d'impôt si moins-value.
+  const _pfu = (typeof KYF_CTO_TAUX_PFU === 'function') ? KYF_CTO_TAUX_PFU() : 0.314;
+  const impotLatent = Math.max(0, gpLive) * _pfu;
+  const latentTotal = g.patrimoineLatent || (totalBrut - impotLatent);
+  set('ck-total-sub', 'Latent : '+fmt(latentTotal,2)+' '+getCryptoSymbol());
+  { const el = document.getElementById('ck-total-sub'); if(el) el.title = g.patrimoineLatent ? 'Valeur latente issue de votre import' : 'Ce qu\'il resterait après revente totale : valeur brute moins l\'impôt estimé sur la plus-value latente (' + fmt(Math.max(0, gpLive),2) + ' ' + getCryptoSymbol() + ' × ' + (Math.round(_pfu * 1000) / 10).toString().replace('.', ',') + ' % = ' + fmt(impotLatent,2) + ' ' + getCryptoSymbol() + '). Estimation simple.'; }
   animateKpi('ck-perf',      (gpTotal>=0?'+':'')+fmt(gpTotal,2)+' '+getCryptoSymbol());
   { const elp=document.getElementById('ck-perf'); if(elp) elp.style.color = gpTotal>=0?'var(--green)':'var(--red)'; }
   set('ck-perf-sub',  (perfPct>=0?'+':'')+perfPct.toFixed(2)+'%');
@@ -49366,8 +49386,11 @@ function renderOpsForm(){
     <button type="button" id="op-dateBtn" class="kyf-csel-btn" data-kyf-date="op-date" aria-haspopup="dialog" aria-expanded="false" style="padding:8px 10px"><span id="op-dateBtnLabel">${todayFR}</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>
   </div>`;
   if(type === 'achat' || type === 'vente') html += `<div style="margin-bottom:10px">
-    <label for="op-heure" style="font-family:'Inter',sans-serif;font-size:9px;color:var(--text3);display:block;margin-bottom:4px;letter-spacing:.5px">HEURE <span style="color:var(--text3)">- optionnel, pour un cours précis</span></label>
-    <input id="op-heure" type="time" onchange="kyfOpAutoCours()" class="kyf-op-heure" style="width:100%;font-family:'Inter',sans-serif;font-size:11px;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);padding:7px 10px;border-radius:6px;outline:none;box-sizing:border-box">
+    <label for="op-heure" style="font-family:'Inter',sans-serif;font-size:9px;color:var(--text3);display:block;margin-bottom:4px;letter-spacing:.5px">HEURE <span style="color:var(--text3);font-size:9px">- optionnel, pour un cours précis</span></label>
+    <div style="position:relative">
+      <button type="button" id="op-heureBtn" class="kyf-csel-btn" data-kyf-time="op-heure" aria-haspopup="dialog" aria-expanded="false" style="padding:8px 10px"><span id="op-heureBtnLabel" style="color:var(--text3)">Non précisée</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button>
+      <input type="hidden" id="op-heure" value="" onchange="const l=document.getElementById('op-heureBtnLabel');if(l)l.style.color='';kyfOpAutoCours()">
+    </div>
   </div>`;
   // Devise des montants de l'opération (KYF range tout en euros : un montant en $ est converti au taux du jour de l'opération)
   const _opCur = window._kyfOpCur || (window._cryptoDevise === 'usd' ? 'usd' : 'eur');
@@ -50076,7 +50099,6 @@ function kyfOpEditRefresh(){
     + '.kyf-opedit-sec{font-family:Inter,sans-serif;font-size:9px;font-weight:400;letter-spacing:.5px;padding:8px 18px;border-radius:7px;border:1px solid var(--border2);background:none;color:var(--text3);cursor:pointer;transition:background .15s}.kyf-opedit-sec:hover{background:var(--hov-bg)}'
     + '.kyf-opedit-x{background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;border-radius:6px;display:inline-flex;transition:background .15s,color .15s}.kyf-opedit-x:hover{background:var(--hov-bg);color:var(--text)}'
     + '.kyf-sess-edit{background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 4px;display:inline-flex;align-items:center;border-radius:4px;transition:color .15s,background .15s}.kyf-sess-edit:hover{color:var(--text);background:var(--hov-bg)}.kyf-sess-edit svg{width:12px;height:12px}.kyf-sess-edit:focus,.kyf-sess-edit:focus-visible{outline:none!important;box-shadow:none!important}'
-    + '.kyf-op-heure:hover{border-color:var(--accent)!important}.kyf-op-heure:focus{border-color:var(--accent)!important;outline:none!important;box-shadow:none!important}'
     + '.kyf-op-dots{background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 6px;display:inline-flex;align-items:center;font-size:16px;letter-spacing:1px;border-radius:5px;vertical-align:middle;transition:background .15s,color .15s}.kyf-op-dots:hover{background:var(--hov-bg);color:var(--text)}'
     + '.kyf-opedit-pri:focus,.kyf-opedit-pri:focus-visible,.kyf-opedit-sec:focus,.kyf-opedit-sec:focus-visible,.kyf-opedit-x:focus,.kyf-opedit-x:focus-visible,.kyf-op-dots:focus,.kyf-op-dots:focus-visible{outline:none!important;box-shadow:none!important}'
     + '#kyfOpEditModal input[type=text]:focus{border-color:var(--accent)!important}';
@@ -53542,7 +53564,7 @@ const GUIDE_PAGES = [
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Montant investi et gain / perte</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9"><strong style="color:var(--text)">MONTANT INVESTI</strong> = tout l'argent mis : le prix de revient des cryptos encore détenues + celui des cryptos déjà vendues (c'est le total des achats du CARNET D'ORDRES). Le <strong style="color:var(--text)">gain / perte</strong> réunit le latent (cryptos détenues, au cours du jour) et le réalisé (VENTES CLÔTURÉES), et son pourcentage est calculé sur ce même montant investi.<br><br>Une opération déjà enregistrée se corrige avec le menu <strong style="color:var(--text)">⋯</strong> de sa ligne dans le CARNET D'ORDRES (Modifier / Supprimer) : date, quantités, montants et devise € / $. Tout est recalculé aussitôt.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9"><strong style="color:var(--text)">MONTANT INVESTI</strong> = tout l'argent mis : le prix de revient des cryptos encore détenues + celui des cryptos déjà vendues (c'est le total des achats du CARNET D'ORDRES). Le <strong style="color:var(--text)">gain / perte</strong> réunit le latent (cryptos détenues, au cours du jour) et le réalisé (VENTES CLÔTURÉES), et son pourcentage est calculé sur ce même montant investi. Sous la valeur totale, <strong style="color:var(--text)">Latent</strong> estime ce qu'il resterait en revendant tout aujourd'hui : la valeur brute moins l'impôt (PFU 31,4 %, modifiable dans les paramètres fiscaux) sur la plus-value latente ; aucun impôt en cas de moins-value.<br><br>Une opération déjà enregistrée se corrige avec le menu <strong style="color:var(--text)">⋯</strong> de sa ligne dans le CARNET D'ORDRES (Modifier / Supprimer) : date, quantités, montants et devise € / $. Tout est recalculé aussitôt.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(240,180,41,0.06);border:1px solid rgba(240,180,41,0.25);border-radius:10px;margin-bottom:14px">
         <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Case "Opération historique"</div>
@@ -60412,6 +60434,10 @@ const FAQ_DATA = [
     a: "Le plus simple est de vous connecter avec <strong style='color:var(--faq-strong);font-weight:700'>Google</strong> ou <strong style='color:var(--faq-strong);font-weight:700'>GitHub</strong>. Vous retrouverez automatiquement votre portefeuille, partout et à tout moment, en un clic.<br><br>Si vous utilisez uniquement le <strong style='color:var(--faq-strong);font-weight:700'>stockage local</strong>, vos données restent enregistrées dans votre navigateur. Il suffit alors d'exporter votre portefeuille (<svg width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:-1px'><path d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/><polyline points='14 2 14 8 20 8'/><line x1='8' y1='13' x2='16' y2='13'/><line x1='8' y1='17' x2='16' y2='17'/></svg> Topbar → Export), de copier le fichier JSON sur votre nouveau PC, puis de l'importer dans KYF.<br><br><div style='background:rgba(240,180,41,0.08);border:1px solid rgba(240,180,41,0.25);border-radius:8px;padding:10px 12px'><strong style='color:var(--faq-strong);font-weight:700;display:inline-flex;align-items:center;gap:5px'><svg width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='#f0b429' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z'/><line x1='12' y1='9' x2='12' y2='13'/><line x1='12' y1='17' x2='12.01' y2='17'/></svg> À noter</strong> : l'import/export restaure votre portefeuille, mais certaines données générées localement (comme les snapshots, certains historiques ou le cache des prix) ne sont pas incluses dans le fichier JSON et seront automatiquement recréées ou recalculées par KYF lorsque cela est possible.</div>"
   },
   {
+    q: "Où sont stockées mes données et comment ne pas les perdre ?",
+    a: "Vos données KYF sont dans le <strong style='color:var(--faq-strong);font-weight:700'>stockage local</strong> de votre navigateur (localStorage). Dans les réglages du navigateur, il fait partie des <strong style='color:var(--faq-strong);font-weight:700'>« Cookies et données de sites »</strong>, pas du « Cache ».<br><br><strong style='color:var(--faq-strong);font-weight:700'>Sans risque</strong> : vider le cache seul ne touche pas à vos données.<br><br><strong style='color:var(--faq-strong);font-weight:700'>Ce qui les efface</strong> :<br>• supprimer les « Cookies et données de sites » (ou effacer l'historique avec cette case cochée) ;<br>• la navigation privée : tout disparaît à la fermeture de la fenêtre ;<br>• le réglage « Supprimer les cookies et les données des sites à la fermeture » (Firefox) ou équivalent, s'il est activé.<br><br><strong style='color:var(--faq-strong);font-weight:700'>À savoir</strong> :<br>• chaque navigateur a ses propres données : KYF ouvert dans Chrome ne voit pas celles de Firefox ;<br>• si vous ouvrez KYF comme fichier sur votre ordinateur, ne le déplacez pas et ne le renommez pas : le navigateur range les données sous l'adresse exacte du fichier et ne les retrouverait plus.<br><br><strong style='color:var(--faq-strong);font-weight:700'>Votre vraie assurance</strong> : une sauvegarde régulière, en fichier chiffré .cgx ou vers votre Google Sheets."
+  },
+  {
     q: "Comment fonctionne le DCA dans KYF ?",
     a: "Le <strong style='color:var(--faq-strong);font-weight:700'>DCA (Dollar Cost Averaging)</strong> est une stratégie d'investissement régulier, vous investissez un montant fixe à intervalles réguliers, quelle que soit l'évolution des marchés.<br><br><strong style='color:var(--faq-strong);font-weight:700'>KYF n'exécute pas d'ordres</strong>, il suit et enregistre vos DCA pour calculer automatiquement votre PRU moyen, les quantités accumulées et votre performance globale.<br><br><strong style='color:var(--faq-strong);font-weight:700'><svg width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='var(--faq-strong)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:-1px'><path d='M3 3v18h18'/><path d='M18 17V9'/><path d='M13 17V5'/><path d='M8 17v-3'/></svg> DCA ETF &amp; Actions</strong><br>• Configurez votre plan : actif, montant, fréquence, jour du mois<br>• KYF récupère le cours de clôture automatiquement via votre GAS<br>• Vous validez chaque entrée : votre PRU moyen et G/P se mettent à jour<br>• 3 modes : <strong>Auto</strong> (cours Yahoo/GAS), <strong>Manuel</strong> (vous saisissez), <strong>API</strong> (source premium)<br><br><strong style='color:var(--faq-strong);font-weight:700'><svg width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='var(--faq-strong)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:-1px'><path d='M11.5 3v18M8 3v18M6 7h9.5a3.5 3.5 0 0 1 0 7H6m0 0h10a3.5 3.5 0 0 1 0 7H6'/></svg> DCA Crypto</strong><br>• Même logique mais les prix viennent de <strong>CoinGecko</strong>, 100% automatique<br>• BTC, ETH, et toutes les cryptos reconnues par CoinGecko<br>• L'historique se reconstitue automatiquement sur vos dates passées<br><br><br><strong style='color:var(--faq-strong);font-weight:700'>DCA Assurance Vie / PER</strong><br>• 3e onglet de la page Investissement / DCA : un versement représente l'argent qui entre dans un <strong>contrat</strong> (compté une seule fois), réparti ensuite sur ses lignes<br>• Pas de validation mensuelle : il s'applique à l'ouverture de KYF, en estimation, jusqu'au prochain relevé importé<br>• Détails dans la question « Comment programmer des versements sur mon assurance vie ou mon PER ? »<div style='background:rgba(240,180,41,0.08);border:1px solid rgba(240,180,41,0.25);border-radius:8px;padding:10px 12px;margin-top:4px'><strong style='color:var(--faq-strong);font-weight:700;display:inline-flex;align-items:center;gap:5px'><svg width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='var(--accent)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z'/><line x1='12' y1='9' x2='12' y2='13'/><line x1='12' y1='17' x2='12.01' y2='17'/></svg> Important : Validation mensuelle requise</strong><br>Chaque mois, après votre achat chez votre courtier, vous devez <strong>valider votre DCA dans KYF</strong> en cliquant sur le plan puis sur <strong>Enregistrer le cours</strong>. C'est cette validation qui met à jour votre <strong>PRU moyen</strong>, votre <strong>quantité totale</strong> et vos <strong>graphiques</strong>. Sans validation, KYF ne connaît pas votre prix d'achat réel.</div><br><strong style='color:var(--text3);font-size:10px'><svg width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:-1px'><path d='M9 18h6'/><path d='M10 22h4'/><path d='M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5.6.6 1.27 1.34 1.41 2.5' stroke='#f0b429'/><circle cx='12' cy='8' r='2' fill='#f0b429' stroke='none'/></svg> Exemple : vous investissez 200 € le 15 de chaque mois en PSP5.PA. Chaque mois, KYF récupère automatiquement le cours de clôture du 15, il vous suffit de valider pour mettre à jour PRU, quantité et graphiques.</strong>"
   },
@@ -62109,6 +62135,18 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.167 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Bandeau d'annonce : une annonce fermée ne revient plus à chaque ouverture de KYF tant que son texte ne change pas ; un nouveau texte réapparaît chez tout le monde. Les indices boursiers reprennent leur place quand l'annonce est fermée.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.166 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">FAQ : nouvelle question « Où sont stockées mes données et comment ne pas les perdre ? » (cookies et données de sites, pas le cache ; navigation privée ; fichier déplacé ; un navigateur = ses propres données ; sauvegardes). Texte d'annonce mis à jour avec les nouveautés crypto.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.165 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto, NOUVELLE OPÉRATION : le champ HEURE utilise le sélecteur d'heure KYF (roues heures / minutes, saisie au clavier), le même que l'heure prévue du DCA, à la place du champ du navigateur.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.164 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto, Latent (sous la valeur totale) : n'affiche plus la même valeur que le brut ; c'est la valeur brute moins l'impôt estimé sur la plus-value latente (PFU 31,4 % des paramètres fiscaux), aucun impôt en cas de moins-value. Détail du calcul au survol ; guide mis à jour.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.163 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Bandeau d'annonce : la croix de fermeture passe en rouge au survol.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.162 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto, NOUVELLE OPÉRATION : champ HEURE au design KYF (même aspect que DATE, icône horloge KYF, cadre orange au survol et au focus).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.161 · 07/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto, NOUVELLE OPÉRATION (achat / vente) : cours automatique selon la crypto, la date et l'heure (nouveau champ HEURE facultatif), en € ou en $ selon la devise choisie : cours Binance de la minute, paire en euros si elle existe sinon convertie au taux EUR/USD du jour, repli cours du jour CoinGecko. Un cours tapé à la main n'est jamais remplacé. Guide mis à jour.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.160 · 07/10/2026</div>
