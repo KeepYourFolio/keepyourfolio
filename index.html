@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_2_159.html
+  @file        : KYF_SHARE_beta_2.8.2.161.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.2.159
+  @version     : Beta 2.8.2.161
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -189,7 +189,7 @@ function kyfParisWall(d){
      ══════════════════════════════════════════════════════════════════ -->
 <script>
   const KYF_ANNONCE_ACTIVE = true;
-  const KYF_ANNONCE_TEXTE  = "Bienvenue à tous ! KYF est en version bêta : des bugs peuvent être présents, pensez à faire des sauvegardes régulièrement.\nBug corrigé : sur un 2e appareil, vos données pouvaient ne pas s'afficher. Rouvrez KYF sur l'appareil qui les contient.";
+  const KYF_ANNONCE_TEXTE  = "Bienvenue à tous ! KYF est en version bêta : des bugs peuvent être présents, pensez à faire des sauvegardes régulièrement.\nNouveautés crypto : modifier une opération (menu ⋯), cours automatique selon la date et l'heure, calculs corrigés (ventes à perte, swaps, stablecoins, montant investi).";
   // Couleurs gains / pertes des graphiques : remplace les teintes vert / rouge d'origine par celles du schéma choisi (Paramètres > Couleurs).
   // Sans schéma personnalisé, la couleur d'origine est renvoyée telle quelle. Utilisable dans les fonctions de dessin des graphiques.
   const KYF_SC_FAM = {
@@ -6511,7 +6511,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.2.159</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.2.161</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -40343,7 +40343,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.159\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.161\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -46721,14 +46721,18 @@ function recalcPositionsFromOps(){
     const key = ((op.ticker || op.nom) || '').toString().toUpperCase();
     if(op.type === 'achat' && key && op.qte > 0){
       if(ign(key)) return;
+      // Coût de l'achat : le MONTANT payé s'il est saisi (frais compris), sinon cours × quantité. Avant, seul le
+      // cours comptait : un achat saisi avec montant + quantité mais sans cours ajoutait la quantité à 0 € (le PRU
+      // baissait et le montant investi ne bougeait pas).
+      const achatCout = (Number(op.montant) || 0) > 0 ? Number(op.montant) : (Number(op.cours) || 0) * op.qte;
       if(posMap[key]){
         const oldInv = posMap[key].pru * posMap[key].qte;
-        const newInv = (op.cours||0) * op.qte;
+        const newInv = achatCout;
         posMap[key].qte = Math.round((posMap[key].qte + op.qte) * 1e8) / 1e8;
         posMap[key].pru = posMap[key].qte > 0 ? Math.round((oldInv + newInv) / posMap[key].qte * 100) / 100 : 0;
         if(op.ticker) posMap[key].ticker = op.ticker;
       } else {
-        posMap[key] = {id:op.id, nom:cryptoResolveName(op.ticker, op.nom), ticker:op.ticker||key, qte:op.qte, pru:op.cours||0};
+        posMap[key] = {id:op.id, nom:cryptoResolveName(op.ticker, op.nom), ticker:op.ticker||key, qte:op.qte, pru: Math.round(achatCout / op.qte * 100) / 100};
       }
     } else if(op.type === 'vente' && key && op.qte > 0){
       if(ign(key)) return;
@@ -48913,6 +48917,7 @@ async function searchCoinGecko(query, nomId='op-nom', tickerId='op-ticker', sugI
       if(!r.ok) return;
       const d = await r.json();
       const coins = (d.coins||[]).slice(0,8);
+      coins.forEach(c => { if(c.id && c.symbol) (window._kyfCoinSym = window._kyfCoinSym || {})[c.id] = c.symbol; });
       if(!coins.length){ sug.style.display='none'; return; }
       window._coinSearchActiveIndex[sugId] = -1;
       sug.innerHTML = coins.map((c,i)=>`
@@ -48968,6 +48973,7 @@ function selectCoin(id, name, thumb, nomId='op-nom', tickerId='op-ticker', sugId
   if(sug)      sug.style.display = 'none';
   kyfUpdateHeldBalanceDisplay(nomId); // no-op si le formulaire courant n'a pas ce bloc d'affichage
   autoCalcSwapDest(); // no-op hors formulaire swap
+  if(tickerId === 'op-ticker') kyfOpAutoCours();   // cours automatique (achat / vente)
 }
 
 // Calcule automatiquement la quantité reçue (et la valeur de l'opération) à partir des cours en direct
@@ -49065,6 +49071,7 @@ function kyfPickHeldAsset(nom, ticker, nomId, tickerId, searchId){
   ['op-portfolio-suggestions', 'op-portfolio-suggestions2'].forEach(id => kyfClosePortfolioDropdown(id));
   kyfUpdateHeldBalanceDisplay(nomId);
   autoCalcSwapDest();
+  if(tickerId === 'op-ticker') kyfOpAutoCours();
 }
 // Bascule visuelle du sens d'un transfert (entrant/sortant) - voir CRYPTO-002 : sans cette information,
 // un transfert restait totalement inerte sur la position.
@@ -49338,6 +49345,7 @@ function kyfOpSetCur(c){
   document.querySelectorAll('.op-cur-btn').forEach(b => b.classList.toggle('on', b.dataset.cur === c));
   document.querySelectorAll('.op-cur-sym').forEach(x => { x.textContent = c === 'usd' ? '($)' : '(€)'; });
   const note = document.getElementById('op-cur-note'); if(note) note.style.display = c === 'usd' ? '' : 'none';
+  try{ kyfOpAutoCours(); }catch(e){}
 }
 (function(){
   const st = document.createElement('style');
@@ -49356,6 +49364,10 @@ function renderOpsForm(){
     <label style="font-family:'Inter',sans-serif;font-size:9px;color:var(--text3);display:block;margin-bottom:4px;letter-spacing:.5px">DATE</label>
     <input type="hidden" id="op-date" value="${today}">
     <button type="button" id="op-dateBtn" class="kyf-csel-btn" data-kyf-date="op-date" aria-haspopup="dialog" aria-expanded="false" style="padding:8px 10px"><span id="op-dateBtnLabel">${todayFR}</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>
+  </div>`;
+  if(type === 'achat' || type === 'vente') html += `<div style="margin-bottom:10px">
+    <label for="op-heure" style="font-family:'Inter',sans-serif;font-size:9px;color:var(--text3);display:block;margin-bottom:4px;letter-spacing:.5px">HEURE <span style="color:var(--text3)">- optionnel, pour un cours précis</span></label>
+    <input id="op-heure" type="time" onchange="kyfOpAutoCours()" class="kyf-op-heure" style="width:100%;font-family:'Inter',sans-serif;font-size:11px;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);padding:7px 10px;border-radius:6px;outline:none;box-sizing:border-box">
   </div>`;
   // Devise des montants de l'opération (KYF range tout en euros : un montant en $ est converti au taux du jour de l'opération)
   const _opCur = window._kyfOpCur || (window._cryptoDevise === 'usd' ? 'usd' : 'eur');
@@ -49395,8 +49407,9 @@ function renderOpsForm(){
     </div>`;
     html += `<div style="margin-bottom:14px">
       <label style="font-family:'Inter',sans-serif;font-size:9px;color:var(--text);display:block;margin-bottom:4px;letter-spacing:.5px">COURS</label>
-      <input id="op-cours" type="text" inputmode="decimal" placeholder="ex: 93000" onfocus="kyfUnformatAmountInput(this)" onblur="kyfFormatAmountInput(this)"
+      <input id="op-cours" type="text" inputmode="decimal" placeholder="ex: 93000 (rempli automatiquement)" oninput="this.dataset.manual=this.value.trim()?'1':'';if(this.value.trim()){const _n=document.getElementById('op-cours-auto');if(_n)_n.style.display='none'}if(!this.value.trim())kyfOpAutoCours()" onfocus="kyfUnformatAmountInput(this)" onblur="kyfFormatAmountInput(this)"
         style="width:100%;font-family:'Inter',sans-serif;font-size:11px;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);padding:8px 10px;border-radius:6px;outline:none;box-sizing:border-box">
+      <div id="op-cours-auto" style="display:none;font-family:'Inter',sans-serif;font-size:9px;color:var(--text3);margin-top:5px;line-height:1.5"></div>
     </div>`;
     html += `<div id="op-balance-info" style="display:none;margin:6px 0 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3)"></div>`;
   } else if(type==='vente'){
@@ -49421,8 +49434,9 @@ function renderOpsForm(){
     html += `<div id="op-balance-info" style="display:none;margin:6px 0 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3)"></div>`;
     html += `<div style="margin-bottom:16px">
       <label style="font-family:'Inter',sans-serif;font-size:9px;color:var(--text);display:block;margin-bottom:4px;letter-spacing:.5px">COURS <span style="color:var(--text3);font-size:9px">- optionnel, calcule le montant</span></label>
-      <input id="op-cours" type="text" inputmode="decimal" placeholder="ex: 68 000" oninput="autoCalcMontantVente()" onfocus="kyfUnformatAmountInput(this)" onblur="kyfFormatAmountInput(this)"
+      <input id="op-cours" type="text" inputmode="decimal" placeholder="ex: 68 000 (rempli automatiquement)" oninput="this.dataset.manual=this.value.trim()?'1':'';if(this.value.trim()){const _n=document.getElementById('op-cours-auto');if(_n)_n.style.display='none'}if(!this.value.trim())kyfOpAutoCours();autoCalcMontantVente()" onfocus="kyfUnformatAmountInput(this)" onblur="kyfFormatAmountInput(this)"
         style="width:100%;font-family:'Inter',sans-serif;font-size:11px;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);padding:8px 10px;border-radius:6px;outline:none;box-sizing:border-box">
+      <div id="op-cours-auto" style="display:none;font-family:'Inter',sans-serif;font-size:9px;color:var(--text3);margin-top:5px;line-height:1.5"></div>
     </div>`;
     html += `<div style="margin-bottom:14px">
       <label style="font-family:'Inter',sans-serif;font-size:9px;color:var(--text);display:block;margin-bottom:4px;letter-spacing:.5px">MONTANT RÉCUPÉRÉ</label>
@@ -49571,7 +49585,8 @@ function saveOperation(){
   if(type==='achat'){
     const nom=g('op-nom'), ticker=g('op-ticker'), montant=n('op-montant'), qte=n('op-qte'), cours=n('op-cours');
     if(!nom||!ticker||!qte){ alert('Nom, ticker et quantité requis'); return; }
-    op = {...op, nom, ticker, montant, qte, cours};
+    if(!montant && !cours){ alert('Indiquez le montant payé ou le cours d\'achat.'); return; }
+    op = {...op, nom, ticker, montant: montant || Math.round(cours * qte * 100) / 100, qte, cours: cours || Math.round(montant / qte * 1e6) / 1e6};
   } else if(type==='vente'){
     const nom=g('op-nom'), ticker=g('op-ticker'), montant=n('op-montant'), qte=n('op-qte'), cours=n('op-cours'), investi=n('op-investi');
     // Quantité facultative si l'on connaît ce qui a été mis et ce qui a été récupéré (ex : 100 € investis, 99 € récupérés).
@@ -49630,6 +49645,8 @@ function saveOperation(){
   }
 
   op.historique = isHistorique;
+  const _heure = (document.getElementById('op-heure')?.value || '').trim();
+  if(/^\d{1,2}:\d{2}$/.test(_heure) && (type === 'achat' || type === 'vente')) op.heure = _heure;
   if((document.getElementById('op-devise')?.value || 'eur') === 'usd') kyfOpMarkUsd(op);
   window._cryptoOpSessionAdded.push(op);
   // Un transfert change juste d'endroit dans le patrimoine : sorti d'un côté = entré de l'autre, pour la
@@ -50059,6 +50076,7 @@ function kyfOpEditRefresh(){
     + '.kyf-opedit-sec{font-family:Inter,sans-serif;font-size:9px;font-weight:400;letter-spacing:.5px;padding:8px 18px;border-radius:7px;border:1px solid var(--border2);background:none;color:var(--text3);cursor:pointer;transition:background .15s}.kyf-opedit-sec:hover{background:var(--hov-bg)}'
     + '.kyf-opedit-x{background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;border-radius:6px;display:inline-flex;transition:background .15s,color .15s}.kyf-opedit-x:hover{background:var(--hov-bg);color:var(--text)}'
     + '.kyf-sess-edit{background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 4px;display:inline-flex;align-items:center;border-radius:4px;transition:color .15s,background .15s}.kyf-sess-edit:hover{color:var(--text);background:var(--hov-bg)}.kyf-sess-edit svg{width:12px;height:12px}.kyf-sess-edit:focus,.kyf-sess-edit:focus-visible{outline:none!important;box-shadow:none!important}'
+    + '.kyf-op-heure:hover{border-color:var(--accent)!important}.kyf-op-heure:focus{border-color:var(--accent)!important;outline:none!important;box-shadow:none!important}'
     + '.kyf-op-dots{background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 6px;display:inline-flex;align-items:center;font-size:16px;letter-spacing:1px;border-radius:5px;vertical-align:middle;transition:background .15s,color .15s}.kyf-op-dots:hover{background:var(--hov-bg);color:var(--text)}'
     + '.kyf-opedit-pri:focus,.kyf-opedit-pri:focus-visible,.kyf-opedit-sec:focus,.kyf-opedit-sec:focus-visible,.kyf-opedit-x:focus,.kyf-opedit-x:focus-visible,.kyf-op-dots:focus,.kyf-op-dots:focus-visible{outline:none!important;box-shadow:none!important}'
     + '#kyfOpEditModal input[type=text]:focus{border-color:var(--accent)!important}';
@@ -50089,6 +50107,85 @@ function scpiSessionEdit(i){
 }
 function cfSessionEdit(i){ const x = _cfSessionAdded[i]; if(!x) return; closeCrowdfunding(); editCrowdfunding(x.id); }
 function orSessionEdit(i){ const x = _orSessionAdded[i]; if(!x) return; closeOrModal(); editOr(x.id); }
+
+// ── Cours automatique (NOUVELLE OPÉRATION, achat / vente) ──
+// Selon la crypto, la date et l'heure (facultative) : cours Binance de la minute demandée, dans la devise choisie
+// (€ ou $). Paire en euros si elle existe, sinon paire en dollars convertie au taux EUR/USD du jour. Repli :
+// cours du jour CoinGecko. N'écrase jamais un cours tapé à la main. Seuls le symbole et l'heure sont envoyés.
+window._kyfCoinSym = window._kyfCoinSym || {};
+function kyfCoinSymbol(id){
+  if(!id) return '';
+  if(window._kyfCoinSym[id]) return String(window._kyfCoinSym[id]).toUpperCase();
+  const pos = (cryptoState?.positions || []).find(p => p.ticker === id && p.symbol);
+  if(pos) return String(pos.symbol).toUpperCase();
+  if(typeof CRYPTO_BINANCE_SYMBOLS !== 'undefined' && CRYPTO_BINANCE_SYMBOLS[id]) return CRYPTO_BINANCE_SYMBOLS[id].replace(/USDT$/, '');
+  const fz = (typeof CRYPTO_FUZZY_LIST !== 'undefined') ? CRYPTO_FUZZY_LIST.find(c => c.id === id) : null;
+  return fz ? String(fz.symbol).toUpperCase() : '';
+}
+async function kyfBinanceMinute(pair, ts){
+  if(!/^[A-Z0-9]{2,20}$/.test(pair)) return null;
+  try{
+    const r = await fetch('https://api.binance.com/api/v3/klines?symbol=' + pair + '&interval=1m&startTime=' + ts + '&limit=1', { signal: AbortSignal.timeout(8000) });
+    if(!r.ok) return null;
+    const d = await r.json();
+    if(!Array.isArray(d) || !d.length || Math.abs(d[0][0] - ts) > 3 * 3600 * 1000) return null;   // paire pas encore cotée à cette date
+    const v = parseFloat(d[0][1]);
+    return v > 0 ? v : null;
+  }catch(e){ return null; }
+}
+// Renvoie { prix, source } dans la devise demandée ('eur' | 'usd'), ou null
+async function kyfCryptoCoursAt(id, ts, cur){
+  const iso = new Date(ts - new Date(ts).getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  const fx = async () => (await kyfFxHistRate(iso)) || getEurUsdRate();   // dollars pour 1 euro
+  const sym = kyfCoinSymbol(id);
+  if(sym){
+    const direct = cur === 'eur' ? [sym + 'EUR'] : [sym + 'USDT', sym + 'USDC'];
+    for(const pr of direct){ const v = await kyfBinanceMinute(pr, ts); if(v) return { prix: v, source: 'Binance ' + sym + '/' + pr.slice(sym.length) }; }
+    const other = cur === 'eur' ? [sym + 'USDT', sym + 'USDC'] : [sym + 'EUR'];
+    for(const pr of other){ const v = await kyfBinanceMinute(pr, ts); if(v){ const r = await fx(); return { prix: cur === 'eur' ? v / r : v * r, source: 'Binance ' + sym + '/' + pr.slice(sym.length) + ', converti' }; } }
+  }
+  try{
+    const h = await fetchCryptoHistoricalPrice(id, iso);   // cours du jour, en euros
+    if(h && h.price > 0){ const r = cur === 'eur' ? 1 : await fx(); return { prix: h.price * r, source: (h.source || 'CoinGecko') + ', cours du jour', jour: true }; }
+  }catch(e){}
+  return null;
+}
+let _kyfAutoCoursTok = 0, _kyfAutoCoursT = null;
+function kyfOpAutoCours(){
+  clearTimeout(_kyfAutoCoursT);
+  _kyfAutoCoursT = setTimeout(kyfOpAutoCoursRun, 350);
+}
+async function kyfOpAutoCoursRun(){
+  const type = document.getElementById('op-type')?.value;
+  const coursEl = document.getElementById('op-cours'), note = document.getElementById('op-cours-auto');
+  if((type !== 'achat' && type !== 'vente') || !coursEl || !note) return;
+  if(coursEl.dataset.manual){ note.style.display = 'none'; return; }
+  const id = document.getElementById('op-ticker')?.value || '';
+  const dateIso = document.getElementById('op-date')?.value || '';
+  if(!id || !/^\d{4}-\d{2}-\d{2}$/.test(dateIso) || kyfIsStableSymbol(id)){ note.style.display = 'none'; return; }
+  const heure = (document.getElementById('op-heure')?.value || '').trim();
+  const [y, m, d] = dateIso.split('-').map(Number);
+  const [hh, mm] = /^\d{1,2}:\d{2}$/.test(heure) ? heure.split(':').map(Number) : [12, 0];
+  let ts = new Date(y, m - 1, d, hh, mm).getTime();
+  const now = Date.now(), isToday = new Date(y, m - 1, d).toDateString() === new Date().toDateString();
+  if(ts > now - 60000 || (isToday && !heure)) ts = now - 60000;   // aujourd'hui sans heure (ou heure à venir) : cours de maintenant
+  const cur = document.getElementById('op-devise')?.value === 'usd' ? 'usd' : 'eur';
+  const tok = ++_kyfAutoCoursTok;
+  note.style.display = 'block'; note.style.color = 'var(--text3)';
+  note.textContent = 'Recherche du cours…';
+  const res = await kyfCryptoCoursAt(id, ts, cur);
+  if(tok !== _kyfAutoCoursTok || coursEl.dataset.manual) return;
+  const sym = cur === 'usd' ? '$' : '€';
+  if(!res){ note.textContent = 'Cours introuvable pour cette date : saisissez-le à la main.'; return; }
+  const v = res.prix >= 1 ? Math.round(res.prix * 100) / 100 : parseFloat(res.prix.toPrecision(6));
+  coursEl.value = String(v); kyfFormatAmountInput(coursEl);
+  coursEl.dataset.auto = '1';
+  const quand = new Date(ts);
+  const lib = res.jour ? 'du ' + quand.toLocaleDateString('fr-FR') : 'du ' + quand.toLocaleDateString('fr-FR') + ' à ' + quand.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  note.textContent = 'Cours automatique ' + lib + ' : ' + (v >= 1 ? fmt(v, 2) : v.toLocaleString('fr-FR', { maximumSignificantDigits: 6 })) + ' ' + sym + ' (' + res.source + ')' + (heure || isToday ? '' : ' - indiquez l\'heure pour plus de précision') + '. Modifiable à la main.';
+  if(type === 'vente') autoCalcMontantVente();
+}
+document.addEventListener('kyf-date-change', e => { if(e.detail === 'op-date') kyfOpAutoCours(); });
 
 // Init form on load
 document.addEventListener('DOMContentLoaded', ()=>{ setTimeout(renderOpsForm, 100); });
@@ -53427,7 +53524,8 @@ const GUIDE_PAGES = [
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">5 types d'opération</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9">
-          <strong style="color:var(--green)">Achat</strong> : crypto (recherche CoinGecko), montant, quantité, cours.<br>
+          <strong style="color:var(--green)">Achat</strong> : crypto (recherche CoinGecko), montant, quantité, cours. Le prix de revient est le <em>montant payé</em> (frais compris) ; sans montant, cours × quantité.<br>
+          <strong style="color:var(--text)">Cours automatique</strong> (achat et vente) : dès que la crypto et la date sont choisies, le cours se remplit tout seul, dans la devise choisie (€ ou $). Indiquez l'<em>heure</em> (facultative) pour le cours de la minute exacte (source Binance) ; sans heure, le cours de midi ce jour-là (ou de maintenant pour aujourd'hui). Un cours tapé à la main n'est jamais remplacé. Seuls le symbole de la crypto et l'heure sont envoyés.<br>
           <strong style="color:var(--red)">Vente</strong> : crypto, quantité vendue, cours (optionnel, calcule le montant automatiquement) ou montant récupéré saisi directement. Vous ne connaissez pas la quantité ? Indiquez le <em>montant investi</em> et le <em>montant récupéré</em> : la quantité devient facultative et le gain ou la perte (ex : 100 € investis, 99 € récupérés = -1 %) s'affiche en direct et alimente VENTES CLÔTURÉES. Une crypto tombée à zéro (ex : LUNA) se saisit avec 0 en montant récupéré. Sans quantité, la position détenue n'est pas diminuée : si vous détenez encore cette crypto, KYF propose de retirer toute la position, pour que la perte ne soit pas comptée deux fois.<br>
           <strong style="color:var(--accent)">Swap</strong> : crypto source + quantité, crypto destination + quantité, pour un échange direct entre deux cryptos. Une fois les deux cryptos choisies, la quantité reçue et la valeur de l'opération se calculent automatiquement à partir des cours en direct (modifiables à la main si le swap a eu lieu à un prix différent). Le prix de revient suit la règle française : un échange <strong>crypto → crypto</strong> n'est pas une vente, la crypto reçue <strong>hérite du prix d'achat</strong> de celle cédée (1 BTC acheté 50 000 €, échangé contre 10 ETH : les ETH ont coûté 50 000 €, la perte ou le gain reste visible). Un échange <strong>crypto → stablecoin</strong> compte comme une vente (gain ou perte réalisé, visible dans VENTES CLÔTURÉES) ; <strong>stablecoin → crypto</strong> comme un achat, au montant de stablecoins dépensé. La valeur saisie ne sert que si KYF ne connaît pas le prix d'achat de la crypto cédée.<br>
           <strong style="color:var(--blue)">Transfert</strong> : crypto, quantité, sens (entrant ou sortant), plateforme d'origine et de destination. Modifie votre position - voir la section dédiée ci-dessous.<br>
@@ -56210,6 +56308,7 @@ function kyfDateApply(y, m, d){
   _kyfDate.viewY = y; _kyfDate.viewM = m;
   kyfDateSetValue(_kyfDate.fieldId, kyfDateISO(y, m, d));
   kyfDateUpdateFutureFlag(_kyfDate.fieldId, y, m, d, true);
+  try{ document.dispatchEvent(new CustomEvent('kyf-date-change', { detail: _kyfDate.fieldId })); }catch(e){}
   const inp = document.getElementById(_kyfDate.fieldId);
   // On déclenche les deux évènements : certains champs branchés sur ce calendrier écoutaient
   // à l'origine "oninput" (recalcul en direct), d'autres "onchange" - les deux doivent continuer
@@ -62010,6 +62109,10 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.161 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto, NOUVELLE OPÉRATION (achat / vente) : cours automatique selon la crypto, la date et l'heure (nouveau champ HEURE facultatif), en € ou en $ selon la devise choisie : cours Binance de la minute, paire en euros si elle existe sinon convertie au taux EUR/USD du jour, repli cours du jour CoinGecko. Un cours tapé à la main n'est jamais remplacé. Guide mis à jour.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.160 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto, achats du CARNET D'ORDRES : le coût d'un achat est le MONTANT payé (sinon cours × quantité). Un achat saisi avec montant et quantité mais sans cours ajoutait la quantité à 0 € : le PRU baissait et le montant investi ne bougeait pas. Les achats déjà enregistrés ainsi sont corrigés automatiquement ; à la saisie, le cours manquant est calculé.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.159 · 07/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto, swaps : crypto → crypto, la crypto reçue hérite du prix d'achat de la crypto cédée (la perte ou le gain ne disparaît plus) ; crypto → stablecoin compté comme une vente (visible dans VENTES CLÔTURÉES) ; stablecoin → crypto comme un achat. Guide (Journal des opérations) mis à jour : swaps, ventes, montant investi, menu ⋯ du carnet.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.158 · 07/10/2026</div>
