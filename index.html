@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_2_155.html
+  @file        : KYF_SHARE_beta_2_8_2_159.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.2.155
+  @version     : Beta 2.8.2.159
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6511,7 +6511,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.2.155</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.2.159</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -37415,6 +37415,7 @@ function analyticsToggle(){
 function animateKpi(id, targetText, duration){
   const el = document.getElementById(id);
   if(!el) return;
+  const tok = el._kyfAnimTok = (el._kyfAnimTok || 0) + 1;   // une animation encore en cours ne doit jamais réécrire une valeur plus récente
   if(!targetText || targetText === '-' || targetText === '\u2014') { el.textContent = targetText || '-'; return; }
 
   // Extraire le nombre de la chaîne (ex: "+21 500,42 €" → 21500.42)
@@ -37428,6 +37429,7 @@ function animateKpi(id, targetText, duration){
   const ms   = duration || 600;
   const start = performance.now();
   function tick(now){
+    if(el._kyfAnimTok !== tok) return;
     const t = Math.min((now - start) / ms, 1);
     // Easing out cubic
     const ease = 1 - Math.pow(1 - t, 3);
@@ -40341,7 +40343,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.155\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.159\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -46667,6 +46669,20 @@ function recalcPositionsFromOps(){
   base.forEach(p => { posMap[keyOf(p)] = {...p}; });
 
   const ops = [...(cryptoState.operations||[])].sort((a,b)=>kyfCryptoOpDateISO(a.date).localeCompare(kyfCryptoOpDateISO(b.date)));
+  // Stablecoins : les opérations (swap, transfert) modifiaient leur solde enregistré à CHAQUE recalcul (ouverture
+  // de KYF, validation, modification, suppression) : le solde gonflait à chaque fois. On retire d'abord la part
+  // apportée par les opérations au calcul précédent (opsQte), puis on rejoue les opérations une seule fois.
+  cryptoState.stables = (cryptoState.stables||[]).filter(st => {
+    st._before = st.qte;
+    if(st.opsQte !== undefined){ st.qte = Math.max(0, Math.round((st.qte - st.opsQte) * 1e8) / 1e8); st._legacy = false; }
+    else st._legacy = true;   // solde d'avant ce correctif : il contient déjà l'effet des opérations
+    st._base = st.qte;
+    return !(/^(swap|transfert)_/.test(String(st.id)) && !st._legacy && Math.abs(st.qte) < 1e-9);
+  });
+  // Transfert entre ses propres portefeuilles (les deux jambes, id et id_inv) : la quantité ne change pas,
+  // seul l'endroit change. Avant, la valeur de la jambe entrante modifiait le PRU (et l'ordre des jambes aussi).
+  const _opIds = new Set(ops.map(o => String(o.id)));
+  const _isPairedTransfer = o => o.type === 'transfert' && (/_inv$/.test(String(o.id)) ? _opIds.has(String(o.id).replace(/_inv$/, '')) : _opIds.has(String(o.id) + '_inv'));
   // Premier passage après la mise à jour : les positions déjà enregistrées contiennent le résultat des opérations
   const legacyPass = !!window._kyfCryptoLegacyPass;
   window._kyfCryptoLegacyPass = false;
@@ -46694,11 +46710,14 @@ function recalcPositionsFromOps(){
   // à l'utilisateur plutôt que de faire disparaître la position sans un mot - le plus souvent le signe d'un
   // doublon dans l'historique (ex : un relevé importé deux fois à des moments différents).
   window._cryptoQtyWarnings = [];
+  window._kyfSwapRealise = {};   // swaps crypto → stablecoin : traités comme une vente (coût, montant récupéré)
+  window._kyfVentePru = {};   // PRU de la position au moment de chaque vente (coût de ce qui a été vendu)
   const warnDeficit = (key, nom, deficit) => {
     window._cryptoQtyWarnings.push({ key, nom: nom || key, deficit: Math.round(deficit * 1e8) / 1e8 });
   };
   ops.forEach(op => {
     if(op.historique) return; // ignorer les opérations historiques
+    if(_isPairedTransfer(op)) return;
     const key = ((op.ticker || op.nom) || '').toString().toUpperCase();
     if(op.type === 'achat' && key && op.qte > 0){
       if(ign(key)) return;
@@ -46714,6 +46733,7 @@ function recalcPositionsFromOps(){
     } else if(op.type === 'vente' && key && op.qte > 0){
       if(ign(key)) return;
       if(posMap[key]){
+        window._kyfVentePru[op.id] = posMap[key].pru;
         const restant = posMap[key].qte - op.qte;
         if(restant < -1e-8) warnDeficit(key, posMap[key].nom, -restant);
         posMap[key].qte = Math.round(restant * 1e8) / 1e8;
@@ -46723,6 +46743,13 @@ function recalcPositionsFromOps(){
       }
     } else if(op.type === 'swap' && key && op.qte > 0){
       const isStableSrc = kyfIsStableSymbol(key);
+      // Coût de ce qui est cédé, lu AVANT de retirer la quantité. Crypto → crypto : la crypto reçue hérite de ce coût
+      // (pas d'imposition à l'échange en France, on garde son prix d'achat). Stablecoin → crypto : achat au montant
+      // dépensé. Sans coût connu (crypto jamais achetée dans KYF), on se rabat sur la valeur saisie, comme avant.
+      const _stRate = window._fxRates?.USD || 0.92;
+      let costSrc = null;
+      if(isStableSrc) costSrc = (Number(op.valeur) || 0) > 0 ? Number(op.valeur) : op.qte * _stRate;
+      else if(posMap[key] && !ign(key) && posMap[key].pru > 0) costSrc = posMap[key].pru * Math.min(op.qte, posMap[key].qte);
       if(isStableSrc){
         // CRYPTO-012 : un swap CÉDÉ depuis un stablecoin (ex : USDC → SOL) n'était jamais reconnu - le
         // stablecoin vit dans cryptoState.stables, pas dans posMap (positions crypto classiques), donc la
@@ -46756,7 +46783,7 @@ function recalcPositionsFromOps(){
         // déjà enregistrés avant ce correctif n'en ont pas), le PRU reste à 0 pour une nouvelle position et
         // inchangé pour une position existante, comme avant. Avec une valeur, le PRU de destination est
         // calculé - et moyenné avec l'existant s'il y en a déjà une, exactement comme pour un achat classique.
-        const swapValue = Number(op.valeur) || 0;
+        const swapValue = costSrc !== null ? costSrc : (Number(op.valeur) || 0);
         if(posMap[key2]){
           const oldInv2 = posMap[key2].pru * posMap[key2].qte;
           const newQte2 = Math.round((posMap[key2].qte + op.qte2) * 1e8) / 1e8;
@@ -46765,6 +46792,10 @@ function recalcPositionsFromOps(){
         } else {
           posMap[key2] = {id:op.id+'_dest', nom:cryptoResolveName(op.ticker2, op.nom2), ticker:op.ticker2||key2, qte:op.qte2, pru: swapValue > 0 ? Math.round(swapValue / op.qte2 * 100) / 100 : 0};
         }
+      }
+      if(key2 && isStable && op.qte2 > 0 && !isStableSrc){
+        // Crypto → stablecoin : comme une vente (le stablecoin est vu comme de l'argent) - gain ou perte réalisé
+        window._kyfSwapRealise[op.id] = { investi: costSrc || 0, recupere: (Number(op.valeur) || 0) > 0 ? Number(op.valeur) : Math.round(op.qte2 * _stRate * 100) / 100 };
       }
       if(key2 && isStable && op.qte2 > 0){
         // Même correctif que côté source : comparer par clé canonique (USDC), pas par égalité de texte
@@ -46838,6 +46869,17 @@ function recalcPositionsFromOps(){
   });
 
   cryptoState.positions = Object.values(posMap);
+  (cryptoState.stables||[]).forEach(st => {
+    const b = st._base === undefined ? 0 : st._base;
+    const d = Math.round((st.qte - b) * 1e8) / 1e8;
+    if(st._legacy && st._base !== undefined){ st.qte = b; }
+    else if(st.qte < 0) st.qte = 0;   // ancien solde : effet des opérations déjà compté, on ne le rajoute pas
+    st.opsQte = d;
+    if(st._before === undefined || d !== 0 || Math.abs(st.qte - st._before) > 1e-9) st.valeur = Math.round(st.qte * (window._fxRates?.USD || 0.92) * 100) / 100;
+    delete st._base; delete st._legacy; delete st._before;
+  });
+  // Ligne de stablecoin créée par une opération et entièrement redépensée : rien à afficher
+  cryptoState.stables = cryptoState.stables.filter(st => !(/^(swap|transfert)_/.test(String(st.id)) && Math.abs(st.qte) < 1e-9));
 }
 
 function cryptoLoad(){
@@ -47983,12 +48025,17 @@ function renderCryptoKPIs(){
   // Pertes CSV
   const pertesCSV = cryptoState.pertes.reduce((s,p)=>s+(p.perte !== undefined ? p.perte : p.investi-p.recupere),0);
   // Ventes manuelles
+  let investiVendu = cryptoState.pertes.reduce((s,p)=>s+(Number(p.investi)||0),0);
   const ventesOps = (cryptoState.operations||[]).filter(o=>o.type==='vente').reduce((s,o)=>{
     const investi  = kyfCryVenteInvesti(o);
     const recupere = o.montant || (o.cours||0) * (o.qte||0);
+    investiVendu += investi;
     return s + (investi - recupere);
   }, 0);
-  const pertes = pertesCSV + ventesOps;
+  const swapsReal = (cryptoState.operations||[]).filter(o=>o.type==='swap' && window._kyfSwapRealise && window._kyfSwapRealise[o.id]).reduce((s,o)=>{
+    const r = window._kyfSwapRealise[o.id]; investiVendu += r.investi; return s + (r.investi - r.recupere);
+  }, 0);
+  const pertes = pertesCSV + ventesOps + swapsReal;
   const nbVentes = cryptoState.pertes.length + (cryptoState.operations||[]).filter(o=>o.type==='vente').length;
   // Montants convertis en nombre : une valeur enregistrée en texte (import, ancienne sauvegarde) ne casse plus le total (« - € »)
   const frais  = convertToDevise(Object.values(cryptoState.frais||{}).reduce((s,v)=>{ const n = parseFloat(v); return s + (isFinite(n) ? n : 0); },0));
@@ -47997,10 +48044,13 @@ function renderCryptoKPIs(){
   const gpLive  = pos.reduce((s,p)=>{ const e=getEvalCrypto(p); return s + (e - convertToDevise(p.pru*p.qte)); }, 0);
   const pertesConv = convertToDevise(pertes);
   const gpTotal = gpLive - pertesConv;
-  const investiEur = g.investiNet || pos.reduce((s,p)=>s+p.pru*p.qte,0);
+  // Montant investi = tout ce qui a été mis : coût des cryptos encore détenues + coût des ventes clôturées
+  // (= total des achats du CARNET D'ORDRES). Avant, seules les positions encore détenues comptaient.
+  const investiEur = g.investiNet || (pos.reduce((s,p)=>s+p.pru*p.qte,0) + investiVendu);
   const investi = convertToDevise(investiEur);
   const totalBrutConv = convertToDevise(totalBrut / (1)); // totalBrut déjà en bonne devise via getCours
-  const perfPct = investi > 0 ? (totalBrut - investi) / investi * 100 : 0;
+  // Même base que le montant G/P (latent + ventes réalisées) : le pourcentage a toujours le même signe que le montant
+  const perfPct = investi > 0 ? gpTotal / investi * 100 : 0;
 
   const set = (id,val,col) => {
     const el = document.getElementById(id);
@@ -48035,7 +48085,7 @@ function renderCryptoKPIs(){
     set('heroCryptoInvesti', fmt(investi,2)+' '+sym);
   } catch(e){ console.warn('[KYF] hero crypto:', e); }
   // ─────────────────────────────────────────────────────────────
-  const pertesNet = -pertesConv; // positif = gain net, négatif = perte nette - converti selon devise
+  const pertesNet = Math.abs(pertesConv) < 0.005 ? 0 : -pertesConv; // positif = gain net, négatif = perte nette - converti selon devise
   animateKpi('ck-pertes',    (pertesNet>=0?'+':'')+fmt(pertesNet,2)+' '+getCryptoSymbol());
   { const elpe=document.getElementById('ck-pertes'); if(elpe) elpe.style.color = pertesNet>=0?'var(--green)':'var(--red)'; }
   set('ck-pertes-sub', nbVentes+' ventes clôturées');
@@ -48789,7 +48839,11 @@ function renderCryptoPertes(){
     return { date: o.date||'-', nom: o.nom||'-', investi, recupere, resultat, _op: true, id: o.id };
   });
 
-  const all = [...csvPertes, ...opsVentes].sort((a,b)=>parseDateFR(b.date)-parseDateFR(a.date));
+  const opsSwaps = (cryptoState.operations||[]).filter(o=>o.type==='swap' && window._kyfSwapRealise && window._kyfSwapRealise[o.id]).map(o=>{
+    const r = window._kyfSwapRealise[o.id];
+    return { date: o.date||'-', nom: (o.nom||'-') + ' → ' + (o.nom2||''), investi: r.investi, recupere: r.recupere, resultat: r.recupere - r.investi, _op: true, id: o.id };
+  });
+  const all = [...csvPertes, ...opsVentes, ...opsSwaps].sort((a,b)=>parseDateFR(b.date)-parseDateFR(a.date));
   const total = all.reduce((s,v)=>s+v.resultat, 0);
 
   const _peTotalPages = Math.max(1, Math.ceil(all.length/_KYF_CRYPTO_PAG_PER));
@@ -49123,7 +49177,10 @@ function handleCoinSearchKeydown(e, sugId){
 function kyfCryVenteInvesti(o){
   const inv = Number(o && o.investi) || 0;
   if(inv > 0) return inv;
-  const pos = (cryptoState.positions||[]).find(p => p.nom?.toLowerCase() === o.nom?.toLowerCase());
+  // PRU de la position au moment de la vente (une vente totale, ou des achats faits après, ne faussent plus le calcul)
+  const pv = window._kyfVentePru && window._kyfVentePru[o.id];
+  if(pv > 0) return pv * (o.qte || 0);
+  const pos = (cryptoState.positions||[]).find(p => (o.ticker && p.ticker === o.ticker) || p.nom?.toLowerCase() === o.nom?.toLowerCase());
   return (pos?.pru || 0) * (o.qte || 0);
 }
 // Petit résumé en direct sous le formulaire de vente : gain ou perte et pourcentage dès que les deux montants sont saisis.
@@ -49416,7 +49473,7 @@ function renderOpsForm(){
     <div id="op-qte2-auto-note" style="display:none;font-family:'Inter',sans-serif;font-size:9px;color:var(--text3);margin-bottom:10px"></div>
     <div id="op-balance-info2" style="display:none;margin:0 0 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3)"></div>
     <div style="margin:16px 0 14px">
-      <label style="font-family:'Inter',sans-serif;font-size:9px;color:var(--text);display:flex;align-items:center;gap:4px;margin-bottom:4px;letter-spacing:.5px">VALEUR DE L'OPÉRATION (€ OU $) - OPTIONNEL <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;cursor:help" title="Rempli automatiquement dès que les deux cryptos ont un cours connu - modifiable à la main si besoin. Sans elle, le prix de revient de la crypto reçue ne peut pas être calculé."><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></label>
+      <label style="font-family:'Inter',sans-serif;font-size:9px;color:var(--text);display:flex;align-items:center;gap:4px;margin-bottom:4px;letter-spacing:.5px">VALEUR DE L'OPÉRATION (€ OU $) - OPTIONNEL <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;cursor:help" title="Rempli automatiquement dès que les deux cryptos ont un cours connu - modifiable à la main si besoin. La crypto reçue hérite du prix d'achat de celle cédée ; cette valeur ne sert que si ce prix n'est pas connu dans KYF."><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></label>
       <input id="op-valeur-swap" type="text" inputmode="decimal" placeholder="ex: 500" oninput="this.dataset.manual='1'" onfocus="kyfUnformatAmountInput(this)" onblur="kyfFormatAmountInput(this)"
         style="width:100%;font-family:'Inter',sans-serif;font-size:11px;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);padding:8px 10px;border-radius:6px;outline:none;box-sizing:border-box">
     </div>`;
@@ -49532,7 +49589,14 @@ function saveOperation(){
       const dispo = detenu ? fmt(detenu.qte,8) : '0';
       if(!confirm('Vous ne détenez que '+dispo+' '+nom+' actuellement, mais cette vente porte sur '+fmt(qte,8)+'. Continuer quand même ?')) return;
     }
-    op = {...op, nom, ticker, montant, qte, cours};
+    // Vente sans quantité d'une crypto encore détenue (ex. LUNA tombée à zéro) : sans quantité la position
+    // resterait dans le portefeuille et sa perte serait comptée deux fois (latente + réalisée).
+    let qteV = qte;
+    if(!qteV && !isHistorique){
+      const held = (cryptoState.positions||[]).find(p => p.ticker === ticker);
+      if(held && held.qte > 0 && confirm('Vous détenez encore ' + fmtCryptoQty(held.qte) + ' ' + nom + '.\n\nOK : retirer toute la position du portefeuille (conseillé, sinon la perte est comptée deux fois).\nAnnuler : garder la position.')) qteV = held.qte;
+    }
+    op = {...op, nom, ticker, montant, qte: qteV, cours};
     if(investi > 0) op.investi = investi;
   } else if(type==='swap'){
     const nom=g('op-nom'), ticker=g('op-ticker'), qte=n('op-qte'), nom2=g('op-nom2'), ticker2=g('op-ticker2'), qte2=n('op-qte2');
@@ -49932,6 +49996,10 @@ function kyfOpEditSave(){
   if(op.type === 'transfert' && !nv.qte){ err('La quantité est requise.'); return; }
   if(op.type === 'frais' && (!txt('opEdit-plateforme') || !nv.montant)){ err('Plateforme et montant requis.'); return; }
 
+  if(op.type === 'vente' && !nv.qte && !op.historique){   // même garde-fou que la saisie : éviter une perte comptée deux fois
+    const held = (cryptoState.positions||[]).find(p => p.ticker === op.ticker);
+    if(held && held.qte > 0 && confirm('Vous détenez encore ' + fmtCryptoQty(held.qte) + ' ' + (op.nom || op.ticker) + '.\n\nOK : retirer toute la position du portefeuille (conseillé, sinon la perte est comptée deux fois).\nAnnuler : garder la position.')) nv.qte = held.qte;
+  }
   const pair = kyfOpFindPair(op, pending);
   const snap = { op: JSON.parse(JSON.stringify(op)), pair: pair ? JSON.parse(JSON.stringify(pair)) : null, frais: cryptoState.frais ? JSON.parse(JSON.stringify(cryptoState.frais)) : null };
   const oldPlat = op.plateforme, oldMontant = parseFloat(op.montant) || 0;
@@ -53354,25 +53422,29 @@ const GUIDE_PAGES = [
     icon: '',
     body: `
       <div style="background:rgba(77,159,255,0.05);border:1px solid rgba(77,159,255,0.2);border-radius:10px;padding:14px 16px;margin-bottom:14px">
-        <div style="font-size:13px;color:var(--text2);line-height:1.8">Onglet <strong style="color:var(--accent)">OPÉRATIONS</strong> de la page Crypto. Saisie manuelle, complémentaire à l'import de relevé (Chapitre 3 suivant) : utile pour une ou plusieurs opérations du jour, sans passer par un export de fichier. Chaque opération saisie va dans une liste d'attente (visible juste au-dessus du formulaire, avec une icône poubelle pour en retirer une) ; un bouton <strong style="color:var(--accent)">VALIDER</strong> les enregistre toutes en une fois, sans changer d'onglet entre chaque saisie. Le bouton <strong style="color:var(--accent)">PORTEFEUILLE CRYPTOS</strong> ouvre la liste de tout ce que vous détenez déjà (navigable au clavier), pour choisir sans avoir à chercher ; une fois une crypto choisie, son solde actuel s'affiche sous le champ et se met à jour en direct pendant la saisie de la quantité.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.8">Onglet <strong style="color:var(--accent)">OPÉRATIONS</strong> de la page Crypto. Saisie manuelle, complémentaire à l'import de relevé (Chapitre 3 suivant) : utile pour une ou plusieurs opérations du jour, sans passer par un export de fichier. Chaque opération saisie va dans une liste d'attente (visible juste au-dessus du formulaire, avec un crayon pour corriger une ligne et une icône poubelle pour la retirer) ; un bouton <strong style="color:var(--accent)">VALIDER</strong> les enregistre toutes en une fois, sans changer d'onglet entre chaque saisie. Le bouton <strong style="color:var(--accent)">PORTEFEUILLE CRYPTOS</strong> ouvre la liste de tout ce que vous détenez déjà (navigable au clavier), pour choisir sans avoir à chercher ; une fois une crypto choisie, son solde actuel s'affiche sous le champ et se met à jour en direct pendant la saisie de la quantité.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">5 types d'opération</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9">
           <strong style="color:var(--green)">Achat</strong> : crypto (recherche CoinGecko), montant, quantité, cours.<br>
-          <strong style="color:var(--red)">Vente</strong> : crypto, quantité vendue, cours (optionnel, calcule le montant automatiquement) ou montant récupéré saisi directement. Vous ne connaissez pas la quantité ? Indiquez le <em>montant investi</em> et le <em>montant récupéré</em> : la quantité devient facultative et le gain ou la perte (ex : 100 € investis, 99 € récupérés = -1 %) s'affiche en direct et alimente PERTES. Sans quantité, la position détenue n'est pas diminuée.<br>
-          <strong style="color:var(--accent)">Swap</strong> : crypto source + quantité, crypto destination + quantité, pour un échange direct entre deux cryptos. Une fois les deux cryptos choisies, la quantité reçue et la valeur de l'opération se calculent automatiquement à partir des cours en direct (modifiables à la main si le swap a eu lieu à un prix différent) - la valeur sert à calculer le prix de revient de la crypto reçue.<br>
+          <strong style="color:var(--red)">Vente</strong> : crypto, quantité vendue, cours (optionnel, calcule le montant automatiquement) ou montant récupéré saisi directement. Vous ne connaissez pas la quantité ? Indiquez le <em>montant investi</em> et le <em>montant récupéré</em> : la quantité devient facultative et le gain ou la perte (ex : 100 € investis, 99 € récupérés = -1 %) s'affiche en direct et alimente VENTES CLÔTURÉES. Une crypto tombée à zéro (ex : LUNA) se saisit avec 0 en montant récupéré. Sans quantité, la position détenue n'est pas diminuée : si vous détenez encore cette crypto, KYF propose de retirer toute la position, pour que la perte ne soit pas comptée deux fois.<br>
+          <strong style="color:var(--accent)">Swap</strong> : crypto source + quantité, crypto destination + quantité, pour un échange direct entre deux cryptos. Une fois les deux cryptos choisies, la quantité reçue et la valeur de l'opération se calculent automatiquement à partir des cours en direct (modifiables à la main si le swap a eu lieu à un prix différent). Le prix de revient suit la règle française : un échange <strong>crypto → crypto</strong> n'est pas une vente, la crypto reçue <strong>hérite du prix d'achat</strong> de celle cédée (1 BTC acheté 50 000 €, échangé contre 10 ETH : les ETH ont coûté 50 000 €, la perte ou le gain reste visible). Un échange <strong>crypto → stablecoin</strong> compte comme une vente (gain ou perte réalisé, visible dans VENTES CLÔTURÉES) ; <strong>stablecoin → crypto</strong> comme un achat, au montant de stablecoins dépensé. La valeur saisie ne sert que si KYF ne connaît pas le prix d'achat de la crypto cédée.<br>
           <strong style="color:var(--blue)">Transfert</strong> : crypto, quantité, sens (entrant ou sortant), plateforme d'origine et de destination. Modifie votre position - voir la section dédiée ci-dessous.<br>
           <strong style="color:#f0b429">Frais</strong> : plateforme et montant, cumulés séparément par plateforme.
         </div>
       </div>
       <div style="padding:14px 16px;background:rgba(77,159,255,0.06);border:1px solid rgba(77,159,255,0.25);border-radius:10px;margin-bottom:14px">
         <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg> Sens d'un transfert</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9">Un transfert change juste d'endroit dans votre patrimoine (Binance → Ledger, par exemple) : ce n'est ni un achat ni une vente. <strong style="color:var(--accent)">Entrant</strong> ajoute la quantité à votre position, <strong style="color:var(--accent)">sortant</strong> la retire. Si vous ne suivez qu'une seule des deux plateformes dans KYF, n'enregistrez que le côté que vous suivez - c'est ce qui permet à une crypto reçue par transfert, sans achat enregistré ailleurs, d'apparaître quand même dans votre position.<br><br>Si vous suivez les <strong>deux</strong> plateformes, cochez <strong style="color:var(--accent)">ENREGISTRER AUSSI LE MOUVEMENT INVERSE</strong> (cochée par défaut) : les deux jambes sont créées d'un coup, même quantité, sens inversé - le total de votre patrimoine ne bouge pas, seul l'emplacement change. Pour une crypto reçue par transfert et jamais détenue ailleurs, une valeur optionnelle permet de calculer son prix de revient, exactement comme pour un swap.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Un transfert change juste d'endroit dans votre patrimoine (Binance → Ledger, par exemple) : ce n'est ni un achat ni une vente. <strong style="color:var(--accent)">Entrant</strong> ajoute la quantité à votre position, <strong style="color:var(--accent)">sortant</strong> la retire. Si vous ne suivez qu'une seule des deux plateformes dans KYF, n'enregistrez que le côté que vous suivez - c'est ce qui permet à une crypto reçue par transfert, sans achat enregistré ailleurs, d'apparaître quand même dans votre position.<br><br>Si vous suivez les <strong>deux</strong> plateformes, cochez <strong style="color:var(--accent)">ENREGISTRER AUSSI LE MOUVEMENT INVERSE</strong> (cochée par défaut) : les deux jambes sont créées d'un coup, même quantité, sens inversé - le total de votre patrimoine ne bouge pas, seul l'emplacement change, et le prix de revient reste le même. Pour une crypto reçue par transfert et jamais détenue ailleurs, une valeur optionnelle permet de calculer son prix de revient, exactement comme pour un swap.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,69,96,0.05);border:1px solid rgba(255,69,96,0.25);border-radius:10px;margin-bottom:14px">
         <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Enregistrer une vente</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9">Une vente réduit automatiquement la position de la crypto concernée. Le cours saisi calcule le montant récupéré en temps réel (modifiable manuellement si besoin, par exemple un montant net après frais de plateforme). Si la quantité vendue dépasse ce que KYF sait détenir, un avertissement s'affiche avant confirmation - utile pour repérer une faute de frappe, sans bloquer une correction volontaire.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Une vente réduit automatiquement la position de la crypto concernée. Le cours saisi calcule le montant récupéré en temps réel (modifiable manuellement si besoin, par exemple un montant net après frais de plateforme). Si la quantité vendue dépasse ce que KYF sait détenir, un avertissement s'affiche avant confirmation - utile pour repérer une faute de frappe, sans bloquer une correction volontaire. Le gain ou la perte d'une vente est calculé avec le prix de revient de la crypto <strong>au moment de la vente</strong> : un achat fait ensuite ne le change pas.</div>
+      </div>
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Montant investi et gain / perte</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9"><strong style="color:var(--text)">MONTANT INVESTI</strong> = tout l'argent mis : le prix de revient des cryptos encore détenues + celui des cryptos déjà vendues (c'est le total des achats du CARNET D'ORDRES). Le <strong style="color:var(--text)">gain / perte</strong> réunit le latent (cryptos détenues, au cours du jour) et le réalisé (VENTES CLÔTURÉES), et son pourcentage est calculé sur ce même montant investi.<br><br>Une opération déjà enregistrée se corrige avec le menu <strong style="color:var(--text)">⋯</strong> de sa ligne dans le CARNET D'ORDRES (Modifier / Supprimer) : date, quantités, montants et devise € / $. Tout est recalculé aussitôt.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(240,180,41,0.06);border:1px solid rgba(240,180,41,0.25);border-radius:10px;margin-bottom:14px">
         <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Case "Opération historique"</div>
@@ -61938,6 +62010,14 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.159 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto, swaps : crypto → crypto, la crypto reçue hérite du prix d'achat de la crypto cédée (la perte ou le gain ne disparaît plus) ; crypto → stablecoin compté comme une vente (visible dans VENTES CLÔTURÉES) ; stablecoin → crypto comme un achat. Guide (Journal des opérations) mis à jour : swaps, ventes, montant investi, menu ⋯ du carnet.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.158 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Audit crypto : le solde des stablecoins reçus par swap ou transfert ne gonfle plus à chaque ouverture ou recalcul ; un transfert entre ses propres portefeuilles (avec mouvement inverse) ne change plus le PRU ; les KPI animés n'affichent plus une ancienne valeur ; « +-0,00 » corrigé.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.157 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto, KPI MONTANT INVESTI : compte aussi le coût des ventes clôturées (coût des cryptos encore détenues + coût des cryptos vendues = total des achats du CARNET D'ORDRES) ; le % de G/P est calculé sur ce même montant.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.156 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto, ventes à perte : le coût d'une vente utilise le PRU de la position au moment de la vente (une vente totale apparaissait en gain, un rachat après la vente faussait la perte) ; le % de G/P du portefeuille a la même base que le montant (latent + ventes réalisées) ; vente sans quantité d'une crypto encore détenue (ex. LUNA à zéro) : KYF propose de retirer la position pour ne pas compter la perte deux fois.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.155 · 07/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crayon Modifier sur chaque ligne « AJOUTÉS CETTE SESSION » des popups d'ajout (ETF &amp; Actions, Crypto, Livrets, SCPI, Crowdfunding, Or) : la ligne, déjà enregistrée, se rouvre dans le popup de modification habituel.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.154 · 07/10/2026</div>
