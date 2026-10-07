@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_2_169.html
+  @file        : KYF_SHARE_beta_2_8_2_170.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.2.169
+  @version     : Beta 2.8.2.170
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6511,7 +6511,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.2.169</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.2.170</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -27939,7 +27939,10 @@ function fiParsePositionsCSV(text){
     // Linxea passés par le convertisseur) ou mot « SCPI » dans le nom - jamais le nom d'un fonds coté.
     const _codeBrut = isinIdx>=0 ? String(cols[isinIdx]||'').trim().toUpperCase() : '';
     const _scpiParCode = /^SCPI\d{4,}$/.test(_codeBrut) || /\bSCPI\d{4,}\b/.test(nomTxt) || /\bSCPI\b/.test(nomTxt);
+    // Fonds en euros sorti du convertisseur : pas d'ISIN, « parts » = montant en euros, PRU = 1 (jamais un titre coté)
+    const _feConvertisseur = !_codeBrut && !ticker && qty > 50 && Math.abs(pru - 1) < 1e-9;
     const typeHint = (/\bSCPI\b/.test(categorieTxt) || _scpiParCode) ? 'scpi'
+                    : _feConvertisseur ? 'fondseuro'
                     : (/FONDS\s+(EN\s+)?EUROS?\b/.test(categorieTxt) || /FONDS\s+EN\s+EUROS?\b/.test(nomTxt) || /^FONDS\s+EUROS?\b/.test(nomTxt.trim())) ? 'fondseuro'
                     // Espèces/liquidités (Trade Republic notamment) : jamais
                     // un titre coté, ne doit jamais demander de ticker.
@@ -40361,7 +40364,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.169\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.170\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -62139,6 +62142,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.170 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import assurance vie / PER : un fonds en euros sorti du convertisseur (sans ISIN, PRU = 1) est toujours reconnu comme fonds en euros, jamais relié à un titre coté. Garde-fou sur la valeur d'un contrat : une ligne dont le cours en direct donne 20 fois plus (ou moins) que la valeur du relevé garde la valeur du relevé (un PER pouvait afficher 32 millions).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.169 · 07/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Base SCPI plus rapide : servie tout de suite depuis l'appareil, même ancienne, puis mise à jour en arrière-plan ; préchargée quelques secondes après l'ouverture (recherche SCPI instantanée au premier usage) ; un seul appel au script à la fois.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.168 · 07/10/2026</div>
@@ -69011,7 +69016,10 @@ function avContratFullValue(d){
       const v = parseFloat(p.valeur) || 0;
       const q = p.ticker ? lp[p.ticker] : null, qty = parseFloat(p.qty) || 0;
       if(p.type !== 'fe' && p.type !== 'immo' && p.ticker && linkedTk.has(up(p.ticker)) && q && q.price > 0 && qty > 0){
-        t += getEval({ ticker: p.ticker, qty }, q) || v;
+        const live = getEval({ ticker: p.ticker, qty }, q) || v;
+        // Garde-fou : un cours 20 fois plus haut (ou plus bas) que la valeur du relevé signale un mauvais rattachement
+        // (ex. un fonds en euros relié à un titre coté : 3 794 « parts » × 8 667 € = 32 millions) - on garde le relevé.
+        t += (v > 0 && (live > v * 20 || live < v / 20)) ? v : live;
       } else t += v;
     });
     // Le fonds en euros s'ajoute aux positions détaillées (sauf s'il y figure déjà comme position « fe »)
@@ -70236,7 +70244,10 @@ async function loadSCPIDB(){
   try{ cachedEntry = JSON.parse(localStorage.getItem('kyf-scpi-db')||'null'); }catch(e){}
   if(cachedEntry && Array.isArray(cachedEntry.data) && cachedEntry.data.length){
     _scpiDB = cachedEntry.data;
-    if(!(Date.now() - (cachedEntry.ts||0) < 6*3600*1000)) _scpiDBFetch();   // trop ancienne : mise à jour discrète
+    // Mise à jour discrète : une fois par ouverture de KYF (une base corrigée côté script arrive dès la session
+    // suivante, sans attendre 6 h), et de toute façon quand elle a plus de 6 h
+    let _dejaVue = false; try{ _dejaVue = sessionStorage.getItem('kyf-scpi-db-maj') === '1'; sessionStorage.setItem('kyf-scpi-db-maj', '1'); }catch(e){}
+    if(!_dejaVue || !(Date.now() - (cachedEntry.ts||0) < 6*3600*1000)) _scpiDBFetch().then(db => { if(db){ try{ if(document.getElementById('page-immo-scpi')?.classList.contains('active')) renderSCPI(); }catch(e){} } });
     return _scpiDB;
   }
   return await _scpiDBFetch();
