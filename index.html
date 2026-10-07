@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_2_167.html
+  @file        : KYF_SHARE_beta_2_8_2_169.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.2.167
+  @version     : Beta 2.8.2.169
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6511,7 +6511,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.2.167</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.2.169</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -27935,8 +27935,12 @@ function fiParsePositionsCSV(text){
     // d'un ETF ou d'une action, sans ambiguïté possible même sans colonne
     // dédiée pour le confirmer.
     const nomTxt = (nom||'').toUpperCase();
-    const typeHint = /\bSCPI\b/.test(categorieTxt) ? 'scpi'
-                    : (/FONDS\s+(EN\s+)?EUROS?\b/.test(categorieTxt) || /FONDS\s+EN\s+EUROS?\b/.test(nomTxt)) ? 'fondseuro'
+    // SCPI reconnue aussi sans colonne Catégorie : code AMF « SCPI00004669 » à la place de l'ISIN (relevés Spirica /
+    // Linxea passés par le convertisseur) ou mot « SCPI » dans le nom - jamais le nom d'un fonds coté.
+    const _codeBrut = isinIdx>=0 ? String(cols[isinIdx]||'').trim().toUpperCase() : '';
+    const _scpiParCode = /^SCPI\d{4,}$/.test(_codeBrut) || /\bSCPI\d{4,}\b/.test(nomTxt) || /\bSCPI\b/.test(nomTxt);
+    const typeHint = (/\bSCPI\b/.test(categorieTxt) || _scpiParCode) ? 'scpi'
+                    : (/FONDS\s+(EN\s+)?EUROS?\b/.test(categorieTxt) || /FONDS\s+EN\s+EUROS?\b/.test(nomTxt) || /^FONDS\s+EUROS?\b/.test(nomTxt.trim())) ? 'fondseuro'
                     // Espèces/liquidités (Trade Republic notamment) : jamais
                     // un titre coté, ne doit jamais demander de ticker.
                     // Match sur le nom complet uniquement (pas une simple
@@ -40357,7 +40361,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.167\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.169\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -62135,6 +62139,10 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.169 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Base SCPI plus rapide : servie tout de suite depuis l'appareil, même ancienne, puis mise à jour en arrière-plan ; préchargée quelques secondes après l'ouverture (recherche SCPI instantanée au premier usage) ; un seul appel au script à la fois.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.168 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import assurance vie : une SCPI est reconnue aussi par son code AMF (SCPI00004669, relevés Spirica / Linxea) ou par le mot SCPI dans son nom, et n'est plus rangée en fonds gérés ; « Fonds Euro ... » reconnu comme fonds en euros. Base SCPI : « Épargne Pierre » n'est plus confondue avec « Épargne Pierre Europe » (un nom n'est rapproché d'un autre que si l'écart est minime).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.167 · 07/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Bandeau d'annonce : une annonce fermée ne revient plus à chaque ouverture de KYF tant que son texte ne change pas ; un nouveau texte réapparaît chez tout le monde. Les indices boursiers reprennent leur place quand l'annonce est fermée.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.166 · 07/10/2026</div>
@@ -70200,30 +70208,41 @@ function calcSCPIAuto(){
 // ── SCPI DB (chargée depuis GAS) ─────────────────────────────────󠁋󠁙󠁆󠁊󠁍󠀲󠀶
 let _scpiDB = null;
 
+// Base SCPI : servie tout de suite depuis l'appareil, même ancienne (le script Google peut mettre plusieurs
+// secondes à se réveiller), puis rafraîchie en arrière-plan quand elle a plus de 6 h. Un seul appel réseau à la fois.
+let _scpiDBFetching = null;
+function _scpiDBFetch(){
+  if(_scpiDBFetching) return _scpiDBFetching;
+  const GAS_SCPI = 'https://script.google.com/macros/s/AKfycbw2eghtYbLFnoiW4VuooIrndQWDIdjqGxi654k7LhtcARnuye3wQ2punn-_-CxHbNf7/exec';
+  _scpiDBFetching = (async () => {
+    try {
+      const resp = await fetch(GAS_SCPI+'?action=scpi', { signal: AbortSignal.timeout(30000) });
+      if(resp.ok){
+        const json = await resp.json();
+        if(json.scpi && json.scpi.length){
+          _scpiDB = json.scpi;
+          try{ localStorage.setItem('kyf-scpi-db', JSON.stringify({data:_scpiDB, ts:Date.now()})); }catch(e){}
+          return _scpiDB;
+        }
+      }
+    } catch(e){ console.warn('[KYF] SCPI DB:', e); }
+    return null;
+  })().finally(() => { _scpiDBFetching = null; });
+  return _scpiDBFetching;
+}
 async function loadSCPIDB(){
   if(_scpiDB) return _scpiDB;
-  // Cache localStorage 6h
-  const cached = localStorage.getItem('kyf-scpi-db');
-  if(cached){
-    try {
-      const {data, ts} = JSON.parse(cached);
-      if(Date.now()-ts < 6*3600*1000){ _scpiDB=data; return _scpiDB; }
-    } catch(e){}
+  let cachedEntry = null;
+  try{ cachedEntry = JSON.parse(localStorage.getItem('kyf-scpi-db')||'null'); }catch(e){}
+  if(cachedEntry && Array.isArray(cachedEntry.data) && cachedEntry.data.length){
+    _scpiDB = cachedEntry.data;
+    if(!(Date.now() - (cachedEntry.ts||0) < 6*3600*1000)) _scpiDBFetch();   // trop ancienne : mise à jour discrète
+    return _scpiDB;
   }
-  try {
-    const GAS_SCPI = 'https://script.google.com/macros/s/AKfycbw2eghtYbLFnoiW4VuooIrndQWDIdjqGxi654k7LhtcARnuye3wQ2punn-_-CxHbNf7/exec';
-    const resp = await fetch(GAS_SCPI+'?action=scpi');
-    if(resp.ok){
-      const json = await resp.json();
-      if(json.scpi && json.scpi.length){
-        _scpiDB = json.scpi;
-        localStorage.setItem('kyf-scpi-db', JSON.stringify({data:_scpiDB, ts:Date.now()}));
-        return _scpiDB;
-      }
-    }
-  } catch(e){ console.warn('[KYF] SCPI DB:', e); }
-  return null;
+  return await _scpiDBFetch();
 }
+// Préchargée quelques secondes après l'ouverture : la recherche SCPI est instantanée au premier usage
+document.addEventListener('DOMContentLoaded', () => setTimeout(() => { try{ loadSCPIDB(); }catch(e){} }, 5000));
 
 // ── Référentiel OPCVM StatsAVie (type "Fonds géré" en AV/PER), même󠁋󠁙󠁆󠁊󠁍󠀲󠀶
 // convention de cache localStorage 6h que loadSCPIDB ci-dessus. Le CSV
@@ -70878,7 +70897,9 @@ function kyfScpiDbFind(nom){
     if(!dk) return;
     let d = -1;
     if(dk === k) d = 0;
-    else if(k.length >= 5 && dk.length >= 5 && (dk.includes(k) || k.includes(dk))) d = Math.abs(dk.length - k.length) + 1;
+    // Nom contenu dans l'autre : seulement si l'écart est minime (« Pfo2 » / « Pfo 2 II »...). « Épargne Pierre » ne
+    // doit jamais devenir « Épargne Pierre Europe » : ce sont deux SCPI différentes.
+    else if(k.length >= 5 && dk.length >= 5 && Math.abs(dk.length - k.length) <= 3 && (dk.includes(k) || k.includes(dk))) d = Math.abs(dk.length - k.length) + 1;
     if(d >= 0 && d < bestD){ best = x; bestD = d; }
   });
   return best;
