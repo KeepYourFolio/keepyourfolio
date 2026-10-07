@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_2_170.html
+  @file        : KYF_SHARE_beta_2_8_2_171.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.2.170
+  @version     : Beta 2.8.2.171
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6511,7 +6511,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.2.170</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.2.171</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -29519,6 +29519,11 @@ async function importHandleFile(input){
   try{
     if(_importType==='etf' || _importType==='av' || _importType==='per'){
       window._ciSheetInfo = null;
+      // Relevé PDF déposé ici directement : KYF le lisait comme du texte et pouvait en tirer des lignes absurdes
+      // (un PER affiché à plusieurs millions). Un PDF passe d'abord par le convertisseur KYF PDF → CSV.
+      { let _isPdf = /\.pdf$/i.test(file.name);
+        try{ if(!_isPdf) _isPdf = new TextDecoder('latin1').decode(new Uint8Array(await file.slice(0, 5).arrayBuffer())) === '%PDF-'; }catch(e){}
+        if(_isPdf) throw new Error('Ceci est un PDF : passez-le d\'abord dans le convertisseur KYF PDF → CSV (gratuit, tout se fait dans votre navigateur), puis importez ici le fichier CSV obtenu.'); }
       let rows = null, stdErr = null;
       if(_importType==='etf' && window._importMaison === 'etf'){
         if(!/\.(xlsx|xls|csv)$/i.test(file.name)) throw new Error('Choisissez un tableur .xlsx, .xls ou .csv.');
@@ -40364,7 +40369,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.170\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.171\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -62142,6 +62147,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.171 · 07/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import ETF / assurance vie / PER : un relevé PDF déposé directement n'est plus lu comme du texte (il pouvait donner des lignes absurdes, ex. un PER à plusieurs millions) ; KYF explique de le passer d'abord dans le convertisseur KYF PDF → CSV. Reconnu aussi quand le fichier PDF a été renommé.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.170 · 07/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import assurance vie / PER : un fonds en euros sorti du convertisseur (sans ISIN, PRU = 1) est toujours reconnu comme fonds en euros, jamais relié à un titre coté. Garde-fou sur la valeur d'un contrat : une ligne dont le cours en direct donne 20 fois plus (ou moins) que la valeur du relevé garde la valeur du relevé (un PER pouvait afficher 32 millions).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.169 · 07/10/2026</div>
