@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_2_171.html
+  @file        : KYF_SHARE_beta_2.8.2.174.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.2.171
+  @version     : Beta 2.8.2.174
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6511,7 +6511,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.2.171</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.2.174</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -7404,7 +7404,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
           Aucune position - cliquez <strong style="color:var(--accent)">+ AJOUTER</strong> pour commencer
         </div>
         <div style="font-family:'Inter',sans-serif;font-size:9px;color:var(--text3);padding:8px 0 2px;border-top:1px solid var(--border);margin-top:4px;line-height:1.8">
-          ~ Prix spot récupérés automatiquement · Or papier via Yahoo Finance (PHAU.L) · Cliquez sur un PRIX D'ACHAT pour le modifier
+          ~ Prix spot récupérés automatiquement (cours de l'once, Yahoo Finance) · Cliquez sur un PRIX D'ACHAT pour le modifier
         </div>
       </div>
 
@@ -16846,10 +16846,21 @@ hydrateLivePricesFromCache();
 // ACTIF sans valeur Or tant que la page Or & Métaux n'avait pas été
 // visitée dans la session (qui, elle, appelle fetchOrSpotPrices()
 // directement). Lecture pure localStorage, aucun coût réseau.
+// Cours des métaux précieux en €/g. Avant : PHAU.L / PHAG.L / PPLT / PALL, des trackers dont UNE part vaut environ
+// 1/10 d'once et cote en dollars - l'or ressortait à ~12 €/g au lieu de ~120 €/g (un lingotin 1 g à 12 €).
+// Maintenant : cours de l'once en dollars (contrats à terme COMEX/NYMEX via Yahoo : GC=F, SI=F, PL=F, PA=F),
+// convertis en euros puis en grammes, avec des bornes de vraisemblance (une valeur hors bornes est ignorée).
+function kyfOrSpotTickers(){ return 'GC=F,SI=F,PL=F,PA=F'; }   // fonction (hissée) : utilisable même avant cette ligne
+function kyfOrSpotFromBulk(bulk){
+  const OZ_TO_G = 31.1035, usdEur = window._fxRates?.USD || 0.92;   // euros pour 1 dollar
+  const g = (tk, min, max) => { const v = (Number(bulk?.[tk]?.price) || 0) * usdEur / OZ_TO_G; return v >= min && v <= max ? v : 0; };
+  return { _ts: Date.now(), _v: 2, or: g('GC=F', 30, 1000), argent: g('SI=F', 0.2, 20), platine: g('PL=F', 5, 300), palladium: g('PA=F', 5, 300) };
+}
+function kyfOrSpotCacheOk(c){ return !!(c && c._v === 2 && c._ts && (c.or || c.argent || c.platine || c.palladium)); }
 function hydrateOrSpotFromCache(){
   try{
     const c = JSON.parse(localStorage.getItem('kyf-or-spot-cache')||'{}');
-    if(c._ts && (c.or || c.argent || c.platine || c.palladium)){
+    if(kyfOrSpotCacheOk(c)){
       window._orSpotPrices = c;
     }
   }catch(e){}
@@ -17145,11 +17156,11 @@ async function fetchAllPrices(force=false){
     // Tableau de bord. Cache/TTL dupliqués en dur ici, sans référence à
     // OR_SPOT_KEY/OR_SPOT_TTL déclarées bien plus bas dans le fichier, cette
     // fonction est invoquée dès le chargement, avant leur initialisation, TDZ sinon.
-    const OR_TICKERS = 'PHAU.L,PHAG.L,PPLT,PALL';
+    const OR_TICKERS = kyfOrSpotTickers();
     let needOrRefresh = false;
     try{
       const c = JSON.parse(localStorage.getItem('kyf-or-spot-cache')||'{}');
-      needOrRefresh = !c._ts || (Date.now()-c._ts >= 30*60*1000);
+      needOrRefresh = !kyfOrSpotCacheOk(c) || (Date.now()-c._ts >= 30*60*1000);
     }catch(e){ needOrRefresh = true; }
     if(KYF_PRICE_URL && (ETF.length > 0 || needOrRefresh)){
       try {
@@ -17178,17 +17189,7 @@ async function fetchAllPrices(force=false){
             }
           });
           if(needOrRefresh){
-            const OZ_TO_G = 31.1035;
-            const phau = bulk['PHAU.L']?.price || 0;
-            const phag = bulk['PHAG.L']?.price || 0;
-            const pplt = bulk['PPLT']?.price   || 0;
-            const pall = bulk['PALL']?.price   || 0;
-            const usdEur = window._fxRates?.USD || 0.92;
-            const spot = { _ts: Date.now() };
-            spot.or        = phau > 0 ? phau / OZ_TO_G : 0;
-            spot.argent    = phag > 0 ? phag / OZ_TO_G : 0;
-            spot.platine   = pplt > 0 ? (pplt * usdEur) / OZ_TO_G : 0;
-            spot.palladium = pall > 0 ? (pall * usdEur) / OZ_TO_G : 0;
+            const spot = kyfOrSpotFromBulk(bulk);
             if(spot.or || spot.argent || spot.platine || spot.palladium){
               localStorage.setItem('kyf-or-spot-cache', JSON.stringify(spot));
               window._orSpotPrices = spot;
@@ -40369,7 +40370,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.171\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.174\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -47644,6 +47645,14 @@ function cryptoSessionRemove(sessionIdx){
   }
 }
 
+// Vide les champs du popup d'ajout pour la crypto suivante (le popup reste ouvert)
+function kyfCryptoAddReset(){
+  ['addCryptoSearchInput','addCryptoId','addCryptoName','addCryptoSymbol','addCryptoPRU','addCryptoQTE'].forEach(i => { const e = document.getElementById(i); if(e) e.value = ''; });
+  const r = document.getElementById('addCryptoResults'); if(r) r.style.display = 'none';
+  const er = document.getElementById('addCryptoError'); if(er) er.style.display = 'none';
+  try{ cryptoAddCalc(); cryptoAddFlash(); }catch(e){}
+  document.getElementById('addCryptoSearchInput')?.focus();
+}
 function confirmAddCryptoPosition(){
   const modal  = document.getElementById('addCryptoModal');
   const editIdx = (modal.dataset.editIdx !== undefined && modal.dataset.editIdx !== '') ? parseInt(modal.dataset.editIdx) : -1;
@@ -47690,14 +47699,46 @@ function confirmAddCryptoPosition(){
     return;
   }
 
-  // Vérifier doublon
+  // Crypto déjà détenue (ex. du BTC sur une 2e plateforme) : au lieu de refuser, on propose de RENFORCER la ligne -
+  // quantités additionnées, PRU moyen calculé par KYF (plus de calcul à la main).
   const isStable = kyfIsStableSymbol(symbol);
   if(isStable){
     const existsStable = cryptoState.stables.find(s => kyfStableCanonicalKey(s.nom) === kyfStableCanonicalKey(name));
-    if(existsStable){ err.textContent='Ce stablecoin est déjà dans STABLECOINS'; err.style.display='block'; return; }
+    if(existsStable){
+      const ajout = Math.round(qte * (pru > 0 ? pru : 1) * 100) / 100;
+      if(!confirm('Vous détenez déjà ' + fmtCryptoQty(existsStable.qte) + ' ' + existsStable.nom + '.\n\nAjouter ' + fmtCryptoQty(qte) + ' à cette ligne ? Total : ' + fmtCryptoQty(Math.round((existsStable.qte + qte) * 1e8) / 1e8) + ' ' + existsStable.nom + '.')) return;
+      const avant = { qte: existsStable.qte, valeur: existsStable.valeur };
+      existsStable.qte = Math.round((existsStable.qte + qte) * 1e8) / 1e8;
+      existsStable.valeur = Math.round(((Number(existsStable.valeur) || 0) + ajout) * 100) / 100;
+      cryptoSave(); renderCryptoAll(); kyfCryptoAddReset();
+      kyfShowUndoToast(existsStable.nom + ' renforcé', () => { existsStable.qte = avant.qte; existsStable.valeur = avant.valeur; cryptoSave(); renderCryptoAll(); });
+      return;
+    }
   } else {
     const exists = cryptoState.positions.find(p=>p.ticker===id);
-    if(exists){ err.textContent='Cette crypto est déjà dans votre portefeuille'; err.style.display='block'; return; }
+    if(exists){
+      const q2 = Math.round((exists.qte + qte) * 1e8) / 1e8;
+      const pru2 = q2 > 0 ? Math.round((exists.pru * exists.qte + pru * qte) / q2 * 100) / 100 : exists.pru;
+      if(!confirm('Vous détenez déjà ' + fmtCryptoQty(exists.qte) + ' ' + (exists.nom || name) + ' (PRU ' + fmt(exists.pru, 2) + ' ' + getCryptoSymbol() + ').\n\nRenforcer la ligne avec ' + fmtCryptoQty(qte) + ' à ' + fmt(pru, 2) + ' ' + getCryptoSymbol() + ' ?\nRésultat : ' + fmtCryptoQty(q2) + ' ' + (exists.nom || name) + ' au PRU moyen de ' + fmt(pru2, 2) + ' ' + getCryptoSymbol() + '.')) return;
+      if(exists.manual){
+        const avant = { qte: exists.qte, pru: exists.pru };
+        exists.qte = q2; exists.pru = pru2;
+        cryptoSave(); renderCryptoAll(); kyfCryptoAddReset();
+        kyfShowUndoToast((exists.nom || name) + ' renforcé', () => { exists.qte = avant.qte; exists.pru = avant.pru; cryptoSave(); renderCryptoAll(); });
+      } else {
+        // Ligne construite depuis le CARNET D'ORDRES : le renfort y entre comme un achat, sinon le prochain recalcul l'effacerait
+        const d = new Date(), p2 = n => String(n).padStart(2, '0');
+        const op = { id: Date.now().toString(36) + Math.random().toString(36).slice(2,5), date: p2(d.getDate()) + '/' + p2(d.getMonth()+1) + '/' + d.getFullYear(),
+          type: 'achat', nom: exists.nom || name, ticker: id, qte, cours: pru, montant: Math.round(pru * qte * 100) / 100, historique: false };
+        if(!cryptoState.operations) cryptoState.operations = [];
+        cryptoState.operations.unshift(op);
+        recalcPositionsFromOps(); cryptoSave(); renderCryptoAll(); kyfCryptoAddReset();
+        kyfShowUndoToast((exists.nom || name) + ' renforcé (achat ajouté au carnet)', () => {
+          cryptoState.operations = cryptoState.operations.filter(o => o.id !== op.id); recalcPositionsFromOps(); cryptoSave(); renderCryptoAll();
+        });
+      }
+      return;
+    }
   }
 
   if(isStable){
@@ -62147,6 +62188,12 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.174 · 08/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto, AJOUTER UNE CRYPTO : une crypto déjà détenue (ex. du BTC sur une 2e plateforme) n'est plus refusée ; KYF propose de renforcer la ligne, additionne les quantités et calcule le PRU moyen (bouton Annuler dans le message). Ligne issue du carnet : le renfort y entre comme un achat. Stablecoins : quantité ajoutée à la ligne existante.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.173 · 08/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance vie / PER, modifier une position : le nom du relevé est gardé quand on change de catégorie ou qu'on choisit un ISIN (il était effacé ou remplacé par le code Yahoo) ; l'identifiant actuel reste affiché dans la recherche ; l'ISIN, la date et les autres informations de la ligne ne sont plus perdus à l'enregistrement.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.172 · 08/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Or &amp; métaux précieux : cours corrigés. KYF lisait le prix d'une part de tracker (PHAU.L, environ 1/10 d'once, en dollars) comme le prix d'une once : l'or ressortait à ~12 €/g au lieu de ~115 €/g (argent, platine, palladium aussi faux). Maintenant : cours de l'once en dollars (GC=F, SI=F, PL=F, PA=F), convertis en €/g, avec des bornes de vraisemblance ; l'ancien cours gardé sur l'appareil est ignoré.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.171 · 07/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import ETF / assurance vie / PER : un relevé PDF déposé directement n'est plus lu comme du texte (il pouvait donner des lignes absurdes, ex. un PER à plusieurs millions) ; KYF explique de le passer d'abord dans le convertisseur KYF PDF → CSV. Reconnu aussi quand le fichier PDF a été renommé.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.170 · 07/10/2026</div>
@@ -77081,16 +77128,24 @@ function avPosSearch(q){
   drop.style.display = 'block';
 }
 
+// En modification, le nom déjà en place (celui du relevé) est gardé : choisir un ISIN ou un ticker dans la recherche
+// ne doit plus le remplacer par le nom ou le code Yahoo.
+function avPosSetNom(name){
+  const el = document.getElementById('avPosNom'); if(!el) return;
+  const editing = !!(document.getElementById('avPosEditIdH')||{}).value;
+  if(editing && el.value.trim() && el.dataset.auto !== '1') return;
+  el.value = name || '';
+}
 function avPosSelectAsset(ticker, name){
   document.getElementById('avPosSearchInput').value = name+' ('+ticker+')';
   document.getElementById('avPosTicker').value = ticker;
-  document.getElementById('avPosNom').value    = name;
+  avPosSetNom(name);
   document.getElementById('avPosSuggestions').style.display = 'none';
 }
 
 function avPosSelectSCPI(s){
   document.getElementById('avPosSearchInput').value = s.nom || s.slug;
-  document.getElementById('avPosNom').value = s.nom || s.slug;
+  avPosSetNom(s.nom || s.slug);
   document.getElementById('avPosTicker').value = s.slug || '';
   document.getElementById('avPosSuggestions').style.display = 'none';
   // Remplissage automatique du prix de la part dans PRU si disponible
@@ -77109,7 +77164,7 @@ function avPosSelectSCPI(s){
 
 function avPosSelectOpcvm(f){
   document.getElementById('avPosSearchInput').value = f.nom;
-  document.getElementById('avPosNom').value = f.nom;
+  avPosSetNom(f.nom);
   document.getElementById('avPosTicker').value = f.isin;
   document.getElementById('avPosSuggestions').style.display = 'none';
 
@@ -77279,7 +77334,12 @@ function saveAVPos(){
   const positions = avPosLoad(_avPosContratId);
   if(editId){
     const idx = positions.findIndex(p=>p.id===editId);
-    if(idx>=0) positions[idx]=pos; else positions.push(pos);
+    // On complète l'ancienne ligne au lieu de la remplacer : l'ISIN, la date, la provenance... ne sont plus perdus
+    if(idx>=0){
+      const old = positions[idx];
+      if(!ticker && old.ticker && type !== 'fe') pos.ticker = old.ticker;
+      positions[idx] = Object.assign({}, old, pos);
+    } else positions.push(pos);
   } else {
     positions.push(pos);
   }
@@ -77302,11 +77362,14 @@ function editAVPos(contratId, posId){
     document.getElementById('avPosType').value   = pos.type||'fe';
     document.getElementById('avPosTicker').value = pos.ticker||'';
     document.getElementById('avPosNom').value    = pos.nom||'';
+    document.getElementById('avPosNom').dataset.auto = '';   // nom enregistré : jamais effacé ni remplacé automatiquement
+    document.getElementById('avPosTaux').dataset.auto = '';
     document.getElementById('avPosPRU').value    = pos.pru||'';
     document.getElementById('avPosQty').value    = pos.qty||'';
     document.getElementById('avPosValeur').value = pos.valeur||'';
     document.getElementById('avPosTaux').value   = pos.tauxRendement||'';
     document.getElementById('avPosEditIdH').value= pos.id;
+    { const _si = document.getElementById('avPosSearchInput'); if(_si) _si.value = pos.ticker || pos.isin || ''; }   // l'identifiant actuel reste visible : pas besoin de le ressaisir
     avPosTypeChange();
   }, 50);
 }
@@ -79372,7 +79435,7 @@ async function fetchOrSpotPrices(){
   // Vérifier cache
   try{
     const c = JSON.parse(localStorage.getItem(OR_SPOT_KEY)||'{}');
-    if(c._ts && Date.now()-c._ts < OR_SPOT_TTL){
+    if(kyfOrSpotCacheOk(c) && Date.now()-c._ts < OR_SPOT_TTL){
       window._orSpotPrices = c;
       return c;
     }
@@ -79381,26 +79444,11 @@ async function fetchOrSpotPrices(){
   if(typeof KYF_PRICE_URL === 'undefined' || !KYF_PRICE_URL) return {};
 
   try{
-    // PHAU.L = or €/oz, PHAG.L = argent €/oz, PPLT = platine $/oz, PALL = palladium $/oz
-    const url = KYF_PRICE_URL + '?action=bulk&tickers=' + encodeURIComponent('PHAU.L,PHAG.L,PPLT,PALL');
+    const url = KYF_PRICE_URL + '?action=bulk&tickers=' + encodeURIComponent(kyfOrSpotTickers());
     const r = await fetch(url, {signal:AbortSignal.timeout(10000), redirect:'follow'});
     const data = await r.json();
-
-    // Convertir €/oz → €/g (1 troy oz = 31.1035g)
-    const OZ_TO_G = 31.1035;
-    const spot = { _ts: Date.now() };
-
-    const phau = data['PHAU.L']?.price || 0;
-    const phag = data['PHAG.L']?.price || 0;
-    const pplt = data['PPLT']?.price   || 0;
-    const pall = data['PALL']?.price   || 0;
-
-    // PHAU.L et PHAG.L sont en EUR/oz, PPLT/PALL en USD/oz
-    const usdEur = window._fxRates?.USD || 0.92;
-    spot.or        = phau > 0 ? phau / OZ_TO_G : 0;
-    spot.argent    = phag > 0 ? phag / OZ_TO_G : 0;
-    spot.platine   = pplt > 0 ? (pplt * usdEur) / OZ_TO_G : 0;
-    spot.palladium = pall > 0 ? (pall * usdEur) / OZ_TO_G : 0;
+    const spot = kyfOrSpotFromBulk(data);
+    if(!kyfOrSpotCacheOk(spot)) return window._orSpotPrices || {};
 
     localStorage.setItem(OR_SPOT_KEY, JSON.stringify(spot));
     window._orSpotPrices = spot;
