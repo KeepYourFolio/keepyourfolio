@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2.8.2.174.html
+  @file        : KYF_SHARE_beta_2_8_2_175.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.2.174
+  @version     : Beta 2.8.2.175
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6511,7 +6511,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.2.174</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.2.175</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -40370,7 +40370,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.174\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.175\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -62188,6 +62188,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.175 · 08/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">SCPI : recherche sans accents ni majuscules (« epargne » trouve « Épargne Pierre », « fonciere » trouve « Foncière »), sur la page SCPI comme dans les contrats ; même chose pour la recherche des fonds gérés. Fait dans KYF : aucun appel en plus au script Google.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.174 · 08/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto, AJOUTER UNE CRYPTO : une crypto déjà détenue (ex. du BTC sur une 2e plateforme) n'est plus refusée ; KYF propose de renforcer la ligne, additionne les quantités et calcule le PRU moyen (bouton Annuler dans le message). Ligne issue du carnet : le renfort y entre comme un achat. Stablecoins : quantité ajoutée à la ligne existante.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.173 · 08/10/2026</div>
@@ -70405,13 +70407,15 @@ async function loadIsinSansYahoo(){
 let _scpiNomList = [];
 let _scpiNomSelectedIdx = -1;
 
+// Recherche sans accents ni majuscules : « epargne » trouve « Épargne Pierre », « fonciere » trouve « Foncière »
+function kyfSansAccent(t){ return String(t||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(); }
 function scpiNomFilter(q){
   const drop = document.getElementById('scpiNomDrop');
   if(!drop) return;
   if(!q.trim()){ drop.style.display='none'; return; }
   const db = _scpiDB || [];
-  const query = q.trim().toLowerCase();
-  const results = db.filter(s=>(s.nom||s.slug||'').toLowerCase().includes(query)).slice(0,10);
+  const query = kyfSansAccent(q.trim());
+  const results = db.filter(s=>kyfSansAccent(s.nom||s.slug||'').includes(query)).slice(0,10);
   _scpiNomList = results;
   _scpiNomSelectedIdx = -1;
   if(!results.length){ drop.style.display='none'; return; }
@@ -77063,8 +77067,8 @@ function avPosSearch(q){
     // Recherche dans la base SCPI
     const db = _scpiDB || [];
     if(!db.length){ loadSCPIDB().then(()=>avPosSearch(q)); return; }
-    const qn = q.trim().toLowerCase();
-    const results = db.filter(s=>(s.nom||s.slug||'').toLowerCase().includes(qn)).slice(0,8);
+    const qn = kyfSansAccent(q.trim());
+    const results = db.filter(s=>kyfSansAccent(s.nom||s.slug||'').includes(qn)).slice(0,8);
     if(!results.length){ drop.style.display='none'; return; }
     drop.innerHTML = results.map(s=>`
       <div onclick="avPosSelectSCPI(${kyfJsonAttr(s)})"
@@ -77081,8 +77085,8 @@ function avPosSearch(q){
     // Recherche dans le référentiel OPCVM StatsAVie
     const db = _opcvmDB || [];
     if(!db.length){ loadOpcvmDB().then(()=>avPosSearch(q)); return; }
-    const qn = q.trim().toLowerCase();
-    const results = db.filter(f => f.nom.toLowerCase().includes(qn) || f.isin.toLowerCase().includes(q.toUpperCase())).slice(0,8);
+    const qn = kyfSansAccent(q.trim());
+    const results = db.filter(f => kyfSansAccent(f.nom).includes(qn) || f.isin.toLowerCase().includes(q.trim().toLowerCase())).slice(0,8);
     if(!results.length){ drop.style.display='none'; return; }
     const sansYahoo = _isinSansYahoo || new Set();
     drop.innerHTML = results.map(f=>{
