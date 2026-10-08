@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_2_185.html
+  @file        : KYF_SHARE_beta_2_8_2_188.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.2.185
+  @version     : Beta 2.8.2.188
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6519,7 +6519,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.2.185</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.2.188</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -7752,7 +7752,11 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
         <div style="font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:var(--text);letter-spacing:.5px">CROWDFUNDING IMMOBILIER</div>
         <div style="font-family:'Inter',sans-serif;font-size:9px;color:var(--text3);margin-top:3px">Prêts à des projets immobiliers, à durée fixe</div>
       </div>
-      <div style="display:flex;gap:8px">
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button type="button" onclick="cfImpOpen()" title="Importer des prêts depuis un export de plateforme (PDF, CSV ou Excel)" style="display:flex;align-items:center;gap:6px;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:7px 14px;border-radius:8px;border:1px solid var(--accent);background:var(--btn-secondary-bg);color:var(--accent);cursor:pointer;transition:background .2s,box-shadow .2s,transform .2s;letter-spacing:0.5px" onmouseover="this.style.background='#f0b429';this.style.color='#000';this.style.boxShadow='0 2px 8px rgba(240,180,41,0.35)';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='var(--btn-secondary-bg)';this.style.color='var(--accent)';this.style.boxShadow='none';this.style.transform='translateY(0)'">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          IMPORTER UN RELEVÉ
+        </button>
         <button onclick="openAddCrowdfunding()" style="display:flex;align-items:center;gap:6px;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:7px 14px;border-radius:8px;border:1px solid var(--accent);background:var(--btn-secondary-bg);color:var(--accent);cursor:pointer;transition:background .2s,box-shadow .2s,transform .2s"
           onmouseover="this.style.background='#f0b429';this.style.color='#000';this.style.boxShadow='0 2px 8px rgba(240,180,41,0.35)';this.style.transform='translateY(-1px)'"
           onmouseout="this.style.background='var(--btn-secondary-bg)';this.style.color='var(--accent)';this.style.boxShadow='none';this.style.transform='translateY(0)'">
@@ -40426,7 +40430,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.185\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.188\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -59236,6 +59240,7 @@ function kyfGeoMultiApply(){
 (function(){
   // Chaque cible = le champ fichier réellement affiché à l'écran ; l'ordre donne la priorité quand plusieurs fenêtres se superposent.
   const TARGETS = [
+    { id:'cfImpFile',         title:'Déposez votre fichier ici',sub:'Import de prêts crowdfunding (PDF, CSV ou Excel)' },
     { id:'kyfGeoFile',        title:'Déposez vos fichiers ici', sub:'Données géographiques (Excel, CSV ou PDF)' },
     { id:'contactFileInput',  title:'Déposez vos fichiers ici', sub:'Pièces jointes du message (photos, PDF, vidéos, tableurs)' },
     { id:'livPdfNewInput',    title:'Déposez votre PDF ici',    sub:'Création d\'un compte depuis un relevé PDF', confirm:'importCertifyOwn4' },
@@ -62305,6 +62310,12 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.188 · 08/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import de prêts crowdfunding : on peut maintenant glisser le fichier n'importe où sur la page, comme partout ailleurs dans KYF (le voile « Déposez votre fichier ici » apparaît, formats PDF, CSV et Excel acceptés).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.187 · 08/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crowdfunding : le bouton d'import reprend exactement celui des pages ETF &amp; Actions et Assurance Vie (même libellé « IMPORTER UN RELEVÉ », même icône, même contour doré et même survol).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.186 · 08/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crowdfunding : nouveau bouton IMPORTER. Déposez l'export de votre plateforme (PDF, CSV ou Excel) : Bienprêter est reconnu directement, les autres plateformes avec des colonnes Projet, Montant et Taux. Vous cochez les prêts à garder, KYF les crée en « en cours » avec la plateforme, le montant et le taux. Le fichier ne donne ni date ni durée : une date de souscription et une durée communes peuvent être saisies pour calculer les remboursements. Un prêt déjà importé est reconnu par son numéro de contrat et n'est jamais ajouté deux fois.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.185 · 08/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">SCPI : « Revenus / mois » était 3 à 4 fois trop élevé pour certaines SCPI (Corum, Iroko Zen). Cause : le site source donne un dividende par trimestre alors que la SCPI verse chaque mois ; KYF prenait « versement mensuel » pour « dividende mensuel ». KYF vérifie maintenant la périodicité du dividende (mois, trimestre, semestre ou année) avec le taux de distribution, retient celle qui colle, et retombe sur l'estimation par le taux de distribution si rien n'est cohérent. S'applique aux SCPI en direct, à celles logées dans un contrat, au formulaire et aux totaux ; les SCPI déjà enregistrées sont recalculées toutes seules. Aucune modification du script Google n'est nécessaire.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.184 · 08/10/2026</div>
@@ -71631,6 +71642,181 @@ function cfUpdateLogoPreview(){
   const el = document.getElementById('cfLogoPreview');
   const plateforme = document.getElementById('cfPlateforme')?.value || '';
   if(el) el.innerHTML = plateforme.trim() ? crowdfundingLogoImg(plateforme, 26) : '';
+}
+
+// ═══ v2.8.2.186 : import de prêts crowdfunding (PDF / CSV / Excel) ═══
+// Lecture 100% locale. Le PDF est lu avec pdf.js en repérant chaque ligne par son numéro de contrat (C + 14 à 20 caractères
+// hexadécimaux), puis en classant les morceaux de texte de la ligne (projet, entreprise, montant, taux, mensualité, date).
+let _cfImp = { rows: [], pf: '' };
+function cfImpOpen(){
+  _cfImp = { rows: [], pf: '' };
+  document.getElementById('cfImpBody').style.display = 'none';
+  document.getElementById('cfImpMsg').style.display = 'none';
+  document.getElementById('cfImpDropTitle').textContent = 'Choisir un fichier';
+  document.getElementById('cfImpGo').disabled = true;
+  document.getElementById('cfImpFile').value = '';
+  kyfDateSetValue('cfImpDate', '', 'JJ/MM/AAAA');
+  document.getElementById('cfImpDuree').value = '';
+  document.getElementById('cfImpOverlay').style.display = 'block';
+  document.getElementById('cfImpModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function cfImpClose(){
+  document.getElementById('cfImpOverlay').style.display = 'none';
+  document.getElementById('cfImpModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+function cfImpMsg(txt, kind){
+  const m = document.getElementById('cfImpMsg');
+  if(!txt){ m.style.display = 'none'; return; }
+  const c = kind === 'err' ? ['rgba(244,63,94,0.08)','rgba(244,63,94,0.3)','var(--red)'] : ['rgba(255,255,255,0.04)','var(--border)','var(--text2)'];
+  m.style.cssText = 'display:block;margin-top:12px;font-size:11px;line-height:1.6;padding:9px 12px;border-radius:8px;background:'+c[0]+';border:1px solid '+c[1]+';color:'+c[2];
+  m.textContent = txt;
+}
+function cfImpNum(v){
+  if(typeof v === 'number') return isFinite(v) ? v : 0;
+  const t = String(v == null ? '' : v).replace(/[\s €%]/g,'').replace(',', '.').replace(/[^\d.\-]/g,'');
+  const n = parseFloat(t); return isNaN(n) ? 0 : n;
+}
+function cfImpDateISO(v){
+  if(v instanceof Date && !isNaN(v)) return v.getFullYear()+'-'+String(v.getMonth()+1).padStart(2,'0')+'-'+String(v.getDate()).padStart(2,'0');
+  const m = /(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})/.exec(String(v||'')); if(m) return m[3]+'-'+m[2].padStart(2,'0')+'-'+m[1].padStart(2,'0');
+  const m2 = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(v||'')); return m2 ? m2[0].slice(0,10) : '';
+}
+const CF_IMP_ID = /^C[0-9A-F]{12,22}$/i;
+async function cfImpParsePdf(file){
+  await kyfLoadPdfJs();
+  const buf = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({data: buf, isEvalSupported: false}).promise;
+  const out = []; let whole = '';
+  for(let p = 1; p <= pdf.numPages; p++){
+    const page = await pdf.getPage(p);
+    const items = (await page.getTextContent()).items.map(i => ({ t: String(i.str||'').replace(/ /g,' ').trim(), x: i.transform[4], y: i.transform[5] })).filter(i => i.t);
+    whole += items.map(i => i.t).join(' ') + '\n';
+    const anchors = items.filter(i => CF_IMP_ID.test(i.t)).sort((a,b) => b.y - a.y);
+    if(!anchors.length) continue;
+    const gaps = anchors.slice(1).map((a,i) => anchors[i].y - a.y).sort((a,b) => a - b);
+    const half = (gaps.length ? gaps[Math.floor(gaps.length/2)] : 30) / 2;
+    const rows = anchors.map(a => ({ id: a.t.toUpperCase(), y: a.y, x: a.x, its: [] }));
+    items.forEach(it => {
+      if(CF_IMP_ID.test(it.t)) return;
+      let best = null, bd = 1e9;
+      rows.forEach(r => { const d = Math.abs(it.y - r.y); if(d < bd){ bd = d; best = r; } });
+      if(best && bd <= half) best.its.push(it);
+    });
+    rows.forEach(r => {
+      const num = [], txt = [];
+      // pdf.js colle parfois un nombre au texte voisin (« SEANCLOR 200.00 € ») : on extrait d'abord les fragments chiffrés de chaque morceau.
+      r.its.forEach(it => {
+        let rest = it.t;
+        const frag = /\d[\d ]*[.,]\d{2}\s*€|\d+(?:[.,]\d+)?\s*%|\d{2}\/\d{2}\/\d{4}|en attente(?: de la cl[oô]ture)?|de la cl[oô]ture/gi;
+        (it.t.match(frag) || []).forEach(f => { num.push({ t: f, x: it.x, y: it.y }); });
+        rest = rest.replace(frag, ' ').replace(/\s+/g, ' ').trim();
+        if(rest && !/^[\d\s.,€%\/]+$/.test(rest)) txt.push({ t: rest, x: it.x, y: it.y });
+        else if(rest && !(it.t.match(frag) || []).length) num.push(it);
+      });
+      // groupes de texte par colonne (même abscisse de départ) : 1er = projet, 2e = entreprise
+      txt.sort((a,b) => a.x - b.x || b.y - a.y);
+      const groups = [];
+      txt.forEach(it => { const g = groups.find(g => Math.abs(g.x - it.x) < 4); if(g) g.its.push(it); else groups.push({ x: it.x, its: [it] }); });
+      const gt = g => g.its.sort((a,b) => b.y - a.y).map(i => i.t).join(' ');
+      const flat = num.sort((a,b) => a.x - b.x).map(i => i.t).join(' ');
+      const amts = [...flat.matchAll(/(\d[\d ]*[.,]\d{2})\s*€/g)].map(m => cfImpNum(m[1]));
+      const tx = /(\d+(?:[.,]\d+)?)\s*%/.exec(flat);
+      const dt = /\d{2}\/\d{2}\/\d{4}/.exec(flat);
+      out.push({ ref: r.id, projet: groups[0] ? gt(groups[0]) : '', entreprise: groups[1] ? gt(groups[1]) : '',
+        montant: amts[0] || 0, taux: tx ? cfImpNum(tx[1]) : 0, mensualite: amts[1] || 0,
+        prochaine: dt ? cfImpDateISO(dt[0]) : '', attente: /attente/i.test(flat) });
+    });
+  }
+  return { rows: out, pf: /bienpr[eê]ter/i.test(whole) || out.length ? 'Bienprêter' : '' , whole };
+}
+function cfImpParseGrid(grid){
+  const norm = h => String(h||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
+  let hi = -1, H = [];
+  for(let i = 0; i < Math.min(grid.length, 15); i++){
+    const c = (grid[i]||[]).map(norm);
+    if(c.some(x => /^(montant|somme|investi)/.test(x)) && c.some(x => /^(projet|nom|entreprise|operation|contrat)/.test(x))){ hi = i; H = c; break; }
+  }
+  if(hi < 0) return null;
+  const fi = re => H.findIndex(h => re.test(h));
+  const ix = { ref: fi(/^(n.?\s*contrat|contrat|reference|ref)/), projet: fi(/^(projet|nom|operation)/), ent: fi(/^(entreprise|societe|porteur|emprunteur)/),
+    mont: fi(/^(montant|somme|investi)/), taux: fi(/^taux/), mens: fi(/^mensualite/), proch: fi(/^prochaine/), pf: fi(/^plateforme/),
+    dsub: fi(/^date.*(souscription|investissement)/), duree: fi(/^duree/) };
+  const out = [];
+  for(let i = hi + 1; i < grid.length; i++){
+    const r = grid[i] || []; const g = k => ix[k] >= 0 ? r[ix[k]] : '';
+    const montant = cfImpNum(g('mont'));
+    const projet = String(g('projet') || '').trim();
+    if(!(montant > 0) || !projet) continue;
+    out.push({ ref: String(g('ref')||'').trim().toUpperCase(), projet, entreprise: String(g('ent')||'').trim(), montant, taux: cfImpNum(g('taux')), mensualite: cfImpNum(g('mens')),
+      prochaine: cfImpDateISO(g('proch')), attente: /attente/i.test(String(g('proch')||'')), pf: String(g('pf')||'').trim(), dsub: cfImpDateISO(g('dsub')), duree: parseInt(g('duree'),10) || 0 });
+  }
+  return out;
+}
+async function cfImpFile(input){
+  const file = input.files && input.files[0]; if(!file) return;
+  cfImpMsg('Lecture du fichier…', 'info');
+  document.getElementById('cfImpBody').style.display = 'none';
+  try{
+    let rows = [], pf = '';
+    if(/\.pdf$/i.test(file.name)){
+      const r = await cfImpParsePdf(file); rows = r.rows; pf = r.pf;
+    } else if(/\.(xlsx|xls)$/i.test(file.name)){
+      const wb = kyfXlsxRead(await file.arrayBuffer());
+      for(const n of wb.SheetNames){ const g = cfImpParseGrid(kyfClampGrid(XLSX.utils.sheet_to_json(wb.Sheets[n], {header:1, raw:false, defval:''}))); if(g && g.length){ rows = g; break; } }
+    } else {
+      const text = kyfDecodeText(await file.arrayBuffer());
+      const l0 = text.split(/\r\n|\n/).find(l => /[;\t,]/.test(l)) || '';
+      const d = l0.includes(';') ? ';' : (l0.includes('\t') ? '\t' : ',');
+      const g = cfImpParseGrid(text.split(/\r\n|\n/).filter(l => l.trim()).map(l => fiParseCSVLine(l, d)));
+      rows = g || [];
+      if(rows.some(r => /^C[0-9A-F]{12,}/i.test(r.ref))) pf = 'Bienprêter';
+    }
+    if(!rows.length){ cfImpMsg("Aucun prêt reconnu dans ce fichier. Il faut au minimum un nom de projet et un montant par ligne.", 'err'); return; }
+    const known = new Set(cfLoad().map(x => x.ref).filter(Boolean));
+    rows.forEach(r => { r.dup = !!(r.ref && known.has(r.ref)); r.on = !r.dup; });
+    _cfImp = { rows, pf };
+    document.getElementById('cfImpPf').value = pf || rows.find(r => r.pf)?.pf || '';
+    document.getElementById('cfImpDropTitle').textContent = file.name;
+    cfImpMsg('', '');
+    document.getElementById('cfImpBody').style.display = 'block';
+    cfImpRender();
+  }catch(e){
+    console.error(e);
+    cfImpMsg("Impossible de lire ce fichier : " + (e && e.message ? e.message : 'format non reconnu'), 'err');
+  }
+}
+function cfImpEsc(x){ return String(x == null ? '' : x).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function cfImpFmt(n){ return (Math.round(n * 100) / 100).toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 2 }); }
+function cfImpName(r){ return r.entreprise ? r.projet + ' · ' + r.entreprise : r.projet; }
+function cfImpRender(){
+  const L = document.getElementById('cfImpList');
+  L.innerHTML = _cfImp.rows.map((r, i) => `<div class="cf-imp-row${r.dup ? ' dup' : ''}" onclick="cfImpToggle(${i})">
+    <input type="checkbox" ${r.on ? 'checked' : ''} ${r.dup ? 'disabled' : ''} style="accent-color:var(--accent);width:14px;height:14px;flex-shrink:0;pointer-events:none">
+    <div style="flex:1;min-width:0"><div style="color:var(--text);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${cfImpEsc(cfImpName(r))}</div>
+      <div style="font-size:9px;color:var(--text3);margin-top:1px">${r.dup ? 'Déjà importé' : (r.attente ? 'En attente de la clôture' : (r.prochaine ? 'Prochaine échéance ' + r.prochaine.split('-').reverse().join('/') : ''))}</div></div>
+    <div style="text-align:right;flex-shrink:0"><div style="color:var(--text);font-weight:700">${cfImpFmt(r.montant)} €</div><div style="font-size:9px;color:var(--text3)">${r.taux ? cfImpFmt(r.taux) + ' %' : ''}</div></div>
+  </div>`).join('');
+  const n = _cfImp.rows.filter(r => r.on).length, tot = _cfImp.rows.filter(r => r.on).reduce((a, r) => a + r.montant, 0);
+  document.getElementById('cfImpCount').textContent = n + ' PRÊT' + (n > 1 ? 'S' : '') + ' SÉLECTIONNÉ' + (n > 1 ? 'S' : '') + ' · ' + cfImpFmt(tot) + ' €';
+  const b = document.getElementById('cfImpGo'); b.disabled = !n; b.textContent = n ? 'Importer ' + n + ' prêt' + (n > 1 ? 's' : '') : 'Importer';
+}
+function cfImpToggle(i){ const r = _cfImp.rows[i]; if(!r || r.dup) return; r.on = !r.on; cfImpRender(); }
+function cfImpAll(on){ _cfImp.rows.forEach(r => { if(!r.dup) r.on = on; }); cfImpRender(); }
+function cfImpApply(){
+  const sel = _cfImp.rows.filter(r => r.on); if(!sel.length) return;
+  const pf = document.getElementById('cfImpPf').value.trim();
+  const dsub = document.getElementById('cfImpDate').value || '';
+  const dur = parseInt(document.getElementById('cfImpDuree').value, 10) || 0;
+  const data = cfLoad(); const t0 = Date.now();
+  sel.forEach((r, i) => {
+    const ds = r.dsub || dsub, du = r.duree || dur;
+    data.push({ id: 'cf_' + t0 + '_' + i, nom: cfImpName(r), plateforme: pf || r.pf || '', montant: r.montant, taux: r.taux,
+      dateSouscription: ds, dureeM: du, dateEcheance: (ds && du) ? cfAddMonthsISO(ds, du) : '', statut: 'en-cours', montantPercu: 0, montantPerdu: 0, ref: r.ref || '' });
+  });
+  cfSave(data); renderCrowdfunding(); cfImpClose();
+  try{ kyfQuickToast(sel.length + ' prêt' + (sel.length > 1 ? 's' : '') + ' importé' + (sel.length > 1 ? 's' : '')); }catch(_){}
 }
 
 function openAddCrowdfunding(){
@@ -82487,6 +82673,57 @@ function orInlineEdit(id, td, currentVal){
   </div>
 </div>
 <!-- cfModal/cfOverlay déplacés ici : enfant direct de body (hors #appShell), même correctif que pour Contact -->
+<!-- v2.8.2.186 : import de prêts crowdfunding (PDF / CSV / Excel d'une plateforme) -->
+<div id="cfImpOverlay" onclick="cfImpClose()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10030"></div>
+<div id="cfImpModal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(760px,96vw);max-height:92vh;flex-direction:column;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;overflow:hidden;z-index:10031;box-shadow:0 12px 48px rgba(0,0,0,0.4);font-family:'Inter',sans-serif">
+  <input type="file" id="cfImpFile" accept=".pdf,.csv,.txt,.xlsx,.xls" style="display:none" onchange="cfImpFile(this)">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);flex-shrink:0">
+    <div>
+      <span style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:12px;letter-spacing:1px;color:var(--text)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>IMPORTER DES PRÊTS CROWDFUNDING</span>
+      <div style="font-size:9px;color:var(--text3);margin-top:3px">Export de votre plateforme (PDF, CSV ou Excel). Le fichier est lu dans votre navigateur, rien n'est envoyé.</div>
+    </div>
+    <button type="button" onclick="cfImpClose()" class="kyf-modal-close" title="Fermer" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:18px 20px;min-height:0">
+    <div id="cfImpDrop" onclick="document.getElementById('cfImpFile').click()" style="cursor:pointer;border:1px dashed var(--border2);border-radius:10px;padding:22px 16px;text-align:center;font-size:11px;color:var(--text2);transition:background .15s,border-color .15s" onmouseover="this.style.background='var(--hov-bg)'" onmouseout="this.style.background='transparent'">
+      <div style="font-weight:700;color:var(--text);margin-bottom:4px" id="cfImpDropTitle">Choisir un fichier</div>
+      <div style="font-size:10px;color:var(--text3)">Bienprêter (export des contrats de prêt) reconnu. Autres plateformes : colonnes Projet, Montant, Taux.</div>
+    </div>
+    <div id="cfImpMsg" style="display:none;margin-top:12px;font-size:11px;line-height:1.6;padding:9px 12px;border-radius:8px"></div>
+    <div id="cfImpBody" style="display:none;margin-top:16px">
+      <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:12px;margin-bottom:6px">
+        <div><div style="font-size:9px;color:var(--text3);margin-bottom:3px">PLATEFORME</div><input type="text" id="cfImpPf" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg) !important;border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 10px;border-radius:6px;outline:none"></div>
+        <div><div style="font-size:9px;color:var(--text3);margin-bottom:3px">DATE DE SOUSCRIPTION (pour tous)</div>
+          <input type="hidden" id="cfImpDate" value="">
+          <button type="button" id="cfImpDateBtn" class="kyf-csel-btn" data-kyf-date="cfImpDate" aria-haspopup="dialog" aria-expanded="false"><span id="cfImpDateBtnLabel">JJ/MM/AAAA</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button></div>
+        <div><div style="font-size:9px;color:var(--text3);margin-bottom:3px">DURÉE PRÉVUE (MOIS, pour tous)</div><input type="number" id="cfImpDuree" min="1" max="120" step="1" placeholder="Ex : 12" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg) !important;border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 10px;border-radius:6px;outline:none"></div>
+      </div>
+      <div style="font-size:9px;color:var(--text3);line-height:1.6;margin-bottom:14px">Le fichier ne donne ni date de souscription ni durée : renseignez-les ici pour calculer les dates de remboursement, ou laissez vide et complétez plus tard projet par projet.</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div id="cfImpCount" style="font-size:10px;font-weight:700;color:var(--text2);letter-spacing:.4px"></div>
+        <div style="display:flex;gap:6px">
+          <button type="button" onclick="cfImpAll(true)" class="cf-imp-lnk">Tout cocher</button>
+          <button type="button" onclick="cfImpAll(false)" class="cf-imp-lnk">Tout décocher</button>
+        </div>
+      </div>
+      <div id="cfImpList" style="border:1px solid var(--border);border-radius:10px;overflow:hidden"></div>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;justify-content:flex-end;align-items:center;padding:12px 18px;border-top:1px solid var(--border);flex-shrink:0">
+    <button type="button" onclick="cfImpClose()" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:8px 16px;border-radius:8px;border:1px solid var(--border2);background:none;color:var(--text3);cursor:pointer;transition:background .15s" onmouseover="this.style.background='var(--hov-bg)'" onmouseout="this.style.background='none'">Annuler</button>
+    <button type="button" id="cfImpGo" onclick="cfImpApply()" disabled style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:8px 16px;border-radius:8px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:opacity .15s" onmouseover="if(!this.disabled)this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Importer</button>
+  </div>
+</div>
+<style>
+.cf-imp-lnk{font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:5px 10px;border-radius:6px;border:1px solid var(--border2);background:none;color:var(--text2);cursor:pointer;transition:background .15s,color .15s}
+.cf-imp-lnk:hover{background:var(--hov-bg);color:var(--text)}
+#cfImpGo:disabled{opacity:.4;cursor:not-allowed}
+.cf-imp-row{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;font-size:11px;color:var(--text2)}
+.cf-imp-row:last-child{border-bottom:none}
+.cf-imp-row:hover{background:var(--hov-bg)}
+.cf-imp-row.dup{opacity:.5;cursor:default}
+.cf-imp-row.dup:hover{background:none}
+</style>
 <div id="cfOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10030"></div>
 <div id="cfModal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(900px,96vw);height:min(560px,94vh);background:var(--bg2);border:1px solid var(--border2);border-radius:16px;overflow:hidden;z-index:10031;box-shadow:0 12px 48px rgba(0,0,0,0.4);font-family:'Inter',sans-serif">
 <div class="av-wrap">
