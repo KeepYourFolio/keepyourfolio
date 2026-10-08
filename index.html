@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_2_192.html
+  @file        : KYF_SHARE_beta_2_8_2_195.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.2.192
+  @version     : Beta 2.8.2.195
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6519,7 +6519,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.2.192</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.2.195</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -40469,7 +40469,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.192\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.195\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -62361,6 +62361,12 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.195 · 08/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Bienprêter : une prochaine échéance déjà passée (par rapport à la date de l'export) classe le prêt comme probablement terminé, signalé dans la liste et décochable. « En attente de la clôture » reste toujours en cours.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.194 · 08/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import crowdfunding : la case « Importer comme remboursés » a maintenant un survol (fond gris) comme le reste de la fenêtre.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.193 · 08/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Bienprêter : montants corrigés (un chiffre de fin de nom d'entreprise ou de projet ne se colle plus au montant, d'où des totaux de plusieurs milliards), et les prêts terminés (sans échéance à venir) sont importés comme remboursés, avec une case pour choisir. Un prêt « en attente de la clôture » reste en cours.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.192 · 08/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Bandeau d'annonce retiré : la connexion Google et les cours fonctionnent de nouveau. Moins de sollicitations du serveur de cours : actualisation toutes les 5 min en séance (au lieu de 2), aucune actualisation quand l'onglet est caché (elle reprend au retour), délai d'attente du cours groupé porté à 20 s, et plus de demandes titre par titre en rafale quand le cours groupé a déjà été demandé.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.191 · 08/10/2026</div>
@@ -71737,6 +71743,35 @@ function cfImpNum(v){
   const t = String(v == null ? '' : v).replace(/[\s €%]/g,'').replace(',', '.').replace(/[^\d.\-]/g,'');
   const n = parseFloat(t); return isNaN(n) ? 0 : n;
 }
+// Montant « 1 234,56 € » : milliers regroupés par 3 chiffres, jamais collés à un chiffre voisin (le nom d'un projet peut finir par
+// des chiffres : « Lot 2024 200.00 € » ne doit pas devenir 2 024 200 €). Une valeur au-dessus de 100 000 € par prêt est invraisemblable
+// pour ces plateformes : on ne garde alors que le dernier groupe de 3 chiffres (« Lot 123 200.00 € » → 200 €).
+const CF_IMP_AMT = /(?<![\d.,])\d{1,3}(?:[ \u00a0\u202f]\d{3})*[.,]\d{2}\s*€/g;
+function cfImpAmtSane(txt){
+  let v = cfImpNum(txt);
+  if(v > 100000){
+    const m = /(\d{1,3}[.,]\d{2})\s*€?\s*$/.exec(String(txt).trim());
+    if(m){ const w = cfImpNum(m[1]); if(w > 0) v = w; }
+  }
+  return v;
+}
+// Montant collé au texte voisin dans un même morceau du PDF (« TAMTURBO 75 200.00 € » : le « 75 » est à l'entreprise, pas au montant).
+// On apprend sur les montants « propres » de la page où commence la colonne Montant et la largeur d'un caractère, puis on retire du début
+// du fragment collé les groupes de chiffres qui démarreraient nettement avant cette colonne.
+function cfImpMed(a){ const b = a.slice().sort((x, y) => x - y); return b.length ? b[Math.floor(b.length / 2)] : null; }
+function cfImpTrimGlue(f, idx, it, S){
+  if(!S || S.x.length < 3 || !(it.w > 0)) return f;
+  if(!/[A-Za-zÀ-ÿ]/.test(it.t.slice(0, idx)) || it.t.slice(idx + f.length).trim()) return f;
+  const ax = cfImpMed(S.x), wc = cfImpMed(S.c); if(!(ax > 0) || !(wc > 0)) return f;
+  const fin = it.x + it.w; let cur = f;
+  for(let k = 0; k < 4; k++){
+    if(fin - wc * cur.length >= ax - wc * 1.5) return cur;
+    const m = /^\d{1,3}[ \u00a0\u202f](\d{3}(?:[ \u00a0\u202f]\d{3})*[.,]\d{2}\s*€)$/.exec(cur);
+    if(!m) return cur;
+    cur = m[1];
+  }
+  return cur;
+}
 function cfImpDateISO(v){
   if(v instanceof Date && !isNaN(v)) return v.getFullYear()+'-'+String(v.getMonth()+1).padStart(2,'0')+'-'+String(v.getDate()).padStart(2,'0');
   const m = /(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})/.exec(String(v||'')); if(m) return m[3]+'-'+m[2].padStart(2,'0')+'-'+m[1].padStart(2,'0');
@@ -71747,10 +71782,12 @@ async function cfImpParsePdf(file){
   await kyfLoadPdfJs();
   const buf = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({data: buf, isEvalSupported: false}).promise;
-  const out = []; let whole = '';
+  const out = []; let whole = ''; let colX = null; const amtS = { x: [], c: [] };
   for(let p = 1; p <= pdf.numPages; p++){
     const page = await pdf.getPage(p);
-    const items = (await page.getTextContent()).items.map(i => ({ t: String(i.str||'').replace(/ /g,' ').trim(), x: i.transform[4], y: i.transform[5] })).filter(i => i.t);
+    const items = (await page.getTextContent()).items.map(i => ({ t: String(i.str||'').replace(/ /g,' ').trim(), x: i.transform[4], y: i.transform[5], w: i.width || 0 })).filter(i => i.t);
+    const hm = items.find(i => /^montant$/i.test(i.t)); if(hm && colX == null) colX = hm.x;
+    items.forEach(i => { if(colX != null && Math.abs(i.x - colX) <= 30 && i.w > 0 && /^\d{1,3}(?:[ \u00a0\u202f]\d{3})*[.,]\d{2}\s*€$/.test(i.t)){ amtS.x.push(i.x); amtS.c.push(i.w / i.t.length); } });
     whole += items.map(i => i.t).join(' ') + '\n';
     const anchors = items.filter(i => CF_IMP_ID.test(i.t)).sort((a,b) => b.y - a.y);
     if(!anchors.length) continue;
@@ -71768,11 +71805,13 @@ async function cfImpParsePdf(file){
       // pdf.js colle parfois un nombre au texte voisin (« SEANCLOR 200.00 € ») : on extrait d'abord les fragments chiffrés de chaque morceau.
       r.its.forEach(it => {
         let rest = it.t;
-        const frag = /\d[\d ]*[.,]\d{2}\s*€|\d+(?:[.,]\d+)?\s*%|\d{2}\/\d{2}\/\d{4}|en attente(?: de la cl[oô]ture)?|de la cl[oô]ture/gi;
-        (it.t.match(frag) || []).forEach(f => { num.push({ t: f, x: it.x, y: it.y }); });
+        const frag = /(?<![\d.,])\d{1,3}(?:[ \u00a0\u202f]\d{3})*[.,]\d{2}\s*€|\d+(?:[.,]\d+)?\s*%|\d{2}\/\d{2}\/\d{4}|en attente(?: de la cl[oô]ture)?|de la cl[oô]ture|termin[eé]e?|rembours[eé]e?|cl[oô]tur[é]e?|sold[eé]e?/gi;
+        for(const mm of it.t.matchAll(frag)){ num.push({ t: /€/.test(mm[0]) ? cfImpTrimGlue(mm[0], mm.index, it, amtS) : mm[0], x: it.x, y: it.y }); }
         rest = rest.replace(frag, ' ').replace(/\s+/g, ' ').trim();
         if(rest && !/^[\d\s.,€%\/]+$/.test(rest)) txt.push({ t: rest, x: it.x, y: it.y });
-        else if(rest && !(it.t.match(frag) || []).length) num.push(it);
+        // Chiffres isolés (« 75 » à la fin d'un nom d'entreprise passé à la ligne) : retenus seulement s'ils sont dans la zone des colonnes chiffrées,
+        // sinon ils se collaient au montant (« 75 » + « 200.00 € » = 75 200 €).
+        else if(rest && !(it.t.match(frag) || []).length && (colX == null || it.x >= colX - 25)) num.push(it);
       });
       // groupes de texte par colonne (même abscisse de départ) : 1er = projet, 2e = entreprise
       txt.sort((a,b) => a.x - b.x || b.y - a.y);
@@ -71780,12 +71819,12 @@ async function cfImpParsePdf(file){
       txt.forEach(it => { const g = groups.find(g => Math.abs(g.x - it.x) < 4); if(g) g.its.push(it); else groups.push({ x: it.x, its: [it] }); });
       const gt = g => g.its.sort((a,b) => b.y - a.y).map(i => i.t).join(' ');
       const flat = num.sort((a,b) => a.x - b.x).map(i => i.t).join(' ');
-      const amts = [...flat.matchAll(/(\d[\d ]*[.,]\d{2})\s*€/g)].map(m => cfImpNum(m[1]));
+      const amts = (flat.match(CF_IMP_AMT) || []).map(cfImpAmtSane);
       const tx = /(\d+(?:[.,]\d+)?)\s*%/.exec(flat);
       const dt = /\d{2}\/\d{2}\/\d{4}/.exec(flat);
       out.push({ ref: r.id, projet: groups[0] ? gt(groups[0]) : '', entreprise: groups[1] ? gt(groups[1]) : '',
         montant: amts[0] || 0, taux: tx ? cfImpNum(tx[1]) : 0, mensualite: amts[1] || 0,
-        prochaine: dt ? cfImpDateISO(dt[0]) : '', attente: /attente/i.test(flat) });
+        prochaine: dt ? cfImpDateISO(dt[0]) : '', attente: /attente/i.test(flat), fini: !/attente/i.test(flat) && (!dt || /termin|rembours|sold[eé]e?\b|cl[oô]tur[é]/i.test(flat)) });
     });
   }
   return { rows: out, pf: /bienpr[eê]ter/i.test(whole) || out.length ? 'Bienprêter' : '' , whole };
@@ -71801,15 +71840,16 @@ function cfImpParseGrid(grid){
   const fi = re => H.findIndex(h => re.test(h));
   const ix = { ref: fi(/^(n.?\s*contrat|contrat|reference|ref)/), projet: fi(/^(projet|nom|operation)/), ent: fi(/^(entreprise|societe|porteur|emprunteur)/),
     mont: fi(/^(montant|somme|investi)/), taux: fi(/^taux/), mens: fi(/^mensualite/), proch: fi(/^prochaine/), pf: fi(/^plateforme/),
-    dsub: fi(/^date.*(souscription|investissement)/), duree: fi(/^duree/) };
+    dsub: fi(/^date.*(souscription|investissement)/), duree: fi(/^duree/), statut: fi(/^(statut|etat)/) };
   const out = [];
   for(let i = hi + 1; i < grid.length; i++){
     const r = grid[i] || []; const g = k => ix[k] >= 0 ? r[ix[k]] : '';
-    const montant = cfImpNum(g('mont'));
+    const montant = cfImpAmtSane(g('mont'));
     const projet = String(g('projet') || '').trim();
     if(!(montant > 0) || !projet) continue;
     out.push({ ref: String(g('ref')||'').trim().toUpperCase(), projet, entreprise: String(g('ent')||'').trim(), montant, taux: cfImpNum(g('taux')), mensualite: cfImpNum(g('mens')),
-      prochaine: cfImpDateISO(g('proch')), attente: /attente/i.test(String(g('proch')||'')), pf: String(g('pf')||'').trim(), dsub: cfImpDateISO(g('dsub')), duree: parseInt(g('duree'),10) || 0 });
+      prochaine: cfImpDateISO(g('proch')), attente: /attente/i.test(String(g('proch')||'')),
+      fini: !/attente/i.test(String(g('proch')||'')) && (!cfImpDateISO(g('proch')) || /termin|rembours|sold[eé]e?\b|cl[oô]tur[é]/i.test(String(g('proch')||'') + ' ' + String(g('statut')||''))), pf: String(g('pf')||'').trim(), dsub: cfImpDateISO(g('dsub')), duree: parseInt(g('duree'),10) || 0 });
   }
   return out;
 }
@@ -71818,9 +71858,9 @@ async function cfImpFile(input){
   cfImpMsg('Lecture du fichier…', 'info');
   document.getElementById('cfImpBody').style.display = 'none';
   try{
-    let rows = [], pf = '';
+    let rows = [], pf = '', exportTxt = '';
     if(/\.pdf$/i.test(file.name)){
-      const r = await cfImpParsePdf(file); rows = r.rows; pf = r.pf;
+      const r = await cfImpParsePdf(file); rows = r.rows; pf = r.pf; exportTxt = r.whole || '';
     } else if(/\.(xlsx|xls)$/i.test(file.name)){
       const wb = kyfXlsxRead(await file.arrayBuffer());
       for(const n of wb.SheetNames){ const g = cfImpParseGrid(kyfClampGrid(XLSX.utils.sheet_to_json(wb.Sheets[n], {header:1, raw:false, defval:''}))); if(g && g.length){ rows = g; break; } }
@@ -71833,6 +71873,11 @@ async function cfImpFile(input){
       if(rows.some(r => /^C[0-9A-F]{12,}/i.test(r.ref))) pf = 'Bienprêter';
     }
     if(!rows.length){ cfImpMsg("Aucun prêt reconnu dans ce fichier. Il faut au minimum un nom de projet et un montant par ligne.", 'err'); return; }
+    // Une « prochaine échéance » antérieure à la date de l'export (ou à aujourd'hui) n'est plus à venir : prêt probablement terminé
+    // (ou, plus rarement, en retard : la liste l'indique et la case peut être décochée).
+    const dm = /date de l.export\s*:?\s*(\d{2}\/\d{2}\/\d{4})/i.exec(exportTxt);
+    const refISO = (dm && cfImpDateISO(dm[1])) || cfImpDateISO(new Date());
+    rows.forEach(r => { if(r.prochaine && !r.attente && r.prochaine < refISO){ r.fini = true; r.passee = true; } });
     const known = new Set(cfLoad().map(x => x.ref).filter(Boolean));
     rows.forEach(r => { r.dup = !!(r.ref && known.has(r.ref)); r.on = !r.dup; });
     _cfImp = { rows, pf };
@@ -71854,9 +71899,13 @@ function cfImpRender(){
   L.innerHTML = _cfImp.rows.map((r, i) => `<div class="cf-imp-row${r.dup ? ' dup' : ''}" onclick="cfImpToggle(${i})">
     <input type="checkbox" ${r.on ? 'checked' : ''} ${r.dup ? 'disabled' : ''} style="accent-color:var(--accent);width:14px;height:14px;flex-shrink:0;pointer-events:none">
     <div style="flex:1;min-width:0"><div style="color:var(--text);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${cfImpEsc(cfImpName(r))}</div>
-      <div style="font-size:9px;color:var(--text3);margin-top:1px">${r.dup ? 'Déjà importé' : (r.attente ? 'En attente de la clôture' : (r.prochaine ? 'Prochaine échéance ' + r.prochaine.split('-').reverse().join('/') : ''))}</div></div>
+      <div style="font-size:9px;color:var(--text3);margin-top:1px">${r.dup ? 'Déjà importé' : (r.passee ? 'Échéance dépassée (' + r.prochaine.split('-').reverse().join('/') + '), probablement terminé' : r.fini ? 'Terminé, aucune échéance à venir' : r.attente ? 'En attente de la clôture' : (r.prochaine ? 'Prochaine échéance ' + r.prochaine.split('-').reverse().join('/') : ''))}</div></div>
     <div style="text-align:right;flex-shrink:0"><div style="color:var(--text);font-weight:700">${cfImpFmt(r.montant)} €</div><div style="font-size:9px;color:var(--text3)">${r.taux ? cfImpFmt(r.taux) + ' %' : ''}</div></div>
   </div>`).join('');
+  try{
+    const nf = _cfImp.rows.filter(r => r.fini && !r.dup).length, fr = document.getElementById('cfImpFiniRow');
+    if(fr){ fr.style.display = nf ? 'flex' : 'none'; document.getElementById('cfImpFiniTxt').textContent = 'Importer comme remboursés les ' + nf + ' prêt' + (nf > 1 ? 's' : '') + ' terminé' + (nf > 1 ? 's' : '') + ' (sans échéance à venir ou échéance dépassée). Sinon ils seraient comptés « en cours ».'; }
+  }catch(_){}
   const n = _cfImp.rows.filter(r => r.on).length, tot = _cfImp.rows.filter(r => r.on).reduce((a, r) => a + r.montant, 0);
   document.getElementById('cfImpCount').textContent = n + ' PRÊT' + (n > 1 ? 'S' : '') + ' SÉLECTIONNÉ' + (n > 1 ? 'S' : '') + ' · ' + cfImpFmt(tot) + ' €';
   const b = document.getElementById('cfImpGo'); b.disabled = !n; b.textContent = n ? 'Importer ' + n + ' prêt' + (n > 1 ? 's' : '') : 'Importer';
@@ -71869,10 +71918,11 @@ function cfImpApply(){
   const dsub = document.getElementById('cfImpDate').value || '';
   const dur = parseInt(document.getElementById('cfImpDuree').value, 10) || 0;
   const data = cfLoad(); const t0 = Date.now();
+  const finisRembourses = !!document.getElementById('cfImpFini')?.checked;
   sel.forEach((r, i) => {
     const ds = r.dsub || dsub, du = r.duree || dur;
     data.push({ id: 'cf_' + t0 + '_' + i, nom: cfImpName(r), plateforme: pf || r.pf || '', montant: r.montant, taux: r.taux,
-      dateSouscription: ds, dureeM: du, dateEcheance: (ds && du) ? cfAddMonthsISO(ds, du) : '', statut: 'en-cours', montantPercu: 0, montantPerdu: 0, ref: r.ref || '' });
+      dateSouscription: ds, dureeM: du, dateEcheance: (ds && du) ? cfAddMonthsISO(ds, du) : '', statut: (r.fini && finisRembourses) ? 'rembourse' : 'en-cours', montantPercu: 0, montantPerdu: 0, ref: r.ref || '' });
   });
   cfSave(data); renderCrowdfunding(); cfImpClose();
   try{ kyfQuickToast(sel.length + ' prêt' + (sel.length > 1 ? 's' : '') + ' importé' + (sel.length > 1 ? 's' : '')); }catch(_){}
@@ -82758,6 +82808,10 @@ function orInlineEdit(id, td, currentVal){
         <div><div style="font-size:9px;color:var(--text3);margin-bottom:3px">DURÉE PRÉVUE (MOIS, pour tous)</div><input type="number" id="cfImpDuree" min="1" max="120" step="1" placeholder="Ex : 12" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg) !important;border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 10px;border-radius:6px;outline:none"></div>
       </div>
       <div style="font-size:9px;color:var(--text3);line-height:1.6;margin-bottom:14px">Le fichier ne donne ni date de souscription ni durée : renseignez-les ici pour calculer les dates de remboursement, ou laissez vide et complétez plus tard projet par projet.</div>
+      <label id="cfImpFiniRow" class="cf-imp-fini" style="display:none;align-items:center;gap:8px;font-size:10px;color:var(--text2);line-height:1.5;margin-bottom:12px;cursor:pointer">
+        <input type="checkbox" id="cfImpFini" checked onchange="cfImpRender()" style="accent-color:var(--accent);width:14px;height:14px;flex-shrink:0;cursor:pointer">
+        <span id="cfImpFiniTxt"></span>
+      </label>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
         <div id="cfImpCount" style="font-size:10px;font-weight:700;color:var(--text2);letter-spacing:.4px"></div>
         <div style="display:flex;gap:6px">
@@ -82776,6 +82830,8 @@ function orInlineEdit(id, td, currentVal){
 <style>
 .cf-imp-lnk{font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:5px 10px;border-radius:6px;border:1px solid var(--border2);background:none;color:var(--text2);cursor:pointer;transition:background .15s,color .15s}
 .cf-imp-lnk:hover{background:var(--hov-bg);color:var(--text)}
+.cf-imp-fini{padding:7px 10px;border-radius:8px;border:1px solid var(--border);transition:background .15s,color .15s}
+.cf-imp-fini:hover{background:var(--hov-bg);color:var(--text)}
 #cfImpGo:disabled{opacity:.4;cursor:not-allowed}
 .cf-imp-row{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;font-size:11px;color:var(--text2)}
 .cf-imp-row:last-child{border-bottom:none}
