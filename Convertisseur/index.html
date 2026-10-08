@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <!--
   ============================================================
-  @file        : KYF_PDF_to_CSV_v2_478.html
+  @file        : KYF_PDF_to_CSV_v2_480.html
   @application : Keep Your Folio (KYF) · Convertisseur PDF → CSV
   @description : Lit les relevés de courtier PDF entièrement dans le
                  navigateur (aucun envoi) et produit le fichier que le
                  Dashboard KYF importe.
-  @version     : v2.478
+  @version     : v2.480
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -20,7 +20,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs; worker-src 'self' blob: https://cdnjs.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none';">
-<title>KYF Convertisseur PDF v2.478</title>
+<title>KYF Convertisseur PDF v2.480</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1370,7 +1370,7 @@
   <div class="hero">
     <div class="hero-title">
     <h1>Convertisseur PDF <span>→ CSV</span> <span style="display:inline-block;background:#c99a06;color:#000;font-size:12px;font-weight:800;letter-spacing:.5px;padding:2px 8px;border-radius:6px;vertical-align:middle;">Bêta</span></h1>
-    <p>Détection automatique · v2.478 · Multi PDF en mode Portefeuille</p>
+    <p>Détection automatique · v2.480 · Multi PDF en mode Portefeuille</p>
     </div>
   </div>
 
@@ -1874,6 +1874,12 @@
       <button type="button" class="btn btn-secondary" onclick="bifferStepPage(-1)" title="Page précédente" aria-label="Page précédente" style="padding:4px 10px;font-size:11px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg></button>
       <span id="bifferPageLabel" style="font-size:11px;color:var(--text2);min-width:80px;text-align:center">Page 1 / 1</span>
       <button type="button" class="btn btn-secondary" onclick="bifferStepPage(1)" title="Page suivante" aria-label="Page suivante" style="padding:4px 10px;font-size:11px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></button>
+    </div>
+    <!-- v2.480 : loupes Agrandir / Réduire / 100% comme sur la prévisualisation PDF du convertisseur (mêmes boutons .pdf-nav-btn). -->
+    <div class="pdf-nav-btns" style="justify-content:center;margin:0 0 6px">
+      <button type="button" class="pdf-nav-btn" onclick="bifferZoom(25)" title="Agrandir" aria-label="Agrandir"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></button>
+      <button type="button" class="pdf-nav-btn" onclick="bifferZoom(-25)" title="Réduire" aria-label="Réduire"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg></button>
+      <button type="button" class="pdf-nav-btn" onclick="bifferZoom(0)" title="Taille originale" aria-label="Taille originale"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg> <span id="bifferZoomLabel">100%</span></button>
     </div>
 
     <div class="biffer-pdf-scroll">
@@ -2396,7 +2402,7 @@
 <script>
   /**
    * @file        KYF PDF to CSV — Convertisseur PDF intelligent
-   * @version     v2.478
+   * @version     v2.480
    * @description Convertisseur PDF → CSV pour KYF Dashboard.
    *              Détection automatique multi-courtiers, biffage pour les
    *              documents non reconnus (voir kyf_biffer_backend.gs).
@@ -2404,7 +2410,7 @@
    * @copyright   © 2026 Keep Your Folio (KYF) — keepyourfolio.fr
    * @license     AGPL-3.0-or-later
    */
-  console.log('%c Keep Your Folio %c PDF → CSV v2.478 %c keepyourfolio.fr ',
+  console.log('%c Keep Your Folio %c PDF → CSV v2.480 %c keepyourfolio.fr ',
     'background:#1a1f2e;color:#f0b429;font-weight:700;padding:4px 8px;border-radius:4px 0 0 4px',
     'background:#2563eb;color:#fff;font-weight:700;padding:4px 8px',
     'background:#1a1f2e;color:#aaa;padding:4px 8px;border-radius:0 4px 4px 0'
@@ -5702,6 +5708,11 @@
       : 'Bourse Direct';
     releveData.positions = reconstructPositionsFromTransactions(transactions);
     releveData.mouvements = mouvements;
+    // Rien de reconnu dans ce relevé : on le dit clairement et on propose d'aider à intégrer cette banque / ce courtier
+    if(!releveData.positions.length && !releveData.mouvements.length){
+      setStatusBar('error', "Aucune opération reconnue dans ce relevé");
+      document.getElementById('fallbackMsg').style.display = 'block';
+    }
 
     document.getElementById('relevePosCount').textContent = releveData.positions.length;
     document.getElementById('relevePosBody').innerHTML = releveData.positions.map(p => `
@@ -6081,6 +6092,9 @@
       }
 
       setStatusBar('error', 'Document non reconnu');
+      // Fin de la chaîne de repli sans structure trouvée : on arrête l'animation « Recherche d'une structure de tableau... »
+      // (elle tournait indéfiniment et donnait l'impression qu'une analyse était encore en cours)
+      hideRawTextFallbackLoading();
       document.getElementById('fallbackMsg').style.display = 'block';
     } else {
       setStep('step-detect', 'done', `${courtier.label} — ${courtier.confidence}% de confiance`);
@@ -6168,6 +6182,8 @@
     if (!rows.length) {
       setStep('step-parse', 'error', 'Aucune ligne extraite');
       setStatusBar('error', 'Aucune ligne extraite');
+      // Document mal lu : on propose tout de suite d'aider à intégrer cette banque / ce courtier
+      document.getElementById('fallbackMsg').style.display = 'block';
       // Aucune structure de tableau reconnue, mais s'il y a du texte natif dans le document
       // (donc pas un simple scan/image), on propose au moins ce texte à copier — mieux qu'un
       // échec sec, notamment pour les documents qui n'ont simplement rien à voir avec un
@@ -6752,6 +6768,7 @@
   let _bifferDrawing = false, _bifferStartX = 0, _bifferStartY = 0;
 
   async function openBifferOverlay(suggestedCourtier = '') {
+    _bifferZoom = 100;
     _bifferSuggestedCourtier = suggestedCourtier;
     const elements = window._lastPdfElements || [];
     const numPages = window._lastPdfNumPages || 1;
@@ -6863,6 +6880,7 @@
     (_bifferRects[n] || []).forEach(r => ctx.fillRect(r.x, r.y, r.w, r.h));
     ov.getContext('2d').clearRect(0, 0, ov.width, ov.height);
     _bifferCurrentPage = n;
+    bifferApplyZoom();
     // Numérotation affichée = position parmi les pages RESTANTES (pas le numéro de page
     // original) : après suppression d'une page, l'utilisateur doit voir "Page 2 / 4",
     // jamais "Page 3 / 5" avec une page manquante au milieu du compte.
@@ -6875,6 +6893,26 @@
     // zone non noircie -ou le message neutre "aucune donnée détectée"- dès qu'on quittait
     // la page puis y revenait, alors que la page restait non validée.
     document.getElementById('bifferVerifyResult').innerHTML = _bifferVerifyResultHtml[n] || '';
+  }
+
+  // v2.480 : zoom de la page à noircir. Le zoom ne change que la taille d'affichage (CSS) : les coordonnées des traits
+  // passent déjà par getBoundingClientRect, donc le noircissage reste exact à tous les niveaux de zoom.
+  let _bifferZoom = 100;
+  function bifferApplyZoom() {
+    const c = document.getElementById('bifferCanvas'), ov = document.getElementById('bifferOverlayCanvas');
+    const box = c && c.closest('.biffer-pdf-scroll');
+    const lab = document.getElementById('bifferZoomLabel');
+    if (lab) lab.textContent = _bifferZoom + '%';
+    if (!c || !box || !c.width) return;
+    if (_bifferZoom === 100) { c.style.width = ''; c.style.maxWidth = '100%'; ov.style.width = ''; ov.style.height = ''; ov.style.maxWidth = '100%'; return; }
+    const base = Math.min(c.width, Math.max(120, box.clientWidth - 4));
+    const w = Math.round(base * _bifferZoom / 100), h = Math.round(w * c.height / c.width);
+    c.style.maxWidth = 'none'; c.style.width = w + 'px';
+    ov.style.maxWidth = 'none'; ov.style.width = w + 'px'; ov.style.height = h + 'px';
+  }
+  function bifferZoom(d) {
+    _bifferZoom = d === 0 ? 100 : Math.max(50, Math.min(300, _bifferZoom + d));
+    bifferApplyZoom();
   }
 
   function bifferAttachCanvasEvents() {
