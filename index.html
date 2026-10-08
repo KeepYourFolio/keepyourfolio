@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_2_188.html
+  @file        : KYF_SHARE_beta_2_8_2_189.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.2.188
+  @version     : Beta 2.8.2.189
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6257,11 +6257,11 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
     <button class="icon-btn" id="discreetBtn" onclick="kyfDiscreetToggle()" title="Mode discret : masquer les montants (Alt + M)" aria-pressed="false">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
     </button>
-    <button class="icon-btn" id="quickBackupBtn" onclick="exportConfig({quick:true})" title="Sauvegarder maintenant (fichier JSON daté)" aria-label="Sauvegarder maintenant" style="position:relative">
+    <button class="icon-btn" id="quickBackupBtn" onclick="exportConfig({quick:true})" title="Sauvegarder maintenant (fichier JSON daté)" aria-label="Sauvegarder maintenant" style="display:none;position:relative">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       <span id="quickBackupDot" style="display:none;position:absolute;top:-2px;right:-2px;width:7px;height:7px;border-radius:50%;background:#ff9f43;border:1.5px solid var(--topbar-bg)"></span>
     </button>
-    <button class="icon-btn" id="quickRestoreBtn" onclick="document.getElementById('quickRestoreFile').click()" title="Restaurer une sauvegarde (fichier JSON ou CGX)" aria-label="Restaurer une sauvegarde">
+    <button class="icon-btn" id="quickRestoreBtn" onclick="document.getElementById('quickRestoreFile').click()" title="Restaurer une sauvegarde (fichier JSON ou CGX)" aria-label="Restaurer une sauvegarde" style="display:none">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
     </button>
     <input type="file" id="quickRestoreFile" accept=".json,.cgx" style="display:none" onchange="importConfig(this)">
@@ -6519,7 +6519,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.2.188</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.2.189</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -12294,6 +12294,43 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 // Sauvegarde rapide (barre du haut) : un clic télécharge un fichier daté. Pastille orange quand la dernière sauvegarde a plus de 7 jours
 // (ou n'existe pas) alors qu'il y a des données. Firefox en mode strict efface le stockage à la fermeture : ce rappel évite de l'oublier.
+// ═══ v2.8.2.189 : boutons Sauvegarder / Restaurer de la barre du haut, masqués par défaut ═══
+// Réglage propre à l'appareil (n'entre pas dans les sauvegardes). Pas de version chiffrée de la sauvegarde : l'utilisateur
+// est averti au moment où il active un des boutons.
+const KYF_TBIO = { export:{ key:'kyf-tb-export', btn:'quickBackupBtn' }, import:{ key:'kyf-tb-import', btn:'quickRestoreBtn' } };
+function kyfTopbarIoApply(){
+  Object.keys(KYF_TBIO).forEach(k => {
+    let on = false; try{ on = localStorage.getItem(KYF_TBIO[k].key) === '1'; }catch(_){}
+    const b = document.getElementById(KYF_TBIO[k].btn), c = document.getElementById('tbIo-' + k);
+    if(b) b.style.display = on ? '' : 'none';
+    if(c) c.checked = on;
+  });
+}
+function kyfTopbarIoSet(k, on){ try{ if(on) localStorage.setItem(KYF_TBIO[k].key, '1'); else localStorage.removeItem(KYF_TBIO[k].key); }catch(_){} kyfTopbarIoApply(); }
+function kyfTopbarIoToggle(k, on){
+  if(!on){ kyfTopbarIoSet(k, false); return; }
+  const c = document.getElementById('tbIo-' + k); if(c) c.checked = false; // coché seulement après confirmation
+  const exp = k === 'export';
+  let ov = document.getElementById('kyfTbIoWarn');
+  if(!ov){ ov = document.createElement('div'); ov.id = 'kyfTbIoWarn'; document.body.appendChild(ov); }
+  ov.style.cssText = 'display:flex;position:fixed;inset:0;z-index:100000000;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:20px;box-sizing:border-box';
+  const li = t => '<div style="display:flex;gap:8px;align-items:flex-start;margin-top:8px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:3px"><polyline points="20 6 9 17 4 12"/></svg><span>' + t + '</span></div>';
+  ov.innerHTML = '<div style="width:min(440px,94vw);background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:22px;font-family:\'Inter\',sans-serif;box-shadow:0 12px 48px rgba(0,0,0,.4)">'
+    + '<div style="display:flex;align-items:center;gap:9px;margin-bottom:12px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span style="font-size:13px;font-weight:700;color:var(--text)">À savoir avant d\'activer ce bouton</span></div>'
+    + '<div style="font-size:11px;color:var(--text2);line-height:1.6">'
+    + (exp ? li('La sauvegarde est un fichier <strong style="color:var(--text)">non chiffré</strong> : toutes vos données patrimoniales y sont lisibles par quiconque ouvre le fichier.')
+           + li('Rangez-le dans un endroit sûr (clé USB, disque chiffré, coffre) et ne le laissez pas traîner dans Téléchargements ou un espace partagé.')
+           + li('Pour une sauvegarde <strong style="color:var(--text)">protégée par mot de passe</strong>, utilisez Mon compte, Export / Import avancé.')
+           + li('Ne l\'envoyez à personne, pas même pour signaler un bug.')
+         : li('Restaurer une sauvegarde <strong style="color:var(--text)">remplace vos données actuelles</strong> par celles du fichier.')
+           + li('N\'ouvrez que des fichiers que vous avez vous-même sauvegardés avec KYF, jamais un fichier reçu d\'une source inconnue.')
+           + li('Pensez à sauvegarder avant, pour pouvoir revenir en arrière.'))
+    + '</div><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:18px">'
+    + '<button type="button" onclick="document.getElementById(\'kyfTbIoWarn\').style.display=\'none\'" style="font-family:\'Inter\',sans-serif;font-size:10px;font-weight:700;padding:8px 16px;border-radius:8px;border:1px solid var(--border2);background:none;color:var(--text3);cursor:pointer;transition:background .15s" onmouseover="this.style.background=\'var(--hov-bg)\'" onmouseout="this.style.background=\'none\'">Annuler</button>'
+    + '<button type="button" onclick="document.getElementById(\'kyfTbIoWarn\').style.display=\'none\';kyfTopbarIoSet(\'' + k + '\',true)" style="font-family:\'Inter\',sans-serif;font-size:10px;font-weight:700;padding:8px 16px;border-radius:8px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:opacity .15s" onmouseover="this.style.opacity=\'.85\'" onmouseout="this.style.opacity=\'1\'">J\'ai compris, afficher le bouton</button></div></div>';
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', kyfTopbarIoApply); else kyfTopbarIoApply();
+
 function kyfBackupDotRefresh(){
   const dot = document.getElementById('quickBackupDot'), btn = document.getElementById('quickBackupBtn');
   if(!dot || !btn) return;
@@ -40430,7 +40467,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.188\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.189\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -61798,6 +61835,18 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
     </div>
         </div>
       </div>
+      <div class="ed-section" style="margin-top:22px">BARRE DU HAUT</div>
+      <div style="font-size:10px;color:var(--text3);line-height:1.6;margin:0 0 12px">Les boutons Sauvegarder et Restaurer sont masqués par défaut. Vous pouvez toujours sauvegarder et restaurer depuis Mon compte, Export / Import avancé (avec mot de passe si vous le souhaitez). Un avertissement s'affiche quand vous les activez.</div>
+      <div style="display:flex;flex-direction:column;gap:8px;max-width:520px">
+        <label style="display:flex;align-items:flex-start;gap:9px;cursor:pointer;font-size:11px;color:var(--text2);padding:9px 11px;border-radius:7px;background:rgba(255,255,255,0.02);border:1px solid var(--border);transition:background .15s" onmouseover="this.style.background='var(--hov-bg)'" onmouseout="this.style.background='rgba(255,255,255,0.02)'">
+          <input type="checkbox" id="tbIo-export" style="accent-color:var(--accent);width:14px;height:14px;flex-shrink:0;margin-top:1px" onchange="kyfTopbarIoToggle('export', this.checked)">
+          <span><span style="color:var(--text);font-weight:600">Bouton Sauvegarder (export)</span><br><span style="font-size:10px;color:var(--text3);line-height:1.5">Télécharge toutes vos données dans un fichier JSON daté.</span></span>
+        </label>
+        <label style="display:flex;align-items:flex-start;gap:9px;cursor:pointer;font-size:11px;color:var(--text2);padding:9px 11px;border-radius:7px;background:rgba(255,255,255,0.02);border:1px solid var(--border);transition:background .15s" onmouseover="this.style.background='var(--hov-bg)'" onmouseout="this.style.background='rgba(255,255,255,0.02)'">
+          <input type="checkbox" id="tbIo-import" style="accent-color:var(--accent);width:14px;height:14px;flex-shrink:0;margin-top:1px" onchange="kyfTopbarIoToggle('import', this.checked)">
+          <span><span style="color:var(--text);font-weight:600">Bouton Restaurer (import)</span><br><span style="font-size:10px;color:var(--text3);line-height:1.5">Recharge une sauvegarde JSON ou CGX.</span></span>
+        </label>
+      </div>
     </div>
 
     <!-- ── ONGLET VERSION ── -->
@@ -62310,6 +62359,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.189 · 08/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Barre du haut : les boutons Sauvegarder et Restaurer sont maintenant masqués par défaut. Paramètres, Affichage, nouveau bloc « Barre du haut » pour les afficher. Comme la sauvegarde n'est pas chiffrée, un avertissement s'affiche à l'activation de chacun (fichier lisible par tous, à ranger en lieu sûr ; la restauration remplace vos données). Sauvegarder et restaurer (avec mot de passe possible) restent disponibles depuis Mon compte, Export / Import avancé.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.188 · 08/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import de prêts crowdfunding : on peut maintenant glisser le fichier n'importe où sur la page, comme partout ailleurs dans KYF (le voile « Déposez votre fichier ici » apparaît, formats PDF, CSV et Excel acceptés).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.187 · 08/10/2026</div>
