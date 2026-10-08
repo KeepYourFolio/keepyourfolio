@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_2_212.html
+  @file        : KYF_SHARE_beta_2_8_2_213.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.2.212
+  @version     : Beta 2.8.2.213
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6527,7 +6527,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.2.212</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.2.213</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -40559,7 +40559,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.212\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.213\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -62451,6 +62451,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.213 · 08/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">KPI Assurance vie : unités de compte calculées depuis le détail des supports</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.212 · 08/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Infobulle de synchro : plus de doublon</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.211 · 08/10/2026</div>
@@ -78832,8 +78834,16 @@ function renderAV(){
   const totalRach  = data.reduce((s,d)=>s+(parseFloat(d.rachats)||0), 0);
   const pv         = totalVal + totalRach - totalVers;
   const pvPct      = totalVers > 0 ? (pv/totalVers*100) : 0;
-  const totalFE    = data.reduce((s,d)=>s+(d.fondsEuros||0), 0);
-  const totalUC    = data.reduce((s,d)=>s+(d.uc||0), 0);
+  // Répartition par contrat : fonds euros = lignes « fe » du détail (sinon le champ du contrat) ; unités de compte = le reste de la valeur
+  // (avant, le champ « uc » du contrat était lu tel quel : il reste à 0 quand les supports viennent du relevé détaillé).
+  let totalFE = 0, totalUC = 0;
+  data.forEach(d=>{
+    let fe = 0;
+    try{ const pos = avPosLoad(d.id); const feP = pos.filter(p=>p.type==='fe'); fe = feP.length ? feP.reduce((a,p)=>a+(parseFloat(p.valeur)||0),0) : (parseFloat(d.fondsEuros)||0); }
+    catch(e){ fe = parseFloat(d.fondsEuros)||0; }
+    const full = avContratFullValue(d);
+    totalFE += fe; totalUC += Math.max(0, full - fe);
+  });
   const nbAV       = allData.filter(d=>d.type==='av').length;
   const nbPER      = allData.filter(d=>['per','per-col','per-ob'].includes(d.type)).length;
 
