@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_2_206.html
+  @file        : KYF_SHARE_beta_2_8_2_212.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.2.206
+  @version     : Beta 2.8.2.212
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6527,7 +6527,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.2.206</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.2.212</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -14606,7 +14606,15 @@ function kyfSetSyncRing(state, title, noPing){
     clearTimeout(ring._pingT);
     ring._pingT = setTimeout(()=>ring.classList.remove('sync-ping'), 1000);
   }
-  if(btn) btn.title = title || KYF_SYNC_TITLES[state] || 'Options avancées';
+  if(btn){
+    const tt = title || KYF_SYNC_TITLES[state] || 'Options avancées';
+    // survol en cours : la bulle KYF a déjà pris le title (data-kyf-tip-moved) → on met à jour la bulle, sans recréer de title natif (doublon)
+    if(btn.hasAttribute('data-kyf-tip-moved')){
+      btn.setAttribute('data-kyf-tip', tt); btn.removeAttribute('title');
+      const kt = document.getElementById('kyfTip');
+      if(kt && kt.style.display !== 'none') kt.textContent = tt;
+    } else btn.title = tt;
+  }
 }
 function updateSheetsIndicator(){
   const ring = document.getElementById('sheetsRing');
@@ -23712,6 +23720,7 @@ async function kyfOpenFigiHeaders(){
   return h;
 }
 
+const KYF_FIGI_YAHOO_SUFFIX = { FP:'.PA', NA:'.AS', GY:'.DE', GR:'.DE', IM:'.MI', SM:'.MC', BB:'.BR', LN:'.L', SW:'.SW', ID:'.IR', PL:'.LS', FH:'.HE', SS:'.ST', DC:'.CO', NO:'.OL' };
 // ISIN → { ticker, name, exchCode, isin } ou null si rien trouvé.
 async function kyfOpenFigiByISIN(isin){
   try{
@@ -23723,9 +23732,17 @@ async function kyfOpenFigiByISIN(isin){
     });
     if(!res.ok) return null;
     const data = await res.json();
-    const first = data?.[0]?.data?.[0];
-    if(!first?.ticker) return null;
-    return { ticker: first.ticker, name: first.name || first.ticker, exchCode: first.exchCode || '', isin: isin.toUpperCase(), type: first.securityType2 === 'Common Stock' ? 'Action' : 'ETF' };
+    const list = (data?.[0]?.data || []).filter(x => x && x.ticker);
+    if(!list.length) return null;
+    // OpenFIGI renvoie le ticker Bloomberg SANS suffixe de bourse (« GOLD » pour un ETC coté à Paris) : sans suffixe, Yahoo lit
+    // un tout autre titre (« GOLD » = Barrick, en dollars). On prend une cotation connue (Paris en priorité) et on ajoute le suffixe Yahoo.
+    const ORDRE = ['FP','NA','GY','GR','IM','SM','BB','LN','SW','ID','PL','FH','SS','DC','NO'];
+    const rang = x => { const i = ORDRE.indexOf(x.exchCode); return i < 0 ? 99 : i; };
+    const first = list.slice().sort((a,b) => rang(a) - rang(b))[0];
+    const suf = KYF_FIGI_YAHOO_SUFFIX[first.exchCode];
+    if(!suf && !/^[A-Z]{2}$/.test(first.exchCode||'')) return null;
+    if(!suf) return null;   // bourse inconnue : mieux vaut ne rien proposer qu'un ticker qui désigne un autre titre
+    return { ticker: String(first.ticker).toUpperCase().replace(/\s+/g,'-') + suf, name: first.name || first.ticker, exchCode: first.exchCode || '', isin: isin.toUpperCase(), type: first.securityType2 === 'Common Stock' ? 'Action' : 'ETF' };
   }catch(e){ return null; }
 }
 
@@ -23743,8 +23760,9 @@ async function kyfOpenFigiSearchByName(query){
     });
     if(!res.ok) return [];
     const data = await res.json();
-    return (data.data||[]).filter(d=>d.ticker && d.name).map(d=>({
-      ticker: d.ticker, name: d.name, exchCode: d.exchCode || '',
+    // Même règle que pour l'ISIN : ticker Bloomberg sans suffixe → suffixe Yahoo, et on écarte les bourses inconnues
+    return (data.data||[]).filter(d=>d.ticker && d.name && KYF_FIGI_YAHOO_SUFFIX[d.exchCode]).map(d=>({
+      ticker: String(d.ticker).toUpperCase().replace(/\s+/g,'-') + KYF_FIGI_YAHOO_SUFFIX[d.exchCode], name: d.name, exchCode: d.exchCode || '',
       type: d.securityType2 === 'Common Stock' ? 'Action' : 'ETF'
     }));
   }catch(e){ return []; }
@@ -23777,9 +23795,19 @@ async function kyfSearchAsset(query){
   const key = query.trim().toLowerCase();
   if(_assetSearchCache.has(key)) return _assetSearchCache.get(key);
 
-  // ISIN : OpenFIGI direct, inchangé - c'est déjà la meilleure source.
+  // ISIN : d'abord la base KYF (ticker Yahoo exact), puis le service de résolution KYF (recherche Yahoo côté serveur),
+  // et seulement en dernier recours OpenFIGI (dont le ticker est converti avec le suffixe de bourse).
   if(kyfIsISINShape(query)){
-    const result = await kyfOpenFigiSearch(query);
+    const isinQ = query.trim().toUpperCase();
+    let result = [];
+    try{
+      const loc = await fiFindHintsByISIN(isinQ);
+      result = loc.filter(h => h.ticker).map(h => ({ ticker: h.ticker, name: h.name, type: h.type || 'ETF', isin: isinQ }));
+    }catch(e){}
+    if(!result.length){
+      try{ const hit = await kyfResolveByISIN(isinQ, ''); if(hit && hit.ticker) result = [{ ticker: hit.ticker, name: hit.name || hit.ticker, type: 'ETF', isin: isinQ }]; }catch(e){}
+    }
+    if(!result.length) result = await kyfOpenFigiSearch(query);
     _assetSearchCache.set(key, result);
     return result;
   }
@@ -26236,6 +26264,11 @@ async function kyfPullOnStartup(){
     const queue = kyfQueueLoad();
     const changedAtStart = (window._kyfStartupPull && window._kyfStartupPull.changed) || new Set();
     let   queueTouched = false;
+    // Clés « passives » : caches et journaux que l'appli réécrit toute seule à chaque session (cours intraday, index et
+    // instantanés quotidiens, journal des alertes). Leur valeur est reprise du Sheet, mais elles ne justifient jamais de
+    // recharger la page : rien de ce qui est affiché n'en dépend avant la prochaine navigation.
+    const _passive = k => k === 'kyf-intraday-cache' || k === 'pea-crypto-intraday' || k === 'kyf-snapshots-index' || String(k).startsWith('kyf-snapshot-') || String(k).startsWith('kyf-alerts-');
+    const reloadKeys = [];
 
     rows.forEach(row=>{
       const [key, rawData, timestamp] = row;
@@ -26264,7 +26297,7 @@ async function kyfPullOnStartup(){
         count++;
         // L'écriture locale faite pendant le chargement (module vide) ne doit pas repartir vers le Sheet
         if(changedAtStart.has(key) && queue[key]){ delete queue[key]; queueTouched = true; }
-        if(changedAtStart.has(key) || localRaw !== null) reloadNeeded = true;
+        if((changedAtStart.has(key) || localRaw !== null) && !_passive(key)){ reloadNeeded = true; reloadKeys.push(key); }
       }
     });
     if(queueTouched) kyfQueueSave(queue);
@@ -26279,7 +26312,8 @@ async function kyfPullOnStartup(){
     if(reloadNeeded){
       let last = 0; try{ last = parseInt(sessionStorage.getItem('kyf-pull-reload')||'0'); }catch(e){}
       if(Date.now() - last > 60000){
-        try{ sessionStorage.setItem('kyf-pull-reload', String(Date.now())); sessionStorage.setItem('kyf-pull-reload-toast','1'); }catch(e){}
+        try{ sessionStorage.setItem('kyf-pull-reload', String(Date.now())); sessionStorage.setItem('kyf-pull-reload-toast','1'); sessionStorage.setItem('kyf-pull-reload-keys', reloadKeys.join(',')); }catch(e){}
+        console.info('[KYF Sync] Rechargement après restauration depuis Google, clés modifiées :', reloadKeys.join(', '));
         window._kyfStartupPull.pending = false;
         location.reload();
         return;
@@ -40525,7 +40559,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.206\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.212\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -62417,6 +62451,18 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.212 · 08/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Infobulle de synchro : plus de doublon</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.211 · 08/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Sauvegarde Google : la page ne se recharge plus au démarrage quand seuls des caches et journaux ont changé (cours intraday, instantanés quotidiens, journal des alertes). Quand un rechargement a lieu, les clés concernées sont notées pour le diagnostic.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.210 · 08/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Listes déroulantes dans les fenêtres (ex. Ajouter un métal précieux, Produit) : la molette de la souris fait de nouveau défiler la liste, elle était bloquée par le verrouillage du défilement de la page.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.209 · 08/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Ajout d'un actif par ISIN : le ticker trouvé par OpenFIGI n'avait pas de suffixe de bourse (« GOLD » pour un ETC coté à Paris), et Yahoo lisait alors un autre titre au mauvais prix. KYF cherche maintenant d'abord dans sa base, puis via son service de résolution, et ajoute le suffixe de bourse (.PA, .L, .DE...) en dernier recours.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.208 · 08/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Or et métaux précieux : choisir « ETF Or » ou « ETF Argent » affiche maintenant un message et un bouton AJOUTER DANS PORTEFEUILLE (un ETF ou un ETC se suit avec ses autres titres, au cours de bourse), au lieu d'une ligne non valorisée.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.207 · 08/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comparateur SCPI : même présentation que le comparateur assurance vie (lignes alternées, trophée par critère, ligne « Meilleures valeurs », barre d'indices masquée). Plus de trophée sur le prix de part (un prix plus élevé n'est pas meilleur).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.206 · 08/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Immobilier, liste des SCPI : nouvelle colonne JOUISSANCE (délai en mois avant le premier dividende) dans le tableau, et nouvelle ligne dans le comparateur.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.205 · 08/10/2026</div>
@@ -69989,50 +70035,62 @@ function openComparateur(){
   const selected = _scpiListeData.filter(s=>_compareSelection.has(s.slug));
   const content  = document.getElementById('comparateurContent');
   if(!content) return;
+  const num = v => { const n = parseFloat(String(v==null?'':v).replace(',','.')); return isNaN(n) ? null : n; };
+  const topSecteurs = v => (v||'').split('|').slice(0,2).map(x=>x.split(':')[0]).join(' · ') || '–';
   const ROWS = [
-    { label:'Prix de part',      key:'prix',      fmt:v=>v?fmt(v,0)+' €':'-',  best:'max' },
-    { label:'Taux distribution', key:'td',         fmt:v=>v?v+'%':'-',          best:'max' },
-    { label:'TRI',               key:'tri',        fmt:v=>v?v+'%':'-',          best:'max' },
-    { label:'Performance (PGA)', key:'perf',       fmt:v=>v?v+'%':'-',          best:'max' },
-    { label:'Frais souscription',key:'frais_sousc',fmt:v=>v?v+'%':'-',          best:'min' },
-    { label:'Délai de jouissance', key:'delai_jouissance_mois', fmt:v=>(parseFloat(v)||0)>0?v+' mois':'-', best:null },
-    { label:'Collecte ouverte',  key:'aug_cap',    fmt:v=>v==='OUI'?'Oui':'Non', best:null },
-    { label:'Géographie',        key:'pays',       fmt:v=>(v||'').split('|').slice(0,2).map(x=>x.split(':')[0]).join(' · ')||'-', best:null },
-    { label:'Secteurs',          key:'secteurs',   fmt:v=>(v||'').split('|').slice(0,2).map(x=>x.split(':')[0]).join(' · ')||'-', best:null },
+    { label:'Prix de part',        key:'prix',        fmt:v=>num(v)?fmt(num(v),0)+' €':'–', best:null },
+    { label:'Taux de distribution',key:'td',          fmt:v=>num(v)?v+'%':'–',   best:'max', val:s=>num(s.td) },
+    { label:'TRI',                 key:'tri',         fmt:v=>num(v)?v+'%':'–',   best:'max', val:s=>num(s.tri) },
+    { label:'Performance (PGA)',   key:'perf',        fmt:v=>num(v)?v+'%':'–',   best:'max', val:s=>num(s.perf) },
+    { label:'Frais de souscription',key:'frais_sousc',fmt:v=>num(v)!==null?v+'%':'–', best:'min', val:s=>num(s.frais_sousc) },
+    { label:'Délai de jouissance', key:'delai_jouissance_mois', fmt:v=>(num(v)||0)>0?v+' mois':'–', best:'min', val:s=>((num(s.delai_jouissance_mois)||0)>0 ? num(s.delai_jouissance_mois) : null) },
+    { label:'Collecte ouverte',    key:'aug_cap',     fmt:v=>v==='OUI'?'Oui':'Non', best:null },
+    { label:'Géographie',          key:'pays',        fmt:v=>escapeHtml(topSecteurs(v)), best:null },
+    { label:'Secteurs',            key:'secteurs',    fmt:v=>escapeHtml(topSecteurs(v)), best:null },
   ];
-  // Calcul meilleurs
-  const best = {};
-  ROWS.forEach(r=>{
-    if(r.best==='max') best[r.key]=Math.max(...selected.map(s=>parseFloat(s[r.key])||0));
-    if(r.best==='min') best[r.key]=Math.min(...selected.map(s=>parseFloat(s[r.key])||999));
+  // Même logique que le comparateur assurance vie : un trophée par critère gagné, pas de gagnant en cas d'égalité parfaite
+  const wins = selected.map(()=>0);
+  const cells = ROWS.map(row=>{
+    if(!row.best) return null;
+    const vals = selected.map(s=>row.val(s));
+    const valid = vals.filter(v=>v!==null && !isNaN(v));
+    if(!valid.length) return null;
+    const target = row.best==='min' ? Math.min(...valid) : Math.max(...valid);
+    if(row.best==='max' && !(target>0)) return null;
+    if(valid.every(v=>v===target) && selected.length>1 && valid.length===selected.length) return vals.map(()=>false);
+    return vals.map((v,i)=>{ const ok = v!==null && v===target; if(ok) wins[i]++; return ok; });
   });
-  const scpiLegend = `<div style="margin-bottom:14px;padding:8px 14px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.10);font-family:'Inter',sans-serif;font-size:10px;color:var(--text2);display:flex;align-items:center;flex-wrap:wrap;gap:14px"><span style="color:var(--text3);font-weight:700;font-size:9px;letter-spacing:.5px">LÉGENDE</span><span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:50%;background:#16a34a;display:inline-block"></span>Favorable</span><span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:50%;background:var(--av-mid);display:inline-block"></span>Correct</span><span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:50%;background:#dc2626;display:inline-block"></span>Défavorable</span><span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:50%;background:var(--av-weak);display:inline-block"></span>Faible / non disponible</span></div>`;
-  content.innerHTML = scpiLegend + `
-    <table style="width:100%;border-collapse:collapse;font-size:11px;min-width:400px">
+  const maxWins = Math.max(...wins);
+  const trophy = '<svg class="trophy-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-left:4px"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M5 4h2v3a2 2 0 0 1-2-2z"/><path d="M19 4h-2v3a2 2 0 0 0 2-2z"/></svg>';
+  const icoImmo = "<svg width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:-1px'><path d='M3 21h18'/><path d='M5 21V7l7-4 7 4v14'/><path d='M9 21v-6h6v6'/></svg>";
+  content.innerHTML = `
+    <div style="font-size:12px;color:var(--text3);margin:0 0 14px">${selected.length} SCPI comparées · le trophée <span style="display:inline-block;vertical-align:-1px">${trophy.replace('margin-left:4px','margin-left:0')}</span> marque la meilleure valeur de chaque critère</div>
+    <table style="width:100%;border-collapse:separate;border-spacing:0;font-size:13px;min-width:${180+selected.length*200}px">
       <thead><tr>
-        <td style="width:20%;padding:10px;font-size:11px;color:var(--text3);border-bottom:2px solid var(--border)">CRITÈRE</td>
-        ${selected.map(s=>`<td style="padding:10px;text-align:center;border-bottom:2px solid var(--border)">
-          <div style="font-weight:700;color:var(--text);font-size:11px">${escapeHtml(s.nom)}</div>
-          <a href="${escapeHtml(kyfSafeHref(s.url))}" target="_blank" rel="noopener noreferrer" class="scpi-source-link" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:700">portail-scpi.fr ↗</a>
-        </td>`).join('')}
+        <th style="width:24%;padding:12px 14px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.6px;color:var(--text3);border-bottom:2px solid var(--border)">CRITÈRE</th>
+        ${selected.map(s=>`<th style="padding:12px 10px;text-align:center;vertical-align:bottom;border-bottom:2px solid var(--border)">
+          <div style="font-weight:700;color:var(--text);font-size:13px;line-height:1.35">${escapeHtml(s.nom)}</div>
+          <div style="margin-top:6px"><a href="${escapeHtml(kyfSafeHref(s.url))}" target="_blank" rel="noopener noreferrer" class="scpi-source-link" style="display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:.5px;padding:2px 8px;border-radius:20px;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text2);text-decoration:none">${icoImmo} portail-scpi.fr ↗</a></div>
+        </th>`).join('')}
       </tr></thead>
       <tbody>${ROWS.map((row,ri)=>`
-        <tr class="${ri%2===0?'cmp-row-stripe':''}" style="border-bottom:1px solid var(--border)">
-          <td style="padding:10px;font-size:11px;color:var(--text3)">${row.label}</td>
-          ${selected.map(s=>{
-            const raw=s[row.key], val=parseFloat(raw)||0;
-            const disp=row.fmt(raw);
-            const color='#111827';
-            const isBest=row.best&&((row.best==='max'&&val===best[row.key]&&val>0)||(row.best==='min'&&val===best[row.key]&&val>0));
-            return `<td style="padding:10px;text-align:center">
-              <span style="font-weight:${isBest?'700':'400'};color:${color};${isBest?'background:rgba(240,180,41,0.1);padding:2px 8px;border-radius:5px;border:1px solid rgba(240,180,41,0.3)':''}">
-                ${disp}${isBest?' <svg class="trophy-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M5 4H3a2 2 0 0 0 0 4h2"/><path d="M19 4h2a2 2 0 0 1 0 4h-2"/></svg>':''}
-              </span></td>`;
+        <tr style="${ri%2===0?'background:color-mix(in srgb,var(--accent) 7%,transparent)':''}">
+          <td style="padding:13px 14px;font-size:12px;font-weight:600;color:var(--text2);border-bottom:1px solid var(--border);white-space:nowrap">${row.label}</td>
+          ${selected.map((s,i)=>{
+            const isBest = cells[ri] && cells[ri][i];
+            const disp = row.fmt(s[row.key], s);
+            return `<td style="padding:13px 10px;text-align:center;border-bottom:1px solid var(--border)">
+              <span style="display:inline-block;color:var(--text);font-weight:${isBest?'700':'500'};${isBest?'background:rgba(240,180,41,0.16);padding:3px 11px;border-radius:7px;border:1px solid rgba(240,180,41,0.45)':''}">${disp}${isBest?trophy:''}</span></td>`;
           }).join('')}
         </tr>`).join('')}
+        <tr>
+          <td style="padding:14px;font-size:12px;font-weight:700;color:var(--text);white-space:nowrap">Meilleures valeurs</td>
+          ${wins.map(w=>`<td style="padding:14px 10px;text-align:center"><span style="display:inline-block;font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;${w>0&&w===maxWins?'background:#f0b429;color:#000':'background:var(--btn-secondary-bg);color:var(--text2);border:1px solid var(--border2)'}">${w}</span></td>`).join('')}
+        </tr>
       </tbody>
     </table>
-    <div style="margin-top:12px;font-size:11px;color:var(--text3);text-align:center;display:flex;align-items:center;justify-content:center;gap:5px"><svg class="trophy-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M5 4H3a2 2 0 0 0 0 4h2"/><path d="M19 4h2a2 2 0 0 1 0 4h-2"/></svg> Meilleure valeur par critère</div>`;
+    <div style="margin-top:14px;font-size:11px;color:var(--text3);text-align:center">Données indicatives issues de portail-scpi.fr · le délai de jouissance est le nombre de mois avant le premier dividende (le plus court est le meilleur)</div>`;
+
   document.getElementById('comparateurModal').style.display   = 'block';
   document.getElementById('comparateurOverlay').style.display = 'block';
   document.body.style.overflow = 'hidden';
@@ -70043,6 +70101,9 @@ function openComparateur(){
   if(topbarScpi) topbarScpi.style.display = 'none';
   const sidebarScpi = document.getElementById('sidebar');
   if(sidebarScpi) sidebarScpi.style.display = 'none';
+  // Barre d'indices (flottante) : masquée tant que la fenêtre est ouverte, comme dans le comparateur assurance vie
+  const idxBs = document.getElementById('idxBand');
+  if(idxBs){ idxBs.dataset.prevVis = idxBs.style.visibility || ''; idxBs.style.visibility = 'hidden'; }
 }
 
 function closeComparateur(){
@@ -70053,6 +70114,8 @@ function closeComparateur(){
   if(topbarScpi) topbarScpi.style.display = '';
   const sidebarScpi = document.getElementById('sidebar');
   if(sidebarScpi) sidebarScpi.style.display = '';
+  const idxBs = document.getElementById('idxBand');
+  if(idxBs) idxBs.style.visibility = idxBs.dataset.prevVis || '';
 }
 
 // ══ LISTE SCPI ═══════════════════════════════════════════════════
@@ -70960,6 +71023,11 @@ function kyfLockBodyScroll(modalEl){
   if(document.body._scrollLockHandler) return; // déjà actif
   const handler = function(e){
     if(modalEl && modalEl.contains(e.target)) return; // laisser scroller dans la modale
+    // Listes déroulantes (position:fixed, rattachées au body donc hors de la modale) : elles doivent défiler à la molette
+    for(let el = e.target; el && el !== document.body && el.nodeType === 1; el = el.parentElement){
+      const cs = getComputedStyle(el);
+      if(cs.position === 'fixed' && (cs.overflowY === 'auto' || cs.overflowY === 'scroll') && el.scrollHeight > el.clientHeight + 1) return;
+    }
     e.preventDefault();
   };
   document.body._scrollLockHandler = handler;
@@ -79592,7 +79660,7 @@ const OR_PRODUITS = {
     {val:'lingotin1oz', label:'Lingotin 1 once (31.1g)'},
     {val:'lingot100',  label:'Lingot 100g'},
     {val:'lingot1kg',  label:'Lingot 1kg'},
-    {val:'etf',        label:'ETF Or (PHAU.L)'},
+    {val:'etf',        label:'ETF Or (à ajouter dans Portefeuille)'},
     {val:'autre',      label:'Autre / Personnalisé'},
   ],
   argent: [
@@ -79600,7 +79668,7 @@ const OR_PRODUITS = {
     {val:'lingotin1g_ag',  label:'Lingotin 1g'},
     {val:'lingotin100_ag', label:'Lingotin 100g'},
     {val:'lingot1kg_ag',   label:'Lingot 1kg'},
-    {val:'etf_ag',         label:'ETF Argent (PHAG.L)'},
+    {val:'etf_ag',         label:'ETF Argent (à ajouter dans Portefeuille)'},
     {val:'autre',          label:'Autre / Personnalisé'},
   ],
   platine: [{val:'autre', label:'Pièce / Lingot'}],
@@ -79758,11 +79826,21 @@ function onOrProduitChange(){
   }
   const lblWrap = document.getElementById('orProduitLblWrap');
   if(lblWrap) lblWrap.style.display = (produit==='autre') ? 'block' : 'none';
+  // ETF / ETC d'or ou d'argent : suivi dans Portefeuille (cours en bourse), pas dans cette rubrique (valorisation au poids)
+  const etfN = document.getElementById('orEtfNotice');
+  if(etfN) etfN.style.display = (produit==='etf' || produit==='etf_ag') ? 'block' : 'none';
+}
+
+function orEtfVersPortefeuille(){
+  closeOrModal();
+  try{ showPage('portfolio', null); }catch(_){}
+  try{ openAddETF(); }catch(_){}
 }
 
 function saveOr(){
   const metal     = document.getElementById('orMetal').value;
   const produit   = document.getElementById('orProduit').value;
+  if((produit==='etf' || produit==='etf_ag') && !document.getElementById('orEditId').value){ orEtfVersPortefeuille(); return; }
   const produitLbl= produit==='autre'
     ? (document.getElementById('orProduitLbl').value.trim() || document.getElementById('orProduitBtnLabel').textContent)
     : document.getElementById('orProduitBtnLabel').textContent;
@@ -83301,6 +83379,10 @@ function orInlineEdit(id, td, currentVal){
         <span id="orProduitBtnLabel">Napoléon 20F (5.81g)</span>
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-left:6px;color:var(--text3)"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
+    </div></div>
+    <div><div id="orEtfNotice" style="display:none;padding:10px 12px;border-radius:8px;background:rgba(77,159,255,0.08);border:1px solid rgba(77,159,255,0.3);font-family:'Inter',sans-serif;font-size:10px;line-height:1.6;color:var(--text2)">
+      Un ETF ou un ETC d'or (ou d'argent) a son ISIN et son cours en bourse : il se suit dans <b>Portefeuille</b>, avec les autres titres, sans conversion de l'once au gramme. Cette rubrique est réservée à l'or physique.
+      <div style="margin-top:8px"><button type="button" onclick="orEtfVersPortefeuille()" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:7px 14px;border-radius:8px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">AJOUTER DANS PORTEFEUILLE</button></div>
     </div></div>
     <div><div id="orProduitLblWrap" style="display:none">
       <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">NOM PERSONNALISÉ</div>
