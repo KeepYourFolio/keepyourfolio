@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_2_191.html
+  @file        : KYF_SHARE_beta_2_8_2_192.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.2.191
+  @version     : Beta 2.8.2.192
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -188,7 +188,7 @@ function kyfParisWall(d){
      modifier pour publier/retirer une annonce.
      ══════════════════════════════════════════════════════════════════ -->
 <script>
-  const KYF_ANNONCE_ACTIVE = true;
+  const KYF_ANNONCE_ACTIVE = false;
   const KYF_ANNONCE_TEXTE  = "Information importante : les cours (ETF, SCPI...) ne seront pas mis à jour aujourd'hui, suite à un problème technique côté Google. La connexion à votre compte Google peut aussi être indisponible. Nous travaillons à rétablir le service. Vos données ne sont pas touchées.";
   // Couleurs gains / pertes des graphiques : remplace les teintes vert / rouge d'origine par celles du schéma choisi (Paramètres > Couleurs).
   // Sans schéma personnalisé, la couleur d'origine est renvoyée telle quelle. Utilisable dans les fonctions de dessin des graphiques.
@@ -6519,7 +6519,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.2.191</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.2.192</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -17005,7 +17005,7 @@ async function _doFetchPrice(ticker,googleCode){
 
   // ── STRATEGY 0 : GAS Price Proxy (prioritaire, 1 appel = tous les prix) ──
   // Géré en bulk dans fetchAllPrices - ici fallback unitaire si bulk a échoué
-  if(KYF_PRICE_URL){
+  if(KYF_PRICE_URL && (Date.now() - (window._kyfGasBulkAt || 0)) > 5*60*1000){
     try {
       const r = await fetch(KYF_PRICE_URL + '?ticker=' + t, {
         signal: AbortSignal.timeout(8000), redirect: 'follow', mode: 'cors'
@@ -17083,8 +17083,8 @@ let _countdownTimer   = null;
 let _prevPrices       = {}; // pour détecter les changements de prix
 
 function getRefreshInterval(){
-  // 2min si marché ouvert, 15min si fermé
-  return getMarketStatus() === 'open' ? 2*60*1000 : 15*60*1000;
+  // 5min si marché ouvert (2min avant : trop d'appels au serveur de cours avec beaucoup d'onglets ouverts), 15min si fermé
+  return getMarketStatus() === 'open' ? 5*60*1000 : 15*60*1000;
 }
 
 function startAutoRefresh(){
@@ -17105,7 +17105,8 @@ function startAutoRefresh(){
     }
     if(remaining <= 0){
       nextRefresh = Date.now() + getRefreshInterval();
-      fetchAllPrices();
+      // Onglet caché : on ne consomme rien. Au retour (plus de 30 s), kyfResumeFromBackground() rafraîchit tout.
+      if(!document.hidden) fetchAllPrices();
     }
   }, 1000);
 }
@@ -17254,9 +17255,10 @@ async function fetchAllPrices(force=false){
       try {
         let tickers = ETF.map(e => e.ticker).join(',');
         if(needOrRefresh) tickers = tickers ? tickers+','+OR_TICKERS : OR_TICKERS;
+        window._kyfGasBulkAt = Date.now(); // le serveur de cours vient d'être interrogé pour tous les titres : pas de demandes unitaires derrière
         const r = await fetch(
           KYF_PRICE_URL + '?action=bulk&tickers=' + encodeURIComponent(tickers) + (kyfRefVeille() === 'google' ? '&ref=google' : ''),
-          { signal: AbortSignal.timeout(12000), redirect: 'follow', mode: 'cors' }
+          { signal: AbortSignal.timeout(20000), redirect: 'follow', mode: 'cors' }
         );
         if(r.ok){
           const bulk = await r.json();
@@ -40467,7 +40469,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.191\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.192\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -62359,6 +62361,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.192 · 08/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Bandeau d'annonce retiré : la connexion Google et les cours fonctionnent de nouveau. Moins de sollicitations du serveur de cours : actualisation toutes les 5 min en séance (au lieu de 2), aucune actualisation quand l'onglet est caché (elle reprend au retour), délai d'attente du cours groupé porté à 20 s, et plus de demandes titre par titre en rafale quand le cours groupé a déjà été demandé.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.191 · 08/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Bandeau d'annonce : texte reformulé, sans promesse de retour à une date. Les cours (ETF, SCPI...) ne sont pas mis à jour aujourd'hui suite à un problème technique côté Google, la connexion Google peut être indisponible, le service est en cours de rétablissement.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.190 · 08/10/2026</div>
