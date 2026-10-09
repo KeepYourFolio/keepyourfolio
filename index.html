@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_2_213.html
+  @file        : KYF_SHARE_beta_2_8_2_214.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.2.213
+  @version     : Beta 2.8.2.214
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -188,8 +188,8 @@ function kyfParisWall(d){
      modifier pour publier/retirer une annonce.
      ══════════════════════════════════════════════════════════════════ -->
 <script>
-  const KYF_ANNONCE_ACTIVE = false;
-  const KYF_ANNONCE_TEXTE  = "Information importante : les cours (ETF, SCPI...) ne seront pas mis à jour aujourd'hui, suite à un problème technique côté Google. La connexion à votre compte Google peut aussi être indisponible. Nous travaillons à rétablir le service. Vos données ne sont pas touchées.";
+  const KYF_ANNONCE_ACTIVE = true;
+  const KYF_ANNONCE_TEXTE  = "Le développeur est en week-end : vos retours et signalements seront pris en compte à partir du lundi 12 octobre 2026. Merci pour votre patience et vos tests !";
   // Couleurs gains / pertes des graphiques : remplace les teintes vert / rouge d'origine par celles du schéma choisi (Paramètres > Couleurs).
   // Sans schéma personnalisé, la couleur d'origine est renvoyée telle quelle. Utilisable dans les fonctions de dessin des graphiques.
   const KYF_SC_FAM = {
@@ -6527,7 +6527,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.2.213</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.2.214</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -40559,7 +40559,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.213\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.214\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -62451,6 +62451,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.214 · 08/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Dashboard : un support d'assurance vie sans cours Yahoo reprend la valeur du relevé au lieu de disparaître de la valorisation</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.213 · 08/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">KPI Assurance vie : unités de compte calculées depuis le détail des supports</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.212 · 08/10/2026</div>
@@ -69436,7 +69438,13 @@ function avContratValue(d){
       const listed = linkedLine || (isLine && (d.ucDansETF || linked
         || (p.ticker && ETF.some(e => e.ticker === p.ticker))
         || (p.isin && ETF.some(e => e.isin && e.isin === p.isin))));
-      if(listed) anyListed = true; else v += parseFloat(p.valeur) || 0;
+      // Ligne sans cours Yahoo (et sans valeur saisie) côté ETF & Actions : elle y vaut 0, donc on ne peut pas la considérer « déjà comptée ».
+      // On reprend alors sa valeur du relevé ; sans ça elle disparaissait du dashboard (valorisation live et allocation sans l'AV).
+      const _lpx = window._lp || {};
+      const _cnt = e => !!_lpx[e.ticker] || (parseFloat(e.evalBase)||0) > 0;
+      const _same = e => p.ticker && String(e.ticker||'').toUpperCase() === String(p.ticker).toUpperCase() && (!e.contratId || String(e.contratId) === String(d.id));
+      const _noPriceLine = ETF.some(e => _same(e) && !_cnt(e)) && !ETF.some(e => _same(e) && _cnt(e));
+      if(listed && !_noPriceLine) anyListed = true; else v += parseFloat(p.valeur) || 0;
     });
     const feExtra = pos.some(p=>p.type==='fe') ? 0 : (parseFloat(d.fondsEuros)||0);
     // Toutes les lignes sont déjà comptées dans ETF & Actions : il ne reste que le fonds en euros (éventuellement 0)
