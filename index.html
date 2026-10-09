@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_2_214.html
+  @file        : KYF_SHARE_beta_2_8_2_215.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.2.214
+  @version     : Beta 2.8.2.215
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6527,7 +6527,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.2.214</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.2.215</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -40559,7 +40559,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.214\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.2.215\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -50549,6 +50549,8 @@ function renderContactCategoryChips(){
   `;
   }).join('');
   const _sh = document.getElementById('contactSheetHint'); if(_sh) _sh.style.display = _contactState.categorie === 'import' ? 'block' : 'none';
+  const _rn = document.getElementById('contactReleveNotice'); if(_rn) _rn.style.display = (_contactState.categorie === 'import' || _contactState.categorie === 'suggestion') ? 'block' : 'none';
+  { const _pl = document.getElementById('contactPjLabel'); if(_pl) _pl.textContent = (_rn && _rn.style.display === 'block') ? 'PIÈCES JOINTES (relevé de positions obligatoire pour une banque, un courtier ou un contrat ; photos, PDF, tableurs Excel / CSV)' : 'PIÈCES JOINTES (facultatif, photos, PDF, vidéos, tableurs Excel / CSV)'; }
 }
 // Envoi d'un tableur perso que KYF ne lit pas : formulaire de contact prérempli (catégorie Import), e-mail facultatif.
 function kyfContactSheet(){
@@ -50669,6 +50671,7 @@ async function kyfContactVet(file){
 }
 function contactHandleFiles(fileList){
   const files = Array.from(fileList || []);
+  { const _dz1 = document.getElementById('contactDropzone'); if(_dz1) _dz1.style.borderColor = ''; }
   const statusEl = document.getElementById('contactStatus');
   let totalMb = _contactState.files.reduce((s,f)=> s + f.size, 0) / (1024*1024);
 
@@ -50784,6 +50787,7 @@ function openContactForm(prefilledCategorie, prefilledSujet, prefilledMessage){
   document.getElementById('contactStatus').innerHTML = '';
   renderContactCategoryChips();
   renderContactFileList();
+  { const _dz0 = document.getElementById('contactDropzone'); if(_dz0) _dz0.style.borderColor = ''; }
   const navWrap = document.getElementById('contactNavigateurWrap');
   if(navWrap) navWrap.style.display = _contactState.categorie === 'bug' ? 'block' : 'none';
   kyfDiagWrapRefresh(true);
@@ -50809,6 +50813,7 @@ function closeContactForm(){
   _kyfPendingTicketContext = null;
 }
 
+function contactSendAnyway(){ _contactState.force = true; contactSubmit(); }
 async function contactSubmit(){
   const statusEl = document.getElementById('contactStatus');
   const btn = document.getElementById('contactSubmitBtn');
@@ -50821,6 +50826,20 @@ async function contactSubmit(){
   if(!_contactState.categorie){ statusEl.innerHTML = `<span style="color:${kyfContactErrColor()}">Choisissez une catégorie.</span>`; return; }
   if(!message){ statusEl.innerHTML = `<span style="color:${kyfContactErrColor()}">Le message ne peut pas être vide.</span>`; return; }
   if(!KYF_CONTACT_URL){ statusEl.innerHTML = `<span style="color:${kyfContactErrColor()}">Formulaire pas encore configuré (KYF_CONTACT_URL vide).</span>`; return; }
+  // Demande d'une banque / d'un courtier / d'un contrat : un relevé de positions en pièce jointe est obligatoire (aucun relevé = impossible à ajouter)
+  {
+    const _txt = sujet + ' ' + message + ' ' + service;
+    const _NOMS = 'cic|cr[ée]dit (agricole|mutuel|du nord|coop)|bnp|paribas|soci[ée]t[ée] g[ée]n[ée]rale|socgen|lcl|caisse d.[ée]pargne|banque populaire|banque postale|la banque postale|hsbc|boursorama|bourso|fortuneo|hello ?bank|monabanq|ing|n26|revolut|trade ?republic|degiro|interactive brokers|ibkr|saxo|etoro|binck|bitstack|linxea|spirica|yomoni|nalo|placement.direct|ramify|lucya|generali|axa|allianz|cardif|afer|abeille|swisslife|suravenir|apicil|credit.?agricole|natixis|oddo|carmignac|amundi|arkea|k[ée]len|bforbank|vitis|ing direct|bourse direct|saxo bank|credit mutuel|cm.?cic|mma|maif|macif|groupama|afi.?esca|ca ?indosuez|palatine|tickr|swissquote|lombard|union financi[èe]re'
+    const _bank = new RegExp('banque|courtier|broker|plateforme|assurance[\\s-]*vie|\\bpea\\b|\\bcto\\b|\\bper\\b|contrat|[ée]tablissement|\\b(' + _NOMS + ')\\b', 'i').test(_txt);
+    const _absent = /absente?|manque|ajout|ajouter|n'?est pas (dans|pr[ée]sent|list|support|pris)|inconnue?|non (pris|support|list)|pas (dans la liste|g[ée]r|support|pris)/i.test(_txt);
+    // Bug : on ne bloque que si le texte demande clairement l'ajout d'un établissement (un vrai bug « ma banque plante » passe)
+    const _need = _contactState.categorie === 'bug' ? (_bank && _absent) : (_bank || _absent && /relev|import|csv|pdf/i.test(_txt));
+    if(_need && !_contactState.force && !_contactState.files.some(f => f.name !== 'kyf-rapport-technique.txt')){
+      statusEl.innerHTML = `<span style="color:${kyfContactErrColor()}">Pour ajouter une banque, un courtier ou un contrat, joignez un relevé de positions (PEA, CTO, assurance vie ou PER). Je n'ai accès à aucun relevé de ces établissements, je ne peux donc pas les ajouter sans exemple. Biffez vos données personnelles avant l'envoi.</span><div style="margin-top:8px"><button type="button" onclick="contactSendAnyway()" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:6px 12px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text2)'">Ce n'est pas une demande d'ajout, envoyer quand même</button></div>`;
+      const _dz = document.getElementById('contactDropzone'); if(_dz){ _dz.style.borderColor = kyfContactErrColor(); try{ _dz.scrollIntoView({block:'center', behavior:'smooth'}); }catch(e){} }
+      return;
+    }
+  }
 
   const payload = {
     categorie: _contactState.categorie,
@@ -62451,6 +62470,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.215 · 08/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Contact : pour demander une banque, un courtier ou un contrat, un relevé de positions en pièce jointe est obligatoire (avec explication)</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.214 · 08/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Dashboard : un support d'assurance vie sans cours Yahoo reprend la valeur du relevé au lieu de disparaître de la valorisation</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.2.213 · 08/10/2026</div>
@@ -82920,8 +82941,8 @@ function orInlineEdit(id, td, currentVal){
         <button type="button" onclick="closeContactForm()" class="kyf-modal-close" title="Fermer" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
 
-      <div style="display:flex;align-items:flex-start;gap:6px;padding:8px 10px;margin-bottom:16px;background:rgba(240,180,41,0.1);border:1px solid rgba(240,180,41,0.3);border-radius:8px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text2);line-height:1.4">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <div style="display:flex;align-items:center;justify-content:center;gap:6px;width:fit-content;max-width:100%;box-sizing:border-box;margin:0 auto 16px;padding:8px 12px;background:rgba(240,180,41,0.1);border:1px solid rgba(240,180,41,0.3);border-radius:8px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text2);line-height:1.4">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         <span>Toute demande concernant une version mobile ne sera pas prise en compte.</span>
       </div>
 
@@ -82969,7 +82990,7 @@ function orInlineEdit(id, td, currentVal){
       </div>
 
       <!-- Pièces jointes -->
-      <div style="font-size:9px;color:var(--text3);letter-spacing:.5px;margin-bottom:6px">PIÈCES JOINTES (facultatif, photos, PDF, vidéos, tableurs Excel / CSV)</div>
+      <div id="contactPjLabel" style="font-size:9px;color:var(--text3);letter-spacing:.5px;margin-bottom:6px">PIÈCES JOINTES (facultatif, photos, PDF, vidéos, tableurs Excel / CSV)</div>
       <div id="contactDropzone" onclick="document.getElementById('contactFileInput').click()" class="kyf-import-dropzone"
         style="border:1.5px dashed var(--border2);border-radius:8px;padding:16px;text-align:center;cursor:pointer;margin-bottom:8px"
         >
@@ -82978,6 +82999,7 @@ function orInlineEdit(id, td, currentVal){
       </div>
       <input id="contactFileInput" type="file" multiple accept="image/*,application/pdf,video/*,.xlsx,.xls,.csv,.ods,.txt" style="display:none" onchange="contactHandleFiles(this.files)">
       <div id="contactSheetHint" style="display:none;font-size:10px;color:var(--text2);line-height:1.7;padding:8px 10px;margin-bottom:10px;border:1px solid var(--border);border-radius:8px">Pour nous faire lire un tableur (Excel, Google Sheets exporté en .xlsx ou .csv) : <strong style="color:var(--text)">remplacez vos montants et quantités par des valeurs approchées</strong> avant de l'envoyer, seule la structure (onglets, colonnes, façon de noter les achats) nous intéresse. L'adresse e-mail est facultative : l'envoi peut rester totalement anonyme.</div>
+      <div id="contactReleveNotice" style="display:none;font-size:10px;color:var(--text2);line-height:1.7;padding:9px 11px;margin-bottom:10px;border:1px solid rgba(240,180,41,0.35);background:rgba(240,180,41,0.08);border-radius:8px"><strong style="color:var(--text)">Vous demandez une banque, un courtier ou un contrat absent de KYF ?</strong><br>Je n'ai accès à aucun relevé de positions (PEA, CTO, assurance vie, PER) de ces établissements : c'est la seule raison pour laquelle ils manquent. Sans exemple de relevé, je ne peux pas les ajouter. <strong style="color:var(--text)">Joindre un relevé de positions est donc obligatoire</strong> (PDF ou CSV, après essai avec le convertisseur si possible). Biffez vos nom, numéro de compte et adresse : seule la mise en forme m'intéresse.</div>
       <div id="contactFileList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px"></div>
 
       <!-- Email -->
