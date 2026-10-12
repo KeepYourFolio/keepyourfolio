@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_3_196.html
+  @file        : KYF_SHARE_beta_2_8_3_198.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.3.196
+  @version     : Beta 2.8.3.198
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6539,7 +6539,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.3.196</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.3.198</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -7093,11 +7093,14 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
     <div class="card" id="intradayCard" style="flex:0 1 calc(32% - 7px);max-width:calc(32% - 7px);min-width:0;display:none;box-sizing:border-box">
       <div class="card-title" style="display:flex;align-items:center;justify-content:space-between">
         <span style="display:flex;align-items:center;gap:6px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg> INTRADAY <span style="color:var(--text3)">(BÊTA)</span></span>
+        <div style="display:flex;align-items:center;gap:6px">
+        <button id="intradayAvPerBtn" onclick="kyfIntradayToggleAvPer()" title="Ajouter à la courbe la variation des lignes cotées de vos contrats assurance vie et PER" style="font-family:'Inter',sans-serif;font-size:9px;padding:2px 7px;border:1px solid var(--border2);border-radius:5px;background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;transition:background .15s,color .15s" onmouseover="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--hov-bg)';this.style.color='var(--text)'}" onmouseout="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)'}">+ AV/PER</button>
         <!-- Hauteur intraday -->
         <div style="display:flex;gap:2px;border:1px solid var(--border2);border-radius:5px;overflow:hidden">
           <button onclick="setChartH('intradayWrap',180,'idh')" id="idh-s" title="Petit" class="idh-btn kyf-toggle-active" style="font-family:'Inter',sans-serif;font-size:9px;padding:2px 7px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:background .15s,color .15s" onmouseover="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--hov-bg)';this.style.color='var(--text)'}" onmouseout="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)'}">S</button>
           <button onclick="setChartH('intradayWrap',320,'idh')" id="idh-m" title="Moyen" class="idh-btn" style="font-family:'Inter',sans-serif;font-size:9px;padding:2px 7px;border:none;background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;transition:background .15s,color .15s" onmouseover="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--hov-bg)';this.style.color='var(--text)'}" onmouseout="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)'}">M</button>
           <button onclick="setChartH('intradayWrap',380,'idh')" id="idh-l" title="Grand" class="idh-btn" style="font-family:'Inter',sans-serif;font-size:9px;padding:2px 7px;border:none;background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;transition:background .15s,color .15s" onmouseover="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--hov-bg)';this.style.color='var(--text)'}" onmouseout="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)'}">L</button>
+        </div>
         </div>
       </div>
       <div class="cw" id="intradayWrap" style="position:relative;height:180px">
@@ -7113,6 +7116,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
           </div>
         </div>
       </div>
+      <div id="intradayManqNote" style="display:none;margin-top:6px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3)"></div>
     </div>
 
   </div>
@@ -14301,7 +14305,9 @@ async function testIntradayConnection(){
     if(d.status==='ok'){
       KYF_INTRADAY_URL = url;
       localStorage.setItem('kyf-intraday-url', url);
-      intradaySetStatus('✅ Connecté au Sheet Intraday','ok');
+      window._kyfIntradayVer = String(d.version || '1.0'); window._kyfIntradayVerUrl = url;
+      if(kyfIntradayVerAtLeast_(window._kyfIntradayVer, '1.2')) intradaySetStatus('✅ Connecté au Sheet Intraday','ok');
+      else intradaySetStatus('✅ Connecté, mais votre script est ancien (v' + window._kyfIntradayVer + ') : mettez-le à jour avec « Copier le code » pour une courbe fiable (voir le Guide, Intraday)','#f59e0b');
       pushIntradayPositions(); // envoie immédiatement, sans attendre le prochain fetchAllPrices
     } else {
       intradaySetStatus('❌ '+(d.error||'Réponse inattendue'),'#ff4560');
@@ -14409,22 +14415,102 @@ async function kyfApplyRestoredIntradayUrl(){
 // Construit la liste des positions ETF/Actions cotées (PEA+CTO, hors Fonds Euro/non cotés)
 // et la pousse vers le Sheet Intraday - sans cet appel, le script GAS ne reçoit jamais
 // aucune position et kyfIntradayTick() s'arrête immédiatement à chaque exécution.
+// Bouton « + AV/PER » du graphique : ajoute à la courbe la variation des lignes cotées des contrats (groupe « contrats » du script v1.2).
+function kyfIntradayAvPerOn_(){ try{ return localStorage.getItem('kyf-intraday-avper') === '1'; }catch(e){ return false; } }
+function kyfIntradayAvPerSync_(){
+  const b = document.getElementById('intradayAvPerBtn'); if(!b) return;
+  const on = kyfIntradayAvPerOn_();
+  b.classList.toggle('kyf-toggle-active', on);
+  b.style.background = on ? '#f0b429' : 'var(--btn-secondary-bg)';
+  b.style.color = on ? '#000' : 'var(--text2)';
+}
+function kyfIntradayPointsFromRaw_(){
+  const raw = window._intradayRaw || [];
+  const on = kyfIntradayAvPerOn_();
+  return raw.map(p => ({ t: p.time, val: Math.round((Number(p.val) + (on && Number.isFinite(Number(p.valC)) && p.valC !== null && p.valC !== '' ? Number(p.valC) : 0)) * 100) / 100 }));
+}
+function kyfIntradayNote_(){
+  const n = document.getElementById('intradayManqNote'); if(!n) return;
+  const raw = window._intradayRaw || [];
+  if(!raw.length){ n.style.display = 'none'; return; }
+  const on = kyfIntradayAvPerOn_();
+  const hasC = raw.some(p => p.valC !== undefined && p.valC !== null && p.valC !== '' && Number.isFinite(Number(p.valC)));
+  let t = 'Courbe : PEA/CTO';
+  if(on && hasC) t += ' + lignes cotées des contrats AV/PER';
+  else if(on) t += ' (aucune ligne cotée de contrat reçue : script v1.2 et lignes avec ticker et quantité requis)';
+  const manq = Number(raw[raw.length - 1].manq) || 0;
+  if(manq > 0) t += ' · Données incomplètes : ' + manq + ' position' + (manq > 1 ? 's' : '') + ' sans cours exploitable, exclue' + (manq > 1 ? 's' : '') + ' du calcul';
+  n.textContent = t; n.style.display = 'block';
+}
+function kyfIntradayToggleAvPer(){
+  try{ localStorage.setItem('kyf-intraday-avper', kyfIntradayAvPerOn_() ? '0' : '1'); }catch(e){}
+  kyfIntradayAvPerSync_();
+  if(window._intradayRaw) window._intradayValorisation = kyfIntradayPointsFromRaw_();
+  if(typeof renderIntradayFromCache === 'function') renderIntradayFromCache();
+  kyfIntradayNote_();
+}
+// Lignes cotées des contrats AV/PER (ticker + quantité), regroupées par ticker : ni fonds euros, ni SCPI/immo, ni ligne saisie en valeur seule.
+function kyfIntradayContractLines_(){
+  const tot = {};
+  try{
+    const ids = new Set(avLoad().map(c => c.id));
+    const all = avPosLoadAll();
+    Object.keys(all).forEach(id => {
+      if(!ids.has(id)) return;
+      (all[id] || []).forEach(p => {
+        const t = String(p.ticker || '').trim(); const q = Number(p.qty);
+        if(!t || !(q > 0) || p.type === 'immo' || p.type === 'fondseuro') return;
+        tot[t] = (tot[t] || 0) + q;
+      });
+    });
+  }catch(e){}
+  return Object.keys(tot).map(t => ({ ticker: t, qty: tot[t], groupe: 'contrats' }));
+}
+// Version du script Intraday installé chez l'utilisateur (ping), gardée en mémoire pour l'URL courante.
+async function kyfIntradayScriptVersion_(){
+  if(window._kyfIntradayVer && window._kyfIntradayVerUrl === KYF_INTRADAY_URL) return window._kyfIntradayVer;
+  try{
+    const r = await fetch(KYF_INTRADAY_URL + (KYF_INTRADAY_URL.includes('?') ? '&' : '?') + 'action=ping', { signal: AbortSignal.timeout(10000), redirect: 'follow' });
+    const d = await r.json();
+    if(d && d.status === 'ok'){ window._kyfIntradayVer = String(d.version || '1.0'); window._kyfIntradayVerUrl = KYF_INTRADAY_URL; return window._kyfIntradayVer; }
+  }catch(e){}
+  return '';
+}
+function kyfIntradayVerAtLeast_(v, min){
+  const a = String(v).split('.').map(Number), b = String(min).split('.').map(Number);
+  for(let k = 0; k < 3; k++){ const x = a[k] || 0, y = b[k] || 0; if(x !== y) return x > y; }
+  return true;
+}
+// Positions envoyées au script Intraday. Script v1.2 et plus : seulement ticker et quantité, le script lit lui-même
+// le cours, la clôture de la veille et la devise chez Yahoo. Ancien script (v1.1) : il a besoin de la clôture de la
+// veille, qu'on ne lui envoie QUE si elle est réelle et fraîche (jamais le cours du moment, le PRU ni un cours en cache) ;
+// sinon la ligne n'est pas envoyée, plutôt qu'une variation du jour inventée.
 async function pushIntradayPositions(){
   if(!KYF_INTRADAY_URL) return; // pas connecté, rien à faire
   try {
+    const ver = await kyfIntradayScriptVersion_();
+    if(!ver){ console.warn('[KYF Intraday] Version du script inconnue : envoi annulé (aucune clôture inventée).'); return; }
+    const nouveau = kyfIntradayVerAtLeast_(ver, '1.2');
     const lp = window._lp || {};
-    const positions = ETF
+    const exclues = [];
+    const positions = [];
+    ETF
       // Inclut PEA/CTO explicites, mais aussi les positions sans enveloppe renseignée
       // (cas fréquent sur des positions créées avant l'introduction de ce champ) -
       // on exclut seulement les enveloppes clairement non cotées (AV/PER/SCI).
       .filter(e => e.ticker && e.qty > 0 && (!e.enveloppe || e.enveloppe==='PEA' || e.enveloppe==='CTO'))
-      .map(e => {
+      .forEach(e => {
+        if(nouveau){ positions.push({ ticker: e.ticker, qty: e.qty, groupe: 'titres' }); return; }
         const live = lp[e.ticker];
-        const prevClose = live?.prev ?? live?.price ?? e.pru ?? 0;
-        const devise = (e.ticker.endsWith('.PA') || e.ticker.endsWith('.AS') || e.ticker.endsWith('.DE') || e.ticker.endsWith('.MI'))
-          ? 'EUR' : (e.ticker.endsWith('.L') ? 'GBP' : (e.ticker.endsWith('.SW') ? 'CHF' : 'USD'));
-        return { ticker: e.ticker, qty: e.qty, prevClose, devise };
+        const prevOk = !!live && Number.isFinite(live.prev) && live.prev > 0 && !live._stale && live.source !== 'cache' && live.source !== 'google';
+        const suf = e.ticker.includes('.') ? e.ticker.slice(e.ticker.lastIndexOf('.')).toUpperCase() : '';
+        const devise = ['.PA','.AS','.DE','.MI'].includes(suf) ? 'EUR' : (suf === '.SW' ? 'CHF' : (suf === '' ? 'USD' : ''));
+        if(!prevOk || !devise){ exclues.push(e.ticker); return; }
+        positions.push({ ticker: e.ticker, qty: e.qty, prevClose: live.prev, devise });
       });
+    if(nouveau) kyfIntradayContractLines_().forEach(l => positions.push(l));
+    window._kyfIntradayExclues = exclues;
+    if(exclues.length) console.warn('[KYF Intraday] Positions non envoyées (clôture de la veille ou devise indisponible) :', exclues.join(', '));
     if(!positions.length) return;
     await fetch(KYF_INTRADAY_URL, {
       method: 'POST',
@@ -14435,7 +14521,6 @@ async function pushIntradayPositions(){
     console.warn('[KYF Intraday] Échec de l\'envoi des positions :', e.message);
   }
 }
-
 function openIntradayCodeModal(){
   const el = document.getElementById('intradayCodeContent');
   if(el) el.textContent = KYF_INTRADAY_GAS_CODE;
@@ -25462,17 +25547,26 @@ function jsonResponse(obj) {
 `;
 
 const KYF_INTRADAY_GAS_CODE = `// ════════════════════════════════════════════════════════════════
-// === KYF INTRADAY - Script autonome v1.1 ===
+// === KYF INTRADAY - Script autonome v1.2 ===
 // Valorisation du portefeuille ETF/Actions toutes les 5 minutes
 // Ce script tourne dans VOTRE Google Sheet personnel "KYF - INTRADAY"
 // Indépendant du Sheet principal de sauvegarde KYF.
 //
+// v1.2 : la clôture de la veille et la devise sont lues par le script
+// lui-même chez Yahoo (plus de clôture envoyée par KYF, qui pouvait
+// dater de plusieurs jours ou valoir le cours du moment : courbe
+// fausse). Avant l'ouverture d'un marché (Yahoo est en différé), la
+// variation de la ligne vaut 0. Une ligne dont le cours, la clôture
+// de la veille, la devise ou le taux de change est indisponible est
+// EXCLUE et comptée dans la colonne "Positions manquantes" : rien
+// n'est inventé (plus de taux 1 par défaut, plus de cours à 0).
+// Les cours en pence (GBp) sont convertis en livres. Champs reçus de
+// KYF validés (ticker, quantité) avant écriture dans le Sheet, verrou
+// contre les exécutions simultanées, groupes "titres" et "contrats"
+// (assurance vie / PER) pour le bouton du graphique KYF.
+//
 // v1.1 : lecture des colonnes par NOM D'EN-TÊTE (et non plus par
-// position fixe) dans les onglets Positions et Graph - le script
-// survit désormais à un réordonnancement manuel des colonnes. Si une
-// colonne attendue est introuvable (en-tête renommé/supprimé), le
-// tick s'arrête proprement et écrit un message clair dans les logs
-// d'exécution au lieu de lire silencieusement de mauvaises données.
+// position fixe) dans les onglets Positions et Graph.
 // ════════════════════════════════════════════════════════════════
 
 // ⚠️ Remplacez par l'ID de VOTRE Google Sheet (visible dans l'URL :
@@ -25481,11 +25575,17 @@ const SPREADSHEET_ID = "VOTRE_SPREADSHEET_ID_ICI"; // Exemple : "1aU1a1zt6qyzNTm
 
 const SHEET_POSITIONS = "Positions";
 const SHEET_GRAPH      = "Données journalières pour Graph";
+const KYF_VERSION      = "1.2";
+const MAX_POSITIONS    = 500;
+const TICKER_RE        = /^[A-Za-z0-9][A-Za-z0-9.^=-]{0,19}$/;
+const COL_MANQ         = "Positions manquantes";
+const COL_VAL_C        = "Valeur contrats";
+const COL_VALO_C       = "Valorisation contrats";
 
-// ──────────────────────────────────────────────────────────────
+// ──────────────────────────────────────────────────────────────︄︋︅︉︄︆︄︊︄︍︃︂︃︆
 // INSTALLATION DU DÉCLENCHEUR (à lancer 1 SEULE FOIS manuellement
 // depuis l'éditeur GAS : sélectionnez cette fonction → ▶ Exécuter)
-// ──────────────────────────────────────────────────────────────
+// ──────────────────────────────────────────────────────────────⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠
 function installerMonDeclencheur() {
   const triggers = ScriptApp.getProjectTriggers();
   triggers.forEach(t => {
@@ -25524,16 +25624,17 @@ function desinstallerMonDeclencheur() {
 // ──────────────────────────────────────────────────────────────︄︋︅︉︄︆︄︊︄︍︃︂︃︆
 // POINT D'ENTRÉE WEB APP (appelé par KYF pour pousser les positions
 // et pour le ping de test de connexion)
-// ──────────────────────────────────────────────────────────────
+// ──────────────────────────────────────────────────────────────⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠
 function doGet(e) {
-  const action = (e.parameter.action || "").toLowerCase();
+  const params = (e && e.parameter) ? e.parameter : {};
+  const action = (params.action || "").toLowerCase();
   try {
-    if (action === "ping") return jsonResponse({ status: "ok", version: "1.1" });
-    if (action === "push_positions") return handlePushPositions(e);
+    if (action === "ping") return jsonResponse({ status: "ok", version: KYF_VERSION });
     if (action === "journalier") return handleJournalier(e);
-    return jsonResponse({ status: "error", error: "Action inconnue : " + action });
+    return jsonResponse({ status: "error", error: "Action inconnue" });
   } catch (err) {
-    return jsonResponse({ status: "error", error: err.message });
+    Logger.log("doGet : " + err.message);
+    return jsonResponse({ status: "error", error: "Erreur interne (voir les logs d'exécution)" });
   }
 }
 
@@ -25544,13 +25645,14 @@ function doPost(e) {
     body = JSON.parse(e.postData.contents);
     action = (body.action || "").toLowerCase();
   } catch (err) {
-    return jsonResponse({ status: "error", error: "JSON invalide : " + err.message });
+    return jsonResponse({ status: "error", error: "JSON invalide" });
   }
   try {
     if (action === "push_positions") return handlePushPositions(e, body);
-    return jsonResponse({ status: "error", error: "Action inconnue : " + action });
+    return jsonResponse({ status: "error", error: "Action inconnue" });
   } catch (err) {
-    return jsonResponse({ status: "error", error: err.message });
+    Logger.log("doPost : " + err.message);
+    return jsonResponse({ status: "error", error: "Erreur interne (voir les logs d'exécution)" });
   }
 }
 
@@ -25560,8 +25662,7 @@ function jsonResponse(obj) {
 
 // Construit une correspondance {nomEnTête: indexColonne (1-based)} à partir
 // de la ligne 1 d'un onglet. Si un en-tête requis est absent (renommé ou
-// colonne supprimée), retourne null et écrit un message clair dans les logs
-// - appelant doit alors s'arrêter proprement plutôt que de mal lire les données.
+// colonne supprimée), retourne null et écrit un message clair dans les logs.
 function getColumnMap(sheet, requiredHeaders, sheetLabel) {
   const lastCol = sheet.getLastColumn();
   if (lastCol === 0) {
@@ -25581,36 +25682,59 @@ function getColumnMap(sheet, requiredHeaders, sheetLabel) {
   return map;
 }
 
-// Réception des positions poussées par KYF (ticker, qty, prevClose, devise)
-// Format attendu : e.postData.contents = JSON.stringify({ positions: [...] })
+// Ajoute en fin de ligne 1 un en-tête optionnel s'il n'existe pas encore.
+function ensureColumn(sheet, map, name) {
+  if (name in map) return map[name];
+  const col = sheet.getLastColumn() + 1;
+  sheet.getRange(1, col).setValue(name);
+  map[name] = col;
+  return col;
+}
+
+// Réception des positions poussées par KYF : ticker, quantité, groupe
+// ("titres" ou "contrats"). La clôture de la veille et la devise envoyées
+// par d'anciennes versions de KYF sont ignorées : le script les lit chez Yahoo.
 function handlePushPositions(e, parsedBody) {
-  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   let positions = [];
   try {
     const body = parsedBody || JSON.parse(e.postData.contents);
-    positions = body.positions || [];
+    positions = Array.isArray(body.positions) ? body.positions : [];
   } catch (err) {
-    return jsonResponse({ status: "error", error: "JSON invalide : " + err.message });
+    return jsonResponse({ status: "error", error: "JSON invalide" });
   }
 
-  let sheet = ss.getSheetByName(SHEET_POSITIONS);
-  if (!sheet) {
-    sheet = ss.insertSheet(SHEET_POSITIONS);
-  }
-  sheet.clearContents();
-  sheet.getRange(1, 1, 1, 4).setValues([["Ticker", "Quantité", "Prix Clôture Veille", "Devise"]]);
+  const rows = [];
+  let rejected = 0;
+  positions.slice(0, MAX_POSITIONS).forEach(p => {
+    const ticker = String((p && p.ticker) || "").trim();
+    const qty = Number(p && p.qty);
+    const groupe = (p && p.groupe === "contrats") ? "contrats" : "titres";
+    if (TICKER_RE.test(ticker) && isFinite(qty) && qty > 0 && qty <= 1e9) rows.push([ticker, qty, groupe]);
+    else rejected++;
+  });
+  if (positions.length > MAX_POSITIONS) rejected += positions.length - MAX_POSITIONS;
 
-  if (positions.length > 0) {
-    const rows = positions.map(p => [p.ticker, p.qty, p.prevClose, p.devise || "EUR"]);
-    sheet.getRange(2, 1, rows.length, 4).setValues(rows);
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(20000)) return jsonResponse({ status: "error", error: "Occupé, réessayez" });
+  try {
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    let sheet = ss.getSheetByName(SHEET_POSITIONS);
+    if (!sheet) sheet = ss.insertSheet(SHEET_POSITIONS);
+    sheet.clearContents();
+    sheet.getRange(1, 1, 1, 3).setValues([["Ticker", "Quantité", "Groupe"]]);
+    if (rows.length > 0) {
+      sheet.getRange(2, 1, rows.length, 1).setNumberFormat("@"); // texte : jamais interprété comme formule
+      sheet.getRange(2, 1, rows.length, 3).setValues(rows);
+    }
+  } finally {
+    lock.releaseLock();
   }
-
-  return jsonResponse({ status: "ok", count: positions.length });
+  return jsonResponse({ status: "ok", count: rows.length, rejected: rejected, version: KYF_VERSION });
 }
 
 // Lecture de l'onglet Graph pour KYF (courbe de valorisation journalière)
-// Retourne uniquement les points du jour courant, au format attendu par KYF :
-// { points: [ { time:"HH:MM", val: <variation en €>, date:"dd/MM/yyyy" }, ... ] }
+// { points: [ { time:"HH:MM", val:<variation en €>, date:"dd/MM/yyyy",
+//               valC:<variation contrats>, manq:<positions manquantes> }, ... ] }
 function handleJournalier(e) {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   const graphSheet = ss.getSheetByName(SHEET_GRAPH);
@@ -25624,6 +25748,8 @@ function handleJournalier(e) {
   }
   const colDate = colMap["Date"];
   const colValeur = colMap["Valeur"];
+  const colValC = colMap[COL_VAL_C];
+  const colManq = colMap[COL_MANQ];
 
   const tz = ss.getSpreadsheetTimeZone();
   const dateAujourdhui = Utilities.formatDate(new Date(), tz, "dd/MM/yyyy");
@@ -25634,36 +25760,40 @@ function handleJournalier(e) {
 
   const points = data
     .filter(r => r[colDate - 1] instanceof Date)
-    .map(r => ({
-      time: Utilities.formatDate(r[colDate - 1], tz, "HH:mm"),
-      val: Math.round((Number(r[colValeur - 1]) || 0) * 100) / 100,
-      date: Utilities.formatDate(r[colDate - 1], tz, "dd/MM/yyyy")
-    }))
+    .map(r => {
+      const p = {
+        time: Utilities.formatDate(r[colDate - 1], tz, "HH:mm"),
+        val: Math.round((Number(r[colValeur - 1]) || 0) * 100) / 100,
+        date: Utilities.formatDate(r[colDate - 1], tz, "dd/MM/yyyy")
+      };
+      if (colValC && r[colValC - 1] !== "" && isFinite(Number(r[colValC - 1]))) p.valC = Math.round(Number(r[colValC - 1]) * 100) / 100;
+      if (colManq) p.manq = Number(r[colManq - 1]) || 0;
+      return p;
+    })
     .filter(p => p.date === dateAujourdhui);
 
   return jsonResponse({ status: "ok", points: points });
 }
 
-// ──────────────────────────────────────────────────────────────⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠
+// ──────────────────────────────────────────────────────────────︄︋︅︉︄︆︄︊︄︍︃︂︃︆
 // TICK PRINCIPAL - exécuté toutes les 5 minutes par le trigger
-// ──────────────────────────────────────────────────────────────
+// ──────────────────────────────────────────────────────────────⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠
 function kyfIntradayTick() {
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(30000)) { Logger.log("KYF Intraday : exécution précédente en cours, tick ignoré."); return; }
+  try {
+    kyfIntradayTickLocked_();
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function kyfIntradayTickLocked_() {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   const tz = ss.getSpreadsheetTimeZone();
   const now = new Date();
 
-  // ── Jours fermés (weekend + fériés Euronext) ──
-  const jourSemaine = now.getDay();
-  const dateStr = Utilities.formatDate(now, tz, "dd/MM");
-  const feries = ["01/01", "01/05", "25/12", "26/12"];
-  const paques = calculerDatePaques(now.getFullYear());
-  const venSt = new Date(paques); venSt.setDate(paques.getDate() - 2);
-  const lunPa = new Date(paques); lunPa.setDate(paques.getDate() + 1);
-
-  const estWeekEnd = (jourSemaine === 0 || jourSemaine === 6);
-  const estFerie = (feries.includes(dateStr) || memeJour(venSt, now) || memeJour(lunPa, now));
-  if (estWeekEnd || estFerie) return; // Marché fermé, rien à faire
-
+  if (marcheFerme_(now, tz)) return; // week-end ou férié Euronext
   const heureActuelle = Number(Utilities.formatDate(now, tz, "H"));
   if (heureActuelle < 9 || heureActuelle >= 22) return; // Hors séance (9h-22h)
 
@@ -25671,43 +25801,30 @@ function kyfIntradayTick() {
   const posSheet = ss.getSheetByName(SHEET_POSITIONS);
   if (!posSheet || posSheet.getLastRow() < 2) return; // Pas encore de positions poussées par KYF
 
-  const posColMap = getColumnMap(posSheet, ["Ticker", "Quantité", "Prix Clôture Veille", "Devise"], SHEET_POSITIONS);
+  const posColMap = getColumnMap(posSheet, ["Ticker", "Quantité"], SHEET_POSITIONS);
   if (!posColMap) return; // En-têtes modifiés/supprimés : on s'arrête proprement (voir logs d'exécution)
 
   const posLastCol = posSheet.getLastColumn();
   const data = posSheet.getRange(2, 1, posSheet.getLastRow() - 1, posLastCol).getValues();
-  const cTicker = posColMap["Ticker"] - 1, cQty = posColMap["Quantité"] - 1,
-        cPrev = posColMap["Prix Clôture Veille"] - 1, cDevise = posColMap["Devise"] - 1;
+  const cTicker = posColMap["Ticker"] - 1, cQty = posColMap["Quantité"] - 1;
+  const cGroupe = ("Groupe" in posColMap) ? posColMap["Groupe"] - 1 : -1;
   const positions = data
     .filter(r => r[cTicker] && r[cQty])
-    .map(r => ({ ticker: String(r[cTicker]).trim(), qty: Number(r[cQty]) || 0, prevClose: Number(r[cPrev]) || 0, devise: String(r[cDevise] || "EUR").toUpperCase() }));
+    .map(r => ({
+      ticker: String(r[cTicker]).trim(),
+      qty: Number(r[cQty]) || 0,
+      groupe: (cGroupe >= 0 && String(r[cGroupe]) === "contrats") ? "contrats" : "titres"
+    }))
+    .filter(p => TICKER_RE.test(p.ticker) && p.qty > 0);
 
   if (positions.length === 0) return;
 
-  // ── Taux de change (récupérés une fois par tick) ──︄︋︅︉︄︆︄︊︄︍︃︂︃︆
-  const fxRates = { EUR: 1 };
-  ["USD", "GBP", "CHF"].forEach(cur => {
-    const rate = fetchFxRate(cur);
-    if (rate) fxRates[cur] = rate;
-  });
-
-  // ── Calcul de la valorisation totale et de la variation ──⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠
-  let valorisationTotale = 0;
-  let variationTotale = 0;
-  let valorisationVeille = 0;
-
-  positions.forEach(p => {
-    const price = fetchYahooPrice(p.ticker);
-    if (price === null) return;
-    const fx = fxRates[p.devise] || 1;
-    const valeurEur = price * p.qty * fx;
-    const valeurVeilleEur = p.prevClose * p.qty * fx;
-    valorisationTotale += valeurEur;
-    valorisationVeille += valeurVeilleEur;
-  });
-
-  variationTotale = valorisationTotale - valorisationVeille;
-  const pourcentage = valorisationVeille > 0 ? (variationTotale / valorisationVeille) : 0;
+  const res = calculerValorisation_(positions, now.getTime(), fetchMetas_);
+  if (res.titres.nb === 0 && res.contrats.nb === 0) {
+    Logger.log("❌ KYF Intraday : aucune position valorisable à cet instant (" + res.manquantes + " manquante(s)). Aucun point écrit.");
+    return;
+  }
+  res.details.filter(d => !d.ok).forEach(d => Logger.log("⚠️ " + d.ticker + " exclu : " + d.raison));
 
   // ── Onglet Graph : reset si nouveau jour, sinon append ──
   let graphSheet = ss.getSheetByName(SHEET_GRAPH);
@@ -25720,6 +25837,10 @@ function kyfIntradayTick() {
   if (!graphColMap) return; // En-têtes modifiés/supprimés : on s'arrête proprement (voir logs d'exécution)
   const gDate = graphColMap["Date"], gValeur = graphColMap["Valeur"],
         gPourcent = graphColMap["Pourcentage"], gValorisation = graphColMap["Valorisation"];
+  const gManq = ensureColumn(graphSheet, graphColMap, COL_MANQ);
+  const hasContrats = positions.some(p => p.groupe === "contrats");
+  const gValC = hasContrats ? ensureColumn(graphSheet, graphColMap, COL_VAL_C) : (graphColMap[COL_VAL_C] || 0);
+  const gValoC = hasContrats ? ensureColumn(graphSheet, graphColMap, COL_VALO_C) : (graphColMap[COL_VALO_C] || 0);
 
   const lastRow = graphSheet.getLastRow();
   const dateAujourdhui = Utilities.formatDate(now, tz, "dd/MM/yyyy");
@@ -25731,62 +25852,186 @@ function kyfIntradayTick() {
     graphSheet.getRange(2, 1, lastRow - 1, graphSheet.getLastColumn()).clearContent();
   }
 
+  const t = res.titres;
   const nouvelleLigne = estNouveauJour ? 2 : graphSheet.getLastRow() + 1;
   graphSheet.getRange(nouvelleLigne, gDate).setValue(now);
-  graphSheet.getRange(nouvelleLigne, gValeur).setValue(Math.round(variationTotale * 100) / 100);
-  graphSheet.getRange(nouvelleLigne, gPourcent).setValue(pourcentage);
-  graphSheet.getRange(nouvelleLigne, gValorisation).setValue(Math.round(valorisationTotale * 100) / 100);
+  graphSheet.getRange(nouvelleLigne, gValeur).setValue(Math.round(t.variation * 100) / 100);
+  graphSheet.getRange(nouvelleLigne, gPourcent).setValue(t.pct);
+  graphSheet.getRange(nouvelleLigne, gValorisation).setValue(Math.round(t.valo * 100) / 100);
   graphSheet.getRange(nouvelleLigne, gPourcent).setNumberFormat("0.00%");
+  graphSheet.getRange(nouvelleLigne, gManq).setValue(res.manquantes);
+  if (gValC) graphSheet.getRange(nouvelleLigne, gValC).setValue(Math.round(res.contrats.variation * 100) / 100);
+  if (gValoC) graphSheet.getRange(nouvelleLigne, gValoC).setValue(Math.round(res.contrats.valo * 100) / 100);
 }
 
 // ──────────────────────────────────────────────────────────────
-// HELPERS - Yahoo Finance (prix live + taux de change)
+// CALCUL (pur, sans accès Google : testable hors du Sheet)
+// positions : [{ticker, qty, groupe}] ; fetchFn(urls) -> [meta|null]
 // ──────────────────────────────────────────────────────────────
-function fetchYahooPrice(ticker) {
-  try {
-    const url = "https://query1.finance.yahoo.com/v8/finance/chart/" + encodeURIComponent(ticker) + "?interval=1d&range=1d";
-    const data = JSON.parse(UrlFetchApp.fetch(url, { muteHttpExceptions: true }).getContentText());
-    const price = data?.chart?.result?.[0]?.meta?.regularMarketPrice;
-    return isFinite(price) ? price : null;
-  } catch (e) {
-    return null;
+
+// Jour (nombre de jours depuis 1970) dans le fuseau de la place de cotation.
+function jourPlace_(epochSec, gmtoffsetSec) {
+  return Math.floor((epochSec + (gmtoffsetSec || 0)) / 86400);
+}
+
+// Une ligne : cours, clôture de la veille, devise (jamais inventés).
+// Retourne { ok:true, price, prev, cur } en devise MAJEURE, ou { ok:false, raison }.
+function ligneYahoo_(meta, nowMs) {
+  if (!meta) return { ok: false, raison: "pas de réponse de Yahoo" };
+  const price = meta.regularMarketPrice;
+  if (typeof price !== "number" || !isFinite(price) || price <= 0) return { ok: false, raison: "cours indisponible" };
+  let cur = typeof meta.currency === "string" ? meta.currency.trim() : "";
+  if (!cur) return { ok: false, raison: "devise inconnue" };
+  let facteur = 1;
+  if (cur === "GBp" || cur === "GBX") { cur = "GBP"; facteur = 0.01; }
+  else if (cur === "ZAc") { cur = "ZAR"; facteur = 0.01; }
+  else if (cur === "ILA") { cur = "ILS"; facteur = 0.01; }
+  cur = cur.toUpperCase();
+
+  const gmt = typeof meta.gmtoffset === "number" ? meta.gmtoffset : 0;
+  const lastT = meta.regularMarketTime;
+  const aCoteAujourdhui = typeof lastT === "number" && jourPlace_(lastT, gmt) === jourPlace_(nowMs / 1000, gmt);
+
+  let prev;
+  if (aCoteAujourdhui) {
+    // Séance du jour commencée : la clôture de la veille est celle de la séance précédente.
+    const p = (typeof meta.chartPreviousClose === "number" && isFinite(meta.chartPreviousClose) && meta.chartPreviousClose > 0)
+      ? meta.chartPreviousClose
+      : ((typeof meta.previousClose === "number" && isFinite(meta.previousClose) && meta.previousClose > 0) ? meta.previousClose : null);
+    if (p === null) return { ok: false, raison: "clôture de la veille indisponible" };
+    prev = p;
+  } else {
+    // Pas encore de cotation aujourd'hui (avant l'ouverture, cours Yahoo en différé,
+    // ou place fermée) : le dernier cours EST la clôture de la veille, variation 0.
+    prev = price;
   }
+  return { ok: true, price: price * facteur, prev: prev * facteur, cur: cur };
 }
 
-// Récupère le taux de change DEVISE→EUR (combien d'EUR pour 1 unité de "devise")
-function fetchFxRate(devise) {
-  try {
-    const url = "https://query1.finance.yahoo.com/v8/finance/chart/" + devise + "EUR=X?interval=1d&range=1d";
-    const data = JSON.parse(UrlFetchApp.fetch(url, { muteHttpExceptions: true }).getContentText());
-    const rate = data?.chart?.result?.[0]?.meta?.regularMarketPrice;
-    return isFinite(rate) ? rate : null;
-  } catch (e) {
-    return null;
+function urlYahoo_(symbole) {
+  return "https://query1.finance.yahoo.com/v8/finance/chart/" + encodeURIComponent(symbole) + "?interval=1d&range=1d";
+}
+
+// Lecture groupée (en parallèle) des métadonnées Yahoo. Retourne un tableau aligné sur symboles.
+function fetchMetas_(symboles) {
+  const out = [];
+  for (let i = 0; i < symboles.length; i += 40) {
+    const lot = symboles.slice(i, i + 40);
+    let reps = [];
+    try {
+      reps = UrlFetchApp.fetchAll(lot.map(s => ({ url: urlYahoo_(s), muteHttpExceptions: true })));
+    } catch (e) {
+      reps = lot.map(() => null);
+    }
+    lot.forEach((s, k) => {
+      let meta = null;
+      try {
+        const rep = reps[k];
+        if (rep && rep.getResponseCode() === 200) {
+          const d = JSON.parse(rep.getContentText());
+          meta = (d && d.chart && d.chart.result && d.chart.result[0] && d.chart.result[0].meta) || null;
+        }
+      } catch (e) { meta = null; }
+      out.push(meta);
+    });
   }
+  return out;
 }
 
-// ──────────────────────────────────────────────────────────────︄︋︅︉︄︆︄︊︄︍︃︂︃︆
-// HELPERS - Dates
+function calculerValorisation_(positions, nowMs, fetchFn) {
+  const tickers = [];
+  positions.forEach(p => { if (tickers.indexOf(p.ticker) < 0) tickers.push(p.ticker); });
+  const metas = fetchFn(tickers);
+  const parTicker = {};
+  tickers.forEach((t, i) => { parTicker[t] = ligneYahoo_(metas[i], nowMs); });
+
+  // Taux de change : uniquement pour les devises réellement rencontrées, jamais de taux 1 par défaut.
+  const devises = [];
+  tickers.forEach(t => { const l = parTicker[t]; if (l.ok && l.cur !== "EUR" && devises.indexOf(l.cur) < 0) devises.push(l.cur); });
+  const fx = { EUR: 1 };
+  if (devises.length > 0) {
+    const fm = fetchFn(devises.map(c => c + "EUR=X"));
+    devises.forEach((c, i) => {
+      const r = fm[i] && fm[i].regularMarketPrice;
+      if (typeof r === "number" && isFinite(r) && r > 0) fx[c] = r;
+    });
+  }
+
+  const res = {
+    titres: { valo: 0, veille: 0, nb: 0, variation: 0, pct: 0 },
+    contrats: { valo: 0, veille: 0, nb: 0, variation: 0, pct: 0 },
+    manquantes: 0, details: []
+  };
+  positions.forEach(p => {
+    const l = parTicker[p.ticker];
+    if (!l.ok) { res.manquantes++; res.details.push({ ticker: p.ticker, ok: false, raison: l.raison }); return; }
+    if (!(l.cur in fx)) { res.manquantes++; res.details.push({ ticker: p.ticker, ok: false, raison: "taux de change " + l.cur + "/EUR indisponible" }); return; }
+    const g = res[p.groupe === "contrats" ? "contrats" : "titres"];
+    g.valo += l.price * p.qty * fx[l.cur];
+    g.veille += l.prev * p.qty * fx[l.cur];
+    g.nb++;
+    res.details.push({ ticker: p.ticker, ok: true, price: l.price, prev: l.prev, cur: l.cur });
+  });
+  ["titres", "contrats"].forEach(k => {
+    res[k].variation = res[k].valo - res[k].veille;
+    res[k].pct = res[k].veille > 0 ? res[k].variation / res[k].veille : 0;
+  });
+  return res;
+}
+
 // ──────────────────────────────────────────────────────────────
-function calculerDatePaques(a) {
+// HELPERS - Dates (jours fermés Euronext, dans le fuseau du Sheet)
+// ──────────────────────────────────────────────────────────────
+function calculerDatePaquesUTC_(a) {
   const b = a % 19, c = Math.floor(a / 100), d = a % 100, e = Math.floor(c / 4), f = c % 4,
     g = Math.floor((c + 8) / 25), h = Math.floor((c - g + 1) / 3), i = (19 * b + c - e - h + 15) % 30,
     j = Math.floor(d / 4), k = d % 4, l = (32 + 2 * f + 2 * j - i - k) % 7,
     m = Math.floor((b + 11 * i + 22 * l) / 451), n = Math.floor((i + l - 7 * m + 114) / 31),
     p = ((i + l - 7 * m + 114) % 31) + 1;
-  return new Date(a, n - 1, p);
-}
-function memeJour(d1, d2) {
-  return d1 && d2 && d1.getDate() === d2.getDate() && d1.getMonth() === d2.getMonth() && d1.getFullYear() === d2.getFullYear();
+  return Date.UTC(a, n - 1, p);
 }
 
-// ──────────────────────────────────────────────────────────────⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠
+function marcheFerme_(now, tz) {
+  const jourSemaine = Utilities.formatDate(now, tz, "u"); // 1 = lundi ... 7 = dimanche
+  if (jourSemaine === "6" || jourSemaine === "7") return true;
+  const mmdd = Utilities.formatDate(now, tz, "MM-dd");
+  if (["01-01", "05-01", "12-25", "12-26"].indexOf(mmdd) >= 0) return true;
+  const annee = Number(Utilities.formatDate(now, tz, "yyyy"));
+  const paques = calculerDatePaquesUTC_(annee);
+  const venSt = new Date(paques - 2 * 86400000).toISOString().slice(5, 10);
+  const lunPa = new Date(paques + 86400000).toISOString().slice(5, 10);
+  return mmdd === venSt || mmdd === lunPa;
+}
+
+// ──────────────────────────────────────────────────────────────
 // TEST MANUEL - utile pour vérifier que tout fonctionne sans
 // attendre le trigger (sélectionnez cette fonction → ▶ Exécuter)
 // ──────────────────────────────────────────────────────────────
 function testManuel() {
   kyfIntradayTick();
   Logger.log("✅ Tick manuel exécuté. Vérifiez l'onglet '" + SHEET_GRAPH + "'.");
+}
+
+// DIAGNOSTIC - affiche, ligne par ligne, le cours, la clôture de la veille et
+// la devise lus chez Yahoo (aucune écriture dans le Sheet), puis le total.
+function diagnosticPositions() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sh = ss.getSheetByName(SHEET_POSITIONS);
+  if (!sh || sh.getLastRow() < 2) { Logger.log("Aucune position dans l'onglet " + SHEET_POSITIONS); return; }
+  const map = getColumnMap(sh, ["Ticker", "Quantité"], SHEET_POSITIONS);
+  if (!map) return;
+  const rows = sh.getRange(2, 1, sh.getLastRow() - 1, sh.getLastColumn()).getValues();
+  const positions = rows.filter(r => r[map["Ticker"] - 1] && r[map["Quantité"] - 1]).map(r => ({
+    ticker: String(r[map["Ticker"] - 1]).trim(), qty: Number(r[map["Quantité"] - 1]) || 0,
+    groupe: ("Groupe" in map && String(r[map["Groupe"] - 1]) === "contrats") ? "contrats" : "titres"
+  }));
+  const res = calculerValorisation_(positions, Date.now(), fetchMetas_);
+  res.details.forEach(d => Logger.log(d.ok
+    ? d.ticker + " : cours " + d.price + " " + d.cur + ", clôture veille " + d.prev
+    : d.ticker + " : EXCLU (" + d.raison + ")"));
+  Logger.log("Titres : valorisation " + Math.round(res.titres.valo) + " €, variation " + Math.round(res.titres.variation * 100) / 100 + " €");
+  Logger.log("Contrats : valorisation " + Math.round(res.contrats.valo) + " €, variation " + Math.round(res.contrats.variation * 100) / 100 + " €");
+  Logger.log("Positions manquantes : " + res.manquantes);
 }
 `;
 const KYF_INTRADAY_TUTO_IMAGES = {
@@ -40824,6 +41069,10 @@ async function fetchAndBuildIntradayCache() {
 
     // data.points = [{time, val, date}, ...] déjà au format attendu par renderIntradayFromCache
     window._intradayValorisation = data.points.map(p => ({ t: p.time, val: p.val }));
+    // Points bruts gardés pour le bouton AV/PER (valC = variation des lignes cotées des contrats) et la note de couverture
+    window._intradayRaw = data.points;
+    window._intradayValorisation = kyfIntradayPointsFromRaw_();
+    kyfIntradayNote_();
     console.log(`[KYF Intraday] ${data.points.length} points reçus depuis le Sheet`);
 
   } catch(e) {
@@ -41154,6 +41403,7 @@ function updateCourbeWidth(){
 }
 
 function renderIntradayFromCache() {
+  kyfIntradayAvPerSync_();
   const vals = window._intradayValorisation;
   const card = document.getElementById('intradayCard');
   if (!vals || vals.length < 2) {
@@ -41478,7 +41728,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.3.196\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.3.198\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -55630,6 +55880,14 @@ const GUIDE_PAGES = [
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:8px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 20h20L12 2z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Vous avez réorganisé votre Google Sheet ?</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9">Depuis la v1.1, le script survit à un réordonnancement des colonnes. Évitez quand même de renommer les onglets ou de supprimer une colonne ou un en-tête : dans ce cas, aucune donnée ne peut être récupérée et le tick s'arrête, sans rien casser du reste.</div>
       </div>
+      <div style="padding:12px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Mettre à jour le script Intraday (v1.2)</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">La v1.2 corrige une courbe fausse : l'ancien script se fiait à la « clôture de la veille » envoyée par KYF, qui pouvait dater de plusieurs jours ou valoir le cours du moment, d'où des marches de plusieurs centaines d'euros dans la courbe. Le nouveau script lit lui-même chez Yahoo le cours, la clôture de la veille et la devise (les cours en pence sont convertis). Une ligne sans donnée fiable est exclue et signalée sous le graphique (« Données incomplètes ») au lieu d'être inventée. Pour mettre à jour : Paramètres, Intraday, <strong style="color:var(--text)">Copier le code</strong>, collez-le dans votre projet Apps Script à la place de l'ancien en gardant votre identifiant de Sheet, puis <strong style="color:var(--text)">Déployer, Gérer les déploiements, Modifier (crayon), Version : Nouvelle version, Déployer</strong>. L'adresse du déploiement reste la même. Si vous ne mettez pas à jour, l'ancien script continue de marcher, mais KYF ne lui envoie plus que les lignes dont la clôture de la veille est certaine.</div>
+      </div>
+      <div style="padding:12px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Le bouton « + AV/PER » du graphique</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Par défaut, la courbe Intraday ne montre que votre PEA et votre CTO, et une ligne de texte sous le graphique le rappelle (« Courbe : PEA/CTO »). Le bouton <strong style="color:var(--text)">+ AV/PER</strong> ajoute la variation des lignes <strong style="color:var(--text)">cotées</strong> de vos contrats d'assurance vie et de PER, c'est-à-dire celles qui ont un ticker et une quantité. Les fonds en euros, les SCPI et les lignes saisies seulement avec une valeur n'ont pas de cours en direct : elles ne peuvent pas apparaître dans la courbe. Un fonds à valeur liquidative quotidienne ne bouge qu'une fois par jour. Cette option demande le script Intraday v1.2 (voir ci-dessus). Votre choix est retenu sur cet appareil.</div>
+      </div>
       <div style="padding:12px 16px;background:rgba(240,180,41,0.06);border:1px solid rgba(240,180,41,0.25);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:8px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg> Vous recevez un email d'erreur de Google ?</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9">
@@ -64372,6 +64630,10 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.198 · 12/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Intraday : bouton « + AV/PER » sur le graphique. Il ajoute à la courbe la variation des lignes cotées de vos contrats assurance vie et PER (lignes avec ticker et quantité, regroupées par ticker ; pas les fonds euros, SCPI ni lignes saisies en valeur seule), calculée par le script v1.2 dans un groupe « contrats ». Par défaut la courbe reste PEA/CTO seul, et une ligne sous le graphique indique ce que la courbe couvre (« Courbe : PEA/CTO » ou « + lignes cotées des contrats AV/PER », avec « Données incomplètes » si besoin). Le choix est retenu sur l'appareil. Nécessite le script Intraday v1.2 ; Guide, Intraday, expliqué.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.197 · 12/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Intraday : script Apps Script v1.2 intégré (Copier le code) et envoi des positions corrigé. Cause d'une courbe fausse (marches de plusieurs centaines d'euros, +492 € dès 09:04) : le script se fiait à la clôture de la veille envoyée par KYF, parfois périmée ou égale au cours du moment (cours en cache ou source de repli) ou au PRU. Maintenant le script lit lui-même chez Yahoo le cours, la clôture de la veille et la devise (cours en pence convertis ; avant l'ouverture la variation vaut 0), exclut et signale toute ligne sans donnée fiable (« Données incomplètes » sous le graphique) au lieu d'inventer, valide les champs reçus (plus de formule injectable), verrouille les exécutions simultanées. KYF n'envoie plus que ticker et quantité au script v1.2 ; à un ancien script v1.1 il n'envoie que les lignes dont la clôture de la veille est réelle. Message de connexion et Guide expliquent comment mettre le script à jour.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.196 · 12/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Sécurité : la recherche Google « date de changement de taux » d'un livret s'ouvre désormais sans lien avec KYF (noopener, noreferrer), comme les autres liens externes. Aucun changement visible.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.195 · 12/10/2026</div>
