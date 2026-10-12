@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_3_190.html
+  @file        : KYF_SHARE_beta_2_8_3_195.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.3.190
+  @version     : Beta 2.8.3.195
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6539,7 +6539,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.3.190</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.3.195</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -17311,7 +17311,8 @@ async function _doFetchPrice(ticker,googleCode){
   const yahooFallbackUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${t}?range=5d&interval=1d`;
   // Proxies tiers uniquement en local (Netlify a son propre proxy)
   if(KYF_ENV === 'hosted') return null;
-  const proxies = [
+  // R07/191 : relais publics désactivés par défaut (ils voient l'IP et les tickers suivis) ; activables dans Paramètres
+  const proxies = !kyfRelaysOn() ? [] : [
     `https://api.allorigins.win/raw?url=${encodeURIComponent(yahooFallbackUrl)}`,
     `https://corsproxy.io/?${encodeURIComponent(yahooFallbackUrl)}`,
     `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(yahooFallbackUrl)}`,
@@ -20753,7 +20754,7 @@ async function fetchHistoricalClose(ticker, dateStr){
     yahooUrl(`v8/finance/chart/${t}?period1=${p1}&period2=${p2}&interval=1d`),
     yahoo2Url(`v8/finance/chart/${t}?period1=${p1}&period2=${p2}&interval=1d`),
   ];
-  const proxies = [
+  const proxies = !kyfRelaysOn() ? [] : [
     `https://api.allorigins.win/raw?url=`,
     `https://corsproxy.io/?`,
     `https://api.codetabs.com/v1/proxy?quest=`,
@@ -41395,6 +41396,13 @@ function renderHistFullChart(){
 
 // ── Détection environnement + proxy URLs ─────────────────────
 // ── Détection environnement ──────────────────────────────────⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠
+// Relais publics de cours (allorigins, corsproxy.io, codetabs) : jamais utilisés sur le site en ligne ; en mode local, seulement si
+// l'utilisateur les autorise (désactivés par défaut : ils voient l'adresse IP et les tickers suivis, et pourraient renvoyer un faux cours).
+const KYF_RELAYS_KEY = 'kyf-public-relays';
+function kyfRelaysOn(){ try{ return localStorage.getItem(KYF_RELAYS_KEY) === '1'; }catch(e){ return false; } }
+function kyfRelaysSet(on){ try{ if(on) localStorage.setItem(KYF_RELAYS_KEY, '1'); else localStorage.removeItem(KYF_RELAYS_KEY); }catch(e){} }
+function kyfRelaysSync(){ try{ const c = document.getElementById('kyfRelaysChk'); if(c) c.checked = kyfRelaysOn(); }catch(e){} }
+window.addEventListener('load', kyfRelaysSync);
 const KYF_ENV = (()=>{
   const host = window.location.hostname;
   const proto = window.location.protocol;
@@ -41470,7 +41478,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.3.190\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.3.195\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -45256,7 +45264,7 @@ function toggleEditor(){
 }
 
 function showEdTab(name,btn){
-  if(name === 'affichage'){ try{ kyfAffichagePrep(); }catch(e){ console.warn('[KYF] affichage', e); } }
+  if(name === 'affichage'){ try{ kyfAffichagePrep(); kyfRelaysSync(); }catch(e){ console.warn('[KYF] affichage', e); } }
   { const _ep = document.getElementById('edPanel'); if(_ep) _ep.classList.toggle('ed-api-wide', name === 'api' || name === 'affichage'); }   // onglet Google et avancé : pas d'aperçu en direct, la place sert aux modes avancés
   if(name==='donuts'){ window._edDnForce=true; setTimeout(function(){try{edPreviewDraw()}catch(e){}},60); }
   document.querySelectorAll('.ed-tab-content').forEach(t=>{ if(t) t.style.display='none'; });
@@ -56290,6 +56298,10 @@ const GUIDE_PAGES = [
         <div style="font-size:13px;color:var(--text2);line-height:1.9">Un PER saisi par erreur comme assurance vie (ou l'inverse) se corrige dans <strong style="color:var(--text)">Modifier le contrat</strong>, en changeant le type. Les lignes du contrat dans <strong style="color:var(--text)">POSITIONS ETF &amp; ACTIONS</strong> changent d'enveloppe en même temps (étiquette AV ou PER). Pour un contrat devenu PER, les compartiments se renseignent au prochain import ou à la main.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">« Écart à vérifier » sur une carte de contrat</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Cette mention orange sous la valeur signale que deux chiffres du contrat ne racontent pas la même chose : la <strong style="color:var(--text)">valeur actuelle</strong> saisie dans la fenêtre du contrat et la somme <strong style="color:var(--text)">fonds euros + unités de compte</strong> diffèrent de plus de 10 %. KYF ne remplace aucun des deux en silence : il garde la valeur saisie et vous prévient. Elle n'apparaît que pour un contrat sans lignes détaillées (quand le contrat a des positions, sa valeur vient du détail, au cours du jour).<br>Pour la faire disparaître : sur la carte, <strong style="color:var(--text)">⋯</strong> puis <strong style="color:var(--text)">Modifier</strong>. Soit vous corrigez la <strong style="color:var(--text)">valeur actuelle</strong> (celle de votre espace client), soit vous la videz pour que KYF utilise fonds euros + unités de compte, soit vous importez le relevé du contrat pour obtenir le détail. Une valeur actuelle laissée vide n'est plus remplacée par le total versé : si KYF ne connaît ni la valeur ni les fonds, il affiche « - » plutôt qu'un chiffre inventé.</div>
+      </div>
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Comparateur Assurance Vie / PER</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9">La page <strong style="color:var(--text)">Comparateur</strong> classe les contrats selon les données de finance-heros.fr : frais d'entrée, de gestion et d'arbitrage, rendement du fonds euros, ETF et immobilier accessibles. Le bandeau du haut indique la date de mise à jour. Sur l'onglet Assurance vie, une colonne <strong style="color:var(--text)">NOTE</strong> affiche les étoiles de la rédaction (triable). Cochez 2 à 5 contrats puis <strong style="color:var(--text)">COMPARER</strong> : une fenêtre les met côte à côte, avec un trophée sur la meilleure valeur de chaque critère et le total de critères gagnés. Les données sont indicatives : vérifiez-les auprès du contrat avant de décider.</div>
       </div>
@@ -56540,7 +56552,7 @@ const GUIDE_PAGES = [
         <div style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
           <div><div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px">Services tiers</div>
-          <div style="font-size:13px;color:var(--text2);line-height:1.8">Yahoo Finance, le relais de prix KYF (un script Google, qui relaie Binance, Bitpanda et CryptoCompare) et, en secours, CoinGecko reçoivent les codes des actifs dont ils donnent le prix, et le service de recherche le nom que vous tapez. Vos quantités et vos montants ne leur sont jamais envoyés. La page Zones géographiques peut partager, avec votre accord, l'ISIN et la répartition d'un ETF ou d'une action dans une base communautaire</div></div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.8">Yahoo Finance, le relais de prix KYF (un script Google, qui relaie Binance, Bitpanda et CryptoCompare) et, en secours, CoinGecko reçoivent les codes des actifs dont ils donnent le prix, et le service de recherche le nom que vous tapez. Vos quantités et vos montants ne leur sont jamais envoyés. Quand KYF est ouvert depuis un fichier sur votre ordinateur, trois relais publics (allorigins, corsproxy.io, codetabs) peuvent servir de secours pour les cours : ils sont désactivés par défaut, car ils verraient votre adresse IP et les codes que vous suivez. Vous pouvez les autoriser dans Paramètres, Affichage. La page Zones géographiques peut partager, avec votre accord, l'ISIN et la répartition d'un ETF ou d'une action dans une base communautaire</div></div>
         </div>
       </div>
       <div style="background:rgba(240,180,41,0.06);border:1px solid rgba(240,180,41,0.25);border-radius:10px;padding:16px 18px;margin-top:14px">
@@ -62637,11 +62649,11 @@ const FAQ_DATA = [
   },
   {
     q: "Comment KYF récupère-t-il les prix en temps réel ?",
-    a: "KYF utilise un proxy Google Apps Script (GAS) dédié qui interroge Yahoo Finance en masse, un seul appel pour tous vos tickers. C'est plus rapide et plus fiable que d'appeler Yahoo directement depuis le navigateur. En cas d'échec, KYF bascule automatiquement sur Yahoo Finance en fallback direct. Aucun compte ni clé API n'est nécessaire."
+    a: "KYF utilise un proxy Google Apps Script (GAS) dédié qui interroge Yahoo Finance en masse, un seul appel pour tous vos tickers. C'est plus rapide et plus fiable que d'appeler Yahoo directement depuis le navigateur. En cas d'échec, KYF bascule automatiquement sur Yahoo Finance en fallback direct. En mode local (fichier ouvert sur votre ordinateur), des relais publics optionnels, désactivés par défaut, peuvent être autorisés dans Paramètres, Affichage. Aucun compte ni clé API n'est nécessaire."
   },
   {
     q: "Pourquoi les prix ne se mettent-ils pas à jour ?",
-    a: "Plusieurs causes possibles : (1) marché fermé : les prix affichent la clôture, c'est normal. (2) Connexion internet coupée. (3) Yahoo Finance temporairement indisponible. Appuyez sur le bouton ↺ dans la topbar pour forcer un refresh. Le badge ● LIVE / ◉ CLÔTURE / ● ERREUR indique l'état en temps réel.<br><br><svg width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='#f59e0b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:-2px'><path d='M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z'/><line x1='12' y1='9' x2='12' y2='13'/><line x1='12' y1='17' x2='12.01' y2='17'/></svg> Les actions Europe et USA/reste du monde sont mises à jour sur des créneaux séparés :<br><br>• <strong style='color:var(--faq-strong);font-weight:700'>Actions Europe</strong> : mise à jour de <strong>9h à 17h30</strong>, avec correction de prix entre 17h30 et 20h, le temps que Yahoo Finance finalise les cours de clôture officiels<br>• <strong style='color:var(--faq-strong);font-weight:700'>Actions USA / reste du monde</strong> : mise à jour de <strong>15h30 à 22h</strong>, avec correction de prix entre 22h et 23h, pour intégrer les ajustements de fin de séance Wall Street<br><br>En dehors de ces créneaux, le dernier prix de clôture connu est affiché.<br><br><strong style='color:var(--faq-strong);font-weight:700'>Petite horloge grise « non à jour »</strong> sous un cours : aucune source n'a donné de cours frais pour ce titre. Le dernier cours connu reste affiché (heure du relevé au survol) et sa variation du jour s'affiche « — » au lieu d'un faux 0 %.<br><strong style='color:var(--faq-strong);font-weight:700'>Petite icône d'échange</strong> à côté d'un cours en dollars ou en livres : le taux de change du jour n'a pas pu être chargé. Grise, KYF utilise le dernier taux connu ; orange, aucun taux n'est connu et le montant est approximatif, il se corrige tout seul dès que le taux arrive."
+    a: "Plusieurs causes possibles : (1) marché fermé : les prix affichent la clôture, c'est normal. (2) Connexion internet coupée. (3) Yahoo Finance temporairement indisponible. (4) KYF ouvert depuis un fichier sur votre ordinateur : Yahoo refuse parfois les appels directs, vous pouvez autoriser des relais publics dans Paramètres, Affichage (désactivés par défaut). Appuyez sur le bouton ↺ dans la topbar pour forcer un refresh. Le badge ● LIVE / ◉ CLÔTURE / ● ERREUR indique l'état en temps réel.<br><br><svg width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='#f59e0b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:-2px'><path d='M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z'/><line x1='12' y1='9' x2='12' y2='13'/><line x1='12' y1='17' x2='12.01' y2='17'/></svg> Les actions Europe et USA/reste du monde sont mises à jour sur des créneaux séparés :<br><br>• <strong style='color:var(--faq-strong);font-weight:700'>Actions Europe</strong> : mise à jour de <strong>9h à 17h30</strong>, avec correction de prix entre 17h30 et 20h, le temps que Yahoo Finance finalise les cours de clôture officiels<br>• <strong style='color:var(--faq-strong);font-weight:700'>Actions USA / reste du monde</strong> : mise à jour de <strong>15h30 à 22h</strong>, avec correction de prix entre 22h et 23h, pour intégrer les ajustements de fin de séance Wall Street<br><br>En dehors de ces créneaux, le dernier prix de clôture connu est affiché.<br><br><strong style='color:var(--faq-strong);font-weight:700'>Petite horloge grise « non à jour »</strong> sous un cours : aucune source n'a donné de cours frais pour ce titre. Le dernier cours connu reste affiché (heure du relevé au survol) et sa variation du jour s'affiche « — » au lieu d'un faux 0 %.<br><strong style='color:var(--faq-strong);font-weight:700'>Petite icône d'échange</strong> à côté d'un cours en dollars ou en livres : le taux de change du jour n'a pas pu être chargé. Grise, KYF utilise le dernier taux connu ; orange, aucun taux n'est connu et le montant est approximatif, il se corrige tout seul dès que le taux arrive."
   },
   {
     q: `Que signifie "données reconstituées" dans l'historique ?`,
@@ -63839,6 +63851,14 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
           <span><span style="color:var(--text);font-weight:600">Bouton Restaurer (import)</span><br><span style="font-size:10px;color:var(--text3);line-height:1.5">Recharge une sauvegarde JSON ou CGX.</span></span>
         </label>
       </div>
+      <div class="ed-section" style="margin-top:22px" id="kyfRelaysBlock">SOURCES DE COURS</div>
+      <div style="font-size:10px;color:var(--text3);line-height:1.6;margin:0 0 12px">Quand KYF est ouvert depuis un fichier sur votre ordinateur, Yahoo refuse parfois les appels directs. Trois services publics (allorigins, corsproxy.io, codetabs) peuvent alors les relayer. Ils voient votre adresse IP et les tickers que vous suivez, et un service compromis pourrait renvoyer un faux cours. Sur le site en ligne, ils ne sont jamais utilisés.</div>
+      <div style="display:flex;flex-direction:column;gap:8px;max-width:520px">
+        <label style="display:flex;align-items:flex-start;gap:9px;cursor:pointer;font-size:11px;color:var(--text2);padding:9px 11px;border-radius:7px;background:rgba(255,255,255,0.02);border:1px solid var(--border);transition:background .15s" onmouseover="this.style.background='var(--hov-bg)'" onmouseout="this.style.background='rgba(255,255,255,0.02)'">
+          <input type="checkbox" id="kyfRelaysChk" style="accent-color:var(--accent);width:14px;height:14px;flex-shrink:0;margin-top:1px" onchange="kyfRelaysSet(this.checked)">
+          <span><span style="color:var(--text);font-weight:600">Relais publics de cours (mode local uniquement)</span><br><span style="font-size:10px;color:var(--text3);line-height:1.5">Désactivé par défaut.</span></span>
+        </label>
+      </div>
     </div>
 
     <!-- ── ONGLET VERSION ── -->
@@ -64352,6 +64372,16 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.195 · 12/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance vie : l'info-bulle de « Écart à vérifier » explique maintenant comment corriger (⋯ puis Modifier, corriger ou vider la valeur actuelle). Nouveau paragraphe dans le Guide, chapitre Mes Contrats.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.194 · 12/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance vie : la mention « Écart à vérifier » n'apparaît plus sur un contrat qui a des lignes détaillées (sa valeur vient du détail au cours du jour, la comparaison entre valeur saisie et fonds euros + unités de compte ne change rien à l'affichage). Elle reste pour les contrats sans détail.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.193 · 12/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance vie : une valeur actuelle non saisie n'est plus remplacée par le montant versé à l'enregistrement du contrat. Cette recopie passait avant fonds euros + unités de compte et déclenchait à tort « Écart à vérifier » (ex. contrat importé avec détail). Un contrat dont la valeur est inconnue affiche « - » (plus de perte de 100 % inventée, ni sur la carte ni dans le KPI global).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.192 · 12/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Le réglage des relais publics de cours passe de « Google et avancé » à « Affichage » (bloc « Sources de cours »). Guide (page Vos Données & Confidentialité) et FAQ (prix, confidentialité) mis à jour.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.191 · 12/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Sécurité : les relais publics de cours (allorigins, corsproxy.io, codetabs), qui voient l'adresse IP et les tickers suivis, sont désactivés par défaut. Un réglage dans Paramètres, Google et avancé, permet de les autoriser en mode local. Sur le site en ligne, ils n'étaient déjà jamais utilisés.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.190 · 12/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Contrat AV, ajout d'une position ETF ou action : un ticker tapé à la main sans choisir de suggestion est maintenant pris en compte (avant : « Saisissez un nom ou un ticker » alors qu'on en avait saisi un). La base communautaire (ex. Afer Actions Amérique) est rechargée si elle n'était pas disponible, comme dans « Ajouter un actif » du Portefeuille.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.189 · 12/10/2026</div>
@@ -71712,6 +71742,9 @@ function avSourceInit(){
 function kyfAvValeurSaisie(d){ const v = parseFloat(d && d.valeur); return (v > 0 && !(d && d.ucDansETF)) ? v : 0; }
 // « Écart à vérifier » : valeur saisie et fonds euros + UC saisis tous deux présents mais éloignés de plus de 10 % (ni l'une ni l'autre n'est remplacée)
 function kyfAvEcartAVerifier(d){
+  // Contrat avec lignes détaillées : sa valeur vient du détail (cours du jour), ni la valeur saisie ni « fonds euros + UC » ne servent à l'affichage,
+  // l'écart entre ces deux champs ne change rien et l'alerte serait trompeuse.
+  try{ if(d && d.id && avPosLoad(d.id).length) return false; }catch(e){}
   const v = parseFloat(d && d.valeur) || 0, c = (parseFloat(d && d.fondsEuros) || 0) + (parseFloat(d && d.uc) || 0);
   return v > 0 && c > 0 && Math.abs(v - c) / v > 0.10;
 }
@@ -81326,7 +81359,9 @@ function saveAV(){
   const _editIdV  = document.getElementById('avEditId').value;
   const versmentsAn= _editIdV ? (parseFloat((avLoad().find(x=>x.id===_editIdV)||{}).versmentsAn)||0) : 0;   // ancienne saisie conservée ; le calculé vient des versements programmés
   const rachats    = Math.max(0, parseNum(document.getElementById('avRachats')?.value)||0);
-  const valeur     = parseNum(document.getElementById('avValeurActuelle').value)||versements;
+  // Valeur actuelle non saisie : on la laisse vide (0). Avant, on y recopiait le montant versé : depuis AV-001 cette recopie était lue
+  // comme une vraie valeur saisie (elle passait avant fonds euros + unités de compte et déclenchait « Écart à vérifier »).
+  const valeur     = parseNum(document.getElementById('avValeurActuelle').value)||0;
   const fe         = parseNum(document.getElementById('avFondsEuros').value)||0;
   const uc         = parseNum(document.getElementById('avUC').value)||0;
   const type       = document.getElementById('avType').value;
@@ -81665,7 +81700,7 @@ function renderAV(){
   const totalVal   = data.reduce((s,d)=>avContratFullValue(d)+s, 0);
   // Plus-value : seulement sur les contrats dont le total investi est connu. Sans lui, valeur - 0 = toute la valeur
   // serait affichée comme « plus-value ». Les autres contrats sont laissés de côté (mention sous le chiffre).
-  const _pvC       = data.filter(d => (parseFloat(d.versements)||0) > 0);
+  const _pvC       = data.filter(d => (parseFloat(d.versements)||0) > 0 && avContratFullValue(d) > 0);   // sans valeur connue, le contrat est laissé de côté (pas de fausse perte)
   const _pvMiss    = data.length - _pvC.length;
   const totalVers  = _pvC.reduce((s,d)=>s+(parseFloat(d.versements)||0), 0);
   const _pvVal     = _pvC.reduce((s,d)=>s+avContratFullValue(d), 0);
@@ -81809,7 +81844,7 @@ function renderAV(){
     if(totalVers > 0){ pvEl.textContent=(pv>=0?'+':'')+fmt(pv,0)+' €'; pvEl.style.color=pv>=0?'var(--green)':'var(--red)'; }
     else { pvEl.textContent='- €'; pvEl.style.color=''; }
   }
-  el('avKpiPvSub', totalVers>0 ? (pvPct>=0?'+':'')+pvPct.toFixed(2)+'% / versements '+fmt(totalVers,0)+' €'+(_pvMiss>0?' · '+_pvMiss+' contrat'+(_pvMiss>1?'s':'')+' sans total investi':'') : (data.length ? 'Total investi à renseigner' : '-'));
+  el('avKpiPvSub', totalVers>0 ? (pvPct>=0?'+':'')+pvPct.toFixed(2)+'% / versements '+fmt(totalVers,0)+' €'+(_pvMiss>0?' · '+_pvMiss+' contrat'+(_pvMiss>1?'s':'')+' sans total investi ou sans valeur':'') : (data.length ? 'Total investi ou valeur à renseigner' : '-'));
 
   // Vue groupée par contrat
   if(!data.length){ tbody.innerHTML=''; noData.style.display='block'; return; }
@@ -81838,7 +81873,7 @@ function renderAV(){
   tbody.innerHTML = dataWithVal.map(({d, val, isFav})=>{
     const positions = avPosLoad(d.id);
     const rach      = parseFloat(d.rachats)||0; // total racheté depuis l'origine : s'ajoute à la valeur pour la plus-value
-    const pv        = d.versements>0 ? val+rach-d.versements : null;
+    const pv        = (d.versements>0 && val>0) ? val+rach-d.versements : null;   // valeur inconnue : « - », jamais une perte de 100 %
     const pvPct     = pv!==null && d.versements>0 ? (pv/d.versements*100) : null;
     // Taux annualisé (CAGR) - nécessite date ouverture et versements
     let cagr = null;
@@ -81939,7 +81974,7 @@ function renderAV(){
           <div style="color:var(--text3);font-size:11px;margin-top:3px">${escapeHtml(d.assureur||'-')} ${kyfPctTxt(d.fraisGestion)?'· FG '+kyfPctTxt(d.fraisGestion)+'%':''}${d.modeGestion&&d.modeGestion!=='libre'?' · '+(d.modeGestion==='mandat'?'Sous mandat':'Pilotée')+(kyfPctTxt(d.fraisPilotage)?' +'+kyfPctTxt(d.fraisPilotage)+'%':''):''}${d.versements>0?' · Versé '+fmt(d.versements,0)+' €':` · <span onclick="editAV('${d.id}');setTimeout(()=>{const i=document.getElementById('avVersements');if(i){i.scrollIntoView({block:'center'});i.focus();}},350)" title="Sans le total investi, KYF ne peut pas calculer la plus-value de ce contrat. À retrouver dans l'espace client de l'assureur (Mes versements) ou sur le relevé annuel." style="color:#f59e0b;font-weight:700;cursor:pointer;text-decoration:underline;transition:color .15s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='#f59e0b'">Total investi à renseigner</span>`}${rach>0?' · Racheté '+fmt(rach,0)+' €':''}</div>
         </div>
         <div style="text-align:right;min-width:110px">
-          <div style="font-weight:700;color:var(--text);font-size:24px;line-height:1.1">${val>0?fmt(val,0)+' €':'-'}</div>${kyfAvEcartAVerifier(d)?'<div style="font-size:9px;font-weight:700;color:#f0b429;margin-top:2px" title="La valeur du contrat saisie diffère de plus de 10 % de la somme fonds euros + unités de compte. KYF retient la valeur du contrat saisie.">Écart à vérifier</div>':''}${kyfAvVersNA(d)>0?'<div style="font-size:9px;font-weight:700;color:var(--text3);margin-top:2px" title="Des versements programmés ne sont affectés à aucun support (règle « total investi seul »). Ils sont comptés dans la valeur du contrat au montant versé, sans gain ni perte, jusqu\'au prochain relevé importé ou à la ressaisie de la valeur.">dont '+fmt(kyfAvVersNA(d),0)+' € non affectés</div>':''}
+          <div style="font-weight:700;color:var(--text);font-size:24px;line-height:1.1">${val>0?fmt(val,0)+' €':'-'}</div>${kyfAvEcartAVerifier(d)?'<div style="font-size:9px;font-weight:700;color:#f0b429;margin-top:2px" title="La valeur actuelle saisie diffère de plus de 10 % de la somme fonds euros + unités de compte. KYF retient la valeur saisie. Pour corriger : ⋯ puis Modifier, corrigez la valeur actuelle ou videz-la (KYF utilisera fonds euros + unités de compte). Détail dans le Guide, Mes Contrats.">Écart à vérifier</div>':''}${kyfAvVersNA(d)>0?'<div style="font-size:9px;font-weight:700;color:var(--text3);margin-top:2px" title="Des versements programmés ne sont affectés à aucun support (règle « total investi seul »). Ils sont comptés dans la valeur du contrat au montant versé, sans gain ni perte, jusqu\'au prochain relevé importé ou à la ressaisie de la valeur.">dont '+fmt(kyfAvVersNA(d),0)+' € non affectés</div>':''}
           <div style="font-size:10px;color:var(--text3);margin-top:2px">Valeur</div>
           ${(()=>{ const rv = d.releve; if(!rv || !(rv.total>0) || avContratMode(d)!=='import' || val<=0) return ''; const dl = val - rv.total; if(Math.abs(dl) < 1) return '';
             const dt = rv.date ? new Date(rv.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'}) : (d.lastImportAt ? new Date(d.lastImportAt).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'}) : '');
