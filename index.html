@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_3_183.html
+  @file        : KYF_SHARE_beta_2_8_3_190.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.3.183
+  @version     : Beta 2.8.3.190
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6539,7 +6539,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.3.183</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.3.190</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -13757,7 +13757,7 @@ async function oauthOnConnected(token){
   // uniquement local). Sans ce pull, une reconnexion après reset écrasait le
   // Sheets distant avec un localStorage vide au lieu de le restaurer.
   if(typeof kyfPullOnStartup==='function') await kyfPullOnStartup();
-  setTimeout(()=>sheetsSyncPushOAuth().catch(()=>{}), 1000);
+  setTimeout(()=>sheetsSyncPushOAuth({ auto:true }).catch(()=>{}), 1000);
   sheetsAutoSync();
   setTimeout(() => { try{ kyfAvisPingSeen(); }catch(e){} }, 3000);
 }
@@ -13927,7 +13927,48 @@ function oauthCheckOnLoad(){
 // (audit, point 2) bouton manuel "Sauvegarder maintenant" - utilisait
 // encore fetch()+token en dur, sans timeout ni refresh sur 401 : un
 // clic juste apres une longue absence echouait sans jamais retenter.
-async function sheetsSyncPushOAuth(){
+// R07 : une clé est « en conflit » quand le Sheet en a une version plus récente que celle connue de cet appareil ET différente.
+function kyfSheetMs_(v){ const t = Date.parse(v); return isNaN(t) ? 0 : t; }
+function kyfSheetSameVal_(a, b){
+  if(a === b) return true;
+  try{ return JSON.stringify(JSON.parse(a)) === JSON.stringify(JSON.parse(b)); }catch(e){ return false; }
+}
+function kyfSheetConflicts_(values){
+  const tsLoc = (typeof kyfTsLoad === 'function') ? kyfTsLoad() : {};
+  const out = []; let remoteMax = 0;
+  const _ls = kyfSheetMs_(localStorage.getItem('kyf-sheets-last-sync'));
+  (values||[]).slice(1).forEach(r=>{
+    const key = r && r[0]; if(!key || !r[1]) return;
+    const rMs = kyfSheetMs_(r[2]);
+    if(rMs > remoteMax) remoteMax = rMs;
+    const loc = localStorage.getItem(key);
+    if(loc === null || !kyfSyncKeyOk(key)) return;
+    if(rMs > Math.max(tsLoc[key] || 0, _ls) && !kyfSheetSameVal_(loc, kyfLZUnpack(r[1]))) out.push({ key, remoteMs: rMs });
+  });
+  return { list: out, remoteMax };
+}
+function kyfSheetFmt_(ms){ return ms ? new Date(ms).toLocaleString('fr-FR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }) : 'inconnue'; }
+function kyfSheetConflictAsk_(c){
+  const keys = c.list.slice(0, 8).map(x => escapeHtml(x.key)).join(', ') + (c.list.length > 8 ? ' et ' + (c.list.length - 8) + ' autres' : '');
+  const lastLoc = localStorage.getItem('kyf-sheets-last-sync');
+  const msg = 'Le Google Sheet contient ' + c.list.length + ' donnée(s) plus récente(s) que celles de cet appareil (modifiées le ' + kyfSheetFmt_(c.remoteMax) +
+    ', dernière synchro de cet appareil : ' + kyfSheetFmt_(lastLoc ? kyfSheetMs_(lastLoc) : 0) + '). Rien n\'a été écrasé.';
+  if(typeof kyfShModal !== 'function'){
+    if(confirm(msg + '\n\nOK = garder cet appareil et écraser le Sheet. Annuler = ne rien faire.')) sheetsSyncPushOAuth({ force:true });
+    return;
+  }
+  kyfShModal({
+    title: 'Le Sheet est plus récent',
+    html: '<p>' + msg + '</p><p style="color:var(--text2);font-size:12px">Données concernées : ' + keys + '</p>',
+    buttons: [
+      { label:'Garder le Sheet', cls:'ksh-go', onClick:()=>{ kyfShClose(); sheetsSyncPullOAuth({ noConfirm:true }); } },
+      { label:'Garder cet appareil', cls:'ksh-danger', onClick:()=>{ kyfShClose(); sheetsSyncPushOAuth({ force:true }); } },
+      { label:'Annuler', onClick:()=>kyfShClose() }
+    ]
+  });
+}
+async function sheetsSyncPushOAuth(opts){
+  opts = opts || {};
   const hasOAuth = !!(window._kyfOAuthCache.token || window._kyfOAuthCache.refresh);
   const sheetId  = localStorage.getItem('kyf-oauth-sheetid');
   if(!hasOAuth||!sheetId) return sheetsSyncPush(); // Fallback GAS
@@ -13945,10 +13986,19 @@ async function sheetsSyncPushOAuth(){
   try {
     const sid = kyfSafeSheetId_(sheetId);
     // Lire les lignes existantes pour upsert
-    const r1 = await kyfFetchAuth(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/KYF_Data!A:A`,
+    const r1 = await kyfFetchAuth(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/KYF_Data!A:D`,
       {}, { timeoutMs: 15000 });
     const existing = await r1.json();
     const existingKeys = (existing.values||[]).slice(1).map(r=>r[0]);
+    if(!opts.force){
+      const c = kyfSheetConflicts_(existing.values);
+      if(c.list.length){
+        addLog('warnings', 'Sauvegarde Google Sheets suspendue : ' + c.list.length + ' donnée(s) plus récente(s) dans le Sheet (' + c.list.slice(0,5).map(x=>x.key).join(', ') + ')', 'io', 'warn');
+        if(opts.auto) sheetsSyncSetStatus(kyfStatusIcon('warn')+'Sheet plus récent sur '+c.list.length+' donnée(s) : rien écrasé. Cliquez sur « Sauvegarder » pour choisir.','#f59e0b');
+        else { sheetsSyncSetStatus(kyfStatusIcon('warn')+'Sheet plus récent : choisissez quoi garder','#f59e0b'); kyfSheetConflictAsk_(c); }
+        return;
+      }
+    }
 
     // Séparer updates et inserts
     const updates=[], inserts=[];
@@ -13979,12 +14029,24 @@ async function sheetsSyncPushOAuth(){
   } catch(e){ sheetsSyncSetStatus(kyfStatusIcon('err')+'Erreur : '+escapeHtml(e.message),'#ff4560'); }
 }
 
-async function sheetsSyncPullOAuth(){
+async function sheetsSyncPullOAuth(opts){
+  opts = opts || {};
   const hasOAuth = !!(window._kyfOAuthCache.token || window._kyfOAuthCache.refresh);
   const sheetId  = localStorage.getItem('kyf-oauth-sheetid');
   if(!hasOAuth||!sheetId) return sheetsSyncPull(); // Fallback GAS
 
-  if(!confirm('Restaurer depuis Google Sheets ?\nLes données du Sheet remplaceront celles de cet appareil. Ce qui n\'est pas dans le Sheet reste en place.')) return;
+  if(!opts.noConfirm){
+    // R07 : on montre les dates avant de remplacer (lecture tentée ; si elle échoue, la confirmation reste affichée sans la date du Sheet)
+    let remoteMax = 0;
+    try{
+      const rp = await kyfFetchAuth(`https://sheets.googleapis.com/v4/spreadsheets/${kyfSafeSheetId_(sheetId)}/values/KYF_Data!A:C`, {}, { timeoutMs: 15000 });
+      const dp = await rp.json();
+      (dp.values||[]).slice(1).forEach(r=>{ const m = kyfSheetMs_(r && r[2]); if(m > remoteMax) remoteMax = m; });
+    }catch(e){}
+    const lastLoc = localStorage.getItem('kyf-sheets-last-sync');
+    const dates = '\n\nSheet modifié le : ' + kyfSheetFmt_(remoteMax) + '\nDernière synchro de cet appareil : ' + kyfSheetFmt_(lastLoc ? kyfSheetMs_(lastLoc) : 0);
+    if(!confirm('Restaurer depuis Google Sheets ?\nLes données du Sheet remplaceront celles de cet appareil. Ce qui n\'est pas dans le Sheet reste en place.' + dates)) return;
+  }
   sheetsSyncSetStatus('⏳ Récupération...','var(--text3)');
 
   try {
@@ -14130,6 +14192,7 @@ function sheetsUpdateBadge(status, label, version){
   if(oauthOn){
     if(ver) ver.textContent = (status==='ok' && version) ? 'v'+version : '';
     if(sync) sync.style.display = 'block';
+    { const n = document.getElementById('sheetsNoConflictNote'); if(n) n.style.display = 'none'; }
     updateSheetsIndicator();
     return;
   }
@@ -14138,6 +14201,7 @@ function sheetsUpdateBadge(status, label, version){
   if(lbl)  lbl.textContent = label;
   if(ver)  ver.textContent = version ? 'v'+version : '';
   if(sync) sync.style.display = status==='ok'?'block':'none';
+  { const n = document.getElementById('sheetsNoConflictNote'); if(n) n.style.display = status==='ok' ? 'block' : 'none'; }   // 189 : limite visible du mode script
   updateSheetsIndicator();
 }
 
@@ -14674,8 +14738,8 @@ async function kyfGasSend(action, fields, timeoutMs){
   return { r, d };
 }
 
-async function sheetsSyncPush(){
-  if(window._kyfOAuthCache.token) return sheetsSyncPushOAuth();
+async function sheetsSyncPush(opts){
+  if(window._kyfOAuthCache.token) return sheetsSyncPushOAuth(opts);
   if(!KYF_SHEETS_URL){ sheetsSyncSetStatus(kyfStatusIcon('warn')+'Non connecté','#f59e0b'); return; }
   sheetsSyncSetStatus('⏳ Envoi...','var(--text3)');
   const payload = {};
@@ -14806,7 +14870,7 @@ let _sheetsSyncTimer=null;
 function sheetsAutoSync(){
   if(!KYF_SHEETS_URL) return;
   if(_sheetsSyncTimer) clearInterval(_sheetsSyncTimer);
-  _sheetsSyncTimer = setInterval(()=>{ sheetsSyncPush().catch(()=>{}); }, 5*60*1000);
+  _sheetsSyncTimer = setInterval(()=>{ sheetsSyncPush({ auto:true }).catch(()=>{}); }, 5*60*1000);
 }
 // ── VERSEMENTS PRÉVUS ────────────────────────────────────────
 const PLANNED_KEY = 'kyf-planned-payments';
@@ -26386,6 +26450,7 @@ async function kyfFlushQueue(){
       // le badge doit refléter qu'une synchro reste à faire, pas la donner
       // pour terminée alors qu'il en reste.
       kyfShowSyncStatus(Object.keys(currentQueue).length ? 'pending' : 'ok');
+      if(window._kyfFlushSkipped && window._kyfFlushSkipped.length){ kyfShowSyncStatus('conflict', window._kyfFlushSkipped); window._kyfFlushSkipped = []; }
       kyfResetRetry_();
 
       // Résolution automatique : la sync repart, on efface les tickets
@@ -26484,8 +26549,12 @@ async function kyfFlushOAuth(sheetId, queue){
     const existingKeys = (existing.values||[]).slice(1).map(r=>r[0]);
     const device = /Mobi|Android/i.test(navigator.userAgent)?'Mobile':'PC';
     const updates=[], inserts=[];
+    // R07 : une modification plus ancienne que la version du Sheet ne l'écrase pas (« le plus récent gagne », comme au démarrage)
+    const skipped = [];
 
     Object.entries(queue).forEach(([key, entry])=>{
+      const _ri = existingKeys.indexOf(key);
+      if(_ri >= 0 && kyfSheetMs_((existing.values||[])[_ri+1] && (existing.values||[])[_ri+1][2]) > entry.ts){ skipped.push(key); return; }
       const row = [key, kyfLZPack(entry.data), new Date(entry.ts).toISOString(), device];
       const idx  = existingKeys.indexOf(key);
       if(idx>=0) updates.push({ range:`KYF_Data!A${idx+2}:D${idx+2}`, values:[row] });
@@ -26496,6 +26565,11 @@ async function kyfFlushOAuth(sheetId, queue){
     if(inserts.length){
       const nextRow = (existing.values||[]).length + 1;
       batchData.push({ range:`KYF_Data!A${nextRow}:D${nextRow+inserts.length-1}`, values:inserts });
+    }
+    window._kyfFlushSkipped = skipped;
+    if(skipped.length){
+      console.warn('[KYF Sync] Non écrasé, plus récent dans le Sheet :', skipped.join(', '));
+      try{ addLog('warnings', 'Synchro : ' + skipped.length + ' donnée(s) plus récente(s) dans le Sheet, non écrasée(s) : ' + skipped.slice(0,5).join(', '), 'io', 'warn'); }catch(e){}
     }
     if(!batchData.length){
       kyfLogQuota(logTok(), sheetId, 'SYNC_PUSH', 0, Date.now()-_t0, 0, 'OK', 'queue vide');
@@ -26618,7 +26692,7 @@ function kyfShowSyncStatus(status, detail){
   // Toast flottant : uniquement en cas d'erreur ou de clé trop volumineuse.
   // Dès que la synchro repart (envoi en cours, réussite), le message d'erreur est retiré tout de suite : avant, il ne
   // disparaissait qu'au bout de son minuteur de 5 s, que la mise en veille de l'ordinateur pouvait bloquer.
-  if(status !== 'error' && status !== 'oversized'){
+  if(status !== 'error' && status !== 'oversized' && status !== 'conflict'){
     if(status === 'ok' || status === 'saving'){
       const t = document.getElementById('kyfSyncToast');
       if(t){ if(t._timer) clearTimeout(t._timer); t.classList.remove('kyf-toast-visible'); t._shownAt = 0; }
@@ -26638,7 +26712,11 @@ function kyfShowSyncStatus(status, detail){
   const warnSvg = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
   icon.innerHTML = warnSvg;
 
-  if(status === 'oversized'){
+  if(status === 'conflict'){
+    icon.style.background = 'color-mix(in srgb, #f0b429 22%, transparent)';
+    icon.style.color = '#f0b429';
+    msg.textContent = (detail && detail.length > 1 ? detail.length + ' données' : 'Une donnée') + ' plus récente(s) dans Google Sheets : rien écrasé, la version du Sheet sera reprise au prochain démarrage';
+  } else if(status === 'oversized'){
     const label = (detail && detail.length === 1) ? detail[0] : (detail ? detail.length + ' clés' : 'Une clé');
     icon.style.background = 'color-mix(in srgb, #f0b429 22%, transparent)';
     icon.style.color = '#f0b429';
@@ -26652,7 +26730,7 @@ function kyfShowSyncStatus(status, detail){
 
   requestAnimationFrame(() => { toast.classList.add('kyf-toast-visible'); });
   toast._shownAt = Date.now();
-  if(status === 'oversized') toast._isError = false;
+  if(status === 'oversized' || status === 'conflict') toast._isError = false;
 
   if(toast._timer) clearTimeout(toast._timer);
   toast._timer = setTimeout(()=>{ toast.classList.remove('kyf-toast-visible'); toast._shownAt = 0; }, 5000);
@@ -41392,7 +41470,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.3.183\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.3.190\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -47776,6 +47854,8 @@ async function githubStorageSave(blob){
   }
   const url    = gistId ? GITHUB_API + '/gists/' + gistId : GITHUB_API + '/gists';
   const method = gistId ? 'PATCH' : 'POST';
+  let headBefore = null;
+  if(gistId){ await kyfStorageRecheck_('github'); headBefore = window._kyfGistHead || null; }   // 185 : revérification juste avant l'écriture
 
   const resp = await fetch(url, {
     method,
@@ -47791,6 +47871,9 @@ async function githubStorageSave(blob){
     throw new Error('GitHub HTTP ' + resp.status + (errText ? ' - ' + errText.slice(0,200) : ''));
   }
   const json = await resp.json();
+  // 185 : si la version juste avant la nôtre n'est pas celle vue avant d'écrire, un autre appareil a écrit entre-temps
+  const prevVer = json.history && json.history[1] && json.history[1].version;
+  if(gistId && headBefore && prevVer && prevVer !== headBefore) throw new Error(KYF_RACE_MSG);
   if(!gistId){ githubSetGistId(json.id); localStorage.setItem('kyf-github-gist-enc', json.id); } // mémorise l'ID du Gist créé pour les prochains save/load
   return true;
 }
@@ -47827,6 +47910,7 @@ window.KYF.storage.backends.github = {
     if(resp.status === 404) return null;
     if(!resp.ok) throw new Error('GitHub HTTP ' + resp.status + ' - vérification de la version impossible');
     const j = await resp.json();
+    window._kyfGistHead = (j.history && j.history[0] && j.history[0].version) || null;
     return j.updated_at || null;
   }
 };
@@ -47909,9 +47993,11 @@ async function kyfFolderCheckPermission(handle, requestIfNeeded){
 }
 
 async function kyfFolderWriteBackup(handle, blob){
+  const enc = await kyfBackupEncode(blob);
+  await kyfStorageRecheck_('folder');   // 185 : revérification juste avant l'écriture (après le chiffrement)
   const fileHandle = await handle.getFileHandle(KYF_FOLDER_FILE_NAME, { create: true });
   const writable = await fileHandle.createWritable();
-  await writable.write(await kyfBackupEncode(blob));
+  await writable.write(enc);
   await writable.close();
 }
 
@@ -48101,6 +48187,22 @@ function kyfStorageSyncReport(active, err){
 // sauvegarde manuelle = question (OK pour écraser) ; sauvegarde automatique = arrêt avec anneau rouge.
 // opts.manual : action de l'utilisateur ; opts.connecting : première connexion de cet appareil à cette sauvegarde.
 const KYF_CONFLICT_MSG = 'Conflit : la sauvegarde distante a été modifiée depuis un autre appareil. Rien n\'a été écrasé. Restaurez-la d\'abord, ou cliquez sur « Synchroniser maintenant » pour l\'écraser.';
+// R07 / 185 : fenêtre de course. La version vue au contrôle est retenue, puis revérifiée JUSTE avant l'écriture
+// (après le chiffrement, qui peut prendre du temps). GitHub ne propose pas de verrou : on contrôle aussi, après l'écriture,
+// que la version juste avant la nôtre dans l'historique du Gist est bien celle qu'on attendait.
+window._kyfCheckedRev = window._kyfCheckedRev || {};
+const KYF_RACE_MSG = 'Une autre sauvegarde a été écrite pendant l\'envoi. L\'ancienne version reste dans l\'historique du Gist sur GitHub (onglet « Revisions »). Restaurez d\'abord, ou cliquez sur « Synchroniser maintenant » pour décider.';
+async function kyfStorageRecheck_(active){
+  const c = window._kyfCheckedRev;
+  if(!c || !Object.prototype.hasOwnProperty.call(c, active)) return;        // pas passé par la sauvegarde contrôlée : rien à comparer
+  const b = window.KYF.storage.backends[active];
+  if(!b || !b.remoteRev) return;
+  const now = await b.remoteRev();
+  if(now === undefined || c[active] === undefined) return;                  // serveur sans version : limite connue
+  if(String(now === null ? '' : now) !== String(c[active] === null ? '' : c[active])) throw new Error(KYF_CONFLICT_MSG);
+}
+function kyfStorageSortKeys_(o){ return (o && typeof o === 'object' && !Array.isArray(o)) ? Object.keys(o).sort().reduce((r,k)=>{ r[k] = kyfStorageSortKeys_(o[k]); return r; }, {}) : (Array.isArray(o) ? o.map(kyfStorageSortKeys_) : o); }
+function kyfStorageSortedData_(){ return JSON.stringify(kyfStorageSortKeys_(window.KYF.storage.collect().data)); }
 async function kyfStorageRememberRev(active){
   try{
     const b = window.KYF.storage.backends[active];
@@ -48112,10 +48214,21 @@ async function kyfStorageCheckConflict(active, opts){
   const b = window.KYF.storage.backends[active];
   if(!b || !b.remoteRev) return;
   const remote = await b.remoteRev();
+  window._kyfCheckedRev[active] = remote;                         // 185 : version vue au contrôle, revérifiée avant l'écriture
   if(remote === null || remote === undefined) return;            // rien à écraser, ou version non fournie par le serveur
   const known = localStorage.getItem('kyf-sync-rev-' + active);
-  if(!known && !(opts && opts.connecting)) return;               // appareil déjà connecté avant cette protection : on adopte la version actuelle
-  if(known === String(remote)) return;                           // personne d'autre n'a écrit
+  if(!known && !(opts && opts.connecting)){
+    // 187 : cet appareil ne connaît aucune version de la sauvegarde distante. Avant : il l'adoptait en silence puis l'écrasait.
+    // Maintenant : on adopte seulement si le contenu distant est identique aux données de cet appareil ; sinon c'est un conflit
+    // (question si l'action est manuelle, arrêt avec message si c'est automatique).
+    let same = false;
+    try{
+      const rd = await b.load();
+      const sortKeys = o => (o && typeof o === 'object' && !Array.isArray(o)) ? Object.keys(o).sort().reduce((r,k)=>{ r[k] = sortKeys(o[k]); return r; }, {}) : (Array.isArray(o) ? o.map(sortKeys) : o);
+      same = !!rd && JSON.stringify(sortKeys(rd.data)) === JSON.stringify(sortKeys(window.KYF.storage.collect().data));
+    }catch(e){ same = false; }
+    if(same) return;
+  } else if(known === String(remote)) return;                    // personne d'autre n'a écrit
   if(opts && opts.manual){
     const label = KYF_BACKEND_LABELS[active] || active;
     const ok = window.confirm('Une sauvegarde ' + label + ' existe déjà et n\'a pas été faite depuis cet appareil (ou a été modifiée depuis un autre appareil).\n\nOK : l\'écraser avec les données de cet appareil.\nAnnuler : ne rien changer (vous pourrez la restaurer d\'abord avec le bouton Restaurer).');
@@ -48126,10 +48239,28 @@ async function kyfStorageCheckConflict(active, opts){
 }
 function kyfStorageSaveQueued(active, opts){
   const run = async () => {
-    await kyfStorageCheckConflict(active, opts);
-    const r = await window.KYF.storage.backends[active].save();
-    await kyfStorageRememberRev(active);
-    return r;
+    delete window._kyfCheckedRev[active];
+    try{
+      await kyfStorageCheckConflict(active, opts);
+      const sent = kyfStorageSortedData_();                       // 188 : ce qu'on s'apprête à envoyer
+      let r;
+      try{ r = await window.KYF.storage.backends[active].save(); }
+      catch(e){
+        // Réponse perdue (coupure réseau après une écriture réussie) : on relit le distant ; s'il contient exactement ce qu'on
+        // envoyait, c'est un succès. Jamais pour un conflit, une annulation, une permission ou un mot de passe.
+        const m = String((e && e.message) || '');
+        const skip = e && (e.kyfCancelled || m === KYF_CONFLICT_MSG || m === KYF_RACE_MSG || m === 'PERMISSION_LOST' || /mot de passe/i.test(m));
+        let ok = false;
+        if(!skip){
+          try{ const rd = await window.KYF.storage.backends[active].load(); ok = !!rd && JSON.stringify(kyfStorageSortKeys_(rd.data)) === sent; }catch(e2){ ok = false; }
+        }
+        if(!ok) throw e;
+        console.info('[KYF sync] réponse perdue mais écriture vérifiée sur le serveur : considérée comme réussie');
+        r = true;
+      }
+      await kyfStorageRememberRev(active);
+      return r;
+    } finally { delete window._kyfCheckedRev[active]; }
   };
   const p = _kyfStorageSaveChain.then(run, run);
   _kyfStorageSaveChain = p.catch(() => {});
@@ -63786,6 +63917,7 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
         </div>
         <div id="sheetsSyncStatus" style="font-size:9px;color:var(--text3);font-family:'Inter',sans-serif;line-height:1.8"></div>
         <div id="sheetsLastSync" style="font-size:9px;color:var(--text3);font-family:'Inter',sans-serif"></div>
+        <div id="sheetsNoConflictNote" style="display:none;font-size:10px;color:var(--text2);margin-top:8px;line-height:1.6;font-weight:600">Limite de ce mode (script Apps Script) : KYF ne peut pas vérifier qu'un autre appareil n'a pas modifié le Sheet entre-temps. Si vous utilisez plusieurs appareils, le dernier qui envoie l'emporte. La connexion Google (OAuth) protège contre cet écrasement.</div>
 
         <!-- Suppression définitive de la sauvegarde distante : jamais de
              popup, tout se déroule dans ce même bloc. La friction est un
@@ -64220,6 +64352,20 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.190 · 12/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Contrat AV, ajout d'une position ETF ou action : un ticker tapé à la main sans choisir de suggestion est maintenant pris en compte (avant : « Saisissez un nom ou un ticker » alors qu'on en avait saisi un). La base communautaire (ex. Afer Actions Amérique) est rechargée si elle n'était pas disponible, comme dans « Ajouter un actif » du Portefeuille.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.189 · 12/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Sécurité R07 : limite rendue visible. En mode script Apps Script (sans connexion Google), un message dans les réglages Sheets indique que le dernier appareil qui envoie l'emporte, et que la connexion Google protège contre cet écrasement.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.188 · 12/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Sécurité R07 : si la réponse du serveur est perdue après une sauvegarde réussie (coupure réseau), KYF relit la sauvegarde distante et, si elle contient exactement ce qu'il envoyait, compte un succès au lieu d'un faux conflit.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.187 · 12/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Sécurité R07 : un appareil qui ne connaît aucune version de la sauvegarde distante (GitHub, dossier, WebDAV) ne l'adopte plus en silence pour l'écraser. Si le contenu distant diffère de ses données, question à l'envoi manuel, arrêt avec message à l'envoi automatique.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.186 · 12/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Sécurité R07 : la sauvegarde fiscale vers GitHub ne provoque plus de faux conflit sur la sauvegarde suivante du patrimoine (la nouvelle version du Gist est mémorisée quand cet appareil était à jour).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.185 · 12/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Sécurité R07 : sauvegardes GitHub (Gist) et dossier local. La version distante est revérifiée juste avant l'écriture (après le chiffrement). Pour GitHub, KYF contrôle aussi après l'écriture que personne n'a écrit entre-temps (historique du Gist) et le signale, l'ancienne version restant récupérable.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.184 · 12/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Sécurité R07 : Google Sheets n'écrase plus une version plus récente. Bouton « Sauvegarder » : contrôle clé par clé, fenêtre de choix (garder le Sheet, garder cet appareil, annuler). Synchro automatique : une clé plus récente dans le Sheet n'est plus écrasée. Restauration : dates affichées avant de remplacer.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.183 · 12/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Bandeau d'annonce : retour à la ligne naturel, quel que soit le texte. Une phrase courte reste d'un seul bloc et passe entière à la ligne quand elle ne tient plus (« Une anomalie ? Forum Linxea ou « Contactez-nous ». » n'est plus coupée au milieu) ; une phrase longue s'écoule normalement, sans ligne perdue.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.182 · 12/10/2026</div>
@@ -78519,6 +78665,18 @@ async function avFiscGithubSaveEncrypted(b64){
   });
   const url    = gistId ? GITHUB_API + '/gists/' + gistId : GITHUB_API + '/gists';
   const method = gistId ? 'PATCH' : 'POST';
+  // R07 / 186 : ce fichier vit dans le même Gist que la sauvegarde patrimoine. Notre propre écriture change la version du Gist :
+  // si cet appareil était à jour juste avant, on mémorise la nouvelle version, sinon la sauvegarde suivante prendrait
+  // notre envoi pour celui d'un autre appareil (faux conflit). Si un autre appareil avait écrit, on ne mémorise rien.
+  let wasUpToDate = false, headBefore = null;
+  try{
+    const known = localStorage.getItem('kyf-sync-rev-github');
+    if(gistId && known){
+      const rev0 = await window.KYF.storage.backends.github.remoteRev();
+      headBefore = window._kyfGistHead || null;
+      wasUpToDate = String(rev0) === known;
+    }
+  }catch(e){ wasUpToDate = false; }
   const resp = await fetch(url, {
     method,
     headers: { 'Authorization':'Bearer '+token, 'Accept':'application/vnd.github+json', 'Content-Type':'application/json' },
@@ -78530,6 +78688,10 @@ async function avFiscGithubSaveEncrypted(b64){
   }
   const json = await resp.json();
   if(!gistId) githubSetGistId(json.id);
+  else if(wasUpToDate && json.updated_at){
+    const prevVer = json.history && json.history[1] && json.history[1].version;
+    if(!headBefore || !prevVer || prevVer === headBefore) localStorage.setItem('kyf-sync-rev-github', String(json.updated_at));
+  }
 }
 
 async function avFiscGithubLoadEncrypted(){
@@ -80258,7 +80420,15 @@ function avPosSearch(q){
     return;
   }
 
-  // Recherche ETF/Actions (comportement existant)
+  // Recherche ETF/Actions : la base communautaire n'est fusionnée dans _etfHints qu'une fois chargée. Si le chargement du
+  // démarrage n'a pas abouti, on le retente (au plus une fois toutes les 30 s) puis on relance la recherche.
+  if(!_kyfDB && (!window._avPosDbTry || Date.now() - window._avPosDbTry > 30000)){
+    window._avPosDbTry = Date.now();
+    kyfDBLoad().catch(()=>null).then(()=>{
+      const inputEl = document.getElementById('avPosSearchInput');
+      if(inputEl && inputEl.value === q) avPosSearch(q);
+    });
+  }
   const normalize = s => s.toLowerCase().replace(/[àáâãä]/g,'a').replace(/[èéêë]/g,'e').replace(/[-_.\s]+/g,' ').trim();
   const qn = normalize(q);
   const results = (_etfHints||[]).filter(h=>{
@@ -80449,6 +80619,7 @@ function avPosTypeChange(){
   // Précharger la base SCPI / OPCVM selon le type
   if(isImmo) loadSCPIDB();
   if(isFonds) { loadOpcvmDB(); loadIsinSansYahoo(); }
+  else if(!isImmo && !_kyfDB){ try{ kyfDBLoad().catch(()=>null); }catch(e){} }   // base communautaire (ETF, actions, fonds ajoutés par la communauté)
   // L'avertissement / l'info "suivi OPCVM" ne concernent que le type
   // fonds, les masquer si l'utilisateur change de type après les avoir vus.
   const avertissement = document.getElementById('avPosOpcvmWarning');
@@ -80533,8 +80704,15 @@ function avReplaceSupportSave(o){
 
 function saveAVPos(){
   const type    = document.getElementById('avPosType').value;
-  const ticker  = document.getElementById('avPosTicker').value.trim().toUpperCase();
-  const nom     = document.getElementById('avPosNom').value.trim();
+  let ticker    = document.getElementById('avPosTicker').value.trim().toUpperCase();
+  let nom       = document.getElementById('avPosNom').value.trim();
+  // Ticker tapé à la main sans choisir de suggestion : le champ de recherche n'alimentait que la liste, le ticker était perdu
+  // (« Saisissez un nom ou un ticker » alors qu'on en avait saisi un). Un texte qui ressemble à un ticker devient le ticker.
+  if(!ticker && (type === 'etf' || type === 'action')){
+    const _q = ((document.getElementById('avPosSearchInput') || {}).value || '').trim();
+    if(/^[A-Za-z0-9][A-Za-z0-9.\-^=]{1,19}$/.test(_q)){ ticker = _q.toUpperCase(); if(!nom) nom = ticker; }
+    else if(_q && !nom) nom = _q;
+  }
   const pru     = parseNum(document.getElementById('avPosPRU').value);
   const qty     = parseNum(document.getElementById('avPosQty').value);
   const valeur  = parseNum(document.getElementById('avPosValeur').value);
@@ -193827,7 +194005,7 @@ async function kyfSharedFinalSave(onStep){
   const before = localStorage.getItem('kyf-sheets-last-sync');
   try{
     onStep && onStep('save');
-    await sheetsSyncPushOAuth();
+    await sheetsSyncPushOAuth({ auto:true });
     const after = localStorage.getItem('kyf-sheets-last-sync');
     if(!after || after === before) return { ok:false, reason:'push' };
     // Dernière séance du jour aussi (historique)
