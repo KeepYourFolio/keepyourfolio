@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <!--
   ============================================================
-  @file        : KYF_PDF_to_CSV_v2_480.html
+  @file        : KYF_PDF_to_CSV_v2_481.html
   @application : Keep Your Folio (KYF) · Convertisseur PDF → CSV
   @description : Lit les relevés de courtier PDF entièrement dans le
                  navigateur (aucun envoi) et produit le fichier que le
                  Dashboard KYF importe.
-  @version     : v2.480
+  @version     : v2.481
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -20,7 +20,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs; worker-src 'self' blob: https://cdnjs.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none';">
-<title>KYF Convertisseur PDF v2.480</title>
+<title>KYF Convertisseur PDF v2.481</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1370,7 +1370,7 @@
   <div class="hero">
     <div class="hero-title">
     <h1>Convertisseur PDF <span>→ CSV</span> <span style="display:inline-block;background:#c99a06;color:#000;font-size:12px;font-weight:800;letter-spacing:.5px;padding:2px 8px;border-radius:6px;vertical-align:middle;">Bêta</span></h1>
-    <p>Détection automatique · v2.480 · Multi PDF en mode Portefeuille</p>
+    <p>Détection automatique · v2.481 · Multi PDF en mode Portefeuille</p>
     </div>
   </div>
 
@@ -2402,7 +2402,7 @@
 <script>
   /**
    * @file        KYF PDF to CSV — Convertisseur PDF intelligent
-   * @version     v2.480
+   * @version     v2.481
    * @description Convertisseur PDF → CSV pour KYF Dashboard.
    *              Détection automatique multi-courtiers, biffage pour les
    *              documents non reconnus (voir kyf_biffer_backend.gs).
@@ -2410,7 +2410,7 @@
    * @copyright   © 2026 Keep Your Folio (KYF) — keepyourfolio.fr
    * @license     AGPL-3.0-or-later
    */
-  console.log('%c Keep Your Folio %c PDF → CSV v2.480 %c keepyourfolio.fr ',
+  console.log('%c Keep Your Folio %c PDF → CSV v2.481 %c keepyourfolio.fr ',
     'background:#1a1f2e;color:#f0b429;font-weight:700;padding:4px 8px;border-radius:4px 0 0 4px',
     'background:#2563eb;color:#fff;font-weight:700;padding:4px 8px',
     'background:#1a1f2e;color:#aaa;padding:4px 8px;border-radius:0 4px 4px 0'
@@ -4176,6 +4176,77 @@
     return rows;
   }
 
+  // v2.481 — Bourso Vie / Generali, relevé « Répartition » : les noms de supports longs tiennent sur 2 lignes
+  // et les chiffres sont centrés verticalement entre les deux. Le moteur générique rattache le fragment
+  // sans chiffre au support PRÉCÉDENT : les noms se mélangeaient (« Eur 3 FF Global Dividend Fund GENERALI… »),
+  // la 1re moitié des noms était perdue, et le Fonds Euro sortait avec le pourcentage comme PRU. Ici chaque
+  // fragment de nom est rattaché à la ligne de chiffres la plus proche (moins de 14 px), et chaque chiffre est
+  // classé par la colonne de son en-tête (Nb de parts, Valeur de part, Montant, %, Prix d'Achat Moyen...).
+  // Le PRU est le « Prix d'Achat Moyen » du relevé (jamais la valeur de part du jour). Si le relevé n'a pas
+  // ces en-têtes, la fonction renvoie null et le moteur générique continue comme avant, sans changement.
+  function extractBoursoVieCentre(elements, tablePages, noiseRe, footnoteRe) {
+    if (!tablePages || !tablePages.length) return null;
+    const NUM_RE = /^[-+]?\d[\d\s]*(?:[.,]\d+)?\s*(?:€|EUR)?$/;
+    const norm = t => t.toLowerCase().replace(/\s+/g, ' ').trim();
+    const cx = e => e.x + (e.width || 0) / 2;
+    const out = [];
+    for (const { page, dataStartY } of tablePages) {
+      const pageEls = elements.filter(e => e.page === page);
+      const hdr = pageEls.filter(e => e.yTop < dataStartY && e.yTop >= dataStartY - 90);
+      const find = re => hdr.filter(e => re.test(norm(e.text))).sort((a, b) => a.x - b.x);
+      const hQty = find(/^nb de( parts?)?$|^nombre de parts?$/)[0];
+      const hVdp = find(/^valeur de part/)[0];
+      const hMont = find(/^montant/);
+      const hPam = find(/^prix d.achat/)[0];
+      if (!hQty || !hVdp || !hMont.length || !hPam) return null;
+      const cols = [
+        { k: 'qty', c: cx(hQty) }, { k: 'vdp', c: cx(hVdp) }, { k: 'montant', c: cx(hMont[0]) }, { k: 'pam', c: cx(hPam) },
+      ];
+      const hPct = find(/^%/);
+      if (hPct[0]) cols.push({ k: 'pct', c: cx(hPct[0]) });
+      if (hMont[1]) cols.push({ k: 'pmv', c: cx(hMont[1]) });
+      if (hPct[1]) cols.push({ k: 'pmvpct', c: cx(hPct[1]) });
+      const nameMaxX = hQty.x - 3;
+      const body = pageEls.filter(e => e.yTop >= dataStartY - 2);
+      const anchors = [];
+      const frags = [];
+      for (const e of body) {
+        const t = e.text.trim();
+        if (!t) continue;
+        const inNameZone = e.x + (e.width || 0) <= nameMaxX + 1;
+        if (!inNameZone && NUM_RE.test(t) && !/\//.test(t) && /\d/.test(t)) {
+          let best = null;
+          for (const c of cols) { const d = Math.abs(cx(e) - c.c); if (!best || d < best.d) best = { k: c.k, d }; }
+          if (!best) continue;
+          let a = anchors.find(r => Math.abs(r.y - e.yTop) <= 5);
+          if (!a) { a = { y: e.yTop, v: {} }; anchors.push(a); }
+          if (a.v[best.k] === undefined) a.v[best.k] = t.replace(/\s*(€|EUR)\s*$/i, '').trim();
+        } else if (inNameZone && /[A-Za-zÀ-ÿ0-9]/.test(t) && !noiseRe.test(t) && !footnoteRe.test(t)) {
+          frags.push(e);
+        }
+      }
+      const rowsP = anchors.filter(a => a.v.montant !== undefined).sort((a, b) => a.y - b.y);
+      for (const r of rowsP) r.names = [];
+      for (const f of frags) {
+        let best = null;
+        for (const r of rowsP) { const d = Math.abs(r.y - f.yTop); if (!best || d < best.d) best = { r, d }; }
+        if (best && best.d <= 14) best.r.names.push(f);
+      }
+      for (const r of rowsP) {
+        const nom = r.names.sort((a, b) => a.yTop - b.yTop || a.x - b.x).map(f => f.text.trim()).join(' ').replace(/\s+/g, ' ').trim();
+        if (!nom) continue;
+        const isEuro = /fonds?\s*euros?\b/i.test(nom);
+        out.push({
+          nom: normalizeNom(nom), isin: '',
+          qty: isEuro ? String(r.v.montant).replace(/\s/g, '') : (r.v.qty || '').replace(/\s/g, ''),
+          pru: isEuro ? '1' : (r.v.pam || '').replace(/\s/g, ''),
+          valeur: r.v.montant || '', type: 'titre', devise: 'EUR'
+        });
+      }
+    }
+    return out.length ? out : null;
+  }
+
   function extractTableData(elements, layoutResult) {
     if (!layoutResult || !layoutResult.columns || !layoutResult.columns.length) return [];
     const { columns, tablePages, mode } = layoutResult;
@@ -4183,6 +4254,10 @@
     const NOISE_RE = cfg.noise;
     const FOOTNOTE_RE = cfg.footnote;
     const EURO_FUND_RE = cfg.euroFund ? /fonds?\s*euro|euro\s*fund|fond\s*en\s*euros?/i : null;
+    if (layoutResult.boursoVieCentre) {
+      const _bv = extractBoursoVieCentre(elements, tablePages, NOISE_RE, FOOTNOTE_RE);
+      if (_bv) return _bv;
+    }
 
     const ASSIGN_TOLERANCE = 130;
     const DATE_RE = /^\d{2}\/\d{2}\/\d{4}$/;
@@ -6156,6 +6231,7 @@
         console.log(`[Type3] repli pipeline générique : ${rows.length} ligne(s) trouvée(s)`);
       }
     } else {
+      if (courtier.id === 'bourso_vie' && layoutResult) layoutResult.boursoVieCentre = true;
       rows = extractTableData(elements, layoutResult);
 
       // Repli de secours : un courtier a été reconnu (même à tort — ex: "PEA" dans un numéro
