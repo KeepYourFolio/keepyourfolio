@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_3_198.html
+  @file        : KYF_SHARE_beta_2_8_3_199.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.3.198
+  @version     : Beta 2.8.3.199
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6539,7 +6539,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.3.198</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.3.199</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -17373,7 +17373,7 @@ async function _doFetchPrice(ticker,googleCode){
       });
       if(r.ok){
         const d = await r.json();
-        if(d.price && d.prev){
+        if(d.price && d.prev && !d.stale){
           const p = { price: d.price, prev: d.prev, change: d.change || d.price - d.prev, pct: d.pct || (d.price - d.prev) / d.prev, source: 'gas' };
           priceCacheSet(ticker, p);
           return p;
@@ -17647,6 +17647,12 @@ async function _fetchAllPricesInner(force=false){
           let count = 0;
           ETF.forEach(e => {
             const d = bulk[e.ticker];
+            if(d && d.price && d.stale){
+              // Copie de secours du relais (Yahoo ou budget bloqué, jusqu'à 6 h) : le prix est connu mais n'est PAS un cours frais.
+              // Marqué périmé : variation du jour inconnue, jamais enregistré comme dernier cours frais, et Yahoo est retenté plus bas.
+              livePrices[e.ticker] = Object.assign(kyfStalePriceEntry({ price: d.price, currency: d.currency || getTickerCurrency(e.ticker, d) }), { source: 'gas-stale' });
+              return;
+            }
             if(d && d.price && d.prev){
               livePrices[e.ticker] = {
                 price: d.price, prev: d.prev,
@@ -17707,7 +17713,7 @@ async function _fetchAllPricesInner(force=false){
         if(cur && !cur._stale && cur._ts && !_freshNow.has(e.ticker) && Date.now() - cur._ts > 30*60*1000){
           cur = livePrices[e.ticker] = kyfStalePriceEntry({ price: cur.price, currency: cur.currency, _ts: cur._ts });
         }
-        if((!cur || cur._stale) && lk[e.ticker] && lk[e.ticker].price > 0) livePrices[e.ticker] = kyfStalePriceEntry(lk[e.ticker]);
+        if((!cur || (cur._stale && cur.source !== 'gas-stale')) && lk[e.ticker] && lk[e.ticker].price > 0) livePrices[e.ticker] = kyfStalePriceEntry(lk[e.ticker]);
       });
       window._kyfPricesStale = ETF.length > 0 && ETF.some(e => !livePrices[e.ticker] || livePrices[e.ticker]._stale);
       if(!window._kyfPricesStale) window._etfFreshTs = Date.now();
@@ -41728,7 +41734,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.3.198\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.3.199\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -64630,6 +64636,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.199 · 12/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Cours du relais marqué « stale » (copie de secours) : n'est plus pris pour un cours frais (variation du jour inconnue, Yahoo retenté, non enregistré comme dernier cours frais)</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.198 · 12/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Intraday : bouton « + AV/PER » sur le graphique. Il ajoute à la courbe la variation des lignes cotées de vos contrats assurance vie et PER (lignes avec ticker et quantité, regroupées par ticker ; pas les fonds euros, SCPI ni lignes saisies en valeur seule), calculée par le script v1.2 dans un groupe « contrats ». Par défaut la courbe reste PEA/CTO seul, et une ligne sous le graphique indique ce que la courbe couvre (« Courbe : PEA/CTO » ou « + lignes cotées des contrats AV/PER », avec « Données incomplètes » si besoin). Le choix est retenu sur l'appareil. Nécessite le script Intraday v1.2 ; Guide, Intraday, expliqué.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.197 · 12/10/2026</div>
