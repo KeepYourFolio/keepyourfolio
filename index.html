@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_3_199.html
+  @file        : KYF_SHARE_beta_2_8_3_207.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.3.199
+  @version     : Beta 2.8.3.207
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5090,10 +5090,16 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
         <input type="radio" name="cryptoSort" value="montant_desc"> Par montant investi ↓
       </label>
       <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:11px;color:var(--text3)">
-        <input type="radio" name="cryptoSort" value="eval_desc"> Par valorisation ↓
+        <input type="radio" name="cryptoSort" value="eval_desc"> Par valorisation ↓ (plus grosse répartition)
       </label>
       <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:11px;color:var(--text3)">
         <input type="radio" name="cryptoSort" value="gp_desc"> Par G/P % ↓
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:11px;color:var(--text3)">
+        <input type="radio" name="cryptoSort" value="gpe_desc" style="accent-color:var(--accent)"> Par G/P en € ↓ (meilleure plus-value)
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:11px;color:var(--text3)">
+        <input type="radio" name="cryptoSort" value="gpe_asc" style="accent-color:var(--accent)"> Par G/P en € ↑ (plus grosse perte)
       </label>
     </div>
   </div>
@@ -5171,10 +5177,16 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
         <input type="radio" name="etfSort" value="montant_desc"> Par montant investi ↓
       </label>
       <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:11px;color:var(--text3)">
-        <input type="radio" name="etfSort" value="eval_desc"> Par valorisation ↓
+        <input type="radio" name="etfSort" value="eval_desc"> Par valorisation ↓ (plus grosse répartition)
       </label>
       <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:11px;color:var(--text3)">
         <input type="radio" name="etfSort" value="gp_desc"> Par G/P % ↓
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:11px;color:var(--text3)">
+        <input type="radio" name="etfSort" value="gpe_desc" style="accent-color:var(--accent)"> Par G/P en € ↓ (meilleure plus-value)
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:11px;color:var(--text3)">
+        <input type="radio" name="etfSort" value="gpe_asc" style="accent-color:var(--accent)"> Par G/P en € ↑ (plus grosse perte)
       </label>
     </div>
   </div>
@@ -5203,6 +5215,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
     <div style="font-size:10px;color:var(--text3);margin:2px 0 8px">Montants affichés sur la ligne de titre de chaque enveloppe. Décochez pour un tableau plus léger.</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px" id="etfSubOptions">
       <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;color:var(--text3)"><input type="checkbox" value="PEA" checked style="accent-color:var(--accent)"> PEA</label>
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;color:var(--text3)"><input type="checkbox" value="PEA-PME" checked style="accent-color:var(--accent)"> PEA-PME</label>
       <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;color:var(--text3)"><input type="checkbox" value="CTO" checked style="accent-color:var(--accent)"> CTO</label>
       <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;color:var(--text3)"><input type="checkbox" value="AV" checked style="accent-color:var(--accent)"> Assurance Vie</label>
       <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;color:var(--text3)"><input type="checkbox" value="PER" checked style="accent-color:var(--accent)"> PER</label>
@@ -5371,6 +5384,12 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
         <input type="radio" name="etfEnveloppe" value="PEA" id="envPEA" style="display:none" checked>
         <div id="envLblPEA" onclick="setEnveloppe('PEA')" style="display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:7px;border:1px solid var(--accent);background:rgba(77,159,255,0.12);color:var(--accent);font-size:11px;font-weight:700;cursor:pointer;transition:all .15s" onmouseover="if(this.style.color!=='var(--accent)')this.style.background=document.documentElement.getAttribute('data-theme')==='light'?'rgba(0,0,0,0.08)':'rgba(255,255,255,0.12)'" onmouseout="if(this.style.color!=='var(--accent)')this.style.background='rgba(255,255,255,0.04)'"
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> PEA
+        </div>
+      </label>
+      <label style="cursor:pointer">
+        <input type="radio" name="etfEnveloppe" value="PEA-PME" id="envPME" style="display:none">
+        <div id="envLblPME" onclick="setEnveloppe('PEA-PME')" style="display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:7px;border:1px solid var(--border2);background:rgba(255,255,255,0.04);color:var(--text3);font-size:11px;font-weight:700;cursor:pointer;transition:all .15s" onmouseover="if(this.style.color!=='var(--accent)')this.style.background=document.documentElement.getAttribute('data-theme')==='light'?'rgba(0,0,0,0.08)':'rgba(255,255,255,0.12)'" onmouseout="if(this.style.color!=='var(--accent)')this.style.background='rgba(255,255,255,0.04)'"
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> PEA-PME
         </div>
       </label>
       <label style="cursor:pointer">
@@ -6539,7 +6558,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.3.199</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.3.207</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -10350,6 +10369,11 @@ function avCompRender(){
             <input type="text" inputmode="numeric" id="fiscal_plafondPea" oninput="kyfFormatMilliersInput(this);fiscalParamsSave()"
               style="width:100px;background:var(--btn-secondary-bg) !important;border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 8px;border-radius:6px;outline:none">
           </div>
+          <div>
+            <div style="font-size:9px;color:var(--text3);margin-bottom:3px">PLAFOND CUMULÉ PEA + PEA-PME (€)</div>
+            <input type="text" inputmode="numeric" id="fiscal_plafondPme" oninput="kyfFormatMilliersInput(this);fiscalParamsSave()"
+              style="width:100px;background:var(--btn-secondary-bg) !important;border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 8px;border-radius:6px;outline:none">
+          </div>
           <div style="width:90px">
             <div style="font-size:9px;color:var(--text3);margin-bottom:3px">TAUX IR RETRAIT &lt;5 ANS (%)</div>
             <input type="number" id="fiscal_tauxIr" min="0" max="100" step="0.1" oninput="fiscalParamsSave()"
@@ -10381,7 +10405,7 @@ function avCompRender(){
 
     <!-- Onglet PEA / CTO -->
     <div id="fiscalTabPea" style="display:block">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px">
 
       <!-- PEA -->
       <div style="padding:18px;border-radius:16px;background:var(--bg2);border:1px solid rgba(77,159,255,0.25);box-shadow:0 4px 20px rgba(0,0,0,0.15)">
@@ -10418,8 +10442,43 @@ function avCompRender(){
         <div id="peaFiscResult" style="margin-top:16px"></div>
       </div>
 
+      <!-- PEA-PME -->
+      <div style="padding:18px;border-radius:16px;background:var(--bg2);border:1px solid rgba(77,159,255,0.25);box-shadow:0 4px 20px rgba(0,0,0,0.15)">
+        <div class="card-title" style="margin-bottom:14px">PEA-PME</div>
+
+        <div style="display:flex;flex-direction:column;gap:10px;font-family:'Inter',sans-serif;margin-bottom:16px">
+          <div>
+            <div style="font-size:9px;color:var(--text3);margin-bottom:3px;letter-spacing:.3px">DATE D'OUVERTURE DE VOTRE PEA-PME</div>
+            <input type="hidden" id="pmeFisc_dateOuverture" onchange="pmeFiscSaveParams();pmeFiscSimuler()" value="">
+            <button type="button" id="pmeFisc_dateOuvertureBtn" class="kyf-csel-btn" data-kyf-date="pmeFisc_dateOuverture" aria-haspopup="dialog" aria-expanded="false" style="width:auto;max-width:160px;font-size:10px;padding:6px 8px"><span id="pmeFisc_dateOuvertureBtnLabel">JJ/MM/AAAA</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>
+            <div style="font-size:9px;color:var(--text3);margin-top:4px;line-height:1.6">Détermine votre statut vis-à-vis de la règle des 5 ans (renseignée une seule fois, KYF ne la devine pas).</div>
+          </div>
+        </div>
+
+        <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,0.03);border:1px solid var(--border);margin-bottom:16px" id="pmeFiscContexte">
+          <div style="font-size:9px;color:var(--text3);letter-spacing:.3px;margin-bottom:8px">SITUATION ACTUELLE (titres PEA-PME de votre portefeuille, espèces non suivies)</div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:var(--text2)">Valeur totale</span><span id="pmeFiscValeur" style="color:var(--text);font-weight:600">- €</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:var(--text2)">Total investi</span><span id="pmeFiscInvesti" style="color:var(--text);font-weight:600">- €</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:var(--text2)">Plus-value latente</span><span id="pmeFiscPV" style="color:var(--text);font-weight:600">- €</span></div>
+        </div>
+
+        <div style="margin-bottom:16px">
+          <div style="font-size:9px;color:var(--text3);margin-bottom:3px;letter-spacing:.3px">TOTAL VERSÉ À CE JOUR (€, depuis votre espace client)</div>
+          <input type="text" inputmode="numeric" id="pmeFisc_totalVerse" placeholder="Ex : 45 000" oninput="kyfFormatMilliersInput(this);pmeFiscSaveParams();pmeFiscSimuler()"
+            style="width:auto;max-width:180px;background:var(--btn-secondary-bg) !important;border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px;border-radius:6px;outline:none">
+          <div style="font-size:9px;color:var(--text3);margin-top:4px;line-height:1.6">Le coût d'acquisition de vos positions actuelles ne reflète pas fiablement ce chiffre (il diminue si vous avez déjà arbitré), KYF ne peut donc pas le déduire seul. Saisissez le total exact depuis votre espace client, la seule source fiable.</div>
+          <div id="pmeFiscPlafondBar" style="margin-top:8px"></div>
+        </div>
+
+        <div style="font-size:9px;color:var(--text3);margin-bottom:3px;letter-spacing:.3px">MONTANT DU RETRAIT ENVISAGÉ (€)</div>
+        <input type="text" inputmode="numeric" id="pmeFisc_montant" placeholder="Ex : 10 000" oninput="kyfFormatMilliersInput(this);pmeFiscSimuler()"
+          style="width:auto;max-width:180px;background:var(--btn-secondary-bg) !important;border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px;border-radius:6px;outline:none">
+
+        <div id="pmeFiscResult" style="margin-top:16px"></div>
+      </div>
+
       <!-- CTO -->
-      <div style="padding:18px;border-radius:16px;background:var(--bg2);border:1px solid rgba(240,180,41,0.2);box-shadow:0 4px 20px rgba(0,0,0,0.15)">
+      <div style="align-self:start;padding:18px;border-radius:16px;background:var(--bg2);border:1px solid rgba(240,180,41,0.2);box-shadow:0 4px 20px rgba(0,0,0,0.15)">
         <div class="card-title" style="margin-bottom:14px">COMPTE-TITRES (CTO)</div>
         <div style="font-size:11px;color:var(--text2);line-height:1.9;margin-bottom:14px">Contrairement au PEA, chaque vente sur un CTO est un événement imposable, peu importe la durée de détention. Le régime par défaut est le <strong style="color:var(--text)">PFU (<span id="ctoFiscTauxIntro">30</span>%)</strong>, sauf option contraire de votre part pour le barème progressif de l'IR lors de votre déclaration.</div>
 
@@ -10491,6 +10550,7 @@ function kyfFiscalGetParam(key, defaut){
   return (brut !== null && !isNaN(val)) ? val : defaut;
 }
 function KYF_PEA_PLAFOND(){      return kyfFiscalGetParam('kyf-pea-plafond',   150000); }
+function KYF_PME_PLAFOND(){      return kyfFiscalGetParam('kyf-pme-plafond',   225000); }   // total des versements PEA + PEA-PME (economie.gouv.fr)
 function KYF_PEA_TAUX_PFU_IR(){  return kyfFiscalGetParam('kyf-pea-taux-ir',   0.128); }
 function KYF_PEA_TAUX_PS(){      return kyfFiscalGetParam('kyf-pea-taux-ps',   0.186); }
 function KYF_CTO_TAUX_PFU(){     return kyfFiscalGetParam('kyf-cto-taux-pfu',  0.314); }
@@ -10535,6 +10595,7 @@ function toggleFiscalParams(){
 function fiscalParamsInit(){
   const set = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
   set('fiscal_plafondPea', kyfFormatMilliers(KYF_PEA_PLAFOND()));
+  set('fiscal_plafondPme', kyfFormatMilliers(KYF_PME_PLAFOND()));
   set('fiscal_tauxIr',     (KYF_PEA_TAUX_PFU_IR() * 100).toFixed(1));
   set('fiscal_tauxPs',     (KYF_PEA_TAUX_PS() * 100).toFixed(1));
   set('fiscal_tauxPfu',    (KYF_CTO_TAUX_PFU() * 100).toFixed(1));
@@ -10549,20 +10610,24 @@ function fiscalParamsSave(){
   const tauxPs  = parseFloat(document.getElementById('fiscal_tauxPs')?.value);
   const tauxPfu = parseFloat(document.getElementById('fiscal_tauxPfu')?.value);
   if(!isNaN(plafond)) localStorage.setItem('kyf-pea-plafond',  plafond);
+  const plafondPme = kyfParseMilliers(document.getElementById('fiscal_plafondPme')?.value);
+  if(!isNaN(plafondPme)) localStorage.setItem('kyf-pme-plafond', plafondPme);
   if(!isNaN(tauxIr))  localStorage.setItem('kyf-pea-taux-ir',  tauxIr / 100);
   if(!isNaN(tauxPs))  localStorage.setItem('kyf-pea-taux-ps',  tauxPs / 100);
   if(!isNaN(tauxPfu)) localStorage.setItem('kyf-cto-taux-pfu', tauxPfu / 100);
   // Reflète immédiatement le changement partout où ces taux sont utilisés,
   // sans attendre un changement d'onglet ou un rechargement de page.
   try{ peaFiscSimuler(); }catch(e){}
+  try{ pmeFiscSimuler(); }catch(e){}
   try{ ctoFiscCalc(); }catch(e){}
   try{ cryptoFiscCalc(); }catch(e){}
 }
 
 function fiscalParamsReset(){
-  ['kyf-pea-plafond','kyf-pea-taux-ir','kyf-pea-taux-ps','kyf-cto-taux-pfu'].forEach(k => localStorage.removeItem(k));
+  ['kyf-pea-plafond','kyf-pme-plafond','kyf-pea-taux-ir','kyf-pea-taux-ps','kyf-cto-taux-pfu'].forEach(k => localStorage.removeItem(k));
   fiscalParamsInit();
   try{ peaFiscSimuler(); }catch(e){}
+  try{ pmeFiscSimuler(); }catch(e){}
   try{ ctoFiscCalc(); }catch(e){}
   try{ cryptoFiscCalc(); }catch(e){}
 }
@@ -10635,6 +10700,7 @@ function peaFiscSimuler(){
   set('peaFiscInvesti',  fmt(investi,2)+' €' + (baseVerse ? ' (total versé)' : ''));
   set('peaFiscPV',       (plusValue>=0?'+':'')+fmt(plusValue,2)+' €' + (noteCours ? ' (' + noteCours + ')' : ''));
   peaFiscRenderPlafond();
+  try{ pmeFiscRenderPlafond(); }catch(e){}   // le plafond commun suit le total versé du PEA
 
   const resEl = document.getElementById('peaFiscResult');
   if(!resEl) return;
@@ -10680,6 +10746,138 @@ function peaFiscSimuler(){
       <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:var(--text2)">Impôt sur le revenu</span><span style="color:var(--text)">${fmt(ir,2)} €</span></div>
       <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:6px"><span style="color:var(--text2)">Prélèvements sociaux (${(KYF_PEA_TAUX_PS()*100).toFixed(1).replace(/\.0$/,'').replace('.',',')} %)</span><span style="color:var(--text)">${fmt(ps,2)} €</span></div>
       <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;border-top:1px solid var(--border);padding-top:8px;margin-top:4px"><span style="color:var(--text)">Net perçu après impôt</span><span style="color:var(--accent)">${fmt(netApresImpot,2)} €</span></div>
+      ${alerteFermeture}${noteExoneration}
+      ${noteCours ? '<div style="font-size:10px;color:var(--text3);margin-top:8px;line-height:1.6">Attention : ' + noteCours + '.</div>' : ''}
+    </div>
+  `;
+}
+
+// ── PEA-PME : même mécanique que le PEA (règles : economie.gouv.fr), plafond commun avec le PEA, cash non suivi ──
+function pmeFiscSaveParams(){
+  const date = document.getElementById('pmeFisc_dateOuverture')?.value || '';
+  localStorage.setItem('kyf-pme-date-ouverture', date);
+  const totalVerse = kyfParseMilliers(document.getElementById('pmeFisc_totalVerse')?.value);
+  localStorage.setItem('kyf-pme-total-verse', isNaN(totalVerse) ? '' : totalVerse);
+}
+function pmeFiscLoadParams(){
+  const date = localStorage.getItem('kyf-pme-date-ouverture') || '';
+  if(document.getElementById('pmeFisc_dateOuverture')) kyfDateSetValue('pmeFisc_dateOuverture', date, 'JJ/MM/AAAA');
+  const totalVerse = localStorage.getItem('kyf-pme-total-verse') || '';
+  const elTV = document.getElementById('pmeFisc_totalVerse');
+  if(elTV) elTV.value = kyfFormatMilliers(totalVerse);
+}
+
+// Barre de suivi du plafond - dépend uniquement du total versé saisi par
+// l'utilisateur (seule source fiable, voir la note affichée à côté du
+// champ) et du plafond configurable dans Paramètres fiscaux, jamais du
+// coût d'acquisition des positions actuelles.
+function pmeFiscRenderPlafond(){
+  const el = document.getElementById('pmeFiscPlafondBar');
+  if(!el) return;
+  const verse = kyfParseMilliers(document.getElementById('pmeFisc_totalVerse')?.value) || 0;
+  const versePea = kyfParseMilliers(document.getElementById('peaFisc_totalVerse')?.value) || 0;
+  const plafond = KYF_PME_PLAFOND();
+  if(verse <= 0){ el.innerHTML = ''; return; }
+  const note = t => '<div style="font-size:9px;color:var(--text3);line-height:1.6;margin-top:4px">' + t + '</div>';
+  // Total versé du PEA inconnu : le cumul ne peut pas être calculé, on ne le fabrique pas
+  if(versePea <= 0){
+    el.innerHTML = '<div style="font-size:9px;color:var(--text3)">' + fmt(verse,0) + ' € versés sur le PEA-PME.</div>'
+      + note('Cumul avec le PEA indisponible : renseignez le total versé de votre PEA (plafond commun de ' + fmt(plafond,0) + ' €).');
+    return;
+  }
+  const cumul = verse + versePea;
+  const pct = Math.min(100, (cumul / plafond) * 100);
+  const restant = plafond - cumul;
+  const couleur = pct >= 100 ? 'var(--red)' : (pct >= 90 ? '#f59e0b' : 'var(--accent)');
+  const plafondPea = KYF_PEA_PLAFOND();
+  el.innerHTML = `
+    <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);margin-bottom:4px;gap:8px">
+      <span>${fmt(versePea,0)} € (PEA) + ${fmt(verse,0)} € (PEA-PME) = ${fmt(cumul,0)} € sur ${fmt(plafond,0)} €</span>
+      <span style="color:${restant >= 0 ? 'var(--text3)' : 'var(--red)'}">${restant >= 0 ? 'Reste ' + fmt(restant,0) + ' €' : 'Dépassé de ' + fmt(-restant,0) + ' €'}</span>
+    </div>
+    <div style="height:5px;border-radius:3px;background:rgba(255,255,255,0.08);overflow:hidden">
+      <div style="height:100%;width:${pct}%;background:${couleur};border-radius:3px;transition:width .3s"></div>
+    </div>
+    ${versePea > plafondPea ? note('Le PEA seul dépasse son propre plafond de ' + fmt(plafondPea,0) + ' €.') : ''}
+  `;
+}
+
+// Situation actuelle du PEA, dérivée du portefeuille existant, jamais
+// ressaisie à la main (contrairement à la date d'ouverture, qui ne peut
+// venir que de l'utilisateur).
+function pmeFiscSituation(){
+  const positionsPEA = ETF.filter(e => e.enveloppe === 'PEA-PME');
+  // Valeur du PEA-PME = titres (les espèces ne sont pas suivies)
+  const cash = 0;   // le cash du PEA-PME n'est pas suivi dans KYF : valeur des TITRES seulement, jamais le cash du PEA
+  // Une ligne sans cours (ni valeur saisie) sort du calcul des DEUX côtés (valeur et coût) : sinon son coût entier compterait comme une perte
+  const _lpP = window._lp || {};
+  const sansCours = positionsPEA.filter(e => kyfEtfNoPrice(e, _lpP)).length;
+  const posOk = positionsPEA.filter(e => !kyfEtfNoPrice(e, _lpP));
+  const valeur = posOk.reduce((s,e)=> s + getEval(e, _lpP[e.ticker]), 0) + cash;
+  // Base de la plus-value : le total versé saisi quand il existe (définition fiscale : valeur - versements, arbitrages
+  // internes compris) ; sinon coût des titres + espèces, approximation qui ignore les gains déjà arbitrés en espèces
+  const verse = kyfParseMilliers(document.getElementById('pmeFisc_totalVerse')?.value) || 0;
+  const investi = verse > 0 ? verse : posOk.reduce((s,e)=> s + etfInvestOf(e), 0) + cash;   // frais inclus, comme le tableau Portefeuille
+  return { valeur, investi, plusValue: valeur - investi, cash, baseVerse: verse > 0, sansCours };
+}
+
+function pmeFiscSimuler(){
+  const dateOuverture = document.getElementById('pmeFisc_dateOuverture')?.value;
+  const montant = kyfParseMilliers(document.getElementById('pmeFisc_montant')?.value) || 0;
+  const { valeur, investi, plusValue, baseVerse, sansCours } = pmeFiscSituation();
+  const noteCours = sansCours > 0 ? (baseVerse ? sansCours + (sansCours > 1 ? ' lignes sans cours non comptées dans la valeur : la plus-value est sous-évaluée' : ' ligne sans cours non comptée dans la valeur : la plus-value est sous-évaluée') : kyfNoPriceMsg(sansCours)) : '';
+
+  const set = (id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
+  set('pmeFiscValeur',   fmt(valeur,2)+' €');
+  set('pmeFiscInvesti',  fmt(investi,2)+' €' + (baseVerse ? ' (total versé)' : ''));
+  set('pmeFiscPV',       (plusValue>=0?'+':'')+fmt(plusValue,2)+' €' + (noteCours ? ' (' + noteCours + ')' : ''));
+  pmeFiscRenderPlafond();
+
+  const resEl = document.getElementById('pmeFiscResult');
+  if(!resEl) return;
+
+  if(!dateOuverture){
+    resEl.innerHTML = "<div style=\"font-size:11px;color:var(--text3)\">Renseignez la date d'ouverture de votre PEA-PME pour lancer une simulation.</div>";
+    return;
+  }
+  if(!montant){
+    resEl.innerHTML = '<div style="font-size:11px;color:var(--text3)">Indiquez un montant de retrait pour voir le résultat.</div>';
+    return;
+  }
+  if(montant > valeur){
+    resEl.innerHTML = '<div style="font-size:11px;color:var(--red)">Ce montant dépasse la valeur des titres PEA-PME suivis (espèces non comptées).</div>';
+    return;
+  }
+
+  const ansDetention = (Date.now() - new Date(dateOuverture).getTime()) / (365.25*24*3600*1000);
+  const _m5 = kyfMoisEntiersDepuis(dateOuverture);
+  const apres5ans = _m5 !== null ? _m5 >= 60 : ansDetention >= 5;   // 5 ans au calendrier, jour anniversaire inclus
+  const partPV = valeur > 0 ? (plusValue / valeur) * montant : 0;
+  const partPVPositive = Math.max(0, partPV);
+
+  const ir = (apres5ans && KYF_PEA_EXONERATION_5ANS) ? 0 : partPVPositive * KYF_PEA_TAUX_PFU_IR();
+  const ps = partPVPositive * KYF_PEA_TAUX_PS();
+  const impotTotal = ir + ps;
+  const netApresImpot = montant - impotTotal;
+
+  const badge5ans = apres5ans
+    ? '<span style="color:var(--green);font-weight:700">5 ans révolus</span>'
+    : '<span style="color:var(--red);font-weight:700">Moins de 5 ans</span>';
+  const alerteFermeture = !apres5ans
+    ? '<div style="font-size:10px;color:var(--red);margin-top:8px;line-height:1.6">Avant 5 ans, un retrait entraîne en principe la clôture de votre PEA-PME (hors cas légaux particuliers : licenciement, invalidité, départ à la retraite...).</div>'
+    : '';
+  const noteExoneration = (apres5ans && !KYF_PEA_EXONERATION_5ANS)
+    ? "<div style=\"font-size:10px;color:var(--text3);margin-top:8px;line-height:1.6\">L'exonération d'impôt sur le revenu après 5 ans n'est plus appliquée dans ce calcul (paramètre désactivé).</div>"
+    : '';
+
+  resEl.innerHTML = `
+    <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,0.03);border:1px solid var(--border)">
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:6px"><span style="color:var(--text2)">Ancienneté du PEA-PME</span><span>${ansDetention.toFixed(1)} an(s), ${badge5ans}</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:6px"><span style="color:var(--text2)">Part de plus-value dans ce retrait</span><span style="color:var(--text);font-weight:600">${fmt(partPV,2)} €</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:var(--text2)">Impôt sur le revenu</span><span style="color:var(--text)">${fmt(ir,2)} €</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:6px"><span style="color:var(--text2)">Prélèvements sociaux (${(KYF_PEA_TAUX_PS()*100).toFixed(1).replace(/\.0$/,'').replace('.',',')} %)</span><span style="color:var(--text)">${fmt(ps,2)} €</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;border-top:1px solid var(--border);padding-top:8px;margin-top:4px"><span style="color:var(--text)">Net perçu après impôt</span><span style="color:var(--accent)">${fmt(netApresImpot,2)} €</span></div>
+      <div style="font-size:10px;color:var(--text3);margin-top:8px;line-height:1.6">Espèces du PEA-PME non comptées : KYF ne suit pas ce cash, la valeur et la plus-value portent sur les titres seulement.</div>
       ${alerteFermeture}${noteExoneration}
       ${noteCours ? '<div style="font-size:10px;color:var(--text3);margin-top:8px;line-height:1.6">Attention : ' + noteCours + '.</div>' : ''}
     </div>
@@ -14489,7 +14687,14 @@ async function pushIntradayPositions(){
   if(!KYF_INTRADAY_URL) return; // pas connecté, rien à faire
   try {
     const ver = await kyfIntradayScriptVersion_();
-    if(!ver){ console.warn('[KYF Intraday] Version du script inconnue : envoi annulé (aucune clôture inventée).'); return; }
+    if(!ver){
+      // 207 : script injoignable ou réponse illisible (souvent : accès non réglé sur « Tout le monde », ou adresse en /dev au lieu de /exec)
+      console.warn('[KYF Intraday] Le script Intraday ne répond pas : vérifiez son déploiement (accès « Tout le monde », adresse en /exec). Envoi annulé, aucune clôture inventée.');
+      window._kyfIntradayKO = true;
+      try{ if(typeof renderIntradayFromCache === 'function') renderIntradayFromCache(); }catch(e){}
+      return;
+    }
+    window._kyfIntradayKO = false;
     const nouveau = kyfIntradayVerAtLeast_(ver, '1.2');
     const lp = window._lp || {};
     const exclues = [];
@@ -14498,7 +14703,7 @@ async function pushIntradayPositions(){
       // Inclut PEA/CTO explicites, mais aussi les positions sans enveloppe renseignée
       // (cas fréquent sur des positions créées avant l'introduction de ce champ) -
       // on exclut seulement les enveloppes clairement non cotées (AV/PER/SCI).
-      .filter(e => e.ticker && e.qty > 0 && (!e.enveloppe || e.enveloppe==='PEA' || e.enveloppe==='CTO'))
+      .filter(e => e.ticker && e.qty > 0 && (!e.enveloppe || e.enveloppe==='PEA' || e.enveloppe==='PEA-PME' || e.enveloppe==='CTO'))
       .forEach(e => {
         if(nouveau){ positions.push({ ticker: e.ticker, qty: e.qty, groupe: 'titres' }); return; }
         const live = lp[e.ticker];
@@ -18484,7 +18689,7 @@ function showPage(id,tab,fromPopstate){
   if(id === 'assurance') try{ renderAV(); }catch(e){}
   if(id === 'av-comparateur') try{ avCompRender(); }catch(e){}
   if(id === 'av-fiscalite') try{ avFiscLoadParams(); avFiscAutoFill(); avFiscCalc(); avFiscCloudInit(); }catch(e){}
-  if(id === 'fiscal-pea-cto') try{ fiscalParamsInit(); peaFiscLoadParams(); peaFiscSimuler(); ctoFiscCalc(); }catch(e){}
+  if(id === 'fiscal-pea-cto') try{ fiscalParamsInit(); peaFiscLoadParams(); peaFiscSimuler(); pmeFiscLoadParams(); pmeFiscSimuler(); ctoFiscCalc(); }catch(e){}
   if(id === 'budget') try{ renderBudgetPage(); }catch(e){}
   if(id === 'immo-crowdfunding') try{ renderCrowdfunding(); }catch(e){}
   if(id === 'per-comprendre') try{ perLoadParams(); perUpdateAll(); }catch(e){}
@@ -20076,7 +20281,7 @@ function kyfAvLinesOf(d, claimed){
   ETF.forEach(e => {
     if(claimed.has(e)) return;
     const mine = e.contratId && String(e.contratId) === String(d.id);
-    const legacy = !e.contratId && !/^(PEA|CTO)$/i.test(String(e.enveloppe || ''))
+    const legacy = !e.contratId && !/^(PEA|PEA-PME|CTO)$/i.test(String(e.enveloppe || ''))
       && pos.some(p => (p.ticker && up(p.ticker) === up(e.ticker)) || (p.isin && e.isin && p.isin === e.isin));
     if(mine || legacy){ claimed.add(e); out.push(e); }
   });
@@ -22112,8 +22317,8 @@ let   _etfSearchTimer = null;
 
 // ── Sélection enveloppe fiscale ───────────────────────────────
 function setEnveloppe(val){
-  const opts = { PEA: 'envLblPEA', CTO: 'envLblCTO', AV: 'envLblAV', PER: 'envLblPER' };
-  const radios = { PEA: 'envPEA', CTO: 'envCTO', AV: 'envAV', PER: 'envPER' };
+  const opts = { PEA: 'envLblPEA', 'PEA-PME': 'envLblPME', CTO: 'envLblCTO', AV: 'envLblAV', PER: 'envLblPER' };
+  const radios = { PEA: 'envPEA', 'PEA-PME': 'envPME', CTO: 'envCTO', AV: 'envAV', PER: 'envPER' };
   Object.entries(opts).forEach(([k, id]) => {
     const el = document.getElementById(id);
     const rd = document.getElementById(radios[k]);
@@ -26224,6 +26429,7 @@ const KYF_WATCHED_KEYS = new Set([
   'kyf-cto-taux-pfu',     // CTO taux PFU
   'kyf-cash-migrated-v2', // Migration répartition cash
   'kyf-pea-date-ouverture','kyf-pea-plafond','kyf-pea-taux-ir','kyf-pea-taux-ps', // Paramètres fiscaux PEA
+  'kyf-pme-date-ouverture','kyf-pme-total-verse','kyf-pme-plafond','kyf-pea-total-verse', // PEA-PME et totaux versés (plafond commun)
   'kyf-depense-mensuelle',// Dépenses mensuelles
   'kyf-forecast-horizon', // Budget horizon de projection
   'kyf-reccal-size',      // Budget taille calendrier récurrents
@@ -28865,6 +29071,18 @@ function kyfMissingLead(i){
   for(let j = 0; j < i; j++){ const o = _importPendingMissing[j] || {}; if(kyfImportNameKey(o.name || o.nom) === k) return j; }
   return i;
 }
+// Place de cotation pour un investisseur français : Paris d'abord, Amsterdam ensuite. Une autre place (Milan, Vienne, Xetra...)
+// n'est gardée que faute de mieux, et signalée « à confirmer » (aConfirmer) au lieu d'être présentée comme sûre.
+function kyfBonnePlace(t){ return /\.(PA|AS)$/.test(fiNormalizeTicker(t)); }
+function kyfPickPlace(list, nom){
+  const l = (list||[]).filter(r => r && r.ticker);
+  const pa = l.filter(r => /\.PA$/.test(fiNormalizeTicker(r.ticker)));
+  if(pa.length) return fiPickPreferred(pa, nom);
+  const as = l.filter(r => /\.AS$/.test(fiNormalizeTicker(r.ticker)));
+  if(as.length) return fiPickPreferred(as, nom);
+  return null;
+}
+function kyfFlagPlace(r){ return (r && r.ticker && !kyfBonnePlace(r.ticker)) ? Object.assign({}, r, { aConfirmer: true }) : r; }
 async function fiResolveTicker(nom, isin){
   // 1. Base locale par ISIN
   const localHints = await fiFindHintsByISIN(isin);
@@ -28874,17 +29092,22 @@ async function fiResolveTicker(nom, isin){
   // blocage CORS contrairement à un fetch() direct depuis le navigateur),
   // avec contribution automatique à la base partagée pour les prochains
   // utilisateurs rencontrant le même ISIN.
+  let gasHit = null;
   if(isin && KYF_IDX_URL){
-    const gasHit = await kyfResolveByISIN(isin, nom);
-    if(gasHit?.ticker) return gasHit;
+    gasHit = await kyfResolveByISIN(isin, nom);
+    if(gasHit?.ticker && kyfBonnePlace(gasHit.ticker)) return gasHit;
+    // Réponse du serveur sur une autre place que Paris ou Amsterdam (ex. Sanofi 1SAN.MI) : on cherche d'abord une cotation Paris/Amsterdam du même ISIN
   }
   // 3. Recherche Yahoo directe par ISIN - tentative de repli si le backend
   // n'est pas configuré ou ne répond pas ; peut échouer par CORS.
   if(isin){
     const yhIsin = await fiYahooSearch(isin);
+    const bonne = kyfPickPlace(yhIsin, nom);
+    if(bonne?.ticker) return bonne;
+    if(gasHit?.ticker) return kyfFlagPlace(gasHit);   // seule cotation connue hors Paris/Amsterdam : gardée, à confirmer
     picked = fiPickPreferred(yhIsin, nom);
-    if(picked?.ticker) return picked;
-  }
+    if(picked?.ticker) return kyfFlagPlace(picked);
+  } else if(gasHit?.ticker) return kyfFlagPlace(gasHit);
   // 4. Indices entre parenthèses dans le libellé + recherche
   picked = await fiSearchFromLabel(nom, isin);
   if(picked?.ticker) return picked;
@@ -30217,7 +30440,7 @@ function importGoToStep2(type){
   if(cfg.needsDest){
     destWrap.style.display = 'block';
     if(type==='etf'){
-      destSel.innerHTML = '<option value="PEA">PEA</option><option value="CTO">Compte-Titres (CTO)</option>';
+      destSel.innerHTML = '<option value="PEA">PEA</option><option value="PEA-PME">PEA-PME</option><option value="CTO">Compte-Titres (CTO)</option>';
     } else if(type==='av' || type==='per'){
       // Un contrat peut être 'av', 'per', 'per-col' (PERCO) ou 'per-ob' (PER
       // obligatoire) - on regroupe tous les sous-types PER sous l'import
@@ -30254,7 +30477,9 @@ function importTotalsPrefill(){
   a.value = c && c.versements > 0 ? fmt(c.versements, 2).replace(/\u202f|\u00a0/g, ' ') : '';
   b.value = c && c.rachats > 0 ? fmt(c.rachats, 2).replace(/\u202f|\u00a0/g, ' ') : '';
 }
-document.addEventListener('change', e => { if(e.target && e.target.id === 'importDest'){ importTotalsPrefill(); const lb = document.getElementById('importCashLivBox'); if(lb) lb.style.display = _importType==='etf' ? 'block' : 'none'; } });
+document.addEventListener('change', e => { if(e.target && e.target.id === 'importDest'){ importTotalsPrefill(); const lb = document.getElementById('importCashLivBox'); if(lb) lb.style.display = (_importType==='etf' && e.target.value!=='PEA-PME') ? 'block' : 'none';
+  // PEA-PME : le cash de cette enveloppe n'est pas suivi (jamais rangé dans celui du PEA) : on masque la saisie des espèces
+  if(_importType==='etf'){ const cw = document.getElementById('importCashWrap'); if(cw) cw.style.display = e.target.value==='PEA-PME' ? 'none' : 'block'; if(e.target.value==='PEA-PME'){ const ei = document.getElementById('importEspecesInput'); if(ei){ ei.value=''; ei.dataset.auto=''; } } } } });
 
 
 // "Import Portfolio Performance" n'est pas non plus un moteur séparé,
@@ -30705,7 +30930,7 @@ async function importHandleFile(input){
         const hint = hints[i];
         const ticker = fiNormalizeTicker(hint?.ticker||'');
         const name   = fiLabelWithoutParens(row.nom) || row.nom || hint?.name || kyfStatsAvieNom(row.isin) || row.isin;
-        if(ticker){ resolved.push({...row, ticker, name, _known: !!hint?._known}); }
+        if(ticker){ resolved.push({...row, ticker, name, _known: !!hint?._known, _aConfirmer: !!hint?.aConfirmer}); }
         else { missing.push({...row, name}); }
       });
       // AV/PER : le cours en direct du ticker trouvé doit rester proche du cours du relevé. Sinon le ticker désigne
@@ -31512,7 +31737,7 @@ function importRenderPreviewETF(){
     { const _ei = document.getElementById('importEspecesInput');   // colonne de gauche : le montant détecté la remplit (sauf saisie manuelle)
       if(_ei && (_ei.value.trim()==='' || _ei.dataset.auto==='1')){ _ei.value = String(Math.round(totalEsp*100)/100).replace('.', ','); _ei.dataset.auto='1'; try{ kyfFormatAmountInput(_ei); }catch(x){} } }
     html += `<div style="font-size:10px;font-weight:700;color:var(--text);margin:14px 0 6px;display:flex;align-items:center;gap:5px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20"/></svg> ESPÈCES DÉTECTÉES (${fmt(totalEsp,2)} €)</div>`;
-    html += `<div style="font-size:10px;color:var(--text3);margin-bottom:6px">Pas un titre coté, jamais résolu comme une position classique : il remplit la colonne « Espèces du compte » ci-dessus et remplacera la trésorerie ${envEsp==='CTO'?'CTO':'PEA'} (jamais additionné au cash existant).</div>`;
+    html += `<div style="font-size:10px;color:var(--text3);margin-bottom:6px">Pas un titre coté, jamais résolu comme une position classique : il remplit la colonne « Espèces du compte » ci-dessus et ${envEsp==='PEA-PME'?'ne sera pas enregistré : le cash du PEA-PME n\'est pas suivi dans KYF, et celui du PEA reste intact.':'remplacera la trésorerie '+(envEsp==='CTO'?'CTO':'PEA')+' (jamais additionné au cash existant).'}</div>`;
   }
   el.innerHTML = html;
   kyfImportTopSync(_isAvImp && (_importPendingResolved.length + _importPendingMissing.length) > 0);
@@ -32034,7 +32259,7 @@ function importConfirm(){
       totalEspeces = _importEspecesRows.reduce((s,r)=>s+((r.qty&&r.pru)?r.qty*r.pru:(r.pru||r.qty||0)),0);
       // Jamais additionné : si la colonne « Espèces du compte » est vide (effacée), on enregistre le montant détecté en remplacement
       const _eiv = document.getElementById('importEspecesInput');
-      if(!_eiv || _eiv.value.trim()===''){ if(enveloppe==='CTO'){ setCashCto(totalEspeces); } else { setCashPea(totalEspeces); } if(typeof renderCashKPI==='function') renderCashKPI(); }
+      if(!_eiv || _eiv.value.trim()===''){ if(enveloppe==='PEA-PME'){ /* cash du PEA-PME non suivi */ } else if(enveloppe==='CTO'){ setCashCto(totalEspeces); } else { setCashPea(totalEspeces); } if(typeof renderCashKPI==='function') renderCashKPI(); }
     }
     // Espèces saisies dans le popup : remplacent le cash de l'enveloppe (ou deviennent un livret rémunéré pour un CTO)
     { const _ei = document.getElementById('importEspecesInput');
@@ -32047,10 +32272,10 @@ function importConfirm(){
           const _lv = livLoad(); const _ex = _lv.find(d => String(d.banque).toLowerCase() === _bq.toLowerCase() && d.type === _ty);
           if(_ex){ _ex.solde = _ev; if(_tx > 0) _ex.taux = _tx; _ex.liquide = 1; }
           else _lv.push({ id: Date.now().toString(), banque:_bq, type:_ty, solde:_ev, taux:Math.min(20, Math.max(0, _tx)), plafond:0, liquide:1 });
-          livSave(_lv); if(enveloppe === 'CTO') setCashCto(0); else setCashPea(0);
+          livSave(_lv); if(enveloppe === 'CTO') setCashCto(0); else if(enveloppe !== 'PEA-PME') setCashPea(0);
           try{ renderLivrets(); }catch(e){}
         } else if(enveloppe === 'CTO'){ setCashCto(_ev); }
-        else { setCashPea(_ev); }
+        else if(enveloppe !== 'PEA-PME'){ setCashPea(_ev); }
         if(typeof renderCashKPI==='function') renderCashKPI();
       } }
     etfSave(); renderETFTable(window._lp||{}); renderDonut(); fetchAllPrices();
@@ -35186,7 +35411,7 @@ async function kyfTitresRowsFromFile(file){
   let pick = found.find(f => f.label === window._ciSheetPref);
   if(!pick){   // sinon, le tableau dont le titre correspond à la destination choisie (PEA / CTO), parmi les mieux classés
     const dest = String((document.getElementById('importDest') || {}).value || '').toUpperCase();
-    const re = dest === 'PEA' ? /\bPEA\b/i : dest === 'CTO' ? /\b(CTO|compte[ -]?titres?)\b/i : null;
+    const re = dest === 'PEA-PME' ? /\bPEA[ -]?PME\b/i : dest === 'PEA' ? /\bPEA\b(?![ -]?PME)/i : dest === 'CTO' ? /\b(CTO|compte[ -]?titres?)\b/i : null;
     pick = (re && found.find(f => f.rank === found[0].rank && re.test(f.label))) || found[0];
   }
   window._ciSheetInfo = { file, unit:'tableau', chosen:pick.label, how:pick.how, skipped:(pick.rows.skipped || []).map(x => x.name), ops:(pick.rows.ops || []), sheets:found.map(f => ({name:f.label, n:f.rows.length, how:f.how})) };
@@ -36456,18 +36681,19 @@ function renderETFTable(lp){
   let etfSorted = [...ETF];
   const sort = _s.sort || 'manual';
   if(sort === 'manual'){
-    const envOrder = { PEA:0, CTO:1, AV:2, PER:3 };
+    const envOrder = { PEA:0, 'PEA-PME':1, CTO:2, AV:3, PER:4 };
     etfSorted.sort((a,b)=> (envOrder[a.enveloppe||'PEA']||0) - (envOrder[b.enveloppe||'PEA']||0));
   }
   if(sort === 'name') etfSorted.sort((a,b)=>a.name.localeCompare(b.name));
   else if(sort === 'montant_desc') etfSorted.sort((a,b)=>(b.montant||0)-(a.montant||0));
   else if(sort === 'eval_desc') etfSorted.sort((a,b)=>getEval(b,lp[b.ticker])-getEval(a,lp[a.ticker]));
-  else if(sort === 'gp_desc'){
-    etfSorted.sort((a,b)=>{
-      const gpA = a.montant>0?((getEval(a,lp[a.ticker])-a.montant)/a.montant)*100:0;
-      const gpB = b.montant>0?((getEval(b,lp[b.ticker])-b.montant)/b.montant)*100:0;
-      return gpB-gpA;
-    });
+  else if(sort === 'gp_desc' || sort === 'gpe_desc' || sort === 'gpe_asc'){
+    // Coût ou cours inconnu : la ligne passe EN DERNIER (jamais comptée comme un gain de 0 %, qui la mettait au milieu du classement)
+    const connu = e => e.montant>0 && !!lp[e.ticker] && Number.isFinite(lp[e.ticker].price) && lp[e.ticker].price>0;
+    const gpEur = e => getEval(e,lp[e.ticker]) - e.montant;
+    const cle = sort==='gp_desc' ? (e=>gpEur(e)/e.montant) : gpEur;
+    const sens = sort==='gpe_asc' ? -1 : 1;
+    etfSorted.sort((a,b)=>{ const ka=connu(a), kb=connu(b); if(ka!==kb) return ka?-1:1; if(!ka) return 0; return sens*(cle(b)-cle(a)); });
   }
   const cols = _s.cols || {};
   const showCol = k => {
@@ -36484,9 +36710,10 @@ function renderETFTable(lp){
   kyfFavBar('etf', ETF.length, _fa.favCount);
 
   // Grouper par enveloppe avec séparateurs (rétractables)
-  const envGroups = ['PEA','CTO','AV','PER'];
-  const envLabels = {PEA:'PEA', CTO:'CTO', AV:'Assurance Vie', PER:'PER'};
+  const envGroups = ['PEA','PEA-PME','CTO','AV','PER'];
+  const envLabels = {PEA:'PEA', 'PEA-PME':'PEA-PME', CTO:'CTO', AV:'Assurance Vie', PER:'PER'};
   const envIcons  = {PEA:'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,17 8,11 13,14 21,5"/><polyline points="17,5 21,5 21,9"/></svg>', CTO:'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="12" width="4" height="10"/><rect x="9" y="7" width="4" height="15"/><rect x="16" y="3" width="4" height="19"/></svg>', AV:'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>', PER:'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg>'};
+  envIcons['PEA-PME'] = envIcons.PEA;
   const colCount = 2 + ['investi','pru','qte','eval','cours','varje','gpe','gpp','repartition'].filter(k=>showCol(k)).length + 1;
   const collapsedEnvs = etfCollapsedEnvsLoad();
 
@@ -37193,6 +37420,15 @@ function renderAllocDonut(lp){
       return s + getEval(e, lp[e.ticker]);
     }, 0);
   } catch(e){}
+  // 206 : les lignes ETF détenues DANS un contrat AV / PER sont classées en « ASSURANCE VIE / PER » (le total ne change pas, la valeur passe d'une classe à l'autre)
+  let etfDansAv = 0;
+  try {
+    const _claimed = new Set();
+    JSON.parse(localStorage.getItem('kyf-av')||'[]').forEach(d=>{
+      kyfAvLinesOf(d, _claimed).forEach(e=>{ if(e.qty>0) etfDansAv += getEval(e, lp[e.ticker]); });
+    });
+    if(Number.isFinite(etfDansAv) && etfDansAv > 0 && etfDansAv <= etfTotal + 0.005) etfTotal -= etfDansAv; else etfDansAv = 0;
+  } catch(e){ etfDansAv = 0; }
 
   // ── Crypto ──
   let cryptoTotal = 0;
@@ -37225,6 +37461,8 @@ function renderAllocDonut(lp){
     const avData = JSON.parse(localStorage.getItem('kyf-av')||'[]');
     avData.forEach(d=>{ avTotal += (typeof avContratValue === 'function') ? avContratValue(d) : ((parseFloat(d.fondsEuros)||0) + (d.ucDansETF ? 0 : (parseFloat(d.uc)||0))); });
   } catch(e){}
+
+  avTotal += etfDansAv;   // 206
 
   // ── Valeur Immobilier (biens + SCPI) ──︄︋︅︉︄︆︄︊︄︍︃︂︃︆
   let immoTotal = 0;
@@ -37398,7 +37636,7 @@ function renderAllocDonut(lp){
   // continuer à chasser un bug de rendu Chart.js sur des tranches quasi
   // filiformes ; à revoir si ça remonte comme un vrai besoin utilisateur).
   const bl = document.getElementById('allocBars'); if(!bl) return;
-  bl.innerHTML = [...CLASSES].sort((a,b)=>(b.val||0)-(a.val||0)).map(c=>{ // du plus important au moins important ; les classes sans valeur restent en bas
+  bl.innerHTML = CLASSES.filter(c=>c.val>0).sort((a,b)=>(b.val||0)-(a.val||0)).map(c=>{   // 206 : plus de classe à 0 dans la légende // du plus important au moins important ; les classes sans valeur restent en bas
     const pct = patrimoine > 0 ? (c.val/patrimoine*100) : 0;
     const pctStr = c.soon ? '-' : pct.toFixed(2)+'% du patrimoine';
     const opacity = c.soon ? 'opacity:0.4;' : '';
@@ -40336,7 +40574,15 @@ function kyfSanitizeLogText(str){
   let s = String(str).trim();
   // Message trop long ou visiblement structuré (JSON/objet sérialisé) :
   // on ne prend aucun risque, on ne transmet pas le contenu.
-  if(s.length > 300 || /^[{\[]/.test(s)){
+  // Les messages de KYF commencent par une balise « [KYF Intraday] », « [KYF Sheets] »... : ce n'est pas du JSON. Avant, le
+  // crochet d'ouverture suffisait à faire effacer le message en entier, et les rapports de logs ne disaient plus rien.
+  // La balise est gardée (elle dit d'où vient le message), le reste passe par le même filtre qu'avant ;
+  // un message balisé trop long ou suivi de données sérialisées ne garde que sa balise.
+  const _balise = (s.match(/^\[KYF[^\]\n]{0,40}\]/) || [''])[0];
+  if(_balise){
+    if(s.length > 300) return _balise + ' [suite non incluse par sécurité : message trop long]';
+    if(/[{\[]\s*["{\[]|"\s*:/.test(s.slice(_balise.length))) return _balise + ' [données structurées non incluses par sécurité]';
+  } else if(s.length > 300 || /^[{\[]/.test(s)){
     return '[message trop long ou structuré - non inclus par sécurité]';
   }
   // Redaction des vraies valeurs secrètes actuellement en mémoire, par
@@ -41437,6 +41683,13 @@ function renderIntradayFromCache() {
       if (iconWrap) iconWrap.style.display = 'flex';
       if (spinner) spinner.style.display = 'none';
       if (title) { title.style.display = 'block'; title.textContent = status.title; }
+    } else if (window._kyfIntradayKO) {
+      // 207 : le script Intraday ne répond pas : pas de spinner qui tourne sans fin, un message qui dit quoi vérifier
+      if (iconWrap) iconWrap.style.display = 'none';
+      if (spinner) spinner.style.display = 'none';
+      if (title) { title.style.display = 'block'; title.textContent = 'Script Intraday injoignable'; }
+      if (text) text.textContent = 'Vérifiez son déploiement dans Google Apps Script : accès « Tout le monde » et adresse en /exec, puis rechargez.';
+      return;
     } else {
       // Vraie attente en séance : spinner, pas de badge
       if (iconWrap) iconWrap.style.display = 'none';
@@ -41734,7 +41987,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.3.199\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.3.207\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -41809,7 +42062,7 @@ document.addEventListener('DOMContentLoaded', function(){
       else if(lastPage==='assurance') try{renderAV();}catch(e){}
       else if(lastPage==='av-comparateur') try{avCompRender();}catch(e){}
       else if(lastPage==='av-fiscalite') try{avFiscLoadParams();avFiscAutoFill();avFiscCalc();avFiscCloudInit();}catch(e){}
-      else if(lastPage==='fiscal-pea-cto') try{fiscalParamsInit();peaFiscLoadParams();peaFiscSimuler();ctoFiscCalc();}catch(e){}
+      else if(lastPage==='fiscal-pea-cto') try{fiscalParamsInit();peaFiscLoadParams();peaFiscSimuler();pmeFiscLoadParams();pmeFiscSimuler();ctoFiscCalc();}catch(e){}
       else if(lastPage==='budget') try{renderBudgetPage();}catch(e){}
       else if(lastPage==='immo-crowdfunding') try{renderCrowdfunding();}catch(e){}
       else if(lastPage==='per-comprendre') try{perLoadParams();perUpdateAll();}catch(e){}
@@ -47624,6 +47877,7 @@ const KYF_STORAGE_KEYS = [
   'kyf-pea-plafond',
   'kyf-pea-taux-ir',
   'kyf-pea-taux-ps',
+  'kyf-pme-date-ouverture','kyf-pme-total-verse','kyf-pme-plafond','kyf-pea-total-verse',
   'kyf-depense-mensuelle',
   'kyf-per-tmi',
   'kyf-forecast-horizon',
@@ -50536,12 +50790,14 @@ function renderCryptoTable(){
   if(sort === 'name')         pos.sort((a,b)=>a.nom.localeCompare(b.nom));
   else if(sort === 'montant_desc') pos.sort((a,b)=>convertToDevise(b.pru*b.qte)-convertToDevise(a.pru*a.qte));
   else if(sort === 'eval_desc')    pos.sort((a,b)=>getEvalCrypto(b)-getEvalCrypto(a));
-  else if(sort === 'gp_desc'){
-    pos.sort((a,b)=>{
-      const gpA = convertToDevise(a.pru*a.qte)>0?(getEvalCrypto(a)-convertToDevise(a.pru*a.qte))/convertToDevise(a.pru*a.qte)*100:0;
-      const gpB = convertToDevise(b.pru*b.qte)>0?(getEvalCrypto(b)-convertToDevise(b.pru*b.qte))/convertToDevise(b.pru*b.qte)*100:0;
-      return gpB-gpA;
-    });
+  else if(sort === 'gp_desc' || sort === 'gpe_desc' || sort === 'gpe_asc'){
+    // Coût ou cours inconnu : la ligne passe EN DERNIER (jamais comptée comme un gain de 0 %)
+    const cout = p => convertToDevise(p.pru*p.qte);
+    const connu = p => cout(p)>0 && getCours(p.ticker)>0;
+    const gpEur = p => getEvalCrypto(p) - cout(p);
+    const cle = sort==='gp_desc' ? (p=>gpEur(p)/cout(p)) : gpEur;
+    const sens = sort==='gpe_asc' ? -1 : 1;
+    pos.sort((a,b)=>{ const ka=connu(a), kb=connu(b); if(ka!==kb) return ka?-1:1; if(!ka) return 0; return sens*(cle(b)-cle(a)); });
   }
 
   // Mettre à jour le thead selon colonnes visibles
@@ -55681,7 +55937,7 @@ const GUIDE_PAGES = [
     icon: '',
     body: `
       <div style="background:rgba(77,159,255,0.05);border:1px solid rgba(77,159,255,0.2);border-radius:10px;padding:14px 16px;margin-bottom:14px">
-        <div style="font-size:13px;color:var(--text2);line-height:1.8">Le tableau POSITIONS ETF &amp; ACTIONS regroupe vos lignes par enveloppe : PEA, CTO, et Assurance Vie/PER (qui y apparaissent aussi, en plus de MES CONTRATS).</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.8">Le tableau POSITIONS ETF &amp; ACTIONS regroupe vos lignes par enveloppe : PEA, PEA-PME, CTO, et Assurance Vie/PER (qui y apparaissent aussi, en plus de MES CONTRATS). Le PEA-PME est une enveloppe à part : son cash n'est pas suivi et ne touche jamais celui du PEA.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
         <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Ajouter une position</div>
@@ -63231,6 +63487,7 @@ function setCash(v){ setCashPea(v); }
 // Renvoie la variation réellement appliquée (le cash ne descend jamais sous 0 : un débit peut donc être plus petit que demandé)
 function adjustCashForEnveloppe(enveloppe, delta){
   if(!delta) return 0;
+  if(enveloppe === 'PEA-PME') return 0;   // cash du PEA-PME non suivi : jamais rangé dans celui du PEA
   const before = enveloppe === 'CTO' ? getCashCto() : getCashPea();
   if(enveloppe === 'CTO'){ setCashCto(before + delta); }
   else { setCashPea(before + delta); } // PEA par défaut (AV ne touche pas ce cash)
@@ -64636,6 +64893,22 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.207 · 13/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Courbe Intraday : si le script Intraday ne répond pas (accès non réglé sur « Tout le monde », adresse en /dev...), la carte affiche « Script Intraday injoignable » avec quoi vérifier, au lieu d'un chargement sans fin, et le message de la liste des warnings devient explicite.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.206 · 13/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Dashboard : les ETF détenus dans une assurance vie ou un PER sont comptés dans « ASSURANCE VIE / PER » (et plus dans « ETF / ACTIONS ») ; la légende de l'allocation n'affiche plus les classes à 0 €. Le total du patrimoine ne change pas.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.205 · 13/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Rapport de logs : les messages balisés « [KYF Intraday] », « [KYF Sheets] »... ne sont plus effacés en bloc (le crochet d'ouverture les faisait prendre pour du JSON); URLs, emails, montants et clés restent masqués, les données sérialisées et les messages trop longs ne gardent que leur balise</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.204 · 13/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fiscalité : la carte Compte-titres (CTO) prend la hauteur de son texte au lieu de s'étirer comme les cartes PEA et PEA-PME</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.203 · 13/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fiscalité : carte PEA-PME (date d'ouverture, total versé, simulation de retrait, même mécanique que le PEA) et plafond commun PEA + PEA-PME de 225 000 € (réglable dans les paramètres fiscaux). Cumul indisponible tant que le total versé du PEA n'est pas renseigné; espèces du PEA-PME non comptées (non suivies)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.202 · 13/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PEA-PME : nouvelle enveloppe à part entière (import de relevé, ajout d'un actif, tableau Positions avec son sous-total, réglage VUE, courbe Intraday). Son cash n'est pas suivi et ne touche jamais celui du PEA ou du CTO; plafond commun de 225 000 € et fiscalité à venir (les lignes PEA-PME restent hors du bilan PEA)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.201 · 13/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Tri des positions (fenêtre « Personnaliser la vue » du Portefeuille et des Cryptos) : nouveaux tris « G/P en € ↓ (meilleure plus-value) » et « G/P en € ↑ (plus grosse perte) »; une ligne dont le coût ou le cours est inconnu passe en dernier au lieu d'être comptée à 0 % au milieu du classement</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.200 · 13/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import de relevé : le ticker trouvé est cherché sur Paris puis Amsterdam avant toute autre place (Sanofi Milan, CMSE Vienne, Basic Resources Xetra); une cotation hors Paris/Amsterdam gardée faute de mieux est marquée « à confirmer »</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.199 · 12/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Cours du relais marqué « stale » (copie de secours) : n'est plus pris pour un cours frais (variation du jour inconnue, Yahoo retenté, non enregistré comme dernier cours frais)</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.198 · 12/10/2026</div>
@@ -69432,7 +69705,7 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
 
         <label class="kyf-reset-row" style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer">
           <input type="checkbox" class="kyf-reset-check" data-module="pea" data-dca-type="etf"
-            data-keys="pea-positions,kyf-etf-transactions,kyf-alerts-,pea-bilan,pea-geo,pea-sectors,kyf-geo-v1,kyf-geo-stale-v1,kyf-favs-v1,kyf-groups-v1,pea-etf-settings,kyf-cash,kyf-cash-ccp,kyf-cash-cto,kyf-cash-pea,kyf-cash-migrated-v2,kyf-dividendes,kyf-etf-collapsed-envs,kyf-perf-asset-filter,kyf-pf-view,kyf-pf-range,kyf-pf-bm,kyf-pf-hidden,kyf-isin-sans-yahoo,kyf-pea-date-ouverture,kyf-pea-plafond,kyf-pea-taux-ir,kyf-pea-taux-ps,kyf-cto-taux-pfu"
+            data-keys="pea-positions,kyf-etf-transactions,kyf-alerts-,pea-bilan,pea-geo,pea-sectors,kyf-geo-v1,kyf-geo-stale-v1,kyf-favs-v1,kyf-groups-v1,pea-etf-settings,kyf-cash,kyf-cash-ccp,kyf-cash-cto,kyf-cash-pea,kyf-cash-migrated-v2,kyf-dividendes,kyf-etf-collapsed-envs,kyf-perf-asset-filter,kyf-pf-view,kyf-pf-range,kyf-pf-bm,kyf-pf-hidden,kyf-isin-sans-yahoo,kyf-pea-date-ouverture,kyf-pea-plafond,kyf-pea-taux-ir,kyf-pea-taux-ps,kyf-pme-date-ouverture,kyf-pme-total-verse,kyf-pme-plafond,kyf-pea-total-verse,kyf-cto-taux-pfu"
             style="accent-color:var(--accent);flex-shrink:0">
           <div>
             <div style="font-size:12px;font-weight:700;color:var(--text2)">PORTEFEUILLE PEA</div>
