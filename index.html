@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_3_226.html
+  @file        : KYF_SHARE_beta_2_8_3_228.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.3.226
+  @version     : Beta 2.8.3.228
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6582,7 +6582,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.3.226</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.3.228</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -7076,6 +7076,11 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
               <button onclick="setBm('INFLATION','Inflation')" class="pfbm-btn" id="pfbm-INFLATION" title="Patrimoine total (versements compris) vs inflation cumulée - pas une mesure de performance des placements" style="display:block;width:100%;text-align:left;font-family:'Inter',sans-serif;font-size:9px;padding:5px 10px;border:none;border-radius:5px;background:none;color:var(--text2);cursor:pointer">Inflation</button>
             </div>
           </div>
+          <!-- Devise d'affichage : raccourci vers Paramètres → Tableaux -->
+          <button type="button" id="kyfDcChip" class="kyf-dc-chip" onclick="openEditorToDevise()" title="Devise d'affichage : EUR (cliquer pour changer)" style="font-family:'Inter',sans-serif;font-size:9px;padding:2px 8px;margin-left:6px;border-radius:4px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:4px">
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <span id="kyfDcChipLabel">EUR</span>
+          </button>
           <!-- Hauteur courbe -->
           <div style="display:flex;gap:2px;margin-left:4px;border:1px solid var(--border2);border-radius:5px;overflow:hidden">
             <button onclick="setChartH('pfFullWrap',180,'pfh')" id="pfh-s" title="Petit" class="pfh-btn kyf-toggle-active" style="font-family:'Inter',sans-serif;font-size:9px;padding:2px 7px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:background .15s,color .15s" onmouseover="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--hov-bg)';this.style.color='var(--text)'}" onmouseout="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)'}">S</button>
@@ -27522,7 +27527,8 @@ function updateSheetsSyncDot(status){
   if(!ring) return;
   if(window._kyfSessionExpired){ kyfSetSyncRing('expired'); return; }
   const known = ['ok','saving','error','pending','oversized'];
-  kyfSetSyncRing(known.includes(status) ? status : 'pending');
+  // 'conflict' = une donnee plus recente du Sheet n'a pas ete ecrasee : la file est vide, ce n'est pas une attente (le toast jaune explique deja)
+  kyfSetSyncRing(status === 'conflict' ? 'ok' : (known.includes(status) ? status : 'pending'), null, status === 'conflict');
   // Après une sauvegarde réussie, retombe sur l'état stable "connecté" (vert fixe)
   if(ring._stableTimer) clearTimeout(ring._stableTimer);
   if(status === 'ok'){
@@ -42294,7 +42300,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.3.226\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.3.228\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -45929,6 +45935,8 @@ body.kyf-reorg [data-kyf-key]:not(.kyf-card-chosen):not(.sortable-drag){animatio
 .kyf-toggle input:checked ~ .kyf-toggle-track { background:var(--accent); }
 .kyf-toggle-thumb { position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,0.35);transition:transform .18s;pointer-events:none; }
 .kyf-toggle input:checked ~ .kyf-toggle-thumb { transform:translateX(16px); }
+.kyf-dc-chip{transition:border-color .15s,color .15s,background .15s}
+.kyf-dc-chip:hover{color:var(--accent) !important;border-color:var(--accent) !important}
 .kyf-env-chip{font-size:8px;font-weight:700;letter-spacing:.8px;color:var(--text3);border:1px solid var(--border2);border-radius:5px;padding:1px 5px;white-space:nowrap}
 .kyf-toggle input:not(:checked):hover ~ .kyf-toggle-track { background:color-mix(in srgb,var(--text3) 40%,var(--border2)); }
 .kyf-toggle input:checked:hover ~ .kyf-toggle-track { filter:brightness(1.18); }
@@ -46019,6 +46027,14 @@ function openEditorToCouleurs(){
   setTimeout(()=>{
     const btn = document.querySelector('.ed-tab[onclick*="couleurs"]');
     showEdTab('couleurs', btn || null);
+  }, edOpen ? 0 : 120);
+}
+function openEditorToDevise(){
+  if(!edOpen) toggleEditor();
+  setTimeout(()=>{
+    const btn = document.querySelector('.ed-tab[onclick*="tableaux"]');
+    showEdTab('tableaux', btn || null);
+    setTimeout(()=>{ const sec = document.getElementById('kyfDcSec'); if(sec){ try{ sec.scrollIntoView({block:'start', behavior:'smooth'}); }catch(e){ sec.scrollIntoView(); } } }, 80);
   }, edOpen ? 0 : 120);
 }
 function openEditorToApi(){
@@ -57785,7 +57801,7 @@ const GUIDE_PAGES = [
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Devise d'affichage</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9">Dans <strong style="color:var(--accent)">Paramètres → Tableaux → Devise d'affichage</strong>, choisissez <strong style="color:var(--text)">EUR, USD, GBP ou CHF</strong>. Les montants du tableau de bord (KPI, courbe de valorisation, allocation) et de la page Mes Projets sont alors convertis au dernier taux de change connu, mémorisé pour rester disponible hors ligne. Le taux se met à jour avec l'actualisation des cours (et toutes les 10 minutes), et le taux utilisé s'affiche sous les boutons avec son heure de mise à jour.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Dans <strong style="color:var(--accent)">Paramètres → Tableaux → Devise d'affichage</strong>, choisissez <strong style="color:var(--text)">EUR, USD, GBP ou CHF</strong>. Les montants du tableau de bord (KPI, courbe de valorisation, allocation) et de la page Mes Projets sont alors convertis au dernier taux de change connu, mémorisé pour rester disponible hors ligne. Le taux se met à jour avec l'actualisation des cours (et toutes les 10 minutes), et le taux utilisé s'affiche sous les boutons avec son heure de mise à jour. Raccourci : la petite pastille avec un globe, dans la barre de la <strong style="color:var(--text)">Courbe de valorisation</strong>, indique la devise affichée et ouvre directement ce réglage.</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">C'est un changement d'affichage uniquement : vos données restent en euros, tout comme les formulaires, les tableaux, les autres pages et la fiscalité. Si le taux n'est pas disponible, KYF reste en euros plutôt que d'afficher un montant faux.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
@@ -62827,7 +62843,13 @@ function kyfDcObserve(){
   });
   KYF_DC_ZONES.forEach(id => { const el = document.getElementById(id); if(el) _kyfDcObs.observe(el, { childList:true, subtree:true, characterData:true, attributes:true, attributeFilter:['title'] }); });
 }
+function kyfDcChip(){
+  const l = document.getElementById('kyfDcChipLabel'); if(!l) return;
+  const c = kyfDcCur(); l.textContent = c;
+  const b = document.getElementById('kyfDcChip'); if(b) b.title = "Devise d'affichage : " + c + (kyfDcPref() !== c ? " (taux indisponible, affichage en euros)" : '') + ' (cliquer pour changer)';
+}
 function kyfDcRefresh(){
+  kyfDcChip();
   kyfDcScan();
   try{ if(typeof renderAllocDonut === 'function') renderAllocDonut(window._lp || {}); }catch(e){}
   try{ if(typeof renderPfFullChart === 'function') renderPfFullChart(); }catch(e){}
@@ -62843,6 +62865,7 @@ async function kyfDcSet(c){
 }
 function kyfDcMsg(t, bad){ const m = document.getElementById('kyfDcMsg'); if(m){ m.textContent = t || ''; m.style.color = bad ? 'var(--red)' : 'var(--text3)'; } }
 function kyfDcRender(){
+  try{ kyfDcChip(); }catch(e){}
   const box = document.getElementById('kyfDcBtns'); if(!box) return;
   const pref = kyfDcPref();
   box.innerHTML = KYF_DC_LIST.map(c => '<button type="button" class="ed-choice kyf-dc-btn' + (c === pref ? ' sw-active' : '') + '" data-c="' + c + '">' + c + ' ' + KYF_DC_SYM[c] + '</button>').join('');
@@ -62878,6 +62901,7 @@ document.addEventListener('visibilitychange', () => { if(!document.hidden) try{ 
   const start = () => {
     kyfDcObserve();
     const c = kyfDcPref();
+    try{ kyfDcChip(); }catch(e){}
     if(c !== 'EUR'){ kyfDcScan(); kyfDcFetch(c).then(ok => { if(ok) kyfDcRefresh(); }); }
   };
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
@@ -64356,7 +64380,7 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><span id="kyfRitMsg" style="font-family:'Inter',sans-serif;font-size:10px;min-height:14px;line-height:1.5"></span><span id="kyfRitCount" style="font-family:'Inter',sans-serif;font-size:10px;color:var(--text3)"></span></div>
       <div id="kyfRitNext" style="font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);margin-top:2px"></div>
 
-      <div class="ed-section">DEVISE D'AFFICHAGE</div>
+      <div class="ed-section" id="kyfDcSec">DEVISE D'AFFICHAGE</div>
       <p style="font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);margin:0 0 8px;line-height:1.7">Affiche les montants du tableau de bord (KPI, courbe de valorisation, allocation) et de la page Mes Projets dans une autre devise, au dernier taux de change connu. Vos données, vos saisies, les autres pages et la fiscalité restent en euros.</p>
       <div style="display:flex;gap:5px;flex-wrap:wrap" id="kyfDcBtns"></div>
       <div id="kyfDcMsg" style="font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);margin-top:6px;min-height:14px;line-height:1.5"></div>
@@ -65308,6 +65332,10 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.228 · 13/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Courbe de valorisation : pastille « devise d'affichage » (globe + devise active) qui ouvre directement Paramètres → Tableaux → Devise d'affichage</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.227 · 13/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Synchro : après une donnée plus récente trouvée dans le Sheet (rien n'est écrasé), l'anneau de synchronisation ne reste plus bloqué sur « Modifications en attente »</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.226 · 13/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Guide : nouveau bloc « Modifier un plan DCA » (crayon, champs modifiables, actif fixe, historique conservé, suppression d'une échéance qui rend les espèces).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.225 · 13/10/2026</div>
