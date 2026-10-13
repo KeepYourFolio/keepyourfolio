@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_3_207.html
+  @file        : KYF_SHARE_beta_2_8_3_208.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.3.207
+  @version     : Beta 2.8.3.208
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6558,7 +6558,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.3.207</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.3.208</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -41987,7 +41987,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.3.207\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.3.208\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -64893,6 +64893,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.208 · 13/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance vie et PER : en modifiant une position (SCPI, ETF, fonds), changer le nombre de parts met maintenant à jour la valeur actuelle, au même prix par part qu'avant, avec une mention et sans jamais écraser une valeur tapée à la main (avant, la valeur gardait l'ancien montant).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.207 · 13/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Courbe Intraday : si le script Intraday ne répond pas (accès non réglé sur « Tout le monde », adresse en /dev...), la carte affiche « Script Intraday injoignable » avec quoi vérifier, au lieu d'un chargement sans fin, et le message de la liste des warnings devient explicite.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.206 · 13/10/2026</div>
@@ -80925,6 +80927,7 @@ function openAddAVPos(contratId){
   document.getElementById('avPosPRU').value     = '';
   document.getElementById('avPosQty').value     = '';
   document.getElementById('avPosValeur').value  = '';
+  kyfAvPosValeurReset_();
   document.getElementById('avPosTaux').value    = '';
   document.getElementById('avPosEditIdH').value = '';
   avPosTypeChange();
@@ -81280,6 +81283,33 @@ function avReplaceSupportSave(o){
   if(typeof kyfOnDataChanged === 'function') kyfOnDataChanged();
 }
 
+// 208 : en modification d'une position, si on change la quantité (parts) sans toucher à la valeur, la valeur est recalculée au même prix par part
+// qu'avant (valeur d'origine / quantité d'origine) et le dit. Prix par part inconnu (quantité ou valeur d'origine absente) : la valeur n'est pas touchée.
+// Une valeur tapée à la main n'est jamais écrasée.
+function kyfAvPosValeurReset_(){
+  const q = document.getElementById('avPosQty'), v = document.getElementById('avPosValeur'), n = document.getElementById('avPosValeurNote');
+  if(q) q.dataset.base = ''; if(v) delete v.dataset.touched; if(n){ n.style.display = 'none'; n.textContent = ''; }
+}
+function kyfAvPosValeurTyped(){
+  const v = document.getElementById('avPosValeur'), n = document.getElementById('avPosValeurNote');
+  if(v) v.dataset.touched = '1'; if(n) n.style.display = 'none';
+}
+function kyfAvPosQtyChanged(){
+  const q = document.getElementById('avPosQty'), v = document.getElementById('avPosValeur'), n = document.getElementById('avPosValeurNote');
+  if(!q || !v) return;
+  let base = null; try{ base = JSON.parse(q.dataset.base || 'null'); }catch(e){}
+  if(!base || !(base.qty > 0) || !(base.valeur > 0)) return;
+  if(v.dataset.touched === '1') return;
+  const nq = parseNum(q.value);
+  if(!(nq > 0) || nq === base.qty){ v.value = String(base.valeur); if(n){ n.style.display = 'none'; n.textContent = ''; } return; }
+  const unit = base.valeur / base.qty, nv = Math.round(unit * nq * 100) / 100;
+  v.value = String(nv);
+  if(n){
+    const f = x => x.toLocaleString('fr-FR', { maximumFractionDigits: 2 });
+    n.textContent = 'Valeur recalculée : ' + f(nq) + ' parts × ' + f(unit) + ' € (prix par part d\'avant). Modifiez-la si besoin.';
+    n.style.display = 'block';
+  }
+}
 function saveAVPos(){
   const type    = document.getElementById('avPosType').value;
   let ticker    = document.getElementById('avPosTicker').value.trim().toUpperCase();
@@ -81359,6 +81389,9 @@ function editAVPos(contratId, posId){
     document.getElementById('avPosPRU').value    = pos.pru||'';
     document.getElementById('avPosQty').value    = pos.qty||'';
     document.getElementById('avPosValeur').value = pos.valeur||'';
+    kyfAvPosValeurReset_();
+    // 208 : quantité et valeur d'origine, pour que la valeur suive un changement de quantité (même prix par part qu'avant)
+    { const _q = parseFloat(pos.qty), _v = parseFloat(pos.valeur); if(_q > 0 && _v > 0) document.getElementById('avPosQty').dataset.base = JSON.stringify({ qty:_q, valeur:_v }); }
     document.getElementById('avPosTaux').value   = pos.tauxRendement||'';
     document.getElementById('avPosEditIdH').value= pos.id;
     { const _ir = document.getElementById('avPosRowIsin'), _ii = document.getElementById('avPosIsin'); if(_ii) _ii.value = pos.isin || ''; if(_ir) _ir.style.display = (pos.type === 'etf' || pos.type === 'action' || pos.type === 'fonds') ? '' : 'none'; }
@@ -84292,15 +84325,16 @@ function orInlineEdit(id, td, currentVal){
       </div>
       <div>
         <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">QUANTITÉ</div>
-        <input id="avPosQty" type="text" inputmode="decimal" placeholder="15"
+        <input id="avPosQty" type="text" inputmode="decimal" placeholder="15" oninput="kyfAvPosQtyChanged()"
           style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none">
       </div>
     </div>
 
     <div>
       <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">VALEUR ACTUELLE (€)</div>
-      <input id="avPosValeur" type="text" inputmode="decimal" placeholder="8 000"
+      <input id="avPosValeur" type="text" inputmode="decimal" placeholder="8 000" oninput="kyfAvPosValeurTyped()"
         style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none">
+      <div id="avPosValeurNote" style="display:none;font-size:10px;color:var(--text3);margin-top:4px;line-height:1.4"></div>
     </div>
 
     <div id="avPosRowTaux">
