@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_3_239.html
+  @file        : KYF_SHARE_beta_2_8_4_00.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.3.239
+  @version     : Beta 2.8.4.00
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -490,6 +490,10 @@ body.kyf-kpop-open .kpi{pointer-events:none}
 @media (max-width:780px){.kyf-geo-body{flex-direction:column}.kyf-geo-side{width:auto;max-height:190px;border-right:none;border-bottom:1px solid var(--border)}.kyf-geo-cols{flex-direction:column;align-items:stretch}}
 .kyf-geo-li{transition:background .12s}
 .kyf-geo-li:hover{background:var(--hov-bg)}
+.kyf-geo-done{display:flex;align-items:center;gap:8px;padding:9px 14px;margin-top:4px;border-top:1px solid var(--border);font-size:10px;font-weight:700;letter-spacing:.5px;color:var(--text3);cursor:pointer;text-transform:uppercase;transition:background .12s,color .12s}
+.kyf-geo-done:hover,.kyf-geo-done:focus-visible{background:var(--hov-bg);color:var(--accent);outline:none}
+.kyf-case{margin-left:6px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--accent);opacity:.9}
+.kyf-geo-done-chev{transition:transform .18s ease;flex-shrink:0}
 :root{ --geo-base:#2a2f3a; --geo-lo:#5c4413; --geo-hi:#f0b429; --geo-hover:#8a6a1c; }
 /* Bandeau d'annonce : sur ordinateur (hors mobile et tablette) le cadre s'élargit avec l'écran, pour que le texte tienne sur deux lignes */
 @media (min-width: 1025px){ :root { --kyf-annonce-max: clamp(760px, calc(100vw - 500px), 1100px); } }
@@ -4690,6 +4694,10 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
           <div><strong style="color:var(--text)">Amundi</strong><br>Fiche de l'ETF, « Répartition des composants de l'indice » : fichier Excel. Pour un ETF physique, « Actifs du fonds » convient aussi.</div>
         </div>
         <div style="display:flex;gap:12px;align-items:flex-start">
+          <span class="kyf-geo-iss" data-d="bnpparibas-am.com" data-l="BN" style="flex-shrink:0;width:22px;height:22px"></span>
+          <div><strong style="color:var(--text)">BNP Paribas (Easy)</strong><br>Page de l'ETF, puis « Rapport mensuel » (PDF). Il donne tous les secteurs, mais seulement les 10 premiers pays : le reste apparaît en « non renseigné ».</div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start">
           <span class="kyf-geo-iss" data-d="invesco.com" data-l="IN" style="flex-shrink:0;width:22px;height:22px"></span>
           <div><strong style="color:var(--text)">Invesco</strong><br>Fiche de l'ETF, « Composantes du fonds », puis « Exporter les données » : deux fichiers Excel, un pour les pays et un pour les secteurs, à importer l'un après l'autre.</div>
         </div>
@@ -4717,9 +4725,9 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
         <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text3);margin-bottom:8px">PAYS</div>
         <div id="kyfGeoRowsc"></div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 18px">
-          <button type="button" class="kyf-geo-mod" onclick="kyfGeoAddRow('c')" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:8px 13px;border-radius:8px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap">+ PAYS</button>
-          <button type="button" id="kyfGeoGgc" class="kyf-geo-mod" onclick="kyfGeoOpenRef('gc')" title="Chercher sur Google" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:8px 13px;border-radius:8px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 48 48" style="flex-shrink:0"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>GOOGLE</button>
-          <button type="button" class="kyf-geo-mod" onclick="kyfGeoTogglePaste('c')" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:8px 13px;border-radius:8px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap;border-style:dashed;background:transparent">COLLER</button>
+          <button type="button" class="kyf-geo-mod" onclick="kyfGeoAddRow('c')" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:5px 10px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap">+ PAYS</button>
+          <button type="button" id="kyfGeoGgc" class="kyf-geo-mod" onclick="kyfGeoOpenRef('gc')" title="Chercher sur Google" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:5px 10px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px"><svg width="11" height="11" viewBox="0 0 48 48" style="flex-shrink:0"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>GOOGLE</button>
+          <button type="button" class="kyf-geo-mod" onclick="kyfGeoTogglePaste('c')" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:5px 10px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap;border-style:dashed;background:transparent">COLLER</button>
         </div>
         <div id="kyfGeoPasteBoxc" style="display:none;margin-bottom:10px">
           <textarea id="kyfGeoPastec" rows="4" placeholder="Copiez le tableau sur le site et collez-le ici. Exemple :&#10;Énergie 4,1 %" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px;border-radius:6px;outline:none;resize:vertical"></textarea>
@@ -4732,9 +4740,9 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
         <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text3);margin-bottom:8px">SECTEURS</div>
         <div id="kyfGeoRowss"></div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 18px">
-          <button type="button" class="kyf-geo-mod" onclick="kyfGeoAddRow('s')" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:8px 13px;border-radius:8px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap">+ SECTEUR</button>
-          <button type="button" id="kyfGeoGgs" class="kyf-geo-mod" onclick="kyfGeoOpenRef('gs')" title="Chercher sur Google" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:8px 13px;border-radius:8px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 48 48" style="flex-shrink:0"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>GOOGLE</button>
-          <button type="button" class="kyf-geo-mod" onclick="kyfGeoTogglePaste('s')" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:8px 13px;border-radius:8px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap;border-style:dashed;background:transparent">COLLER</button>
+          <button type="button" class="kyf-geo-mod" onclick="kyfGeoAddRow('s')" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:5px 10px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap">+ SECTEUR</button>
+          <button type="button" id="kyfGeoGgs" class="kyf-geo-mod" onclick="kyfGeoOpenRef('gs')" title="Chercher sur Google" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:5px 10px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px"><svg width="11" height="11" viewBox="0 0 48 48" style="flex-shrink:0"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>GOOGLE</button>
+          <button type="button" class="kyf-geo-mod" onclick="kyfGeoTogglePaste('s')" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:5px 10px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap;border-style:dashed;background:transparent">COLLER</button>
         </div>
         <div id="kyfGeoPasteBoxs" style="display:none;margin-bottom:10px">
           <textarea id="kyfGeoPastes" rows="4" placeholder="Copiez le tableau sur le site et collez-le ici. Exemple :&#10;Énergie 4,1 %" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px;border-radius:6px;outline:none;resize:vertical"></textarea>
@@ -6582,7 +6590,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.3.239</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.4.00</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -39250,6 +39258,36 @@ function kyfNotifIconSvg(kind){
   if(!p) return '';
   return '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>';
 }
+// Notifications toujours en français : traduction des messages techniques anglais du navigateur et des anciens textes de l'application
+const KYF_LOG_FR = [
+  [/NetworkError when attempting to fetch resource\.?/gi, 'Erreur réseau : connexion impossible'],
+  [/Failed to fetch/gi, 'Connexion impossible'],
+  [/Load failed/gi, 'Chargement impossible'],
+  [/Unexpected end of JSON input/gi, 'Réponse illisible (données incomplètes)'],
+  [/Unexpected token[^;\n]*JSON[^;\n]*/gi, 'Réponse illisible (format inattendu)'],
+  [/JSON\.parse:?[^;\n]*/gi, 'Réponse illisible (format inattendu)'],
+  [/Cannot read propert(?:y|ies) of (?:undefined|null)(?: \(reading '([^']*)'\))?/gi, (m, p) => 'Valeur absente' + (p ? ' (' + p + ')' : '')],
+  [/([\w$.]+) is not defined/g, '$1 n\'est pas défini'],
+  [/([\w$.]+) is not a function/g, '$1 n\'est pas une fonction'],
+  [/(?:QuotaExceededError|exceeded the quota)[^;\n]*/gi, 'Stockage du navigateur plein'],
+  [/(?:The operation was aborted|signal is aborted[^;\n]*)\.?/gi, 'Opération interrompue'],
+  [/Setting up fake worker failed[^\n]*/gi, 'Lecture du PDF impossible'],
+  [/GAS historique failed:?/g, 'Historique : échec :'],
+  [/Analytics ping failed:?/g, 'Statistiques : envoi échoué :'],
+  [/tooltip update error on/g, 'Infobulle : erreur de mise à jour sur'],
+  [/Pipeline error:?/g, 'Erreur du traitement :'],
+  [/ETF fetch not ok:?/g, 'Historique ETF : réponse refusée, code'],
+  [/ETF history error:?/g, 'Historique ETF : erreur :'],
+  [/Crypto history error:?/g, 'Historique crypto : erreur :'],
+  [/\bfailed\b/gi, 'échoué'],
+  [/\bError\b/g, 'Erreur'],
+  [/\bWarning\b/g, 'Avertissement']
+];
+function kyfLogFr(msg){
+  let t = String(msg == null ? '' : msg);
+  KYF_LOG_FR.forEach(([re, to]) => { t = t.replace(re, to); });
+  return t;
+}
 function addLog(type, msg, source, icon){
   if(!LOGS_ENABLED && type === 'infos' && source !== 'io') return; // infos silencieuses sauf I/O
   // Ignorer les warnings de timeout réseau - ils se résolvent au prochain refresh auto
@@ -39260,6 +39298,9 @@ function addLog(type, msg, source, icon){
     msg.includes('Failed to fetch') ||
     msg.includes('CoinGecko fetch error')
   )) return;
+  // Messages techniques en anglais de la librairie de lecture des PDF (« Warning: Setting up fake worker. »...) : sans intérêt pour l'utilisateur, jamais affichés
+  if(type === 'warnings' && /^\s*Warning:\s/.test(String(msg || ''))) return;
+  if(type === 'errors' || type === 'warnings') msg = kyfLogFr(msg);
   const norm = kyfNotifNormalize(msg, type);
   const entry = {
     ts:     new Date().toLocaleTimeString('fr-FR'),
@@ -42404,7 +42445,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.3.239\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.4.00\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -48470,7 +48511,7 @@ const KYF_FIELDS = {
   'kyf-av-arbitrages': { label: 'Arbitrages AV', date: 'date', pos: [['montant','montant'], ['frais','frais']] },
   'kyf-sci': { label: 'SCI', pos: [['valeur','valeur'], ['capital','capital'], ['dettes','dettes'], ['cca','compte courant d\'associé']],
     num: [['tresorerie','trésorerie'], ['valeurNette','valeur nette'], ['quotePart','quote-part']], range: [['parts','parts (%)',0,100,false]] },
-  'kyf-immo-revenus': { label: 'Revenus locatifs', pos: [['loyer','loyer'], ['vacance','vacance'], ['charges','charges'], ['taxe','taxe foncière'], ['pno','assurance PNO'], ['agence','frais d\'agence']], num: [['netAn','revenu net']] }
+  'kyf-immo-revenus': { label: 'Revenus locatifs', pos: [['loyer','loyer'], ['vacance','vacance'], ['charges','charges'], ['taxe','taxe foncière'], ['pno','assurance PNO'], ['agence','frais d\'agence'], ['travaux','travaux'], ['interets','intérêts d\'emprunt']], num: [['netAn','revenu net']] }
 };
 function kyfFieldError(key, list){
   const f = KYF_FIELDS[key]; if(!f) return '';
@@ -61671,6 +61712,7 @@ function kyfGeoErr(t){ const e = document.getElementById('kyfGeoMsg'); if(e){ e.
 function kyfGeoEdit(k){
   if(!ETF.find(x => 'etf:' + x.ticker === k)) return;
   _geoEd = { k:null, r:{ c:[], s:[] }, drafts:{}, cm:null, isin:'', ticker:'', name:'' };
+  _geoDoneOpen = null;
   const box = document.getElementById('kyfGeoShareBox');
   if(box){
     box.style.display = kyfGeoCommOn() ? 'block' : 'none';
@@ -61689,6 +61731,11 @@ function kyfGeoDraftCount(){
   if(!_geoEd) return 0;
   return Object.keys(_geoEd.drafts).filter(k => { const b = kyfGeoBuild(_geoEd.drafts[k].r); return !b.err && kyfGeoHas(b); }).length;
 }
+// Brouillons à enregistrer OU à corriger (ligne avec un pourcentage mais sans pays/secteur choisi) : le bouton reste cliquable pour expliquer l'erreur
+function kyfGeoDraftTodo(){
+  if(!_geoEd) return 0;
+  return Object.keys(_geoEd.drafts).filter(k => { const b = kyfGeoBuild(_geoEd.drafts[k].r); return b.err || kyfGeoHas(b); }).length;
+}
 // Toute saisie marque la position comme « modifiée » (brouillon gardé quand on change de position)
 function kyfGeoTouch(){
   if(!_geoEd || !_geoEd.k) return;
@@ -61697,7 +61744,7 @@ function kyfGeoTouch(){
 }
 function kyfGeoFooter(){
   const b = document.getElementById('kyfGeoValBtn'); if(!b || !_geoEd) return;
-  const n = kyfGeoDraftCount();
+  const n = kyfGeoDraftTodo();
   b.textContent = n ? 'ENREGISTRER ' + n + ' MODIFICATION' + (n > 1 ? 'S' : '') : 'ENREGISTRER';
   b.style.opacity = n ? '1' : '.4'; b.style.pointerEvents = n ? 'auto' : 'none';
   const st = kyfGeoLoad(), rows = kyfGeoCompute().rows;
@@ -61705,19 +61752,37 @@ function kyfGeoFooter(){
   const c = document.getElementById('kyfGeoCount'); if(c) c.textContent = done + ' sur ' + rows.length + ' renseignés';
 }
 // Liste de toutes les positions : état de chacune, clic pour changer sans fermer
+let _geoDoneOpen = null;   // null = automatique (ouvert si recherche ou position affichée dedans), sinon choix de l'utilisateur
+function kyfGeoDoneToggle(){
+  const w = document.getElementById('kyfGeoDoneWrap'); if(!w) return;
+  _geoDoneOpen = w.style.display === 'none';
+  kyfGeoListRender();
+}
 function kyfGeoListRender(){
   const box = document.getElementById('kyfGeoList'); if(!box || !_geoEd) return;
   const q = kyfGeoNorm((document.getElementById('kyfGeoSearch') || {}).value || '');
   const st = kyfGeoLoad();
   const rows = kyfGeoCompute().rows.filter(r => !q || kyfGeoNorm(r.name + ' ' + r.ticker).includes(q));
-  box.innerHTML = rows.length ? rows.map(r => {
+  const row = r => {
     const cur = r.k === _geoEd.k, col = _geoEd.drafts[r.k] ? 'var(--accent)' : st[r.k] ? 'var(--green)' : '#6b7590';
     return '<div class="kyf-geo-li" data-k="' + escapeHtml(r.k) + '" onclick="kyfGeoSwitch(' + kyfJsAttr(r.k) + ')" style="display:flex;align-items:center;gap:10px;padding:8px 14px;cursor:pointer' + (cur ? ';background:rgba(240,180,41,0.14);box-shadow:inset 3px 0 0 var(--accent)' : '') + '">'
       + (typeof renderAssetLogo === 'function' ? renderAssetLogo(r.ticker, r.name, 24) : '')
       + '<span style="flex:1;min-width:0;font-size:12px;color:' + (cur ? 'var(--text)' : 'var(--text2)') + ';font-weight:' + (cur ? 700 : 500) + ';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(r.name) + '</span>'
       + '<i class="kyf-geo-dot" style="background:' + col + '"></i></div>';
-  }).join('') : '<div style="padding:14px;font-size:11px;color:var(--text3)">Aucune position trouvée.</div>';
-  const cur = box.querySelector('.kyf-geo-li[style*="inset"]'); if(cur && cur.scrollIntoView) cur.scrollIntoView({ block:'nearest' });
+  };
+  const isDone = r => !!st[r.k] && !_geoEd.drafts[r.k];   // renseigné et sans modification en cours
+  const todo = rows.filter(r => !isDone(r)), done = rows.filter(isDone);
+  let html = todo.map(row).join('');
+  if(done.length){
+    const curIn = done.some(r => r.k === _geoEd.k);
+    const open = q ? true : (_geoDoneOpen !== null ? _geoDoneOpen : curIn);
+    html += '<div id="kyfGeoDoneHead" class="kyf-geo-done" onclick="kyfGeoDoneToggle()" role="button" tabindex="0" aria-expanded="' + open + '" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();kyfGeoDoneToggle();}">'
+      + '<svg class="kyf-geo-done-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(' + (open ? 90 : 0) + 'deg)"><polyline points="9 6 15 12 9 18"/></svg>'
+      + '<span style="flex:1">Renseignés (' + done.length + ')</span><i class="kyf-geo-dot" style="background:var(--green)"></i></div>'
+      + '<div id="kyfGeoDoneWrap" style="display:' + (open ? 'block' : 'none') + '">' + done.map(row).join('') + '</div>';
+  }
+  box.innerHTML = html || '<div style="padding:14px;font-size:11px;color:var(--text3)">Aucune position trouvée.</div>';
+  const cur = box.querySelector('.kyf-geo-li[style*="inset"]'); if(cur && cur.scrollIntoView && cur.offsetParent) cur.scrollIntoView({ block:'nearest' });
 }
 // Bandeau communauté : validation en un clic
 function kyfGeoCommRender(){
@@ -61795,6 +61860,7 @@ function kyfGeoLoadPos(k){
 }
 function kyfGeoSwitch(k){
   if(!_geoEd || !k || k === _geoEd.k) return;
+  _geoDoneOpen = null;
   kyfGeoLoadPos(k);
 }
 function kyfGeoCloseNow(){
@@ -62059,7 +62125,7 @@ async function kyfGeoPdfItems(buf){
   const u8 = new Uint8Array(buf);
   if(new TextDecoder('latin1').decode(u8.subarray(0, 1024)).indexOf('%PDF-') < 0) throw new Error('Ce fichier n\'est pas un PDF valide.');
   await kyfLoadPdfJs();
-  const task = pdfjsLib.getDocument({ data:buf, isEvalSupported:false, enableXfa:false });
+  const task = pdfjsLib.getDocument({ data:buf, isEvalSupported:false, enableXfa:false, verbosity:0 });
   const job = (async () => {
     let pdf; try{ pdf = await task.promise; }catch(e){ throw new Error('PDF illisible ou corrompu.'); }
     if(pdf.numPages > 40) throw new Error('PDF trop long (40 pages maximum).');
@@ -62439,9 +62505,12 @@ function kyfGeoMultiApply(){
     } catch(err){ if(typeof showToast === 'function') showToast('Dépôt impossible, utilisez le bouton Parcourir.'); }
   });
 })();
-function kyfGeoParse(text, m){
-  const dict = kyfGeoDict(m), re = kyfGeoRe(m), items = {}, ignored = [];
+function kyfGeoParse(text, m, opts){
+  opts = opts || {};
+  const dict = kyfGeoDict(m), re = kyfGeoRe(m), items = {}, ignored = [], dups = [];
   let src = String(text || '').slice(0, 200000).replace(/\u00a0/g, ' ');
+  // collage sur une seule ligne « Santé 21,01 Finance 18,12 ... » : un retour à la ligne après chaque chiffre suivi d'un libellé (uniquement sans %, sans saut de ligne, et en commençant par une lettre)
+  if(opts.line && !/%|\r|\n|\t|\|/.test(src) && /^\s*[A-Za-zÀ-ÿ]/.test(src) && (src.match(/\d+(?:[.,]\d+)?\s+(?=[A-Za-zÀ-ÿ])/g) || []).length >= 1) src = src.replace(/(\d+(?:[.,]\d+)?)\s+(?=[A-Za-zÀ-ÿ])/g, '$1\n');
   if(!/\d\s*%/.test(src)) src = src.replace(/(\d+(?:[.,]\d+)?)([ ]*(?:\r?\n|\t|\||$))/g, '$1 %$2'); // colonnes sans signe % (Morningstar, tableurs)
   const PCT = /(\d+(?:[.,]\d+)?)\s*%/g;
   const clean = t => t.replace(/\([^)]*\)?/g, ' ').replace(/\[[^\]]*\]/g, ' ').replace(/[~≈*_|#>«»"]+/g, ' ').replace(/^[\s\d.)\-–—:•·]+/, '').replace(/[\s:\-–—]+$/, '').replace(/\s(?:et|and|ou|puis)$/i, '').replace(/\s+/g, ' ').trim();
@@ -62460,8 +62529,30 @@ function kyfGeoParse(text, m){
     while((x = re.exec(n))) ids.push(dict[x[1]]);
     return ids.length === 1 ? ids[0] : null;
   };
-  const segs = src.split(/\r?\n|\t|•|·|\||;|\.\s+(?=[A-ZÀ-Ý])/);
-  let last = '';
+  // liste de positions copiée d'un tableau (société, devise, poids %, secteur) : le secteur placé APRÈS le poids est rattaché à ce poids
+  if(opts.rows && /\t/.test(src)) src = src.split(/\r?\n/).map(line => {
+    const c = line.split('\t'), pi = c.findIndex(x => /^\s*\d+(?:[.,]\d+)?\s*%\s*$/.test(x));
+    if(pi < 0 || pi >= c.length - 1) return line;
+    const after = c.slice(pi + 1).join(' ').trim();
+    return after && fit(clean(after)) ? after + ' ' + c[pi].trim() : line;
+  }).join('\n');
+  let segs = src.split(/\r?\n|\t|•|·|\||;|\.\s+(?=[A-ZÀ-Ý])/).map(x => x.trim()).filter(Boolean);
+  let last = '', orphans = 0, multi = false;
+  // libellés d'un côté, poids de l'autre (copie de colonnes) : association dans l'ordre SEULEMENT si le nombre de libellés égale le nombre de poids ; sinon rien n'est attribué (jamais le dernier libellé par défaut)
+  if(opts.rows){
+    const pctOnly = x => /^\d+(?:[.,]\d+)?\s*%$/.test(x), isTxt = x => /[a-zà-ÿ]{2}/i.test(x) && !/\d\s*%/.test(x);
+    for(let i = 0; i < segs.length; i++){
+      if(!pctOnly(segs[i])) continue;
+      let j = i; while(j < segs.length && pctOnly(segs[j])) j++;
+      const M = j - i; if(M < 2){ i = j - 1; continue; }
+      let k = i - 1; while(k >= 0 && isTxt(segs[k])) k--;
+      const labels = segs.slice(k + 1, i), N = labels.length;
+      if(N >= M && labels.slice(0, N - M).every(l => !fit(clean(l)))){
+        const pairs = labels.slice(N - M).map((l, t) => l + ' ' + segs[i + t]);
+        segs.splice(i - M, 2 * M, ...pairs); i = i - M + M - 1;
+      } else { orphans += M; segs.splice(i, M); i--; }
+    }
+  }
   segs.forEach(raw => {
     const seg = raw.trim(); if(!seg) return;
     const pcts = [...seg.matchAll(PCT)];
@@ -62476,13 +62567,15 @@ function kyfGeoParse(text, m){
       // ligne de tableau à plusieurs colonnes (2 pourcentages ou plus) : un libellé avant le chiffre qui n'est pas reconnu (devise, nom d'une société...) ne doit pas faire prendre le libellé de la colonne d'à côté
       let id = fit(B) || (pcts.length >= 2 && /[a-zà-ÿ]{2}/i.test(B) ? null : fit(A));
       if(!id && !B && !A && last) id = fit(clean(last));
-      if(id){ if(v > 0 && v <= 100 && !(id in items)) items[id] = v; return; }
+      if(!id && k > 0 && !B && !A){ multi = true; return; }   // 2e colonne de pourcentages (indice, comparaison) : jamais lue
+      if(!id && !B && !A && !last && pcts.length === 1){ orphans++; return; }
+      if(id){ if(v > 0 && v <= 100){ if(!(id in items)) items[id] = v; else if(opts.sum){ items[id] = Math.round((items[id] + v) * 100) / 100; dups.push(id); } } return; }
       const lab = (B || A || (last && clean(last)) || '').slice(0, 40);
-      if(/[a-zà-ÿ]{3}/i.test(lab) && !/^(total|autres?|others?|reste|cash|liquidit)/i.test(lab)) ignored.push(lab);
+      if(/[a-zà-ÿ]{3}/i.test(lab) && !/^(total|autres?|others?|reste|cash|liquidit)/i.test(lab) && !/^[A-Z]{3}$/.test(lab)) ignored.push(lab);
     });
     last = '';
   });
-  return { items, ignored: [...new Set(ignored)] };
+  return { items, ignored: [...new Set(ignored)], dups: [...new Set(dups)], orphans, multi };
 }
 function kyfGeoTogglePaste(m){
   const b = document.getElementById('kyfGeoPasteBox' + m); if(!b) return;
@@ -62492,9 +62585,9 @@ function kyfGeoTogglePaste(m){
 let _kyfGeoPending = null;
 function kyfGeoSendHide(){ _kyfGeoPending = null; const er = document.getElementById('kyfGeoSendErr'); if(er) er.style.display = 'none'; const b = document.getElementById('kyfGeoSendBox'); if(b) b.style.display = 'none'; }
 // Propose d'envoyer à KYF un relevé mal lu : « Oui » ouvre Contactez-nous, déjà rempli
-function kyfGeoOfferSend(m, text, ids, ignored){
-  _kyfGeoPending = { m, text: String(text || '').slice(0, 6000), nb: ids.length, ignored: (ignored || []).slice(0, 30) };
-  const tt = document.getElementById('kyfGeoSendTxt'); if(tt) tt.textContent = 'KYF n\'a pas bien lu ce relevé. Voulez-vous l\'envoyer à KYF pour que le format soit pris en charge ?';
+function kyfGeoOfferSend(m, text, ids, ignored, lib){
+  _kyfGeoPending = { m, text: String(text || '').slice(0, 6000), nb: ids.length, ignored: (ignored || []).slice(0, 30), lib: !!lib };
+  const tt = document.getElementById('kyfGeoSendTxt'); if(tt) tt.textContent = lib ? (ignored.length > 1 ? ignored.length + ' libellés non reconnus' : 'Un libellé non reconnu') + ' (' + ignored.slice(0, 3).join(', ') + (ignored.length > 3 ? '...' : '') + '). Voulez-vous ' + (ignored.length > 1 ? 'les envoyer' : 'l\'envoyer') + ' à KYF pour ' + (ignored.length > 1 ? 'qu\'ils soient ajoutés' : 'qu\'il soit ajouté') + ' à la liste ?' : 'KYF n\'a pas bien lu ce relevé. Voulez-vous l\'envoyer à KYF pour que le format soit pris en charge ?';
   const b = document.getElementById('kyfGeoSendBox'); if(b) b.style.display = 'flex';
 }
 function kyfGeoOfferFile(file, err, text){
@@ -62526,31 +62619,35 @@ function kyfGeoSendYes(){
     }
     return;
   }
-  const msg = 'Relevé « ' + (q.m === 's' ? 'Secteurs' : 'Pays') + ' » mal reconnu par KYF (Répartition pays et secteurs).\n'
+  const msg = (q.lib ? 'Libellé(s) non reconnu(s) dans le relevé « ' : 'Relevé « ') + (q.m === 's' ? 'Secteurs' : 'Pays') + (q.lib ? ' » (Répartition pays et secteurs), à ajouter à la liste.\n' : ' » mal reconnu par KYF (Répartition pays et secteurs).\n')
     + 'Position : ' + (pos || 'non précisée') + '\n'
     + 'Lignes reconnues : ' + q.nb + (q.ignored.length ? ' · ignorées : ' + q.ignored.join(', ') : '') + '\n\n'
     + '--- Relevé collé ---\n' + q.text;
   kyfGeoSendHide();
-  openContactForm('import', 'Relevé pays/secteurs non reconnu' + (e.ticker ? ' : ' + e.ticker : ''), msg);
+  openContactForm('import', (q.lib ? 'Libellé pays/secteurs à ajouter' : 'Relevé pays/secteurs non reconnu') + (e.ticker ? ' : ' + e.ticker : ''), msg);
 }
 function kyfGeoPasteApply(m){
   if(!_geoEd) return;
   const msg = document.getElementById('kyfGeoMsg');
   const rawText = document.getElementById('kyfGeoPaste' + m).value;
   kyfGeoSendHide();
-  const r = kyfGeoParse(rawText, m);
+  let r = kyfGeoParse(rawText, m, { line:true, sum:true, rows:true });
+  if(Object.keys(r.items).reduce((a, i) => a + r.items[i], 0) > 100.01) r = kyfGeoParse(rawText, m, { line:true, rows:true });   // doublons additionnés au-delà de 100 % : ce sont deux colonnes, on garde la première valeur
   const ids = Object.keys(r.items).sort((a, b) => r.items[b] - r.items[a]);
   const totRec = ids.reduce((a, i) => a + r.items[i], 0);
   // « trop d'erreurs » : rien reconnu, ou davantage de lignes ignorées que reconnues, ou moins de la moitié du total
   const bad = !ids.length || (r.ignored.length >= 3 && r.ignored.length >= ids.length) || (r.ignored.length > 0 && totRec < 50);
   if(!ids.length){ kyfGeoErr('Rien de reconnu : collez les lignes avec leur pourcentage.'); if(rawText.trim()) kyfGeoOfferSend(m, rawText, ids, r.ignored); return; }
   if(bad) setTimeout(() => kyfGeoOfferSend(m, rawText, ids, r.ignored), 0);
+  else if(r.ignored.length) setTimeout(() => kyfGeoOfferSend(m, rawText, ids, r.ignored, true), 0);
   _geoEd.r[m] = ids.map(i => ({ c:i, p:String(Math.round(r.items[i] * 100) / 100).replace('.', ',') }));
   document.getElementById('kyfGeoPaste' + m).value = '';
   document.getElementById('kyfGeoPasteBox' + m).style.display = 'none';
   const tot = Object.keys(r.items).reduce((a, i) => a + r.items[i], 0);
   msg.style.color = tot > 100.01 ? 'var(--red)' : 'var(--text3)';
-  msg.textContent = (tot > 100.01 ? 'Total reconnu ' + kyfGeoPct(tot) + ' : vérifiez les valeurs. ' : ids.length + ' ligne' + (ids.length > 1 ? 's' : '') + ' reconnue' + (ids.length > 1 ? 's' : '') + '. ') + (r.ignored.length ? 'Ignoré : ' + r.ignored.slice(0, 4).join(', ') + (r.ignored.length > 4 ? '...' : '') : '');
+  msg.textContent = (tot > 100.01 ? 'Total reconnu ' + kyfGeoPct(tot) + ' : vérifiez les valeurs. ' : ids.length + ' ligne' + (ids.length > 1 ? 's' : '') + ' reconnue' + (ids.length > 1 ? 's' : '') + '. ') + (r.ignored.length ? 'Ignoré : ' + r.ignored.slice(0, 4).join(', ') + (r.ignored.length > 4 ? '...' : '') + '. ' : '')
+    + (r.orphans ? r.orphans + ' pourcentage' + (r.orphans > 1 ? 's' : '') + ' sans libellé clair non pris en compte : collez ligne par ligne (libellé et pourcentage ensemble). ' : '')
+    + (r.multi ? 'Plusieurs colonnes de pourcentages détectées : la première est utilisée.' : '');
   kyfGeoRows(); kyfGeoTouch();
 }
 function kyfGeoSetC(m, i, v){ if(_geoEd && _geoEd.r[m][i] && kyfGeoRef(m)[v]){ _geoEd.r[m][i].c = v; kyfGeoTouch(); } }
@@ -62639,9 +62736,15 @@ function kyfGeoValidate(){
       if(Object.keys(sc).length || Object.keys(ss).length) kyfGeoCommShare(it.isin, it.ticker, sc, ss);
     }
   });
-  kyfGeoStore(st); kyfGeoCloseNow(); kyfGeoRender();
-  const n = items.length;
-  kyfConfirmPopup(kyfImportSummaryHTML(n + ' position' + (n > 1 ? 's' : '') + ' enregistrée' + (n > 1 ? 's' : '') + '.', null));
+  kyfGeoStore(st); kyfGeoRender();
+  // la fenêtre reste ouverte : les positions enregistrées passent au vert, on enchaîne sur la prochaine non renseignée
+  const n = items.length, cur = _geoEd.k;
+  _geoEd.drafts = {};
+  const rows = kyfGeoCompute().rows, st2 = kyfGeoLoad(), ci = rows.findIndex(r => r.k === cur);
+  const nxt = rows.slice(ci + 1).concat(rows.slice(0, Math.max(0, ci))).find(r => r.k !== cur && !st2[r.k]);
+  kyfGeoLoadPos(nxt ? nxt.k : cur);
+  const msg = document.getElementById('kyfGeoMsg');
+  if(msg){ msg.style.color = 'var(--green)'; msg.textContent = n + ' position' + (n > 1 ? 's' : '') + ' enregistrée' + (n > 1 ? 's' : '') + (doShare ? ', envoyée' + (n > 1 ? 's' : '') + ' à la communauté pour validation' : '') + (nxt ? '. Position suivante : ' + nxt.name : '.'); }
 }
 function kyfGeoClear(){
   if(!_geoEd) return;
@@ -65487,6 +65590,28 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.4.00 · 14/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Revenus locatifs : deux nouveaux champs, TRAVAUX (case 224 de la déclaration 2044) et INTÉRÊTS D'EMPRUNT (case 250) avec estimation depuis le crédit lié ; numéros de case affichés par année de formulaire (aujourd'hui 2044, revenus 2025, et invitation à contrôler quand le formulaire suivant est sorti) ; résultat foncier indicatif (loyers moins charges moins intérêts). Les intérêts ne baissent pas le cash-flow (la mensualité du crédit les contient déjà)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.249 · 14/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Pays / Secteurs, collage : libellés d'un côté et pourcentages de l'autre (copie de colonnes) : association dans l'ordre seulement si les nombres concordent, sinon rien n'est attribué (avant, le dernier libellé recevait le premier pourcentage, ex. Royaume-Uni à 65,20 %) ; les pourcentages sans libellé et les tableaux à plusieurs colonnes sont signalés</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.248 · 14/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Notifications : le message anglais « Setting up fake worker. » (librairie de lecture des PDF) n'apparaît plus dans les avertissements (cause supprimée, et les messages « Warning: ... » de cette librairie sont masqués) ; les autres messages techniques anglais (réseau, données illisibles, valeur absente, anciens textes de l'application) sont traduits en français</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.247 · 14/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Répartition pays et secteurs : boutons + PAYS / + SECTEUR, GOOGLE et COLLER plus compacts (texte 9 px, marges réduites)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.246 · 14/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Répartition pays et secteurs : les positions déjà renseignées sont regroupées dans un bloc repliable « Renseignés (n) » (chevron > avec survol), les positions à faire ou modifiées restent en haut ; le bloc s'ouvre pendant une recherche ou quand la position affichée y est</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.245 · 14/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Répartition pays et secteurs : le rapport mensuel PDF des ETF BNP Paribas Easy est lu (10 premiers pays, tous les secteurs, ISIN reconnu) ; BNP Paribas ajouté à l'aide « Quel fichier importer ? » avec le chemin pour le trouver</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.244 · 14/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Répartition pays et secteurs : le bouton Enregistrer restait grisé sans explication quand une ligne avait un pourcentage mais aucun pays/secteur choisi ; il reste cliquable et affiche maintenant le message « Choisissez un pays (ou un secteur) pour chaque ligne renseignée »</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.243 · 14/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Pays / Secteurs : le collage accepte une liste de positions copiée d'un tableau (société, devise, poids, secteur) : les poids sont additionnés par secteur ; un code devise (USD, EUR...) n'est plus signalé comme libellé inconnu</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.242 · 14/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Répartition pays et secteurs : après « Enregistrer », la fenêtre reste ouverte (positions enregistrées en vert), un message remplace la confirmation et KYF passe à la prochaine position non renseignée pour enchaîner sans rouvrir</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.241 · 14/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Menus KYF (dont Pays et Secteurs) : taper une lettre saute à l'élément qui commence par elle, plusieurs lettres rapides précisent (« fr » = France), la même lettre répétée passe au suivant ; Entrée valide</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.240 · 14/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Pays / Secteurs : le collage lit maintenant un texte sur une seule ligne (« Santé 21,01 Finance 18,12 ... »), additionne les libellés en double (ex. deux lignes Finance) tant que le total reste sous 100 %, et propose d'envoyer à KYF les libellés non reconnus pour qu'ils soient ajoutés</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.239 · 14/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Répartition pays et secteurs : un fichier qui liste les positions du fonds (nom, ISIN, poids) sans pays ni secteur (ex. VanEck) reçoit un message précis au lieu de « Colonnes introuvables »</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.238 · 14/10/2026</div>
@@ -75608,7 +75733,7 @@ const CF_IMP_ID = /^C[0-9A-F]{12,22}$/i;
 async function cfImpParsePdf(file){
   await kyfLoadPdfJs();
   const buf = await file.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({data: buf, isEvalSupported: false}).promise;
+  const pdf = await pdfjsLib.getDocument({data: buf, isEvalSupported: false, verbosity: 0}).promise;
   const out = []; let whole = ''; let colX = null; const amtS = { x: [], c: [] };
   for(let p = 1; p <= pdf.numPages; p++){
     const page = await pdf.getPage(p);
@@ -76025,6 +76150,60 @@ function renderCrowdfunding(){
 }
 
 // ══ REVENUS LOCATIFS ═════════════════════════════════════════════
+// Formulaire 2044 (revenus fonciers, régime réel) : numéros de case PAR ANNÉE de revenus. Une année n'est ajoutée qu'après vérification sur le formulaire officiel
+// (impots.gouv.fr) : jamais de numéro pour une année non vérifiée. Chaque année, ajouter l'entrée de la nouvelle déclaration (HANDOFF : « mise à jour annuelle 2044 »).
+const KYF_F2044 = {
+  2025: { 211:'Loyers (ou fermages) bruts encaissés', 221:'Frais d\'administration et de gestion', 222:'Autres frais de gestion : 20 € par local', 223:'Primes d\'assurance',
+          224:'Dépenses de réparation, d\'entretien et d\'amélioration', 227:'Taxes foncières, taxes annexes', 250:'Intérêts d\'emprunt', 261:'Revenus fonciers taxables (ligne 215 – ligne 240 – ligne 250)' }
+};
+// Champ de KYF -> numéro de case (aucun numéro pour « charges non récup. » ni pour la vacance : pas de correspondance certaine)
+const KYF_F2044_MAP = { revLoyer:211, revAgence:221, revPNO:223, revTravaux:224, revTaxe:227, revInterets:250 };
+function kyfF2044Year(){ const ys = Object.keys(KYF_F2044).map(Number).sort((a, b) => b - a); return ys.length ? ys[0] : null; }
+// Après le 1er avril d'une année, le formulaire de l'année précédente est publié : si la table ne le connaît pas, on invite à contrôler
+function kyfF2044Stale(todayIso){
+  const y = kyfF2044Year(); if(y === null) return false;
+  const m = /^(\d{4})-(\d{2})/.exec(String(todayIso || '')); if(!m) return false;
+  const cy = +m[1], cm = +m[2];
+  const dernierPublie = cm >= 4 ? cy - 1 : cy - 2;
+  return dernierPublie > y;
+}
+function kyfF2044Apply(){
+  const y = kyfF2044Year(), T = y !== null ? KYF_F2044[y] : null;
+  document.querySelectorAll('.kyf-case').forEach(el => { const n = KYF_F2044_MAP[el.getAttribute('data-f')]; el.textContent = (T && T[n]) ? 'case ' + n : ''; el.title = (T && T[n]) ? T[n] : ''; });
+  const note = document.getElementById('revF2044Note'); if(!note) return;
+  if(y === null){ note.textContent = ''; return; }
+  const today = kyfParisNow(new Date(Date.now())).date;
+  note.textContent = 'Cases de la déclaration des revenus fonciers : formulaire 2044, revenus ' + y + '.' + (kyfF2044Stale(today) ? ' Le formulaire de l\'année suivante est sorti : contrôlez les numéros de case sur impots.gouv.fr.' : '');
+}
+// Intérêts d'emprunt payés pendant une année civile, d'après le tableau d'amortissement de KYF (hors assurance), sur tous les crédits en cours du bien.
+// null = indisponible (un crédit n'a pas de capital, taux, durée ou date de début) : jamais un zéro silencieux.
+function creditInteretsAnnee(bienId, annee){
+  const creds = creditLoad().filter(c => c.bienId === bienId && c.statut !== 'vendu');
+  if(!creds.length) return null;
+  let total = 0;
+  for(const c of creds){
+    if(!creditBaseOk_(c)) return null;
+    const segs = creditSegments(c);
+    for(let i = 0; i < segs.length; i++){
+      const sg = segs[i], d0 = String(sg.debut).slice(0, 10), y0 = +d0.slice(0, 4), m0 = +d0.slice(5, 7) - 1;
+      let n = sg.n;
+      if(i + 1 < segs.length){ const mm = kyfCreditMoisEntiers(d0, String(segs[i + 1].debut).slice(0, 10)); if(mm !== null) n = Math.min(n, mm); }
+      for(let k = 1; k <= n; k++){
+        if(y0 + Math.floor((m0 + k) / 12) !== annee) continue;
+        total += Math.max(0, calcCRD(sg.capital, sg.taux, sg.dureeAns, k - 1)) * sg.taux / 1200;
+      }
+    }
+  }
+  return Math.round(total);
+}
+function revInteretsHint(){
+  const h = document.getElementById('revInteretsHint'); if(!h) return;
+  const bienId = document.getElementById('revBienId')?.value || '', y = kyfF2044Year();
+  const v = (bienId && y !== null) ? creditInteretsAnnee(bienId, y) : null;
+  if(v === null || !(v > 0)){ h.style.display = 'none'; h.innerHTML = ''; return; }
+  h.style.display = 'block';
+  h.innerHTML = 'Crédit lié : environ ' + fmt(v, 0) + ' € d\'intérêts payés en ' + y + ' (estimation KYF, hors assurance). <a href="#" onclick="event.preventDefault();var e=document.getElementById(\'revInterets\');e.value=' + v + ';calcRevenuAuto();" style="color:var(--accent);font-weight:700;text-decoration:none">Utiliser</a>';
+}
 const REVENU_KEY = 'kyf-immo-revenus';
 function revenuLoad(){ return JSON.parse(localStorage.getItem(REVENU_KEY)||'[]'); }
 function revenuSave(d){ localStorage.setItem(REVENU_KEY, JSON.stringify(d)); }
@@ -76033,7 +76212,7 @@ function revenuSave(d){ localStorage.setItem(REVENU_KEY, JSON.stringify(d)); }
 function revenuDerived(r){
   const loyer = Number(r.loyer)||0, vac = Math.min(12, Math.max(0, Number(r.vacance)||0));
   const loyerAn = loyer * (12 - vac);
-  const chargesAn = (Number(r.charges)||0) + (Number(r.taxe)||0) + (Number(r.pno)||0) + (Number(r.agence)||0);
+  const chargesAn = (Number(r.charges)||0) + (Number(r.taxe)||0) + (Number(r.pno)||0) + (Number(r.agence)||0) + (Number(r.travaux)||0);   // les intérêts d'emprunt n'y sont PAS : la mensualité du crédit (intérêts compris) est déjà retirée du cash-flow
   const netAn = loyerAn - chargesAn;
   const bien = (typeof immoLoad === 'function' ? immoLoad() : []).find(b => b.id === r.bienId);
   const valeur = bien?.valeur || 0;
@@ -76041,6 +76220,8 @@ function revenuDerived(r){
   const horizon = credit ? credit.duree : 20;
   return {
     loyerAn: Math.round(loyerAn), chargesAn: Math.round(chargesAn), netAn: Math.round(netAn), netMens: Math.round(netAn/12),
+    // Résultat foncier INDICATIF (loyers encaissés - frais et charges - intérêts d'emprunt) : pas le revenu imposable (régimes, déficits, conditions : voir la notice)
+    foncierAn: Math.round(netAn - (Number(r.interets)||0)),
     // Rendement BRUT = loyers annuels pleins (12 mois, avant vacance et charges) / valeur du bien, comme sur la fiche du bien ; la vacance ne baisse que le rendement NET
     rendBrut: valeur>0 ? (loyer*12/valeur*100).toFixed(2) : null,
     rendNet: valeur>0 ? (netAn/valeur*100).toFixed(2) : null,
@@ -76067,14 +76248,18 @@ function calcRevenuAuto(){
   const taxe    = parseNum(document.getElementById('revTaxe')?.value||'0');
   const pno     = parseNum(document.getElementById('revPNO')?.value||'0');
   const agence  = parseNum(document.getElementById('revAgence')?.value||'0');
+  const travaux = parseNum(document.getElementById('revTravaux')?.value||'0');
+  const interets= parseNum(document.getElementById('revInterets')?.value||'0');
   const bienId  = document.getElementById('revBienId')?.value||'';
   const res     = document.getElementById('revCalcResult');
+  revInteretsHint();
   if(!res||!loyer){ if(res) res.style.display='none'; return; }
 
   const loyerAn   = loyer * (12 - vacance);
-  const chargesAn = charges + taxe + pno + agence;
+  const chargesAn = charges + taxe + pno + agence + travaux;
   const netAn     = loyerAn - chargesAn;
   const netMens   = netAn / 12;
+  const foncier   = netAn - interets;
 
   // Récupérer la valeur du bien + mensualité crédit
   const bien    = immoLoad().find(b=>b.id===bienId);
@@ -76092,6 +76277,7 @@ function calcRevenuAuto(){
       <div><div style="font-size:9px;color:var(--text3);margin-bottom:2px">REVENU NET ANNUEL</div><div style="font-size:13px;font-weight:700;color:var(--green)">${fmt(Math.round(netAn),0)} €</div></div>
       <div><div style="font-size:9px;color:var(--text3);margin-bottom:2px">CASH-FLOW / MOIS</div><div style="font-size:13px;font-weight:700;color:${cashflow>=0?'var(--green)':'var(--red)'}">${cashflow>=0?'+':''}${fmt(Math.round(cashflow),0)} €</div></div>
       <div><div style="font-size:9px;color:var(--text3);margin-bottom:2px">CHARGES ANNUELLES</div><div style="font-size:13px;font-weight:700;color:var(--text2)">${fmt(Math.round(chargesAn),0)} €</div></div>
+      ${interets>0?`<div style="grid-column:1/3"><div style="font-size:9px;color:var(--text3);margin-bottom:2px">RÉSULTAT FONCIER INDICATIF${(kyfF2044Year()!==null&&KYF_F2044[kyfF2044Year()][261])?' · case 261':''} <span style="opacity:.7">(${foncier>=0?'bénéfice':'déficit'})</span></div><div style="font-size:13px;font-weight:700;color:${foncier>=0?'var(--green)':'var(--red)'}">${fmt(Math.round(foncier),0)} €</div><div style="font-size:9px;color:var(--text3);margin-top:2px;line-height:1.4">Loyers moins charges moins intérêts d'emprunt. Indicatif : ce n'est pas votre revenu imposable (régime, déficits et conditions : voir la notice de la déclaration).</div></div>`:''}
     </div>
     ${rendBrut?`<div style="display:flex;gap:12px;font-family:'Inter',sans-serif;font-size:9px">
       <span><svg aria-hidden="true" style="vertical-align:-.18em;flex-shrink:0" width="1.1em" height="1.1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg> Rendement brut : <strong style="color:var(--accent)">${rendBrut}%</strong></span>
@@ -76171,7 +76357,7 @@ function openAddRevenu(){
   kyfCSelSetValue('revBienId', bienOptions[0].value, bienOptions[0].label);
   document.getElementById('revEditId').value = '';
   const revTitreEl = document.getElementById('revTitre'); if(revTitreEl) revTitreEl.value = '';
-  ['revLoyer','revVacance','revCharges','revTaxe','revPNO','revAgence'].forEach(id=>{
+  ['revLoyer','revVacance','revCharges','revTaxe','revPNO','revAgence','revTravaux','revInterets'].forEach(id=>{
     const e=document.getElementById(id); if(e) e.value='';
   });
   const res = document.getElementById('revCalcResult');
@@ -76179,6 +76365,7 @@ function openAddRevenu(){
   document.getElementById('revenuModal').style.display   = 'block';
   document.getElementById('revenuOverlay').style.display = 'block';
   document.body.style.overflow = 'hidden';
+  kyfF2044Apply(); revInteretsHint();
 }
 
 function closeRevenu(){
@@ -76195,6 +76382,8 @@ function saveRevenu(){
   const taxe    = parseNum(document.getElementById('revTaxe')?.value||'0');
   const pno     = parseNum(document.getElementById('revPNO')?.value||'0');
   const agence  = parseNum(document.getElementById('revAgence')?.value||'0');
+  const travaux = parseNum(document.getElementById('revTravaux')?.value||'0');
+  const interets= parseNum(document.getElementById('revInterets')?.value||'0');
   const bienId  = document.getElementById('revBienId')?.value||'';
   const titre   = document.getElementById('revTitre')?.value.trim()||'';
   const editId  = document.getElementById('revEditId').value;
@@ -76204,7 +76393,7 @@ function saveRevenu(){
     alert('Ce bien a déjà un revenu locatif. Modifiez-le (crayon) plutôt que d\'en créer un second.'); return;
   }
   const old = editId ? data.find(d => d.id === editId) : null;
-  const rev = { ...(old||{}), id: editId||'rev_'+Date.now(), bienId, titre, loyer, vacance, charges, taxe, pno, agence };
+  const rev = { ...(old||{}), id: editId||'rev_'+Date.now(), bienId, titre, loyer, vacance, charges, taxe, pno, agence, travaux, interets };
   Object.assign(rev, revenuDerived(rev));
   // Mettre à jour le loyer dans le bien
   const bien = immoLoad().find(b=>b.id===bienId);
@@ -76235,7 +76424,7 @@ function editRevenu(id){
   const bien = immoLoad().find(b => b.id === r.bienId);
   if(bien){ kyfCSelSetValue('revBienId', bien.id, bien.nom); }
   const set = (fid, v) => { const e = document.getElementById(fid); if(e) e.value = (v === undefined || v === null) ? '' : v; };
-  set('revLoyer', r.loyer); set('revVacance', r.vacance); set('revCharges', r.charges); set('revTaxe', r.taxe); set('revPNO', r.pno); set('revAgence', r.agence);
+  set('revLoyer', r.loyer); set('revVacance', r.vacance); set('revCharges', r.charges); set('revTaxe', r.taxe); set('revPNO', r.pno); set('revAgence', r.agence); set('revTravaux', r.travaux); set('revInterets', r.interets);
   const ti = document.getElementById('revModalTitle'); if(ti) ti.innerHTML = KYF_ICONS.edit + ' MODIFIER LE REVENU LOCATIF';
   calcRevenuAuto();
 }
@@ -76251,6 +76440,7 @@ function revWaterfallHtml_(r, credit, regime, tmi, ecoFiscale, impotMicro, impot
   steps.push(['Taxe foncière', -(Number(r.taxe)||0)/12, fmt(Number(r.taxe)||0,0) + ' €/an']);
   steps.push(['Assurance PNO', -(Number(r.pno)||0)/12, fmt(Number(r.pno)||0,0) + ' €/an']);
   if(Number(r.agence) > 0) steps.push(['Frais d\'agence', -(Number(r.agence)||0)/12, fmt(Number(r.agence)||0,0) + ' €/an']);
+  if(Number(r.travaux) > 0) steps.push(['Travaux', -(Number(r.travaux)||0)/12, fmt(Number(r.travaux)||0,0) + ' €/an']);
   if(credit) steps.push(['Mensualité crédit', -bienMensTotale(r.bienId), (creditLoad().filter(c => c.bienId === r.bienId && c.statut !== 'vendu').length > 1 ? 'tous les crédits du bien · ' : '') + 'assurance emprunteur incluse']);
   if(regime==='nu') steps.push(['Impôt (revenus fonciers)', -impotNu, 'TMI ' + tmi + ' % + prélèvements sociaux ' + (kyfFiscalGetParam('kyf-immo-nu-taux-ps', 0.172)*100).toFixed(1).replace('.',',') + ' % · sur les loyers nets']);
   if(regime==='lmnp_micro') steps.push(['Impôt (micro 50 %)', -impotMicro, 'abattement 50 % · TMI ' + tmi + ' % + prélèvements sociaux ' + (KYF_PEA_TAUX_PS()*100).toFixed(1).replace('.',',') + ' %']);
@@ -79416,6 +79606,33 @@ function kyfCSelPick(fieldId, val, label){
 function kyfCSelKeydown(e, fieldId){
   const menu = document.getElementById(fieldId+'Drop');
   if(!menu) return;
+  // Recherche à la frappe : une lettre saute au premier élément qui commence par elle (accents ignorés), plusieurs lettres vite = début du mot, même lettre répétée = élément suivant
+  if(e.key && e.key.length === 1 && e.key !== ' ' && !e.ctrlKey && !e.metaKey && !e.altKey){
+    const its = Array.from(menu.querySelectorAll('.gs-result'));
+    if(its.length){
+      const nrm = t => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+      const now = Date.now(), B = window._kyfCSelBuf = window._kyfCSelBuf || {};
+      B.s = (B.id === fieldId && now - (B.t || 0) < 800) ? B.s + nrm(e.key) : nrm(e.key);
+      B.id = fieldId; B.t = now;
+      if(menu.style.display !== 'block') kyfCSelToggle(fieldId);
+      let cur = window._kyfCSelActiveIndex[fieldId]; if(cur === undefined) cur = -1;
+      const rep = B.s.length > 1 && B.s.split('').every(ch => ch === B.s[0]);
+      const pre = rep ? B.s[0] : B.s;
+      let hit = -1;
+      for(let k = 0; k < its.length; k++){
+        const i = rep || B.s.length === 1 ? (cur + 1 + k) % its.length : k;
+        if(nrm(its[i].textContent).indexOf(pre) === 0){ hit = i; break; }
+      }
+      e.preventDefault();
+      if(hit >= 0){
+        window._kyfCSelActiveIndex[fieldId] = hit;
+        its.forEach((it, i) => { it.classList.toggle('gs-active', i === hit); });
+        its[hit].scrollIntoView({block:'nearest'});
+        kyfCSelSetLabel(fieldId, its[hit].dataset.val !== undefined ? its[hit].dataset.val : '', its[hit].textContent.trim());
+      }
+      return;
+    }
+  }
   if(menu.style.display !== 'block'){
     if(e.key==='ArrowDown' || e.key==='ArrowUp' || e.key==='Enter'){ e.preventDefault(); kyfCSelToggle(fieldId); }
     return;
@@ -80338,7 +80555,7 @@ async function kyfExtractPdfText(file){
   await kyfLoadPdfJs();
   const buf = await file.arrayBuffer();
   // (pdf.js 6.x n'exécute plus de code issu du PDF : l'option isEvalSupported n'existe plus, elle est ignorée.)
-  const pdf = await pdfjsLib.getDocument({data: buf, isEvalSupported: false}).promise;
+  const pdf = await pdfjsLib.getDocument({data: buf, isEvalSupported: false, verbosity: 0}).promise;
   let fullText = '';
   for(let p=1; p<=pdf.numPages; p++){
     const page = await pdf.getPage(p);
@@ -85780,8 +85997,9 @@ function orInlineEdit(id, td, currentVal){
     </div></div>
   </div>
   <div class="av-main" onscroll="const d=document.getElementById('revBienIdDrop');if(d)d.style.display='none';" style="padding:22px 24px 14px">
+    <div id="revF2044Note" style="font-size:10px;color:var(--text3);line-height:1.5;margin:-6px 0 14px"></div>
     <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-bottom:22px"><div>
-      <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">LOYER MENSUEL BRUT (€)</div>
+      <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">LOYER MENSUEL BRUT (€)<span class="kyf-case" data-f="revLoyer"></span></div>
       <div style="display:flex;align-items:stretch;border-radius:6px;border:1px solid var(--border2);overflow:hidden;background:var(--btn-secondary-bg);transition:border-color .15s" id="revLoyerWrap">
         <input id="revLoyer" type="text" inputmode="decimal" placeholder="620" oninput="calcRevenuAuto()"
           style="flex:1;min-width:0;background:transparent;border:none;color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;outline:none"
@@ -85848,7 +86066,7 @@ function orInlineEdit(id, td, currentVal){
         </div>
       </div>
     </div><div>
-      <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">TAXE FONCIÈRE (€/an)</div>
+      <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">TAXE FONCIÈRE (€/an)<span class="kyf-case" data-f="revTaxe"></span></div>
       <div style="display:flex;align-items:stretch;border-radius:6px;border:1px solid var(--border2);overflow:hidden;background:var(--btn-secondary-bg);transition:border-color .15s" id="revTaxeWrap">
         <input id="revTaxe" type="text" inputmode="decimal" placeholder="600" oninput="calcRevenuAuto()"
           style="flex:1;min-width:0;background:transparent;border:none;color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;outline:none"
@@ -85871,7 +86089,7 @@ function orInlineEdit(id, td, currentVal){
       </div>
     </div></div>
     <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-bottom:22px"><div>
-      <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">ASSURANCE PNO (€/an)</div>
+      <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">ASSURANCE PNO (€/an)<span class="kyf-case" data-f="revPNO"></span></div>
       <div style="display:flex;align-items:stretch;border-radius:6px;border:1px solid var(--border2);overflow:hidden;background:var(--btn-secondary-bg);transition:border-color .15s" id="revPNOWrap">
         <input id="revPNO" type="text" inputmode="decimal" placeholder="120" oninput="calcRevenuAuto()"
           style="flex:1;min-width:0;background:transparent;border:none;color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;outline:none"
@@ -85893,7 +86111,7 @@ function orInlineEdit(id, td, currentVal){
         </div>
       </div>
     </div><div>
-      <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">GESTION AGENCE (€/an)</div>
+      <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">GESTION AGENCE (€/an)<span class="kyf-case" data-f="revAgence"></span></div>
       <div style="display:flex;align-items:stretch;border-radius:6px;border:1px solid var(--border2);overflow:hidden;background:var(--btn-secondary-bg);transition:border-color .15s" id="revAgenceWrap">
         <input id="revAgence" type="text" inputmode="decimal" placeholder="0" oninput="calcRevenuAuto()"
           style="flex:1;min-width:0;background:transparent;border:none;color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;outline:none"
@@ -85915,6 +86133,52 @@ function orInlineEdit(id, td, currentVal){
         </div>
       </div>
     </div></div>
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-bottom:22px"><div>
+      <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">TRAVAUX (€/an)<span class="kyf-case" data-f="revTravaux"></span></div>
+      <div style="display:flex;align-items:stretch;border-radius:6px;border:1px solid var(--border2);overflow:hidden;background:var(--btn-secondary-bg);transition:border-color .15s" id="revTravauxWrap">
+        <input id="revTravaux" type="text" inputmode="decimal" placeholder="0" oninput="calcRevenuAuto()"
+          style="flex:1;min-width:0;background:transparent;border:none;color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;outline:none"
+          onfocus="document.getElementById('revTravauxWrap').style.borderColor='var(--accent)'"
+          onblur="kyfFormatAmountBlur(this);document.getElementById('revTravauxWrap').style.borderColor='var(--border2)'">
+        <div style="display:flex;flex-direction:column;border-left:1px solid var(--border2)">
+          <button type="button"
+            onmousedown="kyfSpinStart('revTravaux',1,100,calcRevenuAuto)"
+            onmouseup="kyfSpinStop()" onmouseleave="kyfSpinStop()"
+            ontouchstart="kyfSpinStart('revTravaux',1,100,calcRevenuAuto)" ontouchend="kyfSpinStop()"
+            style="flex:1;width:20px;border:none;background:transparent;color:var(--text3);cursor:pointer;font-size:9px;line-height:1;padding:0"
+            onmouseenter="this.style.background='var(--hov-bg)'" onmouseleave="this.style.background='transparent'">▲</button>
+          <button type="button"
+            onmousedown="kyfSpinStart('revTravaux',-1,100,calcRevenuAuto)"
+            onmouseup="kyfSpinStop()" onmouseleave="kyfSpinStop()"
+            ontouchstart="kyfSpinStart('revTravaux',-1,100,calcRevenuAuto)" ontouchend="kyfSpinStop()"
+            style="flex:1;width:20px;border:none;border-top:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;font-size:9px;line-height:1;padding:0"
+            onmouseenter="this.style.background='var(--hov-bg)'" onmouseleave="this.style.background='transparent'">▼</button>
+        </div>
+      </div>
+    </div><div>
+      <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">INTÉRÊTS D'EMPRUNT (€/an)<span class="kyf-case" data-f="revInterets"></span></div>
+      <div style="display:flex;align-items:stretch;border-radius:6px;border:1px solid var(--border2);overflow:hidden;background:var(--btn-secondary-bg);transition:border-color .15s" id="revInteretsWrap">
+        <input id="revInterets" type="text" inputmode="decimal" placeholder="0" oninput="calcRevenuAuto()"
+          style="flex:1;min-width:0;background:transparent;border:none;color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;outline:none"
+          onfocus="document.getElementById('revInteretsWrap').style.borderColor='var(--accent)'"
+          onblur="kyfFormatAmountBlur(this);document.getElementById('revInteretsWrap').style.borderColor='var(--border2)'">
+        <div style="display:flex;flex-direction:column;border-left:1px solid var(--border2)">
+          <button type="button"
+            onmousedown="kyfSpinStart('revInterets',1,100,calcRevenuAuto)"
+            onmouseup="kyfSpinStop()" onmouseleave="kyfSpinStop()"
+            ontouchstart="kyfSpinStart('revInterets',1,100,calcRevenuAuto)" ontouchend="kyfSpinStop()"
+            style="flex:1;width:20px;border:none;background:transparent;color:var(--text3);cursor:pointer;font-size:9px;line-height:1;padding:0"
+            onmouseenter="this.style.background='var(--hov-bg)'" onmouseleave="this.style.background='transparent'">▲</button>
+          <button type="button"
+            onmousedown="kyfSpinStart('revInterets',-1,100,calcRevenuAuto)"
+            onmouseup="kyfSpinStop()" onmouseleave="kyfSpinStop()"
+            ontouchstart="kyfSpinStart('revInterets',-1,100,calcRevenuAuto)" ontouchend="kyfSpinStop()"
+            style="flex:1;width:20px;border:none;border-top:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;font-size:9px;line-height:1;padding:0"
+            onmouseenter="this.style.background='var(--hov-bg)'" onmouseleave="this.style.background='transparent'">▼</button>
+        </div>
+      </div>
+    </div></div>
+    <div id="revInteretsHint" style="display:none;margin:-12px 0 18px;font-size:10px;color:var(--text3);line-height:1.5"></div>
     <div id="revCalcResult" style="display:none;background:rgba(6,182,212,0.06);border:1px solid rgba(6,182,212,0.2);border-radius:10px;padding:12px;margin-bottom:0;font-family:'Inter',sans-serif"></div>
   </div></div>
   <div class="av-foot" style="display:flex;gap:8px;justify-content:flex-end;align-items:center;padding:12px 18px;border-top:1px solid var(--border);flex-shrink:0">
