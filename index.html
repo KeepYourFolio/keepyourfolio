@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_3_231.html
+  @file        : KYF_SHARE_beta_2_8_3_239.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.3.231
+  @version     : Beta 2.8.3.239
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -196,7 +196,7 @@ function kyfParisWall(d){
     '0,212,170':['g',0], '80,255,210':['g',.3], '120,255,220':['g',.3], '100,255,200':['g',.3], '0,120,100':['g',-.45],
     '255,69,96':['r',0], '255,130,130':['r',.3], '255,140,140':['r',.35], '255,160,160':['r',.4], '255,100,100':['r',.25], '255,110,130':['r',.25], '160,20,40':['r',-.38], '180,20,50':['r',-.3]
   };
-  const KYF_SC_DEF = { g:['#00d4aa','#00a884','#16a34a','#008060'], r:['#ff4560','#e03050','#dc2626'] };
+  const KYF_SC_DEF = { g:['#00d4aa','#00a884','#16a34a','#008060'], r:['#ff4560','#e03050','#dc2626','#ff5c72'] };
   function kyfSc(col){
     const m = /^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+)\s*)?\)$/.exec(col);
     if(!m) return col;
@@ -6582,7 +6582,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.3.231</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.3.239</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -8302,8 +8302,8 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
     <!-- KPI PER spécifique - plafond déductibilité -->
     <!-- Card plafond PER compacte -->
     <div id="kpi-row-per" style="display:none;margin-bottom:26px">
-      <div style="width:50%;min-width:280px">
-        <div class="card" style="padding:14px 16px">
+      <div style="max-width:720px;width:100%">
+        <div class="card" style="padding:14px 16px;box-shadow:inset 0 2px 0 #9b6dff">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
             <div class="kyf-purple-text" style="font-size:9px;font-weight:700;color:#9b6dff;letter-spacing:.5px">PLAFOND DÉDUCTIBILITÉ PER</div>
             <div style="display:flex;align-items:center;gap:6px">
@@ -8321,26 +8321,33 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
               </div>
             </div>
           </div>
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center">
-            <div>
-              <div style="font-size:9px;color:var(--text3);letter-spacing:.3px;margin-bottom:3px" title="Cumul des versements depuis l'ouverture (toutes années)">VERSÉ TOTAL</div>
-              <div id="perKpiVers" style="font-size:13px;font-weight:700;color:var(--text)">- €</div>
+          <div id="perKpiSummary" style="font-size:13px;font-weight:700;color:var(--text);line-height:1.5"></div>
+          <div id="perKpiGauge" style="display:none;margin-top:8px">
+            <div style="height:8px;border-radius:4px;background:var(--border);overflow:hidden"><div id="perKpiGaugeFill" style="height:100%;width:0;border-radius:4px;background:linear-gradient(90deg,rgba(155,109,255,.5),#9b6dff);transition:width .3s"></div></div>
+            <div id="perKpiGaugeTxt" style="font-size:10px;color:var(--text3);margin-top:5px"></div>
+          </div>
+          <div id="perKpiData" aria-hidden="true" style="display:none">
+          <div>
+            <div style="border:1px solid var(--border);border-top:2px solid var(--text3);border-radius:8px;padding:8px 6px 7px;background:var(--hov-bg-soft)">
+              <div style="font-size:9px;color:var(--text3);letter-spacing:.3px;margin-bottom:4px" title="Cumul des versements depuis l'ouverture (toutes années)">VERSÉ TOTAL</div>
+              <div id="perKpiVers" style="font-size:15px;font-weight:800;color:var(--text)">- €</div>
             </div>
-            <div>
-              <div style="font-size:9px;color:var(--text3);letter-spacing:.3px;margin-bottom:3px">PLAFOND</div>
-              <div id="perKpiPlafond" class="kyf-purple-text" style="font-size:13px;font-weight:700;color:#9b6dff">- €</div>
+            <div style="border:1px solid var(--border);border-top:2px solid #9b6dff;border-radius:8px;padding:8px 6px 7px;background:var(--hov-bg-soft)">
+              <div style="font-size:9px;color:var(--text3);letter-spacing:.3px;margin-bottom:4px">PLAFOND</div>
+              <div id="perKpiPlafond" class="kyf-purple-text" style="font-size:15px;font-weight:800;color:#9b6dff">- €</div>
             </div>
-            <div>
-              <div style="font-size:9px;color:var(--text3);letter-spacing:.3px;margin-bottom:3px">RESTE</div>
-              <div id="perKpiReste" style="font-size:13px;font-weight:700;color:var(--green)">- €</div>
+            <div style="border:1px solid var(--border);border-top:2px solid var(--green);border-radius:8px;padding:8px 6px 7px;background:var(--hov-bg-soft)">
+              <div style="font-size:9px;color:var(--text3);letter-spacing:.3px;margin-bottom:4px">RESTE</div>
+              <div id="perKpiReste" style="font-size:15px;font-weight:800;color:var(--green)">- €</div>
               <div id="perKpiResteSub" style="font-size:8px;color:var(--text3);margin-top:2px"></div>
             </div>
-            <div>
-              <div style="font-size:9px;color:var(--text3);letter-spacing:.3px;margin-bottom:3px">EV DÉD.</div>
-              <div id="perKpiEvDed" class="kyf-purple-text" style="font-size:13px;font-weight:700;color:#9b6dff">- €</div>
+            <div style="border:1px solid var(--border);border-top:2px solid #9b6dff;border-radius:8px;padding:8px 6px 7px;background:var(--hov-bg-soft)">
+              <div style="font-size:9px;color:var(--text3);letter-spacing:.3px;margin-bottom:4px">EV DÉD.</div>
+              <div id="perKpiEvDed" class="kyf-purple-text" style="font-size:15px;font-weight:800;color:#9b6dff">- €</div>
             </div>
           </div>
-          <div id="perKpiPlafondSub" style="font-size:9px;color:var(--text3);margin-top:6px;text-align:center">→ Saisir vos revenus</div>
+          </div>
+          <div id="perKpiPlafondSub" style="font-size:10px;color:var(--text3);margin-top:3px">→ Saisir vos revenus</div>
         </div>
       </div>
     </div>
@@ -8421,14 +8428,19 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
     <!-- Panneau PEE : saisie manuelle, valeur à part (affiché via le bouton PEE de la barre TOUS/AV/PER) -->
     <div id="avPeePanel" style="display:none">
-      <div class="card" style="margin-bottom:14px">
-        <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
-          <span>PLAN D'ÉPARGNE ENTREPRISE (PEE)</span>
-          <button type="button" onclick="openPeeModal()" class="kyf-fixed-accent" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:6px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--accent);cursor:pointer;letter-spacing:.5px;transition:background .15s,color .15s" onmouseover="this.style.background='#f0b429';this.style.color='#000'" onmouseout="this.style.background='var(--btn-secondary-bg)';this.style.color='var(--accent)'">+ AJOUTER UN PEE</button>
+      <div style="max-width:720px;margin-bottom:16px;padding:0 2px 12px;border-bottom:1px solid var(--border)">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+          <span style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:.5px;color:var(--text2)">PLAN D'ÉPARGNE ENTREPRISE (PEE)</span>
+          <button type="button" onclick="openPeeModal()" style="display:flex;align-items:center;gap:6px;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:7px 14px;border-radius:8px;border:1px solid var(--accent);background:var(--btn-secondary-bg);color:var(--accent);cursor:pointer;letter-spacing:.5px;transition:background .2s,box-shadow .2s,transform .2s"
+            onmouseover="this.style.background='#f0b429';this.style.color='#000';this.style.boxShadow='0 2px 8px rgba(240,180,41,0.35)';this.style.transform='translateY(-1px)'"
+            onmouseout="this.style.background='var(--btn-secondary-bg)';this.style.color='var(--accent)';this.style.boxShadow='none';this.style.transform='translateY(0)'">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            AJOUTER UN PEE
+          </button>
         </div>
-        <div style="font-family:'Inter',sans-serif;font-size:11px;color:var(--text3);line-height:1.7;margin-top:8px">Saisie manuelle : KYF ne calcule ni fiscalité ni règle de déblocage. Ces montants sont suivis à part et ne sont pas comptés dans les totaux de la page Assurance vie ni du tableau de bord.</div>
+        <div style="font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);line-height:1.6;margin-top:6px">Saisie manuelle : KYF ne calcule ni fiscalité ni règle de déblocage. Ces montants sont suivis à part et ne sont pas comptés dans les totaux de la page Assurance vie ni du tableau de bord.</div>
       </div>
-      <div class="kpi-row" id="avPeeKpi" style="margin-bottom:14px"></div>
+      <div class="kpi-row" id="avPeeKpi" style="margin-bottom:26px"></div>
       <div id="avPeeList" style="display:flex;flex-direction:column;gap:12px"></div>
     </div>
 
@@ -20132,7 +20144,9 @@ function initRendered(){ updateCardTitleColor(); initSidebar(); setSidebarActive
   try{
     const raw=localStorage.getItem('pea-style-v2'); if(!raw) return;
     const saved=JSON.parse(raw);
-    Object.entries(saved).forEach(([k,v])=>{if(k.startsWith('--') && k!=='--accent') document.documentElement.style.setProperty(k,v);});
+    Object.entries(saved).forEach(([k,v])=>{ if(!k.startsWith('--') || k==='--accent') return;
+      if((k==='--green' || k==='--red') && KYF_SC_DEF[k==='--green'?'g':'r'].indexOf(String(v).trim().toLowerCase()) >= 0) return;   // 236 : vert/rouge par défaut d'un thème : c'est le thème actif qui décide (sinon le vert du thème sombre restait forcé en thème clair)
+      document.documentElement.style.setProperty(k,v); });
     if(saved._fs) document.body.style.fontSize=saved._fs;
     if(saved._dyn) Object.entries(saved._dyn).forEach(([id,css])=>{let s=document.getElementById('dyn-'+id);if(!s){s=document.createElement('style');s.id='dyn-'+id;document.head.appendChild(s);}s.textContent=css;});
     if(typeof applySidebarLabelTruncation === 'function') applySidebarLabelTruncation();
@@ -20564,7 +20578,15 @@ function renderKPIs(lp){
   const kInvestiEl  = document.querySelector('#kpi-kInvesti .kpi-val');
   const kInvestiSub = document.querySelector('#kpi-kInvesti .kpi-sub');
   if(kInvestiEl){ const v=fmt(investiGlobal,2)+' €'; if(typeof animateKpi==='function'){ kInvestiEl.textContent=''; animateKpi(kInvestiEl.id||'_tmp', v); if(!kInvestiEl.id){ kInvestiEl.id='_kInvestiTmp'; animateKpi('_kInvestiTmp',v); } } else kInvestiEl.textContent = v; }
-  if(kInvestiSub) kInvestiSub.textContent = ETF.length + ' ETF/Action'+(ETF.length>1?'s':'')+(cryptoInvesti>0?' + crypto':'')+(_avN>0?' + '+_avN+' contrat'+(_avN>1?'s':'')+' AV/PER':'');
+  if(kInvestiSub){
+    // 234 : les lignes ETF rattachées à un contrat AV/PER compté dans le montant (_avClaimed) ne sont pas recomptées à part
+    const _nEtfHors = ETF.filter(e => !_avClaimed.has(e)).length;
+    const _parts = [];
+    if(_nEtfHors > 0 || (!(cryptoInvesti > 0) && !(_avN > 0))) _parts.push(_nEtfHors + ' ETF/Action' + (_nEtfHors > 1 ? 's' : ''));
+    if(cryptoInvesti > 0) _parts.push('crypto');
+    if(_avN > 0) _parts.push(_avN + ' contrat' + (_avN > 1 ? 's' : '') + ' AV/PER');
+    kInvestiSub.textContent = _parts.join(' + ');
+  }
   try { renderCashKPI(); } catch(e){}
 
   // GAIN NET VENTES - ETF/Actions + Crypto
@@ -31738,6 +31760,31 @@ function kyfImportNonEtfBadge(st, oldTxt, newTxt){
   if(st.kind === 'changed') return '<span style="' + b + 'color:var(--accent);border:1px solid var(--accent)">' + oldTxt + ' → ' + newTxt + '</span>';
   return '<span style="' + b + 'color:var(--green);border:1px solid var(--green)">NOUVELLE</span>';
 }
+// 233 : lignes du contrat choisi qui ne figurent plus dans le fichier (arbitrage, vente). SCPI et fonds en euros ne sont jamais proposés (leur import a sa propre règle).
+function kyfImportAbsentes(){
+  if(_importType !== 'av' && _importType !== 'per') return [];
+  const cid = kyfImportNonEtfDest(); if(!cid) return [];
+  const rows = _importPendingResolved.concat(_importPendingMissing);
+  if(!rows.length) return [];
+  const U = x => String(x || '').trim().toUpperCase();
+  const present = p => rows.some(r => {
+    const rc = r._comp || '', pc = p.compartiment || '';
+    if(rc && pc && rc !== pc) return false;
+    if(p.isin && r.isin && U(p.isin) === U(r.isin)) return true;
+    if(p.ticker && r.ticker && U(p.ticker) === U(r.ticker)) return true;
+    const a = kyfImportNameKey(p.nom), b = kyfImportNameKey(r.name || r.nom);
+    if(a && b && a === b) return true;
+    const la = kyfImportLooseKey(p.nom), lb = kyfImportLooseKey(r.name || r.nom);
+    return !!(la && lb && la === lb);
+  });
+  return avPosLoad(cid).filter(p => p.type !== 'immo' && p.type !== 'fe' && !present(p));
+}
+function kyfImportAbsentesHtml(){
+  const ab = kyfImportAbsentes(); if(!ab.length) return '';
+  const rows = ab.map(p => '<label style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);font-size:11px;color:var(--text2);cursor:pointer"><span style="display:flex;align-items:center;gap:8px;min-width:0"><input type="checkbox" class="import-absent-check" data-id="' + escapeHtml(String(p.id)) + '" checked style="cursor:pointer;flex-shrink:0"><span style="min-width:0">' + escapeHtml(p.nom || '') + (p.compartiment ? ' <span style="color:var(--text3)">' + escapeHtml(p.compartiment) + '</span>' : '') + '</span></span><span style="color:var(--text3);flex-shrink:0">' + (parseFloat(p.valeur) > 0 ? fmt(parseFloat(p.valeur), 2) + ' €' : 'valeur inconnue') + '</span></label>').join('');
+  return '<div id="importAbsentBox" style="margin-top:14px"><div style="font-size:10px;font-weight:700;color:var(--text);letter-spacing:.3px">ABSENTES DU FICHIER (' + ab.length + ')</div>'
+    + '<div style="font-size:10px;color:var(--text3);margin:3px 0 4px;line-height:1.6">Ces lignes sont dans votre contrat mais plus dans ce fichier (arbitrage, vente). Cochées : retirées du contrat à l\'import, récupérables dans la corbeille. Décochez celles à garder.</div>' + rows + '</div>';
+}
 function kyfImportClassify(r){
   const ex = kyfImportFindExisting(r);
   if(!ex) return { kind: 'new' };
@@ -31912,6 +31959,7 @@ function kyfImportAvPerHtml(){
     <div class="imp-tabs">${order.map(o => `<span class="imp-tab ${o[0]==='todo'?'todo':''} ${o[0]===active?'on':''} ${o[2]?'':'zero'}" data-tab="${o[0]}" role="button" tabindex="0" onclick="kyfImportTab('${o[0]}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();kyfImportTab('${o[0]}')}">${o[1]}<span class="n">${o[2]}</span></span>`).join('')}</div>
   </div>`;
   h += order.map(o => `<div class="imp-pane" data-tab="${o[0]}" style="display:${o[0]===active?'block':'none'}">${o[2] ? panes[o[0]] : '<div style="padding:18px 4px;font-size:11px;color:var(--text3)">Aucune ligne dans cette catégorie.</div>'}</div>`).join('');
+  h += kyfImportAbsentesHtml();
   return h;
 }
 function kyfImportTopSet(collapsed){
@@ -32705,8 +32753,22 @@ function importConfirm(){
       if(_tp2 === 'etf'){ kyfAvEtfUpsert(entry, contratId); window._kyfImpEtf = (window._kyfImpEtf||0) + 1; } else window._kyfImpFonds = (window._kyfImpFonds||0) + 1;
       count++;
     });
+    // 233 : lignes absentes du fichier, cochées dans l'aperçu : retirées du contrat, gardées dans la corbeille
+    let nRetirees = 0;
+    { const _ids = [...document.querySelectorAll('.import-absent-check:checked')].map(b => b.dataset.id);
+      const _gone = [];
+      _ids.forEach(id => { const i = positions.findIndex(p => String(p.id) === id); if(i >= 0) _gone.push({ i, p: positions[i] }); });
+      if(_gone.length){
+        const _rm = new Set(_gone.map(g => g.p));
+        for(let k = positions.length - 1; k >= 0; k--) if(_rm.has(positions[k])) positions.splice(k, 1);
+        _gone.forEach(g => {
+          kyfCorbeillePush('avPosition', g.p.id, g.i, { contratId, pos: g.p }, 'Position AV/PER');
+          if(g.p.ticker && !positions.some(q => q.ticker === g.p.ticker)){ const _ix = ETF.findIndex(e => e.ticker === g.p.ticker && (e.enveloppe === 'AV' || e.enveloppe === 'PER') && (!e.contratId || e.contratId === contratId)); if(_ix >= 0) ETF.splice(_ix, 1); }
+          nRetirees++;
+        });
+      } }
     avPosSave(contratId, positions);
-    if(contratChoisi && (count + updated + _importPendingMissing.length + _importFondsEuroRows.length) > 0){ const _all = avLoad(); const _c = _all.find(x => x.id === contratChoisi.id); if(_c){ _c.source = 'import'; _c.uc = 0; _c.ucDansETF = false; avSave(_all); } }   // mode relevé : les UC saisies sont remplacées par les lignes
+    if(contratChoisi && (count + updated + nRetirees + _importPendingMissing.length + _importFondsEuroRows.length) > 0){ const _all = avLoad(); const _c = _all.find(x => x.id === contratChoisi.id); if(_c){ _c.source = 'import'; _c.uc = 0; _c.ucDansETF = false; avSave(_all); } }   // mode relevé : les UC saisies sont remplacées par les lignes
     { const _tks = []; _sel.forEach(idx => { const r = _importPendingResolved[idx]; if(r && r.ticker) _tks.push(String(r.ticker).toUpperCase()); });
       _importPendingMissing.forEach((r,i) => { const t = fiNormalizeTicker(document.getElementById('fiMissingTicker'+kyfMissingLead(i))?.value||''); if(t) _tks.push(t.toUpperCase()); });
       kyfAvEtfSync(contratId, enveloppe, _tks); }
@@ -32793,8 +32855,9 @@ function importConfirm(){
     if(nbScpi) extra += ` · ${nbScpi} SCPI ajoutée(s) dans Immobilier`;
     if(nbScpiUpd) extra += ` · ${nbScpiUpd} SCPI mise(s) à jour`;
     if(totalFondsEuro) extra += ` · Fonds Euros du contrat fixés à ${fmt(totalFondsEuro,2)} €`;
+    if(nRetirees) extra += ` · ${nRetirees} ligne(s) absente(s) du fichier retirée(s) du contrat (corbeille)`;
     const dupTxt = (updated ? ` · ${updated} mise(s) à jour` : '') + (sameSkipped ? ` · ${sameSkipped} déjà présente(s), ignorée(s)` : '');
-    kyfConfirmPopup(kyfImportSummaryHTML((count || nbScpi || nbScpiUpd || totalFondsEuro) ? `${count} position(s) importée(s) dans le contrat` + (window._kyfImpEtf ? ` dont ${window._kyfImpEtf} ETF/ETC ajouté(s) à POSITIONS ETF & ACTIONS` : '') + (window._kyfImpFonds ? ` · ${window._kyfImpFonds} fonds classé(s) en FONDS GÉRÉS (sans cours en direct, ils restent dans le contrat)` : '') + `${extra}${dupTxt}.` : updated ? `${updated} position(s) mise(s) à jour dans le contrat${sameSkipped ? ` · ${sameSkipped} déjà présente(s), ignorée(s)` : ''}.` : `Aucune nouvelle position : ce relevé est déjà dans votre contrat${dupTxt}.`, _importFinaHackBreakdown));
+    kyfConfirmPopup(kyfImportSummaryHTML((count || nbScpi || nbScpiUpd || totalFondsEuro || nRetirees) ? `${count} position(s) importée(s) dans le contrat` + (window._kyfImpEtf ? ` dont ${window._kyfImpEtf} ETF/ETC ajouté(s) à POSITIONS ETF & ACTIONS` : '') + (window._kyfImpFonds ? ` · ${window._kyfImpFonds} fonds classé(s) en FONDS GÉRÉS (sans cours en direct, ils restent dans le contrat)` : '') + `${extra}${dupTxt}.` : updated ? `${updated} position(s) mise(s) à jour dans le contrat${sameSkipped ? ` · ${sameSkipped} déjà présente(s), ignorée(s)` : ''}.` : `Aucune nouvelle position : ce relevé est déjà dans votre contrat${dupTxt}.`, _importFinaHackBreakdown));
 
   } else if(_importType==='crypto' || _importType==='traderepublic'){
     let count = 0, updated = 0;
@@ -42341,7 +42404,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.3.231\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.3.239\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -57261,7 +57324,7 @@ const GUIDE_PAGES = [
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Renégociation d'un prêt</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9">Un crédit renégocié garde ses données d'origine. Le bouton <strong style="color:var(--text)">Renégocier</strong> de la carte du prêt demande la date, le nouveau taux, la durée restante, et facultativement l'assurance et les frais. Plusieurs renégociations sont possibles.</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:8px">À la date choisie, KYF repart du capital restant dû et applique le nouveau taux : mensualité, capital restant dû, fin prévue et totaux suivent la période en cours. Les frais sont notés pour mémoire et ne changent aucun calcul. Un prêt sans renégociation garde exactement ses chiffres.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:8px">À la date choisie, KYF repart du capital restant dû et applique le nouveau taux : mensualité, capital restant dû, fin prévue et totaux suivent la période en cours. Si vous avez l'échéancier de la banque, vous pouvez saisir <strong style="color:var(--text)">le capital restant dû</strong> et <strong style="color:var(--text)">la mensualité hors assurance</strong> à la place de la durée : KYF repart exactement de ces chiffres et en déduit la durée restante, sans rien deviner. Les deux sont facultatifs. Les frais sont notés pour mémoire et ne changent aucun calcul. Un prêt sans renégociation garde exactement ses chiffres.</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:8px">Le TRI d'un prêt renégocié est affiché « indisponible » plutôt que faussé.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
@@ -57328,7 +57391,7 @@ const GUIDE_PAGES = [
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">PEE (plan d'épargne entreprise)</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9">Le bouton <strong style="color:var(--text)">PEE</strong>, à côté de TOUS/AV/PER, ouvre un suivi à part : <strong style="color:var(--text)">+ AJOUTER UN PEE</strong> demande le nom du plan, sa valeur, le total versé et, si vous le souhaitez, la date d'ouverture et la date de disponibilité. Tout se saisit à la main : KYF ne calcule <strong style="color:var(--text)">ni fiscalité ni règle de déblocage</strong>, et la plus-value n'est affichée que lorsque la valeur et le total versé sont renseignés. Le PEE n'est <strong style="color:var(--text)">pas compté</strong> dans les totaux de la page Assurance vie ni du tableau de bord. Ne le saisissez pas comme un PER collectif ni comme une assurance vie : ce sont des produits différents.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Le bouton <strong style="color:var(--text)">PEE</strong>, à côté de TOUS/AV/PER, ouvre un suivi à part : <strong style="color:var(--text)">AJOUTER UN PEE</strong> demande le nom du plan, sa valeur, le total versé et, si vous le souhaitez, la date d'ouverture et la date de disponibilité. Tout se saisit à la main : KYF ne calcule <strong style="color:var(--text)">ni fiscalité ni règle de déblocage</strong>, et la plus-value n'est affichée que lorsque la valeur et le total versé sont renseignés. Le PEE n'est <strong style="color:var(--text)">pas compté</strong> dans les totaux de la page Assurance vie ni du tableau de bord. Ne le saisissez pas comme un PER collectif ni comme une assurance vie : ce sont des produits différents.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(107,78,255,0.06);border:1px solid rgba(107,78,255,0.25);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">PERECOL : que propose votre entreprise ?</div>
@@ -61945,7 +62008,14 @@ function kyfGeoFileParse(rows){
     });
     if(w >= 0 && (c >= 0 || s >= 0)){ hi = i; wc = w; cc = c; sc = s; }
   }
-  if(hi < 0) return { err:'Colonnes introuvables : il faut au moins « Poids » et « Pays » ou « Secteur ».' };
+  if(hi < 0){
+    // 239 : liste des positions du fonds (nom, ISIN, poids) sans colonne pays ni secteur (ex. VanEck « Tous les fonds de placement ») : message précis, rien n'est deviné
+    for(let i = 0; i < Math.min(rows.length, 80); i++){
+      const hs = (rows[i] || []).map(h => N(h));
+      if(hs.indexOf('isin') >= 0 && hs.some(t => t && t.length <= 40 && /(^| )(actif net|net assets?|poids|weight|weighting)( |$)/.test(t))) return { holdings:true, err:'Ce fichier liste les positions du fonds (nom, ISIN, poids) mais ne contient ni pays ni secteur : KYF ne les devine pas. Cherchez chez l\'émetteur un fichier « répartition par pays » ou « par secteur ».' };
+    }
+    return { err:'Colonnes introuvables : il faut au moins « Poids » et « Pays » ou « Secteur ».' };
+  }
   const pctHdr = /%/.test(String((rows[hi] || [])[wc] || ''));
   const data = [];
   for(let i = hi + 1; i < rows.length; i++){
@@ -62168,8 +62238,8 @@ async function kyfGeoFileRead(file){
       if(/r[ée]plication\s+(synth[ée]tique|indirecte)|acquisition synth[ée]tique/i.test(tx) && !/r[ée]plication directe|acquisition r[ée]elle/i.test(tx) && !/r[ée]partition g[ée]ographique de l.indice|secteurs de l.indice/i.test(tx)) r.info.synth = true;
       const im = tx.match(/ISIN\s*:?\s*([A-Z]{2}[A-Z0-9]{9}\d)/); if(im) r.info.isin = im[1];
     } else { r = x; }
-  } else parts = srcRows.map(kyfGeoFileParse).filter(x => !x.err);
-  if(!srcRows.pdf && !parts.length) return { err:'Colonnes introuvables : il faut au moins « Poids » et « Pays » ou « Secteur ».' };
+  } else { var _all = srcRows.map(kyfGeoFileParse); parts = _all.filter(x => !x.err); }
+  if(!srcRows.pdf && !parts.length){ const _h = (_all || []).find(x => x.holdings); return { err: _h ? _h.err : 'Colonnes introuvables : il faut au moins « Poids » et « Pays » ou « Secteur ».' }; }
   parts.forEach(x => {
     ['c', 's'].forEach(m => { if(!Object.keys(r[m]).length && Object.keys(x[m]).length){ r[m] = x[m]; r.ign[m] = x.ign[m]; } });
     r.n += x.n; r.info.isin = r.info.isin || x.info.isin; r.info.synth = r.info.synth || x.info.synth;
@@ -65417,6 +65487,22 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.239 · 14/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Répartition pays et secteurs : un fichier qui liste les positions du fonds (nom, ISIN, poids) sans pays ni secteur (ex. VanEck) reçoit un message précis au lieu de « Colonnes introuvables »</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.238 · 14/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PER : cadre « Plafond déductibilité PER » allégé : une phrase (reste sur plafond) et une jauge en dégradé KYF à la place des 4 cartes de chiffres</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.237 · 14/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PER : le graphique RÉPARTITION PER ne reste plus vide quand des lignes n'ont pas de compartiment (tranche « Non classé »)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.236 · 14/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Thème clair : le vert et le rouge ne restent plus ceux du thème sombre après un rechargement (couleurs fades) ; les couleurs personnalisées sont conservées</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.235 · 14/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PER : cadre « Plafond déductibilité PER » modernisé (carte 720 px max, 4 mini-cartes avec bande de couleur, jauge des versements déductibles de l'année par rapport au plafond, estimation) ; calculs inchangés</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.234 · 14/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">INVESTI NET : le texte sous le montant ne recompte plus les ETF déjà inclus dans vos contrats AV/PER (ex. « 4 contrats AV/PER » au lieu de « 4 ETF/Actions + 4 contrats AV/PER »)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.233 · 14/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import AV/PER : les lignes du contrat qui ne figurent plus dans le fichier (arbitrage, vente) sont proposées dans un bloc « Absentes du fichier » (cochées par défaut) et retirées du contrat à l'import, avec la corbeille pour les récupérer</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.232 · 14/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crédits : dans « Renégocier », deux champs facultatifs « selon la banque » (capital restant dû et mensualité hors assurance) : KYF repart exactement de ces chiffres et déduit la durée restante, au lieu de recalculer un capital depuis les conditions d'origine ; guide à jour</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.231 · 14/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance vie : nouveau bouton PEE (plan d'épargne entreprise) en saisie manuelle : nom, valeur, total versé, dates d'ouverture et de disponibilité saisies par vous ; aucune fiscalité ni règle de déblocage calculée ; suivi à part, non compté dans les totaux AV/PER ni dans le tableau de bord ; guide à jour</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.3.230 · 14/10/2026</div>
@@ -76514,7 +76600,7 @@ function creditSegments(c){
     if(d <= p.debut) return;
     const mois = kyfCreditMoisEntiers(p.debut, d);
     if(mois === null || mois >= p.n) return;
-    const crdD = Math.max(0, calcCRD(p.capital, p.taux, p.dureeAns, mois));
+    const crdD = parseFloat(r.crdBanque) > 0 ? parseFloat(r.crdBanque) : Math.max(0, calcCRD(p.capital, p.taux, p.dureeAns, mois));   // 232 : capital restant dû donné par la banque, sinon calculé
     const as = (r.assurMens !== undefined && r.assurMens !== null && r.assurMens !== '' && parseFloat(r.assurMens) >= 0) ? parseFloat(r.assurMens) : null;
     segs.push({ debut: d, capital: crdD, taux: parseFloat(r.taux), dureeAns: parseFloat(r.dureeAns), n: Math.round(parseFloat(r.dureeAns) * 12), assurMens: as, rid: r.id || d });
   });
@@ -76996,7 +77082,7 @@ function creditRenegHtml_(cRaw){
     const frais = parseFloat(r.frais) > 0 ? ' · frais payés ' + fr(r.frais) + ' € (pour mémoire)' : '';
     const ass = (r.assurMens !== undefined && r.assurMens !== null && r.assurMens !== '') ? ' · assurance ' + fr(r.assurMens) + ' €/mois' : '';
     return '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:10px;color:var(--text2);padding:5px 0;border-bottom:1px solid var(--border)">'
-      + '<span><strong style="color:var(--text)">' + d + '</strong> : ' + fr(r.taux) + ' % sur ' + fr(r.dureeAns) + ' an' + (parseFloat(r.dureeAns) > 1 ? 's' : '') + ass + frais + etat + '</span>'
+      + '<span><strong style="color:var(--text)">' + d + '</strong> : ' + fr(r.taux) + ' % sur ' + (parseFloat(r.mensBanque) > 0 ? Math.round(parseFloat(r.dureeAns) * 12) + ' mois' : fr(r.dureeAns) + ' an' + (parseFloat(r.dureeAns) > 1 ? 's' : '')) + (parseFloat(r.crdBanque) > 0 ? ' · capital restant dû ' + fr(r.crdBanque) + ' € (banque)' : '') + (parseFloat(r.mensBanque) > 0 ? ' · mensualité ' + fr(r.mensBanque) + ' € (banque)' : '') + ass + frais + etat + '</span>'
       + '<button type="button" class="kyf-icon-btn" title="Supprimer cette renégociation" onclick="event.stopPropagation();creditRenegDelete(\'' + cRaw.id + '\',\'' + id + '\')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:13px;padding:2px 4px;transition:color .15s" onmouseover="this.style.color=\'var(--red)\'" onmouseout="this.style.color=\'var(--text3)\'">' + KYF_ICONS.trash + '</button></div>';
   }).join('');
   return '<div style="margin-top:14px;font-family:\'Inter\',sans-serif">'
@@ -77008,7 +77094,7 @@ function creditRenegHtml_(cRaw){
 function openCreditReneg(id){
   const c = creditLoad().find(x => x.id === id); if(!c || !creditBaseOk_(c)) return;
   document.getElementById('creditRenegCreditId').value = id;
-  ['creditRenegTaux','creditRenegDuree','creditRenegAssur','creditRenegFrais'].forEach(k => { const e = document.getElementById(k); if(e) e.value = ''; });
+  ['creditRenegTaux','creditRenegDuree','creditRenegAssur','creditRenegFrais','creditRenegCrd','creditRenegMens'].forEach(k => { const e = document.getElementById(k); if(e) e.value = ''; });
   kyfDateSetValue('creditRenegDate', '', 'JJ/MM/AAAA');
   const t = document.getElementById('creditRenegTitre'); if(t) t.textContent = c.titre || c.banque || 'Prêt';
   const er = document.getElementById('creditRenegErr'); if(er){ er.style.display = 'none'; er.textContent = ''; }
@@ -77021,28 +77107,43 @@ function closeCreditReneg(){
   document.getElementById('creditRenegOverlay').style.display = 'none';
 }
 // Contrôle commun (aperçu et enregistrement) : renvoie { err } ou { crdD, mens, seg }
-function creditRenegCheck_(c, date, taux, dureeAns){
+function creditRenegCheck_(c, date, taux, dureeAns, crdB, mensB){
   if(!/^\d{4}-\d{2}-\d{2}$/.test(date || '')) return { err: 'Indiquez la date de la renégociation.' };
   if(!(taux >= 0) || isNaN(taux)) return { err: 'Indiquez le nouveau taux (0 pour un taux zéro).' };
-  if(!(dureeAns > 0)) return { err: 'Indiquez la durée restante en années (par exemple 12 ou 12,5).' };
+  const hasCrd = crdB > 0, hasMens = mensB > 0;
+  if(hasMens && dureeAns > 0) return { err: 'Indiquez la durée restante OU la mensualité de la banque, pas les deux.' };
+  if(hasMens && !hasCrd) return { err: 'Avec la mensualité de la banque, indiquez aussi le capital restant dû selon la banque.' };
+  if(!hasMens && !(dureeAns > 0)) return { err: 'Indiquez la durée restante en années (par exemple 12 ou 12,5), ou la mensualité de votre banque.' };
   const segs = creditSegments(c), last = segs[segs.length - 1];
   const apres = (Array.isArray(c.reneg) ? c.reneg : []).some(r => r && String(r.date).slice(0, 10) >= date);
   if(date <= String(c.dateDebut).slice(0, 10)) return { err: 'La renégociation doit être après le début du prêt (' + new Date(String(c.dateDebut).slice(0, 10) + 'T12:00:00').toLocaleDateString('fr-FR') + ').' };
   if(apres) return { err: 'Une renégociation existe déjà à cette date ou après : supprimez-la d\'abord, ou choisissez une date plus récente.' };
   const mois = kyfCreditMoisEntiers(last.debut, date);
   if(mois === null || mois >= last.n) return { err: 'Cette date est après la fin du prêt.' };
-  const crdD = Math.max(0, calcCRD(last.capital, last.taux, last.dureeAns, mois));
-  return { crdD, mens: calcMensualite(crdD, taux, dureeAns) };
+  const crdD = hasCrd ? crdB : Math.max(0, calcCRD(last.capital, last.taux, last.dureeAns, mois));
+  let du = dureeAns;
+  if(hasMens){
+    // durée déduite de la mensualité de la banque (capital restant dû, taux, mensualité) : jamais inventée
+    const i = taux / 100 / 12; let n;
+    if(i === 0) n = crdD / mensB;
+    else { const x = 1 - crdD * i / mensB; if(!(x > 0)) return { err: 'La mensualité ne couvre pas les intérêts du mois : vérifiez le capital restant dû, le taux et la mensualité.' }; n = -Math.log(x) / Math.log(1 + i); }
+    if(!(n >= 1) || !isFinite(n)) return { err: 'Durée restante déduite impossible : vérifiez le capital restant dû, le taux et la mensualité.' };
+    du = n / 12;
+  }
+  return { crdD, mens: hasMens ? mensB : calcMensualite(crdD, taux, du), dureeAns: du, crdBanque: hasCrd ? crdB : undefined, mensBanque: hasMens ? mensB : undefined };
 }
 function creditRenegPreview(){
   const id = document.getElementById('creditRenegCreditId').value, c = creditLoad().find(x => x.id === id), pv = document.getElementById('creditRenegPreview'); if(!c || !pv) return;
-  const date = document.getElementById('creditRenegDate').value, taux = parseNum(document.getElementById('creditRenegTaux').value || ''), du = parseNum(document.getElementById('creditRenegDuree').value || '');
-  const tx = (document.getElementById('creditRenegTaux').value || '').trim() === '' ? NaN : taux;
-  if(!date || isNaN(tx) || !(du > 0)){ pv.style.display = 'none'; return; }
-  const r = creditRenegCheck_(c, date, tx, du);
+  const g = k => (document.getElementById(k) || {}).value || '';
+  const date = g('creditRenegDate'), taux = parseNum(g('creditRenegTaux')), du = parseNum(g('creditRenegDuree')), crdB = parseNum(g('creditRenegCrd')), mensB = parseNum(g('creditRenegMens'));
+  const tx = g('creditRenegTaux').trim() === '' ? NaN : taux;
+  if(!date || isNaN(tx) || !(du > 0 || mensB > 0)){ pv.style.display = 'none'; return; }
+  const r = creditRenegCheck_(c, date, tx, du, crdB, mensB);
   if(r.err){ pv.style.display = 'none'; return; }
-  const f = x => Math.round(x).toLocaleString('fr-FR');
-  pv.textContent = 'Capital restant dû à cette date : ' + f(r.crdD) + ' €. Nouvelle mensualité hors assurance : ' + f(r.mens) + ' €.';
+  const f = x => Math.round(x).toLocaleString('fr-FR'), f2 = x => x.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  pv.textContent = 'Capital restant dû à cette date : ' + (r.crdBanque ? f2(r.crdD) + ' € (selon la banque)' : f(r.crdD) + ' € (calculé par KYF)')
+    + '. Nouvelle mensualité hors assurance : ' + (r.mensBanque ? f2(r.mens) : f(r.mens)) + ' €.'
+    + (r.mensBanque ? ' Durée restante déduite : ' + Math.round(r.dureeAns * 12) + ' mois.' : '');
   pv.style.display = 'block';
 }
 function saveCreditReneg(){
@@ -77054,8 +77155,11 @@ function saveCreditReneg(){
   const date = document.getElementById('creditRenegDate').value;
   const txRaw = (document.getElementById('creditRenegTaux').value || '').trim().replace(',', '.');
   const taux = txRaw === '' ? NaN : parseFloat(txRaw), du = parseNum(document.getElementById('creditRenegDuree').value || '');
-  const r = creditRenegCheck_(c, date, taux, du); if(r.err) return fail(r.err);
-  const entry = { id: 'rn_' + Date.now(), date, taux, dureeAns: du };
+  const crdB = parseNum(document.getElementById('creditRenegCrd').value || ''), mensB = parseNum(document.getElementById('creditRenegMens').value || '');
+  const r = creditRenegCheck_(c, date, taux, du, crdB, mensB); if(r.err) return fail(r.err);
+  const entry = { id: 'rn_' + Date.now(), date, taux, dureeAns: r.dureeAns };
+  if(r.crdBanque) entry.crdBanque = r.crdBanque;
+  if(r.mensBanque) entry.mensBanque = r.mensBanque;
   const as = (document.getElementById('creditRenegAssur').value || '').trim(), fr = (document.getElementById('creditRenegFrais').value || '').trim();
   if(as !== '' && parseNum(as) >= 0) entry.assurMens = parseNum(as);
   if(fr !== '' && parseNum(fr) > 0) entry.frais = parseNum(fr);
@@ -81054,6 +81158,19 @@ function renderPERKpi(plafondOverride){
     el2('perKpiResteSub', plafond<=0 ? '' : (!anneeDispo ? 'non renseigné' : 'estimation'));
     ['perKpiReste','perKpiResteSub'].forEach(id => { const e = document.getElementById(id); if(e) e.title = _det; }); }
   el2('perKpiEvDed',      evDedVal>0 ? fmt(evDedVal,0)+' €' : '- €');
+  // 235 : jauge = versements déductibles de l'année / plafond de l'année (jamais le cumul toutes années). Sans plafond ou sans versement annuel connu : pas de jauge.
+  { const g = document.getElementById('perKpiGauge');
+    if(g){
+      if(plafond > 0 && anneeDispo){
+        const pct = Math.min(100, versAnnee / plafond * 100), f = document.getElementById('perKpiGaugeFill');
+        if(f){ f.style.width = pct.toFixed(1) + '%'; f.style.background = versAnnee >= plafond ? 'linear-gradient(90deg,color-mix(in srgb,var(--green) 50%,transparent),var(--green))' : 'linear-gradient(90deg,rgba(155,109,255,.5),#9b6dff)'; }
+        el2('perKpiGaugeTxt', Math.round(pct) + ' % du plafond utilisé · ' + fmt(versAnnee,0) + ' € versés cette année (estimation)');
+        g.style.display = 'block';
+      } else g.style.display = 'none';
+    } }
+  // 238 : phrase unique (les 4 valeurs restent calculées dans #perKpiData, masqué)
+  el2('perKpiSummary', plafond <= 0 ? '' : (!anneeDispo ? 'Plafond de ' + fmt(plafond,0) + ' €' : (reste > 0 ? 'Reste ' + fmt(reste,0) + ' € sur un plafond de ' + fmt(plafond,0) + ' €' : 'Plafond de ' + fmt(plafond,0) + ' € atteint ✓')));
+  { const sm = document.getElementById('perKpiSummary'); if(sm) sm.title = (document.getElementById('perKpiReste') || {}).title || ''; }
   const resteEl = document.getElementById('perKpiReste');
   if(resteEl) resteEl.style.color = !anneeDispo ? 'var(--text3)' : (reste>0?'#9b6dff':'var(--green)');
   const inp = document.getElementById('perRevenu');
@@ -81144,15 +81261,17 @@ function renderPee(){
     const dispo = x.dateDispo ? ((x.dateDispo <= today ? 'Disponible depuis le ' : 'Disponible à partir du ') + peeDateFr(x.dateDispo)) : '';
     const sub = [x.gestionnaire ? escapeHtml(x.gestionnaire) : '', x.dateOuv ? 'ouvert le ' + peeDateFr(x.dateOuv) : '', dispo ? escapeHtml(dispo) : ''].filter(Boolean).join(' · ');
     const pvTxt = v > 0 && vs > 0 ? (v - vs >= 0 ? '+' : '') + fmt(v - vs, 0) + ' €' : 'Indisponible';
-    return '<div class="card" style="padding:14px 16px"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px">' +
-      '<div style="min-width:0"><div style="font-weight:700;font-size:15px;color:var(--text);overflow-wrap:anywhere">' + escapeHtml(x.nom) + '</div>' +
-      (sub ? '<div style="font-size:11px;color:var(--text3);margin-top:3px">' + sub + '</div>' : '') +
-      (x.note ? '<div style="font-size:11px;color:var(--text3);margin-top:3px">' + escapeHtml(x.note) + '</div>' : '') + '</div>' +
-      '<div style="display:flex;align-items:center;gap:14px;flex-shrink:0"><div style="text-align:right"><div style="font-size:20px;font-weight:700;color:var(--text)">' + (v > 0 ? fmt(v, 0) + ' €' : 'Indisponible') + '</div>' +
-      '<div style="font-size:10px;color:var(--text3);margin-top:2px">Plus-value : ' + pvTxt + '</div></div>' +
-      '<div style="display:flex;gap:2px"><button type="button" onclick="openPeeModal(\'' + x.id + '\')" title="Modifier" aria-label="Modifier" class="kyf-icon-btn" style="' + ib + '"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>' +
-      '<button type="button" onclick="deletePee(\'' + x.id + '\')" title="Supprimer" aria-label="Supprimer" class="kyf-icon-btn" style="' + ib + '"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button></div></div></div></div>';
-  }).join('') : '<div style="text-align:center;padding:36px 20px;color:var(--text3);font-family:\'Inter\',sans-serif;font-size:11px">Aucun PEE - cliquez <strong style="color:var(--accent)">+ AJOUTER UN PEE</strong> pour commencer</div>';
+    const pvOk = v > 0 && vs > 0, pvCol = !pvOk ? 'var(--text3)' : (v - vs > 0 ? 'var(--green)' : (v - vs < 0 ? 'var(--red)' : 'var(--text3)'));
+    const ibt = 'background:none;border:none;color:var(--text3);cursor:pointer;padding:6px;display:inline-flex;align-items:center;border-radius:6px;transition:background-color .15s,color .15s';
+    return '<div class="card" style="max-width:720px;width:100%;box-sizing:border-box;padding:14px 16px;box-shadow:inset 0 2px 0 var(--accent);transition:transform .2s,box-shadow .2s" onmouseover="this.style.transform=\'translateY(-1px)\';this.style.boxShadow=\'inset 0 2px 0 var(--accent),0 4px 14px rgba(0,0,0,0.12)\'" onmouseout="this.style.transform=\'translateY(0)\';this.style.boxShadow=\'inset 0 2px 0 var(--accent)\'"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">' +
+      '<div style="min-width:0"><div style="font-weight:700;font-size:14px;color:var(--text);overflow-wrap:anywhere">' + escapeHtml(x.nom) + '</div>' +
+      (sub ? '<div style="font-size:10px;color:var(--text3);margin-top:4px;line-height:1.6">' + sub + '</div>' : '') +
+      (x.note ? '<div style="font-size:10px;color:var(--text3);margin-top:3px">' + escapeHtml(x.note) + '</div>' : '') + '</div>' +
+      '<div style="display:flex;align-items:flex-start;gap:10px;flex-shrink:0"><div style="text-align:right"><div style="font-size:18px;font-weight:800;color:var(--text)">' + (v > 0 ? fmt(v, 0) + ' €' : 'Indisponible') + '</div>' +
+      '<div style="font-size:10px;font-weight:600;color:' + pvCol + ';margin-top:2px">Plus-value : ' + pvTxt + '</div></div>' +
+      '<div style="display:flex;gap:2px;margin-top:-2px"><button type="button" onclick="openPeeModal(\'' + x.id + '\')" title="Modifier" aria-label="Modifier" class="kyf-icon-btn" style="' + ibt + '" onmouseover="this.style.color=\'var(--text)\'" onmouseout="this.style.color=\'var(--text3)\'">' + KYF_ICONS.edit + '</button>' +
+      '<button type="button" onclick="deletePee(\'' + x.id + '\')" title="Supprimer" aria-label="Supprimer" class="kyf-icon-btn" style="' + ibt + '" onmouseover="this.style.color=\'#ff4560\';this.style.background=\'rgba(255,69,96,0.12)\'" onmouseout="this.style.color=\'var(--text3)\';this.style.background=\'none\'">' + KYF_ICONS.trash + '</button></div></div></div></div>';
+  }).join('') : '<div style="text-align:center;padding:36px 20px;color:var(--text3);font-family:\'Inter\',sans-serif;font-size:11px">Aucun PEE - cliquez <strong style="color:var(--accent)">AJOUTER UN PEE</strong> pour commencer</div>';
 }
 
 function openAddAV(){
@@ -83512,7 +83631,7 @@ function renderPERDonut(data){
     {key:'ev-non-ded',  label:KYF_ICONS.arrowOut+' EV Non Déductible',  color:'#f0b429'},
     {key:'obligatoire', label:KYF_ICONS.lockClosed+' Obligatoire',         color:'#4d9fff'},
     {key:'collectif',   label:KYF_ICONS.users+' Collectif',            color:'#06b6d4'},
-    {key:null,          label:KYF_ICONS.list+' Non classé',          color:'var(--text3)'},
+    {key:null,          label:KYF_ICONS.list+' Non classé',          color:'#94a3b8'},   // 237 : vraie couleur (le dégradé du graphique ne lit pas var(--...) : l'anneau et la légende ne s'affichaient pas)
   ];
 
   const allPos = data.flatMap(d => {
@@ -85813,7 +85932,7 @@ function orInlineEdit(id, td, currentVal){
     <div><div style="font-weight:700;font-size:12px;letter-spacing:1px;color:var(--text)">RENÉGOCIATION DU PRÊT</div><div id="creditRenegTitre" style="font-size:10px;color:var(--text3);margin-top:3px"></div></div>
     <button type="button" onclick="closeCreditReneg()" class="kyf-modal-close" title="Fermer" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
-  <div style="font-size:10px;color:var(--text3);line-height:1.5;margin-bottom:12px">À la date indiquée, KYF repart du capital restant dû, au nouveau taux, sur la durée restante. Les frais sont notés pour mémoire, ils ne changent aucun calcul.</div>
+  <div style="font-size:10px;color:var(--text3);line-height:1.5;margin-bottom:12px">À la date indiquée, KYF repart du capital restant dû (calculé par KYF, ou celui de votre banque si vous le saisissez en bas), au nouveau taux, sur la durée restante (ou celle déduite de la mensualité de la banque). Les frais sont notés pour mémoire, ils ne changent aucun calcul.</div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
     <div><div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">DATE DE LA RENÉGOCIATION</div>
       <input type="hidden" id="creditRenegDate" oninput="creditRenegPreview()" value="">
@@ -85834,7 +85953,7 @@ function orInlineEdit(id, td, currentVal){
             onmouseenter="this.style.background='var(--hov-bg)'" onmouseleave="this.style.background='transparent'">▼</button>
         </div>
       </div></div>
-    <div><div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">DURÉE RESTANTE (ANS)</div>
+    <div><div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">DURÉE RESTANTE (ANS) <span style="opacity:.5">ou mensualité ci-dessous</span></div>
       <div style="display:flex;align-items:stretch;border-radius:6px;border:1px solid var(--border2);overflow:hidden;background:var(--btn-secondary-bg);transition:border-color .15s" id="creditRenegDureeWrap">
         <input id="creditRenegDuree" type="text" inputmode="decimal" placeholder="12 ou 12,5" oninput="creditRenegPreview()"
           style="flex:1;min-width:0;background:transparent;border:none;color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;outline:none"
@@ -85879,6 +85998,11 @@ function orInlineEdit(id, td, currentVal){
             onmouseenter="this.style.background='var(--hov-bg)'" onmouseleave="this.style.background='transparent'">▼</button>
         </div>
       </div></div>
+  </div>
+  <div style="font-size:9px;font-weight:700;letter-spacing:.5px;color:var(--text3);margin:2px 0 6px">SELON LA BANQUE <span style="font-weight:400;opacity:.7">facultatif, depuis votre échéancier</span></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+    <div><div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">CAPITAL RESTANT DÛ (€)</div><input id="creditRenegCrd" type="text" inputmode="decimal" placeholder="vide = calculé par KYF" oninput="creditRenegPreview()" onblur="kyfFormatPriceBlur(this)" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none"></div>
+    <div><div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">MENSUALITÉ HORS ASSURANCE (€)</div><input id="creditRenegMens" type="text" inputmode="decimal" placeholder="à la place de la durée" oninput="creditRenegPreview()" onblur="kyfFormatPriceBlur(this)" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none"></div>
   </div>
   <div id="creditRenegPreview" style="display:none;font-size:10px;color:var(--text2);background:rgba(128,128,128,0.08);border:1px solid rgba(128,128,128,0.20);border-radius:8px;padding:8px 10px;margin-bottom:10px;line-height:1.5"></div>
   <div id="creditRenegErr" style="display:none;font-size:10px;color:var(--red);margin-bottom:10px;line-height:1.5"></div>
