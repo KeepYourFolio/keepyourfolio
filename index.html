@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_4_02.html
+  @file        : KYF_SHARE_beta_2_8_4_04.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.4.02
+  @version     : Beta 2.8.4.04
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -190,6 +190,10 @@ function kyfParisWall(d){
 <script>
   const KYF_ANNONCE_ACTIVE = true;
   const KYF_ANNONCE_TEXTE  = "Mise à jour : corrections de la logique des prix et valeurs globales (séances, gains, coûts, fiscalité crypto, historique) et renforcement de la sécurité (imports, sauvegardes, règles de contenu). Une anomalie ? Forum Linxea ou « Contactez-nous ».";
+  // Annonce ciblée : affichée à la place de la générale, seulement chez ceux qui ont configuré l'Intraday (URL enregistrée).
+  // Fermée, elle ne revient plus ; la générale reprend alors sa place. Mets false pour la retirer.
+  const KYF_ANNONCE_INTRADAY_ACTIVE = true;
+  const KYF_ANNONCE_INTRADAY_TEXTE  = "Intraday : si vous recevez des mails Google « Summary of failures » sur KYF - Intraday, ouvrez votre projet Apps Script, onglet Déclencheurs, supprimez celui sur installerMonDeclencheur et gardez un seul déclencheur sur kyfIntradayTick (toutes les 5 minutes). Cette fonction ne se lance qu'une fois, à la main.";
   // Couleurs gains / pertes des graphiques : remplace les teintes vert / rouge d'origine par celles du schéma choisi (Paramètres > Couleurs).
   // Sans schéma personnalisé, la couleur d'origine est renvoyée telle quelle. Utilisable dans les fonctions de dessin des graphiques.
   const KYF_SC_FAM = {
@@ -6590,7 +6594,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.4.02</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.4.04</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -15028,7 +15032,7 @@ const KYF_INTRADAY_TUTO_STEPS = [
   { img:'IMG_12', label:'14. "Google hasn\u2019t verified this app" → cliquez sur "Hide Advanced" puis "Go to [votre projet] (unsafe)" - sans risque, c\u2019est votre propre script' },
   { img:'IMG_13', label:'15. Cochez "Select all" puis cliquez "Continue"' },
   { img:'IMG_14', label:'16. Copiez l\u2019URL de l\u2019application Web (bouton "Copier")' },
-  { img:'IMG_15', label:'17. (Optionnel) Dans le menu de gauche, l\u2019icône '+KYF_ICONS.clock+' "Déclencheurs" permet de vérifier que "installerMonDeclencheur" est bien actif toutes les 5 minutes' },
+  { img:'IMG_15', label:'17. (Optionnel) Dans le menu de gauche, l\u2019icône '+KYF_ICONS.clock+' "Déclencheurs" permet de vérifier qu\u2019il n\u2019y a qu\u2019un seul déclencheur, sur "kyfIntradayTick", toutes les 5 minutes (la fonction "installerMonDeclencheur" ne se lance qu\u2019une fois, à la main, et ne doit jamais avoir de déclencheur)' },
   { img:'IMG_20', label:'18. Retournez dans KYF → Paramètres → Options avancées → section "'+KYF_ICONS.trendUp+' INTRADAY (BÊTA) · VALORISATION 5 MIN", collez l\u2019URL copiée à l\u2019étape 16 dans le champ prévu, puis cliquez sur "Enregistrer"' },
 ];
 
@@ -28737,21 +28741,29 @@ const KYF_ANNONCE_LIMITE = 320;
 // Annonce fermée : on retient l'empreinte de SON texte. Tant que le texte ne change pas, elle ne revient plus ;
 // un nouveau texte a une autre empreinte et réapparaît chez tout le monde.
 const KYF_ANNONCE_CLOSED_KEY = 'kyf-annonce-fermee';
+// Texte à afficher et clé de fermeture : l'annonce Intraday (si l'Intraday est configuré et qu'elle n'a pas été fermée), sinon la générale
+function kyfAnnonceEff(){
+  try{
+    if(typeof KYF_ANNONCE_INTRADAY_ACTIVE !== 'undefined' && KYF_ANNONCE_INTRADAY_ACTIVE && (localStorage.getItem('kyf-intraday-url') || '').trim()){
+      const ti = (KYF_ANNONCE_INTRADAY_TEXTE || '').trim();
+      if(ti && localStorage.getItem('kyf-annonce-fermee-intraday') !== kyfAnnonceEmpreinte(ti)) return { texte: ti, cle: 'kyf-annonce-fermee-intraday' };
+    }
+  }catch(e){}
+  return { texte: (typeof KYF_ANNONCE_TEXTE === 'string' ? KYF_ANNONCE_TEXTE : '').trim(), cle: 'kyf-annonce-fermee', generale: true };
+}
 // L'annonce occupe-t-elle le bandeau ? (active, avec un texte, et pas déjà fermée pour ce texte)
 function kyfAnnonceAffichee(){
-  if(typeof KYF_ANNONCE_ACTIVE === 'undefined' || !KYF_ANNONCE_ACTIVE) return false;
-  const t = (KYF_ANNONCE_TEXTE || '').trim();
-  if(!t) return false;
-  try{ if(localStorage.getItem('kyf-annonce-fermee') === kyfAnnonceEmpreinte(t)) return false; }catch(e){}
+  const e = kyfAnnonceEff();
+  if(e.generale && (typeof KYF_ANNONCE_ACTIVE === 'undefined' || !KYF_ANNONCE_ACTIVE)) return false;
+  if(!e.texte) return false;
+  try{ if(localStorage.getItem(e.cle) === kyfAnnonceEmpreinte(e.texte)) return false; }catch(er){}
   return true;
 }
 function kyfAnnonceEmpreinte(t){ let h = 5381; for(let i = 0; i < t.length; i++) h = ((h << 5) + h + t.charCodeAt(i)) | 0; return 'a' + (h >>> 0).toString(36) + '.' + t.length; }
 
 function kyfInitAnnonce(){
-  if(!KYF_ANNONCE_ACTIVE) return;
-  const texteBrut = (KYF_ANNONCE_TEXTE||'').trim();
-  if(!texteBrut) return;
-  try{ if(localStorage.getItem(KYF_ANNONCE_CLOSED_KEY) === kyfAnnonceEmpreinte(texteBrut)) return; }catch(e){}
+  if(!kyfAnnonceAffichee()) return;
+  const texteBrut = kyfAnnonceEff().texte;
 
   const texte = texteBrut.length > KYF_ANNONCE_LIMITE
     ? texteBrut.slice(0, KYF_ANNONCE_LIMITE).trim() + '…'
@@ -28793,7 +28805,7 @@ function kyfInitAnnonce(){
 }
 
 function kyfCloseAnnonce(){
-  try{ localStorage.setItem(KYF_ANNONCE_CLOSED_KEY, kyfAnnonceEmpreinte((KYF_ANNONCE_TEXTE||'').trim())); }catch(e){}
+  try{ const e = kyfAnnonceEff(); localStorage.setItem(e.cle, kyfAnnonceEmpreinte(e.texte)); }catch(e){}
   const bandEl = document.getElementById('kyfAnnonceBand');
   const idxEl  = document.getElementById('idxBand');
   if(bandEl){
@@ -42505,7 +42517,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.4.02\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.4.04\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -65346,8 +65358,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
         <div>12. Cochez <strong>Select all</strong> puis <strong>Continue / Autoriser</strong></div>
         <div>13. Copiez l'<strong>URL de l'application Web</strong> (bouton "Copier") → collez-la ci-dessous</div>
         <div>14. Dans le menu de gauche : <strong style="display:inline-flex;align-items:center;gap:3px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Déclencheurs</strong> → <strong>+ Ajouter un déclencheur</strong></div>
-        <div>15. Fonction : <strong>installerMonDeclencheur</strong> · Source : <strong>Déclencheur horaire</strong> → <strong>Intervalle en minutes</strong> → <strong>Toutes les 5 minutes</strong> → <strong>Enregistrer</strong></div>
-        <div>16. (Optionnel) Dans le menu de gauche, l'icône <strong style="display:inline-flex;align-items:center;gap:3px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Déclencheurs</strong> permet de vérifier que <strong>installerMonDeclencheur</strong> est bien actif toutes les 5 minutes</div>
+        <div>15. Fonction : <strong>kyfIntradayTick</strong> (et non installerMonDeclencheur) · Source : <strong>Déclencheur horaire</strong> → <strong>Intervalle en minutes</strong> → <strong>Toutes les 5 minutes</strong> → <strong>Enregistrer</strong></div>
+        <div>16. (Optionnel) Dans le menu de gauche, l'icône <strong style="display:inline-flex;align-items:center;gap:3px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Déclencheurs</strong> permet de vérifier qu'il n'y a <strong>qu'un seul</strong> déclencheur, sur <strong>kyfIntradayTick</strong>, toutes les 5 minutes</div>
         <div style="background:rgba(0,212,170,0.1);border-left:3px solid var(--green);padding:4px 8px;border-radius:4px;margin:2px 0">17. Collez l'URL copiée à l'étape 13 dans le champ ci-dessous, puis cliquez sur <strong>Enregistrer</strong></div>
 
         <div style="border-top:1px solid var(--border);margin-top:10px;padding-top:10px">
@@ -65669,6 +65681,10 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.4.04 · 14/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Annonce ciblée Intraday : un message dans le bandeau d'annonce, seulement chez ceux qui ont configuré l'Intraday (URL enregistrée), pour supprimer un éventuel déclencheur sur installerMonDeclencheur et garder un seul déclencheur sur kyfIntradayTick. Une fois fermée, elle ne revient plus et l'annonce générale reprend sa place.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.4.03 · 14/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Tutoriel Intraday : le guide disait de créer ou de vérifier un déclencheur sur installerMonDeclencheur (étapes 15 et 16 du texte, étape 17 du pas à pas). C'est la mauvaise fonction : elle ne se lance qu'une fois, à la main, et un déclencheur dessus provoquait les mails d'échec Google. Le guide indique maintenant kyfIntradayTick, avec un seul déclencheur toutes les 5 minutes.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.4.02 · 14/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Alertes Prix, graphique « Alertes par actif » : les noms des actifs ne se chevauchent plus quand il y en a plusieurs, ils passent sur 2 lignes selon la largeur de chaque barre (nom complet toujours dans l'infobulle).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.4.01 · 14/10/2026</div>
