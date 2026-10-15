@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_4_04.html
+  @file        : KYF_SHARE_beta_2_8_4_07.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.4.04
+  @version     : Beta 2.8.4.07
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6594,7 +6594,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.4.04</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.4.07</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -8396,9 +8396,9 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
             onmouseout="this.style.background='rgba(77,159,255,0.06)';this.style.boxShadow='none'">
             ↻ PROGRAMMÉ
           </button>
-          <button onclick="openImportRelevé('av-per')" style="display:flex;align-items:center;gap:6px;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:7px 14px;border-radius:8px;border:1px solid var(--accent);background:var(--btn-secondary-bg);color:var(--accent);cursor:pointer;transition:background .2s,box-shadow .2s,transform .2s;letter-spacing:0.5px" onmouseover="this.style.background='#f0b429';this.style.color='#000';this.style.boxShadow='0 2px 8px rgba(240,180,41,0.35)';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='var(--btn-secondary-bg)';this.style.color='var(--accent)';this.style.boxShadow='none';this.style.transform='translateY(0)'">
+          <button onclick="openImportRelevé('av-per')" style="position:relative;display:flex;align-items:center;gap:6px;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:7px 14px;border-radius:8px;border:1px solid var(--accent);background:var(--btn-secondary-bg);color:var(--accent);cursor:pointer;transition:background .2s,box-shadow .2s,transform .2s;letter-spacing:0.5px" onmouseover="this.style.background='#f0b429';this.style.color='#000';this.style.boxShadow='0 2px 8px rgba(240,180,41,0.35)';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='var(--btn-secondary-bg)';this.style.color='var(--accent)';this.style.boxShadow='none';this.style.transform='translateY(0)'">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            IMPORTER UN RELEVÉ
+            IMPORTER UN RELEVÉ<span class="kyf-new-badge" data-new="arb" style="display:none;position:absolute;top:-8px;right:-8px;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.25)">NOUVEAU</span>
           </button>
           <button onclick="openAddAV()" style="display:flex;align-items:center;gap:6px;
             font-family:'Inter',sans-serif;font-size:10px;font-weight:700;
@@ -30472,6 +30472,7 @@ const IMPORT_TYPE_CONFIG = {
 };
 
 async function openImportRelevé(origin){
+  try{ if(origin === 'av-per') kyfNewBadgeSeen('arb'); }catch(e){}
   // Si le popup « Par quoi voulez-vous commencer ? » est ouvert (nouvel utilisateur), on le ferme :
   // sinon il reste dessous et ses 75 % de noir s'ajoutent à ceux de l'import (fond presque noir + cadre gris).
   const _onb = document.getElementById('modalOnboardingChoice');
@@ -31303,7 +31304,13 @@ async function importHandleFile(input){
         rows = await kyfTitresRowsFromFile(file);   // « Excel maison » : directement le lecteur de tableur
         if(!rows.length) throw new Error(KYF_MAISON_EMPTY);
       } else {
-      try{ rows = fiParsePositionsAuto(await fiReadFileAsText(file)); }catch(e){ stdErr = e; }
+      let _arbDone = false;
+      try{
+        const _txt = await fiReadFileAsText(file);
+        if(_importType !== 'etf' && kyfArbCsvIs(_txt)){ _arbDone = true; kyfArbOpen(_txt); }
+        else rows = fiParsePositionsAuto(_txt);
+      }catch(e){ stdErr = e; }
+      if(_arbDone){ statusEl.innerHTML = '<span style="color:var(--green)">Avis d\'arbitrage lu : vérifiez les lignes puis appliquez.</span>'; input.value = ''; return; }
       if(stdErr && /^Fichier/.test(stdErr.message || '')) throw stdErr;   // fichier refusé par les contrôles de sécurité : on s'arrête là
       // ETF & Actions : tableur maison (Excel / Google Sheets exporté) si le relevé n'est pas un export de courtier reconnu
       const stdOk = kyfStdRowsReliable(rows);
@@ -42517,7 +42524,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.4.04\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.4.07\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -57503,7 +57510,8 @@ const GUIDE_PAGES = [
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Importer un relevé (AV ou PER)</div>
-        <ol style="font-size:13px;color:var(--text2);line-height:2;margin:0;padding-left:20px"><li>Cliquez sur <strong style="color:var(--text)">IMPORTER</strong>, choisissez Assurance vie ou PER, le contrat de destination et votre fichier (.csv, .xls, .xlsx, .txt). </li><li>Le résultat s'affiche en quatre onglets : <strong style="color:var(--text)">À compléter</strong> (ligne sans ticker fiable), <strong style="color:var(--text)">Nouvelles</strong>, <strong style="color:var(--text)">Modifiées</strong> (quantité différente) et <strong style="color:var(--text)">Déjà présentes</strong> (ignorées, jamais réimportées en double)</li><li>Un clic sur le ticker d'une ligne ouvre la correction : <strong style="color:var(--text)">ISIN</strong> et <strong style="color:var(--text)">ticker Yahoo</strong> se saisissent à la main (Entrée ou VALIDER), même si la recherche en ligne ne trouve rien. La correction vaut pour toutes les lignes du même fonds</li><li>Le compteur du bouton IMPORTER indique le nombre de lignes retenues. Vous pouvez élargir ou réduire la colonne centrale de la fenêtre en tirant sa séparation</li></ol><div style="font-size:12px;color:var(--text3);margin-top:8px">Les espèces rémunérées d'un courtier (Trade Republic, Revolut…) détectées dans un relevé ne sont pas des titres : elles sont proposées pour votre trésorerie ou vos livrets, sans être comptées deux fois. Un fonds importé garde son cours du relevé tant qu'aucun ticker n'est validé ; avec un ticker, la valeur suit le cours en direct, d'où un petit écart possible avec le relevé.</div>
+        <ol style="font-size:13px;color:var(--text2);line-height:2;margin:0;padding-left:20px"><li>Cliquez sur <strong style="color:var(--text)">IMPORTER</strong>, choisissez Assurance vie ou PER, le contrat de destination et votre fichier (.csv, .xls, .xlsx, .txt). </li><li>Le résultat s'affiche en quatre onglets : <strong style="color:var(--text)">À compléter</strong> (ligne sans ticker fiable), <strong style="color:var(--text)">Nouvelles</strong>, <strong style="color:var(--text)">Modifiées</strong> (quantité différente) et <strong style="color:var(--text)">Déjà présentes</strong> (ignorées, jamais réimportées en double)</li><li>Un clic sur le ticker d'une ligne ouvre la correction : <strong style="color:var(--text)">ISIN</strong> et <strong style="color:var(--text)">ticker Yahoo</strong> se saisissent à la main (Entrée ou VALIDER), même si la recherche en ligne ne trouve rien. La correction vaut pour toutes les lignes du même fonds</li><li>Le compteur du bouton IMPORTER indique le nombre de lignes retenues. Vous pouvez élargir ou réduire la colonne centrale de la fenêtre en tirant sa séparation</li></ol><div style="font-size:12px;color:var(--text2);margin-top:8px;line-height:1.8"><strong style="color:var(--text)">Avis d'arbitrage (PER ou assurance vie) :</strong> passez d'abord le PDF de l'avis d'opération dans le convertisseur KYF, qui en tire un CSV (sorties et entrées, parts, valeur de part, date d'effet). Importez ce CSV ici : KYF affiche chaque support, vous l'associez à une ligne du contrat (ou « Nouvelle ligne » pour une entrée), puis l'arbitrage est appliqué à la date d'effet de l'avis et inscrit dans l'historique. Un même avis ne peut être appliqué qu'une fois.</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:8px">Les espèces rémunérées d'un courtier (Trade Republic, Revolut…) détectées dans un relevé ne sont pas des titres : elles sont proposées pour votre trésorerie ou vos livrets, sans être comptées deux fois. Un fonds importé garde son cours du relevé tant qu'aucun ticker n'est validé ; avec un ticker, la valeur suit le cours en direct, d'où un petit écart possible avec le relevé.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Corriger le type d'un contrat (AV ↔ PER)</div>
@@ -63898,6 +63906,88 @@ document.addEventListener('DOMContentLoaded', function(){
     setTimeout(openOnboardingChoice, 600);
   }
 });
+
+// ── Nouveautés : fenêtre « Quoi de neuf » + badge « Nouveau » sur le bouton concerné ──
+// Pour annoncer une nouveauté : AJOUTER EN TÊTE de KYF_NOUVEAUTES.annonces une annonce { id, date (AAAA-MM-JJ), items }. Pas d'annonce = rien d'affiché, quel que soit le nombre de pushes.
+// Chaque utilisateur voit une seule fois les annonces qu'il n'a pas encore vues (les plus récentes d'abord, 3 au plus, 30 jours au plus). Un nouvel utilisateur (écran de bienvenue pas encore vu) ne voit rien : tout est nouveau pour lui.
+const KYF_NOUVEAUTES = {
+  badge: 'arb',   // clé du badge « Nouveau » (span .kyf-new-badge data-new="...") ; vide = aucun badge
+  annonces: [
+    { id: 'a-2026-10-15', date: '2026-10-15', items: [
+      { titre: 'Avis d’arbitrage PER et assurance vie', texte: 'Vous avez reçu un avis d’opération (Boursorama, Oradéa Vie) ? Passez le PDF dans le convertisseur KYF, puis importez le CSV obtenu avec « Importer un relevé » dans Assurance vie : l’arbitrage est appliqué support par support, à la bonne date, après votre validation.' }
+    ] },
+    { id: 'a-2026-10-14', date: '2026-10-14', items: [
+      { titre: 'Synchronisation Google plus douce', texte: 'Quand le Sheet contient des données plus récentes pendant que vous utilisez KYF, un bandeau vous propose de les appliquer au lieu de recharger la page d’un coup.' },
+      { titre: 'Alertes par actif plus lisibles', texte: 'Les noms des actifs sont raccourcis proprement sur le graphique des alertes, même quand il y en a beaucoup.' }
+    ] }
+  ]
+};
+const KYF_NEW_SEEN_KEY = 'kyf-nouveautes-vue';   // id de la dernière annonce vue
+const KYF_NEW_MAX = 3, KYF_NEW_MAX_AGE_DAYS = 30;
+function kyfNewBadgeKey_(k){ return 'kyf-nouveau-badge-' + k; }
+function kyfNewBadgesRefresh(){
+  try{
+    document.querySelectorAll('.kyf-new-badge').forEach(el => {
+      const k = el.getAttribute('data-new');
+      let vu = false; try{ vu = localStorage.getItem(kyfNewBadgeKey_(k)) === '1'; }catch(e){}
+      el.style.display = (k && k === KYF_NOUVEAUTES.badge && !vu) ? 'inline-block' : 'none';
+    });
+  }catch(e){}
+}
+function kyfNewBadgeSeen(k){
+  try{ localStorage.setItem(kyfNewBadgeKey_(k), '1'); }catch(e){}
+  kyfNewBadgesRefresh();
+}
+function kyfNewPending_(){
+  const L = KYF_NOUVEAUTES.annonces; let seen = '';
+  try{ seen = localStorage.getItem(KYF_NEW_SEEN_KEY) || ''; }catch(e){}
+  const i = L.findIndex(a => a.id === seen);
+  const now = Date.now();
+  return (i === -1 ? L.slice() : L.slice(0, i))
+    .filter(a => now - new Date(a.date + 'T12:00:00').getTime() <= KYF_NEW_MAX_AGE_DAYS * 864e5)
+    .slice(0, KYF_NEW_MAX);
+}
+function kyfNewClose(){
+  ['kyfNewModal', 'kyfNewOverlay'].forEach(id => { const e = document.getElementById(id); if(e) e.remove(); });
+  document.body.style.overflow = '';
+  try{ if(KYF_NOUVEAUTES.annonces.length) localStorage.setItem(KYF_NEW_SEEN_KEY, KYF_NOUVEAUTES.annonces[0].id); }catch(e){}
+  document.removeEventListener('keydown', kyfNewKey_);
+}
+function kyfNewKey_(e){ if(e.key === 'Escape') kyfNewClose(); }
+function kyfNewShow(list){
+  if(document.getElementById('kyfNewModal')) return;
+  list = list || kyfNewPending_(); if(!list.length) return;
+  const ico = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px;color:var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+  const ov = document.createElement('div'); ov.id = 'kyfNewOverlay'; ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10070'; ov.onclick = kyfNewClose;
+  const md = document.createElement('div'); md.id = 'kyfNewModal';
+  md.setAttribute('role', 'dialog'); md.setAttribute('aria-label', 'Quoi de neuf');
+  md.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(500px,94vw);max-height:86vh;overflow-y:auto;z-index:10071;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:24px;font-family:\'Inter\',sans-serif';
+  const grp = a => '<div class="kyf-new-group" style="font-size:10px;font-weight:700;letter-spacing:.6px;color:var(--text3);margin:14px 0 2px">NOUVEAUTÉS DU ' + escapeHtml(a.date.split('-').reverse().join('/')) + '</div>'
+    + a.items.map(it => '<div style="display:flex;gap:10px;padding:10px 0;border-top:1px solid rgba(255,255,255,0.06)">' + ico + '<div><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px">' + escapeHtml(it.titre) + '</div><div style="font-size:11px;color:var(--text2);line-height:1.7">' + escapeHtml(it.texte) + '</div></div></div>').join('');
+  md.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:13px;font-weight:700;color:var(--text);letter-spacing:.5px">QUOI DE NEUF</span><button type="button" onclick="kyfNewClose()" class="kyf-modal-close" title="Fermer" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'
+    + list.map(grp).join('')
+    + '<button type="button" id="kyfNewOk" onclick="kyfNewClose()" style="width:100%;margin-top:14px;font-family:\'Inter\',sans-serif;font-size:11px;font-weight:700;padding:10px;border-radius:8px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:box-shadow .2s,transform .2s" onmouseover="this.style.boxShadow=\'0 2px 8px rgba(240,180,41,0.35)\';this.style.transform=\'translateY(-1px)\'" onmouseout="this.style.boxShadow=\'none\';this.style.transform=\'translateY(0)\'">Compris</button>';
+  document.body.appendChild(ov); document.body.appendChild(md);
+  document.body.style.overflow = 'hidden';
+  document.addEventListener('keydown', kyfNewKey_);
+}
+document.addEventListener('DOMContentLoaded', function(){
+  try{
+    if(!localStorage.getItem(WELCOME_KEY)){   // nouvel utilisateur : rien à annoncer, tout est nouveau
+      if(KYF_NOUVEAUTES.annonces.length) localStorage.setItem(KYF_NEW_SEEN_KEY, KYF_NOUVEAUTES.annonces[0].id);
+      if(KYF_NOUVEAUTES.badge) localStorage.setItem(kyfNewBadgeKey_(KYF_NOUVEAUTES.badge), '1');
+    }
+  }catch(e){}
+  kyfNewBadgesRefresh();
+  setTimeout(function(){
+    try{
+      const list = kyfNewPending_(); if(!list.length) return;
+      const wm = document.getElementById('kyfWelcomeModal'); if(wm && getComputedStyle(wm).display !== 'none') return;
+      if(document.body.style.overflow === 'hidden') return;   // une autre fenêtre est ouverte : on reviendra au prochain lancement
+      kyfNewShow(list);
+    }catch(e){}
+  }, 2500);
+});
 </script>
 
 <script>
@@ -65681,6 +65771,12 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.4.07 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">« Quoi de neuf » devient un historique d'annonces : quelqu'un qui revient après plusieurs jours voit en une seule fenêtre toutes les annonces qu'il n'a pas vues (3 au plus, les plus récentes d'abord, 30 jours au plus), avec un seul « Compris ». Un push sans nouvelle annonce n'affiche rien.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.4.06 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Nouveautés visibles : une fenêtre « Quoi de neuf » s'affiche une fois après la mise à jour (avis d'arbitrage PER et AV, synchronisation Google plus douce, alertes plus lisibles), et un badge « Nouveau » signale le bouton « Importer un relevé » de la page Assurance vie jusqu'à son premier clic. Rien pour un nouvel utilisateur. Le guide décrit aussi l'import d'un avis d'arbitrage.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.4.05 · 14/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import d'un avis d'arbitrage PER / AV : le CSV produit par le convertisseur (v2.482, qui lit maintenant les avis d'opération Boursorama / Oradéa Vie) s'importe via « Importer un relevé (AV ou PER) ». KYF affiche les sorties et entrées avec parts et valeur de part, vous associez chaque support à une ligne du contrat (proposition automatique par nom ou par quantité), puis l'arbitrage est appliqué à la date d'effet du document, avec l'historique. Un même avis ne s'applique qu'une fois.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.4.04 · 14/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Annonce ciblée Intraday : un message dans le bandeau d'annonce, seulement chez ceux qui ont configuré l'Intraday (URL enregistrée), pour supprimer un éventuel déclencheur sur installerMonDeclencheur et garder un seul déclencheur sur kyfIntradayTick. Une fois fermée, elle ne revient plus et l'annonce générale reprend sa place.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.4.03 · 14/10/2026</div>
@@ -82143,7 +82239,15 @@ function renderArbitrageHistory(){
   }
   el.innerHTML = all.map(a => {
     const d = new Date(a.date);
-    const dateStr = d.toLocaleDateString('fr-FR', {day:'2-digit',month:'2-digit',year:'numeric'}) + ' ' + d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+    const dateStr = d.toLocaleDateString('fr-FR', {day:'2-digit',month:'2-digit',year:'numeric'}) + (a.dateSeule ? '' : ' ' + d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}));
+    if(a.isMulti && Array.isArray(a.lignes)){
+      const fl = l => `<div style="font-size:11px;color:var(--text2);display:flex;justify-content:space-between;gap:8px"><span>${l.sens === 'Sortie' ? '<span style="color:var(--red)">−</span>' : '<span style="color:var(--green)">+</span>'} ${escapeHtml(l.nom)}</span><span style="white-space:nowrap">${fmt(l.montant,2)} €</span></div>`;
+      return `<div style="padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.06)">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+        <span style="font-size:9px;color:var(--text3)">${dateStr} · ${escapeHtml(a.contratNom)} · arbitrage multi-supports</span>
+        <span style="font-size:11px;font-weight:700;color:#06b6d4">${fmt(a.montant,2)} €</span>
+      </div>${a.lignes.map(fl).join('')}</div>`;
+    }
     return `<div style="padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.06)">
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
         <span style="font-size:9px;color:var(--text3)">${dateStr} · ${escapeHtml(a.contratNom)}</span>
@@ -82157,6 +82261,190 @@ function renderArbitrageHistory(){
       ${a.frais>0 && !a.isFrais?`<div style="font-size:9px;color:var(--text3);margin-top:2px">Frais : ${fmt(a.frais,0)} €</div>`:''}
     </div>`;
   }).join('');
+}
+
+// ── Import d'un avis d'arbitrage (CSV produit par le convertisseur KYF) ───────────────
+// Un arbitrage multi-supports d'un PER / d'une AV : sorties et entrées avec parts et valeur de part réelles,
+// appliqué à la date d'effet du document. Rien n'est écrit avant la validation ; une donnée absente reste
+// absente (jamais de zéro ni de PRU inventé). Un même avis ne s'applique qu'une fois.
+function kyfArbCsvIs(txt){ return /^﻿?\s*Operation;Date effet;Support;Sens;Montant;Quantite;Valeur de part/i.test(String(txt||'')); }
+function kyfArbCsvSplit_(l){
+  const out = []; let cur = '', q = false;
+  for(let i = 0; i < l.length; i++){
+    const c = l[i];
+    if(q){ if(c === '"'){ if(l[i+1] === '"'){ cur += '"'; i++; } else q = false; } else cur += c; }
+    else if(c === '"') q = true; else if(c === ';'){ out.push(cur); cur = ''; } else cur += c;
+  }
+  out.push(cur); return out;
+}
+function kyfArbCsvParse(txt){
+  const lines = String(txt||'').replace(/^﻿/, '').split(/\r?\n/).filter(l => l.trim());
+  const num = v => { const t = String(v == null ? '' : v).trim().replace(/\s/g, '').replace(',', '.'); if(t === '') return null; const n = Number(t); return isFinite(n) ? n : null; };
+  const out = { date: '', typePer: '', contrat: '', supports: [], erreurs: [] };
+  lines.slice(1).forEach(l => {
+    const c = kyfArbCsvSplit_(l);
+    if(c.length < 11 || c[0].trim().toLowerCase() !== 'arbitrage') return;
+    const sens = /^sortie$/i.test(c[3].trim()) ? 'Sortie' : /^entr[ée]e$/i.test(c[3].trim()) ? 'Entrée' : '';
+    if(!sens){ out.erreurs.push('Sens inconnu pour « ' + c[2] + ' »'); return; }
+    if(!out.date) out.date = c[1].trim();
+    if(!out.typePer) out.typePer = c[9].trim();
+    if(!out.contrat) out.contrat = c[10].trim();
+    out.supports.push({ nom: kyfSafeCellText(c[2], 160), sens, montant: num(c[4]), qty: num(c[5]), vl: num(c[6]) });
+  });
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(out.date) || isNaN(new Date(out.date + 'T12:00:00').getTime())) out.erreurs.push("Date d'effet absente ou illisible");
+  if(!out.supports.some(x => x.sens === 'Sortie') || !out.supports.some(x => x.sens === 'Entrée')) out.erreurs.push('Il faut au moins une sortie et une entrée');
+  out.supports.forEach(x => { if(!(x.montant > 0)) out.erreurs.push('Montant absent pour « ' + x.nom + ' »'); });
+  const sum = sens => Math.round(out.supports.filter(x => x.sens === sens).reduce((a, x) => a + (x.montant || 0), 0) * 100) / 100;
+  out.totSortie = sum('Sortie'); out.totEntree = sum('Entrée');
+  if(Math.abs(out.totSortie - out.totEntree) > 0.05) out.erreurs.push('Total sorti (' + out.totSortie.toFixed(2) + ' €) différent du total entré (' + out.totEntree.toFixed(2) + ' €)');
+  return out;
+}
+function kyfArbPerComp_(typePer){ return /^non/i.test(typePer || '') ? 'ev-non-ded' : /d[ée]ductible/i.test(typePer || '') ? 'ev-ded' : ''; }
+function kyfArbAutoMatch(sup, positions, comp){
+  let c = positions.filter(p => p.type !== 'immo' && p.type !== 'fe');
+  if(comp) c = c.filter(p => !p.compartiment || p.compartiment === comp);
+  const k = kyfImportNameKey(sup.nom), lk = kyfImportLooseKey(sup.nom);
+  let m = c.filter(p => k && kyfImportNameKey(p.nom) === k);
+  if(m.length === 1) return m[0].id;
+  m = c.filter(p => lk && kyfImportLooseKey(p.nom) === lk);
+  if(m.length === 1) return m[0].id;
+  if(sup.sens === 'Sortie' && sup.qty > 0){
+    m = c.filter(p => Math.abs((parseFloat(p.qty) || 0) - sup.qty) < 0.0006);
+    if(m.length === 1) return m[0].id;
+  }
+  return '';
+}
+function kyfArbContratsPer_(){ return avLoad().filter(c => ['per', 'per-col', 'per-ob'].includes(c.type)); }
+function kyfArbOpen(txt){
+  const d = kyfArbCsvParse(txt);
+  window._kyfArb = { data: d, contratId: '', map: {} };
+  const dest = (document.getElementById('importDest') || {}).value;
+  const pers = kyfArbContratsPer_();
+  let cid = '';
+  if(dest && dest !== '__nouveau__' && avLoad().some(c => c.id === dest)) cid = dest;
+  else if(pers.length === 1) cid = pers[0].id;
+  else { const m = pers.filter(c => /matla|bourso/i.test((c.contratNom || '') + ' ' + (c.assureur || ''))); if(m.length === 1) cid = m[0].id; }
+  window._kyfArb.contratId = cid;
+  kyfArbAutoAll_();
+  kyfArbRenderModal();
+}
+function kyfArbAutoAll_(){
+  const st = window._kyfArb; if(!st) return;
+  st.map = {};
+  if(!st.contratId) return;
+  const pos = avPosLoad(st.contratId), comp = kyfArbPerComp_(st.data.typePer);
+  st.data.supports.forEach((x, i) => { st.map[i] = kyfArbAutoMatch(x, pos, comp); });
+}
+function kyfArbSetContrat(id){ const st = window._kyfArb; if(!st) return; st.contratId = id; kyfArbAutoAll_(); kyfArbRenderModal(); }
+function kyfArbSetMap(i, v){ const st = window._kyfArb; if(!st) return; st.map[i] = v; kyfArbRenderModal(); }
+function kyfArbClose(){
+  ['kyfArbImpModal', 'kyfArbImpOverlay'].forEach(id => { const e = document.getElementById(id); if(e) e.remove(); });
+  document.body.style.overflow = '';
+  window._kyfArb = null;
+}
+// Plan d'application (sans rien écrire) : lignes, alertes bloquantes et simples avertissements
+function kyfArbPlan(){
+  const st = window._kyfArb, d = st.data, plan = { lignes: [], bloc: [], warn: [] };
+  if(d.erreurs.length) plan.bloc.push(...d.erreurs);
+  if(!st.contratId){ plan.bloc.push('Choisissez le contrat concerné'); return plan; }
+  const pos = avPosLoad(st.contratId), used = {};
+  d.supports.forEach((x, i) => {
+    const v = st.map[i];
+    if(v === '' || v == null){ plan.bloc.push('Choisissez la ligne KYF correspondant à « ' + x.nom + ' »'); return; }
+    if(v === 'new'){
+      if(x.sens === 'Sortie'){ plan.bloc.push('« ' + x.nom + ' » sort du contrat : il faut une ligne existante'); return; }
+      if(!(x.qty > 0)) plan.warn.push('« ' + x.nom + ' » : nombre de parts indisponible dans l\'avis, la ligne n\'aura que sa valeur');
+      plan.lignes.push({ x, p: null }); return;
+    }
+    const p = pos.find(q => String(q.id) === String(v));
+    if(!p){ plan.bloc.push('Ligne introuvable pour « ' + x.nom + ' »'); return; }
+    if(used[v]) plan.bloc.push('La ligne « ' + (p.nom || p.ticker) + ' » est choisie deux fois');
+    used[v] = 1;
+    if(x.sens === 'Sortie'){
+      const q = parseFloat(p.qty) || 0;
+      if(x.qty > 0 && q > 0 && x.qty > q + 0.0006) plan.bloc.push('« ' + (p.nom || p.ticker) + ' » : ' + x.qty + ' parts à sortir, mais KYF n\'en a que ' + q);
+      else if(x.qty > 0 && q > 0 && Math.abs(q - x.qty) > 0.0006) plan.warn.push('« ' + (p.nom || p.ticker) + ' » : KYF a ' + q + ' parts, l\'avis en sort ' + x.qty + ' (la ligne passe à ' + Math.round((q - x.qty) * 1e6) / 1e6 + ')');
+      else if(!(q > 0)) plan.warn.push('« ' + (p.nom || p.ticker) + ' » : pas de quantité dans KYF, seule la valeur est ajustée');
+    } else if(!(x.qty > 0)) plan.warn.push('« ' + x.nom + ' » : nombre de parts indisponible dans l\'avis, seule la valeur est ajustée');
+    plan.lignes.push({ x, p });
+  });
+  if(st.contratId){
+    const refKey = st.contratId + '|' + d.date + '|' + d.totSortie.toFixed(2);
+    if(avArbLoadAll().some(a => a.refKey === refKey)) plan.bloc.push('Cet avis d\'arbitrage a déjà été appliqué à ce contrat');
+  }
+  return plan;
+}
+function kyfArbRenderModal(){
+  const st = window._kyfArb; if(!st) return;
+  const d = st.data, plan = kyfArbPlan();
+  const fm = v => v == null ? 'indisponible' : Number(v).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+  const fq = v => v == null ? 'indisponible' : Number(v).toLocaleString('fr-FR', { maximumFractionDigits: 3 });
+  const pos = st.contratId ? avPosLoad(st.contratId) : [];
+  const dt = /^\d{4}-\d{2}-\d{2}$/.test(d.date) ? d.date.split('-').reverse().join('/') : 'indisponible';
+  const cs = 'font-family:\'Inter\',sans-serif;font-size:11px;padding:6px 8px;border-radius:6px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text);max-width:100%';
+  const contrats = kyfArbContratsPer_().concat(avLoad().filter(c => !kyfArbContratsPer_().some(q => q.id === c.id)));
+  const cOpts = '<option value="">Choisir un contrat</option>' + contrats.map(c => '<option value="' + escapeHtml(c.id) + '"' + (c.id === st.contratId ? ' selected' : '') + '>' + escapeHtml(c.contratNom || c.assureur || c.id) + '</option>').join('');
+  const rows = d.supports.map((x, i) => {
+    const sel = st.map[i] == null ? '' : st.map[i];
+    const opts = '<option value="">Choisir la ligne</option>' + pos.filter(p => p.type !== 'immo' && p.type !== 'fe').map(p => '<option value="' + escapeHtml(String(p.id)) + '"' + (String(p.id) === String(sel) ? ' selected' : '') + '>' + escapeHtml(p.nom || p.ticker || '?') + (p.compartiment ? ' · ' + escapeHtml((KYF_PER_COMP[p.compartiment] || '').replace(/ \(.*$/, '')) : '') + '</option>').join('')
+      + (x.sens === 'Entrée' ? '<option value="new"' + (sel === 'new' ? ' selected' : '') + '>Nouvelle ligne</option>' : '');
+    const col = x.sens === 'Sortie' ? 'var(--red)' : 'var(--green)';
+    return '<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06)"><div style="display:flex;justify-content:space-between;gap:8px;font-size:11px"><span style="color:var(--text);font-weight:600;word-break:break-word">' + escapeHtml(x.nom) + '</span><span style="color:' + col + ';font-weight:700;white-space:nowrap">' + (x.sens === 'Sortie' ? '− ' : '+ ') + fm(x.montant) + '</span></div><div style="font-size:9px;color:var(--text3);margin:2px 0 5px">' + x.sens + ' · ' + fq(x.qty) + ' parts · valeur de part ' + fm(x.vl) + '</div><select onchange="kyfArbSetMap(' + i + ',this.value)" style="' + cs + ';width:100%">' + opts + '</select></div>';
+  }).join('');
+  const bloc = plan.bloc.length ? '<div style="margin-top:10px;font-size:10px;color:var(--red);line-height:1.6">' + plan.bloc.map(escapeHtml).join('<br>') + '</div>' : '';
+  const warn = plan.warn.length ? '<div style="margin-top:8px;font-size:10px;color:var(--accent);line-height:1.6">' + plan.warn.map(escapeHtml).join('<br>') + '</div>' : '';
+  const ok = !plan.bloc.length;
+  let ov = document.getElementById('kyfArbImpOverlay'), md = document.getElementById('kyfArbImpModal');
+  if(!ov){ ov = document.createElement('div'); ov.id = 'kyfArbImpOverlay'; ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10060'; ov.onclick = kyfArbClose; document.body.appendChild(ov); }
+  if(!md){ md = document.createElement('div'); md.id = 'kyfArbImpModal'; md.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(560px,95vw);max-height:88vh;overflow-y:auto;z-index:10061;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:22px;font-family:\'Inter\',sans-serif'; document.body.appendChild(md); }
+  document.body.style.overflow = 'hidden';
+  md.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;font-weight:700;color:var(--text)">AVIS D\'ARBITRAGE · EFFET ' + dt + '</span><button type="button" onclick="kyfArbClose()" class="kyf-modal-close" title="Fermer" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'
+    + '<div style="font-size:10px;color:var(--text3);margin-bottom:10px">' + escapeHtml(d.contrat || '') + (d.typePer ? ' · ' + escapeHtml(d.typePer) : '') + ' · sorti ' + fm(d.totSortie) + ' · entré ' + fm(d.totEntree) + '</div>'
+    + '<select onchange="kyfArbSetContrat(this.value)" style="' + cs + ';width:100%;margin-bottom:6px">' + cOpts + '</select>'
+    + rows + bloc + warn
+    + '<div style="display:flex;gap:8px;margin-top:14px"><button type="button" onclick="kyfArbClose()" style="flex:1;font-family:\'Inter\',sans-serif;font-size:11px;padding:9px;border-radius:8px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer">Annuler</button>'
+    + '<button type="button" ' + (ok ? 'onclick="kyfArbApply()"' : 'disabled') + ' style="flex:1;font-family:\'Inter\',sans-serif;font-size:11px;font-weight:700;padding:9px;border-radius:8px;border:none;background:#06b6d4;color:#000;cursor:' + (ok ? 'pointer' : 'not-allowed') + ';opacity:' + (ok ? '1' : '.4') + '">Appliquer l\'arbitrage</button></div>';
+}
+function kyfArbApply(){
+  const st = window._kyfArb; if(!st) return;
+  const plan = kyfArbPlan(); if(plan.bloc.length){ kyfArbRenderModal(); return; }
+  const d = st.data, cid = st.contratId, positions = avPosLoad(cid), comp = kyfArbPerComp_(d.typePer);
+  const r6 = v => Math.round(v * 1e6) / 1e6, r2 = v => Math.round(v * 100) / 100;
+  const hist = [];
+  plan.lignes.forEach((L, k) => {
+    const x = L.x; let p = L.p ? positions.find(q => String(q.id) === String(L.p.id)) : null;
+    if(x.sens === 'Sortie'){
+      const q = parseFloat(p.qty) || 0;
+      if(x.qty > 0 && q > 0) p.qty = Math.max(0, r6(q - x.qty));
+      p.valeur = Math.max(0, r2((parseFloat(p.valeur) || 0) - x.montant));
+      if(p.qty === 0 && q > 0) p.valeur = 0;
+    } else if(p){
+      const q = parseFloat(p.qty) || 0, pru = parseFloat(p.pru) || 0;
+      if(x.qty > 0){
+        if(q > 0 && pru > 0) p.pru = Math.round(((pru * q + x.montant) / (q + x.qty)) * 1e4) / 1e4;
+        else if(!(q > 0)) p.pru = x.vl > 0 ? x.vl : r6(x.montant / x.qty);
+        p.qty = r6(q + x.qty);
+      }
+      p.valeur = r2((parseFloat(p.valeur) || 0) + x.montant);
+    } else {
+      p = { id: Date.now().toString() + '_arb' + k, type: kyfFondsTypeFromName(x.nom), ticker: '', nom: x.nom, isin: '', compartiment: comp || null, pru: x.qty > 0 ? (x.vl > 0 ? x.vl : r6(x.montant / x.qty)) : 0, qty: x.qty > 0 ? x.qty : 0, valeur: r2(x.montant), tauxRendement: 0 };
+      positions.push(p);
+    }
+    hist.push({ sens: x.sens, nom: x.nom, ligne: p.nom || p.ticker || x.nom, montant: x.montant, qty: x.qty, vl: x.vl });
+  });
+  avPosSave(cid, positions);
+  try{ etfSave(); }catch(e){}
+  const contrat = avLoad().find(c => c.id === cid);
+  avArbSaveEntry({
+    date: new Date(d.date + 'T12:00:00').toISOString(), dateSeule: true, isMulti: true,
+    contratId: cid, contratNom: contrat ? (contrat.contratNom || contrat.assureur) : '-',
+    refKey: cid + '|' + d.date + '|' + d.totSortie.toFixed(2),
+    montant: d.totSortie, frais: 0, lignes: hist
+  });
+  kyfArbClose();
+  try{ renderAV(); }catch(e){}
+  if(typeof kyfOnDataChanged === 'function') kyfOnDataChanged();
+  showToast('Arbitrage appliqué : ' + hist.filter(h => h.sens === 'Sortie').length + ' sortie(s), ' + hist.filter(h => h.sens === 'Entrée').length + ' entrée(s)');
 }
 
 let _avPosContratId = null;
