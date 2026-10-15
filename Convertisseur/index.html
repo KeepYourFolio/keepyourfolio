@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <!--
   ============================================================
-  @file        : KYF_PDF_to_CSV_v2_485.html
+  @file        : KYF_PDF_to_CSV_v2_486.html
   @application : Keep Your Folio (KYF) · Convertisseur PDF → CSV
   @description : Lit les relevés de courtier PDF entièrement dans le
                  navigateur (aucun envoi) et produit le fichier que le
                  Dashboard KYF importe.
-  @version     : v2.485
+  @version     : v2.486
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -20,7 +20,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs; worker-src 'self' blob: https://cdnjs.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none';">
-<title>KYF Convertisseur PDF v2.485</title>
+<title>KYF Convertisseur PDF v2.486</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1373,7 +1373,7 @@
   <div class="hero">
     <div class="hero-title">
     <h1>Convertisseur PDF <span>→ CSV</span> <span style="display:inline-block;background:#c99a06;color:#000;font-size:12px;font-weight:800;letter-spacing:.5px;padding:2px 8px;border-radius:6px;vertical-align:middle;">Bêta</span></h1>
-    <p>Détection automatique · v2.485 · Multi PDF en mode Portefeuille</p>
+    <p>Détection automatique · v2.486 · Multi PDF en mode Portefeuille</p>
     </div>
   </div>
 
@@ -2422,7 +2422,7 @@
 <script>
   /**
    * @file        KYF PDF to CSV — Convertisseur PDF intelligent
-   * @version     v2.485
+   * @version     v2.486
    * @description Convertisseur PDF → CSV pour KYF Dashboard.
    *              Détection automatique multi-courtiers, biffage pour les
    *              documents non reconnus (voir kyf_biffer_backend.gs).
@@ -2430,7 +2430,7 @@
    * @copyright   © 2026 Keep Your Folio (KYF) — keepyourfolio.fr
    * @license     AGPL-3.0-or-later
    */
-  console.log('%c Keep Your Folio %c PDF → CSV v2.485 %c keepyourfolio.fr ',
+  console.log('%c Keep Your Folio %c PDF → CSV v2.486 %c keepyourfolio.fr ',
     'background:#1a1f2e;color:#f0b429;font-weight:700;padding:4px 8px;border-radius:4px 0 0 4px',
     'background:#2563eb;color:#fff;font-weight:700;padding:4px 8px',
     'background:#1a1f2e;color:#aaa;padding:4px 8px;border-radius:0 4px 4px 0'
@@ -10625,10 +10625,11 @@
 <script>
 // ── v2.485 : fenêtre « Quoi de neuf » du convertisseur ──
 // Pour annoncer une nouveauté : AJOUTER EN TÊTE de KYFC_NOUVEAUTES une annonce { id, date (AAAA-MM-JJ), items:[{titre,texte,action?}] }.
+// Chaque item peut porter version: 'v2.xxx' (la version du convertisseur qui l'apporte), affichée en petit à côté du titre.
 // Pas d'annonce = rien d'affiché. Chaque visiteur voit une seule fois les annonces non vues (3 au plus, 30 jours au plus, les plus récentes d'abord).
 const KYFC_NOUVEAUTES = [
   { id: 'c-2026-10-15', date: '2026-10-15', items: [
-    { titre: 'Envoyer un exemple de votre document', texte: 'Votre banque ou votre courtier n’est pas lu ? Cliquez sur « Proposer une banque / un courtier », déposez le PDF, noircissez vos données personnelles, puis envoyez-nous un exemplaire. Le fichier d’origine ne part jamais.', action: 'bifferIntakeOpen' }
+    { titre: 'Envoyer un exemple de votre document', version: 'v2.484', texte: 'Votre banque ou votre courtier n’est pas lu ? Cliquez sur « Proposer une banque / un courtier », déposez le PDF, noircissez vos données personnelles, puis envoyez-nous un exemplaire. Le fichier d’origine ne part jamais.', action: 'bifferIntakeOpen' }
   ] }
 ];
 const KYFC_SEEN_KEY = 'kyf-conv-nouveautes-vue', KYFC_MAX = 3, KYFC_MAX_AGE_DAYS = 30;
@@ -10651,12 +10652,12 @@ function kyfcNewShow(list){
   const ico = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
   let h = '';
   list.forEach(a => a.items.forEach(it => {
-    h += '<div style="display:flex;gap:10px;margin:14px 0">' + ico + '<div><div style="font-weight:600;font-size:13px;color:var(--text)">' + kyfcNewEsc(it.titre) + '</div><div style="font-size:12px;color:var(--text2);line-height:1.6;margin-top:3px">' + kyfcNewEsc(it.texte) + '</div>'
+    h += '<div style="display:flex;gap:10px;margin:14px 0">' + ico + '<div><div style="font-weight:600;font-size:13px;color:var(--text)">' + kyfcNewEsc(it.titre) + (it.version ? ' <span class="kyfc-new-ver" style="display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;margin-left:4px;vertical-align:1px;background:rgba(240,180,41,0.16);color:var(--accent)">' + kyfcNewEsc(it.version) + '</span>' : '') + '</div><div style="font-size:12px;color:var(--text2);line-height:1.6;margin-top:3px">' + kyfcNewEsc(it.texte) + '</div>'
       + (it.action ? '<button type="button" class="btn btn-secondary kyfc-new-go" data-act="' + it.action + '" style="margin-top:8px;font-size:11px">Essayer</button>' : '') + '</div></div>';
   }));
   const ov = document.createElement('div'); ov.id = 'kyfcNewOverlay'; ov.className = 'learn-overlay visible';
   ov.setAttribute('onclick', 'if(event.target===this) kyfcNewClose()');
-  ov.innerHTML = '<div class="learn-box" role="dialog" aria-label="Quoi de neuf"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><h2 style="margin:0">Quoi de neuf</h2><button type="button" onclick="kyfcNewClose()" class="kyf-modal-close" title="Fermer" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>' + h + '<div style="display:flex;justify-content:flex-end;margin-top:6px"><button type="button" class="btn btn-primary" onclick="kyfcNewClose()">Compris</button></div></div>';
+  ov.innerHTML = '<div class="learn-box" role="dialog" aria-label="Quoi de neuf"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><h2 style="margin:0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></svg>Quoi de neuf</h2><button type="button" onclick="kyfcNewClose()" class="kyf-modal-close" title="Fermer" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>' + h + '<div style="display:flex;justify-content:flex-end;margin-top:6px"><button type="button" class="btn btn-primary" onclick="kyfcNewClose()">Compris</button></div></div>';
   document.body.appendChild(ov);
   ov.querySelectorAll('.kyfc-new-go').forEach(b => b.addEventListener('click', () => { const fn = window[b.getAttribute('data-act')]; kyfcNewClose(); if (typeof fn === 'function') fn(); }));
   document.addEventListener('keydown', kyfcNewKey);
