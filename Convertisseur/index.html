@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <!--
   ============================================================
-  @file        : KYF_PDF_to_CSV_v2_483.html
+  @file        : KYF_PDF_to_CSV_v2_484.html
   @application : Keep Your Folio (KYF) · Convertisseur PDF → CSV
   @description : Lit les relevés de courtier PDF entièrement dans le
                  navigateur (aucun envoi) et produit le fichier que le
                  Dashboard KYF importe.
-  @version     : v2.483
+  @version     : v2.484
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -20,7 +20,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs; worker-src 'self' blob: https://cdnjs.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none';">
-<title>KYF Convertisseur PDF v2.483</title>
+<title>KYF Convertisseur PDF v2.484</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -592,6 +592,9 @@
   /* Popup apprentissage */
   .learn-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); z-index: 1000; align-items: center; justify-content: center; }
   .learn-overlay.visible { display: flex; }
+  #bifferIntakeDrop { border: 1px dashed var(--border); }
+  #bifferIntake .learn-privacy { font-size: 13px; }
+  #bifferIntakeDrop:hover { border-color: var(--accent); background: rgba(var(--white-rgb),0.05); }
   .learn-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 28px 32px; max-width: 480px; width: 92%; box-shadow: 0 24px 60px rgba(0,0,0,.4); }
   .learn-box h2 { font-size: 15px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
   .learn-box p { font-size: 12px; color: var(--text2); line-height: 1.8; margin-bottom: 8px; }
@@ -1370,7 +1373,7 @@
   <div class="hero">
     <div class="hero-title">
     <h1>Convertisseur PDF <span>→ CSV</span> <span style="display:inline-block;background:#c99a06;color:#000;font-size:12px;font-weight:800;letter-spacing:.5px;padding:2px 8px;border-radius:6px;vertical-align:middle;">Bêta</span></h1>
-    <p>Détection automatique · v2.483 · Multi PDF en mode Portefeuille</p>
+    <p>Détection automatique · v2.484 · Multi PDF en mode Portefeuille</p>
     </div>
   </div>
 
@@ -1793,6 +1796,23 @@
      uniquement les pages explicitement traitées sous forme d'image PNG
      aplatie — jamais le PDF original, dont le calque de texte survivrait
      sous des rectangles simplement dessinés par-dessus. -->
+<!-- v2.484 : « Proposer une banque / un courtier » ouvre directement cette fenêtre, où l'on dépose le PDF, au lieu d'exiger de l'avoir d'abord déposé et analysé en haut de page. Le document n'est pas converti : il est seulement lu pour être noirci (biffage). -->
+<div class="learn-overlay" id="bifferIntake" onclick="if(event.target===this) bifferIntakeClose()">
+  <div class="learn-box" role="dialog" aria-label="Proposer une banque ou un courtier">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px">
+      <h2 style="margin:0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Proposer une banque / un courtier</h2>
+      <button type="button" onclick="bifferIntakeClose()" class="kyf-modal-close" title="Fermer" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <p>Votre document n'est pas lu, ou pas encore pris en charge ? Déposez-le ici, sans l'essayer d'abord : vous noircirez vous-même vos données personnelles, puis vous pourrez nous envoyer un exemplaire pour que nous construisions le bon lecteur.</p>
+    <label id="bifferIntakeDrop" for="bifferIntakeInput" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;margin-top:10px;padding:26px 14px;border-radius:12px;cursor:pointer;text-align:center;font-size:12px;color:var(--text2);transition:background .15s,border-color .15s" ondragover="event.preventDefault();this.style.background='rgba(var(--white-rgb),0.06)'" ondragleave="this.style.background=''" ondrop="event.preventDefault();this.style.background='';bifferIntakeLoad(event.dataTransfer.files[0])">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <span><strong>Choisir le PDF</strong> ou le glisser ici</span>
+      <input type="file" id="bifferIntakeInput" accept="application/pdf,.pdf" style="display:none" onchange="bifferIntakeLoad(this.files[0]); this.value=''">
+    </label>
+    <div id="bifferIntakeMsg" style="min-height:18px;margin-top:10px;font-size:12px;color:var(--text2)"></div>
+    <div class="learn-privacy">Le PDF reste dans votre navigateur et n'est pas converti. Rien ne part sans votre accord : seules des images des pages que vous aurez noircies et cochées pourront être envoyées, jamais le fichier d'origine.</div>
+  </div>
+</div>
 <div class="learn-overlay" id="bifferOverlay">
   <div class="learn-box biffer2p">
     <div id="bifferMainContent" class="biffer-main">
@@ -2402,7 +2422,7 @@
 <script>
   /**
    * @file        KYF PDF to CSV — Convertisseur PDF intelligent
-   * @version     v2.483
+   * @version     v2.484
    * @description Convertisseur PDF → CSV pour KYF Dashboard.
    *              Détection automatique multi-courtiers, biffage pour les
    *              documents non reconnus (voir kyf_biffer_backend.gs).
@@ -2410,7 +2430,7 @@
    * @copyright   © 2026 Keep Your Folio (KYF) — keepyourfolio.fr
    * @license     AGPL-3.0-or-later
    */
-  console.log('%c Keep Your Folio %c PDF → CSV v2.483 %c keepyourfolio.fr ',
+  console.log('%c Keep Your Folio %c PDF → CSV v2.484 %c keepyourfolio.fr ',
     'background:#1a1f2e;color:#f0b429;font-weight:700;padding:4px 8px;border-radius:4px 0 0 4px',
     'background:#2563eb;color:#fff;font-weight:700;padding:4px 8px',
     'background:#1a1f2e;color:#aaa;padding:4px 8px;border-radius:0 4px 4px 0'
@@ -7054,7 +7074,45 @@
 
   // ── Biffage : point d'entrée pour un document non reconnu ──────────────
   function startLearningMode(suggestedCourtier = '') {
+    // v2.484 : sans document déjà déposé, on ouvre la fenêtre de dépôt au lieu d'une alerte.
+    if (!window._lastPdfBuffer) { bifferIntakeOpen(suggestedCourtier); return; }
     openBifferOverlay(suggestedCourtier);
+  }
+  let _bifferIntakeSuggest = '';
+  function bifferIntakeOpen(suggestedCourtier = '') {
+    _bifferIntakeSuggest = suggestedCourtier || '';
+    const m = document.getElementById('bifferIntakeMsg'); if (m) m.textContent = '';
+    document.getElementById('bifferIntake').classList.add('visible');
+    document.body.style.overflow = 'hidden';
+  }
+  function bifferIntakeClose() {
+    document.getElementById('bifferIntake').classList.remove('visible');
+    document.body.style.overflow = '';
+  }
+  async function bifferIntakeLoad(file) {
+    const msg = document.getElementById('bifferIntakeMsg');
+    if (!file) return;
+    if (!/\.pdf$/i.test(file.name) && file.type !== 'application/pdf') { msg.style.color = 'var(--red)'; msg.textContent = 'Choisissez un fichier PDF.'; return; }
+    if (file.size > 30 * 1024 * 1024) { msg.style.color = 'var(--red)'; msg.textContent = 'Ce PDF est trop volumineux (30 Mo maximum).'; return; }
+    msg.style.color = 'var(--text2)'; msg.textContent = 'Lecture du document...';
+    try {
+      const buffer = await file.arrayBuffer();
+      const result = await extractPdfStructured(buffer.slice(0));
+      const elements = result.elements;
+      try {
+        const t3 = await buildType3DecodeTable(buffer.slice(0));
+        if (t3 && t3.decodeTable) applyType3DecodeElements(elements, t3, result.type3FontFp);
+      } catch (e) { /* non bloquant : le biffage fonctionne sans le décodage du texte */ }
+      window._lastPdfBuffer = buffer.slice(0);
+      window._lastPdfElements = elements;
+      window._lastPdfNumPages = result.numPages;
+    } catch (e) {
+      msg.style.color = 'var(--red)';
+      msg.textContent = "Ce PDF n'a pas pu être lu (" + (e && e.message ? e.message : 'erreur') + '). S\'il est protégé par un mot de passe, retirez-le puis recommencez.';
+      return;
+    }
+    bifferIntakeClose();
+    openBifferOverlay(_bifferIntakeSuggest);
   }
 
   // ── Biffage : rédaction destructive de PDF dans le navigateur ──────────────
