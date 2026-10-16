@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_6_47.html
+  @file        : KYF_SHARE_beta_2_8_6_51.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.6.47
+  @version     : Beta 2.8.6.51
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6611,7 +6611,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.6.47</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.6.51</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -13662,6 +13662,8 @@ const KYF_ERR = { NETWORK:'network', AUTH:'auth', RATE:'rate', SERVER:'server', 
 // pour ne toucher ni le texte technique ni les correspondances existantes
 // dessus (why.error, filtres addLog, etc.) - le séparateur "—" est repris par
 // kyfNotifNormalize() en " ; ", comme le reste des messages de l'appli.
+// Un refus d'authentification Google ne se corrige pas tout seul : il faut se reconnecter. Pas de note « AUTO » dans ce cas.
+function kyfHealNoteFor(e){ return (e && (e.kyfKind === KYF_ERR.AUTH || e.kyfKind === KYF_ERR.SESSION)) ? '' : KYF_LOG_SELF_HEAL_NOTE; }
 const KYF_LOG_SELF_HEAL_NOTE = '— Cette erreur se corrige automatiquement, pas besoin de nous contacter. Si le problème est récurrent et persistant, contactez-nous.';
 
 function kyfClassifyError(x, googleMessage){
@@ -13891,6 +13893,12 @@ async function oauthGetToken(){
       await kyfSecureSetOAuth('token', d.access_token);
       localStorage.setItem('kyf-oauth-expires', String(Date.now() + (d.expires_in||3600)*1000));
       window._kyfRefreshFailure = null;
+      window._kyfRefusedCount = 0;
+      if(window._kyfAuthRefused){   // le refus s'est résolu : bulle et anneau reviennent à la normale
+        window._kyfAuthRefused = false; window._kyfSessionExpired = false;
+        try{ kyfHideReconnectBubble(true); }catch(_){}
+        try{ updateSheetsIndicator(); }catch(_){}
+      }
       console.log('[KYF OAuth] Token rafraîchi silencieusement ✅');
       return d.access_token;
     }
@@ -13904,7 +13912,10 @@ async function oauthGetToken(){
     // Sans texte d'erreur, on note au moins le code HTTP et la forme de la réponse
     // (noms de champs seulement, jamais leurs valeurs) pour pouvoir diagnostiquer.
     const shape = (d && typeof d === 'object') ? Object.keys(d).slice(0,5).map(k => k.replace(/[^A-Za-z0-9_]/g,'').slice(0,20)).join(',') : typeof d;
-    console.warn('[KYF OAuth] Refresh refusé par le service d\'authentification'+(errTxt?' : '+errTxt:' (HTTP '+r.status+', réponse sans détail'+(shape?' : '+shape:'')+')'), KYF_LOG_SELF_HEAL_NOTE);
+    console.warn('[KYF OAuth] Refresh refusé par le service d\'authentification'+(errTxt?' : '+errTxt:' (HTTP '+r.status+', réponse sans détail'+(shape?' : '+shape:'')+')'));
+    // Deuxième refus de la session : la synchro est réellement coupée, on le montre (bulle « Reconnectez-vous » sur l'avatar) au lieu de laisser un message « AUTO »
+    window._kyfRefusedCount = (window._kyfRefusedCount || 0) + 1;
+    if(window._kyfRefusedCount >= 2 && !kyfOAuthShared() && !window._kyfSessionExpired){ window._kyfAuthRefused = true; kyfSessionExpired(true); }
   } catch(e){
     fail(e && e.name === 'TimeoutError' ? 'timeout' : 'network');
     console.warn('[KYF OAuth] Refresh échoué:', e.message, KYF_LOG_SELF_HEAL_NOTE);
@@ -13929,7 +13940,7 @@ function oauthStartAutoRefresh(){
   window._kyfOAuthAutoRefreshId = setInterval(async ()=>{
     const token = await oauthGetToken();
     if(token) console.log('[KYF OAuth] Auto-refresh OK');
-    else console.warn('[KYF OAuth] Auto-refresh échoué', KYF_LOG_SELF_HEAL_NOTE);
+    else console.warn('[KYF OAuth] Auto-refresh échoué', (window._kyfRefreshFailure && window._kyfRefreshFailure.reason === 'refused') ? '' : KYF_LOG_SELF_HEAL_NOTE);
   }, 55 * 60 * 1000);
 }
 
@@ -26865,7 +26876,7 @@ function kyfPullBannerShow(){
         + '#kyfPullBanner.kpb-in{opacity:1;transform:translate(-50%,0)}'
         + '#kyfPullBanner .kpb-ico{flex-shrink:0;color:var(--accent);display:flex}'
         + '#kyfPullBanner .kpb-t{font-size:12px;font-weight:700}#kyfPullBanner .kpb-s{font-size:10px;color:var(--text2);margin-top:1px}'
-        + '#kyfPullBanner .kpb-go{flex-shrink:0;font-family:Inter,sans-serif;font-size:11px;font-weight:700;padding:6px 12px;border-radius:7px;border:none;background:var(--accent);color:#000;cursor:pointer;transition:filter .15s}'
+        + '#kyfPullBanner .kpb-go{flex-shrink:0;font-family:Inter,sans-serif;font-size:11px;font-weight:700;padding:6px 12px;border-radius:7px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:filter .15s}'
         + '#kyfPullBanner .kpb-go:hover{filter:brightness(1.12)}'
         + '#kyfPullBanner .kpb-x{flex-shrink:0;width:22px;height:22px;border-radius:6px;border:none;background:transparent;color:inherit;opacity:.6;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:color .15s,background .15s,opacity .15s}'
         + '#kyfPullBanner .kpb-x:hover{color:var(--red);background:color-mix(in srgb,var(--red) 12%,transparent);opacity:1}'
@@ -28046,7 +28057,7 @@ async function kyfPullOnStartup(){
       const sheetId2 = localStorage.getItem('kyf-oauth-sheetid');
       if(token2 && sheetId2) kyfLogQuota(token2, sheetId2, 'SYNC_PULL', 0, 0, 0, 'ERREUR', e.message);
     }
-    console.warn('[KYF Sync] Pull démarrage échoué:', e.message, KYF_LOG_SELF_HEAL_NOTE);
+    console.warn('[KYF Sync] Pull démarrage échoué:', e.message, kyfHealNoteFor(e));
   }
   kyfStartupPullDone();
 }
@@ -28149,7 +28160,7 @@ async function kyfPullSnapshotsMissing(){
     // Meme logique que kyfPullOnStartup : une panne reseau au reveil ne
     // doit pas se distinguer d'un pull normal aux yeux de l'utilisateur,
     // juste se retenter plus tard via le cycle habituel.
-    console.warn('[KYF Snapshots OAuth] Pull échoué:', e.message, KYF_LOG_SELF_HEAL_NOTE);
+    console.warn('[KYF Snapshots OAuth] Pull échoué:', e.message, kyfHealNoteFor(e));
   }
 }
 
@@ -39718,6 +39729,14 @@ function addLog(type, msg, source, icon){
     source: source || '',
     expiry: Date.now() + 5 * 60 * 1000, // expire après 5 min
   };
+  const _prev = logs[type][logs[type].length - 1];
+  if(_prev && _prev.msg === entry.msg && _prev.source === entry.source && (Date.now() - (_prev.at || 0)) < 60000){
+    _prev.n = (_prev.n || 1) + 1; _prev.ts = entry.ts; _prev.at = Date.now(); _prev.expiry = entry.expiry;
+    updateNotifBadge();
+    if(activeNotifTab === type) renderNotifContent();
+    return;
+  }
+  entry.at = Date.now();
   logs[type].push(entry);
   if(type === 'infos' && entry.source === 'io') kyfNotifPersistIO(entry);
   updateNotifBadge();
@@ -41271,16 +41290,22 @@ function kyfNotifStatusRender(){
     if(b0){ b0.style.background = 'none'; b0.style.border = '1px solid var(--border2)'; b0.style.color = 'var(--text3)'; }
     return;
   }
-  const nbErr = logs.errors.length, nbReal = logs.warnings.length;
+  const nbErr = logs.errors.length, nbReal = logs.warnings.filter(w => !kyfIsSelfHeal(w.msg)).length;
+  const nbHeal = logs.warnings.length - nbReal;
   const nbNormal = logs.auto.length;
   const ok = nbErr === 0 && nbReal === 0;
+  if(ok && nbHeal > 0 && activeNotifTab !== 'auto'){   // que des messages AUTO : rien à dire en haut
+    box.style.cssText = 'display:none'; box.innerHTML = '';
+    const b1 = document.getElementById('notifSupportBtn');
+    if(b1){ b1.style.background = 'none'; b1.style.border = '1px solid var(--border2)'; b1.style.color = 'var(--text3)'; }
+    return;
+  }
   const dark = document.documentElement.getAttribute('data-theme') !== 'light';
   const col = ok ? (dark ? '#4ade80' : '#0f7a4a') : (nbErr > 0 ? (dark ? '#ff9aa5' : '#a3142a') : (dark ? '#f5cf72' : '#7a5300'));
   const bd  = ok ? '#00d4aa' : (nbErr > 0 ? '#ff4560' : '#f0b429');
   const bg  = ok ? 'rgba(0,212,170,0.10)' : (nbErr > 0 ? 'rgba(255,69,96,0.10)' : 'rgba(240,180,41,0.14)');
   const ico = ok ? 'ok' : 'warn';
-  const t1 = ok ? 'Tout est normal.'
-                : 'Un problème est détecté : envoyez le rapport au support avec le bouton ci-dessous.';
+  const t1 = ok ? 'Tout est normal.' : 'Un problème est détecté.';
   const t2 = '';
   box.style.cssText = 'display:flex;align-items:flex-start;gap:8px;margin:0 0 8px;padding:8px 10px;border-radius:8px;border:1px solid ' + bd + '55;border-left:3px solid ' + bd + ';background:' + bg + ';color:' + col + ';font-family:\'Inter\',sans-serif;font-size:11px;line-height:1.5';
   box.innerHTML = '<span style="display:inline-flex;flex-shrink:0;margin-top:1px">' + kyfNotifIconSvg(ico) + '</span><span><b style="font-weight:700">' + t1 + '</b>' + (t2 ? '<br><span style="font-size:10px;opacity:.85">' + t2 + '</span>' : '') + '</span>';
@@ -41310,6 +41335,13 @@ function kyfNotifShownMsg(e){
   if(src && /^[a-zA-Z_]+$/.test(src) && m.startsWith(src + ':')) return m.slice(src.length + 1).replace(/^\s+/, '');
   return m;
 }
+// Bouton d'action sous un message d'authentification Google : se reconnecter directement, sans chercher où
+function kyfNotifActionHtml(e, s){
+  if(!/Refresh refusé par Google|Session Google absente|Session Google terminée/.test(String(e.msg || ''))) return '';
+  return '<div style="margin-top:6px"><button type="button" onmousedown="event.stopPropagation()" ontouchstart="event.stopPropagation()" onclick="toggleNotifPanel();oauthConnect()"'
+    + ' style="display:inline-flex;align-items:center;gap:5px;background:none;border:1px solid currentColor;border-radius:6px;padding:3px 9px;font-family:\'Inter\',sans-serif;font-size:10px;font-weight:700;cursor:pointer;color:' + s.text + ';transition:opacity .15s" onmouseover="this.style.opacity=.85" onmouseout="this.style.opacity=1">'
+    + '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>Se reconnecter à Google</button></div>';
+}
 function renderNotifContent(){
   const el = document.getElementById('notifContent'); if(!el) return;
   try{ kyfNotifStatusRender(); }catch(_){}
@@ -41335,12 +41367,7 @@ function renderNotifContent(){
   }
   const s0 = styles[activeNotifTab];
   window._notifHelpData = {};
-  const selfHealCount = entries.filter(e => kyfIsSelfHeal(e.msg)).length;
-  const selfHealNote = selfHealCount
-    ? '<div style="display:flex;align-items:flex-start;gap:6px;margin:0 0 8px;padding:6px 10px;border-radius:6px;background:rgba(128,128,128,0.08);border:1px solid rgba(128,128,128,0.2);font-family:\'Inter\',sans-serif;font-size:10px;line-height:1.5;color:var(--text2)">'
-      + '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>'
-      + '<span>Les messages marqués <strong>AUTO</strong> se corrigent tout seuls : inutile de nous contacter, sauf s\'ils reviennent souvent.</span></div>'
-    : '';
+  const selfHealNote = '';   // plus de phrase d'explication : la pastille AUTO porte l'info-bulle
   el.innerHTML = selfHealNote + [...entries].reverse().map((e, i) => {
     const s = s0;
     const help = getErrorHelp(e.msg);
@@ -41377,8 +41404,9 @@ function renderNotifContent(){
       <div class="notif-item-inner" style="position:relative;border-left:2px solid ${s.border};padding:8px 12px;background:${s.bg};border-top:1px solid ${s.border}22;border-bottom:1px solid ${s.border}22;border-right:1px solid ${s.border}22;transition:transform .2s ease;cursor:grab;user-select:none;-webkit-user-select:none">
         <div style="font-family:'Inter',sans-serif;font-size:9px;color:${s.tsColor};margin-bottom:4px;letter-spacing:.4px;font-weight:${activeNotifTab==='errors'||activeNotifTab==='warnings'?'700':'400'}">${escapeHtml(e.ts)}${e.source?` · <span style="color:${s.sourceColor||s.tsColor};font-weight:700">${escapeHtml(e.source)}</span>`:''}</div>
         <div style="font-family:'Inter',sans-serif;font-size:12px;color:${s.text};word-break:break-word;line-height:1.6;display:flex;align-items:flex-start;gap:4px">
-          ${e.icon && KYF_NOTIF_ICONS[e.icon] ? '<span style="display:inline-flex;flex-shrink:0;margin-top:3px;color:'+(e.icon==='ok'?'var(--kyf-sync-ok)':s.text)+'">'+kyfNotifIconSvg(e.icon)+'</span>' : ''}<span style="flex:1">${escapeHtml(kyfNotifShownMsg(e).replace(KYF_SELF_HEAL_RE,''))}</span>${kyfIsSelfHeal(e.msg) ? kyfSelfHealPill(s.text) : ''}${infoIcon}
+          ${e.icon && KYF_NOTIF_ICONS[e.icon] ? '<span style="display:inline-flex;flex-shrink:0;margin-top:3px;color:'+(e.icon==='ok'?'var(--kyf-sync-ok)':s.text)+'">'+kyfNotifIconSvg(e.icon)+'</span>' : ''}<span style="flex:1">${escapeHtml(kyfNotifShownMsg(e).replace(KYF_SELF_HEAL_RE,''))}</span>${e.n > 1 ? '<span title="Message répété" style="flex-shrink:0;margin:2px 0 0 6px;padding:1px 6px;border-radius:4px;background:rgba(128,128,128,0.22);font-size:9px;font-weight:700;line-height:1.5">×' + e.n + '</span>' : ''}${kyfIsSelfHeal(e.msg) ? kyfSelfHealPill(s.text) : ''}${infoIcon}
         </div>
+        ${kyfNotifActionHtml(e, s)}
       </div>
     </div>`;
   }).join('');
@@ -42917,7 +42945,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.6.47\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.6.51\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -64585,6 +64613,10 @@ document.addEventListener('DOMContentLoaded', function(){
 const KYF_NOUVEAUTES = {
   badge: 'arb',   // clé du badge « Nouveau » (span .kyf-new-badge data-new="...") ; vide = aucun badge
   annonces: [
+    { id: 'a-2026-10-16', date: '2026-10-16', items: [
+      { titre: 'Trier les ETF et les cryptos par colonne', version: '2.8.6.37', texte: 'Cliquez sur l’en-tête d’une colonne (nom, valeur, gain, variation du jour...) pour trier vos ETF ou vos cryptos. Une flèche indique le sens du tri : un deuxième clic l’inverse, un troisième revient à l’ordre d’origine.' },
+      { titre: 'Plus-value du PEA et du PEA-PME expliquée', version: '2.8.6.45', texte: 'Sur la carte fiscale, la plus-value porte son vrai nom : « plus-value fiscale », c’est la valeur du plan moins le total versé. Dessous, KYF affiche celle des lignes du tableau Portefeuille et l’écart entre les deux (espèces, gains déjà arbitrés), avec un lien vers le guide.' }
+    ] },
     { id: 'a-2026-10-15b', date: '2026-10-15', items: [
       { titre: 'Versements et retraits sur PEA et CTO', version: '2.8.6.00', texte: 'Vous avez versé de l’argent sur votre PEA ou votre CTO ? Ouvrez la fenêtre des espèces (ligne « Espèces » du module ETF & Actions) : vous pouvez enregistrer un versement ou un retrait avec sa date. Tout est conservé dans « Historique des versements » (page Fiscalité), avec filtres, modification et suppression.' },
       { titre: 'Plus-value PEA fidèle après un retrait', version: '2.8.6.02', texte: 'Quand le total versé est renseigné, un retrait saisi dans l’historique ne fait plus apparaître une fausse perte : il est ajouté à la plus-value affichée.' },
@@ -66747,6 +66779,14 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.51 · 16/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Bandeau Données plus récentes sur Google : bouton Actualiser en jaune KYF, thème clair et sombre</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.50 · 16/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Notifications plus simples : phrase grise AUTO supprimée, bandeau caché quand tout se corrige seul, phrase courte sinon</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.49 · 16/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Notifications : un refus Google n'est plus marqué AUTO, messages répétés regroupés, bandeau juste, bouton Se reconnecter, bulle Reconnectez-vous au 2e refus</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.48 · 16/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Quoi de neuf : tri des ETF et cryptos par colonne, plus-value PEA et PEA-PME expliquée</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.47 · 16/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PEA-PME : même affichage que le PEA (base nommée, lignes du tableau Portefeuille, écart, lien guide)</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.46 · 16/10/2026</div>
