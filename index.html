@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_6_29.html
+  @file        : KYF_SHARE_beta_2_8_6_47.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.6.29
+  @version     : Beta 2.8.6.47
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -1121,8 +1121,22 @@ select:focus {
    visible qu'un simple var(--btn-secondary-bg). !important nécessaire car
    ces boutons ont un background:none permanent en style inline (plus
    prioritaire qu'une règle externe sans !important). */
+.kyf-hd-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.kyf-hd-chips{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:6px}
+.kyf-hd-chip{font-size:10px;font-weight:700;letter-spacing:.3px;padding:3px 8px;border-radius:6px;background:rgba(128,128,128,.14);color:var(--text2);white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
+.kyf-hd-perf{display:inline-block;margin-top:6px;font-size:12px;font-weight:800;padding:3px 10px;border-radius:999px;white-space:nowrap;color:var(--text3);background:color-mix(in srgb,currentColor 14%,transparent)}
 .kyf-icon-btn, .immo-icon-btn{ border-radius:6px; transition:background-color .15s, box-shadow .15s; }
 .kyf-icon-btn:hover, .immo-icon-btn:hover{ background-color:var(--hov-bg) !important; box-shadow:0 0 0 1px rgba(255,255,255,0.1); }
+.kyf-dca-type{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px}
+#etfThead th[data-sort], .cry-tbl th[data-sort]{cursor:pointer;user-select:none;white-space:nowrap}
+#etfThead th[data-sort]::after, .cry-tbl th[data-sort]::after{content:"\2193";display:inline-block;margin-left:4px;color:var(--text3);opacity:.45;font-weight:400;transform:rotate(0deg);transition:transform .25s ease,opacity .25s ease,color .25s ease}
+#etfThead th[data-sdir="desc"]::after, .cry-tbl th[data-sdir="desc"]::after{color:var(--accent);opacity:1;font-weight:700;transform:rotate(0deg)}
+#etfThead th[data-sdir="asc"]::after, .cry-tbl th[data-sdir="asc"]::after{color:var(--accent);opacity:1;font-weight:700;transform:rotate(180deg)}
+#etfThead th[data-sdir], .cry-tbl th[data-sdir]{color:var(--accent);transition:color .25s ease}
+.kyf-dca-type[data-t="etf"]{background:rgba(77,159,255,0.1);color:#4d9fff}
+.kyf-dca-type[data-t="crypto"]{background:rgba(240,180,41,0.1);color:#f0b429}
+[data-theme="light"] .kyf-dca-type[data-t="etf"]{background:rgba(29,95,196,0.16);color:#0f4aa8}
+[data-theme="light"] .kyf-dca-type[data-t="crypto"]{background:rgba(176,120,0,0.18);color:#6b4300}
 [data-theme="light"] .kyf-icon-btn:hover, [data-theme="light"] .immo-icon-btn:hover{ background-color:var(--hov-bg) !important; box-shadow:0 0 0 1px rgba(0,0,0,0.08); }
 /* Étoile favori (contrats Assurance Vie / PER) : au survol, aperçu "rempli
    en noir" avant validation - une fois favori, l'étoile reste dorée
@@ -1654,6 +1668,8 @@ button.kyf-toggle-active[style],.kyf-seg button.kyf-toggle-active{background:#f0
 #importRelevéModal.imp2p .imp-left{grid-column:1;grid-row:1;overflow-y:auto;padding:14px 16px;border-right:1px solid var(--border);background:rgba(255,255,255,0.015);min-height:0}
 #importRelevéModal.imp2p #importPreview{grid-column:2;grid-row:1;margin:0!important;border:none!important;border-radius:0!important;max-height:none!important;overflow-y:auto;padding:0 16px!important;min-height:0}
 #importRelevéModal.imp2p #importPreview:empty::before{content:"Les lignes du relevé s'afficheront ici une fois le fichier choisi.";display:block;padding:40px 10px;text-align:center;font-size:11px;color:var(--text3)}
+#importRelevéModal.imp2p #importTickerHelp{grid-column:2;grid-row:1;align-self:start;margin:16px 16px 0!important;z-index:1}
+#importRelevéModal.imp2p #importStep2.imp-help-on #importPreview:empty::before{display:none}
 #importRelevéModal.imp2p .imp-foot{grid-column:1/-1;grid-row:2;padding:12px 18px;border-top:1px solid var(--border)}
 #importRelevéModal.imp2p .imp-left{padding:20px 20px 16px}
 #importRelevéModal.imp2p #importStep2BackBtn{margin-bottom:18px!important}
@@ -6595,7 +6611,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.6.29</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.6.47</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -7276,17 +7292,17 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
       <div id="etfFavBar" style="display:none"></div>
       <table class="tbl etf-tbl">
         <thead id="etfThead"><tr>
-  <th>ACTIF</th>
+  <th data-sort="name">ACTIF</th>
   <th style="color:var(--text3);font-size:10px;letter-spacing:.5px">TICKER / ISIN</th>
-  <th data-col="investi">INVESTI</th>
-  <th data-col="pru">PRU</th>
-  <th data-col="qte">QTÉ</th>
-  <th data-col="eval">ÉVAL.</th>
-  <th data-col="cours">COURS</th>
-  <th data-col="varje">VAR.J €</th>
-  <th data-col="gpe">G/P €</th>
-  <th data-col="gpp">G/P %</th>
-  <th data-col="repartition">RÉPART.</th>
+  <th data-col="investi" data-sort="investi">INVESTI</th>
+  <th data-col="pru" data-sort="pru">PRU</th>
+  <th data-col="qte" data-sort="qte">QTÉ</th>
+  <th data-col="eval" data-sort="eval">ÉVAL.</th>
+  <th data-col="cours" data-sort="pct">COURS</th>
+  <th data-col="varje" data-sort="varje">VAR.J €</th>
+  <th data-col="gpe" data-sort="gpe">G/P €</th>
+  <th data-col="gpp" data-sort="gpp">G/P %</th>
+  <th data-col="repartition" data-sort="repartition">RÉPART.</th>
   <th style="width:60px"></th>
 </tr></thead>
         <tbody id="etfTbody"><tr><td colspan="12" style="text-align:center;padding:20px;color:var(--text3)">Aucune position - cliquez sur AJOUTER</td></tr></tbody>
@@ -10534,10 +10550,16 @@ function avCompRender(){
         </div>
 
         <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,0.03);border:1px solid var(--border);margin-bottom:16px" id="peaFiscContexte">
-          <div style="font-size:9px;color:var(--text3);letter-spacing:.3px;margin-bottom:8px">SITUATION ACTUELLE (calculée depuis votre portefeuille PEA)</div>
+          <div style="font-size:9px;color:var(--text3);letter-spacing:.3px;margin-bottom:8px">SITUATION ACTUELLE (valeur calculée depuis votre portefeuille PEA, espèces comprises)</div>
           <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:var(--text2)">Valeur totale</span><span id="peaFiscValeur" style="color:var(--text);font-weight:600">- €</span></div>
           <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:var(--text2)">Total investi</span><span id="peaFiscInvesti" style="color:var(--text);font-weight:600">- €</span></div>
-          <div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:var(--text2)">Plus-value latente</span><span id="peaFiscPV" style="color:var(--text);font-weight:600">- €</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:11px"><span id="peaFiscPVLabel" style="color:var(--text2)">Plus-value latente</span><span id="peaFiscPV" style="color:var(--text);font-weight:600">- €</span></div>
+          <div id="peaFiscEcart" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:11px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="color:var(--text3)">dont lignes du tableau Portefeuille</span><span id="peaFiscPVLignes" style="color:var(--text2);font-weight:600">- €</span></div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:12px"><span id="peaFiscEcartLabel" style="color:var(--text3)">Espèces du PEA et gains déjà arbitrés</span><span id="peaFiscEcartVal" style="color:var(--text2);font-weight:600">- €</span></div>
+            <div style="font-size:10px;color:var(--text3);line-height:1.6">La plus-value fiscale compare la valeur du PEA (espèces comprises) à ce que vous avez versé. Le tableau Portefeuille compare vos lignes actuelles à leur coût.</div>
+            <div style="margin-top:10px"><button type="button" class="kyf-hint-link" onclick="kyfOpenGuideId('guide-pea-pv')" style="background:none;border:none;padding:0;font:inherit;font-size:10px;font-weight:600;cursor:pointer">Comprendre l'écart dans le guide →</button></div>
+          </div>
         </div>
 
         <div style="margin-bottom:16px">
@@ -10572,7 +10594,13 @@ function avCompRender(){
           <div style="font-size:9px;color:var(--text3);letter-spacing:.3px;margin-bottom:8px">SITUATION ACTUELLE (titres PEA-PME de votre portefeuille, espèces non suivies)</div>
           <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:var(--text2)">Valeur totale</span><span id="pmeFiscValeur" style="color:var(--text);font-weight:600">- €</span></div>
           <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:var(--text2)">Total investi</span><span id="pmeFiscInvesti" style="color:var(--text);font-weight:600">- €</span></div>
-          <div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:var(--text2)">Plus-value latente</span><span id="pmeFiscPV" style="color:var(--text);font-weight:600">- €</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:11px"><span id="pmeFiscPVLabel" style="color:var(--text2)">Plus-value latente</span><span id="pmeFiscPV" style="color:var(--text);font-weight:600">- €</span></div>
+          <div id="pmeFiscEcart" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:11px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="color:var(--text3)">dont lignes du tableau Portefeuille</span><span id="pmeFiscPVLignes" style="color:var(--text2);font-weight:600">- €</span></div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:12px"><span style="color:var(--text3)">Gains déjà arbitrés (total versé et coût des lignes)</span><span id="pmeFiscEcartVal" style="color:var(--text2);font-weight:600">- €</span></div>
+            <div style="font-size:10px;color:var(--text3);line-height:1.6">La plus-value fiscale compare la valeur du PEA-PME à ce que vous avez versé. Le tableau Portefeuille compare vos lignes actuelles à leur coût.</div>
+            <div style="margin-top:10px"><button type="button" class="kyf-hint-link" onclick="kyfOpenGuideId('guide-pea-pv')" style="background:none;border:none;padding:0;font:inherit;font-size:10px;font-weight:600;cursor:pointer">Comprendre l'écart dans le guide →</button></div>
+          </div>
         </div>
 
         <div style="margin-bottom:16px">
@@ -10837,19 +10865,33 @@ function peaFiscSituation(){
   // (sans total versé, la base est le coût + espèces, qui baisse déjà du retrait : rien à ajouter). Le simulateur de retrait continue d'utiliser plusValue.
   const retraits = (typeof kyfCashMvts === 'function') ? kyfCashMvts().filter(m => m.env === 'PEA' && m.sens === 'out').reduce((x, m) => x + (parseFloat(m.montant) || 0), 0) : 0;
   const plusValue = valeur - investi;
-  return { valeur, investi, plusValue, retraits: verse > 0 ? retraits : 0, pvTotale: plusValue + (verse > 0 ? retraits : 0), cash, baseVerse: verse > 0, sansCours };
+  // Plus-value des lignes seules (valeur des titres - coût des titres) : c'est le chiffre du tableau Portefeuille, sans espèces
+  const pvLignes = posOk.reduce((s,e)=> s + getEval(e, _lpP[e.ticker]) - etfInvestOf(e), 0);
+  return { valeur, investi, plusValue, pvLignes, retraits: verse > 0 ? retraits : 0, pvTotale: plusValue + (verse > 0 ? retraits : 0), cash, baseVerse: verse > 0, sansCours };
 }
 
 function peaFiscSimuler(){
   const dateOuverture = document.getElementById('peaFisc_dateOuverture')?.value;
   const montant = kyfParseMilliers(document.getElementById('peaFisc_montant')?.value) || 0;
-  const { valeur, investi, plusValue, baseVerse, sansCours, retraits, pvTotale } = peaFiscSituation();
+  const { valeur, investi, plusValue, pvLignes, baseVerse, sansCours, retraits, pvTotale } = peaFiscSituation();
   const noteCours = sansCours > 0 ? (baseVerse ? sansCours + (sansCours > 1 ? ' lignes sans cours non comptées dans la valeur : la plus-value est sous-évaluée' : ' ligne sans cours non comptée dans la valeur : la plus-value est sous-évaluée') : kyfNoPriceMsg(sansCours)) : '';
 
   const set = (id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
   set('peaFiscValeur',   fmt(valeur,2)+' €');
   set('peaFiscInvesti',  fmt(investi,2)+' €' + (baseVerse ? ' (total versé)' : ''));
   set('peaFiscPV',       (pvTotale>=0?'+':'')+fmt(pvTotale,2)+' €' + (retraits > 0 ? ' (retraits saisis inclus : ' + fmt(retraits,0) + ' €)' : '') + (noteCours ? ' (' + noteCours + ')' : ''));
+  // Nom honnête de la base + réconciliation avec le tableau Portefeuille (seulement quand la base est le total versé saisi)
+  set('peaFiscPVLabel', baseVerse ? 'Plus-value fiscale (valeur - total versé)' : 'Plus-value latente (estimée sur le coût)');
+  const ecEl = document.getElementById('peaFiscEcart');
+  if(ecEl){
+    ecEl.style.display = baseVerse ? 'block' : 'none';
+    if(baseVerse){
+      set('peaFiscPVLignes', (pvLignes>=0?'+':'')+fmt(pvLignes,2)+' €');
+      set('peaFiscEcartLabel', retraits > 0 ? 'Espèces, gains déjà arbitrés et retraits saisis' : 'Espèces du PEA et gains déjà arbitrés');
+      const ec = pvTotale - pvLignes;
+      set('peaFiscEcartVal', (ec>=0?'+':'')+fmt(ec,2)+' €');
+    }
+  }
   peaFiscRenderPlafond();
   try{ pmeFiscRenderPlafond(); }catch(e){}   // le plafond commun suit le total versé du PEA
 
@@ -10969,19 +11011,30 @@ function pmeFiscSituation(){
   // internes compris) ; sinon coût des titres + espèces, approximation qui ignore les gains déjà arbitrés en espèces
   const verse = kyfParseMilliers(document.getElementById('pmeFisc_totalVerse')?.value) || 0;
   const investi = verse > 0 ? verse : posOk.reduce((s,e)=> s + etfInvestOf(e), 0) + cash;   // frais inclus, comme le tableau Portefeuille
-  return { valeur, investi, plusValue: valeur - investi, cash, baseVerse: verse > 0, sansCours };
+  const pvLignes = posOk.reduce((s,e)=> s + getEval(e, _lpP[e.ticker]) - etfInvestOf(e), 0);   // chiffre du tableau Portefeuille (valeur - coût des lignes)
+  return { valeur, investi, plusValue: valeur - investi, pvLignes, cash, baseVerse: verse > 0, sansCours };
 }
 
 function pmeFiscSimuler(){
   const dateOuverture = document.getElementById('pmeFisc_dateOuverture')?.value;
   const montant = kyfParseMilliers(document.getElementById('pmeFisc_montant')?.value) || 0;
-  const { valeur, investi, plusValue, baseVerse, sansCours } = pmeFiscSituation();
+  const { valeur, investi, plusValue, pvLignes, baseVerse, sansCours } = pmeFiscSituation();
   const noteCours = sansCours > 0 ? (baseVerse ? sansCours + (sansCours > 1 ? ' lignes sans cours non comptées dans la valeur : la plus-value est sous-évaluée' : ' ligne sans cours non comptée dans la valeur : la plus-value est sous-évaluée') : kyfNoPriceMsg(sansCours)) : '';
 
   const set = (id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
   set('pmeFiscValeur',   fmt(valeur,2)+' €');
   set('pmeFiscInvesti',  fmt(investi,2)+' €' + (baseVerse ? ' (total versé)' : ''));
   set('pmeFiscPV',       (plusValue>=0?'+':'')+fmt(plusValue,2)+' €' + (noteCours ? ' (' + noteCours + ')' : ''));
+  set('pmeFiscPVLabel', baseVerse ? 'Plus-value fiscale (valeur - total versé)' : 'Plus-value latente (estimée sur le coût)');
+  const ecEl = document.getElementById('pmeFiscEcart');
+  if(ecEl){
+    ecEl.style.display = baseVerse ? 'block' : 'none';
+    if(baseVerse){
+      set('pmeFiscPVLignes', (pvLignes>=0?'+':'')+fmt(pvLignes,2)+' €');
+      const ec = plusValue - pvLignes;
+      set('pmeFiscEcartVal', (ec>=0?'+':'')+fmt(ec,2)+' €');
+    }
+  }
   pmeFiscRenderPlafond();
 
   const resEl = document.getElementById('pmeFiscResult');
@@ -22386,7 +22439,7 @@ function dcaAvLegacyPlans(){
 function avDcaTilesHtml(){
   let rules=[]; try{ rules=avDCALoad(); }catch(e){ return ''; }
   const contrats=avLoad();
-  return rules.map(r=>{
+  return rules.filter(r=>!(r.freq==='once'&&r.derniereExecution)).map(r=>{
     const c=contrats.find(x=>x.id===r.contratId);
     const nom=c?(c.contratNom||c.assureur):'Contrat supprimé';
     const t=c?String(c.type||'').toUpperCase().replace('PER-COL','PERECO').replace('PER-OB','PER OBL.'):'';
@@ -22563,14 +22616,14 @@ function renderDCA(){
     tb.innerHTML=dcaHistPageItems.length?dcaHistPageItems.map(h=>
       '<tr>'+
         '<td>'+escapeHtml(h.date)+'</td>'+
-        '<td><span style="font-size:9px;padding:2px 6px;border-radius:4px;background:'+(h.type==='crypto'?'rgba(240,180,41,0.1)':'rgba(77,159,255,0.1)')+';color:'+(h.type==='crypto'?'#f0b429':'#4d9fff')+'">'+escapeHtml(String(h.type).toUpperCase())+'</span></td>'+
+        '<td><span class="kyf-dca-type" data-t="'+(h.type==='crypto'?'crypto':'etf')+'">'+escapeHtml(String(h.type).toUpperCase())+'</span></td>'+
         '<td style="font-weight:600">'+escapeHtml(h.name)+'</td>'+
         '<td>'+fmt(h.montant,2)+' €</td>'+
         '<td>'+fmt(h.cours,3)+'</td>'+
         '<td>'+h.qte.toFixed(6)+'</td>'+
         '<td><span style="font-family:Inter,sans-serif;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba('+hexToRgb(modeColor[h.mode]||'#3b9eff')+',0.18);color:'+(modeColor[h.mode]||'#3b9eff')+'">'+escapeHtml(modeLabel[h.mode]||h.mode)+'</span></td>'+
         '<td>'+fmt(h.cours*h.qte,2)+' €</td>'+
-        '<td><button onclick="deleteDCAHistory('+kyfJsNum(h.id)+')" class="kyf-icon-btn" style="background:none;border:none;color:var(--text3);cursor:pointer;display:inline-flex;align-items:center">'+KYF_ICONS.close+'</button></td>'+
+        '<td><button onclick="deleteDCAHistory('+kyfJsNum(h.id)+')" title="Supprimer" aria-label="Supprimer" class="kyf-icon-btn" style="background:none;border:none;color:var(--text3);cursor:pointer;display:inline-flex;align-items:center;padding:6px" onmouseover="this.style.color=\'#ff4560\';this.style.background=\'rgba(255,69,96,0.12)\'" onmouseout="this.style.color=\'var(--text3)\';this.style.background=\'none\'">'+KYF_ICONS.trash+'</button></td>'+
       '</tr>'
     ).join(''):'<tr><td colspan="9" style="text-align:center;padding:20px;color:var(--text3)">Aucune transaction DCA</td></tr>';
     kyfDcaHistPagUpdate(tabHist.length, dcaHistTotalPages);
@@ -22628,7 +22681,9 @@ function etfSettingsSave(){
   s.showLogo = !!document.getElementById('etfLogoToggle')?.checked;
   // Tri
   const sortRadio = document.querySelector('input[name="etfSort"]:checked');
+  const _prevSort = s.sort || 'manual';
   s.sort = sortRadio ? sortRadio.value : 'manual';
+  if(s.sort !== _prevSort) delete s.colSort;   // un autre tri choisi dans les réglages remplace le tri par colonne
   // Colonnes
   s.cols = {};
   document.querySelectorAll('#etfColOptions input[type=checkbox]').forEach(cb => {
@@ -22707,6 +22762,20 @@ function closeETFSettings(){
 
 // Appliquer les settings au rendu ETF
 function etfGetSettings(){ return etfSettingsLoad(); }
+// Tri par clic sur l'en-tête d'une colonne : 1er clic = sens par défaut (A→Z pour le nom, du plus grand au plus petit sinon), 2e = sens inverse, 3e = retour à l'ordre précédent
+function etfColSort(k){
+  const s = etfSettingsLoad(), cur = s.colSort;
+  const first = k === 'name' ? 'asc' : 'desc', second = first === 'asc' ? 'desc' : 'asc';
+  if(!cur || cur.k !== k) s.colSort = { k, dir: first };
+  else if(cur.dir === first) s.colSort = { k, dir: second };
+  else delete s.colSort;
+  try { localStorage.setItem(ETF_SETTINGS_KEY, JSON.stringify(s)); } catch(e){}
+  renderETFTable(window._lp || {});
+}
+document.addEventListener('click', function(ev){
+  const th = ev.target && ev.target.closest && ev.target.closest('#etfThead th[data-sort]');
+  if(th) etfColSort(th.dataset.sort);
+});
 
 
 // ══════════════════════════════════════════════════════════════
@@ -22722,7 +22791,9 @@ function cryptoSettingsSave(){
   const s = cryptoSettingsLoad();
   s.showLogo = !!document.getElementById('cryptoLogoToggle')?.checked;
   const sortRadio = document.querySelector('input[name="cryptoSort"]:checked');
+  const _prevSort = s.sort || 'manual';
   s.sort = sortRadio ? sortRadio.value : 'manual';
+  if(s.sort !== _prevSort) delete s.colSort;   // un autre tri choisi dans les réglages remplace le tri par colonne
   s.cols = {};
   document.querySelectorAll('#cryptoColOptions input[type=checkbox]').forEach(cb => {
     s.cols[cb.value] = cb.checked;
@@ -22759,6 +22830,20 @@ function closeCryptoSettings(){
 }
 
 function cryptoGetSettings(){ return cryptoSettingsLoad(); }
+// Tri par clic sur l'en-tête (mêmes règles que le tableau ETF : sens par défaut, inverse, retour)
+function cryptoColSort(k){
+  const s = cryptoSettingsLoad(), cur = s.colSort;
+  const first = k === 'name' ? 'asc' : 'desc', second = first === 'asc' ? 'desc' : 'asc';
+  if(!cur || cur.k !== k) s.colSort = { k, dir: first };
+  else if(cur.dir === first) s.colSort = { k, dir: second };
+  else delete s.colSort;
+  try { localStorage.setItem(CRYPTO_SETTINGS_KEY, JSON.stringify(s)); } catch(e){}
+  renderCryptoTable();
+}
+document.addEventListener('click', function(ev){
+  const th = ev.target && ev.target.closest && ev.target.closest('.cry-tbl th[data-sort]');
+  if(th) cryptoColSort(th.dataset.sort);
+});
 
 
 
@@ -31356,6 +31441,10 @@ function importDropzoneLock(){
   const on = !!_importResolutionInProgress;
   dz.classList.toggle('is-locked', on);
   dz.title = on ? 'Lecture du relevé en cours : patientez avant d\'en charger un autre' : '';
+  // Encadré « C'est quoi un ticker ? » : seulement pendant la recherche des tickers, il disparaît dès qu'elle est finie
+  if(!on) window._importHelpOn = false;
+  const th = document.getElementById('importTickerHelp'); if(th) th.style.display = (on && window._importHelpOn) ? 'block' : 'none';
+  const s2 = document.getElementById('importStep2'); if(s2) s2.classList.toggle('imp-help-on', !!(on && window._importHelpOn));
 }
 function importDropzoneHint(){
   const st = document.getElementById('importStatus');
@@ -31448,7 +31537,8 @@ async function importHandleFile(input){
       _importEspecesRows = rows.filter(r => r.typeHint === 'especes');
       rows = rows.filter(r => !r.typeHint);
       if(!rows.length && !_importScpiRows.length && !_importFondsEuroRows.length && !_importEspecesRows.length){ if(prevSnap) importRestorePending(prevSnap); /* fichier vide : la liste déjà en attente reste intacte */ statusEl.innerHTML = '<span style="color:var(--red)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Aucune position trouvée dans ce fichier.</span><div style="margin-top:10px"><button onclick="closeImportRelevé(); openAddETF();" style="font-family:\'Inter\',sans-serif;font-size:10px;font-weight:700;padding:8px 14px;border-radius:8px;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer">Ajouter la position manuellement</button><div style="margin-top:6px;font-size:9px;color:var(--text3)">Ouvre le formulaire habituel (recherche + PRU + quantité) - le fichier n\'a pas pu être lu automatiquement, mais vous pouvez saisir les valeurs vous-même en vous aidant du relevé original.</div></div>'; return; }
-      statusEl.innerHTML = `${KYF_HOURGLASS_SVG} ${rows.length} ligne(s) trouvée(s), résolution des tickers...`;
+      statusEl.innerHTML = `${KYF_HOURGLASS_SVG} ${rows.length} ligne(s) trouvée(s), recherche du ticker de chaque ligne...`;
+      window._importHelpOn = true;
       const resolved = [], missing = [];
       _importResolutionInProgress = true; importDropzoneLock();
       // Résolution en parallèle (5 à la fois) et sans refaire deux fois la même ligne (un relevé répète
@@ -31536,6 +31626,7 @@ async function importHandleFile(input){
       if(parsed.length > 500){ parsed = parsed.slice(0, 500); statusEl.innerHTML = '<span style="color:var(--accent)">Plus de 500 lignes : seules les 500 premières sont lues.</span>'; await new Promise(r => setTimeout(r, 1200)); }
       if(!parsed.length){ statusEl.innerHTML = '<span style="color:var(--red)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Aucune ligne valide trouvée dans ce fichier.</span>'; return; }
       statusEl.innerHTML = `${KYF_HOURGLASS_SVG} ${parsed.length} ligne(s) trouvée(s), résolution des cryptos...`;
+      window._importHelpOn = false;
       const resolved = [], missing = [];
       _importResolutionInProgress = true; importDropzoneLock();
       for(const row of parsed){
@@ -37227,8 +37318,8 @@ function etfDrop(ev, targetIdx){
   _etfDragIdx = null;
   // Le tri manuel doit rester actif pour que l'ordre glissé soit respecté à l'affichage
   const _s = etfGetSettings();
-  if(_s.sort && _s.sort !== 'manual'){
-    _s.sort = 'manual';
+  if((_s.sort && _s.sort !== 'manual') || _s.colSort){
+    _s.sort = 'manual'; delete _s.colSort;
     try { localStorage.setItem(ETF_SETTINGS_KEY, JSON.stringify(_s)); } catch(e){}
   }
   etfSave();
@@ -37385,7 +37476,9 @@ function renderETFTable(lp){
   const showLogo = _s.showLogo !== false;
   // Tri - grouper par enveloppe si tri manuel
   let etfSorted = [...ETF];
-  const sort = _s.sort || 'manual';
+  const _cs = (_s.colSort && _s.colSort.k) ? _s.colSort : null;
+  const sort = _cs ? 'col' : (_s.sort || 'manual');
+  document.querySelectorAll('#etfThead th[data-sort]').forEach(th => { if(_cs && th.dataset.sort === _cs.k) th.dataset.sdir = _cs.dir; else delete th.dataset.sdir; });
   if(sort === 'manual'){
     const envOrder = { PEA:0, 'PEA-PME':1, CTO:2, AV:3, PER:4 };
     etfSorted.sort((a,b)=> (envOrder[a.enveloppe||'PEA']||0) - (envOrder[b.enveloppe||'PEA']||0));
@@ -37400,6 +37493,32 @@ function renderETFTable(lp){
     const cle = sort==='gp_desc' ? (e=>gpEur(e)/e.montant) : gpEur;
     const sens = sort==='gpe_asc' ? -1 : 1;
     etfSorted.sort((a,b)=>{ const ka=connu(a), kb=connu(b); if(ka!==kb) return ka?-1:1; if(!ka) return 0; return sens*(cle(b)-cle(a)); });
+  }
+  if(_cs){
+    // Valeur inconnue (cours, coût ou taux absent) : la ligne passe EN DERNIER, dans les deux sens, jamais comptée comme zéro
+    const _tot = ETF.reduce((t,e)=>t+getEval(e,lp[e.ticker]),0);
+    const _inv = e => e.montant !== undefined ? e.montant : e.pru * e.qty;
+    const _fin = v => Number.isFinite(v) ? v : null;
+    const _key = e => {
+      const p = lp[e.ticker], noV = (!p && !e.evalBase) || kyfEtfFxMissing(e, lp), stale = !!(p && p._stale);
+      switch(_cs.k){
+        case 'name': return String(e.name || '').toLowerCase() || null;
+        case 'investi': return _fin(_inv(e));
+        case 'pru': return _fin(parseFloat(e.pru));
+        case 'qte': return _fin(parseFloat(e.qty));
+        case 'eval': return noV ? null : _fin(getEval(e,p));
+        case 'repartition': return noV || !(_tot > 0) ? null : _fin(getEval(e,p) / _tot);
+        case 'gpe': return noV ? null : _fin(getEval(e,p) - _inv(e));
+        case 'gpp': return (noV || !(_inv(e) > 0)) ? null : _fin((getEval(e,p) - _inv(e)) / _inv(e));
+        case 'pct': return (p && !stale && p.pct !== undefined && p.pct !== null) ? _fin(parseFloat(p.pct)) : null;
+        case 'varje': return (p && !stale && p.change !== undefined) ? _fin(toEUR(p.change * kyfEtfHeldQty(e), p.currency || getTickerCurrency(e.ticker, p))) : null;
+      }
+      return null;
+    };
+    const _sg = _cs.dir === 'asc' ? 1 : -1;
+    const _ks = new Map(etfSorted.map(e => [e, _key(e)]));
+    etfSorted.sort((a,b)=>{ const ka=_ks.get(a), kb=_ks.get(b); if((ka===null)!==(kb===null)) return ka===null?1:-1; if(ka===null) return 0;
+      return typeof ka === 'string' ? _sg*ka.localeCompare(kb,'fr') : _sg*(ka-kb); });
   }
   const cols = _s.cols || {};
   const showCol = k => {
@@ -42798,7 +42917,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.6.29\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.6.47\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -51634,8 +51753,8 @@ function cryptoDrop(ev, targetTicker){
   _cryptoDragTicker = null;
   // Le tri manuel doit rester actif pour que l'ordre glissé soit respecté à l'affichage
   const s = cryptoGetSettings();
-  if(s.sort && s.sort !== 'manual'){
-    s.sort = 'manual';
+  if((s.sort && s.sort !== 'manual') || s.colSort){
+    s.sort = 'manual'; delete s.colSort;
     try { localStorage.setItem(CRYPTO_SETTINGS_KEY, JSON.stringify(s)); } catch(e){}
   }
   cryptoSave();
@@ -51730,6 +51849,32 @@ function renderCryptoTable(){
     pos.sort((a,b)=>{ const ka=connu(a), kb=connu(b); if(ka!==kb) return ka?-1:1; if(!ka) return 0; return sens*(cle(b)-cle(a)); });
   }
 
+  if(s.colSort && s.colSort.k){
+    // Valeur inconnue (cours ou coût absent) : la ligne passe EN DERNIER, dans les deux sens, jamais comptée comme zéro
+    const _cs = s.colSort, _dv = kyfCryDayVar(pos);
+    const _tot = pos.reduce((t,p)=>t+getEvalCrypto(p),0);
+    const _fin = v => Number.isFinite(v) ? v : null;
+    const _key = p => {
+      const cours = getCours(p.ticker), cout = convertToDevise(kyfCryCout(p)), ev = getEvalCrypto(p);
+      const sansCout = kyfCryQteSansCout(p) > 0 && kyfCryQteConnue(p) <= 1e-12;
+      switch(_cs.k){
+        case 'name': return String(p.nom || '').toLowerCase() || null;
+        case 'investi': return cout > 0 ? _fin(cout) : null;
+        case 'pru': return _fin(convertToDevise(parseFloat(p.pru)));
+        case 'qte': return _fin(parseFloat(p.qte));
+        case 'eval': return cours > 0 ? _fin(ev) : null;
+        case 'repartition': return (cours > 0 && _tot > 0) ? _fin(ev / _tot) : null;
+        case 'gpe': return (sansCout || !(cours > 0) || !(cout > 0)) ? null : _fin(kyfCryEvalConnue(p, ev) - cout);
+        case 'gpp': return (sansCout || !(cours > 0) || !(cout > 0)) ? null : _fin((kyfCryEvalConnue(p, ev) - cout) / cout);
+        case 'pct': { const d = _dv.pct[p.ticker]; return (d !== null && d !== undefined) ? _fin(d) : (cours > 0 && cryptoPrices[p.ticker] && cryptoPrices[p.ticker].change24h !== undefined ? _fin(cryptoPrices[p.ticker].change24h) : null); }
+        case 'varj': return cours > 0 ? _fin(_dv.by[p.ticker] ?? null) : null;
+      }
+      return null;
+    };
+    const _sg = _cs.dir === 'asc' ? 1 : -1, _ks = new Map(pos.map(p => [p, _key(p)]));
+    pos.sort((a,b)=>{ const ka=_ks.get(a), kb=_ks.get(b); if((ka===null)!==(kb===null)) return ka===null?1:-1; if(ka===null) return 0;
+      return typeof ka === 'string' ? _sg*ka.localeCompare(kb,'fr') : _sg*(ka-kb); });
+  }
   // Mettre à jour le thead selon colonnes visibles
   const thead = tb.closest('table')?.querySelector('thead tr');
   if(thead){
@@ -51744,9 +51889,19 @@ function renderCryptoTable(){
       {k:'gpp',      l:'G/P %'},
       {k:'repartition', l:'RÉPART.'},
     ];
-    thead.innerHTML = '<th>ACTIF</th>' +
-      allCols.filter(c=>colOn(c.k)).map(c=>`<th data-col="${c.k}">${c.l}</th>`).join('') +
-      '<th></th>';
+    const _ccs = (s.colSort && s.colSort.k) ? s.colSort : null;
+    const _sk = {investi:'investi', pru:'pru', qte:'qte', eval:'eval', cours:'pct', varj:'varj', gpe:'gpe', gpp:'gpp', repartition:'repartition'};
+    const _thS = k => ` data-sort="${_sk[k]}"` + ((_ccs && _ccs.k === _sk[k]) ? ` data-sdir="${_ccs.dir}"` : '');
+    const _sig = allCols.filter(c=>colOn(c.k)).map(c=>c.k + ':' + c.l).join('|');
+    if(thead.dataset.sig !== _sig){
+      thead.dataset.sig = _sig;
+      thead.innerHTML = '<th data-sort="name"' + ((_ccs && _ccs.k === 'name') ? ` data-sdir="${_ccs.dir}"` : '') + '>ACTIF</th>' +
+        allCols.filter(c=>colOn(c.k)).map(c=>`<th data-col="${c.k}"${_thS(c.k)}>${c.l}</th>`).join('') +
+        '<th></th>';
+    } else {
+      // mêmes colonnes : on ne touche qu'au sens de la flèche, pour qu'elle pivote en douceur
+      thead.querySelectorAll('th[data-sort]').forEach(th => { if(_ccs && th.dataset.sort === _ccs.k) th.dataset.sdir = _ccs.dir; else delete th.dataset.sdir; });
+    }
   }
 
   const stableValeur = convertToDevise((cryptoState.stables||[]).reduce((s,p)=>s+(parseFloat(p.valeur)||0),0));   // CRY-010 : stockés en euros, convertis en mode dollars
@@ -56814,6 +56969,14 @@ const GUIDE_PAGES = [
             <div style="font-size:12px;color:var(--text2);line-height:2">Vos positions, transactions et historique ne quittent votre appareil que si vous activez vous-même une sauvegarde vers votre propre compte.</div>
           </div>
         </div>
+        <div style="margin-top:14px;padding:14px 16px;background:rgba(240,180,41,0.06);border:1px solid rgba(240,180,41,0.25);border-radius:10px">
+          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Pour démarrer, trois étapes suffisent</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.9">
+            <strong style="color:var(--text)">1. Ajoutez vos positions</strong> : bouton AJOUTER, ou import d'un relevé (chapitre « Importer un relevé »). Quelques lignes suffisent pour commencer, vous complétez ensuite.<br>
+            <strong style="color:var(--text)">2. Regardez le tableau de bord se remplir</strong> : les cours se mettent à jour tout seuls, KYF garde un instantané par jour pour vos graphiques.<br>
+            <strong style="color:var(--text)">3. Activez une sauvegarde</strong> (conseillé) : vos données restent dans le navigateur de cet appareil, donc connectez Google Sheets pour en garder une copie dans votre propre Drive (voir le chapitre « Google Sheets »). Facultatif, mais utile dès que vous avez saisi de vraies données.
+          </div>
+        </div>
       </div>
     `
   },
@@ -57056,6 +57219,10 @@ const GUIDE_PAGES = [
         <div style="font-size:12px;color:var(--text3);line-height:1.8;margin-top:8px">Comme deux balances de boulangerie qui ne pèsent pas tout à fait pareil : le total de la journée reste très proche, mais une ligne peut varier de quelques euros selon la source.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Trier par colonne</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Dans Positions ETF &amp; Actions et Positions Crypto, un <strong style="color:var(--text)">clic sur l'en-tête</strong> d'une colonne trie le tableau : nom, Investi, PRU, Quantité, Évaluation, Cours (variation du jour en %), Variation du jour, G/P en euros, G/P en pourcentage, Répartition. Le premier clic donne le sens par défaut (A vers Z pour le nom, du plus grand au plus petit pour les chiffres), le deuxième l'inverse, le troisième revient à l'ordre d'avant. Une petite flèche marque la colonne triée et pivote d'un sens à l'autre.<br><br>Une ligne dont la valeur est inconnue (cours indisponible, coût inconnu) passe <strong style="color:var(--text)">toujours en dernier</strong>, dans les deux sens : elle n'est jamais comptée comme zéro. Les favoris restent en tête. Glisser-déposer une ligne, ou choisir un autre tri dans la fenêtre VUE, remplace le tri par colonne.</div>
+      </div>
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Favoris, recherche et longs tableaux</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9">
           Avec beaucoup de positions, le tableau devient illisible. Positions ETF &amp; Actions et Positions Crypto proposent les mêmes outils :<br><br>
@@ -57091,6 +57258,10 @@ const GUIDE_PAGES = [
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px">
         <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> En cas d'erreur dans le tableau</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9">Si un actif n'a pas été reconnu ou identifié par erreur, cliquez sur son ticker ou son ISIN dans le tableau pour rouvrir une recherche (par nom ou par ISIN, via OpenFIGI) et corriger la ligne sans tout ressaisir.</div>
+      </div>
+      <div id="guide-ticker" style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Le ticker : c'est quoi, à quoi ça sert, où le trouver</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9"><strong style="color:var(--text)">C'est quoi ?</strong> Le code court d'un titre en bourse, par exemple CW8.PA pour un ETF MSCI World coté à Paris. Le suffixe indique la place de cotation : .PA Paris, .DE Xetra, .L Londres, .MI Milan, .AS Amsterdam.<br><br><strong style="color:var(--text)">À quoi ça sert ?</strong> Avec le ticker, KYF suit le prix en direct de la ligne (Yahoo Finance) et calcule le gain et la variation du jour. Sans ticker, la ligne garde la valeur de votre relevé, sans prix en direct. Rien n'est inventé.<br><br><strong style="color:var(--text)">Comment KYF le trouve</strong> pendant un import : il reprend d'abord le ticker déjà connu pour ce fonds dans votre contrat, puis le cherche à partir de l'ISIN ou du nom du relevé (via OpenFIGI). Pendant cette recherche, un encadré « C'est quoi un ticker ? » s'affiche à droite du message d'avancement et disparaît dès qu'elle est terminée ; son lien « Retrouver ce texte dans le guide » mène ici.<br><br><strong style="color:var(--text)">S'il en manque</strong> : les lignes concernées apparaissent à l'étape suivante sous « À compléter ». Collez l'ISIN et KYF cherche le ticker tout seul. Sinon, ouvrez la page de l'actif sur Yahoo Finance : le symbole s'affiche à côté du nom. Les loupes à côté des champs lancent la recherche pour vous, et le lien « Ticker introuvable ? » mène à la base communautaire.</div>
       </div>
     `
   },
@@ -57895,6 +58066,15 @@ const GUIDE_PAGES = [
         <div style="font-size:13px;color:var(--text2);line-height:1.9">Un PER saisi par erreur comme assurance vie (ou l'inverse) se corrige dans <strong style="color:var(--text)">Modifier le contrat</strong>, en changeant le type. Les lignes du contrat dans <strong style="color:var(--text)">POSITIONS ETF &amp; ACTIONS</strong> changent d'enveloppe en même temps (étiquette AV ou PER). Pour un contrat devenu PER, les compartiments se renseignent au prochain import ou à la main.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">L'en-tête d'une carte de contrat</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">À gauche, le logo de l'assureur, le nom du contrat et des pastilles : <strong style="color:var(--text)">type</strong> (AV ou PER), <strong style="color:var(--text)">RELEVÉ</strong> ou saisie à la main, assureur, <strong style="color:var(--text)">montant versé</strong> et rendement annuel. À droite, la <strong style="color:var(--text)">valeur</strong> du contrat et, juste dessous, sa performance en € et en %. Trois boutons carrés : menu ⋯, étoile et chevron pour déplier la carte. Si un chiffre est inconnu (versé non renseigné, par exemple), KYF affiche un tiret au lieu d'inventer un gain.</div>
+      </div>
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Retrait exceptionnel (PER collectif et PER obligatoire)</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Pour un contrat <strong style="color:var(--text)">PER collectif (PERCO)</strong> ou <strong style="color:var(--text)">PER obligatoire</strong>, le menu ⋯ propose <strong style="color:var(--text)">Retrait exceptionnel</strong> : le déblocage anticipé de l'épargne salariale. Vous choisissez le <strong style="color:var(--text)">motif</strong> dans la liste de la fiche Service Public (chaque produit a la sienne), le montant et la date. Le retrait est réparti sur les lignes du contrat (parts vendues au cours en direct) et s'ajoute au <strong style="color:var(--text)">total racheté</strong> ; le total versé ne change pas.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:8px">La fenêtre est en deux colonnes : à gauche, ce que dit la fiche pour le motif choisi (délai, fiscalité) et les retraits déjà enregistrés ; à droite, le formulaire. Ces informations sont données <strong style="color:var(--text)">à titre indicatif, selon la fiche</strong> : KYF ne calcule aucun impôt. Il n'y a pas de corbeille ni d'annulation pour un retrait. Le PEE a son propre retrait exceptionnel (voir le bloc PEE plus bas).</div>
+      </div>
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Pourquoi la valeur diffère de celle de l'assureur</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9">Pour les fonds cotés, KYF utilise le <strong style="color:var(--text)">cours de marché</strong> le plus récent, comme Yahoo Finance. Votre assureur valorise souvent chaque fonds avec la valeur liquidative de <strong style="color:var(--text)">la veille</strong> : un petit écart d'un jour est donc normal, et il disparaît quand l'assureur met à jour ses valeurs. Le montant officiel reste celui de votre relevé. Pour comparer, passez la souris sur la valeur d'une ligne : l'infobulle le rappelle.</div>
       </div>
@@ -57908,7 +58088,7 @@ const GUIDE_PAGES = [
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">PEE (plan d'épargne entreprise)</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9">Le bouton <strong style="color:var(--text)">PEE</strong>, à côté de TOUS/AV/PER, ouvre un suivi à part : <strong style="color:var(--text)">AJOUTER UN PEE</strong> demande le nom du plan, sa valeur, le total versé et, si vous le souhaitez, la date d'ouverture et la date de disponibilité. Tout se saisit à la main : KYF ne calcule <strong style="color:var(--text)">ni fiscalité ni règle de déblocage</strong>, et la plus-value n'est affichée que lorsque la valeur et le total versé sont renseignés. Le PEE n'est <strong style="color:var(--text)">pas compté</strong> dans les totaux de la page Assurance vie ni du tableau de bord. Ne le saisissez pas comme un PER collectif ni comme une assurance vie : ce sont des produits différents.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Le bouton <strong style="color:var(--text)">PEE</strong>, à côté de TOUS/AV/PER, ouvre un suivi à part : <strong style="color:var(--text)">AJOUTER UN PEE</strong> demande le nom du plan, sa valeur, le total versé et, si vous le souhaitez, la date d'ouverture et la date de disponibilité. Tout se saisit à la main : KYF ne calcule <strong style="color:var(--text)">ni fiscalité ni règle de déblocage</strong>, et la plus-value n'est affichée que lorsque la valeur et le total versé sont renseignés. Le bouton <strong style="color:var(--text)">flèche vers le bas</strong> d'une carte ouvre le <strong style="color:var(--text)">retrait exceptionnel</strong> (déblocage anticipé) : motif choisi dans la liste de la fiche economie.gouv.fr (donnée « notamment », donc non exhaustive), montant et date. La valeur du plan baisse du montant retiré, le retrait est gardé dans l'historique et ajouté au total retiré, si bien que la plus-value ne devient pas une perte. Délai et fiscalité sont affichés à titre indicatif, sans aucun calcul d'impôt. Le PEE n'est <strong style="color:var(--text)">pas compté</strong> dans les totaux de la page Assurance vie ni du tableau de bord. Ne le saisissez pas comme un PER collectif ni comme une assurance vie : ce sont des produits différents.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(107,78,255,0.06);border:1px solid rgba(107,78,255,0.25);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">PERECOL : que propose votre entreprise ?</div>
@@ -58008,8 +58188,12 @@ const GUIDE_PAGES = [
         <div style="font-size:13px;color:var(--text2);line-height:1.9">Par défaut, le versement est réparti à parts égales entre les lignes du contrat (fonds en euros compris). Chaque part se modifie en pourcentage, le total doit faire 100 %. Le bouton <strong style="color:var(--text)">PARTS ÉGALES</strong> coche toutes les lignes et remet tout à égalité ; décocher une ligne la retire de la répartition. Sans aucune ligne cochée, le versement ne compte que dans le total investi.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Versement exceptionnel (une seule fois)</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Pour un versement ponctuel, ouvrez le menu ⋯ du contrat puis <strong style="color:var(--text)">Versement exceptionnel</strong>, ou choisissez la fréquence <strong style="color:var(--text)">Exceptionnel (une seule fois)</strong> dans le pop-up. Montant, date et répartition en % sur les lignes : les parts de chaque ETF sont calculées au cours du jour du versement (au cours de clôture de la date choisie si elle est passée), et le total investi augmente du montant. Une fois passé, il apparaît dans la liste comme un versement unique, sans prochaine échéance.</div>
+      </div>
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Ce que KYF met à jour</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9">Le <strong style="color:var(--text)">total investi</strong> du contrat (une seule fois), les <strong style="color:var(--text)">frais d'entrée</strong> (retirés de chaque versement avant répartition), le <strong style="color:var(--text)">montant versé par an</strong> utilisé pour le coût réel des frais, et la <strong style="color:var(--text)">Trésorerie</strong> à titre informatif (aucune écriture dans le calendrier, aucun solde modifié). Les lignes du contrat sont ajustées en estimation à l'ouverture de KYF, au dernier cours connu ; le prochain relevé importé remplace cette estimation, et les échéances antérieures au dernier relevé ne sont jamais appliquées.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Le <strong style="color:var(--text)">total investi</strong> du contrat (une seule fois), les <strong style="color:var(--text)">frais d'entrée</strong> (retirés de chaque versement avant répartition), le <strong style="color:var(--text)">montant versé par an</strong> utilisé pour le coût réel des frais, et la <strong style="color:var(--text)">Trésorerie</strong> à titre informatif (aucune écriture dans le calendrier, aucun solde modifié). Les lignes du contrat sont ajustées en estimation à l'ouverture de KYF : une échéance passée est calculée au cours de clôture de sa date (et non au cours du jour). Si ce cours est introuvable, l'échéance n'est pas enregistrée et KYF réessaie au chargement suivant, il n'invente jamais un prix ; le prochain relevé importé remplace cette estimation, et les échéances antérieures au dernier relevé ne sont jamais appliquées.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Modifier, mettre en pause, supprimer</div>
@@ -58256,6 +58440,14 @@ const GUIDE_PAGES = [
     title: 'Google <span style="color:var(--accent)">Sheets</span>',
     icon: '',
     body: `
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">À quoi sert la connexion à Google Sheets ?</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">KYF n'a pas de serveur : vos données sont rangées dans le navigateur de cet appareil, c'est la <strong style="color:var(--text)">sauvegarde locale</strong>. Si vous videz le navigateur, changez d'ordinateur ou de téléphone, elles n'y sont plus. Google Sheets sert à en garder une <strong style="color:var(--text)">copie dans votre propre Drive</strong>, que vous pouvez ensuite <strong style="color:var(--text)">restaurer sur n'importe quel appareil</strong>.<br><br>Une fois connecté, vous n'avez <strong style="color:var(--text)">rien à refaire chaque jour</strong> : KYF envoie vos modifications tout seul pendant que vous l'utilisez, et l'anneau de la topbar passe au vert quand tout est sauvegardé. Ce n'est pas lui qui fournit les cours, ils viennent de Yahoo, indépendamment de la sauvegarde. C'est facultatif : KYF marche sans, mais c'est la protection la plus simple contre la perte de vos données.</div>
+      </div>
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">En pratique, quatre clics</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9"><strong style="color:var(--text)">1.</strong> Icône de la topbar (Options avancées), onglet Google Sheets. <strong style="color:var(--text)">2.</strong> Choisissez le mode : appareil personnel (par défaut) ou appareil partagé. <strong style="color:var(--text)">3.</strong> Cliquez sur Connecter avec Google. <strong style="color:var(--text)">4.</strong> Sur l'écran Google, cochez la case Google Drive puis Continuer. Le reste (création du classeur, liaison) est automatique, quelques secondes suffisent.</div>
+      </div>
       <div style="background:rgba(77,159,255,0.05);border:1px solid rgba(77,159,255,0.2);border-radius:10px;padding:14px 16px;margin-bottom:14px">
         <div style="font-size:13px;color:var(--text2);line-height:1.8">Accessible depuis l'icône <span style="display:inline-flex;align-items:center;vertical-align:middle;background:var(--btn-secondary-bg);border:1px solid var(--border2);border-radius:6px;padding:2px 5px;margin:0 2px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg></span> de la topbar (Options avancées), onglet <strong style="color:var(--accent)">Google Sheets · Synchronisation</strong>.</div>
       </div>
@@ -58958,9 +59150,9 @@ const GUIDE_PAGES = [
         <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">La fenêtre Cash garde la saisie, les 3 derniers mouvements et un lien « Voir tout l'historique ».</div>
       </div>
 
-      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+      <div id="guide-pea-pv" style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg> Plus-value du PEA et retraits</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9">Quand le « Total versé à ce jour » est renseigné, la plus-value affichée est : <strong style="color:var(--text)">valeur actuelle + retraits saisis - total versé</strong>. Un retrait ne crée donc pas de fausse perte. Exemple : 1 500 € versés, valeur 1 600 €, retrait de 200 € : la plus-value reste de +100 €, et la ligne indique « retraits saisis inclus : 200 € ». Sans total versé, KYF garde son calcul habituel. Le simulateur de retrait part toujours de la valeur actuelle.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Quand le « Total versé à ce jour » est renseigné, la plus-value affichée est : <strong style="color:var(--text)">valeur actuelle + retraits saisis - total versé</strong>. Un retrait ne crée donc pas de fausse perte. Exemple : 1 500 € versés, valeur 1 600 €, retrait de 200 € : la plus-value reste de +100 €, et la ligne indique « retraits saisis inclus : 200 € ». Sans total versé, KYF garde son calcul habituel. Le simulateur de retrait part toujours de la valeur actuelle.<br><br><strong style="color:var(--text)">Pourquoi deux plus-values différentes ?</strong> La carte fiscale et le tableau Portefeuille ne mesurent pas la même chose. La <strong style="color:var(--text)">carte fiscale</strong> compare la valeur du PEA, espèces comprises, à votre total versé : c'est la base d'un retrait. Le <strong style="color:var(--text)">tableau Portefeuille</strong> compare la valeur de vos lignes actuelles à leur coût, sans les espèces. L'écart vient des espèces du PEA et de la différence entre votre total versé et le coût de vos lignes (souvent des gains déjà arbitrés puis réinvestis). La carte PEA-PME fait de même, sans espèces (non suivies). La carte affiche les deux chiffres et l'écart quand le total versé est renseigné ; sans total versé, elle est estimée sur le coût.</div>
       </div>
 
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
@@ -59188,8 +59380,8 @@ const GUIDE_PAGES = [
 // ── Version du guide ──
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
-const KYF_GUIDE_VERSION = '1.01';
-const KYF_GUIDE_POUR = '2.8.6.14';
+const KYF_GUIDE_VERSION = '1.09';
+const KYF_GUIDE_POUR = '2.8.6.47';
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -59576,6 +59768,26 @@ function guideGoToTerm(id){
     el.classList.remove('kyf-lex-flash'); void el.offsetWidth; el.classList.add('kyf-lex-flash');
   }, 60);
 }
+function kyfOpenGuideId(id){
+  const i = GUIDE_PAGES.findIndex(p => String(p.body || '').indexOf('id="' + id + '"') !== -1);
+  openGuide(i >= 0 ? i : 0);
+  setTimeout(() => {
+    const el = document.getElementById(id); if(!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.classList.remove('kyf-lex-flash'); void el.offsetWidth; el.classList.add('kyf-lex-flash');
+  }, 80);
+}
+function kyfOpenGuideTicker(){
+  const i = GUIDE_PAGES.findIndex(p => String(p.body || '').indexOf('id="guide-ticker"') !== -1);
+  // le guide passe au-dessus de la fenêtre d'import (même niveau de base, l'import est plus bas dans la page) ; remis à son niveau à la fermeture
+  ['modalGuideOverlay','modalGuide'].forEach(id => { const e = document.getElementById(id); if(e) e.style.zIndex = '10000030'; });
+  openGuide(i >= 0 ? i : 0);
+  setTimeout(() => {
+    const el = document.getElementById('guide-ticker'); if(!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.classList.remove('kyf-lex-flash'); void el.offsetWidth; el.classList.add('kyf-lex-flash');
+  }, 80);
+}
 function guideGoTo(n){
   // Navigation via un menu (SOMMAIRE, bande de chapitres, sous-pages) -
   // pas d'animation tourne-page ici, réservée aux flèches ‹ › (guideNav).
@@ -59620,6 +59832,7 @@ function openGuide(pageIndex){
 function closeGuide(){
   const overlay = document.getElementById('modalGuideOverlay');
   const modal = document.getElementById('modalGuide');
+  [overlay, modal].forEach(e => { if(e) e.style.zIndex = '9999999'; });   // retire le niveau relevé par kyfOpenGuideTicker
   if(overlay) overlay.style.display = 'none';
   if(modal) modal.style.display = 'none';
   document.body.style.overflow = '';
@@ -66534,6 +66747,42 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.47 · 16/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PEA-PME : même affichage que le PEA (base nommée, lignes du tableau Portefeuille, écart, lien guide)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.46 · 16/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PEA : carte fiscale, espacement entre la ligne d'écart, le texte d'aide et le lien vers le guide</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.45 · 16/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PEA : la carte fiscale nomme sa base (plus-value fiscale = valeur - total versé), affiche les lignes du tableau Portefeuille et l'écart (espèces, gains arbitrés), lien vers le guide</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.44 · 16/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Encadré « C'est quoi un ticker ? » de l'import : lien « Retrouver ce texte dans le guide » qui ouvre le guide directement sur le bloc « Le ticker » (par-dessus la fenêtre d'import, qui reste en place). Guide v1.08.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.43 · 16/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import de relevé : pendant la recherche des tickers, un encadré « C'est quoi un ticker ? » (définition, utilité, où KYF le trouve, que faire s'il en manque) s'affiche à droite du message et disparaît quand la recherche est finie. Message d'avancement plus clair. Guide v1.07 : bloc « Le ticker ». Retour utilisateur : recherche des tickers manquants peu explicite.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.42 · 16/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Versements programmés AV/PER : une échéance passée (rattrapage, ou date passée d'un versement exceptionnel) achète les parts au cours de clôture de SA date, plus au cours du jour. Cours introuvable : l'échéance n'est pas enregistrée (journal + nouvel essai), jamais un prix inventé. Lignes en euros ou en dollars.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.41 · 16/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Guide v1.05 : « Pour démarrer, trois étapes » sur la page Bienvenue, et « À quoi sert la connexion à Google Sheets ? » avec « En pratique, quatre clics » en tête du chapitre Google Sheets (retour utilisateur : début compliqué).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.40 · 16/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Guide v1.04 : nouveau bloc « Trier par colonne » (ETF et Crypto). Guide rédigé pour cette version, avec le retrait exceptionnel PEE déjà décrit en v1.03.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.39 · 16/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Tri par colonne : plus de bulle d'info, une seule flèche qui pivote en douceur (bas puis haut) comme les chevrons de la barre du haut, sur les tableaux ETF et Crypto.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.38 · 16/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Tri par colonne : flèches toujours visibles sur les en-têtes (neutres, orange sur la colonne triée), plus d'effet au survol, et même tri cliquable sur le tableau Crypto (valeur inconnue en dernier).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.37 · 16/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Positions ETF : tri par clic sur l'en-tête de chaque colonne (nom, investi, PRU, quantité, valorisation, variation du jour en % et en €, G/P en € et en %, répartition). Clic 1 = sens par défaut, 2 = sens inverse, 3 = retour. Valeur inconnue : ligne en dernier.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.36 · 16/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Historique DCA : colonne TYPE (ETF / CRYPTO) plus contrastée sur le thème clair, corbeille à la place de la croix pour supprimer une ligne.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.35 · 16/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PEE : retrait exceptionnel (déblocage anticipé). Motif choisi dans la liste de la fiche economie.gouv.fr, montant et date ; la valeur du plan baisse, le retrait est gardé dans l'historique et ajouté au total retiré (plus-value inchangée), délai et fiscalité affichés à titre indicatif. Guide v1.03.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.34 · 16/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Guide v1.02 : en-tête des cartes de contrat, versement exceptionnel, retrait exceptionnel (PER collectif et obligatoire). Guide rédigé pour cette version.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.33 · 16/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Retrait exceptionnel : fenêtre en deux colonnes comme les versements programmés (à gauche l'explication, ce que dit la fiche pour le motif et les retraits déjà enregistrés ; à droite le formulaire).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.32 · 16/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Contrats PER collectif et PER obligatoire : nouveau « Retrait exceptionnel » (déblocage anticipé), menu ⋯ du contrat. Motif choisi dans la liste de la fiche Service Public, retrait réparti sur les lignes (parts vendues au cours en direct), ajouté au total racheté ; délai et fiscalité affichés à titre d'information, aucun impôt calculé.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.31 · 16/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Contrats AV/PER : nouveau « Versement exceptionnel » (menu ⋯ du contrat). Montant, date et répartition en % sur les lignes ; les parts de chaque ETF sont calculées au cours en direct, comme pour un versement programmé, et le total investi augmente du montant.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.30 · 16/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Contrats AV/PER : barre du haut allégée (nom seul, pastilles type, assureur, versé, rendement annuel, valeur avec pastille de performance, trois boutons carrés)</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.29 · 15/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Importer un relevé AV / PER : l'aperçu est simplifié (seuls les onglets qui contiennent des lignes sont affichés, et plus aucun onglet quand il n'y en a qu'un) ; nouveau point d'information qui explique chaque catégorie (À compléter, Nouvelles, Modifiées, Déjà présentes, À retirer).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.28 · 15/10/2026</div>
@@ -74258,7 +74507,7 @@ function getImmoNetTotal(){
 const AV_DCA_KEY = 'kyf-av-dca';
 function avDCALoad(){ try{ return JSON.parse(localStorage.getItem(AV_DCA_KEY)||'[]'); }catch(e){ return []; } }
 function avDCASave(d){ localStorage.setItem(AV_DCA_KEY, JSON.stringify(d)); }
-const AV_DCA_FREQ = { monthly:{label:'Mensuel', n:12, step:1, short:'/mois'}, quarterly:{label:'Trimestriel', n:4, step:3, short:'/trimestre'}, yearly:{label:'Annuel', n:1, step:12, short:'/an'} };
+const AV_DCA_FREQ = { monthly:{label:'Mensuel', n:12, step:1, short:'/mois'}, quarterly:{label:'Trimestriel', n:4, step:3, short:'/trimestre'}, yearly:{label:'Annuel', n:1, step:12, short:'/an'}, once:{label:'Exceptionnel', n:0, step:0, short:'une fois', once:true} };
 function avDcaFreq(r){ return AV_DCA_FREQ[r && r.freq] || AV_DCA_FREQ.monthly; }
 function avDcaAnnual(r){ return (r && r.actif ? (parseFloat(r.montant)||0) : 0) * avDcaFreq(r).n; }
 // Versements par an d'un contrat : somme des règles actives ; sans règle, ancienne saisie manuelle (conservée en secours)
@@ -74325,6 +74574,14 @@ function avDCAContratChange(keepComp){
   _avDcaRows = id ? avDcaRowsFor(id, comp) : [];
   avDcaEqual();
   ['avDCAContrat','avDCAFreq','avDCAComp'].forEach(id => { const e = document.getElementById(id); if(e && typeof kyfPgLabel === 'function') kyfPgLabel(e); });
+}
+function avDcaFreqChange(){
+  const once = (document.getElementById('avDCAFreq') || {}).value === 'once';
+  const l = document.getElementById('avDCADateLbl'); if(l) l.textContent = once ? 'DATE DU VERSEMENT' : 'PREMIÈRE DATE';
+  const h = document.getElementById('avDCADateHint'); if(h) h.style.display = once ? 'none' : '';
+  const a = document.getElementById('avDCAActifWrap'); if(a) a.style.visibility = once ? 'hidden' : '';
+  try{ avDcaSetEditMode(_avDcaEditId); }catch(e){}
+  avDCARenderAlloc();
 }
 function avDCARenderAlloc(noRebuild){
   const el = document.getElementById('avDCAAllocList'), warn = document.getElementById('avDCAAllocWarning');
@@ -74411,7 +74668,8 @@ function avDcaFlashStart(ruleId){
 function avDcaSetEditMode(id){
   _avDcaEditId = id || null;
   const t = document.getElementById('avDCAFormTitle'), b = document.getElementById('avDCASaveBtn');
-  if(t) t.textContent = id ? 'MODIFIER LE VERSEMENT PROGRAMMÉ' : '+ NOUVEAU VERSEMENT PROGRAMMÉ';
+  const once1 = ((document.getElementById('avDCAFreq') || {}).value === 'once');
+  if(t) t.textContent = id ? (once1 ? 'MODIFIER LE VERSEMENT EXCEPTIONNEL' : 'MODIFIER LE VERSEMENT PROGRAMMÉ') : (once1 ? '+ NOUVEAU VERSEMENT EXCEPTIONNEL' : '+ NOUVEAU VERSEMENT PROGRAMMÉ');
   avDcaFootSync();
 }
 function avDCAEdit(ruleId){
@@ -74420,6 +74678,7 @@ function avDCAEdit(ruleId){
   const sel = document.getElementById('avDCAContrat'); sel.value = r.contratId;
   const cp = document.getElementById('avDCAComp'); if(cp) cp.value = r.compartiment || 'ev-ded';
   document.getElementById('avDCAFreq').value = avDcaFreq(r).key || r.freq || 'monthly';
+  try{ avDcaFreqChange(); }catch(e){}
   document.getElementById('avDCAMontant').value = String(r.montant).replace('.', ',');
   if(r.debut) kyfDateSetValue('avDCADebut', r.debut);
   document.getElementById('avDCAJour').value = r.jour || 1;
@@ -74446,6 +74705,7 @@ function openAVDCA(contratId, preset){
   sel.value = (contratId && contrats.some(c=>c.id===contratId)) ? contratId : '';
   ['avDCAContrat','avDCAFreq','avDCAComp'].forEach(id => { const e = document.getElementById(id); if(e && typeof kyfPgInit === 'function'){ kyfPgInit(e); } });
   const f = document.getElementById('avDCAFreq'); if(f) f.value = (preset && preset.freq) || 'monthly';
+  try{ avDcaFreqChange(); }catch(e){}
   const cp = document.getElementById('avDCAComp'); if(cp) cp.value = 'ev-ded';
   document.getElementById('avDCAMontant').value = (preset && preset.montant) ? String(preset.montant) : '';
   kyfDateSetValue('avDCADebut', new Date().toISOString().slice(0,10));
@@ -74484,15 +74744,16 @@ function avDCARenderList(){
     const nom  = c ? (c.contratNom||c.assureur) : 'Contrat supprimé';
     const next = r.actif ? avDCANextDate(r) : '-';
     const fr   = avDcaFreq(r);
+    const isOnce = !!fr.once, done1 = isOnce && !!r.derniereExecution;
     const nl   = (r.allocs||[]).filter(a=>a.posId||a.kind==='fe').length;
     const comp = r.compartiment ? (r.compartiment === 'ev-non-ded' ? ' · non déductible' : ' · déductible') : '';
     return `<div data-rid="${r.id}" style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border);margin-bottom:6px;transition:background .4s,border-color .4s">
       <div style="flex:1;min-width:0">
         <div style="font-size:10px;font-weight:700;color:${r.actif?'var(--text)':'var(--text3)'}">${escapeHtml(nom)}${!c?' <span style="color:var(--red);font-weight:400">· règle orpheline</span>':''}</div>
-        <div style="font-size:9px;color:var(--text3);margin-top:2px">${fmt(r.montant,0)} € ${fr.short} · le ${r.jour}${comp}${nl?' · '+nl+' ligne'+(nl>1?'s':''):' · total investi seul'}${r.actif&&next!=='-'?' · <span style="color:var(--accent)">Prochain : '+next+'</span>':''}</div>
+        <div style="font-size:9px;color:var(--text3);margin-top:2px">${fmt(r.montant,0)} € ${isOnce ? '· exceptionnel du ' + new Date(String(r.debut).slice(0,10)+'T12:00:00').toLocaleDateString('fr-FR') : fr.short + ' · le ' + r.jour}${comp}${nl?' · '+nl+' ligne'+(nl>1?'s':''):' · total investi seul'}${done1?' · <span style="color:var(--green)">Appliqué</span>':(r.actif&&next!=='-'?' · <span style="color:var(--accent)">'+(isOnce?'Prévu le ':'Prochain : ')+next+'</span>':'')}</div>
       </div>
-      <button type="button" onclick="avDCAEdit('${r.id}')" class="kyf-icon-btn" style="background:none;border:none;color:var(--text3);cursor:pointer;transition:color .15s;display:inline-flex" title="Modifier" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text3)'">${KYF_ICONS.edit}</button>
-      <button type="button" onclick="avDCAToggle('${r.id}')" style="font-size:9px;padding:3px 8px;border-radius:4px;border:1px solid var(--border2);background:${r.actif?'rgba(240,180,41,0.15)':'rgba(255,255,255,0.05)'};color:${r.actif?'var(--accent)':'var(--text3)'};cursor:pointer;font-family:'Inter',sans-serif">${r.actif?'Actif':'Pause'}</button>
+      ${done1?'':`<button type="button" onclick="avDCAEdit('${r.id}')" class="kyf-icon-btn" style="background:none;border:none;color:var(--text3);cursor:pointer;transition:color .15s;display:inline-flex" title="Modifier" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text3)'">${KYF_ICONS.edit}</button>`}
+      ${isOnce?'':`<button type="button" onclick="avDCAToggle('${r.id}')" style="font-size:9px;padding:3px 8px;border-radius:4px;border:1px solid var(--border2);background:${r.actif?'rgba(240,180,41,0.15)':'rgba(255,255,255,0.05)'};color:${r.actif?'var(--accent)':'var(--text3)'};cursor:pointer;font-family:'Inter',sans-serif">${r.actif?'Actif':'Pause'}</button>`}
       <button type="button" onclick="avDCADelete('${r.id}')" class="kyf-icon-btn" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;transition:color .15s" title="Supprimer" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text3)'"><svg aria-hidden="true" style="vertical-align:-.18em;flex-shrink:0" width="1.1em" height="1.1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>`;
   }).join('');
@@ -74502,9 +74763,10 @@ function saveAVDCA(){
   const contratId = document.getElementById('avDCAContrat').value;
   const montant   = parseNum(document.getElementById('avDCAMontant').value)||0;
   const debut     = document.getElementById('avDCADebut').value;
-  const jour      = parseInt(document.getElementById('avDCAJour').value)||1;
-  const actif     = document.getElementById('avDCAActif').checked;
+  let jour        = parseInt(document.getElementById('avDCAJour').value)||1;
+  let actif       = document.getElementById('avDCAActif').checked;
   const freq      = document.getElementById('avDCAFreq').value || 'monthly';
+  if(freq === 'once'){ jour = new Date(debut+'T12:00:00').getDate() || 1; actif = true; }
   if(!contratId){ alert('Choisissez un contrat.'); return; }
   if(montant<=0){ alert('Montant invalide.'); return; }
   if(!debut){ alert('Choisissez une date.'); return; }
@@ -74518,7 +74780,7 @@ function saveAVDCA(){
   }
   // Date passée : les échéances déjà écoulées seraient ajoutées au total investi
   if(new Date(debut+'T12:00:00') < new Date(new Date().toDateString()) && (parseFloat(c && c.versements)||0) > 0){
-    if(!confirm('La première date est passée : les versements déjà échus depuis cette date seront ajoutés au total investi du contrat.\n\nSi votre total investi les inclut déjà, choisissez plutôt une date à venir.\n\nContinuer ?')) return;
+    if(!confirm(freq === 'once' ? 'Ce versement exceptionnel sera ajouté au total investi du contrat et réparti sur les lignes choisies.\n\nSi votre total investi l\'inclut déjà, annulez.\n\nContinuer ?' : 'La première date est passée : les versements déjà échus depuis cette date seront ajoutés au total investi du contrat.\n\nSi votre total investi les inclut déjà, choisissez plutôt une date à venir.\n\nContinuer ?')) return;
   }
   const allocs = sel.length ? sel.map(r => ({ posId:r.posId, kind:r.kind, label:r.label, pct:parseFloat(r.pct)||0 })) : null;
   const rules = avDCALoad();
@@ -74527,6 +74789,7 @@ function saveAVDCA(){
   if(ex){ Object.assign(ex, {contratId, montant, freq, jour, debut, actif, compartiment, allocs}); savedId = ex.id; }
   else { savedId = Date.now().toString(); rules.push({id:savedId, contratId, montant, freq, jour, debut, actif, compartiment, allocs, derniereExecution:null}); }
   avDCASave(rules);
+  if(freq === 'once'){ try{ avDCARunPending(); }catch(e){ console.warn('[KYF versement exceptionnel]', e.message); } }
   avDcaSetEditMode(null);
   avDCARenderList();
   try{ if(typeof renderDCA === 'function') renderDCA(); }catch(e){}
@@ -74579,10 +74842,177 @@ function avVersOpenDCA(){
   openAVDCA(id, legacy);
 }
 // Depuis le menu du contrat (carte)
-function avOpenDCAFor(id){ openAVDCA(id); }
+function avOpenDCAFor(id, preset){ openAVDCA(id, preset); }
+
+// ── Retrait exceptionnel (déblocage anticipé) : PER collectif et PER obligatoire ─────────────────────────────
+// Motifs, délais et fiscalité : fiche Service Public F31622 « Dans quels cas peut-on demander le déblocage anticipé de l'épargne salariale ? »
+// (consultée le 16/10/2026). KYF recopie ce que dit la fiche, n'applique et ne calcule aucun impôt.
+const KYF_RETRAIT_CAS = {
+  'per-col': {
+    titre: "PER d'entreprise collectif",
+    cas: [
+      "Décès du conjoint ou du partenaire de Pacs du titulaire",
+      "Invalidité (2e ou 3e catégorie) du titulaire, de ses enfants, de son conjoint ou de son partenaire de Pacs",
+      "Maladie grave, invalidité ou accident grave d'un enfant à charge",
+      "Surendettement (la commission de surendettement en informe l'organisme gestionnaire)",
+      "Expiration des droits à l'assurance chômage du titulaire (ou fin d'un mandat social depuis au moins 2 ans, sans contrat de travail ni pension)",
+      "Cessation d'activité non salariée",
+      "Achat de la résidence principale (les droits issus des versements obligatoires restent bloqués)"
+    ],
+    delai: "La demande peut être faite à tout moment.",
+    fisc: "Selon la fiche : les sommes issues de versements volontaires ayant bénéficié d'un avantage fiscal suivent le barème progressif de l'impôt sur le revenu, leurs gains le prélèvement forfaitaire ; les sommes issues de l'épargne salariale ne sont pas soumises à l'impôt sur le revenu, leurs gains aux prélèvements sociaux."
+  },
+  'per-ob': {
+    titre: "PER obligatoire (contrat article 83)",
+    cas: [
+      "Expiration des droits à l'assurance chômage après perte involontaire d'emploi (ou fin d'un mandat social depuis au moins 2 ans, sans pension)",
+      "Cessation d'activité non salariée après liquidation judiciaire, ou autre situation difficile attestée par le président du tribunal de commerce",
+      "Invalidité de 2e ou 3e catégorie",
+      "Maladie grave, invalidité ou accident grave d'un enfant à charge",
+      "Décès du conjoint ou du partenaire de Pacs",
+      "Surendettement"
+    ],
+    delai: "La fiche ne précise pas de délai pour ce produit.",
+    fisc: "Selon la fiche : le capital débloqué n'est soumis ni à l'impôt sur le revenu ni aux prélèvements sociaux.",
+    note: "Selon la fiche, l'achat de la résidence principale ne permet pas de débloquer ce produit."
+  }
+};
+let _avRetId = null, _avRetRows = [];
+function avOpenRetrait(id){
+  const c = avLoad().find(x => x.id === id); if(!c || !KYF_RETRAIT_CAS[c.type]) return;
+  _avRetId = id;
+  const cfg = KYF_RETRAIT_CAS[c.type];
+  document.getElementById('avRetTitre').textContent = '· ' + (c.contratNom || c.assureur || 'Contrat');
+  const sel = document.getElementById('avRetMotif');
+  sel.innerHTML = '<option value="">-- Choisir le motif --</option>' + cfg.cas.map((t,i) => '<option value="'+i+'">'+escapeHtml(t)+'</option>').join('');
+  sel.value = '';
+  try{ if(typeof kyfPgInit === 'function') kyfPgInit(sel); if(typeof kyfPgLabel === 'function') kyfPgLabel(sel); }catch(e){}
+  document.getElementById('avRetMontant').value = '';
+  kyfDateSetValue('avRetDate', new Date().toISOString().slice(0,10));
+  const lp = window._lp || {}, linked = kyfAvLinkedTk(c), pos = avPosLoad(id);
+  _avRetRows = pos.map(p => ({ key:'p'+p.id, label:p.nom || p.ticker || 'Ligne', kind:'pos', posId:p.id, val: kyfAvPosValue(p, linked, lp).val || 0, on:true, pct:0 }));
+  const fe = parseFloat(c.fondsEuros) || 0;
+  if(!pos.some(p => p.type === 'fe') && fe > 0) _avRetRows.push({ key:'fe', label:'Fonds en euros', kind:'fe', posId:null, val:fe, on:true, pct:0 });
+  _avRetRows = _avRetRows.filter(r => r.val > 0);
+  avRetInfo();
+  avRetProrata();
+  avRetListRender(c);
+  document.getElementById('avRetModal').style.display = 'block';
+  document.getElementById('avRetOverlay').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+function avRetListRender(c){
+  const el = document.getElementById('avRetList'); if(!el) return;
+  const l = Array.isArray(c && c.retraits) ? c.retraits.slice().reverse() : [];
+  if(!l.length){ el.innerHTML = '<div style="font-size:10px;color:var(--text3);text-align:center;padding:10px">Aucun retrait enregistré</div>'; return; }
+  el.innerHTML = l.map(r => '<div style="padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border);margin-bottom:6px">'
+    + '<div style="font-size:10px;font-weight:700;color:var(--text)">' + fmt(r.montant,2) + ' € · ' + new Date(String(r.date).slice(0,10) + 'T12:00:00').toLocaleDateString('fr-FR') + '</div>'
+    + '<div style="font-size:9px;color:var(--text3);margin-top:2px;line-height:1.5">' + escapeHtml(r.motif || '') + '</div></div>').join('');
+}
+function avRetClose(){
+  document.getElementById('avRetModal').style.display = 'none';
+  document.getElementById('avRetOverlay').style.display = 'none';
+  if(typeof _kyfPg !== 'undefined' && _kyfPg.open && /^avRet/.test(_kyfPg.open.id||'')) kyfPgClose(false);
+  document.body.style.overflow = '';
+}
+function avRetInfo(){
+  const el = document.getElementById('avRetInfo'); if(!el) return;
+  const c = avLoad().find(x => x.id === _avRetId); const cfg = c && KYF_RETRAIT_CAS[c.type];
+  const mi = document.getElementById('avRetMotif').value;
+  if(!cfg || mi === ''){ el.innerHTML = '<span style="color:var(--text3)">Choisissez le motif parmi ceux que la loi prévoit pour ce contrat.</span>'; return; }
+  el.innerHTML = '<div><strong>Délai</strong> : ' + escapeHtml(cfg.delai) + '</div><div style="margin-top:3px"><strong>Fiscalité</strong> : ' + escapeHtml(cfg.fisc) + '</div>'
+    + (cfg.note ? '<div style="margin-top:3px">' + escapeHtml(cfg.note) + '</div>' : '')
+    + '<div style="margin-top:4px;font-size:9px;color:var(--text3)">Source : fiche Service Public F31622 (consultée le 16/10/2026). Information, pas un calcul : vérifiez votre situation auprès de votre gestionnaire.</div>';
+}
+function avRetProrata(fromBtn){
+  if(fromBtn) _avRetRows.forEach(r => { r.on = true; });
+  const on = _avRetRows.filter(r => r.on), tot = on.reduce((t,r) => t + r.val, 0);
+  _avRetRows.forEach(r => { r.pct = 0; });
+  if(on.length && tot > 0){
+    on.forEach(r => { r.pct = Math.round(r.val / tot * 10000) / 100; });
+    const diff = Math.round((100 - on.reduce((t,r) => t + r.pct, 0)) * 100) / 100;
+    on[0].pct = Math.round((on[0].pct + diff) * 100) / 100;
+  }
+  avRetRender();
+}
+function avRetToggle(i){ _avRetRows[i].on = !_avRetRows[i].on; avRetProrata(); }
+function avRetSetPct(i, v){ _avRetRows[i].pct = parseFloat(String(v).replace(',','.')) || 0; avRetRender(true); }
+function avRetRender(noRebuild){
+  const el = document.getElementById('avRetAlloc'); if(!el) return;
+  if(!_avRetRows.length){ el.innerHTML = '<div style="font-size:10px;color:var(--text3);line-height:1.6">Ce contrat n\'a pas de ligne détaillée : KYF ne sait pas d\'où retirer le montant. Modifiez le contrat (valeur actuelle et total racheté).</div>'; return; }
+  const montant = parseNum(document.getElementById('avRetMontant')?.value || '0') || 0;
+  const total = Math.round(_avRetRows.filter(r => r.on).reduce((t,r) => t + (parseFloat(r.pct)||0), 0) * 100) / 100;
+  if(noRebuild !== true || !el.firstChild){
+    el.innerHTML = _avRetRows.map((r,i) => '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border)">'
+      + '<input type="checkbox" ' + (r.on ? 'checked' : '') + ' onchange="avRetToggle(' + i + ')" style="accent-color:var(--accent);flex-shrink:0">'
+      + '<span style="flex:1;min-width:0;font-size:11px;color:' + (r.on ? 'var(--text)' : 'var(--text3)') + ';white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="' + escapeHtml(r.label) + '">' + escapeHtml(r.label) + '</span>'
+      + '<span style="font-size:9px;color:var(--text3);white-space:nowrap">valeur ' + fmt(r.val,0) + ' €</span>'
+      + '<input type="text" inputmode="decimal" value="' + (r.on ? String(r.pct).replace('.',',') : '') + '" ' + (r.on ? '' : 'disabled') + ' onchange="avRetSetPct(' + i + ',this.value)" style="width:56px;text-align:right;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:\'Inter\',sans-serif;font-size:11px;padding:3px 6px;border-radius:5px;outline:none">'
+      + '<span style="font-size:9px;color:var(--text3);width:12px">%</span>'
+      + '<span id="avRetEur' + i + '" style="font-size:10px;color:var(--text3);width:74px;text-align:right;font-variant-numeric:tabular-nums"></span></div>').join('')
+      + '<div id="avRetTot" style="font-size:9px;font-weight:700;margin-top:6px"></div>';
+  }
+  _avRetRows.forEach((r,i) => { const e = document.getElementById('avRetEur' + i); if(e) e.textContent = (r.on && montant > 0) ? fmt(montant * (r.pct||0) / 100, 2) + ' €' : ''; });
+  const t = document.getElementById('avRetTot');
+  if(t){ const ok = Math.abs(total - 100) < 0.01; t.style.color = ok ? 'var(--green)' : (total > 100 ? 'var(--red)' : 'var(--text3)'); t.textContent = 'Total : ' + String(total).replace('.',',') + ' %' + (ok ? ' ✓' : ''); }
+}
+function avRetSave(){
+  const cs = avLoad(), c = cs.find(x => x.id === _avRetId); if(!c) return;
+  const cfg = KYF_RETRAIT_CAS[c.type]; if(!cfg) return;
+  const mi = document.getElementById('avRetMotif').value;
+  if(mi === ''){ alert('Choisissez le motif du déblocage.'); return; }
+  const montant = Math.round((parseNum(document.getElementById('avRetMontant').value) || 0) * 100) / 100;
+  if(!(montant > 0)){ alert('Montant invalide.'); return; }
+  const date = document.getElementById('avRetDate').value;
+  if(!date){ alert('Choisissez une date.'); return; }
+  if(new Date(date + 'T00:00:00') > new Date()){ alert('La date d\'un retrait ne peut pas être dans le futur.'); return; }
+  if(!_avRetRows.length){ alert('Ce contrat n\'a pas de ligne détaillée : modifiez le contrat (valeur actuelle et total racheté).'); return; }
+  const sel = _avRetRows.filter(r => r.on && (parseFloat(r.pct)||0) > 0);
+  const total = sel.reduce((t,r) => t + (parseFloat(r.pct)||0), 0);
+  if(!sel.length || Math.abs(total - 100) > 0.05){ alert('La répartition doit totaliser 100 %.'); return; }
+  const positions = avPosLoad(c.id), lp = window._lp || {};
+  const plan = [];
+  for(const r of sel){
+    const share = Math.round(montant * (parseFloat(r.pct)||0)) / 100;
+    if(share > r.val + 0.005){ alert('Le retrait dépasse la valeur de « ' + r.label + ' » (' + fmt(r.val,2) + ' €).'); return; }
+    if(r.kind === 'fe'){ plan.push({ r, share }); continue; }
+    const p = positions.find(x => x.id === r.posId);
+    if(!p){ alert('La ligne « ' + r.label + ' » est introuvable.'); return; }
+    const qty0 = parseFloat(p.qty) || 0;
+    let dq = 0;
+    if((p.type === 'etf' || p.type === 'action') && p.ticker){
+      let price = 0;
+      try{ const q = lp[p.ticker]; if(q && q.price > 0){ price = toEUR(q.price, q.currency || getTickerCurrency(p.ticker, q)); } }catch(e){}
+      if(!(price > 0)) price = (qty0 > 0 && (parseFloat(p.valeur)||0) > 0) ? (parseFloat(p.valeur) / qty0) : 0;
+      if(!(price > 0)){ alert('Cours indisponible pour « ' + r.label + ' » : retrait impossible sans cours.'); return; }
+      dq = share / price;
+      if(dq > qty0 + 1e-6){ alert('Le retrait dépasse le nombre de parts de « ' + r.label + ' ».'); return; }
+    } else if(qty0 > 0 && r.val > 0){ dq = qty0 * (share / r.val); }
+    plan.push({ r, share, p, dq, qty0 });
+  }
+  plan.forEach(x => {
+    if(x.r.kind === 'fe'){ c.fondsEuros = Math.max(0, Math.round(((parseFloat(c.fondsEuros)||0) - x.share) * 100) / 100); return; }
+    const p = x.p, val0 = parseFloat(p.valeur) || 0;
+    if(x.qty0 > 0){
+      const q1 = Math.max(0, x.qty0 - x.dq);
+      p.qty = Math.round(q1 * 1e6) / 1e6;
+      p.valeur = Math.round(val0 * (q1 / x.qty0) * 100) / 100;
+    } else {
+      p.valeur = Math.max(0, Math.round((val0 - x.share) * 100) / 100);
+    }
+  });
+  c.rachats = Math.round(((parseFloat(c.rachats)||0) + montant) * 100) / 100;
+  c.retraits = (Array.isArray(c.retraits) ? c.retraits : []).concat([{ id: Date.now().toString(), date, montant, motif: cfg.cas[parseInt(mi,10)], lignes: sel.map(r => ({ label:r.label, pct:parseFloat(r.pct)||0 })) }]);
+  avSave(cs);
+  avPosSave(c.id, positions);
+  try{ addLog('infos', 'Retrait exceptionnel : ' + montant + '€ → ' + (c.contratNom || c.assureur) + ' (' + cfg.cas[parseInt(mi,10)] + ')', 'AV'); }catch(e){}
+  avRetClose();
+  try{ renderAV(); }catch(e){}
+}
+
 
 // Application d'un versement : total investi + répartition estimée sur les lignes
-function avDcaApply(contrat, r){
+function avDcaApply(contrat, r, hist){
   const montant = parseFloat(r.montant)||0;
   contrat.versements = (parseFloat(contrat.versements)||0) + montant;
   const net = montant * (1 - (parseFloat(contrat.fraisEntree)||0)/100);
@@ -74602,8 +75032,13 @@ function avDcaApply(contrat, r){
     const qty0 = parseFloat(p.qty)||0, pru0 = parseFloat(p.pru)||0;
     if((p.type === 'etf' || p.type === 'action') && p.ticker){
       let price = 0;
-      try{ const lp = window._lp && window._lp[p.ticker]; if(lp && lp.price > 0){ price = toEUR(lp.price, lp.currency || getTickerCurrency(p.ticker, lp)); } }catch(e){}
-      if(!(price > 0)) price = qty0 > 0 && (parseFloat(p.valeur)||0) > 0 ? (parseFloat(p.valeur)/qty0) : pru0;
+      if(hist){
+        // Échéance passée : cours de clôture de la date de l'échéance, jamais le cours du jour (résolu avant, sinon l'échéance n'est pas enregistrée)
+        price = parseFloat(hist[p.ticker]) || 0;
+      } else {
+        try{ const lp = window._lp && window._lp[p.ticker]; if(lp && lp.price > 0){ price = toEUR(lp.price, lp.currency || getTickerCurrency(p.ticker, lp)); } }catch(e){}
+        if(!(price > 0)) price = qty0 > 0 && (parseFloat(p.valeur)||0) > 0 ? (parseFloat(p.valeur)/qty0) : pru0;
+      }
       if(price > 0){
         const dq = share / price;
         p.pru = Math.round(((qty0*pru0 + share) / (qty0 + dq))*1e4)/1e4;
@@ -74624,31 +75059,86 @@ function avDcaApply(contrat, r){
 }
 
 // ── Exécution automatique au démarrage ──────────────────────────
+// Cours de clôture d'une date passée, en euros. Inconnu = jamais inventé : { wait } (à réessayer) ou { fail } (devise non gérée).
+async function avDcaHistPriceEUR(tk, iso){
+  const lp = window._lp && window._lp[tk];
+  let cur = ''; try{ cur = kyfNormCcy((lp && lp.currency) || getTickerCurrency(tk, lp)); }catch(e){}
+  if(!cur) return { wait:true, why:'devise inconnue' };
+  let px = null;
+  try{ px = await fetchHistoricalClose(tk, getLastTradingDay(iso, tk)); }catch(e){ px = null; }
+  if(!(px > 0)) return { wait:true, why:'cours introuvable' };
+  if(cur === 'EUR') return { price:px };
+  if(cur === 'USD'){ const rate = await kyfFxHistRate(iso); return rate > 0 ? { price: px / rate } : { wait:true, why:'taux de change introuvable' }; }
+  return { fail:true, why:'devise ' + cur + ' non gérée' };
+}
+let _avDcaBusy = false, _avDcaTries = 0;
 function avDCARunPending(){
-  const rules    = avDCALoad();
-  const contrats = avLoad();
-  if(!rules.length) return;
-  let changed = false;
-  const now = new Date();
-  rules.forEach(r=>{
-    if(!r.actif) return;
-    const contrat = contrats.find(c=>c.id===r.contratId);
-    if(!contrat) return;
+  if(_avDcaBusy) return Promise.resolve();
+  const rules0 = avDCALoad();
+  if(!rules0.length) return Promise.resolve();
+  _avDcaBusy = true;
+  return avDCARunPendingAsync(rules0).catch(e => { console.warn('[KYF DCA AV]', e && e.message); }).finally(() => { _avDcaBusy = false; });
+}
+async function avDCARunPendingAsync(rules0){
+  const contrats0 = avLoad();
+  const now = new Date(), pad = n => String(n).padStart(2,'0');
+  const ymd = d => d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
+  const todayStr = ymd(now);
+  // Phase 1 : échéances dues, avec le cours de clôture de leur date pour les lignes cotées (échéance passée)
+  const plans = []; let retry = false;
+  for(const r of rules0){
+    if(!r.actif) continue;
+    const contrat = contrats0.find(c => c.id === r.contratId);
+    if(!contrat) continue;
     const last = r.derniereExecution ? new Date(r.derniereExecution) : null;
     const imp  = contrat.lastImportAt ? new Date(contrat.lastImportAt) : null;   // un relevé importé contient déjà les versements antérieurs
-    let count = 0, lastDone = null;
+    const items = []; let stuck = null;
     for(let k=0; k<2000; k++){
+      if(avDcaFreq(r).once && k > 0) break;   // versement exceptionnel : une seule échéance
       const d = avDcaDate(r, k);
       if(d > now) break;
       if(last && d <= last) continue;
-      lastDone = d;
-      if(imp && d <= imp) continue;
-      avDcaApply(contrat, r);
-      count++;
+      const skip = !!(imp && d <= imp);
+      const dStr = ymd(d);
+      let hist = null;
+      if(!skip && dStr < todayStr){
+        const pos = avPosLoad(contrat.id);
+        const tks = Array.from(new Set((r.allocs||[]).filter(a => a.posId && (parseFloat(a.pct)||0) > 0)
+          .map(a => pos.find(p => p.id === a.posId)).filter(p => p && (p.type === 'etf' || p.type === 'action') && p.ticker).map(p => p.ticker)));
+        if(tks.length){
+          hist = {};
+          for(const tk of tks){
+            const res = await avDcaHistPriceEUR(tk, dStr);
+            if(res.price > 0) hist[tk] = res.price; else { stuck = { dStr, tk, why: res.why || 'cours introuvable', wait: !!res.wait }; break; }
+          }
+          if(stuck) break;   // on garde l'ordre : les échéances suivantes attendent celle-ci
+        }
+      }
+      items.push({ d, skip, hist });
     }
-    if(lastDone){ r.derniereExecution = lastDone.toISOString(); changed = true; }
+    plans.push({ r, items, stuck });
+  }
+  // Phase 2 : application d'un seul coup sur des données relues (aucune modification perdue pendant l'attente des cours)
+  const contrats = avLoad(), rules = avDCALoad();
+  let changed = false;
+  plans.forEach(pl => {
+    const r = rules.find(x => x.id === pl.r.id), contrat = r && contrats.find(c => c.id === r.contratId);
+    if(!r || !contrat || r.derniereExecution !== pl.r.derniereExecution || !r.actif) return;
+    let count = 0, lastDone = null;
+    pl.items.forEach(it => {
+      lastDone = it.d;
+      if(it.skip) return;
+      avDcaApply(contrat, r, it.hist);
+      count++;
+    });
+    if(lastDone){ r.derniereExecution = lastDone.toISOString(); changed = true; if(avDcaFreq(r).once && !pl.stuck) r.actif = false; }
     if(count>0){
-      addLog('infos', `Versement programmé : ${count} × ${r.montant}€ → ${contrat.contratNom||contrat.assureur}`, 'DCA AV');
+      addLog('infos', avDcaFreq(r).once ? `Versement exceptionnel : ${r.montant}€ → ${contrat.contratNom||contrat.assureur}` : `Versement programmé : ${count} × ${r.montant}€ → ${contrat.contratNom||contrat.assureur}`, 'DCA AV');
+    }
+    if(pl.stuck){
+      const fr = pl.stuck.dStr.split('-').reverse().join('/');
+      addLog('infos', `Versement du ${fr} non enregistré : ${pl.stuck.why} (${pl.stuck.tk}). Le cours de cette date est indispensable : nouvel essai au prochain chargement.`, 'DCA AV');
+      if(pl.stuck.wait) retry = true;
     }
   });
   if(changed){
@@ -74657,6 +75147,7 @@ function avDCARunPending(){
     try{ renderAV(); }catch(e){}
     try{ if(typeof renderETFTable === 'function') renderETFTable(window._lp || {}); }catch(e){}
   }
+  if(retry && _avDcaTries < 3){ _avDcaTries++; setTimeout(() => { try{ avDCARunPending(); }catch(e){} }, 8000); }
 }
 
 let _immoCurrentTab = 'biens';
@@ -82507,8 +82998,95 @@ function savePee(){
   const it = { id: editId || 'pee_' + Date.now(), type: 'pee', nom, gestionnaire: g('peeGest').trim(), valeur, versements: vers,
     dateOuv: g('peeDateOuv'), dateDispo: g('peeDateDispo'), note: g('peeNote').trim() };
   const d = peeLoad();
+  { const prev = editId ? d.find(x => x.id === editId) : null; if(prev && Array.isArray(prev.retraits) && prev.retraits.length) it.retraits = prev.retraits; }
   if(editId){ const i = d.findIndex(x => x.id === editId); if(i > -1) d[i] = it; else d.push(it); } else d.push(it);
   peeSave(d); closePeeModal(); renderPee();
+}
+
+// ── Retrait exceptionnel PEE (déblocage anticipé) ───────────────────────────────────────────────────────
+// Source : economie.gouv.fr « Plan d'épargne entreprise (PEE), comment ça marche ? » (consultée le 16/10/2026). Liste donnée « notamment » : exemples, pas exhaustive.
+const KYF_PEE_RETRAIT = {
+  cas: [
+    { t: "Mariage ou conclusion d'un Pacs" },
+    { t: "Naissance ou adoption d'un troisième enfant" },
+    { t: "Divorce, séparation ou dissolution d'un Pacs, avec la garde d'au moins un enfant" },
+    { t: "Violences conjugales", tout: true },
+    { t: "Invalidité du titulaire, de son conjoint, de son partenaire de Pacs ou de ses enfants", tout: true },
+    { t: "Décès du titulaire, de son conjoint ou de son partenaire de Pacs", tout: true },
+    { t: "Rupture du contrat de travail, cessation d'activité d'un entrepreneur individuel, fin de mandat social ou perte du statut de conjoint collaborateur ou d'associé", tout: true },
+    { t: "Création ou reprise d'entreprise, début d'une activité non salariée ou acquisition de parts d'une SCOP" },
+    { t: "Acquisition ou agrandissement de la résidence principale (création de surface habitable, permis de construire ou déclaration préalable)" },
+    { t: "Remise en état de la résidence principale après une catastrophe naturelle reconnue par arrêté" },
+    { t: "Travaux de rénovation énergétique de la résidence principale" },
+    { t: "Situation de surendettement", tout: true },
+    { t: "Activité de proche aidant", tout: true },
+    { t: "Achat d'un véhicule propre neuf ou d'un vélo à assistance électrique neuf" }
+  ],
+  delai6: "En principe, la demande doit être faite dans les six mois suivant l'événement.",
+  delaiTout: "Pour ce motif, la demande peut être faite à tout moment.",
+  fisc: "Selon la page : l'abondement est exonéré d'impôt sur le revenu dans les limites prévues mais soumis à la CSG et à la CRDS ; les gains de cession des titres sont exonérés d'impôt sur le revenu mais soumis aux prélèvements sociaux ; les intérêts non réinvestis sont soumis à l'impôt sur le revenu et aux prélèvements sociaux. Les versements volontaires ne sont pas déductibles du revenu imposable. La page ne détaille pas le traitement du retrait lui-même.",
+  note: "La liste de la fiche est donnée « notamment » : d'autres cas peuvent exister. Votre gestionnaire vous indique le traitement applicable à votre situation."
+};
+let _peeRetId = null;
+function peeRetTotal(x){ return Array.isArray(x && x.retraits) ? x.retraits.reduce((s, r) => s + (parseFloat(r.montant) || 0), 0) : 0; }
+function peeRetOpen(id){
+  const it = peeLoad().find(x => x.id === id); if(!it) return;
+  _peeRetId = id;
+  document.getElementById('peeRetTitre').textContent = '· ' + (it.nom || 'PEE');
+  const sel = document.getElementById('peeRetMotif');
+  sel.innerHTML = '<option value="">-- Choisir le motif --</option>' + KYF_PEE_RETRAIT.cas.map((c,i) => '<option value="'+i+'">'+escapeHtml(c.t)+'</option>').join('');
+  sel.value = '';
+  try{ if(typeof kyfPgInit === 'function') kyfPgInit(sel); if(typeof kyfPgLabel === 'function') kyfPgLabel(sel); }catch(e){}
+  document.getElementById('peeRetMontant').value = '';
+  kyfDateSetValue('peeRetDate', new Date().toISOString().slice(0,10));
+  peeRetInfo(); peeRetListRender(it);
+  const v = parseFloat(it.valeur) || 0;
+  const w = document.getElementById('peeRetVal'); if(w) w.textContent = v > 0 ? 'Valeur actuelle saisie : ' + fmt(v, 2) + ' €' : 'Valeur actuelle indisponible : renseignez-la d\'abord (Modifier le PEE).';
+  document.getElementById('peeRetModal').style.display = 'block';
+  document.getElementById('peeRetOverlay').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+function peeRetClose(){
+  document.getElementById('peeRetModal').style.display = 'none';
+  document.getElementById('peeRetOverlay').style.display = 'none';
+  if(typeof _kyfPg !== 'undefined' && _kyfPg.open && /^peeRet/.test(_kyfPg.open.id||'')) kyfPgClose(false);
+  document.body.style.overflow = '';
+}
+function peeRetInfo(){
+  const el = document.getElementById('peeRetInfo'); if(!el) return;
+  const mi = document.getElementById('peeRetMotif').value;
+  if(mi === ''){ el.innerHTML = '<span style="color:var(--text3)">Choisissez le motif dans la liste de la fiche.</span>'; return; }
+  const c = KYF_PEE_RETRAIT.cas[parseInt(mi,10)];
+  el.innerHTML = '<div><strong>Délai</strong> : ' + escapeHtml(c.tout ? KYF_PEE_RETRAIT.delaiTout : KYF_PEE_RETRAIT.delai6) + '</div><div style="margin-top:3px"><strong>Fiscalité</strong> : ' + escapeHtml(KYF_PEE_RETRAIT.fisc) + '</div>'
+    + '<div style="margin-top:3px">' + escapeHtml(KYF_PEE_RETRAIT.note) + '</div>'
+    + '<div style="margin-top:4px;font-size:9px;color:var(--text3)">Source : economie.gouv.fr, « Plan d\'épargne entreprise (PEE), comment ça marche ? » (consultée le 16/10/2026). Information, pas un calcul.</div>';
+}
+function peeRetListRender(it){
+  const el = document.getElementById('peeRetList'); if(!el) return;
+  const l = Array.isArray(it && it.retraits) ? it.retraits.slice().reverse() : [];
+  if(!l.length){ el.innerHTML = '<div style="font-size:10px;color:var(--text3);text-align:center;padding:10px">Aucun retrait enregistré</div>'; return; }
+  el.innerHTML = l.map(r => '<div style="padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border);margin-bottom:6px">'
+    + '<div style="font-size:10px;font-weight:700;color:var(--text)">' + fmt(r.montant,2) + ' € · ' + new Date(String(r.date).slice(0,10) + 'T12:00:00').toLocaleDateString('fr-FR') + '</div>'
+    + '<div style="font-size:9px;color:var(--text3);margin-top:2px;line-height:1.5">' + escapeHtml(r.motif || '') + '</div></div>').join('');
+}
+function peeRetSave(){
+  const d = peeLoad(), it = d.find(x => x.id === _peeRetId); if(!it) return;
+  const mi = document.getElementById('peeRetMotif').value;
+  if(mi === ''){ alert('Choisissez le motif du déblocage.'); return; }
+  const montant = Math.round((parseNum(document.getElementById('peeRetMontant').value) || 0) * 100) / 100;
+  if(!(montant > 0)){ alert('Montant invalide.'); return; }
+  const date = document.getElementById('peeRetDate').value;
+  if(!date){ alert('Choisissez une date.'); return; }
+  if(new Date(date + 'T00:00:00') > new Date()){ alert('La date d\'un retrait ne peut pas être dans le futur.'); return; }
+  const v = parseFloat(it.valeur) || 0;
+  if(!(v > 0)){ alert('La valeur actuelle du PEE est indisponible : renseignez-la (Modifier le PEE) avant d\'enregistrer un retrait.'); return; }
+  if(montant > v + 0.005){ alert('Le retrait dépasse la valeur actuelle du PEE (' + fmt(v,2) + ' €).'); return; }
+  const motif = KYF_PEE_RETRAIT.cas[parseInt(mi,10)].t;
+  it.valeur = Math.max(0, Math.round((v - montant) * 100) / 100);
+  it.retraits = (Array.isArray(it.retraits) ? it.retraits : []).concat([{ id: Date.now().toString(), date, montant, motif }]);
+  peeSave(d);
+  try{ addLog('infos', 'Retrait exceptionnel PEE : ' + montant + '€ (' + motif + ')', 'AV'); }catch(e){}
+  peeRetClose(); renderPee();
 }
 function deletePee(id){
   if(!confirm('Supprimer ce PEE ?')) return;
@@ -82522,7 +83100,7 @@ function renderPee(){
   const totVers = d.reduce((s, x) => s + (parseFloat(x.versements) || 0), 0);
   // plus-value : seulement sur les plans dont la valeur ET le total versé sont connus (sinon inconnue, jamais 0 ni valeur entière)
   const ok = d.filter(x => (parseFloat(x.valeur) || 0) > 0 && (parseFloat(x.versements) || 0) > 0);
-  const pv = ok.reduce((s, x) => s + (parseFloat(x.valeur) - parseFloat(x.versements)), 0);
+  const pv = ok.reduce((s, x) => s + (parseFloat(x.valeur) + peeRetTotal(x) - parseFloat(x.versements)), 0);
   const miss = d.length - ok.length;
   const k = (lbl, val, sub, band) => '<div class="kpi" style="--band:' + band + '"><div class="kpi-lbl">' + lbl + '</div><div class="kpi-val">' + val + '</div><div class="kpi-sub">' + sub + '</div></div>';
   kpi.innerHTML = d.length ? (
@@ -82535,16 +83113,17 @@ function renderPee(){
     const v = parseFloat(x.valeur) || 0, vs = parseFloat(x.versements) || 0, today = new Date().toISOString().slice(0, 10);
     const dispo = x.dateDispo ? ((x.dateDispo <= today ? 'Disponible depuis le ' : 'Disponible à partir du ') + peeDateFr(x.dateDispo)) : '';
     const sub = [x.gestionnaire ? escapeHtml(x.gestionnaire) : '', x.dateOuv ? 'ouvert le ' + peeDateFr(x.dateOuv) : '', dispo ? escapeHtml(dispo) : ''].filter(Boolean).join(' · ');
-    const pvTxt = v > 0 && vs > 0 ? (v - vs >= 0 ? '+' : '') + fmt(v - vs, 0) + ' €' : 'Indisponible';
-    const pvOk = v > 0 && vs > 0, pvCol = !pvOk ? 'var(--text3)' : (v - vs > 0 ? 'var(--green)' : (v - vs < 0 ? 'var(--red)' : 'var(--text3)'));
+    const rt = peeRetTotal(x), pvv = v + rt - vs;
+    const pvTxt = v > 0 && vs > 0 ? (pvv >= 0 ? '+' : '') + fmt(pvv, 0) + ' €' : 'Indisponible';
+    const pvOk = v > 0 && vs > 0, pvCol = !pvOk ? 'var(--text3)' : (pvv > 0 ? 'var(--green)' : (pvv < 0 ? 'var(--red)' : 'var(--text3)'));
     const ibt = 'background:none;border:none;color:var(--text3);cursor:pointer;padding:6px;display:inline-flex;align-items:center;border-radius:6px;transition:background-color .15s,color .15s';
     return '<div class="card" style="max-width:720px;width:100%;box-sizing:border-box;padding:14px 16px;box-shadow:inset 0 2px 0 var(--accent);transition:transform .2s,box-shadow .2s" onmouseover="this.style.transform=\'translateY(-1px)\';this.style.boxShadow=\'inset 0 2px 0 var(--accent),0 4px 14px rgba(0,0,0,0.12)\'" onmouseout="this.style.transform=\'translateY(0)\';this.style.boxShadow=\'inset 0 2px 0 var(--accent)\'"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">' +
       '<div style="min-width:0"><div style="font-weight:700;font-size:14px;color:var(--text);overflow-wrap:anywhere">' + escapeHtml(x.nom) + '</div>' +
       (sub ? '<div style="font-size:10px;color:var(--text3);margin-top:4px;line-height:1.6">' + sub + '</div>' : '') +
       (x.note ? '<div style="font-size:10px;color:var(--text3);margin-top:3px">' + escapeHtml(x.note) + '</div>' : '') + '</div>' +
       '<div style="display:flex;align-items:flex-start;gap:10px;flex-shrink:0"><div style="text-align:right"><div style="font-size:18px;font-weight:800;color:var(--text)">' + (v > 0 ? fmt(v, 0) + ' €' : 'Indisponible') + '</div>' +
-      '<div style="font-size:10px;font-weight:600;color:' + pvCol + ';margin-top:2px">Plus-value : ' + pvTxt + '</div></div>' +
-      '<div style="display:flex;gap:2px;margin-top:-2px"><button type="button" onclick="openPeeModal(\'' + x.id + '\')" title="Modifier" aria-label="Modifier" class="kyf-icon-btn" style="' + ibt + '" onmouseover="this.style.color=\'var(--text)\'" onmouseout="this.style.color=\'var(--text3)\'">' + KYF_ICONS.edit + '</button>' +
+      '<div style="font-size:10px;font-weight:600;color:' + pvCol + ';margin-top:2px">Plus-value : ' + pvTxt + '</div>' + (rt > 0 ? '<div style="font-size:10px;color:var(--text3);margin-top:2px">Retiré : ' + fmt(rt, 0) + ' €</div>' : '') + '</div>' +
+      '<div style="display:flex;gap:2px;margin-top:-2px"><button type="button" onclick="peeRetOpen(\'' + x.id + '\')" title="Retrait exceptionnel" aria-label="Retrait exceptionnel" class="kyf-icon-btn" style="' + ibt + '" onmouseover="this.style.color=\'var(--text)\'" onmouseout="this.style.color=\'var(--text3)\'"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><polyline points="7,10 12,15 17,10"/><path d="M5 21h14"/></svg></button><button type="button" onclick="openPeeModal(\'' + x.id + '\')" title="Modifier" aria-label="Modifier" class="kyf-icon-btn" style="' + ibt + '" onmouseover="this.style.color=\'var(--text)\'" onmouseout="this.style.color=\'var(--text3)\'">' + KYF_ICONS.edit + '</button>' +
       '<button type="button" onclick="deletePee(\'' + x.id + '\')" title="Supprimer" aria-label="Supprimer" class="kyf-icon-btn" style="' + ibt + '" onmouseover="this.style.color=\'#ff4560\';this.style.background=\'rgba(255,69,96,0.12)\'" onmouseout="this.style.color=\'var(--text3)\';this.style.background=\'none\'">' + KYF_ICONS.trash + '</button></div></div></div></div>';
   }).join('') : '<div style="text-align:center;padding:36px 20px;color:var(--text3);font-family:\'Inter\',sans-serif;font-size:11px">Aucun PEE - cliquez <strong style="color:var(--accent)">AJOUTER UN PEE</strong> pour commencer</div>';
 }
@@ -84977,45 +85556,34 @@ function renderAV(){
         <div style="position:absolute;top:0;left:0;width:4px;height:100%;border-radius:14px 0 0 14px;background:${accentGrad}"></div>
       </div>
       <div style="padding-left:4px">
-      <div onclick="avToggleCard('${d.id}')" style="cursor:pointer;display:flex;align-items:center;gap:16px;padding:14px 14px 14px 13px;flex-wrap:wrap">
+      <div onclick="avToggleCard('${d.id}')" style="cursor:pointer;display:flex;align-items:center;gap:12px;padding:14px 14px 14px 13px;flex-wrap:wrap">
         <div style="width:52px;height:52px;flex-shrink:0;border-radius:12px;border:1px solid var(--border2);background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;overflow:hidden">${assureurLogoImg(d.assureur, 34)}</div>
-        <div style="flex:1;min-width:160px">
-          <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px">
-            <span style="font-size:10px;font-weight:700;color:${accentCol};white-space:nowrap;display:flex;align-items:center;gap:4px">${TYPE_LBL[d.type]||escapeHtml(d.type)}</span>
-          </div>
+        <div style="flex:1;min-width:120px">
           <div style="font-weight:700;font-size:16px">${escapeHtml(d.contratNom||d.assureur||'-')}<span title="${avContratMode(d)==='import'?'Montants issus du relevé importé':'Montants saisis à la main'}" style="margin-left:8px;font-size:8px;font-weight:700;letter-spacing:.6px;padding:2px 6px;border-radius:4px;border:1px solid var(--border2);color:var(--text3);vertical-align:2px">${avContratMode(d)==='import'?'RELEVÉ':'MANUEL'}</span></div>
-          <div style="color:var(--text3);font-size:11px;margin-top:3px">${escapeHtml(d.assureur||'-')} ${kyfPctTxt(d.fraisGestion)?'· FG '+kyfPctTxt(d.fraisGestion)+'%':''}${d.modeGestion&&d.modeGestion!=='libre'?' · '+(d.modeGestion==='mandat'?'Sous mandat':'Pilotée')+(kyfPctTxt(d.fraisPilotage)?' +'+kyfPctTxt(d.fraisPilotage)+'%':''):''}${d.versements>0?' · Versé '+fmt(d.versements,0)+' €':` · <span onclick="editAV('${d.id}');setTimeout(()=>{const i=document.getElementById('avVersements');if(i){i.scrollIntoView({block:'center'});i.focus();}},350)" title="Sans le total investi, KYF ne peut pas calculer la plus-value de ce contrat. À retrouver dans l'espace client de l'assureur (Mes versements) ou sur le relevé annuel." style="color:#f59e0b;font-weight:700;cursor:pointer;text-decoration:underline;transition:color .15s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='#f59e0b'">Total investi à renseigner</span>`}${rach>0?' · Racheté '+fmt(rach,0)+' €':''}</div>
+          <div class="kyf-hd-chips"><span class="kyf-hd-chip" style="color:${accentCol};background:color-mix(in srgb,${accentCol} 16%,transparent)">${TYPE_LBL[d.type]||escapeHtml(d.type)}</span><span class="kyf-hd-chip">${escapeHtml(d.assureur||'-')}${kyfPctTxt(d.fraisGestion)?' · FG '+kyfPctTxt(d.fraisGestion)+'%':''}</span>${d.modeGestion&&d.modeGestion!=='libre'?'<span class="kyf-hd-chip">'+(d.modeGestion==='mandat'?'Sous mandat':'Pilotée')+(kyfPctTxt(d.fraisPilotage)?' +'+kyfPctTxt(d.fraisPilotage)+'%':'')+'</span>':''}${d.versements>0?'<span class="kyf-hd-chip">Versé '+fmt(d.versements,0)+' €</span>':`<span class="kyf-hd-chip"><span onclick="editAV('${d.id}');setTimeout(()=>{const i=document.getElementById('avVersements');if(i){i.scrollIntoView({block:'center'});i.focus();}},350)" title="Sans le total investi, KYF ne peut pas calculer la plus-value de ce contrat. À retrouver dans l'espace client de l'assureur (Mes versements) ou sur le relevé annuel." style="color:#f59e0b;font-weight:700;cursor:pointer;text-decoration:underline;transition:color .15s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='#f59e0b'">Total investi à renseigner</span></span>`}${rach>0?'<span class="kyf-hd-chip">Racheté '+fmt(rach,0)+' €</span>':''}<span class="kyf-hd-chip" title="Rendement annuel moyen depuis l'origine">Rend./an : <span style="font-weight:800;color:${cagr===null?'var(--text3)':cagr>=0?'var(--green)':'var(--red)'}">${cagr!==null?(cagr>=0?'+':'')+cagr.toFixed(1)+'%':'-'}</span></span></div>
         </div>
         <div style="text-align:right;min-width:110px">
-          <div style="font-weight:700;color:var(--text);font-size:24px;line-height:1.1">${val>0?fmt(val,0)+' €':'-'}</div>${kyfAvEcartAVerifier(d)?'<div style="font-size:9px;font-weight:700;color:#f0b429;margin-top:2px" title="La valeur actuelle saisie diffère de plus de 10 % de la somme fonds euros + unités de compte. KYF retient la valeur saisie. Pour corriger : ⋯ puis Modifier, corrigez la valeur actuelle ou videz-la (KYF utilisera fonds euros + unités de compte). Détail dans le Guide, Mes Contrats.">Écart à vérifier</div>':''}${kyfAvVersNA(d)>0?'<div style="font-size:9px;font-weight:700;color:var(--text3);margin-top:2px" title="Des versements programmés ne sont affectés à aucun support (règle « total investi seul »). Ils sont comptés dans la valeur du contrat au montant versé, sans gain ni perte, jusqu\'au prochain relevé importé ou à la ressaisie de la valeur.">dont '+fmt(kyfAvVersNA(d),0)+' € non affectés</div>':''}
-          <div style="font-size:10px;color:var(--text3);margin-top:2px">Valeur</div>
+          <div style="font-weight:700;color:var(--text);font-size:24px;line-height:1.1">${val>0?fmt(val,0)+' €':'-'}</div><div class="kyf-hd-perf ${pvPct===null&&pv===null?'':(pvPct!==null?pvPct>=0:pv>=0)?'up':'dn'}" title="Performance depuis l'origine (gain ou perte sur le total investi)">${pvPct!==null?(pvPct>=0?'+':'')+pvPct.toFixed(1)+'%':''}${pvPct!==null&&pv!==null?' · ':''}${pv!==null?(pv>=0?'+':'-')+fmt(Math.abs(pv),0)+' €':''}${pvPct===null&&pv===null?'-':''}</div>${kyfAvEcartAVerifier(d)?'<div style="font-size:9px;font-weight:700;color:#f0b429;margin-top:2px" title="La valeur actuelle saisie diffère de plus de 10 % de la somme fonds euros + unités de compte. KYF retient la valeur saisie. Pour corriger : ⋯ puis Modifier, corrigez la valeur actuelle ou videz-la (KYF utilisera fonds euros + unités de compte). Détail dans le Guide, Mes Contrats.">Écart à vérifier</div>':''}${kyfAvVersNA(d)>0?'<div style="font-size:9px;font-weight:700;color:var(--text3);margin-top:2px" title="Des versements programmés ne sont affectés à aucun support (règle « total investi seul »). Ils sont comptés dans la valeur du contrat au montant versé, sans gain ni perte, jusqu\'au prochain relevé importé ou à la ressaisie de la valeur.">dont '+fmt(kyfAvVersNA(d),0)+' € non affectés</div>':''}
           ${(()=>{ const rv = d.releve; if(!rv || !(rv.total>0) || avContratMode(d)!=='import' || val<=0) return ''; const dl = val - rv.total; if(Math.abs(dl) < 1) return '';
             const dt = rv.date ? new Date(rv.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'}) : (d.lastImportAt ? new Date(d.lastImportAt).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'}) : '');
             return '<div title="Valeur du contrat au cours du relevé importé, comparée à la valeur actuelle (cours en direct)" style="font-size:9px;color:var(--text3);margin-top:3px;white-space:nowrap">Relevé' + (dt ? ' du ' + dt : '') + ' : ' + fmt(rv.total,2) + ' € · <span class="' + (dl>=0?'up':'dn') + '" style="font-weight:700">' + (dl>=0?'+':'-') + fmt(Math.abs(dl),0) + ' € en direct</span></div>'; })()}
         </div>
-        <div style="text-align:right;min-width:60px">
-          <div class="${pvPct===null?'':pvPct>=0?'up':'dn'}" style="font-size:17px;font-weight:700">${pvPct!==null?(pvPct>=0?'+':'')+pvPct.toFixed(1)+'%':'-'}</div>
-          ${pv!==null?`<div class="${pv>=0?'up':'dn'}" style="font-size:10px;font-weight:600;margin-top:1px;white-space:nowrap">${pv>=0?'+':'-'}${fmt(Math.abs(pv),0)} €</div>`:''}
-          <div style="font-size:10px;color:var(--text3);margin-top:2px">Performance</div>
-        </div>
-        <div style="text-align:right;min-width:60px">
-          <div style="font-size:16px;font-weight:700;color:${cagr===null?'var(--text3)':cagr>=0?'var(--green)':'var(--red)'}">${cagr!==null?(cagr>=0?'+':'')+cagr.toFixed(1)+'%':'-'}</div>
-          <div style="font-size:10px;color:var(--text3);margin-top:2px">Rend./an</div>
-        </div>
-        <div onclick="event.stopPropagation()" style="white-space:nowrap;position:relative;display:flex;align-items:center;gap:6px">
+        <div class="kyf-hd-actions"><div onclick="event.stopPropagation()" style="white-space:nowrap;position:relative;display:flex;align-items:center;gap:6px">
           <div style="position:relative">
-            <button onclick="avToggleActionsMenu('${d.id}')" title="Plus d'actions" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 6px;display:inline-flex;align-items:center;font-size:16px;letter-spacing:1px">⋯</button>
+            <button onclick="avToggleActionsMenu('${d.id}')" title="Plus d'actions" class="kyf-icon-btn" style="background:none;border:1px solid var(--border2);box-sizing:border-box;border-radius:8px;width:34px;height:34px;justify-content:center;color:var(--text3);cursor:pointer;padding:0;display:inline-flex;align-items:center;font-size:16px;letter-spacing:1px">⋯</button>
             <div id="avActionsMenu-${d.id}" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:190px">
 ${isPER ? `              <div onclick="avCloseActionsMenu('${d.id}');openAddAVPosComp('${d.id}','ev-ded')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.arrowIn} Versement déductible</div>              <div onclick="avCloseActionsMenu('${d.id}');openAddAVPosComp('${d.id}','ev-non-ded')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.arrowOut} Versement non déductible</div>` : `              <div onclick="avCloseActionsMenu('${d.id}');openAddAVPos('${d.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">+ Ajouter une position</div>`}
               <div onclick="avCloseActionsMenu('${d.id}');avOpenDCAFor('${d.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Versement programmé</div>
+              <div onclick="avCloseActionsMenu('${d.id}');avOpenDCAFor('${d.id}',{freq:'once'})" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Versement exceptionnel</div>
+${(d.type==='per-col'||d.type==='per-ob') ? `<div onclick="avCloseActionsMenu('${d.id}');avOpenRetrait('${d.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Retrait exceptionnel</div>` : ''}
               <div onclick="avCloseActionsMenu('${d.id}');openArbitrageModal('${d.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">⇄ Arbitrer entre supports</div>
               <div onclick="avCloseActionsMenu('${d.id}');editAV('${d.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.edit} Modifier</div>
               <div onclick="avCloseActionsMenu('${d.id}');deleteAV('${d.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:#ff4560;cursor:pointer;display:flex;align-items:center;gap:6px;border-top:1px solid var(--border)" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg aria-hidden="true" style="vertical-align:-.18em;flex-shrink:0" width="1.1em" height="1.1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg> Supprimer</div>
             </div>
           </div>
         </div>
-        <button onclick="event.stopPropagation();avToggleFavori('${d.id}',${data.length})" title="${isFav?'Retirer des favoris':'Marquer comme favori'}" class="kyf-icon-btn kyf-favstar" style="background:none;border:none;cursor:pointer;padding:2px 4px;border-radius:4px;color:${isFav?'var(--accent)':'var(--text3)'};display:flex;align-items:center;flex-shrink:0">${isFav?KYF_ICONS.starFilled:KYF_ICONS.starOutline}</button>
-        <span id="avChevron-${d.id}" style="display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;color:var(--text3);transition:transform .25s ease,color .15s,background .15s;transform:rotate(${isOpen?'0':'-90'}deg);flex-shrink:0;${isFav?'opacity:0.3;pointer-events:none':''}" onmouseover="this.style.color='var(--accent)';this.style.background=kyfChevronHoverBg()" onmouseout="this.style.color='var(--text3)';this.style.background='transparent'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+        <button onclick="event.stopPropagation();avToggleFavori('${d.id}',${data.length})" title="${isFav?'Retirer des favoris':'Marquer comme favori'}" class="kyf-icon-btn kyf-favstar" style="background:none;border:1px solid var(--border2);cursor:pointer;padding:0;box-sizing:border-box;width:34px;height:34px;justify-content:center;border-radius:8px;color:${isFav?'var(--accent)':'var(--text3)'};display:flex;align-items:center;flex-shrink:0">${isFav?KYF_ICONS.starFilled:KYF_ICONS.starOutline}</button>
+        <span id="avChevron-${d.id}" style="display:flex;align-items:center;justify-content:center;box-sizing:border-box;width:34px;height:34px;border:1px solid var(--border2);border-radius:8px;color:var(--text3);transition:transform .25s ease,color .15s,background .15s;transform:rotate(${isOpen?'0':'-90'}deg);flex-shrink:0;${isFav?'opacity:0.3;pointer-events:none':''}" onmouseover="this.style.color='var(--accent)';this.style.background=kyfChevronHoverBg()" onmouseout="this.style.color='var(--text3)';this.style.background='transparent'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
       </div>
       <div id="avCardBody-${d.id}" style="display:${isOpen?'block':'none'};border-top:1px solid var(--border);padding-bottom:6px">${avSummaryStrip(d, val, pv, pvPct, rach)}${posRows}</div>
       </div>
@@ -86571,16 +87139,16 @@ function orInlineEdit(id, td, currentVal){
       </div>
       <div>
         <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">FRÉQUENCE</div>
-        <select id="avDCAFreq" data-kyf-pg-look="field" onchange="avDCARenderAlloc()" style="width:100%;font-size:11px"><option value="monthly">Mensuel</option><option value="quarterly">Trimestriel</option><option value="yearly">Annuel</option></select>
+        <select id="avDCAFreq" data-kyf-pg-look="field" onchange="avDcaFreqChange()" style="width:100%;font-size:11px"><option value="monthly">Mensuel</option><option value="quarterly">Trimestriel</option><option value="yearly">Annuel</option><option value="once">Exceptionnel (une seule fois)</option></select>
       </div>
       <div>
-        <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">PREMIÈRE DATE</div>
+        <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px" id="avDCADateLbl">PREMIÈRE DATE</div>
         <input type="hidden" id="avDCADebut" onchange="document.getElementById('avDCAJour').value=new Date(this.value+'T12:00:00').getDate()||1" value="">
         <button type="button" id="avDCADebutBtn" class="kyf-csel-btn" data-kyf-date="avDCADebut" aria-haspopup="dialog" aria-expanded="false"><span id="avDCADebutBtnLabel">JJ/MM/AAAA</span><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>
         <input type="hidden" id="avDCAJour" value="1">
-        <div style="font-size:9px;color:var(--text3);margin-top:3px">Le jour de cette date est repris à chaque échéance</div>
+        <div id="avDCADateHint" style="font-size:9px;color:var(--text3);margin-top:3px">Le jour de cette date est repris à chaque échéance</div>
       </div>
-      <div style="display:flex;align-items:flex-end">
+      <div id="avDCAActifWrap" style="display:flex;align-items:flex-end">
         <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:11px;color:var(--text2)">
           <input type="checkbox" id="avDCAActif" checked style="accent-color:var(--accent)"> Actif
         </label>
@@ -86599,6 +87167,99 @@ function orInlineEdit(id, td, currentVal){
     <button type="button" id="avDCANewBtn" onclick="avDcaNew()" style="display:none;margin-right:auto;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:8px 14px;border-radius:7px;border:1px solid var(--accent);background:none;color:var(--accent);cursor:pointer;transition:background .15s" onmouseover="this.style.background='var(--hov-bg)'" onmouseout="this.style.background='none'">+ NOUVEAU VERSEMENT</button>
     <button type="button" id="avDCACancelBtn" onclick="avDcaCancelClick()" style="font-family:'Inter',sans-serif;font-size:9px;padding:8px 18px;border-radius:7px;border:1px solid var(--border2);background:none;color:var(--text3);cursor:pointer;transition:background .15s" onmouseover="this.style.background='var(--hov-bg)'" onmouseout="this.style.background='none'">FERMER</button>
     <button type="button" id="avDCASaveBtn" onclick="avDcaMainClick()" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:8px 18px;border-radius:7px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">ENREGISTRER LE VERSEMENT</button>
+  </div>
+</div></div>
+
+<!-- ══ RETRAIT EXCEPTIONNEL (déblocage anticipé) ══ -->
+<div id="avRetOverlay" onclick="avRetClose()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10000011"></div>
+<div id="avRetModal" class="avdca2" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:min(980px,96vw);height:min(640px,94vh);z-index:10000012;background:var(--bg2);border:1px solid var(--border2);
+  border-radius:16px;padding:0;font-family:'Inter',sans-serif;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.4)">
+<div class="av-wrap">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);flex-shrink:0">
+    <span style="font-weight:700;font-size:13px;color:var(--text)">RETRAIT EXCEPTIONNEL <span id="avRetTitre" style="font-weight:600;color:var(--text3);font-size:11px;margin-left:6px"></span></span>
+    <button type="button" onclick="avRetClose()" class="kyf-modal-close" title="Fermer" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div class="av-body"><div class="av-side">
+    <div style="font-size:10px;color:var(--text2);line-height:1.6;margin-bottom:14px;padding:9px 12px;border-radius:8px;background:rgba(6,182,212,0.06);border:1px solid rgba(6,182,212,0.2)">
+      Un déblocage anticipé est <strong>de l'argent qui sort du contrat</strong> pour un motif prévu par la loi. KYF retire le montant des lignes choisies (parts vendues au cours en direct), l'ajoute au total racheté et garde le motif. KYF n'effectue aucun virement et ne calcule aucun impôt.
+    </div>
+    <div style="font-size:9px;color:var(--text3);margin:2px 0 8px;letter-spacing:.5px">CE QUE DIT LA FICHE POUR CE MOTIF</div>
+    <div id="avRetInfo" style="font-size:10px;color:var(--text2);line-height:1.6;margin-bottom:14px"></div>
+    <div style="font-size:9px;color:var(--text3);margin:2px 0 8px;letter-spacing:.5px">RETRAITS DÉJÀ ENREGISTRÉS</div>
+    <div id="avRetList"></div>
+  </div>
+  <div class="av-main">
+    <div style="font-size:11px;color:var(--accent);font-weight:700;letter-spacing:.5px;margin-bottom:12px">+ NOUVEAU RETRAIT EXCEPTIONNEL</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;margin-bottom:10px">
+      <div style="grid-column:span 2">
+        <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">MOTIF DU DÉBLOCAGE</div>
+        <select id="avRetMotif" data-kyf-pg-look="field" onchange="avRetInfo()" style="width:100%;font-size:11px"></select>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">MONTANT RETIRÉ (€)</div>
+        <input id="avRetMontant" type="text" inputmode="decimal" placeholder="500" oninput="avRetRender(true)" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;border-radius:6px;outline:none">
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">DATE DU RETRAIT</div>
+        <input type="hidden" id="avRetDate" value="">
+        <button type="button" id="avRetDateBtn" class="kyf-csel-btn" data-kyf-date="avRetDate" aria-haspopup="dialog" aria-expanded="false"><span id="avRetDateBtnLabel">JJ/MM/AAAA</span><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>
+      </div>
+    </div>
+    <div style="margin-top:10px;border-top:1px solid var(--border);padding-top:10px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px">
+        <div style="font-size:11px;color:var(--accent);font-weight:700;letter-spacing:.5px">RETIRÉ DE CES LIGNES</div>
+        <button type="button" onclick="avRetProrata(true)" style="font-family:'Inter',sans-serif;font-size:9px;padding:4px 10px;border-radius:6px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">AU PRORATA DES VALEURS</button>
+      </div>
+      <div id="avRetAlloc"></div>
+    </div>
+  </div></div>
+  <div class="av-foot" style="display:flex;gap:8px;justify-content:flex-end;align-items:center;padding:12px 18px;border-top:1px solid var(--border);flex-shrink:0">
+    <button type="button" onclick="avRetClose()" style="font-family:'Inter',sans-serif;font-size:9px;padding:8px 18px;border-radius:7px;border:1px solid var(--border2);background:none;color:var(--text3);cursor:pointer;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">ANNULER</button>
+    <button type="button" onclick="avRetSave()" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:8px 18px;border-radius:7px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">ENREGISTRER LE RETRAIT</button>
+  </div>
+</div></div>
+
+<div id="peeRetOverlay" onclick="peeRetClose()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10000011"></div>
+<div id="peeRetModal" class="avdca2" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:min(980px,96vw);height:min(560px,94vh);z-index:10000012;background:var(--bg2);border:1px solid var(--border2);
+  border-radius:16px;padding:0;font-family:'Inter',sans-serif;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.4)">
+<div class="av-wrap">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);flex-shrink:0">
+    <span style="font-weight:700;font-size:13px;color:var(--text)">RETRAIT EXCEPTIONNEL PEE <span id="peeRetTitre" style="font-weight:600;color:var(--text3);font-size:11px;margin-left:6px"></span></span>
+    <button type="button" onclick="peeRetClose()" class="kyf-modal-close" title="Fermer" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div class="av-body"><div class="av-side">
+    <div style="font-size:10px;color:var(--text2);line-height:1.6;margin-bottom:14px;padding:9px 12px;border-radius:8px;background:rgba(6,182,212,0.06);border:1px solid rgba(6,182,212,0.2)">
+      Un déblocage anticipé est <strong>de l'argent qui sort du PEE</strong> pour un motif prévu par la loi. KYF baisse la valeur du plan du montant retiré, l'ajoute au total retiré (la plus-value n'en souffre pas) et garde le motif. KYF n'effectue aucun virement et ne calcule aucun impôt.
+    </div>
+    <div style="font-size:9px;color:var(--text3);margin:2px 0 8px;letter-spacing:.5px">CE QUE DIT LA FICHE POUR CE MOTIF</div>
+    <div id="peeRetInfo" style="font-size:10px;color:var(--text2);line-height:1.6;margin-bottom:14px"></div>
+    <div style="font-size:9px;color:var(--text3);margin:2px 0 8px;letter-spacing:.5px">RETRAITS DÉJÀ ENREGISTRÉS</div>
+    <div id="peeRetList"></div>
+  </div>
+  <div class="av-main">
+    <div style="font-size:11px;color:var(--accent);font-weight:700;letter-spacing:.5px;margin-bottom:12px">+ NOUVEAU RETRAIT EXCEPTIONNEL</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;margin-bottom:10px">
+      <div style="grid-column:span 2">
+        <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">MOTIF DU DÉBLOCAGE</div>
+        <select id="peeRetMotif" data-kyf-pg-look="field" onchange="peeRetInfo()" style="width:100%;font-size:11px"></select>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">MONTANT RETIRÉ (€)</div>
+        <input id="peeRetMontant" type="text" inputmode="decimal" placeholder="500" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;border-radius:6px;outline:none">
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">DATE DU RETRAIT</div>
+        <input type="hidden" id="peeRetDate" value="">
+        <button type="button" id="peeRetDateBtn" class="kyf-csel-btn" data-kyf-date="peeRetDate" aria-haspopup="dialog" aria-expanded="false"><span id="peeRetDateBtnLabel">JJ/MM/AAAA</span><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>
+      </div>
+    </div>
+    <div id="peeRetVal" style="font-size:10px;color:var(--text3);line-height:1.6"></div>
+  </div></div>
+  <div class="av-foot" style="display:flex;gap:8px;justify-content:flex-end;align-items:center;padding:12px 18px;border-top:1px solid var(--border);flex-shrink:0">
+    <button type="button" onclick="peeRetClose()" style="font-family:'Inter',sans-serif;font-size:9px;padding:8px 18px;border-radius:7px;border:1px solid var(--border2);background:none;color:var(--text3);cursor:pointer;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">ANNULER</button>
+    <button type="button" onclick="peeRetSave()" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:8px 18px;border-radius:7px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">ENREGISTRER LE RETRAIT</button>
   </div>
 </div></div>
 
@@ -90608,6 +91269,14 @@ function orInlineEdit(id, td, currentVal){
 
     <div id="importStatus" style="font-size:12px;color:var(--text2);margin-bottom:10px"></div>
     </div>
+    <aside id="importTickerHelp" style="display:none;box-sizing:border-box;margin:0 0 12px;padding:12px 14px;border-radius:8px;background:rgba(77,159,255,0.06);border:1px solid rgba(77,159,255,0.22);font-size:11px;line-height:1.6;color:var(--text2)">
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--text);margin-bottom:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>C'est quoi un ticker ?</div>
+        <div><strong style="color:var(--text)">Le code court d'un titre en bourse</strong> : par exemple CW8.PA pour un ETF MSCI World coté à Paris. Le suffixe indique la place (.PA Paris, .DE Xetra, .L Londres, .MI Milan, .AS Amsterdam).</div>
+        <div style="margin-top:5px"><strong style="color:var(--text)">À quoi ça sert</strong> : avec lui, KYF suit le prix en direct de la ligne et calcule gain et variation du jour. Sans ticker, la ligne garde la valeur de votre relevé, sans prix en direct.</div>
+        <div style="margin-top:5px"><strong style="color:var(--text)">Où KYF le trouve</strong> : à partir de l'ISIN ou du nom de chaque fonds de votre relevé. Rien à faire, quelques secondes suffisent.</div>
+        <div style="margin-top:5px"><strong style="color:var(--text)">S'il en manque</strong> : l'étape suivante vous les propose à compléter. Collez l'ISIN et KYF le cherche seul, ou cherchez le symbole sur la page Yahoo Finance de l'actif.</div>
+        <div style="margin-top:8px"><button type="button" class="kyf-hint-link" onclick="kyfOpenGuideTicker()" style="background:none;border:none;padding:0;font:inherit;font-size:11px;font-weight:600;cursor:pointer;text-align:left">Retrouver ce texte dans le guide →</button></div>
+      </aside>
     <div id="importPreview" style="margin-bottom:14px;border:1px solid var(--border);border-radius:8px;padding:0 10px"></div>
 
     <div class="imp-foot" style="display:flex;gap:8px;justify-content:flex-end">
