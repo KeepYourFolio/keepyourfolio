@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <!--
   ============================================================
-  @file        : KYF_PDF_to_CSV_v2_489.html
+  @file        : KYF_PDF_to_CSV_v2_490.html
   @application : Keep Your Folio (KYF) · Convertisseur PDF → CSV
   @description : Lit les relevés de courtier PDF entièrement dans le
                  navigateur (aucun envoi) et produit le fichier que le
                  Dashboard KYF importe.
-  @version     : v2.489
+  @version     : v2.490
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -20,7 +20,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs; worker-src 'self' blob: https://cdnjs.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none';">
-<title>KYF Convertisseur PDF v2.489</title>
+<title>KYF Convertisseur PDF v2.490</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1374,7 +1374,7 @@
   <div class="hero">
     <div class="hero-title">
     <h1>Convertisseur PDF <span>→ CSV</span> <span style="display:inline-block;background:#c99a06;color:#000;font-size:12px;font-weight:800;letter-spacing:.5px;padding:2px 8px;border-radius:6px;vertical-align:middle;">Bêta</span></h1>
-    <p>Détection automatique · v2.489 · Multi PDF en mode Portefeuille</p>
+    <p>Détection automatique · v2.490 · Multi PDF en mode Portefeuille</p>
     </div>
   </div>
 
@@ -2357,7 +2357,7 @@
     <span class="footer-sep">·</span>
     <a href="mailto:keep.your.folio@gmail.com">keep.your.folio@gmail.com</a>
     <span class="footer-sep">·</span>
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSe37Lom1iH5WIXstb9LmEUpfO_YlAcN7NYtx_zUaNxEmbsEog/viewform?usp=send_form" target="_blank" rel="noopener">Feedback &amp; Beta</a>
+    <a href="https://forms.gle/7XWBa5TzMpnAK3QM8" target="_blank" rel="noopener">Feedback &amp; Beta</a>
   </div>
 </footer>
 
@@ -2423,7 +2423,7 @@
 <script>
   /**
    * @file        KYF PDF to CSV — Convertisseur PDF intelligent
-   * @version     v2.489
+   * @version     v2.490
    * @description Convertisseur PDF → CSV pour KYF Dashboard.
    *              Détection automatique multi-courtiers, biffage pour les
    *              documents non reconnus (voir kyf_biffer_backend.gs).
@@ -2431,7 +2431,7 @@
    * @copyright   © 2026 Keep Your Folio (KYF) — keepyourfolio.fr
    * @license     AGPL-3.0-or-later
    */
-  console.log('%c Keep Your Folio %c PDF → CSV v2.489 %c keepyourfolio.fr ',
+  console.log('%c Keep Your Folio %c PDF → CSV v2.490 %c keepyourfolio.fr ',
     'background:#1a1f2e;color:#f0b429;font-weight:700;padding:4px 8px;border-radius:4px 0 0 4px',
     'background:#2563eb;color:#fff;font-weight:700;padding:4px 8px',
     'background:#1a1f2e;color:#aaa;padding:4px 8px;border-radius:0 4px 4px 0'
@@ -3202,6 +3202,18 @@
         { pattern: /relev[eé]\s*de\s*situation/i, score: 15 },
         { pattern: /nb\s*de\s*parts?|nombre\s*de\s*parts?/i, score: 10 },
         { pattern: /assurance\s*vie|vie\b/i, score: 5 },
+      ]
+    },
+    {
+      id: 'ca_assurances',
+      label: 'Crédit Agricole Assurances (Predica)',
+      mode: 'av_per',
+      detail: 'information trimestrielle ("Votre information trimestrielle au [date]", contrat Floriane 2 ou similaire) : supports en unités de compte et fonds en euros ; le relevé ne donne pas de prix de revient (PRU laissé vide, jamais inventé)',
+      criteria: [
+        { pattern: /cr[ée]dit\s*agricole\s*assurances|predica/i, score: 50 },
+        { pattern: /information\s*trimestrielle/i, score: 25 },
+        { pattern: /situation\s*d[ée]taill[ée]e\s*par\s*support/i, score: 20 },
+        { pattern: /nombre\s*d.uc|valeur\s*de\s*l.uc|contre.valeur/i, score: 15 },
       ]
     },
     {
@@ -4335,6 +4347,65 @@
       }
     }
     return out.length ? out : null;
+  }
+
+  // v2.490 — Crédit Agricole Assurances, « Votre information trimestrielle » : deux tableaux par page,
+  // supports en unités de compte (Nombre d'UC, Valeur de l'UC, Contre-valeur, Frais) puis fonds en euros
+  // (Valeur nette de frais, Frais). Chaque chiffre est classé par la colonne de son en-tête. Le relevé ne
+  // donne aucun prix de revient : PRU laissé vide (jamais fabriqué). Fonds en euros : quantité = valeur, PRU = 1,
+  // comme pour Bourso Vie. Une ligne sans nombre d'UC ou sans contre-valeur n'est pas reprise (rien d'inventé).
+  function extractCAAssurancesData(elements, docDevise = 'EUR') {
+    const NUM_RE = /^[-+]?\d[\d\s\u00a0]*(?:[.,]\d+)?\s*(?:€|EUR)?$/;
+    const norm = t => String(t).toLowerCase().replace(/[’]/g, "'").replace(/\s+/g, ' ').trim();
+    const cx = e => e.x + (e.width || 0) / 2;
+    const clean = t => String(t).replace(/\s*(€|EUR)\s*$/i, '').replace(/[\s\u00a0]/g, '');
+    const rows = [];
+    const pages = [...new Set(elements.map(e => e.page))].sort((a, b) => a - b);
+    for (const pg of pages) {
+      const els = elements.filter(e => e.page === pg).sort((a, b) => a.yTop - b.yTop || a.x - b.x);
+      const lines = [];
+      for (const e of els) {
+        const l = lines.find(l => Math.abs(l.y - e.yTop) <= 4);
+        if (l) l.els.push(e); else lines.push({ y: e.yTop, els: [e] });
+      }
+      lines.sort((a, b) => a.y - b.y);
+      let mode = null, cols = null;
+      for (const line of lines) {
+        line.els.sort((a, b) => a.x - b.x);
+        const find = re => line.els.find(e => re.test(norm(e.text)));
+        const first = norm(line.els[0].text);
+        if (/^valeur totale de votre adh/.test(first)) { mode = null; continue; }
+        const hq = find(/^nombre d'uc/);
+        if (hq) {
+          const hv = find(/^valeur de l'uc/), hc = find(/^contre-valeur/), hf = find(/^frais pr/);
+          if (hv && hc) { mode = 'uc'; cols = [{ k: 'qty', c: cx(hq) }, { k: 'vl', c: cx(hv) }, { k: 'cv', c: cx(hc) }]; if (hf) cols.push({ k: 'frais', c: cx(hf) }); }
+          continue;
+        }
+        const hval = find(/^valeur$/), hfe = find(/^frais pr/);
+        if (hval && hfe) { mode = 'euro'; cols = [{ k: 'val', c: cx(hval) }, { k: 'frais', c: cx(hfe) }]; continue; }
+        if (!mode) continue;
+        const nums = line.els.filter(e => NUM_RE.test(e.text.trim()) && !/\//.test(e.text) && /\d/.test(e.text));
+        if (!nums.length) continue;   // ligne de catégorie (« Fonds Obligations ») ou texte d'en-tête
+        const firstNumX = Math.min(...nums.map(e => e.x));
+        const nom = line.els.filter(e => !nums.includes(e) && e.x < firstNumX - 2).map(e => e.text.trim()).join(' ')
+          .replace(/\s*\*+\s*$/, '').replace(/\s+/g, ' ').trim();
+        if (!nom) continue;
+        const v = {};
+        for (const e of nums) {
+          let best = null;
+          for (const c of cols) { const d = Math.abs(cx(e) - c.c); if (!best || d < best.d) best = { k: c.k, d }; }
+          if (best && v[best.k] === undefined) v[best.k] = clean(e.text);
+        }
+        if (mode === 'uc') {
+          if (!v.qty || !v.cv) continue;
+          rows.push({ nom: normalizeNom(nom), isin: '', qty: v.qty, pru: '', valeur: v.cv, type: 'titre', devise: docDevise });
+        } else {
+          if (!v.val) continue;
+          rows.push({ nom: normalizeNom(nom), isin: '', qty: v.val, pru: '1', valeur: v.val, type: 'titre', devise: docDevise });
+        }
+      }
+    }
+    return rows;
   }
 
   function extractTableData(elements, layoutResult) {
@@ -6475,6 +6546,9 @@
     // Parseurs dédiés pour les formats sans en-têtes classiques
     if (courtier.id === 'swissborg') {
       rows = extractSwissborgData(elements, docDevise);
+    } else if (courtier.id === 'ca_assurances') {
+      rows = extractCAAssurancesData(elements, docDevise);
+      if (!rows.length) rows = extractTableData(elements, layoutResult);
     } else if (courtier.id === 'boursobank_per' && window._lastType3Info) {
       // Police Type3 déchiffrée : ce format n'a pas d'en-têtes de colonnes classiques,
       // on utilise le parseur dédié à correspondance positionnelle (nom/valeur/quantité
