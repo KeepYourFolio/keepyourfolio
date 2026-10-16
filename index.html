@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_6_64.html
+  @file        : KYF_SHARE_beta_2_8_6_68.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.6.64
+  @version     : Beta 2.8.6.68
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -4641,7 +4641,7 @@ html:not(.kyf-kbd) .icon-btn:focus-visible,html:not(.kyf-kbd) button:focus-visib
       <div>• Identifiant aléatoire (ex: KYF-7A92-FQ11)</div>
       <div>• Version KYF utilisée</div>
       <div>• Plateforme (desktop / mobile)</div>
-      <div>• Date de dernière activité</div>
+      <div>• Date de dernière activité (un envoi au plus, une fois par jour)</div>
       <div style="color:var(--text2);font-weight:600;margin-top:6px">Aucune donnée financière · Aucune IP stockée · Aucun tracker</div>
       <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
         Vous pouvez consulter les données envoyées en temps réel :<br>
@@ -6622,7 +6622,7 @@ html:not(.kyf-kbd) .icon-btn:focus-visible,html:not(.kyf-kbd) button:focus-visib
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.6.64</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.6.68</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -40029,12 +40029,9 @@ function loadKpiCache(){
 
 async function analyticsPing(){
   if(!analyticsIsEnabled()) return;
-  // Ne pinger qu'une fois par 7 jours max
+  // Un seul envoi par jour (jour calendaire) : le Sheet donne alors les appareils actifs jour par jour
   const last = localStorage.getItem(ANALYTICS_LAST_KEY);
-  if(last){
-    const diff = (Date.now() - parseInt(last)) / (1000*60*60*24);
-    if(diff < 7) return;
-  }
+  if(last && new Date(parseInt(last)).toISOString().slice(0,10) === new Date().toISOString().slice(0,10)) return;
   const id       = analyticsGetId();
   const version  = document.getElementById('versionBadge')?.textContent || 'unknown';
   const platform = /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
@@ -42956,7 +42953,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.6.64\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.6.68\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -65014,7 +65011,7 @@ const FAQ_DATA = [
   },
   {
     q: "Quelle est la sécurité de Keep Your Folio ?",
-    a: "KYF est conçu pour que vos données restent chez vous : elles sont stockées dans le navigateur de votre appareil, sans compte ni serveur KYF qui les reçoive. Seuls des codes d'actifs (ex: CW8.PA, BTC) sont envoyés à Yahoo Finance et au relais de prix KYF (un script Google, avec CoinGecko en secours) pour récupérer les prix, et le nom que vous tapez au service de recherche : vos quantités et vos montants ne sont jamais envoyés. Si vous activez la sauvegarde Google Sheets, KYF ne demande l'accès qu'au classeur qu'il crée lui-même. Le code fait l'objet de revues de sécurité régulières, sans audit indépendant certifié. Les limites à connaître (appareil, chiffrement local, fichiers importés) sont détaillées dans le guide, page « Vos Données & Confidentialité »."
+    a: "KYF est conçu pour que vos données restent chez vous : elles sont stockées dans le navigateur de votre appareil, sans compte ni serveur KYF qui les reçoive. Seuls des codes d'actifs (ex: CW8.PA, BTC) sont envoyés à Yahoo Finance et au relais de prix KYF (un script Google, avec CoinGecko en secours) pour récupérer les prix, et le nom que vous tapez au service de recherche : vos quantités et vos montants ne sont jamais envoyés. Si vous activez la sauvegarde Google Sheets, KYF ne demande l'accès qu'au classeur qu'il crée lui-même. Une seule option envoie un signal anonyme, désactivée par défaut : « Statistiques d'usage » (proposée une seule fois). Elle transmet au plus une fois par jour un identifiant aléatoire, la version de KYF, la plateforme et la date, sans donnée financière ni IP stockée. Le code fait l'objet de revues de sécurité régulières, sans audit indépendant certifié. Les limites à connaître (appareil, chiffrement local, fichiers importés) sont détaillées dans le guide, page « Vos Données & Confidentialité »."
   },
   {
     q: "Keep Your Folio a-t-il accès à mes données ?",
@@ -67001,6 +66998,14 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.68 · 16/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">STATISTIQUES D'USAGE, invitation : elle n'apparaît plus qu'à partir de la 3e ouverture de KYF (compteur local, une ouverture par session de navigateur), pour ne pas surgir dès la découverte de l'outil. Le reste ne change pas : une seule fois, Oui ou Non, jamais redemandée.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.67 · 16/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">STATISTIQUES D'USAGE, invitation : boutons et croix repris au standard KYF. « Non merci » transparent avec fond de survol, « Oui, compter » doré plein avec survol d'opacité, croix identique à celle des autres fenêtres (gris, halo rouge au survol).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.66 · 16/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">STATISTIQUES D'USAGE : invitation unique, discrète (carte en bas à droite) « Compter mon appareil, anonymement ? » avec Oui / Non, jamais redemandée (la croix vaut Non). Rien n'est envoyé avant un Oui, et le réglage reste modifiable dans le panneau cœur. N'apparaît pas par-dessus une fenêtre ouverte ni avec l'avertissement Safari, ni chez ceux qui ont déjà choisi. La FAQ confidentialité mentionne cette option unique.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.65 · 16/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">STATISTIQUES D'USAGE (option à cocher, désactivée par défaut) : l'envoi anonyme part désormais une fois par jour au lieu d'une fois tous les 7 jours, pour suivre le nombre d'appareils actifs jour par jour. Rien d'autre ne change : même identifiant aléatoire, même contenu (version, plateforme, date), aucune donnée financière, aucune IP. Le texte des détails l'indique.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.64 · 16/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">DÉTAIL PAR POSITION : retrait des pastilles jaunes sur les colonnes PAYS et SECTEURS (le texte « non renseigné » suffit)</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.63 · 16/10/2026</div>
@@ -198456,6 +198461,22 @@ input.kyf-secret-on:hover{border-color:var(--accent)!important;background:var(--
 #kyfSafariWarn .ksw-go:hover{background:#ffc94a;border-color:#ffc94a}
 #kyfSafariWarn .ksw-x{position:absolute;top:10px;right:10px;width:22px;height:22px;padding:0;display:flex;align-items:center;justify-content:center;background:none;border:none;color:var(--text3);border-radius:50%}
 #kyfSafariWarn .ksw-x:hover{background:var(--hov-bg,rgba(77,159,255,.12));color:var(--text)}
+#kyfStatsInvite{position:fixed;right:18px;bottom:18px;z-index:9989;width:340px;max-width:calc(100vw - 36px);box-sizing:border-box;
+  background:var(--bg2);border:1px solid var(--border2);border-left:3px solid var(--accent);border-radius:12px;padding:14px 16px 12px;
+  box-shadow:0 10px 32px rgba(0,0,0,.35);font-family:'Inter',sans-serif;color:var(--text);opacity:0;transform:translateY(8px);transition:opacity .3s,transform .3s}
+#kyfStatsInvite.on{opacity:1;transform:translateY(0)}
+#kyfStatsInvite .ksi-h{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.3px;padding-right:22px}
+#kyfStatsInvite .ksi-h svg{color:var(--accent);flex-shrink:0}
+#kyfStatsInvite .ksi-t{font-size:11px;line-height:1.6;color:var(--text2);margin:8px 0 12px}
+#kyfStatsInvite .ksi-t strong{color:var(--text);font-weight:600}
+#kyfStatsInvite .ksi-a{display:flex;gap:8px;justify-content:flex-end}
+/* Boutons au standard KYF : ANNULER transparent (survol hov-bg), VALIDER doré plein (survol opacité .85), croix .kyf-modal-close (halo rouge) */
+#kyfStatsInvite .ksi-no,#kyfStatsInvite .ksi-yes{font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:.3px;padding:8px 16px;border-radius:8px;border:none;cursor:pointer}
+#kyfStatsInvite .ksi-no{background:none;color:var(--text3);transition:background .15s}
+#kyfStatsInvite .ksi-no:hover{background:var(--hov-bg)}
+#kyfStatsInvite .ksi-yes{background:#f0b429;color:#000;transition:opacity .15s}
+#kyfStatsInvite .ksi-yes:hover{opacity:.85}
+#kyfStatsInvite .ksi-x{position:absolute;top:8px;right:8px}
 </style>
 <script>
 // ── Avertissement Safari (Mac) : Apple efface les données d'un site non ouvert depuis 7 jours ──
@@ -198503,6 +198524,52 @@ input.kyf-secret-on:hover{border-color:var(--accent)!important;background:var(--
   }
   window.kyfSafariWarnCheck = show;
   function start(){ setTimeout(show, 4000); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+})();
+// ── Invitation unique aux statistiques d'usage ──
+// Une seule fois, jamais redemandée (Oui ou Non, la croix vaut Non), et seulement à partir de la 3e ouverture de KYF
+// (compteur local kyf-stats-opens, une ouverture = une session de navigateur). Réglage modifiable ensuite dans le panneau cœur.
+// Rien n'est envoyé tant que la personne n'a pas répondu Oui. Attend qu'aucune fenêtre ni l'avertissement Safari ne soit affiché.
+(function(){
+  var K = 'kyf-stats-invite', OPENS = 'kyf-stats-opens', MIN_OPENS = 3;
+  function countOpen(){
+    try{
+      if(decided() || sessionStorage.getItem('kyf-stats-opens-s')) return;
+      sessionStorage.setItem('kyf-stats-opens-s', '1');
+      localStorage.setItem(OPENS, String((parseInt(localStorage.getItem(OPENS) || '0', 10) || 0) + 1));
+    }catch(e){}
+  }
+  function opens(){ try{ return parseInt(localStorage.getItem(OPENS) || '0', 10) || 0; }catch(e){ return 0; } }
+  function decided(){ try{ return localStorage.getItem(K) || localStorage.getItem('pea-analytics-consent') !== null; }catch(e){ return true; } }
+  function close(){
+    var el = document.getElementById('kyfStatsInvite'); if(!el) return;
+    el.classList.remove('on'); setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 320);
+  }
+  function answer(yes){
+    try{ localStorage.setItem(K, yes ? 'oui' : 'non'); localStorage.setItem('pea-analytics-consent', yes ? 'true' : 'false'); }catch(e){}
+    close();
+    try{ if(typeof analyticsUpdateUI === 'function') analyticsUpdateUI(); if(yes && typeof analyticsPing === 'function') analyticsPing(); }catch(e){}
+  }
+  function show(){
+    if(decided() || opens() < MIN_OPENS || document.getElementById('kyfStatsInvite')) return;
+    if(document.getElementById('kyfSafariWarn')){ setTimeout(show, 8000); return; }
+    var el = document.createElement('div');
+    el.id = 'kyfStatsInvite'; el.setAttribute('role', 'dialog');
+    el.innerHTML =
+      '<button class="ksi-x kyf-modal-close" type="button" title="Non merci" aria-label="Non merci"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' +
+      '<div class="ksi-h"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>Compter mon appareil, anonymement ?</div>' +
+      '<div class="ksi-t">Un petit signal <strong>une fois par jour</strong> aide à savoir combien de personnes utilisent KYF : un identifiant aléatoire, la version et la date. <strong>Aucune donnée financière, aucune IP stockée.</strong> Modifiable à tout moment dans le panneau cœur, « Statistiques d\'usage ».</div>' +
+      '<div class="ksi-a"><button class="ksi-no" type="button">Non merci</button><button class="ksi-yes" type="button">Oui, compter</button></div>';
+    document.body.appendChild(el);
+    var r = el.getBoundingClientRect(), top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+    if(top && !el.contains(top)){ el.parentNode.removeChild(el); setTimeout(show, 6000); return; }
+    el.querySelector('.ksi-x').onclick = function(){ answer(false); };
+    el.querySelector('.ksi-no').onclick = function(){ answer(false); };
+    el.querySelector('.ksi-yes').onclick = function(){ answer(true); };
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ el.classList.add('on'); }); });
+  }
+  window.kyfStatsInviteCheck = show;
+  function start(){ countOpen(); setTimeout(show, 12000); }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();
 </script>
