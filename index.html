@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_5_06.html
+  @file        : KYF_SHARE_beta_2_8_6_29.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.5.06
+  @version     : Beta 2.8.6.29
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -2879,6 +2879,7 @@ html.kyf-boot #sidebar, html.kyf-boot #mainContent, html.kyf-boot #mainContent .
 }
 .card .cw:last-child,.card .cw.t:last-child,.card .cw.s:last-child{border-radius:0 0 11px 11px}
 .card>:not(.cw):last-child{padding-bottom:16px!important}
+#kyfSupportCard>:last-child{padding-bottom:0!important}   /* widget Support & Contact : la règle ci-dessus ajoutait 16 px de vide sous les icônes */
 .card .cw+*{padding-bottom:0}
 .card-title{
   font-family:'Inter',sans-serif;font-size:12px;font-weight:700;
@@ -4458,7 +4459,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
       &nbsp;·&nbsp;
       <a href="mailto:keep.your.folio@gmail.com" style="color:#4d9fff;text-decoration:none">keep.your.folio@gmail.com</a>
       &nbsp;·&nbsp;
-      <a href="https://forms.gle/HFKwyN6xZdRpzvWq6" target="_blank" rel="noopener noreferrer" style="color:var(--green);text-decoration:none">Demander un accès →</a>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSe37Lom1iH5WIXstb9LmEUpfO_YlAcN7NYtx_zUaNxEmbsEog/viewform?usp=send_form" target="_blank" rel="noopener noreferrer" style="color:var(--green);text-decoration:none">Demander un accès →</a>
     </div>
   </div>
 </div>
@@ -6594,7 +6595,7 @@ html.kyf-no-crumb .kyf-crumb{display:none!important}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.5.06</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.6.29</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -10512,6 +10513,7 @@ function avCompRender(){
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;flex-wrap:wrap">
       <button id="fiscal-btn-pea" class="kyf-toggle-active" onclick="setFiscalTab('pea')" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:5px 12px;border-radius:6px;border:1px solid var(--accent);background:#f0b429;color:#000;cursor:pointer;letter-spacing:.5px;transition:background .15s,color .15s" onmouseover="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--hov-bg)';this.style.color='var(--text)'}" onmouseout="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text3)'}">PEA / CTO</button>
       <button id="fiscal-btn-crypto" onclick="setFiscalTab('crypto')" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:5px 12px;border-radius:6px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text3);cursor:pointer;letter-spacing:.5px;transition:background .15s,color .15s" onmouseover="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--hov-bg)';this.style.color='var(--text)'}" onmouseout="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text3)'}">CRYPTO</button>
+      <button id="fiscal-btn-hist" onclick="setFiscalTab('hist')" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:5px 12px;border-radius:6px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text3);cursor:pointer;letter-spacing:.5px;transition:background .15s,color .15s" onmouseover="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--hov-bg)';this.style.color='var(--text)'}" onmouseout="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text3)'}">HISTORIQUE DES VERSEMENTS</button>
     </div>
 
     <!-- Onglet PEA / CTO -->
@@ -10599,6 +10601,47 @@ function avCompRender(){
     </div>
     </div>
 
+    <!-- Onglet Historique des versements -->
+    <div id="fiscalTabHist" style="display:none">
+    <div id="cashHistRow" style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
+    <div class="card" id="cashHistCard" style="position:relative;flex:1 1 560px;min-width:0;margin-bottom:0">
+      <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;gap:8px"><span>HISTORIQUE DES VERSEMENTS</span>
+        <span style="display:flex;align-items:center;gap:14px"><span style="color:var(--text3)" id="cashHistCount">- … MOUVEMENTS</span>
+        <button type="button" onclick="openCashEdit()" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:6px 14px;border-radius:8px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">AJOUTER UN MOUVEMENT</button></span>
+      </div>
+      <div id="cashHistFilters" style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:18px;margin-bottom:18px"></div>
+      <div id="cashHistScroll" style="overflow-y:auto">
+      <table class="tbl sm hist-tbl"><thead><tr><th>DATE</th><th>ENVELOPPE</th><th>SENS</th><th>MONTANT</th><th></th></tr></thead>
+      <tbody id="cashHistList"></tbody></table>
+      </div>
+      <div id="cashHistPagination" style="display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:14px;padding:16px 4px 4px 4px;border-top:1px solid var(--border);margin-top:16px">
+        <button onclick="cashHistPrev()" id="cashHistPrevBtn" class="kyf-mini-btn">← PRÉC.</button>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span id="cashHistPageInfo" style="font-family:'Inter',sans-serif;font-size:9px;color:var(--text3);letter-spacing:.5px"></span>
+          <div id="cashHistPageNumbers" style="display:flex;align-items:center;justify-content:center;gap:3px;min-width:0"></div>
+        </div>
+        <button onclick="cashHistNext()" id="cashHistNextBtn" class="kyf-mini-btn">SUIV. →</button>
+        <div style="display:flex;align-items:center;gap:4px;margin-left:auto">
+          <span style="font-family:'Inter',sans-serif;font-size:9px;color:var(--text3);letter-spacing:.3px">PAR PAGE</span>
+          <div style="display:flex;gap:2px;border:1px solid var(--border2);border-radius:5px;overflow:hidden">
+            <button class="cash-pp-btn" data-n="5" onclick="cashHistSetPerPage(5)" style="font-family:'Inter',sans-serif;font-size:9px;padding:3px 8px;border:none;background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;transition:all .15s" onmouseover="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--hov-bg)'}" onmouseout="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--btn-secondary-bg)'}">5</button>
+            <button class="cash-pp-btn" data-n="10" onclick="cashHistSetPerPage(10)" style="font-family:'Inter',sans-serif;font-size:9px;padding:3px 8px;border:none;background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;transition:all .15s" onmouseover="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--hov-bg)'}" onmouseout="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--btn-secondary-bg)'}">10</button>
+            <button class="cash-pp-btn kyf-toggle-active" data-n="15" onclick="cashHistSetPerPage(15)" style="font-family:'Inter',sans-serif;font-size:9px;padding:3px 8px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:all .15s" onmouseover="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--hov-bg)'}" onmouseout="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--btn-secondary-bg)'}">15</button>
+            <button class="cash-pp-btn" data-n="20" onclick="cashHistSetPerPage(20)" style="font-family:'Inter',sans-serif;font-size:9px;padding:3px 8px;border:none;background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;transition:all .15s" onmouseover="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--hov-bg)'}" onmouseout="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--btn-secondary-bg)'}">20</button>
+          </div>
+        </div>
+      </div>
+      <div style="font-family:'Inter',sans-serif;font-size:11px;color:var(--text3);padding:6px 4px 2px;line-height:1.8">
+        Mouvements saisis dans KYF. Un versement PEA augmente les espèces et, si le total versé est renseigné, ce total. Un retrait ne modifie que les espèces. Rien n'est reconstitué : les versements d'avant la saisie dans KYF n'apparaissent pas.
+      </div>
+    </div>
+    <div class="card" id="cashNetCard" style="flex:0 1 360px;min-width:260px;margin-bottom:0;display:flex;flex-direction:column;gap:12px">
+      <div class="card-title" style="margin-bottom:0"><span>NET CUMULÉ <span style="color:var(--text3)">· PEA + CTO</span></span></div>
+      <div id="cashNetBody"></div>
+    </div>
+    </div>
+    </div>
+
     <!-- Onglet Crypto -->
     <div id="fiscalTabCrypto" style="display:none">
       <div style="padding:18px;border-radius:16px;background:var(--bg2);border:1px solid rgba(240,180,41,0.2);box-shadow:0 4px 20px rgba(0,0,0,0.15)">
@@ -10621,24 +10664,17 @@ function avCompRender(){
 // cet onglet précis (pas à chaque visite de la page Fiscalité), pour ne
 // jamais faire un calcul inutile côté PEA/CTO.
 function setFiscalTab(tab){
-  const btnPea = document.getElementById('fiscal-btn-pea');
-  const btnCrypto = document.getElementById('fiscal-btn-crypto');
-  const panePea = document.getElementById('fiscalTabPea');
-  const paneCrypto = document.getElementById('fiscalTabCrypto');
   const activeStyle = 'font-family:\'Inter\',sans-serif;font-size:10px;font-weight:700;padding:5px 12px;border-radius:6px;border:1px solid var(--accent);background:#f0b429;color:#000;cursor:pointer;letter-spacing:.5px;transition:background .15s,color .15s';
   const inactiveStyle = 'font-family:\'Inter\',sans-serif;font-size:10px;font-weight:700;padding:5px 12px;border-radius:6px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text3);cursor:pointer;letter-spacing:.5px;transition:background .15s,color .15s';
-  if(tab === 'crypto'){
-    if(panePea) panePea.style.display = 'none';
-    if(paneCrypto) paneCrypto.style.display = 'block';
-    if(btnPea){ btnPea.classList.remove('kyf-toggle-active'); btnPea.setAttribute('style', inactiveStyle); }
-    if(btnCrypto){ btnCrypto.classList.add('kyf-toggle-active'); btnCrypto.setAttribute('style', activeStyle); }
-    try{ cryptoFiscCalc(); }catch(e){}
-    return;
-  }
-  if(panePea) panePea.style.display = 'block';
-  if(paneCrypto) paneCrypto.style.display = 'none';
-  if(btnPea){ btnPea.classList.add('kyf-toggle-active'); btnPea.setAttribute('style', activeStyle); }
-  if(btnCrypto){ btnCrypto.classList.remove('kyf-toggle-active'); btnCrypto.setAttribute('style', inactiveStyle); }
+  const T = { pea:['fiscal-btn-pea','fiscalTabPea'], crypto:['fiscal-btn-crypto','fiscalTabCrypto'], hist:['fiscal-btn-hist','fiscalTabHist'] };
+  if(!T[tab]) tab = 'pea';
+  Object.keys(T).forEach(k => {
+    const b = document.getElementById(T[k][0]), p = document.getElementById(T[k][1]), on = k === tab;
+    if(p) p.style.display = on ? 'block' : 'none';
+    if(b){ b.classList.toggle('kyf-toggle-active', on); b.setAttribute('style', on ? activeStyle : inactiveStyle); }
+  });
+  if(tab === 'crypto'){ try{ cryptoFiscCalc(); }catch(e){} }
+  if(tab === 'hist'){ try{ kyfCashMvtRefresh(); }catch(e){} }
 }
 // l'exonération d'impôt sur le revenu après 5 ans de détention (les
 // prélèvements sociaux, eux, restent dus dans tous les cas. Cette règle
@@ -10797,19 +10833,23 @@ function peaFiscSituation(){
   // internes compris) ; sinon coût des titres + espèces, approximation qui ignore les gains déjà arbitrés en espèces
   const verse = kyfParseMilliers(document.getElementById('peaFisc_totalVerse')?.value) || 0;
   const investi = verse > 0 ? verse : posOk.reduce((s,e)=> s + etfInvestOf(e), 0) + cash;   // frais inclus, comme le tableau Portefeuille
-  return { valeur, investi, plusValue: valeur - investi, cash, baseVerse: verse > 0, sansCours };
+  // Retraits PEA saisis dans l'historique : la valeur actuelle les a déjà perdus alors que le total versé ne baisse pas. Plus-value = valeur + retraits saisis - total versé
+  // (sans total versé, la base est le coût + espèces, qui baisse déjà du retrait : rien à ajouter). Le simulateur de retrait continue d'utiliser plusValue.
+  const retraits = (typeof kyfCashMvts === 'function') ? kyfCashMvts().filter(m => m.env === 'PEA' && m.sens === 'out').reduce((x, m) => x + (parseFloat(m.montant) || 0), 0) : 0;
+  const plusValue = valeur - investi;
+  return { valeur, investi, plusValue, retraits: verse > 0 ? retraits : 0, pvTotale: plusValue + (verse > 0 ? retraits : 0), cash, baseVerse: verse > 0, sansCours };
 }
 
 function peaFiscSimuler(){
   const dateOuverture = document.getElementById('peaFisc_dateOuverture')?.value;
   const montant = kyfParseMilliers(document.getElementById('peaFisc_montant')?.value) || 0;
-  const { valeur, investi, plusValue, baseVerse, sansCours } = peaFiscSituation();
+  const { valeur, investi, plusValue, baseVerse, sansCours, retraits, pvTotale } = peaFiscSituation();
   const noteCours = sansCours > 0 ? (baseVerse ? sansCours + (sansCours > 1 ? ' lignes sans cours non comptées dans la valeur : la plus-value est sous-évaluée' : ' ligne sans cours non comptée dans la valeur : la plus-value est sous-évaluée') : kyfNoPriceMsg(sansCours)) : '';
 
   const set = (id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
   set('peaFiscValeur',   fmt(valeur,2)+' €');
   set('peaFiscInvesti',  fmt(investi,2)+' €' + (baseVerse ? ' (total versé)' : ''));
-  set('peaFiscPV',       (plusValue>=0?'+':'')+fmt(plusValue,2)+' €' + (noteCours ? ' (' + noteCours + ')' : ''));
+  set('peaFiscPV',       (pvTotale>=0?'+':'')+fmt(pvTotale,2)+' €' + (retraits > 0 ? ' (retraits saisis inclus : ' + fmt(retraits,0) + ' €)' : '') + (noteCours ? ' (' + noteCours + ')' : ''));
   peaFiscRenderPlafond();
   try{ pmeFiscRenderPlafond(); }catch(e){}   // le plafond commun suit le total versé du PEA
 
@@ -11519,7 +11559,7 @@ function renderBudgetEngagements(){
 
   <!-- HEATMAP JOUR × MOIS -->
   <div style="display:flex;gap:14px;margin-top:30px;margin-bottom:14px;align-items:flex-start">
-  <div class="card" style="flex:0 0 calc(50% - 7px);min-width:0;overflow:hidden">
+  <div class="card" style="flex:0 0 calc(50% - 7px);min-width:0;overflow:hidden;position:relative">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:14px">
       <div style="display:flex;align-items:center;gap:12px">
         <div class="card-title" style="margin-bottom:0">PERFORMANCES MENSUELLES</div>
@@ -11527,8 +11567,14 @@ function renderBudgetEngagements(){
           <button id="hm-etf" class="kyf-toggle-active" onclick="_kyfModeByUser.hm=1;setHeatmapMode('etf')" style="font-family:'Inter',sans-serif;font-size:9px;padding:2px 8px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:background .15s,color .15s" onmouseover="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--hov-bg)';this.style.color='var(--text)'}" onmouseout="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)'}">ETF/ACTIONS</button>
           <button id="hm-total" onclick="_kyfModeByUser.hm=1;setHeatmapMode('total')" style="font-family:'Inter',sans-serif;font-size:9px;padding:2px 8px;border:none;background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;transition:background .15s,color .15s" onmouseover="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--hov-bg)';this.style.color='var(--text)'}" onmouseout="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)'}">AVEC CRYPTO</button>
         </div>
+        <button type="button" id="hmInfoBtn" class="av-info-btn" onclick="hmInfoToggle(event)" title="Comment lire ce calendrier" aria-label="Informations sur les performances mensuelles" aria-expanded="false" style="width:22px;height:22px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></button>
       </div>
       <div id="hmYearTabs" style="display:flex;gap:6px"></div>
+    </div>
+    <div id="hmInfoPop" style="display:none;position:absolute;left:10px;right:10px;top:46px;z-index:60;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:11px 13px;box-shadow:0 10px 32px rgba(0,0,0,.35);font-size:10px;line-height:1.6;color:var(--text2);font-weight:400;letter-spacing:0;text-transform:none">
+      Chaque case est la <strong>variation du portefeuille entre deux séances</strong>, apports (versements, achats) retirés. La vue ETF/ACTIONS exclut la crypto, la vue AVEC CRYPTO l'ajoute.
+      <div style="margin-top:4px">Ce chiffre peut différer de celui du tableau de bord, qui affiche la variation des cours depuis la veille sur les lignes détenues aujourd'hui. L'écart est fréquent un jour d'import ou d'arbitrage : les lignes ont changé entre les deux séances.</div>
+      <div style="margin-top:4px">Le week-end, en vue AVEC CRYPTO, la case reflète la crypto : les ETF gardent leur dernière clôture.</div>
     </div>
     <!-- Stats -->
     <div id="hmStats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px"></div>
@@ -11537,7 +11583,7 @@ function renderBudgetEngagements(){
     <!-- Calendar grid -->
     <div id="hmCalGrid" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;min-width:0"></div>
     <!-- Legend -->
-    <div style="display:flex;align-items:center;gap:16px;margin-top:12px;flex-wrap:wrap">
+    <div id="hmLegend" style="display:flex;align-items:center;gap:16px;margin-top:24px;flex-wrap:wrap">
       <div style="display:flex;align-items:center;gap:5px;font-family:'Inter',sans-serif;font-size:11px;color:var(--text2)">
         <div class="kyf-hm-leg-hausse" style="width:12px;height:12px;border-radius:2px;background:color-mix(in srgb,var(--green) 20%,transparent)"></div>Hausse
       </div>
@@ -11547,8 +11593,10 @@ function renderBudgetEngagements(){
       <div style="display:flex;align-items:center;gap:5px;font-family:'Inter',sans-serif;font-size:11px;color:var(--text2)">
         <div class="kyf-hm-leg-stable" style="width:12px;height:12px;border-radius:2px;background:rgba(77,159,255,0.12);border:1px solid rgba(77,159,255,0.3)"></div>Stable</div>
       <div style="display:flex;align-items:center;gap:5px;font-family:'Inter',sans-serif;font-size:11px;color:var(--text2)">
-        <div style="width:12px;height:12px;border-radius:2px;border:1.5px dashed var(--green);background:color-mix(in srgb,var(--green) 18%,transparent)"></div>En cours
+        <div style="width:14px;height:14px;box-sizing:border-box;border-radius:2px;border:1.5px dashed;border-color:var(--green) var(--red) var(--red) var(--green);background:linear-gradient(135deg,color-mix(in srgb,var(--green) 22%,transparent) 50%,color-mix(in srgb,var(--red) 18%,transparent) 50%)"></div>En cours
       </div>
+      <button type="button" id="hmLegBtn" onclick="kyfHmLegToggle()" aria-expanded="false" aria-label="Afficher les autres légendes" title="Autres légendes" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;border:none;background:transparent;cursor:pointer;padding:0;transition:background .15s" onmouseover="this.style.background=kyfChevronHoverBg();this.querySelector('svg').style.color='var(--accent)'" onmouseout="this.style.background='transparent';this.querySelector('svg').style.color='var(--text3)'"><svg id="hmLegChev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text3);transition:transform .2s,color .15s"><polyline points="9 18 15 12 9 6"/></svg></button>
+      <div id="hmLegMore" style="display:none;align-items:center;gap:16px;flex-wrap:wrap">
       <div style="display:flex;align-items:center;gap:5px;font-family:'Inter',sans-serif;font-size:11px;color:var(--text2)">
         <div style="width:12px;height:12px;border-radius:2px;background:rgba(255,255,255,0.18);border:1px solid rgba(210,210,210,0.45)"></div>Pas de séance
       </div>
@@ -11563,6 +11611,7 @@ function renderBudgetEngagements(){
       </div>
       <div style="display:flex;align-items:center;gap:5px;font-family:'Inter',sans-serif;font-size:11px;color:var(--text2)">
         <div style="width:12px;height:12px;border-radius:2px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(240,180,41,.22),rgba(240,180,41,.08));outline:1.5px solid rgba(240,180,41,.55);outline-offset:-1px"><svg class="hm-dp" width="10" height="10" viewBox="0 0 24 24" fill="none"><circle class="hm-dp-dot" cx="5" cy="19" r="2.6" fill="#f0b429"/><path class="hm-dp-path" d="M7.5 16.5L12 12l3 2.5L20 8" stroke="#f0b429" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.6 7.7L20 8l-.3 4.4" stroke="#f0b429" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Départ
+      </div>
       </div>
     </div>
   </div>
@@ -11595,7 +11644,7 @@ function renderBudgetEngagements(){
        .active, car display:none sur le parent masque aussi les descendants
        fixed. -->
   <div style="position:fixed;bottom:20px;right:20px;z-index:600">
-    <div class="card" style="border-radius:14px;padding:12px 14px;min-width:180px">
+    <div class="card" id="kyfSupportCard" style="border-radius:14px;padding:12px 14px;min-width:180px">
       <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--text3);margin-bottom:10px;text-transform:uppercase">Support &amp; Contact</div>
       <div style="display:flex;flex-direction:column;gap:7px">
         <a href="https://ko-fi.com/keepyourfolio" target="_blank" rel="noopener noreferrer" style="
@@ -11629,7 +11678,7 @@ function renderBudgetEngagements(){
           <a class="kyf-support-icon" href="#" onclick="openContactForm();return false;" title="Nous contacter" style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:7px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--text2);text-decoration:none;transition:all .15s" onmouseover="this.style.background='var(--accent)';this.style.borderColor='var(--accent)';this.style.color='var(--bg)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='var(--text2)'">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
           </a>
-          <a class="kyf-support-icon" href="#" onclick="openContactForm('suggestion');return false;" title="Donner mon avis" style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:7px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--text2);text-decoration:none;transition:all .15s" onmouseover="this.style.background='var(--accent)';this.style.borderColor='var(--accent)';this.style.color='var(--bg)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='var(--text2)'">
+          <a class="kyf-support-icon" href="https://docs.google.com/forms/d/e/1FAIpQLSe37Lom1iH5WIXstb9LmEUpfO_YlAcN7NYtx_zUaNxEmbsEog/viewform?usp=send_form" target="_blank" rel="noopener noreferrer" title="Donner mon avis" style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:7px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--text2);text-decoration:none;transition:all .15s" onmouseover="this.style.background='var(--accent)';this.style.borderColor='var(--accent)';this.style.color='var(--bg)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='var(--text2)'">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
           </a>
         </div>
@@ -12814,8 +12863,10 @@ async function decryptAndImport(){
     let plainText;
 
     // Essayer mot de passe d'abord, sinon clé de récupération
+    // Export manuel chiffré : { payload, recovery }. Sauvegarde automatique (dossier, GitHub, WebDAV) : { type:'encrypted', data } sans clé de récupération
+    const _enc = (typeof raw.payload === 'string') ? raw.payload : raw.data;
     if(pwd){
-      try { plainText = await decryptPayload(raw.payload, pwd); }
+      try { plainText = await decryptPayload(_enc, pwd); }
       catch(e){ plainText = null; }
     }
     if(!plainText && recoveryKey && raw.recovery){
@@ -14461,7 +14512,7 @@ const SHEETS_SYNC_KEYS = [
   'pea-positions','pea-crypto-v1','pea-dca-v1',
   'kyf-dividendes','kyf-livrets','kyf-scpi',
   'kyf-immo','kyf-immo-credits','kyf-immo-revenus','kyf-sci',
-  'kyf-or','kyf-av','kyf-av-positions','kyf-pee','kyf-av-dca','kyf-av-arbitrages','kyf-cash-pea','kyf-cash-cto','kyf-cash-ccp',
+  'kyf-or','kyf-av','kyf-av-positions','kyf-pee','kyf-av-dca','kyf-av-arbitrages','kyf-cash-pea','kyf-cash-cto','kyf-cash-ccp','kyf-cash-mvts','kyf-flux-neutres',
   'kyf-alerts-seuils','kyf-alerts-index',
   'kyf-etf-transactions','kyf-depense-mensuelle','kyf-per-tmi',
   'pea-etf-settings','pea-crypto-settings',
@@ -16633,6 +16684,23 @@ function exD(n){
 // (pas de classe CSS dédiée), donc un simple blanc translucide à 5%
 // devient invisible sur fond déjà clair : on bascule vers du noir
 // translucide dans ce cas.
+function kyfHmLegToggle(){
+  const m = document.getElementById('hmLegMore'), c = document.getElementById('hmLegChev'), b = document.getElementById('hmLegBtn');
+  if(!m) return;
+  const ouvert = m.style.display !== 'none';
+  m.style.display = ouvert ? 'none' : 'contents';   // les autres légendes se placent à la suite du chevron, sur la même ligne tant qu'il y a la place
+  if(c) c.style.transform = ouvert ? '' : 'rotate(180deg)';
+  if(b){
+    const tt = ouvert ? 'Autres légendes' : 'Masquer les autres légendes';
+    b.setAttribute('aria-expanded', ouvert ? 'false' : 'true'); b.setAttribute('aria-label', tt);
+    // la bulle KYF a déjà pris le title au survol (data-kyf-tip-moved) : on met à jour la bulle, sans recréer de title natif (info-bulle du navigateur en doublon)
+    if(b.hasAttribute('data-kyf-tip-moved')){
+      b.setAttribute('data-kyf-tip', tt); b.removeAttribute('title');
+      const kt = document.getElementById('kyfTip');
+      if(kt && kt.style.display !== 'none') kt.textContent = tt;
+    } else b.title = tt;
+  }
+}
 function kyfChevronHoverBg(){
   return document.documentElement.getAttribute('data-theme')==='light' ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.05)';
 }
@@ -18733,7 +18801,7 @@ const KYF_BAD_PAGES = {
   'livrets':['kyf-livrets','kyf-livrets-transactions'], 'livrets-recurrents':['kyf-recurrents'], 'or':['kyf-or'], 'immobilier':['kyf-immo','kyf-sci'],
   'immo-credits':['kyf-immo-credits'], 'immo-revenus':['kyf-immo-revenus'], 'immo-scpi':['kyf-scpi'], 'immo-scpi-liste':['kyf-scpi'], 'immo-crowdfunding':['kyf-crowdfunding'],
   'assurance':['kyf-av','kyf-av-positions','kyf-pee','kyf-av-dca','kyf-av-arbitrages'], 'dca':['pea-dca-v1'], 'budget':['kyf-depense-mensuelle','kyf-cash-ccp'],
-  'fiscal-pea-cto':['kyf-cash-pea','kyf-cash-cto'], 'av-fiscalite':['kyf-per-tmi'],
+  'fiscal-pea-cto':['kyf-cash-pea','kyf-cash-cto','kyf-cash-mvts'], 'av-fiscalite':['kyf-per-tmi'], 'heatmap':['kyf-flux-neutres'],
   'dashboard':'*', 'bilan':'*'
 };
 function kyfBadStored(keys){
@@ -18808,7 +18876,7 @@ function showPage(id,tab,fromPopstate){
   if(id === 'assurance') try{ renderAV(); }catch(e){}
   if(id === 'av-comparateur') try{ avCompRender(); }catch(e){}
   if(id === 'av-fiscalite') try{ avFiscLoadParams(); avFiscAutoFill(); avFiscCalc(); avFiscCloudInit(); }catch(e){}
-  if(id === 'fiscal-pea-cto') try{ fiscalParamsInit(); peaFiscLoadParams(); peaFiscSimuler(); pmeFiscLoadParams(); pmeFiscSimuler(); ctoFiscCalc(); }catch(e){}
+  if(id === 'fiscal-pea-cto') try{ fiscalParamsInit(); peaFiscLoadParams(); peaFiscSimuler(); pmeFiscLoadParams(); pmeFiscSimuler(); ctoFiscCalc(); kyfCashMvtRefresh(); }catch(e){}
   if(id === 'budget') try{ renderBudgetPage(); }catch(e){}
   if(id === 'immo-crowdfunding') try{ renderCrowdfunding(); }catch(e){}
   if(id === 'per-comprendre') try{ perLoadParams(); perUpdateAll(); }catch(e){}
@@ -19766,9 +19834,11 @@ function setHeatmapMode(mode){
     b.style.color      = active ? '#000' : 'var(--text2)';
   });
   // Reset HIST pour forcer recalcul depuis snapshots (aucune séance dans cette vue : calendrier grisé)
-  if(!rebuildHistFromSnapshotsIfEmpty()){ kyfHmEmptyCalendar(); return; }
-  // Ne réactualiser que PERFORMANCES MENSUELLES (pas DISTRIBUTION DES VARIATIONS ni MEILLEURES & PIRES SÉANCES)
+  if(!rebuildHistFromSnapshotsIfEmpty()){ kyfHmEmptyCalendar(); try{ renderHeatmapDistribution(); }catch(e){} return; }
+  // Les trois cadres suivent la vue choisie : PERFORMANCES MENSUELLES, DISTRIBUTION DES VARIATIONS et MEILLEURES & PIRES SÉANCES
+  // (avant, les deux derniers gardaient la vue précédente jusqu'au prochain affichage de la page)
   renderHeatmapCalendar();
+  try{ renderHeatmapDistribution(); }catch(e){}
 }
 
 function setBilanMode(mode){
@@ -26887,7 +26957,7 @@ const KYF_WATCHED_KEYS = new Set([
   'kyf-cto-taux-pfu',     // CTO taux PFU
   'kyf-cash-migrated-v2', // Migration répartition cash
   'kyf-pea-date-ouverture','kyf-pea-plafond','kyf-pea-taux-ir','kyf-pea-taux-ps', // Paramètres fiscaux PEA
-  'kyf-pme-date-ouverture','kyf-pme-total-verse','kyf-pme-plafond','kyf-pea-total-verse', // PEA-PME et totaux versés (plafond commun)
+  'kyf-pme-date-ouverture','kyf-pme-total-verse','kyf-pme-plafond','kyf-pea-total-verse','kyf-cash-mvts','kyf-flux-neutres', // PEA-PME et totaux versés (plafond commun)
   'kyf-depense-mensuelle',// Dépenses mensuelles
   'kyf-forecast-horizon', // Budget horizon de projection
   'kyf-reccal-size',      // Budget taille calendrier récurrents
@@ -27699,7 +27769,7 @@ async function kyfInitialPush(){
     'pea-positions','pea-crypto-v1','pea-dca-v1',
     'kyf-dividendes','kyf-livrets','kyf-scpi',
     'kyf-immo','kyf-immo-credits','kyf-immo-revenus','kyf-sci',
-    'kyf-or','kyf-av','kyf-av-positions','kyf-pee','kyf-av-dca','kyf-av-arbitrages','kyf-cash-pea','kyf-cash-cto','kyf-cash-ccp',
+    'kyf-or','kyf-av','kyf-av-positions','kyf-pee','kyf-av-dca','kyf-av-arbitrages','kyf-cash-pea','kyf-cash-cto','kyf-cash-ccp','kyf-cash-mvts','kyf-flux-neutres',
     'kyf-alerts-seuils','kyf-alerts-index',
     'kyf-etf-transactions','kyf-depense-mensuelle','kyf-per-tmi',
     'pea-etf-settings','pea-crypto-settings',
@@ -31429,7 +31499,7 @@ async function importHandleFile(input){
           : Promise.resolve(0)));
         const keep = [];
         resolved.forEach((r, i) => {
-          const live = r._known ? 0 : lives[i], ratio = live > 0 ? live / r.cours : 1; // ticker déjà validé dans le contrat : on lui fait confiance
+          const live = lives[i], ratio = live > 0 ? live / r.cours : 1; // même contrôle pour un ticker déjà présent dans le contrat : un mauvais ticker y est resté sans que rien ne le signale
           if(live > 0 && (ratio < 0.7 || ratio > 1.4)) missing.push({...r, _mismatch: { ticker: r.ticker, live, csv: r.cours }, ticker: undefined});
           else keep.push(r);
         });
@@ -31988,6 +32058,16 @@ function kyfImportMissIsSame(r){
     return avPosLoad(cid).some(p => p.type !== 'immo' && kyfImportNameKey(p.nom) === k && (p.compartiment||'') === (r._comp||'') && Math.abs((p.qty||0) - (r.qty||0)) < 1e-6 && Math.abs((p.valeur||0) - val) < 0.01);
   }catch(e){ return false; }
 }
+function impInfoClose(){ const pop = document.getElementById('impInfoPop'); if(pop) pop.style.display = 'none'; document.getElementById('impInfoBtn')?.setAttribute('aria-expanded','false'); }
+function impInfoToggle(e){
+  if(e) e.stopPropagation();
+  const pop = document.getElementById('impInfoPop'), b = document.getElementById('impInfoBtn'); if(!pop) return;
+  const open = pop.style.display === 'none';
+  pop.style.display = open ? 'block' : 'none';
+  if(b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+document.addEventListener('click', e => { const pop = document.getElementById('impInfoPop'); if(pop && pop.style.display !== 'none' && !pop.contains(e.target)) impInfoClose(); });
+document.addEventListener('keydown', e => { const pop = document.getElementById('impInfoPop'); if(e.key === 'Escape' && pop && pop.style.display !== 'none'){ impInfoClose(); e.stopPropagation(); } }, true);
 function kyfImportTab(k){
   window._importTab = k;
   document.querySelectorAll('#importPreview .imp-tab').forEach(t => t.classList.toggle('on', t.dataset.tab === k));
@@ -32072,10 +32152,19 @@ function kyfImportAvPerHtml(){
   h += `<div class="import-sticky" style="padding-top:8px">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
       <span style="font-size:10px;font-weight:700;color:${nSame && !nImp && !todo.length ? 'var(--green)' : 'var(--text2)'}">${KYF_CHECK_SVG} ${nSame && !nImp && !todo.length ? 'Tout est déjà à jour : rien à importer' : (nSame ? nSame + ' position' + (nSame>1?'s':'') + ' déjà à jour, rien à faire pour elle' + (nSame>1?'s':'') : (_importPendingResolved.length + _importPendingMissing.length) + ' positions lues')}</span>
+      <button type="button" id="impInfoBtn" class="av-info-btn" onclick="impInfoToggle(event)" title="Comment lire cet aperçu" aria-label="Informations sur l'aperçu de l'import" aria-expanded="false" style="width:22px;height:22px;flex-shrink:0;margin-right:auto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></button>
       <label id="importSelectAllLbl" style="display:${(active==='same'||!(gNew.length||gChg.length||todo.length))?'none':'flex'};align-items:center;gap:5px;font-size:9px;color:var(--text3);cursor:pointer;user-select:none"><input type="checkbox" id="importSelectAllBox" checked onchange="importToggleSelectAll(this.checked);kyfImportUpdateCount()" style="cursor:pointer"> Tout sélectionner</label>
     </div>
+    <div id="impInfoPop" style="display:none;position:absolute;left:0;right:0;top:44px;z-index:6;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:11px 13px;box-shadow:0 10px 32px rgba(0,0,0,.35);font-size:10px;line-height:1.6;color:var(--text2);font-weight:400;letter-spacing:0;text-transform:none">
+      Le relevé est comparé à votre contrat, ligne par ligne. Seuls les onglets qui contiennent des lignes sont affichés.
+      <div style="margin-top:5px"><strong>À compléter</strong> : lignes sans ticker Yahoo fiable. Elles sont ajoutées à leur valeur du relevé, sans prix en direct.</div>
+      <div style="margin-top:3px"><strong>Nouvelles</strong> : lignes absentes du contrat, ajoutées à l'import.</div>
+      <div style="margin-top:3px"><strong>Modifiées</strong> : lignes déjà présentes dont la quantité, le prix de revient ou la valeur ont changé, mises à jour.</div>
+      <div style="margin-top:3px"><strong>Déjà présentes</strong> : identiques au contrat, rien n'est réimporté.</div>
+      <div style="margin-top:3px"><strong>À retirer</strong> : lignes du contrat absentes du relevé. Cochées, elles sont retirées du contrat et gardées dans la corbeille.</div>
+    </div>
     ${per ? kyfImportCompBannerHtml() : ''}
-    <div class="imp-tabs">${order.map(o => `<span class="imp-tab ${(o[0]==='todo'||o[0]==='abs')?'todo':''} ${o[0]===active?'on':''} ${o[2]?'':'zero'}" data-tab="${o[0]}" role="button" tabindex="0" onclick="kyfImportTab('${o[0]}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();kyfImportTab('${o[0]}')}">${o[1]}<span class="n">${o[2]}</span></span>`).join('')}</div>
+    <div class="imp-tabs" style="${order.filter(o => o[2] > 0).length > 1 ? '' : 'display:none'}">${order.map(o => `<span class="imp-tab ${(o[0]==='todo'||o[0]==='abs')?'todo':''} ${o[0]===active?'on':''} ${o[2]?'':'zero'}" ${o[2]?'':'style="display:none"'} data-tab="${o[0]}" role="button" tabindex="0" onclick="kyfImportTab('${o[0]}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();kyfImportTab('${o[0]}')}">${o[1]}<span class="n">${o[2]}</span></span>`).join('')}</div>
   </div>`;
   h += order.map(o => `<div class="imp-pane" data-tab="${o[0]}" style="display:${o[0]===active?'block':'none'}">${o[2] ? panes[o[0]] : '<div style="padding:18px 4px;font-size:11px;color:var(--text3)">Aucune ligne dans cette catégorie.</div>'}</div>`).join('');
   return h;
@@ -36391,6 +36480,91 @@ function kyfIsinBtn(name, ticker, size){
   const z = size || 11;
   return '<button type="button" class="kyf-isin-g" title="Chercher l\'ISIN sur Google" aria-label="Chercher l\'ISIN sur Google" onmousedown="event.preventDefault()" onclick="event.stopPropagation();kyfIsinSearch(' + kyfJsAttr(name || '') + ',' + kyfJsAttr(ticker || '') + ')" style="background:none;border:none;padding:1px 3px;margin-left:3px;cursor:pointer;color:var(--text3);display:inline-flex;align-items:center;vertical-align:middle;opacity:.8" onmouseover="this.style.color=\'var(--accent)\'" onmouseout="this.style.color=\'var(--text3)\'"><svg width="' + z + '" height="' + z + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>';
 }
+// ── PER : glisser une ligne vers l'autre compartiment (sans passer par Modifier) ──
+const KYF_PER_DND = { 'ev-ded': 'EV Déductible', 'ev-non-ded': 'EV Non Déductible' };
+function kyfAvPosMoveComp(contratId, posId, comp){
+  if(!KYF_PER_DND[comp]) return false;
+  const c = avLoad().find(x => String(x.id) === String(contratId));
+  if(!c || !['per','per-col','per-ob'].includes(c.type)) return false;
+  const pos = avPosLoad(contratId), p = pos.find(x => String(x.id) === String(posId));
+  if(!p || (p.compartiment || null) === comp) return false;
+  p.compartiment = comp;
+  avPosSave(contratId, pos);
+  renderAV();
+  try{ showToast('\u2705 Ligne déplacée : ' + (p.nom || p.ticker || 'ligne') + ' → ' + KYF_PER_DND[comp]); }catch(e){}
+  return true;
+}
+(function kyfAvDndInit_(){
+  if(window.__kyfAvDnd) return; window.__kyfAvDnd = true;
+  try{
+    const st = document.createElement('style'); st.id = 'kyfAvDndCss';
+    st.textContent = '.kyf-pos-row[draggable=true]:hover{background:rgba(255,255,255,0.04) !important}.kyf-pos-row.kyf-dragging{opacity:.4}'
+      + '.kyf-comp-zone{transition:background .15s,outline-color .15s;border-radius:8px}.kyf-comp-zone.kyf-drop-on{outline:2px dashed var(--accent);outline-offset:-2px;background:rgba(77,159,255,0.07)}'
+      + '.kyf-comp-tmp{margin:8px 12px;padding:14px;text-align:center;font:600 11px Inter,sans-serif;letter-spacing:.4px;color:var(--text3);border:1px dashed var(--border2)}';
+    document.head.appendChild(st);
+  }catch(e){}
+  let cur = null;
+  const clear = () => document.querySelectorAll('.kyf-drop-on').forEach(z => z.classList.remove('kyf-drop-on'));
+  const zoneOf = e => { const z = e.target && e.target.closest ? e.target.closest('.kyf-comp-zone') : null; return (z && cur && z.dataset.kyfContrat === cur.contrat && KYF_PER_DND[z.dataset.kyfComp]) ? z : null; };
+  document.addEventListener('dragstart', e => {
+    const r = e.target && e.target.closest ? e.target.closest('.kyf-pos-row') : null; if(!r) return;
+    cur = { contrat: r.dataset.kyfContrat, pos: r.dataset.kyfPos };
+    r.classList.add('kyf-dragging');
+    try{ e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', cur.pos); }catch(_){}
+    // compartiment absent du contrat : une zone de dépôt provisoire apparaît pendant le glissement
+    const w = document.querySelector('.kyf-comp-wrap[data-kyf-contrat="' + CSS.escape(cur.contrat) + '"]');
+    if(w) Object.keys(KYF_PER_DND).forEach(k => {
+      if(w.querySelector('.kyf-comp-zone[data-kyf-comp="' + k + '"]')) return;
+      const t = document.createElement('div'); t.className = 'kyf-comp-zone kyf-comp-tmp'; t.dataset.kyfComp = k; t.dataset.kyfContrat = cur.contrat;
+      t.textContent = 'Déposer ici pour passer en ' + KYF_PER_DND[k]; w.appendChild(t);
+    });
+  });
+  document.addEventListener('dragover', e => { const z = zoneOf(e); if(!z) return; e.preventDefault(); try{ e.dataTransfer.dropEffect = 'move'; }catch(_){} if(!z.classList.contains('kyf-drop-on')){ clear(); z.classList.add('kyf-drop-on'); } });
+  document.addEventListener('dragleave', e => { const z = zoneOf(e); if(z && !z.contains(e.relatedTarget)) z.classList.remove('kyf-drop-on'); });
+  document.addEventListener('drop', e => {
+    const z = zoneOf(e); if(!z) return; e.preventDefault(); clear();
+    const c = cur; cur = null;
+    document.querySelectorAll('.kyf-comp-tmp').forEach(t => t.remove());
+    if(c) kyfAvPosMoveComp(c.contrat, c.pos, z.dataset.kyfComp);
+  });
+  document.addEventListener('dragend', () => { clear(); cur = null; document.querySelectorAll('.kyf-comp-tmp').forEach(t => t.remove()); document.querySelectorAll('.kyf-dragging').forEach(r => r.classList.remove('kyf-dragging')); });
+})();
+// Retour d'information après modification d'une ligne AV/PER : ce qui a changé, puis le cours en direct du nouveau ticker comparé à la valeur du relevé ÷ quantité (mêmes bornes que l'import : 0,7 à 1,4)
+async function kyfAvPosFeedback(fb){
+  const tk = String(fb.nw || '').toUpperCase(), ot = String(fb.old || '').toUpperCase();
+  const tkChanged = (fb.type === 'etf' || fb.type === 'action') && tk !== ot;
+  const isinChanged = !!fb.isin && fb.isin !== fb.oldIsin;
+  if(!tkChanged && !isinChanged) return;
+  const show = (txt, warn, ms) => {
+    showToast((warn ? '\u26A0 ' : '\u2705 ') + txt);
+    const t = document.getElementById('_scheduleToast'); if(!t) return;
+    clearTimeout(t._t); t.style.whiteSpace = 'normal'; t.style.maxWidth = 'min(620px,92vw)';
+    t._t = setTimeout(() => { t.style.opacity = '0'; setTimeout(() => { t.style.display = 'none'; t.style.whiteSpace = 'nowrap'; t.style.maxWidth = ''; }, 400); }, ms);
+  };
+  const parts = [];
+  if(tkChanged) parts.push(tk ? 'Ticker changé : ' + (ot || 'aucun') + ' → ' + tk : 'Ticker retiré : ' + ot + ', la ligne garde sa valeur du relevé');
+  if(isinChanged) parts.push('ISIN enregistré : ' + fb.isin);
+  if(!(tkChanged && tk)){ show(parts.join(' · '), false, 6000); return; }
+  show(parts.join(' · ') + ' · vérification du cours...', false, 8000);
+  let live = 0;
+  try{ const q = await Promise.race([fetchPrice(tk), new Promise(r => setTimeout(() => r(null), 7000))]); live = (q && q.price > 0) ? q.price : 0; }catch(e){}
+  const eur = n => fmt(n, 2) + ' €', ref = (fb.qty > 0 && fb.valeur > 0) ? fb.valeur / fb.qty : 0;
+  let warn = false;
+  if(live > 0 && ref > 0){
+    const ratio = live / ref;
+    if(ratio < 0.7 || ratio > 1.4){ warn = true; parts.push('cours en direct ' + eur(live) + ' très éloigné de ' + eur(ref) + ' (valeur du relevé ÷ quantité) : vérifiez le ticker'); }
+    else parts.push('cours en direct ' + eur(live) + ' (relevé ' + eur(ref) + ')');
+  } else if(live > 0) parts.push('cours en direct ' + eur(live));
+  else { warn = true; parts.push('cours en direct indisponible pour ce ticker'); }
+  show(parts.join(' · '), warn, warn ? 10000 : 6000);
+}
+// Fenêtre « Ajouter / modifier une position » d'un contrat AV/PER : mêmes recherches Google que dans l'import et le tableau ETF, avec ce qui est saisi à l'instant
+function kyfAvPosGoogle(kind){
+  const v = id => ((document.getElementById(id) || {}).value || '').trim();
+  const nom = v('avPosNom'), isin = v('avPosIsin'), tick = v('avPosTicker') || v('avPosSearchInput');
+  if(kind === 'isin'){ if(!(nom || tick)) return; kyfIsinSearch(nom || tick, tick); }
+  else { if(!(nom || isin || tick)) return; kyfTickerSearch(nom || tick, isin); }
+}
 // Recherche du TICKER sur Google (même petite fenêtre que pour l'ISIN)
 function kyfTickerSearch(name, isin){
   const base = String(name || '').replace(/\s*\([^)]*\)\s*$/, '').trim() || String(isin || '').trim();
@@ -39341,7 +39515,7 @@ let activeBenchmark = 'none';
 // SYSTÈME DE NOTIFICATIONS v2.1.73.29
 // ══════════════════════════════════════════════════════════════════
 const LOGS_ENABLED = false; // désactivé par défaut
-const logs = { errors: [], warnings: [], infos: [] };
+const logs = { errors: [], warnings: [], infos: [], auto: [] };   // auto : protections automatiques de KYF (rien à faire)
 let activeNotifTab = 'errors';
 let unreadCount = 0;
 
@@ -39371,6 +39545,10 @@ function kyfNotifIconSvg(kind){
 }
 // Notifications toujours en français : traduction des messages techniques anglais du navigateur et des anciens textes de l'application
 const KYF_LOG_FR = [
+  // Protections normales de la synchro Google : message clair + « Rien à faire. » (repère du statut NORMAL, voir kyfIsNormal)
+  [/\[KYF Sync\] Non écrasé, plus récent dans le Sheet\s*:\s*([^\n]*)/g, 'Synchro : votre Sheet avait des données plus récentes, elles ont été gardées ($1). Rien à faire.'],
+  [/Synchro\s*:\s*(\d+) donnée\(s\) plus récente\(s\) dans le Sheet, non écrasée\(s\)\s*:\s*([^\n]*)/g, 'Synchro : $1 donnée(s) plus récente(s) dans le Sheet, gardée(s) telle(s) quelle(s) ($2). Rien à faire.'],
+  [/\[KYF Sync\] Envoi vide bloqué \([^)]*\)\s*:\s*([^\n]*)/g, (m, l) => 'Synchro : un envoi vide a été bloqué par sécurité, votre sauvegarde Google garde vos données (' + l.replace(/[\[\]"]/g, '') + '). Rien à faire.'],
   [/NetworkError when attempting to fetch resource\.?/gi, 'Erreur réseau : connexion impossible'],
   [/Failed to fetch/gi, 'Connexion impossible'],
   [/Load failed/gi, 'Chargement impossible'],
@@ -39412,11 +39590,12 @@ function addLog(type, msg, source, icon){
   // Messages techniques en anglais de la librairie de lecture des PDF (« Warning: Setting up fake worker. »...) : sans intérêt pour l'utilisateur, jamais affichés
   if(type === 'warnings' && /^\s*Warning:\s/.test(String(msg || ''))) return;
   if(type === 'errors' || type === 'warnings') msg = kyfLogFr(msg);
+  if(type === 'warnings' && kyfIsNormal(msg)) type = 'auto';   // protection normale : onglet AUTO, pas WARNINGS
   const norm = kyfNotifNormalize(msg, type);
   const entry = {
     ts:     new Date().toLocaleTimeString('fr-FR'),
     msg:    norm.text,
-    icon:   icon || norm.icon || '',
+    icon:   type === 'auto' ? 'ok' : (icon || norm.icon || ''),   // AUTO : coche, pas de triangle d'alerte
     source: source || '',
     expiry: Date.now() + 5 * 60 * 1000, // expire après 5 min
   };
@@ -39425,10 +39604,10 @@ function addLog(type, msg, source, icon){
   updateNotifBadge();
   if(activeNotifTab === type) renderNotifContent();
   // Auto-purge des warnings expirés toutes les 5 min
-  if(type === 'warnings') setTimeout(() => {
-    logs.warnings = logs.warnings.filter(e => !e.expiry || e.expiry > Date.now());
+  if(type === 'warnings' || type === 'auto') setTimeout(() => {
+    logs[type] = logs[type].filter(e => !e.expiry || e.expiry > Date.now());
     updateNotifBadge();
-    if(activeNotifTab === 'warnings') renderNotifContent();
+    if(activeNotifTab === type) renderNotifContent();
   }, 5 * 60 * 1000);
 }
 
@@ -39479,7 +39658,8 @@ function clearSourceError(source){
 function updateNotifBadge(){
   const ioInfos = logs.infos.filter(e => e.source === 'io').length;
   const anomalyCount = (typeof kyfDetectAnomalies === 'function') ? kyfDetectAnomalies().length : 0;
-  const total   = logs.errors.length + logs.warnings.length + ioInfos + anomalyCount;
+  const warnReal = logs.warnings.length;   // l'onglet AUTO ne déclenche pas la pastille
+  const total   = logs.errors.length + warnReal + ioInfos + anomalyCount;
   const badge   = document.getElementById('notifBadge');
   const btn     = document.getElementById('notifBtn');
   if(!badge) return;
@@ -39490,7 +39670,7 @@ function updateNotifBadge(){
     // > anomalies > infos), comme une notification de téléphone - pas toujours
     // rouge, pour refléter la vraie gravité de ce qu'il y a à voir.
     const bubbleColor = logs.errors.length > 0 ? '#ff4560'
-      : logs.warnings.length > 0 ? '#f0b429'
+      : warnReal > 0 ? '#f0b429'
       : anomalyCount > 0 ? '#9b6dff'
       : '#4d9fff';
     badge.style.background = bubbleColor;
@@ -39506,8 +39686,9 @@ function updateNotifBadge(){
     badge.style.display = 'none';
     if(btn) btn.style.color = 'var(--text2)';
   }
+  try{ kyfNotifStatusRender(); }catch(_){}
   // Update tab badges
-  ['errors','warnings','infos'].forEach(t => {
+  ['errors','warnings','infos','auto'].forEach(t => {
     const el = document.getElementById('nbadge-'+t);
     if(el) el.textContent = logs[t].length > 0 ? ' ('+logs[t].length+')' : '';
   });
@@ -40476,6 +40657,16 @@ function kyfCorbeilleGetStore(storeKey){
       cryptoSave();
       renderCryptoAll();
     }, label: 'Position crypto' },
+    cashMvt: { label: 'Mouvement PEA/CTO', restore: function(entry){
+      // Remet la ligne et rejoue son effet : espèces, et total versé du PEA s'il avait été ajusté
+      const m = entry.item; if(!m || !m.id) return;
+      const a = kyfCashMvts(); if(a.some(x => x.id === m.id)) return;
+      a.splice(Math.min(entry.idx, a.length), 0, m); kyfCashMvtsSave(a);
+      adjustCashForEnveloppe(m.env, m.sens === 'in' ? m.montant : -m.montant);
+      if(m.verseAjuste) kyfPeaTotalVerseSet(kyfPeaTotalVerse() + m.montant);
+      try{ renderCashKPI(); }catch(_){}
+      try{ kyfCashMvtRefresh(); }catch(_){}
+    } },
     planned: { restore: function(entry){
       const insertAt = Math.min(entry.idx, _planned.length);
       _planned.splice(insertAt, 0, entry.item);
@@ -40583,7 +40774,8 @@ function kyfCorbeilleModuleLabel(storeKey){
     cryptoOperation: 'Crypto',
     avPosition:   'AV/PER',
     cryptoPosition: 'Crypto',
-    planned:      'Investissement programmé'
+    planned:      'Investissement programmé',
+    cashMvt:      'Versements PEA/CTO'
   };
   return modules[storeKey] || '';
 }
@@ -40594,6 +40786,7 @@ function kyfCorbeilleModuleLabel(storeKey){
 function kyfCorbeilleDisplayItem(storeKey, item){
   if(storeKey === 'etfPosition' || storeKey === 'cryptoPosition') return item?.pos;
   if(storeKey === 'avPosition') return item?.pos;
+  if(storeKey === 'cashMvt' && item) return { nom: item.env + ' · ' + (item.sens === 'in' ? 'Versement' : 'Retrait'), montant: item.montant, date: item.date };
   return item;
 }
 // Détail lisible d'un élément supprimé - PAS le JSON brut (illisible, plein
@@ -40705,6 +40898,7 @@ function toggleNotifPanel(){
     // Priorité : Erreurs > Warnings > Infos
     const priorityTab = logs.errors.length > 0 ? 'errors'
                       : logs.warnings.length > 0 ? 'warnings'
+                      : (logs.infos.length === 0 && logs.auto.length > 0) ? 'auto'
                       : 'infos';
     // Même mise à jour que le clic sur un onglet : le soulignement (classe active) suit l'onglet ouvert.
     // Avant, Erreurs gardait la classe active et affichait un trait sombre alors qu'un autre onglet était ouvert.
@@ -40718,7 +40912,7 @@ function showNotifTab(tab, btn){
     b.classList.remove('active');
     b.style.color = 'var(--text3)';
   });
-  const cols = {errors:'var(--red)', warnings:'#b07800', infos:'#4d9fff', anomalies:'#9b6dff'};
+  const cols = {errors:'var(--red)', warnings:'#b07800', infos:'#4d9fff', anomalies:'#9b6dff', auto:'#2e9e7a'};
   if(btn){ btn.classList.add('active'); btn.style.color = cols[tab]; }
   renderNotifContent();
 }
@@ -40944,6 +41138,42 @@ function renderAnomaliesTab(el){
 // sous chaque message. À l'affichage, elle est retirée et remplacée par une petite pastille AUTO (phrase
 // complète en info-bulle), et UNE seule ligne d'explication s'affiche en haut de la liste. Le message
 // enregistré reste complet (téléchargement / envoi au support inchangés).
+// Messages « normaux » (protection de la synchro, rien à faire) : reconnus à leur dernière phrase « Rien à faire. »
+function kyfIsNormal(msg){ return /Rien à faire\.\s*$/.test(String(msg || '')); }
+
+// Bandeau d'état en haut de la fenêtre + bouton « Envoyer au support » discret quand tout est normal
+function kyfNotifStatusRender(){
+  const box = document.getElementById('notifStatus'); if(!box) return;
+  // Le bandeau vert « Tout est normal » n'apparaît que dans l'onglet AUTO ; le bandeau de problème, dans tous les onglets
+  const _hasProblem = logs.errors.length > 0 || logs.warnings.length > 0;
+  if(!_hasProblem && activeNotifTab !== 'auto'){
+    box.style.cssText = 'display:none'; box.innerHTML = '';
+    const b0 = document.getElementById('notifSupportBtn');   // bandeau caché = rien à signaler : bouton discret
+    if(b0){ b0.style.background = 'none'; b0.style.border = '1px solid var(--border2)'; b0.style.color = 'var(--text3)'; }
+    return;
+  }
+  const nbErr = logs.errors.length, nbReal = logs.warnings.length;
+  const nbNormal = logs.auto.length;
+  const ok = nbErr === 0 && nbReal === 0;
+  const dark = document.documentElement.getAttribute('data-theme') !== 'light';
+  const col = ok ? (dark ? '#4ade80' : '#0f7a4a') : (nbErr > 0 ? (dark ? '#ff9aa5' : '#a3142a') : (dark ? '#f5cf72' : '#7a5300'));
+  const bd  = ok ? '#00d4aa' : (nbErr > 0 ? '#ff4560' : '#f0b429');
+  const bg  = ok ? 'rgba(0,212,170,0.10)' : (nbErr > 0 ? 'rgba(255,69,96,0.10)' : 'rgba(240,180,41,0.14)');
+  const ico = ok ? 'ok' : 'warn';
+  const t1 = ok ? 'Tout est normal.'
+                : 'Un problème est détecté : envoyez le rapport au support avec le bouton ci-dessous.';
+  const t2 = '';
+  box.style.cssText = 'display:flex;align-items:flex-start;gap:8px;margin:0 0 8px;padding:8px 10px;border-radius:8px;border:1px solid ' + bd + '55;border-left:3px solid ' + bd + ';background:' + bg + ';color:' + col + ';font-family:\'Inter\',sans-serif;font-size:11px;line-height:1.5';
+  box.innerHTML = '<span style="display:inline-flex;flex-shrink:0;margin-top:1px">' + kyfNotifIconSvg(ico) + '</span><span><b style="font-weight:700">' + t1 + '</b>' + (t2 ? '<br><span style="font-size:10px;opacity:.85">' + t2 + '</span>' : '') + '</span>';
+  const b = document.getElementById('notifSupportBtn');
+  if(b){
+    // Le bouton prend la couleur de l'état du bandeau : contour discret (normal), orange (warning), rouge (erreur)
+    b.style.background = ok ? 'none' : (nbErr > 0 ? '#ff4560' : '#f0b429');
+    b.style.border = ok ? '1px solid var(--border2)' : 'none';
+    b.style.color = ok ? 'var(--text3)' : (nbErr > 0 ? '#fff' : '#000');
+    b.title = ok ? 'Inutile si tout est normal. Joint un rapport de logs anonymisé (URLs, emails et montants masqués) au formulaire de contact' : 'Joint un rapport de logs anonymisé (URLs, emails et montants masqués) au formulaire de contact';
+  }
+}
 const KYF_SELF_HEAL_RE = /\s*[;:\u2014-]?\s*Cette erreur se corrige automatiquement[\s\S]*$/;
 function kyfIsSelfHeal(msg){ return KYF_SELF_HEAL_RE.test(String(msg || '')); }
 function kyfSelfHealPill(color){
@@ -40963,10 +41193,11 @@ function kyfNotifShownMsg(e){
 }
 function renderNotifContent(){
   const el = document.getElementById('notifContent'); if(!el) return;
+  try{ kyfNotifStatusRender(); }catch(_){}
   if(activeNotifTab === 'anomalies'){ renderAnomaliesTab(el); return; }
   const entries = logs[activeNotifTab];
   if(entries.length === 0){
-    const emptyMsgs = {errors:'Aucune erreur détectée', warnings:'Aucun warning détecté', infos:'Aucune info détectée'};
+    const emptyMsgs = {errors:'Aucune erreur détectée', warnings:'Aucun warning détecté', infos:'Aucune info détectée', auto:'Aucune protection automatique'};
     el.innerHTML = '<div style="font-family:\'Inter\',sans-serif;font-size:9px;color:var(--text3);text-align:center;padding:24px;display:flex;align-items:center;justify-content:center;gap:5px">'+(emptyMsgs[activeNotifTab]||'Aucune entrée')+' <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>';
     return;
   }
@@ -40974,14 +41205,16 @@ function renderNotifContent(){
     errors:   { border:'#ff4560', bg:'rgba(255,69,96,0.10)', text:'#7a0f1e', tsColor:'#a3142a',          swipeBg:kyfSc('rgba(255,69,96,0.30)')   },
     warnings: { border:'#f0b429', bg:'rgba(240,180,41,0.28)', text:'#1a1200', tsColor:'rgba(0,0,0,0.85)',     swipeBg:'rgba(240,180,41,0.35)'  },
     infos:    { border:'#4d9fff', bg:'rgba(77,159,255,0.10)', text:'#2C3E50', tsColor:'#5A7DA1', sourceColor:'#1A3A5A', swipeBg:'rgba(77,159,255,0.30)'  },
+    auto:     { border:'#2e9e7a', bg:'rgba(46,158,122,0.12)', text:'#0d4a38', tsColor:'#1f7a5c', swipeBg:'rgba(46,158,122,0.30)'  },
   };
   // Thème sombre : les couleurs de texte ci-dessus sont pensées pour le thème clair (illisibles sur fond sombre)
   if(document.documentElement.getAttribute('data-theme') !== 'light'){
     styles.errors   = { border:'#ff4560', bg:'#2d0a0e', text:'#ff9aa5', tsColor:'#ffffff', swipeBg:kyfSc('rgba(255,69,96,0.30)') };
     styles.warnings = { border:'#f0b429', bg:'rgba(240,180,41,0.14)', text:'#ffe19a', tsColor:'#f5cf72', swipeBg:'rgba(240,180,41,0.35)' };
     styles.infos    = { border:'#4d9fff', bg:'rgba(77,159,255,0.12)', text:'#e4eefb', tsColor:'#8fb8e8', sourceColor:'#b5d2f4', swipeBg:'rgba(77,159,255,0.30)' };
+    styles.auto     = { border:'#3dbb94', bg:'rgba(61,187,148,0.14)', text:'#c3f0df', tsColor:'#7fd6b8', swipeBg:'rgba(61,187,148,0.35)' };
   }
-  const s = styles[activeNotifTab];
+  const s0 = styles[activeNotifTab];
   window._notifHelpData = {};
   const selfHealCount = entries.filter(e => kyfIsSelfHeal(e.msg)).length;
   const selfHealNote = selfHealCount
@@ -40990,6 +41223,7 @@ function renderNotifContent(){
       + '<span>Les messages marqués <strong>AUTO</strong> se corrigent tout seuls : inutile de nous contacter, sauf s\'ils reviennent souvent.</span></div>'
     : '';
   el.innerHTML = selfHealNote + [...entries].reverse().map((e, i) => {
+    const s = s0;
     const help = getErrorHelp(e.msg);
     if(help) window._notifHelpData[i] = help;
     const iconColor = activeNotifTab==='warnings' ? '#c8880a' : s.border;
@@ -41107,7 +41341,7 @@ function renderNotifContent(){
 }
 
 function clearLogs(){
-  logs.errors = []; logs.warnings = []; logs.infos = [];
+  logs.errors = []; logs.warnings = []; logs.infos = []; logs.auto = [];
   unreadCount = 0;
   updateNotifBadge();
   renderNotifContent();
@@ -41118,6 +41352,7 @@ function downloadLogs(){
     errors:   logs.errors,
     warnings: logs.warnings,
     infos:    logs.infos,
+    auto:     logs.auto,
     exported: new Date().toISOString(),
     version:  kyfGetVersion(),
   };
@@ -41204,6 +41439,7 @@ function kyfBuildLogsReport(){
   report += 'chaînes longues (tokens) sont automatiquement masqués ci-dessous.\n\n';
   report += section('ERREURS',  logs.errors);
   report += section('WARNINGS', logs.warnings);
+  if(logs.auto.length) report += section('AUTO (protections automatiques, rien à faire)', logs.auto);
   return report;
 }
 
@@ -42562,7 +42798,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.5.06\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.6.29\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -42637,7 +42873,7 @@ document.addEventListener('DOMContentLoaded', function(){
       else if(lastPage==='assurance') try{renderAV();}catch(e){}
       else if(lastPage==='av-comparateur') try{avCompRender();}catch(e){}
       else if(lastPage==='av-fiscalite') try{avFiscLoadParams();avFiscAutoFill();avFiscCalc();avFiscCloudInit();}catch(e){}
-      else if(lastPage==='fiscal-pea-cto') try{fiscalParamsInit();peaFiscLoadParams();peaFiscSimuler();pmeFiscLoadParams();pmeFiscSimuler();ctoFiscCalc();}catch(e){}
+      else if(lastPage==='fiscal-pea-cto') try{fiscalParamsInit();peaFiscLoadParams();peaFiscSimuler();pmeFiscLoadParams();pmeFiscSimuler();ctoFiscCalc();kyfCashMvtRefresh();}catch(e){}
       else if(lastPage==='budget') try{renderBudgetPage();}catch(e){}
       else if(lastPage==='immo-crowdfunding') try{renderCrowdfunding();}catch(e){}
       else if(lastPage==='per-comprendre') try{perLoadParams();perUpdateAll();}catch(e){}
@@ -42779,6 +43015,53 @@ function kyfSnapExtras(etfInvesti, cryptoInvesti){
     invAll: parseFloat(((etfInvesti||0) + (cryptoInvesti||0) + avCost + immo + liv + cf + orCost).toFixed(2))
   };
 }
+// ── Mouvements internes : variation du coût des lignes AV/PER lors d'un import (arbitrage, remplacement des lignes) ──
+// Le coût (PRU x quantité) des lignes du contrat bouge sans que de l'argent frais entre : la séance ne doit pas y voir un apport
+// (sinon une perte égale à l'écart de coût apparaît dans la Heatmap et le Journal). Les versements du contrat restent saisis à part.
+function kyfFluxNeutres(){ try{ const a = JSON.parse(localStorage.getItem('kyf-flux-neutres') || '[]'); return Array.isArray(a) ? a.filter(f => f && /^\d{4}-\d{2}-\d{2}$/.test(String(f.date)) && typeof f.montant === 'number') : []; }catch(e){ return []; } }
+function kyfFluxNeutreAdd_(montant, motif, dateIso){
+  if(!isFinite(montant) || Math.abs(montant) < 0.005) return;
+  const a = kyfFluxNeutres(); a.push({ date: dateIso || kyfParisNow().date, montant: Math.round(montant * 100) / 100, motif: motif || '' });
+  localStorage.setItem('kyf-flux-neutres', JSON.stringify(a));
+}
+function kyfAvLinesCost_(){ try{ return ETF.filter(e => e.enveloppe === 'AV' || e.enveloppe === 'PER').reduce((s, e) => s + etfInvestOf(e), 0); }catch(e){ return 0; } }
+// Rattrapage unique : séance d'import déjà passée avant cette règle (lignes créées par l'import ce jour-là, hausse du coût constatée entre les deux séances)
+function kyfFluxNeutresMig_(){
+  try{
+    if(localStorage.getItem('kyf-flux-neutres-mig-v1')) return;
+    const idx = JSON.parse(localStorage.getItem('kyf-snapshots-index') || '[]').slice().sort();
+    const posAll = JSON.parse(localStorage.getItem('kyf-av-positions') || '{}'), etfs = (typeof ETF !== 'undefined') ? ETF : [];
+    const dayOf = id => { const t = parseInt(String(id).split('_')[0], 10); return (t > 1e12 && t < 4e12) ? kyfParisNow(new Date(t)).date : ''; };
+    const dejaMarque = new Set(kyfFluxNeutres().map(f => f.date));
+    for(let i = 1; i < idx.length; i++){
+      const d = idx[i]; if(dejaMarque.has(d)) continue;
+      const prev = kyfSnapStored(idx[i - 1]), cur = kyfSnapStored(d);
+      if(!prev || !cur || prev.invEtf === undefined || cur.invEtf === undefined || prev._catchup || cur._catchup) continue;
+      const delta = cur.invEtf - prev.invEtf; if(!(delta > 0.005)) continue;
+      let neuf = 0, nb = 0;
+      Object.keys(posAll).forEach(cid => (posAll[cid] || []).forEach(p => {
+        if(p && p.type === 'etf' && p.ticker && dayOf(p.id) === d){
+          const e = etfs.find(x => String(x.contratId) === String(cid) && String(x.ticker || '').toUpperCase() === String(p.ticker).toUpperCase());
+          if(e){ neuf += etfInvestOf(e); nb++; }
+        }
+      }));
+      if(nb && neuf >= delta - 0.01){ kyfFluxNeutreAdd_(delta, 'import contrat (rattrapage)', d); try{ addLog('info', 'Import du ' + d.split('-').reverse().join('/') + ' : écart de coût de ' + delta.toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' € traité comme mouvement interne, pas comme versement.', 'Séances'); }catch(e){} }
+    }
+    localStorage.setItem('kyf-flux-neutres-mig-v1', '1');
+  }catch(e){}
+}
+window.addEventListener('load', () => setTimeout(kyfFluxNeutresMig_, 4000));
+window.addEventListener('load', () => {
+  if(typeof importConfirm !== 'function' || importConfirm._kyfFlux) return;
+  const _orig = importConfirm;
+  const _w = function(){
+    const avant = kyfAvLinesCost_();
+    const r = _orig.apply(this, arguments);
+    try{ kyfFluxNeutreAdd_(kyfAvLinesCost_() - avant, 'import contrat'); }catch(e){}
+    return r;
+  };
+  _w._kyfFlux = true; window.importConfirm = _w; try{ importConfirm = _w; }catch(e){}
+});
 // Valeur et apports d'un snapshot selon la vue :
 //   'etf'    = ETF/Actions ; 'crypto' = crypto ;
 //   'total'  = MARCHÉS : ETF/Actions + crypto (journal des séances, statistiques, vues « AVEC CRYPTO »).
@@ -42804,6 +43087,10 @@ function kyfSnapDelta(prev, cur, mode){
   let flows = (a.inv !== undefined && b.inv !== undefined) ? (b.inv - a.inv) : 0;
   // TRA-004 : entre une séance à l'ancien calcul de invAll et une au nouveau, la différence de coût n'est pas un flux réel : on ne la corrige pas
   if(mode !== 'etf' && mode !== 'crypto' && mode !== 'total' && (prev.invAllV || 1) !== (cur.invAllV || 1)) flows = 0;
+  // Mouvements internes (import / arbitrage des lignes d'un contrat AV/PER) : le coût des lignes change sans argent frais, ce n'est pas un apport
+  if((mode === 'etf' || mode === 'total') && a.inv !== undefined && b.inv !== undefined && prev.date && cur.date){
+    try{ kyfFluxNeutres().forEach(f => { if(f.date > prev.date && f.date <= cur.date && isFinite(f.montant)) flows -= f.montant; }); }catch(e){}
+  }
   // TRA-003 (D1) : la base de coût (inv) baisse du COÛT des parts vendues, mais le flux sortant réel est le PRODUIT net.
   // Sans correction, une vente à cours constant apparaît comme une perte égale à la plus-value réalisée.
   // On retire donc des flux la plus-value réalisée (gainNet = produit net - PRU x quantité) des ventes ETF/Actions datées entre les deux séances
@@ -43435,6 +43722,29 @@ async function kyfCatchupFetchHistories(){
 
     return { etfHistory, cryptoHistory, cryptoPositions };
 }
+// Week-end / jour férié (toutes les bourses détenues fermées) sans cours historique pour une ligne : sa valeur est celle de la dernière séance réelle
+// figée (clôture enregistrée par KYF, _etfp), à condition que la quantité n'ait pas changé et que tous les jours entre les deux soient fermés.
+// Rien d'inventé : c'est la valeur réellement enregistrée ce jour-là. Sinon null (la séance reste signalée incomplète).
+function kyfEtfCarryValue_(ticker, date, qtyAtDate, qtyAtFn){
+  try{
+    if(!(qtyAtDate > 0) || !kyfMarketsClosedOn(date)) return null;
+    const idx = JSON.parse(localStorage.getItem('kyf-snapshots-index') || '[]').filter(d => d < date).sort();
+    const k = String(ticker || '').toUpperCase();
+    for(let i = idx.length - 1; i >= 0; i--){
+      const d = idx[i], snap = kyfSnapStored(d);
+      if(!snap || snap._catchup || snap._etfFinal !== true || !snap._etfp) continue;   // seule une clôture réelle compte
+      // tous les jours entre la séance et la date visée doivent être fermés (aucune cotation entre les deux)
+      const t0 = Date.parse(d + 'T12:00:00Z'), t1 = Date.parse(date + 'T12:00:00Z');
+      for(let t = t0 + 86400000; t <= t1; t += 86400000){ if(!kyfMarketsClosedOn(new Date(t).toISOString().slice(0, 10))) return null; }
+      const key = Object.keys(snap._etfp).find(x => String(x).toUpperCase() === k);
+      if(!key) return null;
+      const v = snap._etfp[key]; if(!Array.isArray(v) || !(v[1] > 0)) return null;
+      const qd = qtyAtFn(d); if(!(Math.abs(qd - qtyAtDate) < 1e-6)) return null;   // quantité changée entre les deux : valeur non transposable
+      return v[1];
+    }
+  }catch(e){}
+  return null;
+}
 // Une séance reconstituée pour une date (cours historiques, quantités de l'époque). c.strict : aucun cours de repli, c.missing liste les cours absents.
 function kyfCatchupBuildSnap(date, c){
   const { etfHistory, cryptoHistory, etfLastKnown, cryptoPositions } = c, _etfTr = c.etfTr, _cryOps = c.cryOps;
@@ -43447,6 +43757,10 @@ function kyfCatchupBuildSnap(date, c){
     let price = history && history[date] ? history[date] : null;
     // Fallback : dernier prix connu (weekend/férié)
     if (!price && etfLastKnown[e.ticker]) price = etfLastKnown[e.ticker];
+    if (!price && _qAt.get(e) > 0){
+      const _cv = kyfEtfCarryValue_(e.ticker, date, _qAt.get(e), d0 => kyfEtfQtyAt(e, d0, _etfTr));   // week-end : valeur de la dernière clôture réelle
+      if(_cv !== null){ etfTotal += _cv; return; }
+    }
     if (!price && c.strict && _qAt.get(e) > 0) (c.missing = c.missing || []).push(e.ticker);   // recalcul : jamais de cours inventé
     if (!price && _qAt.get(e) > 0) (c.fallback = c.fallback || []).push(e.ticker);   // cours de repli utilisé : la séance sera marquée incomplète
     // Fallback final : evalBase
@@ -43462,6 +43776,10 @@ function kyfCatchupBuildSnap(date, c){
     if(!(r.qty > 0)) return;
     const h = etfHistory[g.ticker]; let px = null;
     if(h){ if(h[date]) px = h[date]; else { const ds = Object.keys(h).filter(d => d <= date).sort(); if(ds.length) px = h[ds[ds.length - 1]]; } }
+    if(r.ok && g.ok && !px){
+      const _cv = kyfEtfCarryValue_(g.ticker, date, r.qty, d0 => kyfEtfReplay(g.trans, d0).qty);
+      if(_cv !== null){ etfTotal += _cv; _ghInv += r.cost; return; }
+    }
     if(!r.ok || !g.ok || !px){ if(c.strict) (c.missing = c.missing || []).push(g.ticker); (c.fallback = c.fallback || []).push(g.ticker); return; }
     etfTotal += px * r.qty; _ghInv += r.cost;
   });
@@ -47598,7 +47916,7 @@ function executeReset(){
     kyf_keys.forEach(k=>localStorage.removeItem(k));
   } else {
     if(_resetPending==='crypto') ['pea-crypto-v1','pea-crypto-intraday'].forEach(k=>localStorage.removeItem(k));
-    else if(_resetPending==='pea') ['pea-positions','kyf-etf-transactions','pea-alertes','pea-hist','pea-bilan','pea-geo','pea-sectors','pea-nav-order','pea-kpi-order','pea-dca-v1','pea-etf-settings','kyf-cash','kyf-cash-ccp','kyf-cash-cto','kyf-cash-pea','kyf-planned-payments','kyf-projections','kyf-dividendes'].forEach(k=>localStorage.removeItem(k));
+    else if(_resetPending==='pea') ['pea-positions','kyf-etf-transactions','pea-alertes','pea-hist','pea-bilan','pea-geo','pea-sectors','pea-nav-order','pea-kpi-order','pea-dca-v1','pea-etf-settings','kyf-cash','kyf-cash-ccp','kyf-cash-mvts','kyf-cash-cto','kyf-cash-pea','kyf-planned-payments','kyf-projections','kyf-dividendes'].forEach(k=>localStorage.removeItem(k));
     else if(_resetPending==='prefs') ['pea-style','pea-theme','pea-font','pea-chart-prefs','pea-kpi-band','pea-nav-order','pea-intraday-prefs','kyf-card-layout-v2','kyf-card-hidden-v1','kyf-shortcuts-v1','kyf-views-v1','kyf-rituals-v1','kyf-columns-v1'].forEach(k=>localStorage.removeItem(k));
   }
   addLog('infos', _resetPending === 'all' ? 'Réinitialisation complète effectuée' : 'Réinitialisation partielle effectuée (' + ({crypto:'crypto',pea:'portefeuille ETF',prefs:'préférences'}[_resetPending] || _resetPending) + ')', 'io', 'ok');
@@ -48473,7 +48791,7 @@ const KYF_STORAGE_KEYS = [
   'kyf-or-settings',
   'kyf-dividendes',
   'kyf-cash',
-  'kyf-cash-ccp',
+  'kyf-cash-ccp','kyf-cash-mvts','kyf-flux-neutres',
   'kyf-cash-cto',
   'kyf-cash-pea',
   'kyf-cash-migrated-v2',
@@ -48488,7 +48806,7 @@ const KYF_STORAGE_KEYS = [
   'kyf-pea-plafond',
   'kyf-pea-taux-ir',
   'kyf-pea-taux-ps',
-  'kyf-pme-date-ouverture','kyf-pme-total-verse','kyf-pme-plafond','kyf-pea-total-verse',
+  'kyf-pme-date-ouverture','kyf-pme-total-verse','kyf-pme-plafond','kyf-pea-total-verse','kyf-cash-mvts',
   'kyf-depense-mensuelle',
   'kyf-per-tmi',
   'kyf-forecast-horizon',
@@ -48562,7 +48880,7 @@ const KYF_RESTORE_KEEP_KEYS = ['pea-schedule', 'kyf-oauth-first-seen'];
 const KYF_SHAPE_LISTE = { 'pea-positions':'ETF & Actions', 'kyf-etf-transactions':'Transactions', 'kyf-dividendes':'Dividendes', 'kyf-livrets':'Livrets',
   'kyf-livrets-transactions':'Mouvements des livrets', 'kyf-scpi':'SCPI', 'kyf-immo':'Immobilier', 'kyf-immo-credits':'Crédits immobiliers',
   'kyf-immo-revenus':'Revenus locatifs', 'kyf-sci':'SCI', 'kyf-or':'Or et métaux', 'kyf-crowdfunding':'Crowdfunding', 'kyf-av':'Assurance vie / PER', 'kyf-pee':'PEE',
-  'kyf-av-dca':'Versements programmés AV', 'kyf-av-arbitrages':'Arbitrages AV', 'kyf-recurrents':'Récurrents' };
+  'kyf-cash-mvts':'Versements et retraits', 'kyf-flux-neutres':'Mouvements internes (arbitrages)', 'kyf-av-dca':'Versements programmés AV', 'kyf-av-arbitrages':'Arbitrages AV', 'kyf-recurrents':'Récurrents' };
 const KYF_SHAPE_OBJET = { 'pea-crypto-v1':'Crypto', 'pea-dca-v1':'Investissement programmé (DCA)', 'kyf-av-positions':'Positions des contrats AV/PER' };
 const KYF_SHAPE_NOMBRE = { 'kyf-cash-pea':'Espèces PEA', 'kyf-cash-cto':'Espèces CTO', 'kyf-cash-ccp':'Compte courant', 'kyf-depense-mensuelle':'Dépense mensuelle', 'kyf-per-tmi':'Tranche marginale (TMI)' };
 // '' si la forme est bonne (ou la clé non concernée), sinon le libellé de la partie et le problème
@@ -54116,19 +54434,29 @@ function contactDownloadCopy(){
     <button type="button" onclick="toggleNotifPanel()" class="kyf-modal-close" title="Fermer" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
   <!-- Tabs -->
-  <div style="display:flex;border-bottom:1px solid var(--border);margin-bottom:8px">
-    <button class="notif-tab kyf-ul active" id="ntab-errors"   onclick="showNotifTab('errors',this)"   style="flex:1;font-family:'Inter',sans-serif;font-size:11px;padding:8px 4px;background:none;border:none;border-bottom:0;color:var(--red);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> ERREURS <span id="nbadge-errors">0</span></button>
-    <button class="notif-tab kyf-ul"        id="ntab-warnings" onclick="showNotifTab('warnings',this)" style="flex:1;font-family:'Inter',sans-serif;font-size:11px;padding:8px 4px;background:none;border:none;border-bottom:0;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> WARNINGS <span id="nbadge-warnings">0</span></button>
-    <button class="notif-tab kyf-ul"        id="ntab-anomalies" onclick="showNotifTab('anomalies',this)" style="flex:1;font-family:'Inter',sans-serif;font-size:11px;padding:8px 4px;background:none;border:none;border-bottom:0;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#9b6dff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 2 3 7v6c0 5 4 9 9 9s9-4 9-9V7l-9-5z"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> ANOMALIES <span id="nbadge-anomalies">0</span></button>
-    <button class="notif-tab kyf-ul"        id="ntab-infos"    onclick="showNotifTab('infos',this)"    style="flex:1;font-family:'Inter',sans-serif;font-size:11px;padding:8px 4px;background:none;border:none;border-bottom:0;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#4d9fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> INFOS <span id="nbadge-infos">0</span></button>
+  <style>
+    /* 5 onglets : largeur selon le contenu (plus de coupe d'AUTO), police et icônes réduites sur petit écran, défilement en dernier recours */
+    #notifTabs{overflow-x:auto;scrollbar-width:none}
+    #notifTabs::-webkit-scrollbar{display:none}
+    #notifPanel .notif-tab{flex:1 1 auto !important;min-width:0;white-space:nowrap;padding-left:2px !important;padding-right:2px !important}
+    @media (max-width:480px){ #notifPanel .notif-tab{font-size:10px !important;gap:2px !important} #notifPanel .notif-tab svg{display:none} }
+  </style>
+  <div id="notifTabs" style="display:flex;gap:6px;border-bottom:1px solid var(--border);margin-bottom:10px">
+    <button class="notif-tab kyf-ul active" id="ntab-errors"   onclick="showNotifTab('errors',this)"   style="flex:1;font-family:'Inter',sans-serif;font-size:11px;padding:8px 4px;background:none;border:none;border-bottom:0;color:var(--red);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> ERREURS <span id="nbadge-errors"></span></button>
+    <button class="notif-tab kyf-ul"        id="ntab-warnings" onclick="showNotifTab('warnings',this)" style="flex:1;font-family:'Inter',sans-serif;font-size:11px;padding:8px 4px;background:none;border:none;border-bottom:0;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> WARNINGS <span id="nbadge-warnings"></span></button>
+    <button class="notif-tab kyf-ul"        id="ntab-anomalies" onclick="showNotifTab('anomalies',this)" style="flex:1;font-family:'Inter',sans-serif;font-size:11px;padding:8px 4px;background:none;border:none;border-bottom:0;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#9b6dff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 2 3 7v6c0 5 4 9 9 9s9-4 9-9V7l-9-5z"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> ANOMALIES <span id="nbadge-anomalies"></span></button>
+    <button class="notif-tab kyf-ul"        id="ntab-infos"    onclick="showNotifTab('infos',this)"    style="flex:1;font-family:'Inter',sans-serif;font-size:11px;padding:8px 4px;background:none;border:none;border-bottom:0;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#4d9fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> INFOS <span id="nbadge-infos"></span></button>
+    <button class="notif-tab kyf-ul"        id="ntab-auto"     onclick="showNotifTab('auto',this)"     title="Protections automatiques de KYF : rien à faire" style="flex:1;font-family:'Inter',sans-serif;font-size:11px;padding:8px 4px;background:none;border:none;border-bottom:0;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#2e9e7a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><polyline points="9 12 11 14 15 10"/></svg> AUTO <span id="nbadge-auto"></span></button>
   </div>
+  <!-- Statut -->
+  <div id="notifStatus"></div>
   <!-- Log content -->
   <div id="notifContent" style="height:210px;overflow-y:auto;padding:4px 8px 4px 0"></div>
   <!-- Actions -->
-  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+  <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
     <button onclick="clearLogs()" style="flex:1;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;background:none;border:1px solid var(--border2);color:var(--text3);padding:7px 10px;border-radius:8px;cursor:pointer;letter-spacing:.5px;transition:background .15s;display:inline-flex;align-items:center;justify-content:center;gap:5px" onmouseover="this.style.background='var(--hov-bg)'" onmouseout="this.style.background='none'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg> VIDER</button>
     <button onclick="downloadLogs()" style="flex:1;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;background:#f0b429;border:none;color:#000;padding:7px 10px;border-radius:8px;cursor:pointer;letter-spacing:.5px;transition:opacity .15s;display:inline-flex;align-items:center;justify-content:center;gap:5px" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> TÉLÉCHARGER</button>
-    <button onclick="kyfSendLogsToContact()" title="Joint un rapport de logs anonymisé (URLs, emails et montants masqués) au formulaire de contact" style="flex:1 1 100%;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;background:#f0b429;border:none;color:#000;padding:7px 10px;border-radius:8px;cursor:pointer;letter-spacing:.5px;transition:opacity .15s;display:inline-flex;align-items:center;justify-content:center;gap:5px" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg> ENVOYER AU SUPPORT</button>
+    <button id="notifSupportBtn" onclick="kyfSendLogsToContact()" title="Joint un rapport de logs anonymisé (URLs, emails et montants masqués) au formulaire de contact" style="flex:1 1 100%;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;background:#f0b429;border:none;color:#000;padding:7px 10px;border-radius:8px;cursor:pointer;letter-spacing:.5px;transition:opacity .15s;display:inline-flex;align-items:center;justify-content:center;gap:5px" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg> ENVOYER AU SUPPORT</button>
     <div style="flex:1 1 100%;display:flex;align-items:center;justify-content:center;gap:5px;font-family:'Inter',sans-serif;font-size:9px;color:var(--text3);text-align:center;line-height:1.6">
       <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Aucune donnée sensible n'est envoyée (URLs, emails et montants masqués)
     </div>
@@ -56430,6 +56758,7 @@ const GUIDE_PAGES = [
             COMMENCER LA VISITE →
           </button>
           <div style="font-size:11px;color:var(--text3);letter-spacing:.5px">__GUIDE_META__</div>
+          <div style="font-size:11px;color:var(--text3);letter-spacing:.5px;margin-top:-6px">__GUIDE_VER__</div>
         </div>
         <div style="display:flex;align-items:center;gap:16px;font-size:12px;color:var(--text3);margin-top:4px">
           <a href="https://x.com/keepYourFolio" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:6px;color:var(--text2);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text2)'">
@@ -57380,7 +57709,13 @@ const GUIDE_PAGES = [
         <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:8px">Chaque régime applique ses propres règles quand elles sont connues avec certitude (exonération totale pour une résidence principale, abattements liés à la durée de détention pour un bien secondaire ou locatif). Quand KYF ne dispose pas d'assez d'informations pour un calcul fiable, comme pour une SCI, le résultat affiche <strong style="color:var(--text)">Estimation fiscale</strong> plutôt qu'un montant présenté comme définitif. Une note rappelle systématiquement que ce n'est pas un avis de notaire ou d'expert-comptable.</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:8px">Une fois la vente enregistrée, le bien passe en statut <strong style="color:var(--text)">Vendu</strong> avec un filigrane sur sa photo, façon panneau d'agence. Il n'est jamais supprimé : il reste consultable dans une section dédiée d'Immobilier ainsi que dans Historique &amp; Snapshots, mais il sort du calcul du patrimoine actuel.</div>
       </div>
-    `
+    
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+        <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Revenus locatifs : travaux et intérêts d'emprunt</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Le popup Revenus locatifs comprend deux champs en plus des loyers : <strong style="color:var(--text)">TRAVAUX</strong> (case 224 de la déclaration 2044) et <strong style="color:var(--text)">INTÉRÊTS D'EMPRUNT</strong> (case 250), avec une estimation depuis le crédit lié. Les numéros de case sont affichés pour l'année de formulaire en vigueur (aujourd'hui la 2044, revenus 2025) ; KYF vous invite à les contrôler quand le formulaire suivant est sorti.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">KYF affiche un <strong style="color:var(--text)">résultat foncier indicatif</strong> : loyers moins charges moins intérêts. Les intérêts ne baissent pas le cash-flow, car la mensualité du crédit les contient déjà.</div>
+      </div>
+`
   },
   {
     chapter: 'Chapitre 7',
@@ -57552,7 +57887,7 @@ const GUIDE_PAGES = [
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Importer un relevé (AV ou PER)</div>
-        <ol style="font-size:13px;color:var(--text2);line-height:2;margin:0;padding-left:20px"><li>Cliquez sur <strong style="color:var(--text)">IMPORTER</strong>, choisissez Assurance vie ou PER, le contrat de destination et votre fichier (.csv, .xls, .xlsx, .txt). </li><li>Le résultat s'affiche en quatre onglets : <strong style="color:var(--text)">À compléter</strong> (ligne sans ticker fiable), <strong style="color:var(--text)">Nouvelles</strong>, <strong style="color:var(--text)">Modifiées</strong> (quantité différente) et <strong style="color:var(--text)">Déjà présentes</strong> (ignorées, jamais réimportées en double)</li><li>Un clic sur le ticker d'une ligne ouvre la correction : <strong style="color:var(--text)">ISIN</strong> et <strong style="color:var(--text)">ticker Yahoo</strong> se saisissent à la main (Entrée ou VALIDER), même si la recherche en ligne ne trouve rien. La correction vaut pour toutes les lignes du même fonds</li><li>Le compteur du bouton IMPORTER indique le nombre de lignes retenues. Vous pouvez élargir ou réduire la colonne centrale de la fenêtre en tirant sa séparation</li></ol><div style="font-size:12px;color:var(--text2);margin-top:8px;line-height:1.8"><strong style="color:var(--text)">Avis d'arbitrage (PER ou assurance vie) :</strong> passez d'abord le PDF de l'avis d'opération dans le convertisseur KYF, qui en tire un CSV (sorties et entrées, parts, valeur de part, date d'effet). Importez ce CSV ici : KYF affiche chaque support, vous l'associez à une ligne du contrat (ou « Nouvelle ligne » pour une entrée), puis l'arbitrage est appliqué à la date d'effet de l'avis et inscrit dans l'historique. Un même avis ne peut être appliqué qu'une fois.</div>
+        <ol style="font-size:13px;color:var(--text2);line-height:2;margin:0;padding-left:20px"><li>Cliquez sur <strong style="color:var(--text)">IMPORTER</strong>, choisissez Assurance vie ou PER, le contrat de destination et votre fichier (.csv, .xls, .xlsx, .txt). </li><li>Le résultat s'affiche en quatre onglets : <strong style="color:var(--text)">À compléter</strong> (ligne sans ticker fiable), <strong style="color:var(--text)">Nouvelles</strong>, <strong style="color:var(--text)">Modifiées</strong> (quantité différente) et <strong style="color:var(--text)">Déjà présentes</strong> (ignorées, jamais réimportées en double). Un cinquième onglet, <strong style="color:var(--text)">À retirer</strong> (pastille orange), apparaît quand des lignes du contrat ne figurent plus dans le fichier (arbitrage, vente) : elles sont cochées par défaut et retirées du contrat à l'import, et la corbeille permet de les récupérer</li><li>Un clic sur le ticker d'une ligne ouvre la correction : <strong style="color:var(--text)">ISIN</strong> et <strong style="color:var(--text)">ticker Yahoo</strong> se saisissent à la main (Entrée ou VALIDER), même si la recherche en ligne ne trouve rien. La correction vaut pour toutes les lignes du même fonds</li><li>Le compteur du bouton IMPORTER indique le nombre de lignes retenues. Vous pouvez élargir ou réduire la colonne centrale de la fenêtre en tirant sa séparation</li></ol><div style="font-size:12px;color:var(--text2);margin-top:8px;line-height:1.8"><strong style="color:var(--text)">Avis d'arbitrage (PER ou assurance vie) :</strong> passez d'abord le PDF de l'avis d'opération dans le convertisseur KYF, qui en tire un CSV (sorties et entrées, parts, valeur de part, date d'effet). Importez ce CSV ici : KYF affiche chaque support, vous l'associez à une ligne du contrat (ou « Nouvelle ligne » pour une entrée), puis l'arbitrage est appliqué à la date d'effet de l'avis et inscrit dans l'historique. Un même avis ne peut être appliqué qu'une fois.</div>
         <div style="font-size:12px;color:var(--text3);margin-top:8px">Les espèces rémunérées d'un courtier (Trade Republic, Revolut…) détectées dans un relevé ne sont pas des titres : elles sont proposées pour votre trésorerie ou vos livrets, sans être comptées deux fois. Un fonds importé garde son cours du relevé tant qu'aucun ticker n'est validé ; avec un ticker, la valeur suit le cours en direct, d'où un petit écart possible avec le relevé.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
@@ -57598,7 +57933,21 @@ const GUIDE_PAGES = [
           <div style="font-size:13px;color:var(--text2);line-height:1.9">Cette base n'est alimentée que par des contributions volontaires : elle n'est ni exhaustive, ni issue d'une source officielle (AMF/GECO), ni garantie à jour. Le niveau de confiance affiché est purement indicatif, basé sur les confirmations et signalements des utilisateurs, pas une certification. Une contribution envoyée reste anonyme, non traçable et non supprimable individuellement, c'est un choix de conception assumé plutôt qu'une limite technique.</div>
         </div>
       </div>
-    `
+    
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+        <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 9 2 12 5 15"/><polyline points="9 5 12 2 15 5"/><polyline points="15 19 12 22 9 19"/><polyline points="19 9 22 12 19 15"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/></svg> PER : compartiments et plafond de déductibilité</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Un contrat PER peut séparer ses lignes en deux compartiments, <strong style="color:var(--text)">EV Déductible</strong> et <strong style="color:var(--text)">EV Non Déductible</strong>. Pour déplacer une ligne de l'un à l'autre, glissez-la avec la souris, sans passer par Modifier ; si le compartiment n'existe pas encore, une zone de dépôt provisoire apparaît, puis un message confirme le déplacement. Le glisser-déposer n'existe pas sur écran tactile : utilisez alors Modifier.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">Le cadre <strong style="color:var(--text)">Plafond déductibilité PER</strong> tient en une phrase (ce qu'il reste sur le plafond) et une jauge des versements déductibles de l'année par rapport au plafond.</div>
+      </div>
+
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+        <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Quand la banque modifie les lignes de votre contrat</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Sur un contrat en gestion pilotée, ou après un arbitrage fait chez votre assureur, les lignes de votre contrat changent sans passer par KYF. Deux façons de les remettre à jour :</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">1. Le dernier relevé</strong> : importez-le avec IMPORTER. KYF ajoute les nouvelles lignes, met à jour celles dont la quantité a changé, et propose dans l'onglet <strong style="color:var(--text)">À retirer</strong> celles qui ne figurent plus dans le relevé (cochées par défaut, récupérables dans la corbeille).</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:6px"><strong style="color:var(--text)">2. L'avis d'arbitrage</strong> : passez le PDF de l'avis d'opération dans le convertisseur KYF, puis importez le CSV obtenu. L'arbitrage est appliqué à sa date d'effet et inscrit dans l'historique.</div>
+        <div class="gj-orange" style="font-size:12px;color:#f59e0b;line-height:1.8;margin-top:10px">Aucune mise à jour automatique : KYF ne se connecte pas à votre banque ni à votre assureur. Tant que vous n'importez rien, les lignes restent celles que vous avez saisies ou importées la dernière fois.</div>
+      </div>
+`
   },
   {
     chapter: 'Chapitre 8',
@@ -57798,7 +58147,19 @@ const GUIDE_PAGES = [
       <div style="background:rgba(240,180,41,0.06);border:1px solid rgba(240,180,41,0.2);border-radius:10px;padding:12px 16px;margin-top:14px;font-size:13px;color:var(--text2);line-height:1.8">
         <span style="display:inline-flex;align-items:flex-start;gap:4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5.6.6 1.27 1.34 1.41 2.5"/><circle cx="12" cy="8" r="2" fill="#f0b429" stroke="none"/></svg><span><strong style="color:var(--accent)">Rouge</strong> = baisse significative, <strong style="color:var(--green)">vert</strong> = hausse significative. Chaque alerte est aussi accompagnée d'un court commentaire (ex. "Momentum haussier", "Pression vendeuse").</span></span>
       </div>
-    `
+    
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+        <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> La cloche : fenêtre Notifications</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">La cloche en haut de l'écran ouvre la fenêtre Notifications, avec cinq onglets : <strong style="color:var(--text)">ERREURS</strong> (rouge), <strong style="color:var(--text)">WARNINGS</strong> (orange), <strong style="color:var(--text)">ANOMALIES</strong> (violet), <strong style="color:var(--text)">INFOS</strong> (bleu) et <strong style="color:var(--text)">AUTO</strong> (vert doux).</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">L'onglet AUTO liste les protections automatiques de KYF, surtout celles de la synchronisation Google : par exemple « votre Sheet avait des données plus récentes, elles ont été gardées » ou « un envoi vide a été bloqué par sécurité ». Elles se terminent par « Rien à faire » : ce ne sont pas des problèmes et elles ne déclenchent pas la pastille de la cloche.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">Un bandeau en haut de la fenêtre résume l'état : « Tout est normal. » dans l'onglet AUTO, ou « Un problème est détecté » dès qu'il y a une erreur ou un vrai warning. Le bouton <strong style="color:var(--text)">Envoyer au support</strong> joint un rapport anonymisé (URLs, emails et montants masqués) ; il est discret quand tout est normal, orange pour un warning et rouge pour une erreur.</div>
+      </div>
+
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+        <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg> Quoi de neuf</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Après une mise à jour, une fenêtre « Quoi de neuf » liste les nouveautés que vous n'avez pas encore vues : 3 annonces au plus, les plus récentes d'abord, sur 30 jours au plus. Un badge « Nouveau » peut aussi signaler le bouton concerné jusqu'à ce que vous l'ouvriez.</div>
+      </div>
+`
   },
   {
     chapter: 'Chapitre 11',
@@ -57882,7 +58243,12 @@ const GUIDE_PAGES = [
         <div style="font-size:13px;color:var(--text2);line-height:1.8">Automatise l'export à intervalle régulier (quotidien, hebdomadaire, mensuel ou tous les 90 jours), en JSON ou en .cgx. Nécessite d'ouvrir le fichier KYF pour se déclencher : Chrome et Edge proposent un dossier de sauvegarde dédié, les autres navigateurs utilisent le dossier Téléchargements. Un rappel agenda (.ics) peut être ajouté en complément pour ne pas oublier d'ouvrir le fichier.</div>
       </div>
       <div style="font-size:12px;color:var(--text3);line-height:1.7">Note : certaines données recalculées automatiquement (snapshots, historiques, cache des prix) ne font pas partie du fichier exporté. Elles sont reconstruites par KYF après import.</div>
-    `
+    
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+        <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Restaurer le fichier d'une sauvegarde automatique</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Le fichier créé par la sauvegarde automatique (dossier local, GitHub ou WebDAV) est chiffré avec votre mot de passe de chiffrement : le bouton <strong style="color:var(--text)">Restaurer</strong> l'ouvre avec ce mot de passe. Si KYF répond « Mot de passe incorrect », vérifiez que vous saisissez bien le mot de passe de la sauvegarde automatique.</div>
+      </div>
+`
   },
   {
     chapter: 'Chapitre 11',
@@ -57988,7 +58354,13 @@ const GUIDE_PAGES = [
         <div style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:5px">Si la connexion automatique ne fonctionne pas</div>
         <div style="font-size:12px;color:var(--text3);line-height:1.7">Le mode avancé (repli manuel, dans le même onglet) permet de déployer le script vous-même sur script.google.com et de le relier à votre propre Sheets. Un tutoriel détaillé est disponible via le bouton TUTORIEL du panneau.</div>
       </div>
-    `
+    
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+        <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Si l'autre appareil a sauvegardé entre-temps</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">KYF ne recharge plus la page tout seul quand vous l'utilisez déjà. Si un autre appareil a sauvegardé entre-temps, un bandeau « Données plus récentes sur Google » vous propose d'actualiser : rien n'est écrasé.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">Règle de la synchronisation : <strong style="color:var(--text)">le plus récent gagne</strong>. Une donnée plus ancienne que celle du Sheet ne l'écrase pas, et un appareil qui n'a jamais eu de données ne peut pas envoyer de valeur vide par-dessus votre sauvegarde Google. Ces protections apparaissent dans l'onglet AUTO de la cloche avec la mention « Rien à faire ».</div>
+      </div>
+`
   },
   {
     chapter: 'Chapitre 11',
@@ -58547,7 +58919,7 @@ const GUIDE_PAGES = [
     icon: '',
     body: `
       <div style="display:flex;flex-direction:column;gap:14px">
-        <div style="font-size:13px;color:var(--text2);line-height:1.9">Page dédiée "Fiscalité", accessible depuis la barre latérale juste après Portefeuille, avec 2 onglets : PEA/CTO et Crypto. Contrairement à l'Assurance Vie, cette fiscalité ne peut pas être calculée entièrement automatiquement depuis votre historique : elle dépend en partie de décisions que seul vous connaissez (quand vous retirez, combien).</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Page dédiée "Fiscalité", accessible depuis la barre latérale juste après Portefeuille, avec 3 onglets : PEA / CTO, Crypto et Historique des versements. Contrairement à l'Assurance Vie, cette fiscalité ne peut pas être calculée entièrement automatiquement depuis votre historique : elle dépend en partie de décisions que seul vous connaissez (quand vous retirez, combien).</div>
 
         <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px">
           <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7m0-4V3m8 18v-9m0-4V3m8 18v-5m0-4V3"/><circle cx="4" cy="14" r="2"/><circle cx="12" cy="8" r="2"/><circle cx="20" cy="12" r="2"/></svg> Paramètres fiscaux (plafond &amp; taux, modifiables)</div>
@@ -58572,7 +58944,32 @@ const GUIDE_PAGES = [
 
         <div style="font-size:12px;color:var(--text3);line-height:1.8">La fiscalité Crypto (article 150 VH bis) vit dans le 2e onglet de cette même page, voir le chapitre "TWR &amp; Fiscalité Crypto".</div>
       </div>
-    `
+    
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+        <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V8H6a2 2 0 0 1 0-4h12v4"/><path d="M4 6v12a2 2 0 0 0 2 2h14v-4"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/></svg> Espèces, versements et retraits (PEA et CTO)</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Sous le tableau ETF &amp; Actions, la ligne <strong style="color:var(--text)">Espèces</strong> affiche les liquidités de votre PEA et de votre CTO (ou « à renseigner »). Un clic ouvre la fenêtre Cash : à gauche vos espèces, à droite le volet <strong style="color:var(--text)">Versements et retraits</strong>.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">Choisissez l'enveloppe (PEA ou CTO), Versement ou Retrait, le montant et la date, puis <strong style="color:var(--text)">ENREGISTRER</strong>. Un versement augmente les espèces de l'enveloppe ; pour le PEA, il augmente aussi le « Total versé à ce jour », mais seulement si vous l'avez déjà renseigné : KYF n'invente aucun chiffre. Un retrait diminue les espèces, ne peut jamais dépasser les espèces disponibles et ne modifie pas le total versé.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">À la saisie d'un dividende PEA ou CTO, la case <strong style="color:var(--text)">Créditer le cash du PEA/CTO</strong> (cochée d'office) ajoute le dividende aux espèces. Modifier ou supprimer le dividende rend exactement la somme créditée ; les dividendes déjà saisis ou importés ne touchent pas au cash.</div>
+      </div>
+
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+        <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg> Historique des versements</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">L'onglet <strong style="color:var(--text)">HISTORIQUE DES VERSEMENTS</strong> de la page Fiscalité reprend le style du Journal des séances : filtres Tous / PEA / CTO et par année, totaux versé, retiré et net, tri du plus récent au plus ancien, pagination. Le menu <strong style="color:var(--text)">⋯</strong> de chaque ligne propose Modifier ou Supprimer : les espèces et le total versé reviennent exactement comme avant le mouvement.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">La fenêtre Cash garde la saisie, les 3 derniers mouvements et un lien « Voir tout l'historique ».</div>
+      </div>
+
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+        <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg> Plus-value du PEA et retraits</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Quand le « Total versé à ce jour » est renseigné, la plus-value affichée est : <strong style="color:var(--text)">valeur actuelle + retraits saisis - total versé</strong>. Un retrait ne crée donc pas de fausse perte. Exemple : 1 500 € versés, valeur 1 600 €, retrait de 200 € : la plus-value reste de +100 €, et la ligne indique « retraits saisis inclus : 200 € ». Sans total versé, KYF garde son calcul habituel. Le simulateur de retrait part toujours de la valeur actuelle.</div>
+      </div>
+
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+        <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Retrait d’un PEA de moins de 5 ans</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Si la date d'ouverture du PEA est renseignée et que le PEA a moins de 5 ans à la date du retrait, KYF demande confirmation avant d'enregistrer. Avant 5 ans, tout retrait d'espèces d'un PEA entraîne automatiquement la clôture du plan et l'imposition des gains (hors prélèvements sociaux). Exceptionnellement, le plan peut rester ouvert si les fonds sont retirés pour créer ou reprendre une entreprise dans les 3 mois.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">KYF ne clôture rien : il enregistre seulement le mouvement. Sans date d'ouverture, KYF ne peut pas savoir si le retrait intervient avant 5 ans : il l'enregistre et vous invite à renseigner cette date dans la fiche fiscale du PEA.</div>
+        <div class="gj-orange" style="font-size:12px;color:#f59e0b;line-height:1.8;margin-top:10px">Vérifiez toujours votre situation auprès de votre établissement : KYF informe, il ne remplace pas son avis.</div>
+      </div>
+`
   },
   {
     chapter: 'Chapitre 3',
@@ -58778,9 +59175,28 @@ const GUIDE_PAGES = [
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px">À savoir</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.8">La répartition que vous saisissez suit vos sauvegardes et votre synchronisation (Google Sheets, GitHub, dossier local). L'identifiant anonyme reste sur l'appareil et n'est jamais sauvegardé. Cette page ne couvre que les ETF et actions : la crypto, l'or, l'immobilier et l'assurance vie n'y figurent pas pour le moment.</div>
       </div>
-    `
+    
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+        <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Saisir plus vite une répartition</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Dans la fenêtre MODIFIER, après <strong style="color:var(--text)">Enregistrer</strong>, la fenêtre reste ouverte : la position passe en vert et KYF affiche la prochaine position non renseignée pour enchaîner sans rouvrir. Les positions déjà renseignées sont regroupées dans un bloc repliable « Renseignés (n) » ; il s'ouvre pendant une recherche.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">Le bouton <strong style="color:var(--text)">COLLER</strong> lit un texte sur une seule ligne (« Santé 21,01 Finance 18,12 ... »), additionne les libellés en double tant que le total reste sous 100 %, et lit aussi une liste de positions copiée d'un tableau (société, devise, poids, secteur). Quand les libellés et les pourcentages viennent de deux colonnes, KYF les associe dans l'ordre seulement si les nombres concordent, sinon il n'attribue rien. Les ETF BNP Paribas Easy se lisent depuis leur rapport mensuel PDF.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">Dans tous les menus KYF (dont Pays et Secteurs), taper une lettre saute à l'élément qui commence par elle, plusieurs lettres rapides précisent (« fr » pour France), et Entrée valide.</div>
+      </div>
+`
   }
 ];
+// ── Version du guide ──
+// KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
+// KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
+const KYF_GUIDE_VERSION = '1.01';
+const KYF_GUIDE_POUR = '2.8.6.14';
+function kyfGuideVersionLine_(){
+  let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
+  site = String(site).replace(/^\s*Beta\s*/i, '').trim();
+  let l = 'Guide v' + KYF_GUIDE_VERSION + ' · rédigé pour KYF ' + KYF_GUIDE_POUR;
+  if(site && site !== KYF_GUIDE_POUR) l += ' · votre version : ' + site + ' (des nouveautés récentes peuvent manquer)';
+  return l;
+}
 // Compteur de la couverture calculé sur le contenu réel du guide (chapitres distincts, ~230 mots/min) : plus jamais périmé
 (function(){
   try{
@@ -58789,8 +59205,8 @@ const GUIDE_PAGES = [
     const chapters = new Set(GUIDE_PAGES.map(g => g.chapter).filter(c => c)).size;
     const min = Math.max(5, Math.round(words / 230 / 5) * 5);
     const dur = min >= 60 ? '~' + Math.floor(min/60) + ' h' + (min % 60 ? ' ' + String(min % 60).padStart(2,'0') : '') : '~' + min + ' min';
-    GUIDE_PAGES.forEach(g => { if(g.isCover) g.body = String(g.body).replace('__GUIDE_META__', chapters + ' chapitres · ' + dur); });
-  }catch(err){ GUIDE_PAGES.forEach(g => { if(g.isCover) g.body = String(g.body).replace('__GUIDE_META__', ''); }); }
+    GUIDE_PAGES.forEach(g => { if(g.isCover) g.body = String(g.body).replace('__GUIDE_META__', chapters + ' chapitres · ' + dur).replace('__GUIDE_VER__', kyfGuideVersionLine_()); });
+  }catch(err){ GUIDE_PAGES.forEach(g => { if(g.isCover) g.body = String(g.body).replace('__GUIDE_META__', '').replace('__GUIDE_VER__', ''); }); }
 })();
 
 const CHAPTER_TITLES = ['Introduction', 'Portefeuille', 'Historique', 'Transactions', 'Alertes', 'Données', 'Fin'];
@@ -63956,6 +64372,11 @@ document.addEventListener('DOMContentLoaded', function(){
 const KYF_NOUVEAUTES = {
   badge: 'arb',   // clé du badge « Nouveau » (span .kyf-new-badge data-new="...") ; vide = aucun badge
   annonces: [
+    { id: 'a-2026-10-15b', date: '2026-10-15', items: [
+      { titre: 'Versements et retraits sur PEA et CTO', version: '2.8.6.00', texte: 'Vous avez versé de l’argent sur votre PEA ou votre CTO ? Ouvrez la fenêtre des espèces (ligne « Espèces » du module ETF & Actions) : vous pouvez enregistrer un versement ou un retrait avec sa date. Tout est conservé dans « Historique des versements » (page Fiscalité), avec filtres, modification et suppression.' },
+      { titre: 'Plus-value PEA fidèle après un retrait', version: '2.8.6.02', texte: 'Quand le total versé est renseigné, un retrait saisi dans l’historique ne fait plus apparaître une fausse perte : il est ajouté à la plus-value affichée.' },
+      { titre: 'Avertissement avant 5 ans', version: '2.8.6.02', texte: 'Retirer des espèces d’un PEA de moins de 5 ans entraîne en principe la clôture du plan et l’imposition des gains. KYF vous le rappelle et demande confirmation, sans rien clôturer. Pensez à renseigner la date d’ouverture du PEA dans la fiche fiscale.' }
+    ] },
     { id: 'a-2026-10-15', date: '2026-10-15', items: [
       { titre: 'Avis d’arbitrage PER et assurance vie', version: '2.8.4.05', texte: 'Vous avez reçu un avis d’opération (Boursorama, Oradéa Vie) ? Passez le PDF dans le convertisseur KYF, puis importez le CSV obtenu avec « Importer un relevé » dans Assurance vie : l’arbitrage est appliqué support par support, à la bonne date, après votre validation.' }
     ] },
@@ -64069,7 +64490,7 @@ function kyfNewShow(list){
     + a.items.map(it => '<div style="display:flex;gap:10px;padding:10px 0;border-top:1px solid rgba(255,255,255,0.06)">' + ico + '<div><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px">' + escapeHtml(it.titre) + (it.version ? ' <span class="kyf-new-ver" style="display:inline-block;font-size:9px;font-weight:700;letter-spacing:.3px;padding:1px 6px;border-radius:6px;margin-left:4px;vertical-align:1px;background:rgba(240,180,41,0.14);color:var(--accent)">' + escapeHtml(it.version) + '</span>' : '') + '</div><div style="font-size:11px;color:var(--text2);line-height:1.7">' + escapeHtml(it.texte) + '</div></div></div>').join('');
   md.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between"><span style="display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--text);letter-spacing:.5px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></svg>QUOI DE NEUF</span><button type="button" onclick="kyfNewClose()" class="kyf-modal-close" title="Fermer" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'
     + list.map(grp).join('')
-    + '<button type="button" id="kyfNewOk" onclick="kyfNewClose()" style="width:100%;margin-top:14px;font-family:\'Inter\',sans-serif;font-size:11px;font-weight:700;padding:10px;border-radius:8px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:box-shadow .2s,transform .2s" onmouseover="this.style.boxShadow=\'0 2px 8px rgba(240,180,41,0.35)\';this.style.transform=\'translateY(-1px)\'" onmouseout="this.style.boxShadow=\'none\';this.style.transform=\'translateY(0)\'">Compris</button>';
+    + '<button type="button" id="kyfNewOk" onclick="kyfNewClose()" style="display:block;width:auto;min-width:96px;margin:14px auto 0;font-family:\'Inter\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.5px;padding:7px 22px;border-radius:8px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:opacity .15s" onmouseover="this.style.opacity=\'.85\'" onmouseout="this.style.opacity=\'1\'">Compris</button>';
   document.body.appendChild(ov); document.body.appendChild(md);
   document.body.style.overflow = 'hidden';
   document.addEventListener('keydown', kyfNewKey_);
@@ -64561,6 +64982,7 @@ function openCashEdit(){
   fPea.value = getCashPea() || '';
   fCto.value = getCashCto() || '';
   fCcp.value = getCashCcp() || '';
+  try{ kyfCashMvtInit(); }catch(e){}
   // Affichage groupé par milliers dès l'ouverture (comme le reste de KYF) ; kyfUnformatAmountInput()
   // repasse au nombre brut dès que le champ reprend le focus, pour une édition sans piège.
   kyfFormatAmountInput(fPea);
@@ -64573,6 +64995,241 @@ function openCashEdit(){
   document.getElementById('cashEditModal').style.display = 'block';
   document.getElementById('cashEditOverlay').style.display = 'block';
   document.body.style.overflow = 'hidden';
+}
+
+// ── Versements et retraits par enveloppe (PEA, CTO) : un mouvement ajuste les espèces, et pour un versement PEA le total versé s'il est renseigné ──
+const KYF_CASH_MVTS_KEY = 'kyf-cash-mvts';
+function kyfCashMvts(){ try{ const a = JSON.parse(localStorage.getItem(KYF_CASH_MVTS_KEY) || '[]'); return Array.isArray(a) ? a : []; }catch(e){ return []; } }
+function kyfCashMvtsSave(a){ localStorage.setItem(KYF_CASH_MVTS_KEY, JSON.stringify(a)); }
+function kyfPeaTotalVerse(){ return parseFloat(localStorage.getItem('kyf-pea-total-verse')) || 0; }
+function kyfPeaTotalVerseSet(v){
+  localStorage.setItem('kyf-pea-total-verse', String(Math.max(0, Math.round(v * 100) / 100)));
+  try{ if(typeof peaFiscLoadParams === 'function') peaFiscLoadParams(); }catch(e){}
+  try{ if(typeof peaFiscRenderPlafond === 'function') peaFiscRenderPlafond(); }catch(e){}
+  try{ if(typeof peaFiscSimuler === 'function') peaFiscSimuler(); }catch(e){}
+}
+// Règles : un retrait ne dépasse jamais les espèces de l'enveloppe ; un retrait ne modifie pas le total versé (aucune règle fiscale inventée) ;
+// total versé inconnu : il n'est pas touché (pas de chiffre fabriqué), le message le dit.
+function kyfCashMvtAdd(env, sens, montant, dateIso){
+  env = env === 'CTO' ? 'CTO' : 'PEA'; sens = sens === 'out' ? 'out' : 'in'; montant = Math.round((parseFloat(montant) || 0) * 100) / 100;
+  if(!(montant > 0)) return { ok:false, msg:'Saisissez un montant supérieur à 0.' };
+  const avant = env === 'CTO' ? getCashCto() : getCashPea();
+  if(sens === 'out' && montant > avant + 0.005) return { ok:false, msg:'Ce retrait dépasse les espèces du ' + env + ' (' + fmt(avant,2) + ' €).' };
+  adjustCashForEnveloppe(env, sens === 'in' ? montant : -montant);
+  let verseAjuste = false, note = '';
+  if(env === 'PEA' && sens === 'in'){
+    const tv = kyfPeaTotalVerse();
+    if(tv > 0){ kyfPeaTotalVerseSet(tv + montant); verseAjuste = true; note = 'Total versé du PEA : ' + fmt(tv + montant, 0) + ' €.'; }
+    else note = 'Total versé du PEA non renseigné : KYF ne l\'a pas modifié (à saisir dans la fiche fiscale du PEA).';
+  }
+  const a = kyfCashMvts();
+  a.unshift({ id:'m' + Date.now().toString(36) + Math.random().toString(36).slice(2,5), env, sens, montant, date: dateIso || new Date().toISOString().slice(0,10), verseAjuste });
+  kyfCashMvtsSave(a);
+  try{ renderCashKPI(); }catch(e){}
+  return { ok:true, msg: (sens === 'in' ? 'Versement' : 'Retrait') + ' de ' + fmt(montant,2) + ' € enregistré sur le ' + env + '. ' + note };
+}
+function kyfCashMvtReverse_(m){
+  adjustCashForEnveloppe(m.env, m.sens === 'in' ? -m.montant : m.montant);
+  if(m.verseAjuste) kyfPeaTotalVerseSet(kyfPeaTotalVerse() - m.montant);
+}
+function kyfCashMvtDelete(id){
+  if(!window.confirm('Supprimer ce mouvement ? Les espèces (et le total versé s\'il avait été ajusté) seront remis comme avant.')) return;
+  kyfCashMvtUndo(id);
+}
+function kyfCashMvtUndo(id){
+  const a = kyfCashMvts(), i = a.findIndex(m => m.id === id); if(i < 0) return;
+  const m = a[i];
+  const corbId = kyfCorbeillePush('cashMvt', m.id, i, m, 'Mouvement ' + m.env);
+  kyfCashMvtReverse_(m);
+  a.splice(i, 1); kyfCashMvtsSave(a);
+  try{ renderCashKPI(); }catch(e){}
+  kyfCashMvtRefresh();
+  try{ kyfShowUndoToast((m.sens === 'in' ? 'Versement' : 'Retrait') + ' ' + m.env + ' supprimé', () => kyfCorbeilleRestore(corbId), corbId); }catch(e){}
+}
+window._cashMvtFilter = window._cashMvtFilter || { env:'all', an:'all' };
+function kyfCashMvtFilterEnv(v){ kyfCashMvtSetFilter('env', v); }
+function kyfCashMvtFilterAn(v){ kyfCashMvtSetFilter('an', v); }
+function kyfCashMvtSetFilter(k, v){ window._cashMvtFilter[k] = v; window._cashHistPage = 0; kyfCashMvtRefresh(); }
+function kyfCashMvtRow_(m){
+  const d = new Date(m.date + 'T12:00:00'), ds = isNaN(d) ? escapeHtml(String(m.date)) : d.toLocaleDateString('fr-FR');
+  return '<div class="kyf-cash-row" style="display:flex;align-items:center;gap:8px;padding:9px 6px;border-top:1px solid var(--border);font-size:11px">'
+    + '<span style="color:var(--text3);width:72px;flex-shrink:0">' + ds + '</span>'
+    + '<span style="color:var(--text2);width:34px;flex-shrink:0;font-weight:700">' + escapeHtml(m.env) + '</span>'
+    + '<span style="color:var(--text3);width:62px;flex-shrink:0">' + (m.sens === 'in' ? 'Versement' : 'Retrait') + '</span>'
+    + '<span class="' + (m.sens === 'in' ? 'up' : 'dn') + '" style="flex:1;text-align:right;font-weight:700">' + (m.sens === 'in' ? '+' : '-') + fmt(m.montant,2) + ' €</span>'
+    + '<button type="button" class="kyf-cash-mvt-x" onclick="kyfCashMvtUndo(\'' + m.id + '\')" title="Annuler ce mouvement (espèces' + (m.verseAjuste ? ' et total versé' : '') + ' remis comme avant)" aria-label="Annuler ce mouvement" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 4px;display:inline-flex;transition:color .15s" onmouseover="this.style.color=\'var(--red)\'" onmouseout="this.style.color=\'var(--text3)\'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>';
+}
+function kyfCashMvtRefresh(){
+  try{ kyfCashMvtCss_(); }catch(e){}
+  const f = (id, v) => { const el = document.getElementById(id); if(el){ el.value = v || ''; try{ kyfFormatAmountInput(el); }catch(e){} } };
+  f('cashEditPea', getCashPea()); f('cashEditCto', getCashCto());   // les champs resteraient sur l'ancien solde et l'écraseraient à l'enregistrement
+  const all = kyfCashMvts();
+  // Fenêtre Cash : les 3 derniers mouvements et le lien vers l'historique complet
+  const box = document.getElementById('cashMvtList');
+  if(box){
+    box.innerHTML = all.length
+      ? '<div style="font-size:9px;color:var(--text3);letter-spacing:.5px;margin-bottom:4px">DERNIERS MOUVEMENTS</div>' + all.slice(0,3).map(kyfCashMvtRow_).join('')
+        + '<button type="button" class="kyf-cash-link" onclick="kyfCashHistOpen()">Voir tout l\'historique (' + all.length + ')</button>'
+      : '<div style="font-size:10px;color:var(--text3)">Aucun mouvement enregistré. Les versements et retraits saisis ici forment votre historique, consultable dans la page Fiscalité.</div>';
+  }
+  // Onglet Historique des versements (Fiscalité) : même présentation que le Journal des séances
+  const list = document.getElementById('cashHistList'); if(!list) return;
+  document.querySelectorAll('[id^="avActionsMenu-cm-"]').forEach(m => m.remove());   // menus ⋯ de l'affichage précédent
+  const F = window._cashMvtFilter;
+  const ans = [...new Set(all.map(m => String(m.date || '').slice(0,4)).filter(x => /^\d{4}$/.test(x)))].sort().reverse();
+  if(F.an !== 'all' && !ans.includes(F.an)) F.an = 'all';
+  const seg = (items, cur, fn) => '<div style="display:flex;gap:2px;border:1px solid var(--border2);border-radius:5px;overflow:hidden">' + items.map(([k, l]) => { const on = cur === k;
+    return '<button type="button" class="cash-seg-btn' + (on ? ' kyf-toggle-active' : '') + '" onclick="' + fn + '(\'' + k + '\')" style="font-family:\'Inter\',sans-serif;font-size:9px;font-weight:700;letter-spacing:.4px;padding:5px 11px;border:none;background:' + (on ? '#f0b429' : 'var(--btn-secondary-bg)') + ';color:' + (on ? '#000' : 'var(--text2)') + ';cursor:pointer;transition:all .15s" onmouseover="if(!this.classList.contains(\'kyf-toggle-active\')){this.style.background=\'var(--hov-bg)\';this.style.color=\'var(--text)\'}" onmouseout="if(!this.classList.contains(\'kyf-toggle-active\')){this.style.background=\'var(--btn-secondary-bg)\';this.style.color=\'var(--text2)\'}">' + l + '</button>'; }).join('') + '</div>';
+  const fl = document.getElementById('cashHistFilters');
+  if(fl) fl.innerHTML = all.length ? seg([['all','TOUS'],['PEA','PEA'],['CTO','CTO']], F.env, 'kyfCashMvtFilterEnv')
+    + (ans.length > 1 ? seg([['all','TOUTES LES ANNÉES']].concat(ans.map(y => [y, y])), F.an, 'kyfCashMvtFilterAn') : '') : '';
+  const a = all.filter(m => (F.env === 'all' || m.env === F.env) && (F.an === 'all' || String(m.date || '').slice(0,4) === F.an)).sort((x, y) => String(y.date).localeCompare(String(x.date)));   // du plus récent au plus ancien (ordre de saisie à date égale)
+  const cnt = document.getElementById('cashHistCount'); if(cnt) cnt.textContent = a.length + (a.length > 1 ? ' MOUVEMENTS' : ' MOUVEMENT');
+  try{ kyfCashNetRender_(all); }catch(e){}
+  const st = document.getElementById('cashHistStats');   // supprimé de la carte (les totaux sont dans la carte NET CUMULÉ)
+  if(st){
+    const vi = a.filter(m => m.sens === 'in').reduce((x, m) => x + m.montant, 0), vo = a.filter(m => m.sens === 'out').reduce((x, m) => x + m.montant, 0), net = vi - vo;
+    const cell = (lbl, html) => '<div style="flex:1;min-width:130px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:rgba(255,255,255,0.03)"><div style="font-size:9px;color:var(--text3);letter-spacing:.4px;margin-bottom:3px">' + lbl + '</div>' + html + '</div>';
+    st.innerHTML = a.length ? cell('VERSÉ', '<div class="up" style="font-size:12px;font-weight:700">' + fmt(vi,2) + ' €</div>') + cell('RETIRÉ', '<div class="dn" style="font-size:12px;font-weight:700">' + fmt(vo,2) + ' €</div>') + cell('NET', '<div class="' + (net >= 0 ? 'up' : 'dn') + '" style="font-size:12px;font-weight:700">' + (net >= 0 ? '+' : '-') + fmt(Math.abs(net),2) + ' €</div>') : '';
+  }
+  const perPage = window._cashHistPerPage || 15, totalPages = Math.max(1, Math.ceil(a.length / perPage));
+  window._cashHistPage = Math.min(window._cashHistPage || 0, totalPages - 1);
+  const page = window._cashHistPage, slice = a.slice(page * perPage, page * perPage + perPage);
+  list.innerHTML = slice.length ? slice.map(kyfCashMvtTr_).join('') : '<tr><td colspan="5" style="color:var(--text3);font-size:11px;padding:12px 8px;height:100px;text-align:center;vertical-align:middle">' + (all.length ? 'Aucun mouvement pour ce filtre.' : 'Aucun mouvement enregistré. Utilisez « Ajouter un mouvement » : vos versements et retraits PEA et CTO apparaîtront ici.') + '</td></tr>';
+  const info = document.getElementById('cashHistPageInfo'); if(info) info.textContent = a.length + (a.length > 1 ? ' mouvements' : ' mouvement');
+  const pn = document.getElementById('cashHistPageNumbers');
+  if(pn){ pn.innerHTML = a.length ? kyfBuildPageNumbersHtml(page, totalPages, 'cashHistGoTo') : ''; pn.style.minWidth = totalPages > 1 ? '210px' : '0'; }
+  const pb = document.getElementById('cashHistPrevBtn'), nb = document.getElementById('cashHistNextBtn');
+  if(pb){ pb.style.opacity = page === 0 ? '0.3' : '1'; pb.style.pointerEvents = page === 0 ? 'none' : 'auto'; }
+  if(nb){ nb.style.opacity = page >= totalPages - 1 ? '0.3' : '1'; nb.style.pointerEvents = page >= totalPages - 1 ? 'none' : 'auto'; }
+}
+// Carte NET CUMULÉ (versements moins retraits, PEA + CTO, tous les mouvements, quel que soit le filtre du tableau)
+function kyfCashNetRender_(all){
+  const box = document.getElementById('cashNetBody'); if(!box) return;
+  if(!all.length){ box.innerHTML = '<div style="font-size:11px;color:var(--text3);line-height:1.8">Aucun mouvement enregistré : la courbe du net apparaîtra dès le premier versement ou retrait.</div>'; return; }
+  const asc = all.map((m, i) => ({ m, i })).sort((a, b) => String(a.m.date).localeCompare(String(b.m.date)) || b.i - a.i).map(o => o.m);   // du plus ancien au plus récent (all est du plus récent au plus ancien à date égale)
+  let cum = 0; const pts = asc.map(m => { cum += (m.sens === 'in' ? 1 : -1) * m.montant; return { t: new Date(m.date + 'T12:00:00').getTime(), v: cum }; });
+  const net = cum, vi = all.filter(m => m.sens === 'in').reduce((x, m) => x + m.montant, 0), vo = all.filter(m => m.sens === 'out').reduce((x, m) => x + m.montant, 0);
+  const envNet = e => all.filter(m => m.env === e).reduce((x, m) => x + (m.sens === 'in' ? 1 : -1) * m.montant, 0);
+  const W = 300, H = 130, x0 = 10, x1 = 290, yb = 120, yt = 18;
+  const t0 = pts[0].t, t1 = pts[pts.length - 1].t, vmin = Math.min(0, ...pts.map(p => p.v)), vmax = Math.max(1, ...pts.map(p => p.v));
+  const X = (p, i) => (t1 > t0 ? x0 + (p.t - t0) / (t1 - t0) * (x1 - x0) : (pts.length > 1 ? x0 + i / (pts.length - 1) * (x1 - x0) : x1));
+  const Y = v => yb - (v - vmin) / (vmax - vmin) * (yb - yt);
+  const xy = pts.map((p, i) => [X(p, i), Y(p.v)]);
+  const line = xy.map(a => a[0].toFixed(1) + ',' + a[1].toFixed(1)).join(' ');
+  const last = xy[xy.length - 1], zero = Y(0);
+  const d0 = new Date(t0).toLocaleDateString('fr-FR'), d1 = new Date(t1).toLocaleDateString('fr-FR');
+  const row = (dot, lbl, val, cls) => '<div style="display:flex;align-items:center;gap:10px;font-size:12px"><span style="width:8px;height:8px;border-radius:' + (dot.r || '50%') + ';background:' + dot.c + ';flex-shrink:0"></span><span style="flex-grow:1;color:var(--text2)">' + lbl + '</span><b class="' + (cls || '') + '">' + val + '</b></div>';
+  const sg = v => (v >= 0 ? '+' : '-') + fmt(Math.abs(v), 2) + ' €';
+  box.innerHTML = '<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><span class="' + (net < 0 ? 'dn' : '') + '" style="font-size:28px;font-weight:800;letter-spacing:-.5px;color:' + (net < 0 ? '' : 'var(--text)') + '">' + sg(net) + '</span><span style="font-size:10px;color:var(--text3)">depuis le ' + d0 + '</span></div>'
+    + '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" style="display:block;margin-top:6px;max-height:150px" role="img" aria-label="Courbe du net cumulé des versements et retraits">'
+    + '<defs><linearGradient id="cashNetG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0b429" stop-opacity="0.35"/><stop offset="1" stop-color="#f0b429" stop-opacity="0"/></linearGradient></defs>'
+    + '<line x1="' + x0 + '" y1="' + yb + '" x2="' + x1 + '" y2="' + yb + '" stroke="var(--border2)"/>'
+    + (vmin < 0 ? '<line x1="' + x0 + '" y1="' + zero.toFixed(1) + '" x2="' + x1 + '" y2="' + zero.toFixed(1) + '" stroke="var(--border2)" stroke-dasharray="3 4"/>' : '')
+    + (pts.length > 1 ? '<polygon points="' + line + ' ' + x1 + ',' + yb + ' ' + xy[0][0].toFixed(1) + ',' + yb + '" fill="url(#cashNetG)"/>' : '')
+    + (pts.length > 1 ? '<polyline points="' + line + '" fill="none" stroke="#f0b429" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>' : '')
+    + '<circle cx="' + last[0].toFixed(1) + '" cy="' + last[1].toFixed(1) + '" r="4" fill="#f0b429"/></svg>'
+    + '<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);margin-top:2px"><span>' + d0 + '</span><span>' + (pts.length > 1 ? d1 : '') + '</span></div>'
+    + '<div style="height:1px;background:var(--border);margin:12px 0"></div>'
+    + '<div style="display:flex;flex-direction:column;gap:10px">'
+    + row({ c: 'var(--green)' }, 'Versé', '+' + fmt(vi, 2) + ' €', 'up') + row({ c: 'var(--red)' }, 'Retiré', '-' + fmt(vo, 2) + ' €', 'dn')
+    + row({ c: '#f0b429', r: '2px' }, 'PEA (net)', sg(envNet('PEA')), envNet('PEA') < 0 ? 'dn' : '') + row({ c: '#4d9fff', r: '2px' }, 'CTO (net)', sg(envNet('CTO')), envNet('CTO') < 0 ? 'dn' : '')
+    + '</div>';
+}
+function kyfCashMvtTr_(m){
+  const d = new Date(m.date + 'T12:00:00'), ds = isNaN(d) ? escapeHtml(String(m.date)) : d.toLocaleDateString('fr-FR');
+  const cls = m.sens === 'in' ? 'up' : 'dn';
+  return '<tr class="kyf-cash-row"><td>' + ds + '</td><td style="font-weight:700">' + escapeHtml(m.env) + '</td><td style="color:var(--text3)">' + (m.sens === 'in' ? 'Versement' : 'Retrait') + '</td>'
+    + '<td class="' + cls + '" style="font-weight:700">' + (m.sens === 'in' ? '+' : '-') + fmt(m.montant,2) + ' €</td>'
+    + '<td style="text-align:right"><span style="position:relative;display:inline-block"><button type="button" onclick="event.stopPropagation();avToggleActionsMenu(\'cm-' + m.id + '\')" title="Actions" aria-label="Actions" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 6px;display:inline-flex;align-items:center;font-size:16px;letter-spacing:1px">\u22EF</button>'
+    + '<div id="avActionsMenu-cm-' + m.id + '" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:130px">'
+    + '<div onclick="avCloseActionsMenu(\'cm-' + m.id + '\');kyfCashMvtEditStart(\'' + m.id + '\')" style="padding:8px 12px;font-family:\'Inter\',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background=\'var(--hov-bg-soft)\'" onmouseout="this.style.background=\'\'">' + KYF_ICONS.edit + ' Modifier</div>'
+    + '<div onclick="avCloseActionsMenu(\'cm-' + m.id + '\');kyfCashMvtDelete(\'' + m.id + '\')" style="padding:8px 12px;font-family:\'Inter\',sans-serif;font-size:10px;color:#ff4560;cursor:pointer;display:flex;align-items:center;gap:6px;border-top:1px solid var(--border)" onmouseover="this.style.background=\'var(--hov-bg-soft)\'" onmouseout="this.style.background=\'\'">' + KYF_ICONS.trash + ' Supprimer</div>'
+    + '</div></span></td></tr>';
+}
+function cashHistPrev(){ if((window._cashHistPage||0) > 0){ window._cashHistPage--; kyfCashMvtRefresh(); } }
+function cashHistNext(){ window._cashHistPage = (window._cashHistPage||0) + 1; kyfCashMvtRefresh(); }
+function cashHistGoTo(v){ window._cashHistPage = parseInt(v) || 0; kyfCashMvtRefresh(); }
+function cashHistSetPerPage(n){
+  window._cashHistPerPage = parseInt(n) || 15; window._cashHistPage = 0; kyfCashMvtRefresh();
+  document.querySelectorAll('.cash-pp-btn').forEach(b => { const on = parseInt(b.dataset.n) === parseInt(n); b.classList.toggle('kyf-toggle-active', on); b.style.background = on ? '#f0b429' : 'var(--btn-secondary-bg)'; b.style.color = on ? '#000' : 'var(--text2)'; });
+}
+function kyfCashHistOpen(){
+  closeCashEdit();
+  try{ showPage('fiscal-pea-cto', null); if(typeof setFiscalTab === 'function') setFiscalTab('hist'); }catch(e){}
+  setTimeout(() => { const e = document.getElementById('cashHistCard'); if(e) e.scrollIntoView({ behavior:'smooth', block:'start' }); }, 350);
+}
+// Modification : le mouvement est remis comme avant (espèces, total versé), puis le nouveau est appliqué ; en cas de refus (retrait trop grand), tout est rétabli
+function kyfCashMvtApplyEdit(id, env, sens, montant, dateIso){
+  const a = kyfCashMvts(), i = a.findIndex(m => m.id === id); if(i < 0) return { ok:false, msg:'Mouvement introuvable.' };
+  const snap = { pea: localStorage.getItem('kyf-cash-pea'), cto: localStorage.getItem('kyf-cash-cto'), tv: localStorage.getItem('kyf-pea-total-verse'), list: localStorage.getItem(KYF_CASH_MVTS_KEY) };
+  kyfCashMvtReverse_(a[i]); a.splice(i, 1); kyfCashMvtsSave(a);
+  const r = kyfCashMvtAdd(env, sens, montant, dateIso);
+  if(!r.ok){
+    if(snap.pea !== null) localStorage.setItem('kyf-cash-pea', snap.pea); if(snap.cto !== null) localStorage.setItem('kyf-cash-cto', snap.cto);
+    localStorage.setItem('kyf-pea-total-verse', snap.tv === null ? '' : snap.tv); if(snap.list !== null) localStorage.setItem(KYF_CASH_MVTS_KEY, snap.list);
+    try{ renderCashKPI(); if(typeof peaFiscLoadParams === 'function') peaFiscLoadParams(); }catch(e){}
+    return r;
+  }
+  const b = kyfCashMvts(); if(b[0]) b[0].id = id; kyfCashMvtsSave(b);   // garde l'identité du mouvement modifié
+  return { ok:true, msg:'Mouvement modifié : ' + r.msg };
+}
+function kyfCashMvtEditStart(id){
+  const m = kyfCashMvts().find(x => x.id === id); if(!m) return;
+  window._cashMvtEditKeep = true; openCashEdit(); window._cashMvtEditKeep = false;
+  window._cashMvtEditId = id;
+  const set = (el, v) => { const e = document.getElementById(el); if(e){ e.value = v; e.dispatchEvent(new Event('change')); } };
+  set('cashMvtEnv', m.env); set('cashMvtSens', m.sens);
+  const mt = document.getElementById('cashMvtMontant'); if(mt){ mt.value = String(m.montant); try{ kyfFormatAmountInput(mt); }catch(e){} }
+  try{ kyfDateSetValue('cashMvtDate', m.date); }catch(e){}
+  kyfCashMvtEditUi_();
+}
+function kyfCashMvtEditUi_(){
+  const ed = !!window._cashMvtEditId;
+  const t = document.getElementById('cashMvtTitle'); if(t) t.textContent = ed ? 'MODIFIER UN MOUVEMENT' : 'VERSEMENTS ET RETRAITS';
+  const b = document.querySelector('.kyf-cash-mvt-btn'); if(b) b.textContent = ed ? 'MODIFIER' : 'AJOUTER';
+  const c = document.getElementById('cashMvtCancelEdit'); if(c) c.style.display = ed ? 'inline-block' : 'none';
+}
+function kyfCashMvtCancelEdit(){ window._cashMvtEditId = null; const m = document.getElementById('cashMvtMontant'); if(m) m.value = ''; const g = document.getElementById('cashMvtMsg'); if(g) g.textContent = ''; kyfCashMvtEditUi_(); }
+// Retrait PEA : avant 5 ans il entraîne en principe la clôture du plan. Rien n'est clôturé par KYF : confirmation avant l'enregistrement, ou information si la date d'ouverture manque
+function kyfCashMvtPeaGuard_(env, sens, dateIso){
+  if(env !== 'PEA' || sens !== 'out') return { ok:true, note:'' };
+  const ds = localStorage.getItem('kyf-pea-date-ouverture') || '';
+  const d0 = ds ? new Date(ds + 'T12:00:00') : null;
+  if(!d0 || isNaN(d0)) return { ok:true, note:' Date d\'ouverture du PEA non renseignée : KYF ne peut pas savoir si ce retrait intervient avant 5 ans (fiche fiscale du PEA).' };
+  const d1 = dateIso ? new Date(dateIso + 'T12:00:00') : new Date();
+  const mois = (d1.getFullYear() - d0.getFullYear()) * 12 + (d1.getMonth() - d0.getMonth()) - (d1.getDate() < d0.getDate() ? 1 : 0);
+  if(mois >= 60) return { ok:true, note:'' };
+  const go = window.confirm('Ce PEA a moins de 5 ans à la date de ce retrait.\n\nAvant 5 ans, tout retrait d\'espèces d\'un PEA entraîne automatiquement la clôture du plan et l\'imposition des gains (hors prélèvements sociaux). Exceptionnellement, le plan peut rester ouvert si les fonds sont retirés pour créer ou reprendre une entreprise dans les 3 mois.\n\nKYF ne clôture rien : il enregistre seulement le mouvement.\n\nEnregistrer ce retrait quand même ?');
+  return go ? { ok:true, note:' Retrait avant 5 ans : le plan est en principe clôturé, vérifiez auprès de votre établissement.' } : { ok:false, note:'' };
+}
+function kyfCashMvtSubmit(){
+  const g = id => (document.getElementById(id) || {}).value;
+  const eid = window._cashMvtEditId;
+  const gd = kyfCashMvtPeaGuard_(g('cashMvtEnv'), g('cashMvtSens'), g('cashMvtDate'));
+  if(!gd.ok){ const mg = document.getElementById('cashMvtMsg'); if(mg){ mg.textContent = 'Retrait non enregistré.'; mg.style.color = 'var(--text3)'; } return; }
+  const r = eid ? kyfCashMvtApplyEdit(eid, g('cashMvtEnv'), g('cashMvtSens'), parseNum(g('cashMvtMontant')), g('cashMvtDate')) : kyfCashMvtAdd(g('cashMvtEnv'), g('cashMvtSens'), parseNum(g('cashMvtMontant')), g('cashMvtDate'));
+  if(r.ok && gd.note) r.msg += gd.note;
+  const msg = document.getElementById('cashMvtMsg');
+  if(msg){ msg.textContent = r.msg; msg.style.color = r.ok ? 'var(--green)' : 'var(--red)'; }
+  if(r.ok){ const m = document.getElementById('cashMvtMontant'); if(m) m.value = ''; window._cashMvtEditId = null; kyfCashMvtEditUi_(); kyfCashMvtRefresh(); }
+}
+function kyfCashMvtCss_(){
+  if(document.getElementById('kyfCashMvtCss')) return;
+  const st = document.createElement('style'); st.id = 'kyfCashMvtCss';
+  st.textContent = '.kyf-cash-body{display:flex;align-items:stretch}.kyf-cash-left{width:370px;flex-shrink:0;box-sizing:border-box;padding:24px 26px;border-right:1px solid var(--border)}.kyf-cash-right{flex:1;min-width:0;padding:24px 26px}'
+    + '.kyf-cash-chip{font-family:Inter,sans-serif;font-size:10px;font-weight:700;padding:5px 11px;border-radius:999px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;transition:background .15s,color .15s,border-color .15s}.kyf-cash-chip:hover{color:var(--text);border-color:var(--accent)}.kyf-cash-chip.on{background:rgba(240,180,41,0.18);border-color:#f0b429;color:var(--text)}'
+    + '.kyf-cash-link{display:block;margin-top:10px;background:none;border:none;padding:0;font:600 11px Inter,sans-serif;color:var(--accent);cursor:pointer;transition:opacity .15s}.kyf-cash-link:hover{opacity:.75;text-decoration:underline}'
+    + '.kyf-cash-row:hover{background:var(--hov-bg-soft)}@media (max-width:780px){.kyf-cash-body{flex-direction:column}.kyf-cash-left{width:auto;border-right:none;border-bottom:1px solid var(--border)}}';
+  document.head.appendChild(st);
+}
+function kyfCashMvtInit(){
+  kyfCashMvtCss_();
+  if(!window._cashMvtEditKeep){ window._cashMvtEditId = null; kyfCashMvtEditUi_(); }
+  const d = document.getElementById('cashMvtDate'); if(d && !d.value && typeof kyfDateSetValue === 'function') kyfDateSetValue('cashMvtDate', '');
+  try{ kyfSelectify(document.getElementById('cashMvtEnv')); kyfSelectify(document.getElementById('cashMvtSens')); }catch(e){}
+  const msg = document.getElementById('cashMvtMsg'); if(msg){ msg.textContent = ''; }
+  kyfCashMvtRefresh();
 }
 function closeCashEdit(){
   document.getElementById('cashEditModal').style.display = 'none';
@@ -64591,7 +65248,7 @@ function kyfSelectify(sel){
   sel.addEventListener('change',()=>kyfPgLabel(sel));
   kyfPgLabel(sel);
 }
-function kyfSelectifyAll(){ ['cashPeaLivBank','cashCtoLivBank','importEspLivBank','apiProvider'].forEach(id=>kyfSelectify(document.getElementById(id))); }
+function kyfSelectifyAll(){ ['cashPeaLivBank','cashCtoLivBank','importEspLivBank','apiProvider','cashMvtEnv','cashMvtSens'].forEach(id=>kyfSelectify(document.getElementById(id))); }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',kyfSelectifyAll); else kyfSelectifyAll();
 
 // --on-accent : couleur de texte lisible sur l'accent courant (recalculée quand le thème ou l'accent change)
@@ -65877,6 +66534,88 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.29 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Importer un relevé AV / PER : l'aperçu est simplifié (seuls les onglets qui contiennent des lignes sont affichés, et plus aucun onglet quand il n'y en a qu'un) ; nouveau point d'information qui explique chaque catégorie (À compléter, Nouvelles, Modifiées, Déjà présentes, À retirer).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.28 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Heatmap : nouveau point d'information à côté de PERFORMANCES MENSUELLES (comme DISTRIBUTION DES VARIATIONS) : comment lire le calendrier, pourquoi il peut différer du tableau de bord (jour d'import ou d'arbitrage) et ce que montre le week-end.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.27 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Heatmap : le chevron de la légende affiche l'info-bulle KYF (et non plus celle du navigateur) après un clic, et son texte suit l'état (Autres légendes / Masquer les autres légendes).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.26 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Séances du week-end : si une ligne n'a aucun cours historique un samedi, dimanche ou jour férié, KYF reprend la valeur de sa dernière clôture réelle (même quantité, aucun jour de cotation entre les deux) au lieu d'exclure la séance ; les résultats crypto du week-end apparaissent donc en vue AVEC CRYPTO. Sans clôture réelle disponible, la séance reste signalée incomplète.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.25 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Heatmap : en changeant de vue (ETF/ACTIONS, AVEC CRYPTO), DISTRIBUTION DES VARIATIONS et MEILLEURES & PIRES SÉANCES se mettent à jour tout de suite, comme le calendrier (avant : elles gardaient la vue précédente).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.24 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Support & Contact : les icônes sont remontées vers le bas du widget (16 px de vide en trop retirés sous la rangée d'icônes, hauteur du widget réduite).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.23 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Support & Contact : le bouton « Donner mon avis » ouvre maintenant le formulaire Google Forms (nouvel onglet) au lieu de la fenêtre interne.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.22 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Heatmap : le chevron de la légende reste à sa place (juste après « En cours ») et les autres légendes s'affichent à sa suite ; l'icône « En cours » est agrandie (14 px, comme « Stable »).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.21 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Heatmap : plus d'espace entre le calendrier et la légende ; la légende n'affiche par défaut que Hausse, Baisse, Stable et En cours, un chevron (survol orange) déplie les autres ; l'icône « En cours » est moitié verte, moitié rouge.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.20 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Séances et Heatmap : un import ou arbitrage des lignes d'un contrat AV/PER n'est plus compté comme un versement (fausse perte de plusieurs milliers d'euros dans la Heatmap et le Journal). L'écart de coût est enregistré comme mouvement interne ; la séance du 15/10 déjà touchée est rattrapée une fois.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.19 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Historique des versements : un mouvement supprimé va maintenant dans la Corbeille (et le bouton « Annuler » apparaît un instant). « Restaurer » remet la ligne et rejoue son effet sur les espèces et le total versé du PEA.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.18 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Historique des versements : cadre vide plus compact (zone du message « Aucun mouvement » réduite, toujours centrée).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.17 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Historique des versements : le message « Aucun mouvement enregistré » est centré dans le tableau, en largeur et en hauteur.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.16 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Historique des versements : plus d'espace entre le compteur de mouvements et les filtres TOUS / PEA / CTO, entre les filtres et le tableau, et entre le tableau et la pagination.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.15 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Historique des versements : nouvelle carte NET CUMULÉ · PEA + CTO à droite du tableau (courbe du net depuis le premier mouvement, versé, retiré, net PEA et net CTO) ; les trois cases de totaux au-dessus du tableau sont retirées.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.14 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Guide v1.01 : nouveau bloc « Quand la banque modifie les lignes de votre contrat » (import du dernier relevé, onglet À retirer, avis d'arbitrage, aucune mise à jour automatique).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.13 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Quoi de neuf : le bouton Compris est plus petit (largeur et hauteur réduites, centré) et prend le survol des autres boutons KYF.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.12 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Guide mis à jour d'après les changelogs depuis la 2.8.3.229 : espèces, versements et retraits PEA/CTO, historique, plus-value et avertissement avant 5 ans, cloche Notifications et onglet AUTO, Quoi de neuf, revenus locatifs, import AV/PER (onglet À retirer), PER (compartiments, plafond), zones géographiques, synchro Google, restauration d'une sauvegarde automatique. Numéro de version du guide (v1.0, rédigé pour KYF 2.8.6.12) sur la couverture.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.11 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Notifications : les 5 onglets tiennent dans la fenêtre (AUTO n'est plus coupé), adaptation aux petits écrans, plus de « 0 » affiché sur les onglets vides.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.10 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Notifications : le bouton Envoyer au support prend la couleur de l'état (contour discret si tout est normal, orange pour un warning, rouge pour une erreur).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.09 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Notifications : plus d'espace entre les onglets et entre les boutons du bas (Vider, Télécharger, Envoyer au support).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.08 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Info-bulles : dans la fenêtre Notifications, la bulle reste à l'intérieur de la fenêtre (plus de débordement à droite).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.07 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Notifications : le bandeau vert « Tout est normal. » n'apparaît plus que dans l'onglet AUTO (plus affiché en permanence) et la phrase « rien à faire » n'est plus répétée.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.06 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Notifications : nouvel onglet AUTO (vert doux lisible en clair et en sombre) pour les protections automatiques de la synchro ; WARNINGS ne contient plus que de vrais avertissements ; pastille NORMAL retirée ; rapport support et export incluent l'onglet AUTO.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.05 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Notifications : les protections normales de la synchro Google (Sheet plus récent, envoi vide bloqué) sont reformulées, marquées NORMAL en vert et ne déclenchent plus la pastille ; bandeau d'état en haut (tout est normal / problème détecté) ; bouton Envoyer au support discret quand tout est normal.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.04 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Lien du formulaire « Demander un accès » remplacé par le nouveau Google Form.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.03 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Quoi de neuf : annonce des versements et retraits PEA/CTO, de la plus-value PEA avec retraits et de l'avertissement avant 5 ans.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.02 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PEA : la plus-value latente tient compte des retraits saisis dans l'historique (valeur + retraits - total versé), un retrait ne crée plus de fausse perte. Un retrait PEA avant 5 ans demande confirmation (clôture du plan en principe) ; date d'ouverture absente : information.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.01 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Historique des versements : filtres Tous / PEA / CTO et années au style KYF, totaux versé / retiré / net en cases au-dessus (police +1 px), menu ⋯ sur chaque ligne avec Modifier et Supprimer, tri du plus récent au plus ancien.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.00 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Historique des versements : même design que le Journal des séances (carte, tableau, pagination Préc. / Suiv. et nombre de lignes par page). Disponible dans l'onglet HISTORIQUE DES VERSEMENTS de la page Fiscalité.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.5.21 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Page Fiscalité : un onglet HISTORIQUE DES VERSEMENTS à côté de PEA / CTO et CRYPTO, qui contient l'historique des versements et retraits. Les onglets PEA / CTO et CRYPTO retrouvent leur contenu d'avant.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.5.19 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Historique des versements et retraits : il vit maintenant dans la page Fiscalité (PEA / CTO), en pleine largeur avec filtres, totaux et annulation. La fenêtre Cash garde la saisie, les 3 derniers mouvements et un lien Voir tout l'historique.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.5.18 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre Cash : marges et espacements plus aérés dans le volet des espèces et dans le volet Versements et retraits.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.5.17 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Cash : la fenêtre passe en deux volets comme Géo. À gauche les espèces, à droite les versements et retraits avec l'historique complet (filtres Tous / PEA / CTO et par année, totaux versé, retiré et net, annulation d'une ligne, défilement).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.5.16 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Cash, versement / retrait : calendrier, listes PEA/CTO et Versement/Retrait et bouton ENREGISTRER au style KYF, avec le même survol que le reste de l'application.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.5.15 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Cash : versement et retrait par enveloppe (PEA, CTO) dans la fenêtre Cash disponible, avec historique daté et annulation. Un versement PEA met aussi à jour le total versé s'il est renseigné ; un retrait ne dépasse jamais les espèces.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.5.14 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Restaurer une sauvegarde : le fichier de la sauvegarde automatique (dossier local, GitHub, WebDAV) s'ouvre maintenant avec son mot de passe de chiffrement. Avant, le bouton Restaurer répondait « Mot de passe incorrect » à tort.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.5.10 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Contrat PER : une ligne se glisse d'un compartiment à l'autre (EV Déductible / EV Non Déductible) sans passer par Modifier ; zone de dépôt provisoire si le compartiment n'existe pas encore, message de confirmation. Souris uniquement (le glisser-déposer du navigateur n'existe pas sur écran tactile).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.5.09 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Correctif 2.8.5.08 : le ticker saisi dans « Rechercher un actif » n'est repris que si l'utilisateur l'a réellement tapé (le changement de ticker par une autre voie, comme Remplacer un support, n'est plus écrasé).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.5.08 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Modifier la position (AV/PER) : un ticker retapé dans « Rechercher un actif » remplace maintenant l'ancien, message de confirmation (ticker changé, ISIN enregistré, cours en direct comparé au relevé avec alerte si trop éloigné), champ NOM sur toute la largeur. Import AV/PER : le contrôle du cours en direct vaut aussi pour un ticker déjà présent dans le contrat.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.5.07 · 15/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre « Modifier la position » d'un contrat AV/PER : loupes Google pour chercher le ticker (à côté de « Rechercher un actif ») et l'ISIN, comme dans l'import et le tableau ETF.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.5.06 · 15/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Intraday : la courbe démarre au premier montant reçu, sans la ligne plate à 0 avant l'ouverture. Aucun changement du script Intraday.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.5.05 · 15/10/2026</div>
@@ -70807,7 +71546,7 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
 
         <label class="kyf-reset-row" style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer">
           <input type="checkbox" class="kyf-reset-check" data-module="pea" data-dca-type="etf"
-            data-keys="pea-positions,kyf-etf-transactions,kyf-alerts-,pea-bilan,pea-geo,pea-sectors,kyf-geo-v1,kyf-geo-stale-v1,kyf-favs-v1,kyf-groups-v1,pea-etf-settings,kyf-cash,kyf-cash-ccp,kyf-cash-cto,kyf-cash-pea,kyf-cash-migrated-v2,kyf-dividendes,kyf-etf-collapsed-envs,kyf-perf-asset-filter,kyf-pf-view,kyf-pf-range,kyf-pf-bm,kyf-pf-hidden,kyf-isin-sans-yahoo,kyf-pea-date-ouverture,kyf-pea-plafond,kyf-pea-taux-ir,kyf-pea-taux-ps,kyf-pme-date-ouverture,kyf-pme-total-verse,kyf-pme-plafond,kyf-pea-total-verse,kyf-cto-taux-pfu"
+            data-keys="pea-positions,kyf-etf-transactions,kyf-alerts-,pea-bilan,pea-geo,pea-sectors,kyf-geo-v1,kyf-geo-stale-v1,kyf-favs-v1,kyf-groups-v1,pea-etf-settings,kyf-cash,kyf-cash-ccp,kyf-cash-mvts,kyf-cash-cto,kyf-cash-pea,kyf-cash-migrated-v2,kyf-dividendes,kyf-etf-collapsed-envs,kyf-perf-asset-filter,kyf-pf-view,kyf-pf-range,kyf-pf-bm,kyf-pf-hidden,kyf-isin-sans-yahoo,kyf-pea-date-ouverture,kyf-pea-plafond,kyf-pea-taux-ir,kyf-pea-taux-ps,kyf-pme-date-ouverture,kyf-pme-total-verse,kyf-pme-plafond,kyf-pea-total-verse,kyf-cto-taux-pfu"
             style="accent-color:var(--accent);flex-shrink:0">
           <div>
             <div style="font-size:12px;font-weight:700;color:var(--text2)">PORTEFEUILLE PEA</div>
@@ -82604,6 +83343,7 @@ function openAddAVPos(contratId){
   kyfAvPosValeurReset_();
   document.getElementById('avPosTaux').value    = '';
   document.getElementById('avPosEditIdH').value = '';
+  { const _si = document.getElementById('avPosSearchInput'); if(_si) _si.dataset.typed = ''; }
   avPosTypeChange();
   document.getElementById('avPosModal').style.display    = 'block';
   document.getElementById('avPosOverlay').style.display  = 'block';
@@ -82988,6 +83728,13 @@ function saveAVPos(){
   const type    = document.getElementById('avPosType').value;
   let ticker    = document.getElementById('avPosTicker').value.trim().toUpperCase();
   let nom       = document.getElementById('avPosNom').value.trim();
+  window.__avPosFb = null;
+  // Ticker retapé dans « Rechercher un actif » alors que la ligne en avait déjà un : le champ caché gardait l'ancien et le nouveau était ignoré sans un mot.
+  // Un texte « nom (ticker) » venant d'une suggestion n'est pas un ticker : il n'entre pas ici.
+  if(ticker && (type === 'etf' || type === 'action') && (document.getElementById('avPosSearchInput') || {}).dataset.typed === '1'){
+    const _qT = ((document.getElementById('avPosSearchInput') || {}).value || '').trim();
+    if(/^[A-Za-z0-9][A-Za-z0-9.\-^=]{1,19}$/.test(_qT) && _qT.toUpperCase() !== ticker) ticker = _qT.toUpperCase();
+  }
   // Ticker tapé à la main sans choisir de suggestion : le champ de recherche n'alimentait que la liste, le ticker était perdu
   // (« Saisissez un nom ou un ticker » alors qu'on en avait saisi un). Un texte qui ressemble à un ticker devient le ticker.
   if(!ticker && (type === 'etf' || type === 'action')){
@@ -83030,6 +83777,7 @@ function saveAVPos(){
       if(isinIn) pos.isin = isinIn; else if(_tkChanged) pos.isin = kyfIsinFromHints(pos.ticker, nom) || '';
       positions[idx] = Object.assign({}, old, pos);
       window.__avPosTkChanged = _tkChanged;
+      window.__avPosFb = { type, old: String(old.ticker || ''), nw: String(pos.ticker || ''), isin: isinIn || '', oldIsin: String(old.isin || ''), qty: pos.qty, valeur: pos.valeur };
     } else positions.push(pos);
   } else {
     positions.push(pos);
@@ -83042,6 +83790,7 @@ function saveAVPos(){
   window.__avPosTkChanged = false;
   closeAVPosModal();
   renderAV();
+  try{ if(window.__avPosFb){ const _fb = window.__avPosFb; window.__avPosFb = null; kyfAvPosFeedback(_fb); } }catch(e){}
   // La page SCPI consolidée affiche cette donnée en lecture seule (non éditable depuis là),
   // mais on la rafraîchit quand même si elle est visible pour que la valeur reste à jour.
   if(document.getElementById('scpiList') && typeof renderSCPI==='function') renderSCPI();
@@ -83457,6 +84206,16 @@ function hjInfoToggle(e){
 }
 document.addEventListener('click', e => { const pop = document.getElementById('hjInfoPop'); if(pop && pop.style.display !== 'none' && !pop.contains(e.target)) hjInfoClose(); });
 document.addEventListener('keydown', e => { const pop = document.getElementById('hjInfoPop'); if(e.key === 'Escape' && pop && pop.style.display !== 'none'){ hjInfoClose(); } }, true);
+function hmInfoClose(){ const pop = document.getElementById('hmInfoPop'); if(pop) pop.style.display = 'none'; document.getElementById('hmInfoBtn')?.setAttribute('aria-expanded','false'); }
+function hmInfoToggle(e){
+  if(e) e.stopPropagation();
+  const pop = document.getElementById('hmInfoPop'), b = document.getElementById('hmInfoBtn'); if(!pop) return;
+  const open = pop.style.display === 'none';
+  pop.style.display = open ? 'block' : 'none';
+  if(b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+document.addEventListener('click', e => { const pop = document.getElementById('hmInfoPop'); if(pop && pop.style.display !== 'none' && !pop.contains(e.target)) hmInfoClose(); });
+document.addEventListener('keydown', e => { const pop = document.getElementById('hmInfoPop'); if(e.key === 'Escape' && pop && pop.style.display !== 'none'){ hmInfoClose(); } }, true);
 function dvInfoClose(){ const pop = document.getElementById('dvInfoPop'); if(pop) pop.style.display = 'none'; document.getElementById('dvInfoBtn')?.setAttribute('aria-expanded','false'); }
 function dvInfoToggle(e){
   if(e) e.stopPropagation();
@@ -84161,7 +84920,7 @@ function renderAV(){
         const rendStr = p.type==='fe' && p.tauxRendement ? `<span style="color:var(--green);font-weight:700">${p.tauxRendement}%/an</span>` :
                         p.pru && p.qty ? `<span class="${(_val-(p.pru*p.qty))>=0?'up':'dn'}" style="font-weight:700">${((_val-(p.pru*p.qty))/(p.pru*p.qty)*100).toFixed(2).replace('.',',')} %</span>` : '-';
         const _valTitle = _d.live ? 'Au cours du jour' + ((parseFloat(p.valeur)||0) > 0 ? '. Valeur du relevé' + (d.releve && d.releve.date ? ' du ' + new Date(d.releve.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'}) : '') + ' : ' + fmt(parseFloat(p.valeur),0) + ' €' : '') + '. Cours de marché : la valeur affichée par votre assureur peut avoir un jour de retard.' : '';
-        return `<div style="display:flex;align-items:center;gap:10px;padding:6px 12px 6px 32px;background:rgba(255,255,255,0.015)">
+        return `<div${isPER ? ` class="kyf-pos-row" draggable="true" data-kyf-pos="${escapeHtml(String(p.id))}" data-kyf-contrat="${escapeHtml(String(d.id))}" title="Glisser vers un autre compartiment pour déplacer cette ligne"` : ''} style="display:flex;align-items:center;gap:10px;padding:6px 12px 6px 32px;background:rgba(255,255,255,0.015)${isPER ? ';cursor:grab' : ''}">
           <span style="flex:1;min-width:0;font-size:12px;color:var(--text2);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(p.nom||p.ticker||'-')}</span>
           <span style="font-size:10px;color:var(--text3);flex-shrink:0">${escapeHtml(p.ticker||'')}</span>
           <span style="font-size:15px;font-weight:700;flex-shrink:0;min-width:70px;text-align:right"${_valTitle ? ' title="' + escapeHtml(_valTitle) + '"' : ''}>${_val>0?fmt(_val,0)+' €':'-'}</span>
@@ -84189,7 +84948,7 @@ function renderAV(){
         const compPos = positions.filter(p=>(p.compartiment||null)===comp);
         if(!compPos.length) return;
         const compTotal = compPos.reduce((s,p)=>s+_pv(p).val,0);
-        posRows += `<div style="padding:10px 4px 5px 12px">
+        posRows += `<div class="kyf-comp-zone" data-kyf-comp="${comp||''}" data-kyf-contrat="${escapeHtml(String(d.id))}"><div style="padding:10px 4px 5px 12px">
           <div style="display:flex;align-items:center;gap:8px">
             <span style="font-size:10px;font-weight:700;color:var(--text);letter-spacing:1.2px">${compartLabels[comp]||comp||'-'}</span>
             <div style="flex:1;height:1px;background:linear-gradient(to right,var(--border2),transparent)"></div>
@@ -84200,7 +84959,9 @@ function renderAV(){
           const gPos = compPos.filter(p=>p.type===gk);
           if(gPos.length) posRows += renderPosGroup(gPos, gk);
         });
+        posRows += '</div>';
       });
+      posRows = '<div class="kyf-comp-wrap" data-kyf-contrat="' + escapeHtml(String(d.id)) + '">' + posRows + '</div>';
     } else {
       // AV : grouper par type uniquement
       groupOrder.forEach(gk=>{
@@ -85970,16 +86731,17 @@ function orInlineEdit(id, td, currentVal){
       <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">RECHERCHER UN ACTIF</div>
       <div style="position:relative">
         <input id="avPosSearchInput" placeholder="Nom ou ticker (ex: CW8, MSCI World...)" autocomplete="off"
-          style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none"
-          oninput="avPosSearch(this.value)"
+          style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 30px 7px 10px;border-radius:6px;outline:none"
+          oninput="this.dataset.typed='1';avPosSearch(this.value)"
           onfocus="avPosSearch(this.value)">
+        <button type="button" class="kyf-isin-g" title="Chercher le ticker sur Google" aria-label="Chercher le ticker sur Google" onmousedown="event.preventDefault()" onclick="event.stopPropagation();kyfAvPosGoogle('ticker')" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;padding:3px;cursor:pointer;color:var(--text3);display:inline-flex;align-items:center;opacity:.8" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text3)'"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
         <div id="avPosSuggestions" style="display:none;position:absolute;top:calc(100%+2px);left:0;right:0;z-index:99999;
           background:var(--bg2);border:1px solid var(--border2);border-radius:8px;
           box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;max-height:180px;overflow-y:auto"></div>
       </div>
     </div>
 
-    <div>
+    <div style="grid-column:span 2">
       <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">NOM <span id="avPosNomHint" style="opacity:.5">optionnel si recherche</span></div>
       <input id="avPosNom" type="text" oninput="this.dataset.auto=''" placeholder="ex: Immorente, Fonds Euros Exclusif..."
         style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none">
@@ -85988,8 +86750,11 @@ function orInlineEdit(id, td, currentVal){
 
     <div id="avPosRowIsin" style="display:none;grid-column:span 2">
       <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">ISIN <span style="opacity:.5">facultatif</span></div>
+      <div style="position:relative">
       <input id="avPosIsin" type="text" maxlength="14" autocomplete="off" placeholder="ex: LU1681043599"
-        style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none">
+        style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 30px 7px 10px;border-radius:6px;outline:none">
+        <button type="button" class="kyf-isin-g" title="Chercher l'ISIN sur Google" aria-label="Chercher l'ISIN sur Google" onmousedown="event.preventDefault()" onclick="event.stopPropagation();kyfAvPosGoogle('isin')" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;padding:3px;cursor:pointer;color:var(--text3);display:inline-flex;align-items:center;opacity:.8" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text3)'"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+      </div>
     </div>
     <div id="avPosRowPRUQty" style="display:none;grid-column:span 2;grid-template-columns:1fr 1fr;gap:10px">
       <div>
@@ -89573,19 +90338,21 @@ function orInlineEdit(id, td, currentVal){
 <!-- ══════════ MODAL ÉDITION CASH (PEA/CTO/CCP) ══════════ -->
 <div id="cashEditOverlay" onclick="closeCashEdit()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10012"></div>
 <div id="cashEditModal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
-  width:min(380px,92vw);z-index:10013;background:var(--bg2);border:1px solid var(--border2);
-  border-radius:14px;padding:22px;font-family:'Inter',sans-serif">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+  max-height:92vh;overflow:auto;width:min(900px,96vw);z-index:10013;background:var(--bg2);border:1px solid var(--border2);
+  border-radius:14px;padding:0;font-family:'Inter',sans-serif">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border)">
     <span style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--text)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7a7 7 0 1 0 0 10"/><line x1="4" y1="10" x2="14" y2="10"/><line x1="4" y1="14" x2="13" y2="14"/></svg> CASH DISPONIBLE</span>
     <button type="button" onclick="closeCashEdit()" class="kyf-modal-close" title="Fermer" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
 
-  <div style="margin-bottom:12px">
-    <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">CASH PEA (€)</div>
+  <div class="kyf-cash-body">
+  <div class="kyf-cash-left">
+  <div style="margin-bottom:20px">
+    <div style="font-size:9px;color:var(--text3);margin-bottom:6px;letter-spacing:.5px">CASH PEA (€)</div>
     <input id="cashEditPea" type="text" inputmode="decimal" placeholder="0"
       oninput="this.value=this.value.replace(/-/g,'')" onfocus="kyfUnformatAmountInput(this)" onblur="kyfFormatAmountInput(this)"
       style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;border-radius:6px;outline:none">
-    <button type="button" onclick="cashEnvLivToggle('Pea')" style="margin-top:7px;background:none;border:none;color:var(--accent);font-family:'Inter',sans-serif;font-size:10px;font-weight:600;cursor:pointer;padding:0;text-align:left">Espèces rémunérées (Trade Republic, Revolut...) ? Enregistrer dans mes livrets</button>
+    <button type="button" onclick="cashEnvLivToggle('Pea')" style="margin-top:10px;background:none;border:none;color:var(--accent);font-family:'Inter',sans-serif;font-size:10px;font-weight:600;cursor:pointer;padding:0;text-align:left">Espèces rémunérées (Trade Republic, Revolut...) ? Enregistrer dans mes livrets</button>
     <div id="cashPeaLivBox" style="display:none;margin-top:8px;padding:10px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--bg3)">
       <div style="font-size:10px;color:var(--text2);line-height:1.6;margin-bottom:8px">Le montant du cash PEA ci-dessus devient un livret liquide (il reste compté dans le Cash) et le cash PEA repasse à 0.</div>
       <div style="display:flex;gap:8px">
@@ -89599,12 +90366,12 @@ function orInlineEdit(id, td, currentVal){
     </div>
 
   </div>
-  <div style="margin-bottom:12px">
-    <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">CASH CTO (€)</div>
+  <div style="margin-bottom:20px">
+    <div style="font-size:9px;color:var(--text3);margin-bottom:6px;letter-spacing:.5px">CASH CTO (€)</div>
     <input id="cashEditCto" type="text" inputmode="decimal" placeholder="0"
       oninput="this.value=this.value.replace(/-/g,'')" onfocus="kyfUnformatAmountInput(this)" onblur="kyfFormatAmountInput(this)"
       style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;border-radius:6px;outline:none">
-    <button type="button" onclick="cashEnvLivToggle('Cto')" style="margin-top:7px;background:none;border:none;color:var(--accent);font-family:'Inter',sans-serif;font-size:10px;font-weight:600;cursor:pointer;padding:0;text-align:left">Espèces rémunérées (Trade Republic, Revolut...) ? Enregistrer dans mes livrets</button>
+    <button type="button" onclick="cashEnvLivToggle('Cto')" style="margin-top:10px;background:none;border:none;color:var(--accent);font-family:'Inter',sans-serif;font-size:10px;font-weight:600;cursor:pointer;padding:0;text-align:left">Espèces rémunérées (Trade Republic, Revolut...) ? Enregistrer dans mes livrets</button>
     <div id="cashCtoLivBox" style="display:none;margin-top:8px;padding:10px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--bg3)">
       <div style="font-size:10px;color:var(--text2);line-height:1.6;margin-bottom:8px">Le montant du cash CTO ci-dessus devient un livret liquide (il reste compté dans le Cash) et le cash CTO repasse à 0.</div>
       <div style="display:flex;gap:8px">
@@ -89617,8 +90384,8 @@ function orInlineEdit(id, td, currentVal){
       <button type="button" onclick="cashEnvToLivret('Cto')" style="margin-top:6px;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:7px 12px;border-radius:7px;border:none;background:#f0b429;color:#000;cursor:pointer">ENREGISTRER DANS MES LIVRETS</button>
     </div>
   </div>
-  <div style="margin-bottom:18px">
-    <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">CCP / COMPTE BANCAIRE (€)</div>
+  <div style="margin-bottom:20px">
+    <div style="font-size:9px;color:var(--text3);margin-bottom:6px;letter-spacing:.5px">CCP / COMPTE BANCAIRE (€)</div>
     <input id="cashEditCcp" type="text" inputmode="decimal" placeholder="0"
       oninput="this.value=this.value.replace(/-/g,'')" onfocus="kyfUnformatAmountInput(this)" onblur="kyfFormatAmountInput(this)"
       style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;border-radius:6px;outline:none">
@@ -89626,8 +90393,8 @@ function orInlineEdit(id, td, currentVal){
     <div id="cashEditCcpWarn" style="display:none;font-size:10px;color:var(--accent);margin-top:6px;line-height:1.5"></div>
   </div>
 
-  <div style="margin-bottom:18px">
-    <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">STABLECOINS (€)</div>
+  <div style="margin-bottom:24px">
+    <div style="font-size:9px;color:var(--text3);margin-bottom:6px;letter-spacing:.5px">STABLECOINS (€)</div>
     <div id="cashEditStableDisplay" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text2);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;border-radius:6px;opacity:.75">0 €</div>
     <div style="font-size:9px;color:var(--text3);margin-top:6px;opacity:.8">Calculé automatiquement depuis vos positions dans <span onclick="closeCashEdit();showPage('crypto',null)" style="color:var(--accent);cursor:pointer;text-decoration:underline">Crypto &gt; Stablecoins</span>, non modifiable ici.</div>
   </div>
@@ -89642,6 +90409,22 @@ function orInlineEdit(id, td, currentVal){
       font-weight:700;padding:8px 16px;border-radius:8px;border:none;
       background:#f0b429;color:#000;cursor:pointer;transition:opacity .15s"
       onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">ENREGISTRER</button>
+  </div>
+  </div>
+  <div class="kyf-cash-right">
+    <div id="cashMvtTitle" style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text);margin-bottom:18px">VERSEMENTS ET RETRAITS</div>
+    <div style="display:flex;gap:10px;margin-bottom:12px">
+      <select id="cashMvtEnv" data-kyf-pg-look="field" style="flex:1;width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;border-radius:6px;outline:none"><option value="PEA">PEA</option><option value="CTO">CTO</option></select>
+      <select id="cashMvtSens" data-kyf-pg-look="field" style="flex:1;width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;border-radius:6px;outline:none"><option value="in">Versement</option><option value="out">Retrait</option></select>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:12px">
+      <input id="cashMvtMontant" type="text" inputmode="decimal" placeholder="Montant (€)" onfocus="kyfUnformatAmountInput(this)" onblur="kyfFormatAmountInput(this)" oninput="this.value=this.value.replace(/-/g,'')" style="flex:1;width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;border-radius:6px;outline:none">
+      <div style="flex:1;min-width:0"><input type="hidden" id="cashMvtDate" value=""><button type="button" id="cashMvtDateBtn" class="kyf-csel-btn" data-kyf-date="cashMvtDate" aria-haspopup="dialog" aria-expanded="false"><span id="cashMvtDateBtnLabel">JJ/MM/AAAA</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button></div>
+    </div>
+    <button type="button" onclick="kyfCashMvtSubmit()" class="kyf-cash-mvt-btn" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:8px 16px;border-radius:8px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">AJOUTER</button> <button type="button" id="cashMvtCancelEdit" class="kyf-cash-link" onclick="kyfCashMvtCancelEdit()" style="display:none;margin:0 0 0 12px;vertical-align:middle">Annuler la modification</button>
+    <div id="cashMvtMsg" style="font-size:10px;line-height:1.5;margin-top:10px;min-height:14px;color:var(--text3)"></div>
+    <div id="cashMvtList" style="margin-top:20px"></div>
+  </div>
   </div>
 </div>
 
@@ -196034,10 +196817,15 @@ export { WorkerMessageHandler };
   }
   // Place la bulle à droite de la souris, ou à gauche s'il n'y a pas la place (jamais tronquée ni rétrécie)
   function place(t){
+    // Dans la fenêtre Notifications : la bulle reste à l'intérieur de la fenêtre (jamais plus large, jamais qui déborde à droite)
+    var box = (cur && cur.closest) ? cur.closest('#notifPanel') : null, bl = 0, br = window.innerWidth;
+    if(box){ var rb = box.getBoundingClientRect(); bl = rb.left; br = rb.right; t.style.maxWidth = Math.min(280, Math.max(120, rb.width - 20)) + 'px'; }
+    else t.style.maxWidth = '280px';
     var w = t.offsetWidth, h = t.offsetHeight, vw = window.innerWidth, vh = window.innerHeight;
     var x = mx + 12;
     if(x + w > vw - 6) x = mx - w - 12;
     x = Math.min(Math.max(x, 6), vw - w - 6);
+    if(box) x = Math.min(Math.max(x, bl + 10), br - w - 10);
     var y = my + 20; if(y + h > vh - 6) y = Math.max(my - h - 12, 6);
     t.style.left = x + 'px'; t.style.top = y + 'px';
   }
