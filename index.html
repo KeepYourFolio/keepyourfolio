@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_6_79.html
+  @file        : KYF_SHARE_beta_2_8_6_81.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.6.79
+  @version     : Beta 2.8.6.81
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -4662,7 +4662,7 @@ html:not(.kyf-kbd) .icon-btn:focus-visible,html:not(.kyf-kbd) button:focus-visib
       </button>
       <div style="display:flex;align-items:center;gap:8px">
       <div id="analyticsPingStatus" style="font-size:10px;color:var(--text3)"></div>
-      <button onclick="analyticsTestNow()" style="font-family:'Inter',sans-serif;font-size:9px;
+      <button id="analyticsSendBtn" onclick="analyticsTestNow()" style="font-family:'Inter',sans-serif;font-size:9px;transition:opacity .15s;
         padding:3px 8px;border-radius:6px;border:1px solid var(--border2);
         background:var(--bg3);color:var(--text2);cursor:pointer"
         onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text2)'">
@@ -6622,7 +6622,7 @@ html:not(.kyf-kbd) .icon-btn:focus-visible,html:not(.kyf-kbd) button:focus-visib
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.6.79</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.6.81</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -39998,6 +39998,10 @@ function analyticsUpdateUI(){
   const chk = document.getElementById('analyticsToggleChk');
   if(!chk) return;
   chk.checked = analyticsIsEnabled();
+  const btn = document.getElementById('analyticsSendBtn');
+  if(btn){ btn.style.opacity = chk.checked ? '' : '.5'; btn.title = chk.checked ? '' : "Case décochée : activez d'abord les statistiques"; }
+  const st = document.getElementById('analyticsPingStatus');
+  if(st && (!chk.checked || st.dataset.ok !== '1')){ st.textContent = ''; st.dataset.ok = ''; }
 }
 
 // ── Stale-while-revalidate KPI ──────────────────────────────────────
@@ -40083,7 +40087,7 @@ async function analyticsPing(){
     });
     localStorage.setItem(ANALYTICS_LAST_KEY, Date.now().toString());
     const st = document.getElementById('analyticsPingStatus');
-    if(st){ st.innerHTML = kyfEmoHtml('✓ Ping envoyé · '+date); st.dataset.ok = '1'; st.style.color='#1a8a45'; st.style.fontSize='10px'; st.style.fontWeight='600'; }
+    if(st){ st.innerHTML = kyfEmoHtml('✓ Envoyé, non confirmé · '+date); st.title = "Le navigateur ne peut pas lire la réponse du serveur : l'envoi est parti, sans confirmation de réception."; st.dataset.ok = '1'; st.style.color='#1a8a45'; st.style.fontSize='10px'; st.style.fontWeight='600'; }
   } catch(e){
     console.error('Analytics ping failed:', e);
   }
@@ -40091,11 +40095,15 @@ async function analyticsPing(){
 
 async function analyticsTestNow(){
   const st = document.getElementById('analyticsPingStatus');
-  if(!analyticsIsEnabled()){ if(st) st.innerHTML = kyfEmoHtml("⚠ Activez les statistiques d'abord"); return; }
-  if(st){ st.dataset.ok = ''; st.innerHTML = kyfEmoHtml('⏳ Envoi...'); }
-  localStorage.removeItem('pea-analytics-last'); // forcer le ping
-  await analyticsPing();
-  if(st && !st.dataset.ok) st.innerHTML = kyfEmoHtml('❌ Échec - vérifiez la console');
+  if(window._analyticsBusy) return;   // un double-clic ne doit pas envoyer deux fois
+  if(!analyticsIsEnabled()){ if(st){ st.dataset.ok = ''; st.style.color = '#d9480f'; st.style.fontWeight = '700'; st.innerHTML = kyfEmoHtml("⚠ Case décochée : activez d'abord"); } return; }
+  window._analyticsBusy = true;
+  try{
+    if(st){ st.dataset.ok = ''; st.style.color = 'var(--text3)'; st.innerHTML = kyfEmoHtml('⏳ Envoi...'); }
+    localStorage.removeItem('pea-analytics-last'); // forcer le ping
+    await analyticsPing();
+    if(st && !st.dataset.ok){ st.style.color = '#c0392b'; st.innerHTML = kyfEmoHtml('❌ Échec - vérifiez la console'); }
+  } finally { window._analyticsBusy = false; }
 }
 
 function toggleHeartPanel(){
@@ -42996,7 +43004,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.6.79\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.6.81\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -67103,6 +67111,10 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.81 · 17/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Statistiques d'usage : avertissement « Case décochée » en orange franc et en gras (le jaune se lisait mal)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.80 · 17/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Statistiques d'usage : le message ne dit plus « Ping envoyé » mais « Envoyé, non confirmé » (le serveur ne peut pas confirmer), bouton « Envoyer maintenant » grisé avec avertissement clair quand la case est décochée, double-clic protégé</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.79 · 17/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Contactez-nous : zone e-mail allégée (une ligne d'aide, case « Pas de suivi » à côté du titre, avertissement sur une ligne avec deux boutons)</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.78 · 17/10/2026</div>
