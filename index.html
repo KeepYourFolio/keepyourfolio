@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_6_68.html
+  @file        : KYF_SHARE_beta_2_8_6_69.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.6.68
+  @version     : Beta 2.8.6.69
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6622,7 +6622,7 @@ html:not(.kyf-kbd) .icon-btn:focus-visible,html:not(.kyf-kbd) button:focus-visib
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.6.68</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.6.69</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -42953,7 +42953,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.6.68\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.6.69\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66998,6 +66998,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.69 · 17/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Immobilier : la « Part du patrimoine » est correcte dès l'ajout d'un bien (avant : calculée avec l'ancien patrimoine global, jusqu'à 504 % tant que le tableau de bord n'était pas rafraîchi), et après suppression d'un bien.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.68 · 16/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">STATISTIQUES D'USAGE, invitation : elle n'apparaît plus qu'à partir de la 3e ouverture de KYF (compteur local, une ouverture par session de navigateur), pour ne pas surgir dès la découverte de l'outil. Le reste ne change pas : une seule fois, Oui ou Non, jamais redemandée.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.67 · 16/10/2026</div>
@@ -79700,6 +79702,8 @@ function saveImmo(){
   }catch(_){}
   kyfTrackFirstAsset();
   closeImmoModal();
+  // Patrimoine global recalculé AVANT la page Immobilier : sinon « Part du patrimoine » se calcule avec l'ancien total (ex. 504 % après un premier bien)
+  try{ renderKPIs(); }catch(_){}
   renderImmo();
 }
 
@@ -81834,7 +81838,7 @@ function toggleImmoCard(id){
   renderImmo();
 }
 
-function deleteImmo(id){ if(!confirm('Supprimer ce bien ?')) return; kyfDeleteWithUndo(immoLoad, immoSave, id, function(){ renderImmo(); try{ renderImmoVentesHistorique(); }catch(e){} }, 'Bien'); }
+function deleteImmo(id){ if(!confirm('Supprimer ce bien ?')) return; kyfDeleteWithUndo(immoLoad, immoSave, id, function(){ try{ renderKPIs(); }catch(e){} renderImmo(); try{ renderImmoVentesHistorique(); }catch(e){} }, 'Bien'); }
 
 // ════════════════════════════════════════════════════════════════
 function avFiscAutoFill(){
