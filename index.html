@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_6_69.html
+  @file        : KYF_SHARE_beta_2_8_6_71.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.6.69
+  @version     : Beta 2.8.6.71
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6622,7 +6622,7 @@ html:not(.kyf-kbd) .icon-btn:focus-visible,html:not(.kyf-kbd) button:focus-visib
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.6.69</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.6.71</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -42099,8 +42099,8 @@ function intradayStatusInfo() {
   const memeJourFront = (d1, d2) => d1.getDate() === d2.getDate() && d1.getMonth() === d2.getMonth() && d1.getFullYear() === d2.getFullYear();
   const estFerie = feries.includes(dateStr) || memeJourFront(venSt, now) || memeJourFront(lunPa, now);
 
-  if (estFerie) return { closed: true, title: 'Marché fermé', detail: 'Reprise à la prochaine séance (9h)' };
-  if (estWeekEnd) return { closed: true, title: 'Marché fermé', detail: 'Reprise lundi à l\'ouverture (9h)' };
+  if (estFerie) return { closed: true, jourFerme: true, title: 'Marché fermé', detail: 'Reprise à la prochaine séance (9h)' };
+  if (estWeekEnd) return { closed: true, jourFerme: true, title: 'Marché fermé', detail: 'Reprise lundi à l\'ouverture (9h)' };
   if (heureActuelle < 9 || heureActuelle >= 22) return { closed: true, title: 'Hors séance', detail: 'Prochaine mise à jour à l\'ouverture (9h)' };
   return { closed: false, title: '', detail: 'Chargement des données intraday...' };
 }
@@ -42260,6 +42260,11 @@ async function fetchAndBuildIntradayCache() {
   }
   if (!KYF_INTRADAY_URL) {
     console.log('[KYF Intraday] Aucune URL GAS configurée - fetch annulé');
+    return;
+  }
+  // Week-end ou jour férié : aucun point n'existe côté script, inutile de l'interroger (le script répondait une page vide : faux avertissement « Réponse illisible »)
+  if (intradayStatusInfo().jourFerme) {
+    console.log('[KYF Intraday] Jour sans séance - pas de fetch');
     return;
   }
   // Vérifier si le cache est encore frais
@@ -42953,7 +42958,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.6.69\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.6.71\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -43513,6 +43518,20 @@ function tryDailySnapshot(){
       let _prevP = {};
       try{ const _ix = JSON.parse(localStorage.getItem('kyf-snapshots-index') || '[]').filter(d => d < today); const _ps = _ix.length ? kyfSnapStored(_ix[_ix.length - 1]) : null; _prevP = (_ps && _ps._etfp) || {}; }catch(e){}
       if(ETF.some(e => kyfEtfNoPrice(e, lp) && _prevP[e.ticker]) || kyfFxMissingCcy(lp).length) return;
+    }
+
+    // Aucun cours ETF disponible (réseau coupé, cache vide) alors que la séance précédente avait une valorisation ETF : la bourse serait
+    // comptée 0 (fausse chute, -100 %) dès que l'AV, l'immobilier ou la crypto font un total > 0. On n'enregistre pas, la séance
+    // provisoire existante est conservée. Une ligne qui n'a jamais eu de cours (séance précédente à 0) garde l'ancien comportement.
+    if(!frozenEtf){
+      try{
+        const _q = ETF.filter(e => e.ticker && e.qty > 0);
+        if(_q.length && !_q.some(e => { const x = lp[e.ticker]; return (x && x.price > 0) || e.evalBase > 0; })){
+          const _jx = JSON.parse(localStorage.getItem('kyf-snapshots-index') || '[]').filter(d => d < today).sort();
+          const _pj = _jx.length ? kyfSnapStored(_jx[_jx.length - 1]) : null;
+          if(_pj && (_pj.valorisation || 0) > 0) return;
+        }
+      }catch(e){}
     }
 
     // Valeur nulle (prix pas encore chargés, positions sans valeur) : on n'enregistre pas
@@ -66998,6 +67017,10 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.71 · 17/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Séances : plus de séance provisoire à 0 pour la bourse quand aucun cours ETF n'est disponible (réseau coupé, cache vide) alors que la séance précédente avait une valorisation : avant, une fausse chute (jusqu'à -100 % sur la bourse) apparaissait dans l'historique jusqu'au retour des cours. La séance existante est conservée.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.70 · 17/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Intraday : plus de lecture du script Google le week-end et les jours fériés (aucune donnée n'existe ces jours-là), ce qui supprime l'avertissement « Réponse illisible (format inattendu) » dans les journaux. Séance et soirées de semaine inchangées.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.69 · 17/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Immobilier : la « Part du patrimoine » est correcte dès l'ajout d'un bien (avant : calculée avec l'ancien patrimoine global, jusqu'à 504 % tant que le tableau de bord n'était pas rafraîchi), et après suppression d'un bien.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.68 · 16/10/2026</div>
