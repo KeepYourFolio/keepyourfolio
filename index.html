@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_6_81.html
+  @file        : KYF_SHARE_beta_2_8_6_87.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.6.81
+  @version     : Beta 2.8.6.87
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -1422,6 +1422,35 @@ select:focus {
 }
 .kyf-modal-close svg{width:14px;height:14px;flex-shrink:0}
 .kyf-modal-close:hover{color:var(--red);background:color-mix(in srgb,var(--red) 12%,transparent)}
+/* Boîte de dialogue KYF (remplace les fenêtres natives du navigateur) : kyfDialog() */
+.kyf-dlg-ov{position:fixed;inset:0;z-index:10060;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;font-family:'Inter',sans-serif}
+.kyf-dlg{width:min(400px,100%);background:var(--bg2);border:1px solid var(--border2);border-radius:16px;color:var(--text);box-shadow:0 12px 48px rgba(0,0,0,.4);overflow:hidden}
+.kyf-dlg-bar{display:flex;height:3px}
+.kyf-dlg-bar i{flex:1;display:block}
+.kyf-dlg-hd{display:flex;align-items:center;gap:10px;padding:10px 10px 10px 16px;background:var(--bg3);border-bottom:1px solid var(--border)}
+.kyf-dlg-wm{flex:1;display:flex;align-items:baseline;text-transform:uppercase}
+.kyf-dlg-wm .k{color:var(--text2);font-weight:400;font-size:11px;letter-spacing:2px}
+.kyf-dlg-wm .y{color:#e0ecff;font-weight:300;font-size:11px;letter-spacing:2px}
+[data-theme="light"] .kyf-dlg-wm .k,[data-theme="light"] .kyf-dlg-wm .y{color:#7a90b8}
+.kyf-dlg-wm .f{color:#d97706;font-weight:700;font-size:12px;letter-spacing:1px}
+.kyf-dlg-wm .d{display:inline-block;width:4px;height:4px;border-radius:50%;background:#d97706;margin:0 3px;align-self:baseline;position:relative;top:-3px}
+.kyf-dlg-wm .fr{color:#d97706;font-weight:600;font-size:11px;letter-spacing:.5px;text-transform:none;margin-left:1px}
+.kyf-dlg-bd{display:flex;gap:14px;align-items:flex-start;padding:20px 22px 22px;font-size:13px;line-height:1.6}
+.kyf-dlg-ic{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px}
+.kyf-dlg-q{font-weight:700;color:var(--text);white-space:pre-line;overflow-wrap:anywhere}
+.kyf-dlg-q.plain{font-weight:500}
+.kyf-dlg-d{margin-top:5px;font-size:12px;color:var(--text2);white-space:pre-line;overflow-wrap:anywhere}
+.kyf-dlg-in{display:block;width:100%;box-sizing:border-box;margin-top:10px;padding:9px 10px;border-radius:8px;border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-family:inherit;font-size:12px;outline:none;transition:border-color .15s}
+.kyf-dlg-in:focus{border-color:var(--accent)}
+.kyf-dlg-ft{display:flex;border-top:1px solid var(--border)}
+.kyf-dlg-seg{flex:1;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;padding:10px 10px;border:none;background:transparent;cursor:pointer;color:var(--text2);transition:background .15s,color .15s}
+.kyf-dlg-seg+.kyf-dlg-seg{border-left:1px solid var(--border)}
+.kyf-dlg-seg:hover{background:var(--hov-bg);color:var(--accent)}
+.kyf-dlg-seg.main{color:var(--accent)}
+.kyf-dlg-seg.main:hover{background:color-mix(in srgb,var(--accent) 14%,transparent)}
+.kyf-dlg-seg.danger{color:var(--red)}
+.kyf-dlg-seg.danger:hover{background:color-mix(in srgb,var(--red) 14%,transparent);color:var(--red)}
+.kyf-dlg-seg:focus-visible{outline:2px solid var(--accent);outline-offset:-3px}
 @media(max-width:640px){
   .kyf-modal-close{width:36px;height:36px}
   .kyf-modal-close svg{width:16px;height:16px}
@@ -6622,7 +6651,7 @@ html:not(.kyf-kbd) .icon-btn:focus-visible,html:not(.kyf-kbd) button:focus-visib
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.6.81</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.6.87</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -9883,8 +9912,8 @@ function editDividende(id){
   if(typeof kyfDateSetValue === 'function' && document.querySelector('[data-kyf-date="divDate"]')) kyfDateSetValue('divDate', d.date);
 }
 
-function deleteDividende(id){
-  if(!confirm('Supprimer ce dividende ?')) return;
+async function deleteDividende(id){
+  if(!(await kyfAsk('Supprimer ce dividende ?'))) return;
   kyfDeleteWithUndo(divLoad, divSave, id, renderDividendes, 'Dividende');
 }
 
@@ -10044,12 +10073,12 @@ function divParActifEdit(ticker){
   const last = divLoad().filter(d => d.ticker === ticker).sort((a,b)=>String(b.date).localeCompare(String(a.date)))[0];
   if(last) editDividende(last.id);
 }
-function divParActifDelete(ticker){
+async function divParActifDelete(ticker){
   const all = divLoad();
   const items = all.map((d,i)=>({d,i})).filter(x => x.d.ticker === ticker);
   if(!items.length) return;
   const n = items.length;
-  if(!confirm(n > 1 ? 'Supprimer les ' + n + ' versements de dividendes de ' + ticker + ' ?' : 'Supprimer ce dividende ?')) return;
+  if(!(await kyfAsk(n > 1 ? 'Supprimer les ' + n + ' versements de dividendes de ' + ticker + ' ?' : 'Supprimer ce dividende ?'))) return;
   if(n === 1){ kyfDeleteWithUndo(divLoad, divSave, items[0].d.id, renderDividendes, 'Dividende'); return; }
   divSave(all.filter(d => d.ticker !== ticker));
   items.forEach(x => { try{ kyfDivCashUndo(x.d); }catch(_){} });   // le cash crédité par ces dividendes est rendu
@@ -12947,7 +12976,7 @@ async function decryptAndImport(){
 
     const keys = Object.keys(payload.data);
     const date = payload.meta?.date ? new Date(payload.meta.date).toLocaleDateString('fr-FR') : 'inconnue';
-    const ok   = window.confirm(`Importer ${keys.length} clés ?\n\nDate : ${date}\n\nLes données actuelles seront remplacées.`);
+    const ok   = await kyfAsk(`Importer ${keys.length} clés ?\n\nDate : ${date}\n\nLes données actuelles seront remplacées.`, { kind:'danger', ok:'Importer', cancel:'Annuler' });
     if(!ok) return;
 
     try{ kyfRestoreAtomic(payload.data, { replace: true }); }   // F03 : remplace vraiment, tout ou rien
@@ -13148,7 +13177,7 @@ async function kyfCopyText(text){
 
 function copyRecoveryKey(){
   kyfCopyText(_currentRecoveryKey).then(ok=>{
-    if(!ok){ prompt('La copie automatique est bloquée. Copiez votre clé de récupération (Ctrl+C) :', _currentRecoveryKey); return; }
+    if(!ok){ kyfDialog({ kind:'copy', q:'Copiez votre clé de récupération', d:'La copie automatique est bloquée : le texte est sélectionné, faites Ctrl+C.', value:_currentRecoveryKey }); return; }
     const btn = document.getElementById('copyRecoveryBtn');
     if(!btn) return;
     btn.innerHTML = kyfEmoHtml('✓ COPIÉ !');
@@ -14323,8 +14352,8 @@ function oauthUpdateUI(connected){
   }
 }
 
-function oauthDisconnect(){
-  if(!confirm('Déconnecter Google Sheets ?\nVos données locales restent intactes.')) return;
+async function oauthDisconnect(){
+  if(!(await kyfAsk('Déconnecter Google Sheets ?\nVos données locales restent intactes.'))) return;
   kyfSecureRemoveOAuth();
   ['kyf-oauth-expires','kyf-oauth-email','kyf-oauth-sheetid'].forEach(k=>localStorage.removeItem(k));
   clearTimeout(_kyfSessionTimer);
@@ -14393,7 +14422,7 @@ function kyfSheetConflictAsk_(c){
   const msg = 'Le Google Sheet contient ' + c.list.length + ' donnée(s) plus récente(s) que celles de cet appareil (modifiées le ' + kyfSheetFmt_(c.remoteMax) +
     ', dernière synchro de cet appareil : ' + kyfSheetFmt_(lastLoc ? kyfSheetMs_(lastLoc) : 0) + '). Rien n\'a été écrasé.';
   if(typeof kyfShModal !== 'function'){
-    if(confirm(msg + '\n\nOK = garder cet appareil et écraser le Sheet. Annuler = ne rien faire.')) sheetsSyncPushOAuth({ force:true });
+    kyfAsk(msg + '\n\nGarder cet appareil écrase le Sheet. Ne rien faire laisse tout en l\'état.', { kind:'danger', ok:'Garder cet appareil', cancel:'Ne rien faire' }).then(function(ok){ if(ok) sheetsSyncPushOAuth({ force:true }); });
     return;
   }
   kyfShModal({
@@ -14484,7 +14513,7 @@ async function sheetsSyncPullOAuth(opts){
     }catch(e){}
     const lastLoc = localStorage.getItem('kyf-sheets-last-sync');
     const dates = '\n\nSheet modifié le : ' + kyfSheetFmt_(remoteMax) + '\nDernière synchro de cet appareil : ' + kyfSheetFmt_(lastLoc ? kyfSheetMs_(lastLoc) : 0);
-    if(!confirm('Restaurer depuis Google Sheets ?\nLes données du Sheet remplaceront celles de cet appareil. Ce qui n\'est pas dans le Sheet reste en place.' + dates)) return;
+    if(!(await kyfAsk('Restaurer depuis Google Sheets ?\nLes données du Sheet remplaceront celles de cet appareil. Ce qui n\'est pas dans le Sheet reste en place.' + dates))) return;
   }
   sheetsSyncSetStatus('⏳ Récupération...','var(--text3)');
 
@@ -15298,7 +15327,7 @@ async function sheetsSyncPush(opts){
 async function sheetsSyncPull(){
   if(window._kyfOAuthCache.token) return sheetsSyncPullOAuth();
   if(!KYF_SHEETS_URL){ sheetsSyncSetStatus(kyfStatusIcon('warn')+'Non connecté','#f59e0b'); return; }
-  if(!confirm('Restaurer depuis Google Sheets ?\nLes données du Sheet remplaceront celles de cet appareil. Ce qui n\'est pas dans le Sheet reste en place.')) return;
+  if(!(await kyfAsk('Restaurer depuis Google Sheets ?\nLes données du Sheet remplaceront celles de cet appareil. Ce qui n\'est pas dans le Sheet reste en place.'))) return;
   sheetsSyncSetStatus('⏳ Récupération...','var(--text3)');
   try {
     const r = await fetch(KYF_SHEETS_URL+'?action=sync_pull',{signal:AbortSignal.timeout(30000),redirect:'follow'});
@@ -16049,8 +16078,8 @@ async function closeSchedulePwdWarn(){
   }
 }
 
-function cancelSchedule(){
-  if(!confirm('Désactiver la sauvegarde automatique ?')) return;
+async function cancelSchedule(){
+  if(!(await kyfAsk('Désactiver la sauvegarde automatique ?'))) return;
   try {
     const s = JSON.parse(localStorage.getItem('pea-schedule')||'{}');
     delete s.freq;
@@ -16407,7 +16436,7 @@ function importConfig(input){
   }
 
   const reader = new FileReader();
-  reader.onload = e => {
+  reader.onload = async e => {
     try {
       const raw = JSON.parse(e.target.result);
 
@@ -16454,9 +16483,9 @@ function importConfig(input){
       // Confirmation avant import
       const date    = raw.meta?.date ? new Date(raw.meta.date).toLocaleDateString('fr-FR') : 'inconnue';
       const version = raw.meta?.version || 'inconnue';
-      const confirm = window.confirm(
+      const confirm = await kyfAsk(
         `Importer ${known.length} clés ?\n\nVersion : ${version}\nDate : ${date}\n\n⚠️ Les données actuelles seront remplacées.`
-      );
+      , { kind:'danger', ok:'Importer', cancel:'Annuler' });
       if(!confirm) return;
 
       // Import
@@ -21120,8 +21149,8 @@ async function apiSave(){
 }
 
 // ── Supprimer ─────────────────────────────────────────────────
-function apiClear(){
-  if(!confirm('Supprimer la clé API ? Le Mode 3 sera désactivé.')) return;
+async function apiClear(){
+  if(!(await kyfAsk('Supprimer la clé API ? Le Mode 3 sera désactivé.'))) return;
   localStorage.removeItem(API_KEY_STORAGE);
   window._kyfApiCache.key = null;
   const inp = document.getElementById('apiKeyInput');
@@ -21835,9 +21864,9 @@ function dcaAddRenderList(highlightId){
       setTimeout(()=>{ row.style.background = ''; row.style.borderColor = ''; }, 1800); }
   }
 }
-function dcaAddDelete(id){
+async function dcaAddDelete(id){
   const p = _dcaPlans.find(x => x.id === id); if(!p) return;
-  if(!confirm('Supprimer le plan "' + p.name + '" ?')) return;
+  if(!(await kyfAsk('Supprimer le plan "' + p.name + '" ?'))) return;
   _dcaPlans = _dcaPlans.filter(x => x.id !== id);
   dcaSave(); renderDCA(); dcaAddRenderList(); dcaAddFootSync();
 }
@@ -22146,8 +22175,8 @@ function confirmAddDCAPlan(){
 }
 
 // ── Supprimer plan ────────────────────────────────────────────︄︋︅︉︄︆︄︊︄︍︃︂︃︆
-function deleteDCAPlan(idx){
-  if(!confirm('Supprimer le plan "'+_dcaPlans[idx]?.name+'" ?')) return;
+async function deleteDCAPlan(idx){
+  if(!(await kyfAsk('Supprimer le plan "'+_dcaPlans[idx]?.name+'" ?'))) return;
   const item = _dcaPlans[idx];
   _dcaPlans.splice(idx,1);
   dcaSave(); renderDCA();
@@ -22429,8 +22458,8 @@ function dcaCheckPending(){
 }
 
 // ── Supprimer transaction historique ─────────────────────────󠁋󠁙󠁆󠁊󠁍󠀲󠀶
-function deleteDCAHistory(id, noConfirm){
-  if(!noConfirm && !confirm('Supprimer cette transaction ? La position (quantité, PRU) et le cash seront ajustés en conséquence.')) return;
+async function deleteDCAHistory(id, noConfirm){
+  if(!noConfirm && !(await kyfAsk('Supprimer cette transaction ? La position (quantité, PRU) et le cash seront ajustés en conséquence.'))) return;
   const idx = _dcaHistory.findIndex(h => h.id === id);
   if(idx === -1) return;
   const item = _dcaHistory[idx];
@@ -22520,13 +22549,13 @@ function dcaAvBannerRender(){
   b.innerHTML = '<span style="flex:1;min-width:220px"><strong style="color:var(--text)">' + legacy.length + ' plan' + (legacy.length>1?'s':'') + ' par actif sur des lignes de contrat AV / PER.</strong> Chaque plan compte aujourd\'hui comme un versement séparé. Convertissez-les en versement de contrat : l\'argent est compté une seule fois, puis réparti sur les lignes.</span>'
     + '<button type="button" onclick="dcaAvConvert()" style="font-family:\'Inter\',sans-serif;font-size:9px;font-weight:700;padding:7px 14px;border-radius:7px;border:1px solid var(--accent);background:none;color:var(--accent);cursor:pointer;transition:background .15s,color .15s" onmouseover="this.style.background=\'#f0b429\';this.style.color=\'#000\'" onmouseout="this.style.background=\'none\';this.style.color=\'var(--accent)\'">CONVERTIR</button>';
 }
-function dcaAvConvert(){
+async function dcaAvConvert(){
   const legacy = dcaAvLegacyPlans();
   if(!legacy.length) return;
   const mappable = legacy.filter(x => ['monthly','quarterly'].includes(x.plan.freq));
   const skipped = legacy.length - mappable.length;
   if(!mappable.length){ alert('Ces plans sont hebdomadaires ou ponctuels : créez à la main un versement de contrat (mensuel, trimestriel ou annuel).'); return; }
-  if(!confirm('Convertir ' + mappable.length + ' plan(s) en versement(s) de contrat ?' + (skipped ? '\n' + skipped + ' plan(s) hebdomadaire(s) ou ponctuel(s) seront laissés tels quels.' : '') + '\n\nLes montants des lignes d\'un même contrat sont additionnés en un seul versement, réparti au prorata.')) return;
+  if(!(await kyfAsk('Convertir ' + mappable.length + ' plan(s) en versement(s) de contrat ?' + (skipped ? '\n' + skipped + ' plan(s) hebdomadaire(s) ou ponctuel(s) seront laissés tels quels.' : '') + '\n\nLes montants des lignes d\'un même contrat sont additionnés en un seul versement, réparti au prorata.'))) return;
   const rules = avDCALoad(), done = new Set();
   const groups = {};
   mappable.forEach(x => {
@@ -24477,7 +24506,7 @@ function storageUiShowSyncBtn(show){
  * pouvait réellement récupérer une sauvegarde GitHub depuis KYF.
  */
 async function storageGithubRestore(){
-  if(!confirm('Restaurer depuis GitHub ?\nCela écrasera les données locales.')) return;
+  if(!(await kyfAsk('Restaurer depuis GitHub ?\nCela écrasera les données locales.'))) return;
   const statusEl = document.getElementById('storageGithubStatus');
   if(statusEl) statusEl.innerHTML = KYF_HOURGLASS_SVG+' Récupération depuis GitHub...';
   try {
@@ -24496,7 +24525,7 @@ async function storageGithubRestore(){
 // Même correctif que GitHub juste au-dessus : .load() existait déjà sur
 // le backend webdav, jamais appelé nulle part dans l'app.
 async function storageWebdavRestore(){
-  if(!confirm('Restaurer depuis WebDAV ?\nCela écrasera les données locales.')) return;
+  if(!(await kyfAsk('Restaurer depuis WebDAV ?\nCela écrasera les données locales.'))) return;
   const statusEl = document.getElementById('storageWebdavStatus');
   if(statusEl) statusEl.innerHTML = KYF_HOURGLASS_SVG+' Récupération depuis WebDAV...';
   try {
@@ -24518,7 +24547,7 @@ async function storageWebdavRestore(){
 // l'autorisation d'écriture du navigateur peut expirer après un
 // redémarrage, sans rapport avec l'existence du fichier de sauvegarde.
 async function storageFolderRestore(){
-  if(!confirm('Restaurer depuis le dossier local ?\nCela écrasera les données locales.')) return;
+  if(!(await kyfAsk('Restaurer depuis le dossier local ?\nCela écrasera les données locales.'))) return;
   const statusEl = document.getElementById('storageFolderStatus');
   if(statusEl) statusEl.innerHTML = KYF_HOURGLASS_SVG+' Récupération depuis le dossier local...';
   try {
@@ -30769,9 +30798,9 @@ function kyfImpCatsOff(){ const nav = document.getElementById('importCatNav'); i
     if(m && m.style.display !== 'none' && !m.contains(e.target) && !(e.target.closest && e.target.closest('#finaryTutoModal,#finaryLightboxOverlay'))) e.preventDefault();
   }, {passive:false});
 })();
-function closeImportRelevé(){
+async function closeImportRelevé(){
   if(_importResolutionInProgress){
-    const ok = confirm('Une résolution est en cours, la fermer maintenant arrêtera le traitement des lignes restantes. Continuer ?');
+    const ok = await kyfAsk('Une résolution est en cours, la fermer maintenant arrêtera le traitement des lignes restantes. Continuer ?', { kind:'danger', ok:'Fermer quand même', cancel:'Continuer l\'import' });
     if(!ok) return;
     _importResolutionInProgress = false; importDropzoneLock(); // fait sortir la boucle en cours à la prochaine itération
   }
@@ -32879,6 +32908,130 @@ function oiParseRowsSmart(rows){
 // ── Popup de confirmation stylé (remplace les alert() natifs - sans icônes,
 // pas de contrôle sur le rendu) - icônes SVG uniquement, cf. conventions du
 // projet. Réutilisé par tous les imports (ETF/AV/PER/Crypto/Or).
+// Boîte de dialogue KYF : remplace confirm()/alert() du navigateur. Renvoie une promesse (true = bouton principal, false = Annuler / Échap / clic à côté).
+// o = { kind:'confirm'|'danger'|'info', q:'question en gras', d:'détail', ok:'Continuer', cancel:'Annuler' }. 'info' : un seul bouton.
+function kyfDialog(o){
+  o = o || {};
+  const kind = (o.kind === 'danger' || o.kind === 'info' || o.kind === 'input' || o.kind === 'copy') ? o.kind : 'confirm';
+  const hasInput = kind === 'input' || kind === 'copy';
+  return new Promise(function(resolve){
+    const old = document.getElementById('kyfDlgOv'); if(old && old._kyfDone) old._kyfDone(false);
+    const tone = kind === 'danger' ? 'var(--red)' : (kind === 'info' ? 'var(--blue)' : 'var(--accent)');
+    const ICO = {
+      input:   '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+      copy:    '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/>',
+      confirm: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7"/><path d="M12 17h.01"/>',
+      danger:  '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/>',
+      info:    '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>'
+    };
+    const hasCancel = kind !== 'info';
+    const ov = document.createElement('div');
+    ov.id = 'kyfDlgOv'; ov.className = 'kyf-dlg-ov';
+    ov.innerHTML =
+      '<div class="kyf-dlg" role="dialog" aria-modal="true" aria-labelledby="kyfDlgQ">' +
+        '<div class="kyf-dlg-bar"><i style="background:#0015FF"></i><i style="background:#FFFFFF"></i><i style="background:#FF0000"></i></div>' +
+        '<div class="kyf-dlg-hd">' +
+          '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="7" fill="var(--bg2)" stroke="var(--accent)" stroke-width="1.2"/><path d="M8.5 6.5v11" stroke="var(--text)" stroke-width="2" stroke-linecap="round"/><path d="M9 12.6l7 5" stroke="var(--text)" stroke-width="2" stroke-linecap="round"/><path d="M9 11.9l7-5.4M12.6 6.5H16v3.4" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+          '<div class="kyf-dlg-wm" aria-label="KeepYourFolio.fr"><span class="k">Keep</span><span class="d"></span><span class="y">Your</span><span class="d"></span><span class="f">Folio</span><span class="fr">.fr</span></div>' +
+          '<button type="button" class="kyf-modal-close" data-kyf-dlg="x" aria-label="Fermer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' +
+        '</div>' +
+        '<div class="kyf-dlg-bd">' +
+          '<div class="kyf-dlg-ic" style="color:' + tone + ';background:color-mix(in srgb,' + tone + ' 16%,transparent)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICO[kind] + '</svg></div>' +
+          '<div style="min-width:0"><div class="kyf-dlg-q' + (o.plain ? ' plain' : '') + '" id="kyfDlgQ">' + kyfEmoSvg(escapeHtml(String(o.q || ''))) + '</div>' + (o.d ? '<div class="kyf-dlg-d">' + kyfEmoSvg(escapeHtml(String(o.d))) + '</div>' : '') + (hasInput ? '<input type="text" class="kyf-dlg-in" id="kyfDlgIn" autocomplete="off" spellcheck="false"' + (kind === 'copy' ? ' readonly' : '') + ' aria-label="' + escapeHtml(String(o.q || '')) + '">' : '') + '</div>' +
+        '</div>' +
+        '<div class="kyf-dlg-ft">' +
+          (hasCancel ? '<button type="button" class="kyf-dlg-seg" data-kyf-dlg="cancel">' + escapeHtml(String(o.cancel || (kind === 'copy' ? 'Fermer' : 'Annuler'))) + '</button>' : '') +
+          '<button type="button" class="kyf-dlg-seg ' + (kind === 'danger' ? 'danger' : 'main') + '" data-kyf-dlg="ok">' + escapeHtml(String(o.ok || (kind === 'info' ? 'OK' : (kind === 'copy' ? 'Copier' : 'Continuer')))) + '</button>' +
+        '</div>' +
+      '</div>';
+    const prevOverflow = document.body.style.overflow, prevFocus = document.activeElement;
+    let finished = false;
+    function onKey(e){
+      if(e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); done(kind === 'info'); }
+      else if(e.key === 'Enter' && hasInput && document.activeElement === ov.querySelector('.kyf-dlg-in')){ e.preventDefault(); e.stopPropagation(); accept(); }
+      else if(e.key === 'Tab'){
+        const b = Array.prototype.slice.call(ov.querySelectorAll('button')); if(!b.length) return;
+        const i = b.indexOf(document.activeElement);
+        e.preventDefault(); b[(i + (e.shiftKey ? -1 : 1) + b.length) % b.length].focus();
+      }
+    }
+    function done(v){
+      if(finished) return; finished = true;
+      document.removeEventListener('keydown', onKey, true);
+      if(ov.parentNode) ov.parentNode.removeChild(ov);
+      document.body.style.overflow = prevOverflow;
+      try{ if(prevFocus && prevFocus.focus) prevFocus.focus(); }catch(e){}
+      resolve(kind === 'input' ? (v ? inVal : null) : !!v);
+    }
+    let inVal = '';
+    function accept(){
+      const inp = ov.querySelector('.kyf-dlg-in');
+      if(inp) inVal = inp.value;
+      if(kind === 'copy'){ try{ kyfCopyText(inVal); }catch(e){} }
+      done(true);
+    }
+    ov._kyfDone = done;
+    ov.addEventListener('click', function(e){
+      if(e.target === ov){ done(kind === 'info'); return; }
+      const b = e.target.closest ? e.target.closest('[data-kyf-dlg]') : null;
+      if(!b) return;
+      const w = b.getAttribute('data-kyf-dlg');
+      if(w === 'ok'){ accept(); return; }
+      done(w === 'x' && kind === 'info');
+    });
+    document.addEventListener('keydown', onKey, true);
+    document.body.appendChild(ov);
+    document.body.style.overflow = 'hidden';
+    const first = ov.querySelector(kind === 'danger' ? '[data-kyf-dlg="cancel"]' : '[data-kyf-dlg="ok"]');
+    try{
+      const inp = ov.querySelector('.kyf-dlg-in');
+      if(inp){ inp.value = String(o.value == null ? '' : o.value); inp.focus(); inp.select(); }
+      else if(first) first.focus();
+    }catch(e){}
+  });
+}
+
+// alert() du navigateur remplacé par la boîte KYF (un seul bouton OK). Les messages s'affichent l'un après l'autre, jamais par-dessus une autre boîte.
+// Renvoie une promesse résolue quand la personne a fermé le message (utile quand un rechargement suit).
+const _kyfNativeAlert = window.alert.bind(window);
+let _kyfAlertChain = Promise.resolve();
+function kyfAlert(msg){
+  const text = String(msg == null ? '' : msg).trim();
+  if(!document.body){ _kyfNativeAlert(text); return Promise.resolve(); }
+  const i = text.indexOf('\n');
+  const o = i > 0 ? { q: text.slice(0, i).trim(), d: text.slice(i + 1).trim() } : { q: text };
+  const p = _kyfAlertChain.then(function(){
+    return new Promise(function(res){
+      (function wait(){
+        if(document.getElementById('kyfDlgOv')){ setTimeout(wait, 200); return; }
+        try{ kyfDialog({ kind: 'info', plain: true, q: o.q, d: o.d, ok: 'OK' }).then(res); }catch(e){ _kyfNativeAlert(text); res(); }
+      })();
+    });
+  });
+  _kyfAlertChain = p.catch(function(){});
+  return p;
+}
+window.alert = function(m){ kyfAlert(m); };
+
+// confirm() du navigateur remplacé par la boîte KYF : `if(!(await kyfAsk('Supprimer ce bien ?'))) return;` dans une fonction async.
+// Le texte est coupé en question (gras) + détail ; les suppressions donnent un bouton rouge ; jamais par-dessus une autre boîte ouverte.
+function kyfAsk(msg, o){
+  const text = String(msg == null ? '' : msg).trim();
+  let q = text, d = '';
+  const nl = text.indexOf('\n');
+  if(nl > 0){ q = text.slice(0, nl).trim(); d = text.slice(nl + 1).trim(); }
+  else { const m = text.match(/^(.*?\?)\s+(\S[\s\S]*)$/); if(m){ q = m[1]; d = m[2]; } else { const m2 = text.match(/^(.*\.)\s+([^.]*\?)$/); if(m2){ q = m2[2]; d = m2[1]; } } }
+  o = o || {};
+  const danger = o.kind ? o.kind === 'danger' : /^(Supprimer|Vider|TOUT EFFACER|Réinitialiser)|irréversible/i.test(text);
+  const ok = o.ok || (/^Supprimer/i.test(text) ? 'Supprimer' : /^Vider/i.test(text) ? 'Vider' : /^TOUT EFFACER/i.test(text) ? 'Tout effacer' : /^Réinitialiser/i.test(text) ? 'Réinitialiser' : /^Désactiver/i.test(text) ? 'Désactiver' : /^Déconnecter/i.test(text) ? 'Déconnecter' : 'Continuer');
+  return new Promise(function(res){
+    (function wait(){
+      if(document.getElementById('kyfDlgOv')){ setTimeout(wait, 150); return; }
+      kyfDialog({ kind: danger ? 'danger' : 'confirm', q: q, d: d, ok: ok, cancel: o.cancel || 'Annuler' }).then(res);
+    })();
+  });
+}
+
 function kyfConfirmPopup(html){
   let ov = document.getElementById('kyfConfirmOverlay');
   if(!ov){
@@ -32916,7 +33069,7 @@ function kyfImportSummaryHTML(title, breakdown){
   return html;
 }
 
-function importConfirm(){
+async function importConfirm(){
   // PER : le compartiment doit être précisé avant d'importer (jamais déduit par défaut)
   if(typeof kyfImportIsPer === 'function' && kyfImportIsPer()){
     const todo = [];
@@ -33036,7 +33189,7 @@ function importConfirm(){
     const enveloppe = contratChoisi && contratChoisi.type!=='av' ? 'PER' : 'AV';
     // Contrat saisi à la main : l'import le fait passer en mode relevé, ses montants UC saisis sont remplacés (jamais additionnés)
     if(contratChoisi && avContratMode(contratChoisi) === 'manual' && ((parseFloat(contratChoisi.uc)||0) > 0 || (parseFloat(contratChoisi.fondsEuros)||0) > 0)){
-      if(!confirm('« ' + (contratChoisi.contratNom||'Ce contrat') + ' » est en saisie manuelle (fonds euros ' + fmt(parseFloat(contratChoisi.fondsEuros)||0,2) + ' €, unités de compte ' + fmt(parseFloat(contratChoisi.uc)||0,2) + ' €).\n\nL\'import passe le contrat en mode « depuis un relevé » : les unités de compte saisies sont remplacées par les lignes du relevé, rien n\'est compté deux fois.\n\nContinuer ?')) return;
+      if(!(await kyfAsk('« ' + (contratChoisi.contratNom||'Ce contrat') + ' » est en saisie manuelle (fonds euros ' + fmt(parseFloat(contratChoisi.fondsEuros)||0,2) + ' €, unités de compte ' + fmt(parseFloat(contratChoisi.uc)||0,2) + ' €).\n\nL\'import passe le contrat en mode « depuis un relevé » : les unités de compte saisies sont remplacées par les lignes du relevé, rien n\'est compté deux fois.\n\nContinuer ?'))) return;
     }
     let count = 0, updated = 0;
     const _mode = window._importChangedMode || 'update';
@@ -36352,7 +36505,7 @@ function etfSessionRemove(sessionIdx){
 }
 
 function confirmAddETFGate(){ kyfCcyGate().then(ok => { if(ok) confirmAddETF(); }); }
-function confirmAddETF(){
+async function confirmAddETF(){
   const err  = document.getElementById('etfAddError');
   const pru  = kyfPruRead('etfPRU', _etfEditIdx !== null);
   const qty  = parseNum(document.getElementById('etfQTY').value);
@@ -36392,7 +36545,7 @@ function confirmAddETF(){
       // (ETF-007), comme pour la suppression d'une ligne : « Annuler » = correction, espèces inchangées.
       const priceNow = (window._lp && window._lp[entry.ticker]?.price) || pru;
       const valVendue = (oldQty - qty) * priceNow;
-      if(valVendue > 0 && confirm('Quantité baissée de ' + fmt(oldQty, 4) + ' à ' + fmt(qty, 4) + '. Était-ce une vente ?\n\nOK : ajouter ' + fmt(valVendue, 2) + ' € aux espèces ' + entry.enveloppe + '.\nAnnuler : simple correction de la quantité, espèces inchangées.')){
+      if(valVendue > 0 && (await kyfAsk('Quantité baissée de ' + fmt(oldQty, 4) + ' à ' + fmt(qty, 4) + '. Était-ce une vente ?\n\nOui : ajouter ' + fmt(valVendue, 2) + ' € aux espèces ' + entry.enveloppe + '.\nNon : simple correction de la quantité, espèces inchangées.', { ok:'Oui, une vente', cancel:'Non, correction' }))){
         adjustCashForEnveloppe(entry.enveloppe, valVendue);
       }
     }
@@ -36470,16 +36623,16 @@ function confirmAddETF(){
 }
 
 // ── Supprimer une position ────────────────────────────────────
-function deleteETF(idx){
+async function deleteETF(idx){
   const pos = ETF[idx];
-  if(!confirm('Supprimer "' + pos?.name + '" de vos positions ?')) return;
+  if(!(await kyfAsk('Supprimer "' + pos?.name + '" de vos positions ?'))) return;
   // Le cash n'est crédité que si la suppression correspond à une vraie vente (PEA/CTO uniquement) : supprimer une ligne saisie
   // par erreur, ou avant de réimporter un relevé, ne doit pas faire apparaître d'espèces fictives.
   let cashCredited = 0;
   if(pos && (pos.enveloppe === 'PEA' || pos.enveloppe === 'CTO')){
     const priceNow = (window._lp && window._lp[pos.ticker]?.price) || pos.pru || 0;
     const val = (pos.qty||0) * priceNow;
-    if(val > 0 && confirm('Était-ce une vente ?\n\nOK : ajouter ' + fmt(val,2) + ' € aux espèces ' + pos.enveloppe + '.\nAnnuler : supprimer la ligne sans toucher aux espèces.')){
+    if(val > 0 && (await kyfAsk('Était-ce une vente ?\n\nOui : ajouter ' + fmt(val,2) + ' € aux espèces ' + pos.enveloppe + '.\nNon : supprimer la ligne sans toucher aux espèces.', { ok:'Oui, une vente', cancel:'Non' }))){
       cashCredited = val;
       adjustCashForEnveloppe(pos.enveloppe, cashCredited);
     }
@@ -36753,7 +36906,7 @@ async function etfInlineEditISIN(idx, span, currentVal){
     pos.isin = newIsin; // dans tous les cas, l'ISIN saisi (validé) est conservé
     if(resolved && resolved.ticker){
       const nomTrouve = fiLabelWithoutParens(resolved.name) || resolved.name || '';
-      const ok = confirm('ISIN reconnu dans le référentiel :\n' + resolved.ticker + (nomTrouve ? ' · '+nomTrouve : '') + '\n\nMettre à jour le ticker et le nom de cette position ?');
+      const ok = await kyfAsk('ISIN reconnu dans le référentiel :\n' + resolved.ticker + (nomTrouve ? ' · '+nomTrouve : '') + '\n\nMettre à jour le ticker et le nom de cette position ?', { ok:'Mettre à jour', cancel:'Garder' });
       if(ok){
         const _oldT = pos.ticker;
         pos.ticker = fiNormalizeTicker(resolved.ticker);
@@ -40162,7 +40315,7 @@ async function kyfShareCopyLink(btn){
       setTimeout(()=>{ label.textContent = original; }, 1800);
     }
   } catch(e){
-    prompt('Copie ce lien :', KYF_SHARE_URL);
+    kyfDialog({ kind:'copy', q:'Copiez ce lien', d:'La copie automatique est bloquée : le texte est sélectionné, faites Ctrl+C.', value:KYF_SHARE_URL });
   }
 }
 function kyfShareTo(platform){
@@ -40921,8 +41074,8 @@ function kyfCorbeilleRestore(corbId){
   kyfUndoToastRemoveByCorbId(corbId);
   renderCorbeilleList();
 }
-function kyfCorbeilleClear(){
-  if(!confirm('Vider définitivement la corbeille ? Cette action est irréversible.')) return;
+async function kyfCorbeilleClear(){
+  if(!(await kyfAsk('Vider définitivement la corbeille ? Cette action est irréversible.'))) return;
   kyfCorbeilleSave([]);
   renderCorbeilleList();
 }
@@ -43004,7 +43157,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.6.81\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.6.87\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -45172,8 +45325,8 @@ function updateSeuils(){
   if(el) el.textContent = etf+'% / '+action+'% / '+crypto+'%';
 }
 
-function clearAllAlertes(){
-  if(!confirm('Supprimer toutes les alertes ? Action irréversible.')) return;
+async function clearAllAlertes(){
+  if(!(await kyfAsk('Supprimer toutes les alertes ? Action irréversible.'))) return;
   let idx = [];
   try { idx = JSON.parse(localStorage.getItem('kyf-alerts-index') || '[]'); } catch(e){}
   idx.forEach(date => localStorage.removeItem('kyf-alerts-'+date));
@@ -46380,7 +46533,7 @@ async function kyfCryptoDonCopy(btn){
       setTimeout(function(){ label.textContent = original; }, 1800);
     }
   } catch(e){
-    prompt("Copie cette adresse :", d.addr);
+    kyfDialog({ kind:'copy', q:'Copiez cette adresse', d:'La copie automatique est bloquée : le texte est sélectionné, faites Ctrl+C.', value:d.addr });
   }
 }
 </script>
@@ -48144,16 +48297,15 @@ function executeReset(){
   setTimeout(()=>location.reload(), 1200);
 }
 
-function resetAll(){
-  if(!confirm('TOUT EFFACER : toutes vos données KYF seront supprimées (positions, transactions, crypto, historique, préférences). Cette action est irréversible.')) return;
+async function resetAll(){
+  if(!(await kyfAsk('TOUT EFFACER : toutes vos données KYF seront supprimées (positions, transactions, crypto, historique, préférences). Cette action est irréversible.'))) return;
   const keys = Object.keys(localStorage).filter(k => 
     (k.startsWith('pea-') || k.startsWith('kyf-') || k.startsWith('cg-')) &&
     k !== 'kyf-beta-unlocked' && k !== 'kyf-sheets-url' && k !== 'kyf-bugfix-seen' && k !== 'kyf-last-page'
   );
   keys.forEach(k => localStorage.removeItem(k));
   addLog('infos', 'Toutes les données locales ont été effacées', 'io', 'ok');
-  alert('Données effacées. Rechargement...');
-  location.reload();
+  kyfAlert('Données effacées. Rechargement...').then(function(){ location.reload(); });
 }
 
 // ── Réinitialisation personnalisée (modal à cases à cocher) ─────────────
@@ -48183,7 +48335,7 @@ function toggleSelectAllReset(){
   boxes.forEach(cb => cb.checked = !allChecked);
   btn.textContent = allChecked ? 'Tout sélectionner' : 'Tout désélectionner';
 }
-function confirmSelectiveReset(){
+async function confirmSelectiveReset(){
   const checked = [...document.querySelectorAll('#selResetList .kyf-reset-check:checked')];
   const fb = document.getElementById('selResetFeedback');
 
@@ -48198,7 +48350,7 @@ function confirmSelectiveReset(){
   }
 
   const moduleNames = checked.map(cb => cb.closest('.kyf-reset-row').querySelector('div > div').textContent.trim());
-  if(!confirm('Réinitialiser ' + checked.length + ' module(s) sélectionné(s) :\n\n' + moduleNames.join('\n') + '\n\nCette action est irréversible.')) return;
+  if(!(await kyfAsk('Réinitialiser ' + checked.length + ' module(s) sélectionné(s) :\n\n' + moduleNames.join('\n') + '\n\nCette action est irréversible.'))) return;
 
   // Cases cochées → clés exactes et préfixes à supprimer (les tokens
   // finissant par "-" sont traités comme des préfixes, les autres comme
@@ -48916,9 +49068,9 @@ function openEditStable(idx){
   const ov = document.getElementById('addCryptoOverlay'); if(ov) ov.style.display='block';
   document.body.style.overflow = 'hidden';
 }
-function deleteStable(idx){
+async function deleteStable(idx){
   const st = (cryptoState.stables||[])[idx]; if(!st) return;
-  if(!confirm('Supprimer le stablecoin ' + st.nom + ' ? Cette action est irréversible.')) return;
+  if(!(await kyfAsk('Supprimer le stablecoin ' + st.nom + ' ? Cette action est irréversible.'))) return;
   const copy = JSON.parse(JSON.stringify(st));
   cryptoState.stables.splice(idx, 1);
   cryptoSave();
@@ -48930,8 +49082,8 @@ function deleteStable(idx){
 }
 
 // ── Supprimer une position crypto ────────────────────────────────
-function deleteCryptoPosition(ticker){
-  if(!confirm('Supprimer la position ' + ticker + ' ? Cette action est irréversible.')) return;
+async function deleteCryptoPosition(ticker){
+  if(!(await kyfAsk('Supprimer la position ' + ticker + ' ? Cette action est irréversible.'))) return;
   const pos = cryptoState.positions.find(p=>p.ticker===ticker);
   const removedOps = (cryptoState.operations||[]).filter(op=>op.ticker===ticker && op.type==='achat');
   cryptoState.positions = cryptoState.positions.filter(p=>p.ticker!==ticker);
@@ -49899,7 +50051,7 @@ async function kyfStorageCheckConflict(active, opts){
   } else if(known === String(remote)) return;                    // personne d'autre n'a écrit
   if(opts && opts.manual){
     const label = KYF_BACKEND_LABELS[active] || active;
-    const ok = window.confirm('Une sauvegarde ' + label + ' existe déjà et n\'a pas été faite depuis cet appareil (ou a été modifiée depuis un autre appareil).\n\nOK : l\'écraser avec les données de cet appareil.\nAnnuler : ne rien changer (vous pourrez la restaurer d\'abord avec le bouton Restaurer).');
+    const ok = await kyfAsk('Une sauvegarde ' + label + ' existe déjà et n\'a pas été faite depuis cet appareil (ou a été modifiée depuis un autre appareil).\n\nÉcraser : la remplacer par les données de cet appareil.\nNe rien changer : vous pourrez d\'abord la restaurer avec le bouton Restaurer.', { kind:'danger', ok:'Écraser', cancel:'Ne rien changer' });
     if(ok) return;
     const e = new Error('Envoi annulé : la sauvegarde distante est plus récente que cet appareil. Utilisez Restaurer si besoin.'); e.kyfCancelled = true; throw e;
   }
@@ -51246,7 +51398,7 @@ function kyfCryptoAddReset(){
   try{ cryptoAddCalc(); cryptoAddFlash(); }catch(e){}
   document.getElementById('addCryptoSearchInput')?.focus();
 }
-function confirmAddCryptoPosition(){
+async function confirmAddCryptoPosition(){
   const modal  = document.getElementById('addCryptoModal');
   const editIdx = (modal.dataset.editIdx !== undefined && modal.dataset.editIdx !== '') ? parseInt(modal.dataset.editIdx) : -1;
   const err    = document.getElementById('addCryptoError');
@@ -51299,7 +51451,7 @@ function confirmAddCryptoPosition(){
     const existsStable = cryptoState.stables.find(s => kyfStableCanonicalKey(s.nom) === kyfStableCanonicalKey(name));
     if(existsStable){
       const ajout = Math.round(qte * (pru > 0 ? pru : 1) * 100) / 100;
-      if(!confirm('Vous détenez déjà ' + fmtCryptoQty(existsStable.qte) + ' ' + existsStable.nom + '.\n\nAjouter ' + fmtCryptoQty(qte) + ' à cette ligne ? Total : ' + fmtCryptoQty(Math.round((existsStable.qte + qte) * 1e8) / 1e8) + ' ' + existsStable.nom + '.')) return;
+      if(!(await kyfAsk('Vous détenez déjà ' + fmtCryptoQty(existsStable.qte) + ' ' + existsStable.nom + '.\n\nAjouter ' + fmtCryptoQty(qte) + ' à cette ligne ? Total : ' + fmtCryptoQty(Math.round((existsStable.qte + qte) * 1e8) / 1e8) + ' ' + existsStable.nom + '.'))) return;
       const avant = { qte: existsStable.qte, valeur: existsStable.valeur };
       existsStable.qte = Math.round((existsStable.qte + qte) * 1e8) / 1e8;
       existsStable.valeur = Math.round(((Number(existsStable.valeur) || 0) + ajout) * 100) / 100;
@@ -51312,7 +51464,7 @@ function confirmAddCryptoPosition(){
     if(exists){
       const q2 = Math.round((exists.qte + qte) * 1e8) / 1e8;
       const pru2 = q2 > 0 ? Math.round((exists.pru * exists.qte + pru * qte) / q2 * 100) / 100 : exists.pru;
-      if(!confirm('Vous détenez déjà ' + fmtCryptoQty(exists.qte) + ' ' + (exists.nom || name) + ' (PRU ' + fmt(exists.pru, 2) + ' ' + getCryptoSymbol() + ').\n\nRenforcer la ligne avec ' + fmtCryptoQty(qte) + ' à ' + fmt(pru, 2) + ' ' + getCryptoSymbol() + ' ?\nRésultat : ' + fmtCryptoQty(q2) + ' ' + (exists.nom || name) + ' au PRU moyen de ' + fmt(pru2, 2) + ' ' + getCryptoSymbol() + '.')) return;
+      if(!(await kyfAsk('Vous détenez déjà ' + fmtCryptoQty(exists.qte) + ' ' + (exists.nom || name) + ' (PRU ' + fmt(exists.pru, 2) + ' ' + getCryptoSymbol() + ').\n\nRenforcer la ligne avec ' + fmtCryptoQty(qte) + ' à ' + fmt(pru, 2) + ' ' + getCryptoSymbol() + ' ?\nRésultat : ' + fmtCryptoQty(q2) + ' ' + (exists.nom || name) + ' au PRU moyen de ' + fmt(pru2, 2) + ' ' + getCryptoSymbol() + '.'))) return;
       if(exists.manual){
         const avant = { qte: exists.qte, pru: exists.pru };
         exists.qte = q2; exists.pru = pru2;
@@ -53346,7 +53498,7 @@ function renderOpsForm(){
 // Opérations ajoutées à la liste mais pas encore validées (multi-ajout sans changer de sous-onglet).
 window._cryptoOpSessionAdded = [];
 
-function saveOperation(){
+async function saveOperation(){
   const type = document.getElementById('op-type')?.value;
   const dateRaw = document.getElementById('op-date')?.value;
   if(!dateRaw){ alert('Date requise'); return; }
@@ -53386,14 +53538,14 @@ function saveOperation(){
     const detenu = (cryptoState.positions||[]).find(p => p.ticker === ticker);
     if(!isHistorique && qte > 0 && (!detenu || qte > detenu.qte + 1e-8)){
       const dispo = detenu ? fmt(detenu.qte,8) : '0';
-      if(!confirm('Vous ne détenez que '+dispo+' '+nom+' actuellement, mais cette vente porte sur '+fmt(qte,8)+'. Continuer quand même ?')) return;
+      if(!(await kyfAsk('Vous ne détenez que '+dispo+' '+nom+' actuellement, mais cette vente porte sur '+fmt(qte,8)+'. Continuer quand même ?'))) return;
     }
     // Vente sans quantité d'une crypto encore détenue (ex. LUNA tombée à zéro) : sans quantité la position
     // resterait dans le portefeuille et sa perte serait comptée deux fois (latente + réalisée).
     let qteV = qte;
     if(!qteV && !isHistorique){
       const held = (cryptoState.positions||[]).find(p => p.ticker === ticker);
-      if(held && held.qte > 0 && confirm('Vous détenez encore ' + fmtCryptoQty(held.qte) + ' ' + nom + '.\n\nOK : retirer toute la position du portefeuille (conseillé, sinon la perte est comptée deux fois).\nAnnuler : garder la position.')) qteV = held.qte;
+      if(held && held.qte > 0 && (await kyfAsk('Vous détenez encore ' + fmtCryptoQty(held.qte) + ' ' + nom + '.\n\nRetirer toute la position du portefeuille est conseillé, sinon la perte est comptée deux fois.', { ok:'Retirer la position', cancel:'Garder la position' }))) qteV = held.qte;
     }
     op = {...op, nom, ticker, montant, qte: qteV, cours};
     if(investi > 0) op.investi = investi;
@@ -53408,7 +53560,7 @@ function saveOperation(){
     const detenuSwap = detenuStableSwap ? {qte: detenuStableSwap.qte} : (cryptoState.positions||[]).find(p => p.ticker === ticker);
     if(!isHistorique && qte > 0 && (!detenuSwap || qte > detenuSwap.qte + 1e-8)){
       const dispoSwap = detenuSwap ? fmt(detenuSwap.qte,8) : '0';
-      if(!confirm('Vous ne détenez que '+dispoSwap+' '+nom+' actuellement, mais ce swap en envoie '+fmt(qte,8)+'. Continuer quand même ?')) return;
+      if(!(await kyfAsk('Vous ne détenez que '+dispoSwap+' '+nom+' actuellement, mais ce swap en envoie '+fmt(qte,8)+'. Continuer quand même ?'))) return;
     }
     op = {...op, nom, ticker, qte, nom2, ticker2, qte2, valeur: n('op-valeur-swap') || 0};
   } else if(type==='transfert'){
@@ -53419,7 +53571,7 @@ function saveOperation(){
       const detenuTransfert = kyfIsStableSymbol(ticker) ? (cryptoState.stables||[]).find(s => kyfStableCanonicalKey(s.nom) === kyfStableCanonicalKey(ticker)) : (cryptoState.positions||[]).find(p => p.ticker === ticker);
       if(!detenuTransfert || qte > detenuTransfert.qte + 1e-8){
         const dispoTransfert = detenuTransfert ? fmt(detenuTransfert.qte,8) : '0';
-        if(!confirm('Vous ne détenez que '+dispoTransfert+' '+nom+' actuellement, mais ce transfert sortant porte sur '+fmt(qte,8)+'. Continuer quand même ?')) return;
+        if(!(await kyfAsk('Vous ne détenez que '+dispoTransfert+' '+nom+' actuellement, mais ce transfert sortant porte sur '+fmt(qte,8)+'. Continuer quand même ?'))) return;
       }
     }
     op = {...op, nom, ticker, qte, from, to, sens, valeur: n('op-valeur-transfert') || 0};
@@ -53660,8 +53812,8 @@ function setCryptoOpsPerPage(n){ window._cryptoOpsPerPage=parseInt(n); window._c
   });
 }
 
-function deleteOperation(id){
-  if(!confirm('Supprimer cette opération ? Les positions seront recalculées automatiquement.')) return;
+async function deleteOperation(id){
+  if(!(await kyfAsk('Supprimer cette opération ? Les positions seront recalculées automatiquement.'))) return;
   const idx = (cryptoState.operations||[]).findIndex(o => o.id === id);
   if(idx === -1) return;
   const item = cryptoState.operations[idx];
@@ -53777,7 +53929,7 @@ function kyfOpEditSetCur(c){
   m.querySelectorAll('.opEdit-sym').forEach(x => { x.textContent = c === 'usd' ? '$' : '€'; });
   const n = document.getElementById('opEdit-cur-note'); if(n) n.textContent = c === 'usd' ? 'Converti en euros au taux EUR/USD du jour de l\'opération.' : 'Les montants ci-dessous sont en euros.';
 }
-function kyfOpEditSave(){
+async function kyfOpEditSave(){
   const m = document.getElementById('kyfOpEditModal'); if(!m) return;
   const pending = m.dataset.pending === '1';
   const op = kyfOpEditList(pending).find(o => o.id === m.dataset.opId);
@@ -53800,7 +53952,7 @@ function kyfOpEditSave(){
 
   if(op.type === 'vente' && !nv.qte && !op.historique){   // même garde-fou que la saisie : éviter une perte comptée deux fois
     const held = (cryptoState.positions||[]).find(p => p.ticker === op.ticker);
-    if(held && held.qte > 0 && confirm('Vous détenez encore ' + fmtCryptoQty(held.qte) + ' ' + (op.nom || op.ticker) + '.\n\nOK : retirer toute la position du portefeuille (conseillé, sinon la perte est comptée deux fois).\nAnnuler : garder la position.')) nv.qte = held.qte;
+    if(held && held.qte > 0 && (await kyfAsk('Vous détenez encore ' + fmtCryptoQty(held.qte) + ' ' + (op.nom || op.ticker) + '.\n\nRetirer toute la position du portefeuille est conseillé, sinon la perte est comptée deux fois.', { ok:'Retirer la position', cancel:'Garder la position' }))) nv.qte = held.qte;
   }
   const pair = kyfOpFindPair(op, pending);
   const snap = { op: JSON.parse(JSON.stringify(op)), pair: pair ? JSON.parse(JSON.stringify(pair)) : null, frais: cryptoState.frais ? JSON.parse(JSON.stringify(cryptoState.frais)) : null };
@@ -56387,8 +56539,8 @@ function dbgInjectDays(n){
 
 function dbgInject30Days()  { dbgInjectDays(30);  }
 function dbgInject365Days() { dbgInjectDays(365); }
-function dbgSimulateAbsence(){
-  if(!confirm('Cela va supprimer les snapshots des 9 derniers jours et reculer kyf-last-snapshot au 15/05/2026.\nAu rechargement, le rattrapage se déclenchera automatiquement.\n\nContinuer ?')) return;
+async function dbgSimulateAbsence(){
+  if(!(await kyfAsk('Cela va supprimer les snapshots des 9 derniers jours et reculer kyf-last-snapshot au 15/05/2026.\nAu rechargement, le rattrapage se déclenchera automatiquement.\n\nContinuer ?'))) return;
 
   // Calculer la date cible = aujourd'hui - 9 jours
   const target = new Date();
@@ -56443,8 +56595,8 @@ function dbgTestPerf(){
   dbgLog('Delta     : '+(p.delta>=0?'+':'')+p.delta+'€  ('+(p.deltaPct>=0?'+':'')+p.deltaPct.toFixed(2)+'%)', col);
 }
 
-function dbgClearAll(){
-  if(!confirm('Supprimer TOUS les snapshots ? Cette action est irréversible.')) return;
+async function dbgClearAll(){
+  if(!(await kyfAsk('Supprimer TOUS les snapshots ? Cette action est irréversible.'))) return;
   let idx = [];
   try { idx = JSON.parse(localStorage.getItem('kyf-snapshots-index')||'[]'); } catch(e){}
   idx.forEach(date => localStorage.removeItem('kyf-snapshot-'+date));
@@ -56801,7 +56953,7 @@ function kyfReconcilePositionsFromTransactions(){
   return created;
 }
 
-function confirmAddTransaction(){
+async function confirmAddTransaction(){
   const ticker = document.getElementById('transInputTicker')?.value.trim().toUpperCase();
   const nom    = document.getElementById('transInputNom')?.value.trim() || ticker;
   const date   = document.getElementById('transInputDate')?.value;
@@ -56824,7 +56976,7 @@ function confirmAddTransaction(){
   if(_transType === 'vente'){
     if(_lines.length && qty > _held + 1e-9){ alert('Quantité vendue (' + qty + ') supérieure à la quantité détenue en ' + _env + ' (' + _held + ').'); return; }
     if(!_lines.length && _all.length){ alert(ticker + ' n\'est pas détenu en ' + _env + ' (détenu en ' + [...new Set(_all.map(e=>e.enveloppe||'PEA'))].join(', ') + '). Choisissez la bonne enveloppe.'); return; }
-    if(!_lines.length && !confirm('Aucune position ' + ticker + ' dans votre portefeuille. Enregistrer quand même cette vente ?')) return;
+    if(!_lines.length && !(await kyfAsk('Aucune position ' + ticker + ' dans votre portefeuille. Enregistrer quand même cette vente ?'))) return;
   }
   // Achat payé depuis un livret : son solde doit couvrir l'achat (jamais de solde négatif fabriqué)
   const _srcId = (_transType === 'achat' && (_env === 'PEA' || _env === 'CTO')) ? (document.getElementById('transInputSource')?.value || '') : '';
@@ -56990,14 +57142,14 @@ function kyfOrTradeRevert(tx){
   kyfOrCashApply(tx, -1); // ETF-005 : reprend le cash seulement là où la vente l'avait crédité (ancienne vente : PEA)
   try{ renderOr(); renderKPIs(window._lp||{}); renderDonut(); }catch(_){}
 }
-function deleteTransaction(id){
+async function deleteTransaction(id){
   const all0 = etfTransLoad(), idx0 = all0.findIndex(t => t.id === id);
   if(idx0 === -1) return;
   const tx = all0[idx0];
   // Achat/vente d'actions et ETF : la position et le cash sont remis en état. Or et autres : suppression simple.
   const isOrSale = tx.assetClass === 'or' && tx.type === 'vente';
   const adjust = isOrSale || (!!tx.ticker && tx.assetClass !== 'or' && (tx.type === 'achat' || tx.type === 'vente'));
-  if(!confirm(adjust ? 'Supprimer cette transaction ? La position (quantité, PRU) et le cash seront ajustés en conséquence.' : 'Supprimer cette transaction ?')) return;
+  if(!(await kyfAsk(adjust ? 'Supprimer cette transaction ? La position (quantité, PRU) et le cash seront ajustés en conséquence.' : 'Supprimer cette transaction ?'))) return;
   if(!adjust){
     kyfDeleteWithUndo(etfTransLoad, etfTransSave, id, () => { loadEtfTransactions(); renderTransactions(); }, 'Transaction');
     return;
@@ -61456,12 +61608,12 @@ function kyfViewsApplyData(d){
   if(_kyfReorg) document.querySelectorAll('[data-kyf-key]').forEach(kyfEyeSync);
   kyfLayoutRefresh();
 }
-function kyfViewApply(id, auto){
+async function kyfViewApply(id, auto){
   const st = kyfViewsLoad();
   const view = id ? st.v.find(x => x.id === id) : null;
   if(id && !view) return;
   const cur = kyfViewSnapshot();
-  if(!auto && !kyfViewIsEmpty(cur) && !st.v.some(x => kyfViewMatches(x, cur)) && !confirm('La disposition actuelle n\'est enregistrée dans aucune vue. La remplacer quand même ?')) return;
+  if(!auto && !kyfViewIsEmpty(cur) && !st.v.some(x => kyfViewMatches(x, cur)) && !(await kyfAsk('La disposition actuelle n\'est enregistrée dans aucune vue. La remplacer quand même ?'))) return;
   kyfViewsApplyData(view || { l:{}, h:{}, k:{} });
   st.a = view ? view.id : '';
   kyfViewsStore(st);
@@ -61497,7 +61649,7 @@ function kyfViewSave(){
   kyfViewsRender(); kyfRitRender();
   if(document.getElementById('kyfScList')) kyfScRender();
 }
-function kyfViewsAction(act, id){
+async function kyfViewsAction(act, id){
   const st = kyfViewsLoad();
   const view = st.v.find(x => x.id === id);
   if(act === 'default'){ kyfViewApply(''); return; }
@@ -61508,14 +61660,14 @@ function kyfViewsAction(act, id){
     view.l = snap.l; view.h = snap.h; view.k = snap.k; st.a = id;
     kyfViewsStore(st); kyfViewsMsg('Vue « ' + view.n + ' » mise à jour.', false); kyfViewsRender();
   } else if(act === 'rename'){
-    const nn = window.prompt('Nouveau nom de la vue :', view.n);
+    const nn = await kyfDialog({ kind:'input', q:'Nouveau nom de la vue', value:view.n, ok:'Renommer' });
     if(nn === null) return;
     const err = kyfViewNameOk(nn, st, id);
     if(err){ kyfViewsMsg(err, true); return; }
     view.n = nn.trim(); kyfViewsStore(st); kyfViewsRender(); kyfRitRender();
     if(document.getElementById('kyfScList')) kyfScRender();
   } else if(act === 'delete'){
-    if(!window.confirm('Supprimer la vue « ' + view.n + ' » ? La disposition actuelle reste inchangée.')) return;
+    if(!(await kyfAsk('Supprimer la vue « ' + view.n + ' » ? La disposition actuelle reste inchangée.'))) return;
     st.v = st.v.filter(x => x.id !== id); if(st.a === id) st.a = '';
     kyfViewsStore(st);
     const map = kyfScLoad(); if('act:view-' + id in map){ map['act:view-' + id] = ''; kyfScStore(map); }
@@ -62972,9 +63124,9 @@ function kyfGeoCloseNow(){
   document.body.style.overflow = '';
   _geoEd = null;
 }
-function kyfGeoClose(){
+async function kyfGeoClose(){
   const n = _geoEd ? kyfGeoDraftCount() : 0;
-  if(n && !confirm(n + ' modification' + (n > 1 ? 's' : '') + ' non enregistrée' + (n > 1 ? 's' : '') + '. Fermer quand même ?')) return;
+  if(n && !(await kyfAsk(n + ' modification' + (n > 1 ? 's' : '') + ' non enregistrée' + (n > 1 ? 's' : '') + '. Fermer quand même ?'))) return;
   kyfGeoCloseNow();
 }
 function kyfGeoRows(){
@@ -63076,7 +63228,7 @@ function kyfGeoIssuerLogo(domain, label){
   return '<img src="https://www.google.com/s2/favicons?domain=' + domain + '&sz=64" alt="" width="22" height="22" style="width:22px;height:22px;border-radius:5px;display:block" onerror="if(this.parentNode)this.outerHTML=this.getAttribute(\'data-fb\')" data-fb=\'' + fb.replace(/'/g, '&#39;') + '\'>';
 }
 // ── Modifier l'ISIN de la position depuis le popup : même contrôle et même enregistrement que dans le portefeuille ──
-function kyfGeoIsinEdit(){
+async function kyfGeoIsinEdit(){
   const sp = document.getElementById('kyfGeoIsinSpan'); if(!sp || !_geoEd || sp.querySelector('input')) return;
   const orig = sp.innerHTML, cur = _geoEd.isin || '', k = _geoEd.k;
   const inp = document.createElement('input');
@@ -63085,14 +63237,14 @@ function kyfGeoIsinEdit(){
   sp.style.borderBottom = 'none'; sp.innerHTML = ''; sp.appendChild(inp); inp.focus(); inp.select();
   let done = false;
   const back = () => { sp.style.borderBottom = ''; sp.innerHTML = orig; };
-  const commit = () => {
+  const commit = async () => {
     if(done) return; done = true;
     const v = inp.value.trim().toUpperCase().replace(/[\s-]/g, '');
     if(!v || v === cur){ back(); return; }
     if(typeof fiIsinChecksumValid === 'function' && !fiIsinChecksumValid(v)){ back(); kyfGeoErr('ISIN invalide : le format ou la clé de contrôle ne correspond pas. Rien n\'a été modifié.'); return; }
     const e = ETF.find(x => 'etf:' + x.ticker === k); if(!e){ back(); return; }
     const dup = ETF.find(x => x !== e && String(x.isin || '').toUpperCase() === v);
-    if(dup && !confirm('Cet ISIN est déjà utilisé par « ' + (dup.name || dup.ticker) + ' ». Continuer quand même ?')){ back(); return; }
+    if(dup && !(await kyfAsk('Cet ISIN est déjà utilisé par « ' + (dup.name || dup.ticker) + ' ». Continuer quand même ?'))){ back(); return; }
     e.isin = v; etfSave();
     if(_geoEd.drafts[k]) _geoEd.drafts[k].isin = v;
     try{ renderETFTable(window._lp || {}); }catch(x){}
@@ -63459,8 +63611,8 @@ async function kyfGeoFileImport(inp){
       if(m.how === 'isin' && m.k !== _geoEd.k){ kyfGeoSwitch(m.k); }
     }
     const hc = Object.keys(r.c).length, hs = Object.keys(r.s).length;
-    if(r.info.isin && _geoEd.isin && r.info.isin !== _geoEd.isin && !confirm('Ce fichier concerne ' + r.info.isin + ', et la position choisie est ' + _geoEd.isin + '. Importer quand même ?')) return;
-    if(r.info.synth && !confirm('Ce fonds utilise une réplication synthétique : le fichier montre le panier de titres détenu par le fonds, pas l\'exposition réelle de son indice. Importer quand même ?')) return;
+    if(r.info.isin && _geoEd.isin && r.info.isin !== _geoEd.isin && !(await kyfAsk('Ce fichier concerne ' + r.info.isin + ', et la position choisie est ' + _geoEd.isin + '. Importer quand même ?'))) return;
+    if(r.info.synth && !(await kyfAsk('Ce fonds utilise une réplication synthétique : le fichier montre le panier de titres détenu par le fonds, pas l\'exposition réelle de son indice. Importer quand même ?'))) return;
     if(hc) _geoEd.r.c = _geoRowsOf(r.c);
     if(hs) _geoEd.r.s = _geoRowsOf(r.s);
     const ig = ['c', 's'].map(m => Object.keys(r.ign[m]).sort((a, b) => r.ign[m][b] - r.ign[m][a]).slice(0, 3).filter(l => r.ign[m][l] >= 0.05));
@@ -64507,19 +64659,19 @@ function kyfApExport(){
   setTimeout(() => URL.revokeObjectURL(a.href), 2000);
   kyfApMsg('Profil exporté (' + n + ' réglages).', false);
 }
-function kyfApImport(input){
+async function kyfApImport(input){
   const f = input.files && input.files[0]; input.value = '';
   if(!f) return;
   if(f.size > 2 * 1024 * 1024){ kyfApMsg('Fichier trop volumineux pour un profil d\'apparence.', true); return; }
   const rd = new FileReader();
-  rd.onload = () => {
+  rd.onload = async () => {
     let o; try{ o = JSON.parse(rd.result); }catch(e){ o = null; }
     if(!o || o.kyf !== 'appearance' || !o.data || typeof o.data !== 'object'){ kyfApMsg('Ce fichier n\'est pas un profil d\'apparence KYF.', true); return; }
     const clean = {};
     Object.keys(o.data).slice(0, 300).forEach(k => { if(kyfApMatch(k)){ const c = kyfApClean(k, o.data[k]); if(c !== null) clean[k] = c; } });
     const keys = Object.keys(clean);
     if(!keys.length){ kyfApMsg('Le profil ne contient aucun réglage reconnu.', true); return; }
-    if(!confirm('Remplacer votre apparence actuelle par ce profil (' + keys.length + ' réglages) ? La page va se recharger.')) return;
+    if(!(await kyfAsk('Remplacer votre apparence actuelle par ce profil (' + keys.length + ' réglages) ? La page va se recharger.'))) return;
     try{
       const old = []; for(let i = 0; i < localStorage.length; i++){ const k = localStorage.key(i); if(kyfApMatch(k)) old.push(k); }
       old.forEach(k => localStorage.removeItem(k));
@@ -65609,8 +65761,8 @@ function kyfCashMvtReverse_(m){
   adjustCashForEnveloppe(m.env, m.sens === 'in' ? -m.montant : m.montant);
   if(m.verseAjuste) kyfPeaTotalVerseSet(kyfPeaTotalVerse() - m.montant);
 }
-function kyfCashMvtDelete(id){
-  if(!window.confirm('Supprimer ce mouvement ? Les espèces (et le total versé s\'il avait été ajusté) seront remis comme avant.')) return;
+async function kyfCashMvtDelete(id){
+  if(!(await kyfAsk('Supprimer ce mouvement ? Les espèces (et le total versé s\'il avait été ajusté) seront remis comme avant.'))) return;
   kyfCashMvtUndo(id);
 }
 function kyfCashMvtUndo(id){
@@ -65769,7 +65921,7 @@ function kyfCashMvtEditUi_(){
 }
 function kyfCashMvtCancelEdit(){ window._cashMvtEditId = null; const m = document.getElementById('cashMvtMontant'); if(m) m.value = ''; const g = document.getElementById('cashMvtMsg'); if(g) g.textContent = ''; kyfCashMvtEditUi_(); }
 // Retrait PEA : avant 5 ans il entraîne en principe la clôture du plan. Rien n'est clôturé par KYF : confirmation avant l'enregistrement, ou information si la date d'ouverture manque
-function kyfCashMvtPeaGuard_(env, sens, dateIso){
+async function kyfCashMvtPeaGuard_(env, sens, dateIso){
   if(env !== 'PEA' || sens !== 'out') return { ok:true, note:'' };
   const ds = localStorage.getItem('kyf-pea-date-ouverture') || '';
   const d0 = ds ? new Date(ds + 'T12:00:00') : null;
@@ -65777,13 +65929,13 @@ function kyfCashMvtPeaGuard_(env, sens, dateIso){
   const d1 = dateIso ? new Date(dateIso + 'T12:00:00') : new Date();
   const mois = (d1.getFullYear() - d0.getFullYear()) * 12 + (d1.getMonth() - d0.getMonth()) - (d1.getDate() < d0.getDate() ? 1 : 0);
   if(mois >= 60) return { ok:true, note:'' };
-  const go = window.confirm('Ce PEA a moins de 5 ans à la date de ce retrait.\n\nAvant 5 ans, tout retrait d\'espèces d\'un PEA entraîne automatiquement la clôture du plan et l\'imposition des gains (hors prélèvements sociaux). Exceptionnellement, le plan peut rester ouvert si les fonds sont retirés pour créer ou reprendre une entreprise dans les 3 mois.\n\nKYF ne clôture rien : il enregistre seulement le mouvement.\n\nEnregistrer ce retrait quand même ?');
+  const go = await kyfAsk('Ce PEA a moins de 5 ans à la date de ce retrait.\n\nAvant 5 ans, tout retrait d\'espèces d\'un PEA entraîne automatiquement la clôture du plan et l\'imposition des gains (hors prélèvements sociaux). Exceptionnellement, le plan peut rester ouvert si les fonds sont retirés pour créer ou reprendre une entreprise dans les 3 mois.\n\nKYF ne clôture rien : il enregistre seulement le mouvement.\n\nEnregistrer ce retrait quand même ?', { kind:'danger', ok:'Enregistrer le retrait', cancel:'Annuler' });
   return go ? { ok:true, note:' Retrait avant 5 ans : le plan est en principe clôturé, vérifiez auprès de votre établissement.' } : { ok:false, note:'' };
 }
-function kyfCashMvtSubmit(){
+async function kyfCashMvtSubmit(){
   const g = id => (document.getElementById(id) || {}).value;
   const eid = window._cashMvtEditId;
-  const gd = kyfCashMvtPeaGuard_(g('cashMvtEnv'), g('cashMvtSens'), g('cashMvtDate'));
+  const gd = await kyfCashMvtPeaGuard_(g('cashMvtEnv'), g('cashMvtSens'), g('cashMvtDate'));
   if(!gd.ok){ const mg = document.getElementById('cashMvtMsg'); if(mg){ mg.textContent = 'Retrait non enregistré.'; mg.style.color = 'var(--text3)'; } return; }
   const r = eid ? kyfCashMvtApplyEdit(eid, g('cashMvtEnv'), g('cashMvtSens'), parseNum(g('cashMvtMontant')), g('cashMvtDate')) : kyfCashMvtAdd(g('cashMvtEnv'), g('cashMvtSens'), parseNum(g('cashMvtMontant')), g('cashMvtDate'));
   if(r.ok && gd.note) r.msg += gd.note;
@@ -65880,7 +66032,7 @@ function cashEnvLivToggle(env){
   b.style.display = b.style.display === 'none' ? 'block' : 'none';
 }
 // Espèces d'un PEA/CTO chez un courtier qui les rémunère : deviennent un livret liquide, comptées dans le Cash comme avant
-function cashEnvToLivret(env){
+async function cashEnvToLivret(env){
   const E = env === 'Pea' ? 'PEA' : 'CTO';
   const msg = (t, bad) => { const m = document.getElementById('cash' + env + 'LivMsg'); if(m){ m.textContent = t; m.style.color = bad ? 'var(--red)' : 'var(--text3)'; } };
   const amt = parseNum(document.getElementById('cashEdit' + env).value) || 0;
@@ -65893,7 +66045,7 @@ function cashEnvToLivret(env){
   const data = livLoad();
   const ex = data.find(d => String(d.banque).toLowerCase() === banque.toLowerCase() && d.type === type);
   if(ex){
-    if(!confirm('« ' + banque + ' » existe déjà dans vos livrets (' + fmt(ex.solde,2) + ' €).\nRemplacer son solde par ' + fmt(amt,2) + ' € ?')) return;
+    if(!(await kyfAsk('« ' + banque + ' » existe déjà dans vos livrets (' + fmt(ex.solde,2) + ' €).\nRemplacer son solde par ' + fmt(amt,2) + ' € ?'))) return;
     ex.solde = amt; if(taux > 0) ex.taux = taux; ex.liquide = 1;
   } else {
     data.push({ id: Date.now().toString(), banque, type, solde: amt, taux, plafond: 0, liquide: 1 });
@@ -67111,6 +67263,18 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.87 · 17/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Les 5 dernières fenêtres de saisie du navigateur (copier la clé de récupération, le lien de partage, l'adresse de don, renommer une vue, corriger une adresse d'urbanisme) passent par la boîte KYF avec un vrai champ de saisie.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.86 · 17/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Lot 2 des confirmations du navigateur : ventes, ajouts de position, imports, restaurations, conflits de synchro, vues, fiches de fonds et retraits PEA passent par la boîte KYF avec des boutons à la bonne étiquette (Oui, une vente / Non, correction ; Retirer la position / Garder la position...)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.85 · 17/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Lot 1 des confirmations du navigateur : 31 messages de suppression, réinitialisation, déconnexion et désactivation (position, bien, contrat, livret, crédit, dividende, opération, vue, alertes, corbeille, tout effacer...) passent par la boîte KYF</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.84 · 17/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Les 151 alertes du navigateur (« Cette page indique ») sont remplacées par la boîte KYF à un seul bouton OK, affichées l'une après l'autre ; « Tout effacer » attend la fermeture du message avant de recharger</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.83 · 17/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Boîte de dialogue KYF : wordmark aux couleurs du logo en haut à gauche (points orange, FOLIO orange en gras, taille réduite), liseré bleu/blanc/rouge identique, boutons Annuler / Continuer plus petits</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.82 · 17/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Nouvelle boîte de dialogue KYF (liseré bleu blanc rouge, wordmark KeepYourFolio.fr, icône de type, boutons collés) qui remplace la fenêtre native du navigateur : appliquée d'abord au message « Passer ce contrat en saisie manuelle »</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.81 · 17/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Statistiques d'usage : avertissement « Case décochée » en orange franc et en gras (le jaune se lisait mal)</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.80 · 17/10/2026</div>
@@ -74386,8 +74550,8 @@ function editLivret(id){
   if(sessList){ sessList.style.display = 'none'; sessList.innerHTML = ''; }
 }
 
-function deleteLivret(id){
-  if(!confirm('Supprimer ce livret ?')) return;
+async function deleteLivret(id){
+  if(!(await kyfAsk('Supprimer ce livret ?'))) return;
   kyfDeleteWithUndo(livLoad, livSave, id, renderLivrets, 'Livret');
 }
 
@@ -75191,7 +75355,7 @@ function avDCARenderList(){
   }).join('');
 }
 
-function saveAVDCA(){
+async function saveAVDCA(){
   const contratId = document.getElementById('avDCAContrat').value;
   const montant   = parseNum(document.getElementById('avDCAMontant').value)||0;
   const debut     = document.getElementById('avDCADebut').value;
@@ -75212,7 +75376,7 @@ function saveAVDCA(){
   }
   // Date passée : les échéances déjà écoulées seraient ajoutées au total investi
   if(new Date(debut+'T12:00:00') < new Date(new Date().toDateString()) && (parseFloat(c && c.versements)||0) > 0){
-    if(!confirm(freq === 'once' ? 'Ce versement exceptionnel sera ajouté au total investi du contrat et réparti sur les lignes choisies.\n\nSi votre total investi l\'inclut déjà, annulez.\n\nContinuer ?' : 'La première date est passée : les versements déjà échus depuis cette date seront ajoutés au total investi du contrat.\n\nSi votre total investi les inclut déjà, choisissez plutôt une date à venir.\n\nContinuer ?')) return;
+    if(!(await kyfAsk(freq === 'once' ? 'Ce versement exceptionnel sera ajouté au total investi du contrat et réparti sur les lignes choisies.\n\nSi votre total investi l\'inclut déjà, annulez.\n\nContinuer ?' : 'La première date est passée : les versements déjà échus depuis cette date seront ajoutés au total investi du contrat.\n\nSi votre total investi les inclut déjà, choisissez plutôt une date à venir.\n\nContinuer ?'))) return;
   }
   const allocs = sel.length ? sel.map(r => ({ posId:r.posId, kind:r.kind, label:r.label, pct:parseFloat(r.pct)||0 })) : null;
   const rules = avDCALoad();
@@ -75231,8 +75395,8 @@ function saveAVDCA(){
   try{ avVersSummaryRender(); avUpdateCoutFrais(); }catch(e){}
 }
 
-function avDCADelete(id){
-  if(!confirm('Supprimer ce versement programmé ?')) return;
+async function avDCADelete(id){
+  if(!(await kyfAsk('Supprimer ce versement programmé ?'))) return;
   avDCASave(avDCALoad().filter(r=>r.id!==id));
   if(_avDcaEditId===id) avDcaSetEditMode(null);
   avDCARenderList();
@@ -76232,8 +76396,8 @@ function editSCI(id){
   document.getElementById('sciOverlay').style.display = 'block';
 }
 
-function deleteSCI(id){
-  if(!confirm('Supprimer cette SCI ?')) return;
+async function deleteSCI(id){
+  if(!(await kyfAsk('Supprimer cette SCI ?'))) return;
   kyfDeleteWithUndo(sciLoad, sciSave, id, renderSCI, 'SCI');
 }
 
@@ -77552,8 +77716,8 @@ function editSCPI(id){
   kyfLockBodyScroll(document.getElementById('scpiModal'));
 }
 
-function deleteSCPI(id){
-  if(!confirm('Supprimer cette SCPI ?')) return;
+async function deleteSCPI(id){
+  if(!(await kyfAsk('Supprimer cette SCPI ?'))) return;
   kyfDeleteWithUndo(scpiLoad, scpiSave, id, renderSCPI, 'SCPI');
 }
 
@@ -78028,10 +78192,10 @@ function cfSessionRemove(i){
   renderCrowdfunding();
 }
 
-function deleteCrowdfunding(){
+async function deleteCrowdfunding(){
   const id = document.getElementById('cfEditId').value;
   if(!id) return;
-  if(!confirm('Supprimer ce projet ?')) return;
+  if(!(await kyfAsk('Supprimer ce projet ?'))) return;
   closeCrowdfunding();
   kyfDeleteWithUndo(cfLoad, cfSave, id, renderCrowdfunding, 'Projet crowdfunding');
 }
@@ -78616,8 +78780,8 @@ function revSetRegime(id, regime){
   }
 }
 
-function deleteRevenu(id){
-  if(!confirm('Supprimer ces revenus ?')) return;
+async function deleteRevenu(id){
+  if(!(await kyfAsk('Supprimer ces revenus ?'))) return;
   kyfDeleteWithUndo(revenuLoad, revenuSave, id, renderRevenus, 'Revenu locatif');
 }
 
@@ -79340,8 +79504,8 @@ function saveCreditReneg(){
   renderCredits();
   try{ if(typeof renderImmo === 'function') renderImmo(); }catch(e){}
 }
-function creditRenegDelete(cid, rid){
-  if(!confirm('Supprimer cette renégociation ? Le prêt reprend ses données d\'avant.')) return;
+async function creditRenegDelete(cid, rid){
+  if(!(await kyfAsk('Supprimer cette renégociation ? Le prêt reprend ses données d\'avant.'))) return;
   const data = creditLoad(), c = data.find(x => x.id === cid); if(!c || !Array.isArray(c.reneg)) return;
   c.reneg = c.reneg.filter(r => (r.id || String(r.date).slice(0, 10)) !== rid);
   if(!c.reneg.length) delete c.reneg;
@@ -79349,8 +79513,8 @@ function creditRenegDelete(cid, rid){
   renderCredits();
 }
 
-function deleteCredit(id){
-  if(!confirm('Supprimer ce crédit ?')) return;
+async function deleteCredit(id){
+  if(!(await kyfAsk('Supprimer ce crédit ?'))) return;
   const _bid = (creditLoad().find(c => c.id === id) || {}).bienId;
   kyfDeleteWithUndo(creditLoad, creditSave, id, renderCredits, 'Crédit');
   // Plus aucun crédit pour ce bien : on efface l'ancienne copie du CRD (bien.crd, écrite par les versions précédentes), sinon elle resterait affichée
@@ -80076,13 +80240,13 @@ function venteUpdateCalc(){
   `;
 }
 
-function saveVente(){
+async function saveVente(){
   const bienId = document.getElementById('venteBienId').value;
   const v = venteReadForm();
   if(!v.prixVente){ alert('Veuillez saisir le prix de vente.'); return; }
   if(!v.dateVente){ alert('Veuillez saisir la date de vente.'); return; }
   if(!v.prixAcquisition){ alert("Veuillez saisir le prix d'acquisition d'origine."); return; }
-  if(!confirm('Confirmer la vente de ce bien ? Il passera en statut « Vendu » et ne comptera plus dans votre patrimoine actuel.')) return;
+  if(!(await kyfAsk('Confirmer la vente de ce bien ? Il passera en statut « Vendu » et ne comptera plus dans votre patrimoine actuel.'))) return;
 
   const r = immoCalculVente(v.regime, v);
   const data = immoLoad();
@@ -80876,8 +81040,8 @@ function toggleImmoValoDossiers(id){
  * backend). Ne modifie QUE l'affichage côté KYF, jamais la donnée
  * source ni le backend. Correction vide = on retire la correction.
  */
-function immoValoCorrigerDossier(bienId, numeroDossier, valeurActuelle){
-  const nouvelleValeur = prompt('Corriger l\'affichage de cette adresse (n\'affecte que KYF, pas la source officielle) :', valeurActuelle);
+async function immoValoCorrigerDossier(bienId, numeroDossier, valeurActuelle){
+  const nouvelleValeur = await kyfDialog({ kind:'input', q:'Corriger l\'affichage de cette adresse', d:'N\'affecte que KYF, pas la source officielle. Laissez vide pour retirer la correction.', value:valeurActuelle, ok:'Enregistrer' });
   if(nouvelleValeur === null) return; // annulé
   const data = immoLoad();
   const idx = data.findIndex(b=>b.id===bienId);
@@ -81992,7 +82156,7 @@ function toggleImmoCard(id){
   renderImmo();
 }
 
-function deleteImmo(id){ if(!confirm('Supprimer ce bien ?')) return; kyfDeleteWithUndo(immoLoad, immoSave, id, function(){ try{ renderKPIs(); }catch(e){} renderImmo(); try{ renderImmoVentesHistorique(); }catch(e){} }, 'Bien'); }
+async function deleteImmo(id){ if(!(await kyfAsk('Supprimer ce bien ?'))) return; kyfDeleteWithUndo(immoLoad, immoSave, id, function(){ try{ renderKPIs(); }catch(e){} renderImmo(); try{ renderImmoVentesHistorique(); }catch(e){} }, 'Bien'); }
 
 // ════════════════════════════════════════════════════════════════
 function avFiscAutoFill(){
@@ -83559,8 +83723,8 @@ function peeRetSave(){
   try{ addLog('infos', 'Retrait exceptionnel PEE : ' + montant + '€ (' + motif + ')', 'AV'); }catch(e){}
   peeRetClose(); renderPee();
 }
-function deletePee(id){
-  if(!confirm('Supprimer ce PEE ?')) return;
+async function deletePee(id){
+  if(!(await kyfAsk('Supprimer ce PEE ?'))) return;
   kyfDeleteWithUndo(peeLoad, peeSave, id, renderPee, 'PEE');
 }
 function renderPee(){
@@ -84939,8 +85103,8 @@ function kyfAvEtfPurge(contratId, tickers){
   if(removed.length){ etfSave(); try{ renderETFTable(window._lp||{}); renderDonut(); }catch(_){} }
   return removed;
 }
-function deleteAVPos(contratId, posId){
-  if(!confirm('Supprimer cette position ?')) return;
+async function deleteAVPos(contratId, posId){
+  if(!(await kyfAsk('Supprimer cette position ?'))) return;
   const all = avPosLoad(contratId);
   const idx = all.findIndex(p => p.id === posId);
   if(idx === -1) return;
@@ -84957,8 +85121,8 @@ function deleteAVPos(contratId, posId){
   kyfShowUndoToast('Position supprimée', () => kyfCorbeilleRestore(corbId), corbId);
 }
 
-function deleteAV(id){
-  if(!confirm('Supprimer ce contrat ? Ses lignes dans ETF & Actions seront aussi retirées.')) return;
+async function deleteAV(id){
+  if(!(await kyfAsk('Supprimer ce contrat ? Ses lignes dans ETF & Actions seront aussi retirées.'))) return;
   const _tk = (avPosLoad(id)||[]).map(p=>p.ticker).filter(Boolean);
   const _removed = kyfAvEtfPurge(id, _tk);
   kyfDeleteWithUndo(avLoad, avSave, id, renderAV, 'Contrat');
@@ -85438,7 +85602,15 @@ function saveAV(){
   // en saisie manuelle qui a des lignes (ajoutées à la main sur la carte du contrat) ne déclenche plus ce message et ne perd aucune ligne.
   const _avAvant = editId ? (avLoad().find(x => x.id === editId) || null) : null;
   if(editId && source === 'manual' && _avAvant && avContratMode(_avAvant) === 'import' && (avPosLoad(editId)||[]).length){
-    if(!confirm('Passer ce contrat en saisie manuelle supprime ses lignes importées (unités de compte et fonds euros du relevé) : les montants saisis les remplacent.\n\nContinuer ?')) return;
+    if(!window._kyfAvPassOk){
+      // Boîte KYF (au lieu de la fenêtre du navigateur) : si on confirme, on relance l'enregistrement avec l'accord donné
+      kyfDialog({ kind:'confirm', q:'Passer ce contrat en saisie manuelle ?', d:'Cela supprime ses lignes importées (unités de compte et fonds euros du relevé) : les montants saisis les remplacent.', ok:'Continuer', cancel:'Annuler' }).then(function(ok){
+        if(!ok) return;
+        window._kyfAvPassOk = true;
+        try{ saveAV(); } finally { window._kyfAvPassOk = false; }
+      });
+      return;
+    }
     const _tk = (avPosLoad(editId)||[]).map(p=>p.ticker).filter(Boolean);
     try{ kyfAvEtfPurge(editId, _tk); }catch(e){}
     avPosSave(editId, []);
@@ -86505,8 +86677,8 @@ function saveLivretDCA(){
   document.getElementById('livDCAWarn').style.display = 'none';
 }
 
-function deleteLivDCA(id){
-  if(!confirm('Supprimer cette règle ?')) return;
+async function deleteLivDCA(id){
+  if(!(await kyfAsk('Supprimer cette règle ?'))) return;
   kyfDeleteWithUndo(livDCALoad, livDCASave, id, livDCARenderList, 'Règle');
 }
 
@@ -86814,7 +86986,7 @@ function orEtfVersPortefeuille(){
 // D14 : coût d'acquisition d'un lot d'or. Champ vide ou 0 non confirmé = inconnu (plus-value indisponible) ;
 // 0 € n'est un coût connu que si l'utilisateur l'a confirmé (don, héritage, lot reçu gratuitement) : drapeau coutNul.
 function kyfOrCoutConnu(d){ return !!d && (parseFloat(d.prixAchat) > 0 || d.coutNul === true); }
-function saveOr(){
+async function saveOr(){
   const metal     = document.getElementById('orMetal').value;
   const produit   = document.getElementById('orProduit').value;
   if((produit==='etf' || produit==='etf_ag') && !document.getElementById('orEditId').value){ orEtfVersPortefeuille(); return; }
@@ -86827,7 +86999,7 @@ function saveOr(){
   const prixAchat = parseNum(prixAchatTxt)||0;
   let coutNul = false;   // D14
   if(prixAchatTxt !== '' && prixAchat === 0){
-    if(!confirm("Prix d'achat à 0 € : ce lot a-t-il vraiment été reçu gratuitement (don, héritage) ?\n\nOK = coût nul déclaré (la plus-value sera calculée sur 0 €).\nAnnuler = coût inconnu (plus-value indisponible).")){ /* inconnu */ }
+    if(!(await kyfAsk("Prix d'achat à 0 € : ce lot a-t-il vraiment été reçu gratuitement (don, héritage) ?\n\nOui : coût nul déclaré (la plus-value sera calculée sur 0 €).\nNon : coût inconnu (plus-value indisponible).", { ok:'Oui, gratuit', cancel:'Non, coût inconnu' }))){ /* inconnu */ }
     else coutNul = true;
   }
   const date      = document.getElementById('orDate').value||'';
@@ -86897,8 +87069,8 @@ function editOr(id){
   if(sessList){ sessList.style.display = 'none'; sessList.innerHTML = ''; }
 }
 
-function deleteOr(id){
-  if(!confirm('Supprimer cette position ?')) return;
+async function deleteOr(id){
+  if(!(await kyfAsk('Supprimer cette position ?'))) return;
   kyfDeleteWithUndo(orLoad, orSave, id, renderOr, 'Position Or');
 }
 
