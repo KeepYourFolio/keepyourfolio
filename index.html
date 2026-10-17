@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_6_71.html
+  @file        : KYF_SHARE_beta_2_8_6_79.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.6.71
+  @version     : Beta 2.8.6.79
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -189,7 +189,7 @@ function kyfParisWall(d){
      ══════════════════════════════════════════════════════════════════ -->
 <script>
   const KYF_ANNONCE_ACTIVE = true;
-  const KYF_ANNONCE_TEXTE  = "Mise à jour : corrections de la logique des prix et valeurs globales (séances, gains, coûts, fiscalité crypto, historique) et renforcement de la sécurité (imports, sauvegardes, règles de contenu). Une anomalie ? Forum Linxea ou « Contactez-nous ».";
+  const KYF_ANNONCE_TEXTE  = "Assurance vie : le problème de la saisie manuelle (message de suppression des lignes) est corrigé. Une anomalie ? Forum Linxea ou « Contactez-nous ». Si vous souhaitez un retour, n'hésitez pas à mettre votre e-mail.";
   // Annonce ciblée : affichée à la place de la générale, seulement chez ceux qui ont configuré l'Intraday (URL enregistrée).
   // Fermée, elle ne revient plus ; la générale reprend alors sa place. Mets false pour la retirer.
   const KYF_ANNONCE_INTRADAY_ACTIVE = true;
@@ -6622,7 +6622,7 @@ html:not(.kyf-kbd) .icon-btn:focus-visible,html:not(.kyf-kbd) button:focus-visib
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.6.71</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.6.79</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -17365,6 +17365,27 @@ function getCSSVar(n){ return getComputedStyle(document.documentElement).getProp
 function isDark(){ return document.documentElement.getAttribute('data-theme')==='dark'; }
 
 // ── Utilitaire : parse nombre - accepte espaces et virgules (copier-coller friendly)
+// Fenêtres « Modifier la position » : le PRU enregistré peut avoir des décimales de calcul (coût total / quantité).
+// kyfPruShow l'affiche arrondi (4 décimales, 6 chiffres significatifs sous 1) mais mémorise la valeur d'origine ;
+// kyfPruRead rend cette valeur d'origine tant que le champ n'a pas été touché (aucun coût investi modifié sans action de l'utilisateur).
+function kyfPruShow(id, pru){
+  const el = document.getElementById(id); if(!el) return;
+  const n = Number(pru);
+  let s = String(pru == null ? '' : pru);
+  if(Number.isFinite(n)){
+    if(Math.abs(n) >= 1) s = String(Math.round(n * 10000) / 10000);
+    else s = Number(n.toPrecision(6)).toFixed(12).replace(/0+$/, '').replace(/\.$/, '');
+  }
+  el.value = s; el.dataset.pruOrig = String(pru); el.dataset.pruShown = s;
+}
+function kyfPruRead(id, editing){
+  const el = document.getElementById(id);
+  const v = parseNum(el.value);
+  if(editing && el.dataset.pruOrig !== undefined && el.value === el.dataset.pruShown){
+    const o = Number(el.dataset.pruOrig); if(Number.isFinite(o)) return o;
+  }
+  return v;
+}
 function parseNum(str){
   if(typeof str === 'number') return str;
   return parseFloat((str||'').toString().replace(/\s/g,'').replace(',','.')) || 0;
@@ -24990,7 +25011,7 @@ function openEditETF(idx){
   etfAddBtnReset();
   document.getElementById('etfAddBtn').textContent        = 'ENREGISTRER';
   document.getElementById('etfSearchInput').value         = e.name + ' (' + e.ticker + ')';
-  document.getElementById('etfPRU').value                 = e.pru;
+  kyfPruShow('etfPRU', e.pru);
   document.getElementById('etfQTY').value                 = e.qty;
   document.getElementById('etfGoogleCode').value          = e.googleCode||'';
   document.getElementById('etfSuggestions').style.display = 'none';
@@ -36333,7 +36354,7 @@ function etfSessionRemove(sessionIdx){
 function confirmAddETFGate(){ kyfCcyGate().then(ok => { if(ok) confirmAddETF(); }); }
 function confirmAddETF(){
   const err  = document.getElementById('etfAddError');
-  const pru  = parseNum(document.getElementById('etfPRU').value);
+  const pru  = kyfPruRead('etfPRU', _etfEditIdx !== null);
   const qty  = parseNum(document.getElementById('etfQTY').value);
 
   // Validations
@@ -39891,6 +39912,22 @@ const ANALYTICS_KEY = 'pea-analytics-consent';
 const ANALYTICS_ID_KEY = 'pea-analytics-id';
 const ANALYTICS_LAST_KEY = 'pea-analytics-last';
 
+// Marque propriétaire : l'identifiant ENVOYÉ se termine par « -Admin » (KYF-DJ6P-Admin) pour distinguer les appareils du développeur des visiteurs.
+// Reconnu par l'empreinte SHA-256 de l'adresse du compte Google connecté (l'adresse elle-même n'est jamais dans le code ni envoyée),
+// ou par une marque locale posée une fois dans la console : kyfAnalyticsAdmin(true) (kyfAnalyticsAdmin(false) pour l'enlever).
+const ANALYTICS_ADMIN_HASH = '6e31164469407594ab24ed5b7488dda3f0db1933f364ebef6f497024a62a501b';
+const ANALYTICS_ADMIN_KEY  = 'kyf-analytics-admin';
+function kyfAnalyticsAdmin(on){ try{ if(on === false) localStorage.removeItem(ANALYTICS_ADMIN_KEY); else localStorage.setItem(ANALYTICS_ADMIN_KEY, '1'); }catch(e){} return on !== false; }
+async function analyticsIsAdmin(){
+  try{
+    if(localStorage.getItem(ANALYTICS_ADMIN_KEY) === '1') return true;
+    const em = (localStorage.getItem('kyf-oauth-email') || '').trim().toLowerCase();
+    if(!em || !(window.crypto && crypto.subtle)) return false;
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(em));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('') === ANALYTICS_ADMIN_HASH;
+  }catch(e){ return false; }
+}
+
 function analyticsGetId(){
   let id = localStorage.getItem(ANALYTICS_ID_KEY);
   if(!id){
@@ -40032,7 +40069,8 @@ async function analyticsPing(){
   // Un seul envoi par jour (jour calendaire) : le Sheet donne alors les appareils actifs jour par jour
   const last = localStorage.getItem(ANALYTICS_LAST_KEY);
   if(last && new Date(parseInt(last)).toISOString().slice(0,10) === new Date().toISOString().slice(0,10)) return;
-  const id       = analyticsGetId();
+  let id         = analyticsGetId();
+  if(await analyticsIsAdmin()) id = id.replace(/-[^-]+$/, '-Admin');   // identifiant stocké inchangé, seul l'envoi porte la marque
   const version  = document.getElementById('versionBadge')?.textContent || 'unknown';
   const platform = /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
   const date     = new Date().toISOString().slice(0,10);
@@ -42958,7 +42996,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.6.71\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.6.79\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -48831,7 +48869,7 @@ function openEditCrypto(ticker){
   document.getElementById('addCryptoId').value     = p.ticker;
   document.getElementById('addCryptoName').value   = p.nom;
   document.getElementById('addCryptoSymbol').value = p.symbol || p.ticker;
-  document.getElementById('addCryptoPRU').value    = p.pru;
+  kyfPruShow('addCryptoPRU', p.pru);
   document.getElementById('addCryptoQTE').value    = p.qte;
   kyfFavPickInit('cry', kyfFavIs('cry', p.ticker));
   // Marquer comme édition
@@ -51207,7 +51245,7 @@ function confirmAddCryptoPosition(){
   const id     = document.getElementById('addCryptoId').value;
   const name   = document.getElementById('addCryptoName').value;
   const symbol = document.getElementById('addCryptoSymbol').value;
-  const pru    = parseNum(document.getElementById('addCryptoPRU').value);
+  const pru    = kyfPruRead('addCryptoPRU', editIdx >= 0);
   const qte    = parseNum(document.getElementById('addCryptoQTE').value);
 
   if(!id){ err.textContent='Sélectionnez une crypto dans la liste'; err.style.display='block'; return; }
@@ -52028,6 +52066,7 @@ function renderCryptoTable(){
         <span style="position:relative;display:inline-block;vertical-align:middle">
           <button onclick="event.stopPropagation();avToggleActionsMenu('cry-${ci}')" title="Actions" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 6px;display:inline-flex;align-items:center;font-size:16px;letter-spacing:1px">⋯</button>
           <div id="avActionsMenu-cry-${ci}" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:130px">
+            ${typeof kyfCryRowOpItems === 'function' ? kyfCryRowOpItems('cry-'+ci, 'pos', "'"+tkJs+"'") : ''}
             <div onclick="avCloseActionsMenu('cry-${ci}');openEditCrypto('${tkJs}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.edit} Modifier</div>
             <div onclick="avCloseActionsMenu('cry-${ci}');deleteCryptoPosition('${tkJs}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:#ff4560;cursor:pointer;display:flex;align-items:center;gap:6px;border-top:1px solid var(--border)" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg> Supprimer</div>
           </div>
@@ -52074,6 +52113,7 @@ function renderCryptoStables(){
         <span style="position:relative;display:inline-block;vertical-align:middle">
           <button onclick="event.stopPropagation();avToggleActionsMenu('stb-${idx}')" title="Actions" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 6px;display:inline-flex;align-items:center;font-size:16px;letter-spacing:1px">⋯</button>
           <div id="avActionsMenu-stb-${idx}" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:130px">
+            ${typeof kyfCryRowOpItems === 'function' ? kyfCryRowOpItems('stb-'+idx, 'stb', idx) : ''}
             <div onclick="avCloseActionsMenu('stb-${idx}');openEditStable(${idx})" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.edit} Modifier</div>
             <div onclick="avCloseActionsMenu('stb-${idx}');deleteStable(${idx})" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:#ff4560;cursor:pointer;display:flex;align-items:center;gap:6px;border-top:1px solid var(--border)" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg> Supprimer</div>
           </div>
@@ -53948,6 +53988,26 @@ function kyfCryptoTabView(tab){
     if(pane) pane.style.display = active?'block':'none';
   });
 }
+// Menu « ⋯ » d'une ligne crypto ou stablecoin : ouvre l'onglet Opérations, choisit le type et préremplit la crypto
+// (mêmes champs et mêmes règles que le formulaire de l'onglet Opérations, via kyfPickHeldAsset : aucune règle nouvelle).
+function kyfCryptoRowOp(type, kind, key){
+  let nom, ticker;
+  if(kind === 'stb'){ const st = (cryptoState.stables || [])[key]; if(!st) return; nom = st.nom; ticker = st.nom; }   // même convention que le bouton « Portefeuille cryptos »
+  else { const p = (cryptoState.positions || []).find(x => x.ticker === key); if(!p) return; nom = p.nom; ticker = p.ticker; }
+  switchCryptoTab('ops');
+  kyfSelectOpType(type);
+  kyfPickHeldAsset(nom, ticker, 'op-nom', 'op-ticker', 'op-ticker-search');
+  const top = document.getElementById('opTypeButtons');
+  if(top && top.scrollIntoView) top.scrollIntoView({ block:'center', behavior:'smooth' });
+}
+function kyfCryRowOpItems(menuId, kind, keyJs){
+  const it = (type, label, ico, last) => `<div onclick="avCloseActionsMenu('${menuId}');kyfCryptoRowOp('${type}','${kind}',${keyJs})" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px${last ? ';border-bottom:1px solid var(--border)' : ''}" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${ico} ${label}</div>`;
+  const svg = p => `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+  return it('achat', 'Acheter', svg('<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>'))
+       + it('vente', 'Vendre', svg('<circle cx="12" cy="12" r="9"/><path d="M8 12h8"/>'))
+       + it('swap', 'Swap', svg('<path d="M17 3l4 4-4 4"/><path d="M3 7h18"/><path d="M7 21l-4-4 4-4"/><path d="M21 17H3"/>'))
+       + it('transfert', 'Transfert', svg('<path d="M5 12h14"/><path d="M13 6l6 6-6 6"/>'), true);
+}
 function switchCryptoTab(tab){
   kyfCryptoTabView(tab);
   try{ localStorage.setItem(KYF_CRYPTO_TAB_KEY, tab); }catch(e){}
@@ -54256,6 +54316,7 @@ function openContactForm(prefilledCategorie, prefilledSujet, prefilledMessage){
   document.getElementById('contactMessage').value = prefilledMessage || '';
   document.getElementById('contactService').value = '';
   document.getElementById('contactEmail').value = '';
+  { const _e = document.getElementById('contactEmail'); if(_e){ _e.disabled = false; _e.style.opacity = ''; } const _nf = document.getElementById('contactNoFollow'); if(_nf) _nf.checked = false; const _nn = document.getElementById('contactNoEmailNotice'); if(_nn) _nn.style.display = 'none'; }
   document.getElementById('contactStatus').innerHTML = '';
   renderContactCategoryChips();
   renderContactFileList();
@@ -54286,6 +54347,16 @@ function closeContactForm(){
 }
 
 function contactSendAnyway(){ _contactState.force = true; contactSubmit(); }
+// E-mail de contact : « Ajouter mon e-mail » referme l'avertissement et place le curseur dans le champ ; « Envoyer quand même » confirme l'envoi sans e-mail.
+function contactNoEmailAdd(){ const n = document.getElementById('contactNoEmailNotice'); if(n) n.style.display = 'none'; const e = document.getElementById('contactEmail'); if(e){ try{ e.focus(); }catch(_){} } }
+function contactNoEmailSend(){ _contactState.noEmailOk = true; return contactSubmit(); }
+// Case « Je ne souhaite pas de suivi » : l'absence d'e-mail est voulue, le champ est vidé et désactivé, plus d'avertissement.
+function contactNoFollowChange(){
+  const c = document.getElementById('contactNoFollow'), e = document.getElementById('contactEmail'), n = document.getElementById('contactNoEmailNotice');
+  if(!c || !e) return;
+  if(c.checked){ e.value = ''; e.disabled = true; e.style.opacity = '.5'; if(n) n.style.display = 'none'; }
+  else { e.disabled = false; e.style.opacity = ''; }
+}
 async function contactSubmit(){
   const statusEl = document.getElementById('contactStatus');
   const btn = document.getElementById('contactSubmitBtn');
@@ -54298,6 +54369,21 @@ async function contactSubmit(){
   if(!_contactState.categorie){ statusEl.innerHTML = `<span style="color:${kyfContactErrColor()}">Choisissez une catégorie.</span>`; return; }
   if(!message){ statusEl.innerHTML = `<span style="color:${kyfContactErrColor()}">Le message ne peut pas être vide.</span>`; return; }
   if(!KYF_CONTACT_URL){ statusEl.innerHTML = `<span style="color:${kyfContactErrColor()}">Formulaire pas encore configuré (KYF_CONTACT_URL vide).</span>`; return; }
+  // E-mail : une adresse mal écrite est refusée ; vide sans « Je ne souhaite pas de suivi » : avertissement avant l'envoi (l'utilisateur choisit)
+  const _noFollow = !!(document.getElementById('contactNoFollow') || {}).checked;
+  const _noteNoMail = document.getElementById('contactNoEmailNotice');
+  if(email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){
+    statusEl.innerHTML = `<span style="color:${kyfContactErrColor()}">Adresse e-mail invalide : corrigez-la, ou laissez le champ vide.</span>`;
+    try{ document.getElementById('contactEmail').focus(); }catch(e){}
+    return;
+  }
+  if(!email && !_noFollow && !_contactState.noEmailOk){
+    statusEl.innerHTML = '';
+    if(_noteNoMail){ _noteNoMail.style.display = 'block'; try{ _noteNoMail.scrollIntoView({block:'center', behavior:'smooth'}); }catch(e){} }
+    return;
+  }
+  if(_noteNoMail) _noteNoMail.style.display = 'none';
+  const _marque = email ? '' : (_noFollow ? '\n\n(Pas de suivi souhaité)' : '\n\n(Envoyé sans e-mail : pas de suivi possible)');
   // Demande d'une banque / d'un courtier / d'un contrat : un relevé de positions en pièce jointe est obligatoire (aucun relevé = impossible à ajouter)
   {
     const _txt = sujet + ' ' + message + ' ' + service;
@@ -54316,7 +54402,7 @@ async function contactSubmit(){
   const payload = {
     categorie: _contactState.categorie,
     sujet: sujet || '(sans sujet)',
-    message,
+    message: message + _marque,
     service,
     navigateur,
     email, // jamais forcé, une chaîne vide = anonyme côté serveur
@@ -67017,6 +67103,22 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.79 · 17/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Contactez-nous : zone e-mail allégée (une ligne d'aide, case « Pas de suivi » à côté du titre, avertissement sur une ligne avec deux boutons)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.78 · 17/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Annonce du bandeau : le problème de la saisie manuelle en assurance vie est corrigé, et invitation à laisser son e-mail dans Contactez-nous pour recevoir un retour.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.77 · 17/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Contactez-nous : une adresse e-mail mal écrite est refusée ; sans e-mail, un avertissement propose d'ajouter l'adresse ou d'envoyer quand même ; nouvelle case « Je ne souhaite pas de suivi » (le message arrive avec la mention). Le texte précise que sans e-mail nous ne pouvons pas répondre.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.76 · 17/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance vie : modifier un contrat déjà en saisie manuelle n'affiche plus « Passer ce contrat en saisie manuelle supprime ses lignes importées » et ne supprime plus ses lignes. Le message reste pour un vrai passage du mode Relevé au mode Manuel.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.75 · 17/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Statistiques d'usage : l'identifiant envoyé se termine par « -Admin » quand le compte Google connecté est celui du propriétaire (reconnu par empreinte, l'adresse n'est ni dans le code ni envoyée), pour distinguer ses appareils des visiteurs. Aucun changement pour les autres utilisateurs.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.74 · 17/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto : le menu « ⋯ » des lignes (cryptos et stablecoins) propose Acheter, Vendre, Swap et Transfert : ils ouvrent l'onglet Opérations avec le type choisi et la crypto déjà sélectionnée (mêmes champs et mêmes règles qu'avant).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.73 · 17/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Listes déroulantes (Bibliothèque de cadres, Immobilier, Crédit, Livret, SCPI, Or...) : elles se referment quand la page ou un panneau défile derrière, au lieu de rester figées à l'écran. Défiler dans la liste elle-même ne la ferme pas.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.72 · 17/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Modifier la position (Crypto et ETF &amp; Actions) : le PRU s'affiche arrondi (4 décimales) au lieu de 48115.09861380632. Enregistrer sans toucher au champ garde le PRU d'origine exact : aucun coût investi ne change sans action de l'utilisateur.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.71 · 17/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Séances : plus de séance provisoire à 0 pour la bourse quand aucun cours ETF n'est disponible (réseau coupé, cache vide) alors que la séance précédente avait une valorisation : avant, une fausse chute (jusqu'à -100 % sur la bourse) apparaissait dans l'historique jusqu'au retour des cours. La séance existante est conservée.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.70 · 17/10/2026</div>
@@ -81572,6 +81674,23 @@ document.addEventListener('contextmenu', e => {
   if(e.target.closest && e.target.closest('[data-kyf-csel], [id$="Drop"]')) e.preventDefault();
   kyfCSelCloseAll();
 });
+// Listes déroulantes en position fixe (moteur kyfCSel et listes propres aux fenêtres : immobilier, crédit, livret, SCPI, or...) :
+// elles sont posées à l'ouverture sous leur bouton, donc restaient figées à l'écran quand la page ou un panneau défilait derrière.
+// Un seul écouteur (phase de capture, attrape le défilement de n'importe quel conteneur) les referme ; défiler DANS la liste elle-même
+// ne la ferme pas. Les menus de pagination (id en KDrop) gardent leur propre gestion (_kyfPg).
+function kyfFloatDropsClose(e){
+  const t = e && e.target;
+  let any = false;
+  document.querySelectorAll('[id$="Drop"]:not([id$="KDrop"])').forEach(d => {
+    if(d.style.display === 'none' || d.style.display === '') return;
+    if(t && t.nodeType === 1 && (t === d || d.contains(t))) return;
+    if(getComputedStyle(d).position !== 'fixed') return;
+    any = true; d.style.display = 'none';
+  });
+  if(any){ try{ Object.keys(window._kyfCSelPend || {}).forEach(kyfCSelCancelPending); }catch(_){} }
+}
+document.addEventListener('scroll', kyfFloatDropsClose, true);
+window.addEventListener('resize', () => kyfFloatDropsClose(null));
 // ── Pagination KYF : menu « Page N » personnalisé (remplace la liste native du navigateur) ──
 // Un seul moteur, branché automatiquement sur tous les <select> dont l'id se termine par
 // « PageSelect » (Historique, Achats, Ventes clôturées, Swaps & transferts, Opérations crypto).
@@ -85302,8 +85421,11 @@ function saveAV(){
 
   if(!nom){ alert('Recherchez ou saisissez un contrat.'); return; }
   const source = (document.getElementById('avSource')||{}).value === 'import' ? 'import' : 'manual';
-  // Passage en saisie manuelle d'un contrat qui a des lignes importées : elles seraient comptées en plus des montants saisis
-  if(editId && source === 'manual' && (avPosLoad(editId)||[]).length){
+  // Passage en saisie manuelle d'un contrat qui a des lignes importées : elles seraient comptées en plus des montants saisis.
+  // Seulement s'il s'agit d'un VRAI passage Relevé -> Manuel (le contrat était en mode relevé avant cette modification) : un contrat déjà
+  // en saisie manuelle qui a des lignes (ajoutées à la main sur la carte du contrat) ne déclenche plus ce message et ne perd aucune ligne.
+  const _avAvant = editId ? (avLoad().find(x => x.id === editId) || null) : null;
+  if(editId && source === 'manual' && _avAvant && avContratMode(_avAvant) === 'import' && (avPosLoad(editId)||[]).length){
     if(!confirm('Passer ce contrat en saisie manuelle supprime ses lignes importées (unités de compte et fonds euros du relevé) : les montants saisis les remplacent.\n\nContinuer ?')) return;
     const _tk = (avPosLoad(editId)||[]).map(p=>p.ticker).filter(Boolean);
     try{ kyfAvEtfPurge(editId, _tk); }catch(e){}
@@ -90112,10 +90234,25 @@ function orInlineEdit(id, td, currentVal){
       <div id="contactFileList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px"></div>
 
       <!-- Email -->
-      <div style="font-size:9px;color:var(--text3);letter-spacing:.5px;margin-bottom:6px">ADRESSE E-MAIL DE CONTACT (facultatif)</div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:6px">
+        <span style="font-size:9px;color:var(--text3);letter-spacing:.5px">E-MAIL <span style="letter-spacing:0">(facultatif)</span></span>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3)">
+          <input type="checkbox" id="contactNoFollow" onchange="contactNoFollowChange()" style="accent-color:var(--accent);cursor:pointer;margin:0">
+          <span>Pas de suivi</span>
+        </label>
+      </div>
       <input id="contactEmail" type="email" placeholder="vous@exemple.fr" style="width:100%;box-sizing:border-box;font-family:'Inter',sans-serif;font-size:11px;padding:10px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text);outline:none"
         onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border2)'">
-      <div style="font-size:9px;color:var(--text3);line-height:1.6;margin-top:6px;margin-bottom:16px">Votre e-mail est facultatif. Sans e-mail, votre message est envoyé anonymement.</div>
+      <div style="font-size:9px;color:var(--text3);line-height:1.5;margin-top:5px;margin-bottom:12px">Pour vous répondre. Sans e-mail, l'envoi reste anonyme.</div>
+      <div id="contactNoEmailNotice" style="display:none;margin-bottom:12px;border:1px solid rgba(240,180,41,0.35);background:rgba(240,180,41,0.08);border-radius:8px;padding:8px 10px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+          <span style="font-size:10px;color:var(--text);font-weight:600;display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>Sans e-mail, pas de réponse possible</span>
+          <span style="display:flex;gap:6px">
+            <button type="button" onclick="contactNoEmailAdd()" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:5px 11px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;transition:background .15s,color .15s,border-color .15s;white-space:nowrap" onmouseover="this.style.background='var(--hov-bg)';this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.background='transparent';this.style.color='var(--text2)';this.style.borderColor='var(--border2)'">Ajouter</button>
+            <button type="button" onclick="contactNoEmailSend()" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:5px 11px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;transition:background .15s,color .15s,border-color .15s;white-space:nowrap" onmouseover="this.style.background='var(--hov-bg)';this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.background='transparent';this.style.color='var(--text2)';this.style.borderColor='var(--border2)'">Envoyer quand même</button>
+          </span>
+        </div>
+      </div>
 
       <button id="contactSubmitBtn" onclick="contactSubmit()" style="width:100%;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;padding:11px;border-radius:8px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Envoyer</button>
       <div id="contactStatus" style="font-size:10px;margin-top:10px;text-align:center"></div>
