@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_6_87.html
+  @file        : KYF_SHARE_beta_2_8_6_90.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.6.87
+  @version     : Beta 2.8.6.90
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -4670,7 +4670,8 @@ html:not(.kyf-kbd) .icon-btn:focus-visible,html:not(.kyf-kbd) button:focus-visib
       <div>• Identifiant aléatoire (ex: KYF-7A92-FQ11)</div>
       <div>• Version KYF utilisée</div>
       <div>• Plateforme (desktop / mobile)</div>
-      <div>• Date de dernière activité (un envoi au plus, une fois par jour)</div>
+      <div>• Date d'activité (un envoi au plus, une fois par jour)</div>
+      <div>• Heure d'envoi : ajoutée par le serveur à chaque envoi. Les envois successifs forment l'historique de vos jours d'activité (date et heure), conservé 24 mois dans le Sheet</div>
       <div style="color:var(--text2);font-weight:600;margin-top:6px">Aucune donnée financière · Aucune IP stockée · Aucun tracker</div>
       <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
         Vous pouvez consulter les données envoyées en temps réel :<br>
@@ -6651,7 +6652,7 @@ html:not(.kyf-kbd) .icon-btn:focus-visible,html:not(.kyf-kbd) button:focus-visib
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.6.87</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.6.90</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -9913,7 +9914,7 @@ function editDividende(id){
 }
 
 async function deleteDividende(id){
-  if(!(await kyfAsk('Supprimer ce dividende ?'))) return;
+  if(!(await kyfAsk('Supprimer ce dividende ?', { corbeille:true }))) return;
   kyfDeleteWithUndo(divLoad, divSave, id, renderDividendes, 'Dividende');
 }
 
@@ -22176,7 +22177,7 @@ function confirmAddDCAPlan(){
 
 // ── Supprimer plan ────────────────────────────────────────────︄︋︅︉︄︆︄︊︄︍︃︂︃︆
 async function deleteDCAPlan(idx){
-  if(!(await kyfAsk('Supprimer le plan "'+_dcaPlans[idx]?.name+'" ?'))) return;
+  if(!(await kyfAsk('Supprimer le plan "'+_dcaPlans[idx]?.name+'" ?', { corbeille:true }))) return;
   const item = _dcaPlans[idx];
   _dcaPlans.splice(idx,1);
   dcaSave(); renderDCA();
@@ -22459,7 +22460,7 @@ function dcaCheckPending(){
 
 // ── Supprimer transaction historique ─────────────────────────󠁋󠁙󠁆󠁊󠁍󠀲󠀶
 async function deleteDCAHistory(id, noConfirm){
-  if(!noConfirm && !(await kyfAsk('Supprimer cette transaction ? La position (quantité, PRU) et le cash seront ajustés en conséquence.'))) return;
+  if(!noConfirm && !(await kyfAsk('Supprimer cette transaction ? La position (quantité, PRU) et le cash seront ajustés en conséquence.', { corbeille:true }))) return;
   const idx = _dcaHistory.findIndex(h => h.id === id);
   if(idx === -1) return;
   const item = _dcaHistory[idx];
@@ -33022,6 +33023,7 @@ function kyfAsk(msg, o){
   if(nl > 0){ q = text.slice(0, nl).trim(); d = text.slice(nl + 1).trim(); }
   else { const m = text.match(/^(.*?\?)\s+(\S[\s\S]*)$/); if(m){ q = m[1]; d = m[2]; } else { const m2 = text.match(/^(.*\.)\s+([^.]*\?)$/); if(m2){ q = m2[2]; d = m2[1]; } } }
   o = o || {};
+  if(o.corbeille){ d = (d ? d + '\n' : '') + 'Vous pourrez la restaurer depuis la corbeille.'; }
   const danger = o.kind ? o.kind === 'danger' : /^(Supprimer|Vider|TOUT EFFACER|Réinitialiser)|irréversible/i.test(text);
   const ok = o.ok || (/^Supprimer/i.test(text) ? 'Supprimer' : /^Vider/i.test(text) ? 'Vider' : /^TOUT EFFACER/i.test(text) ? 'Tout effacer' : /^Réinitialiser/i.test(text) ? 'Réinitialiser' : /^Désactiver/i.test(text) ? 'Désactiver' : /^Déconnecter/i.test(text) ? 'Déconnecter' : 'Continuer');
   return new Promise(function(res){
@@ -36625,7 +36627,7 @@ async function confirmAddETF(){
 // ── Supprimer une position ────────────────────────────────────
 async function deleteETF(idx){
   const pos = ETF[idx];
-  if(!(await kyfAsk('Supprimer "' + pos?.name + '" de vos positions ?'))) return;
+  if(!(await kyfAsk('Supprimer "' + pos?.name + '" de vos positions ?', { corbeille:true }))) return;
   // Le cash n'est crédité que si la suppression correspond à une vraie vente (PEA/CTO uniquement) : supprimer une ligne saisie
   // par erreur, ou avant de réimporter un relevé, ne doit pas faire apparaître d'espèces fictives.
   let cashCredited = 0;
@@ -43157,7 +43159,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.6.87\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.6.90\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -49083,7 +49085,7 @@ async function deleteStable(idx){
 
 // ── Supprimer une position crypto ────────────────────────────────
 async function deleteCryptoPosition(ticker){
-  if(!(await kyfAsk('Supprimer la position ' + ticker + ' ? Cette action est irréversible.'))) return;
+  if(!(await kyfAsk('Supprimer la position ' + ticker + ' ?', { corbeille:true }))) return;
   const pos = cryptoState.positions.find(p=>p.ticker===ticker);
   const removedOps = (cryptoState.operations||[]).filter(op=>op.ticker===ticker && op.type==='achat');
   cryptoState.positions = cryptoState.positions.filter(p=>p.ticker!==ticker);
@@ -53813,7 +53815,7 @@ function setCryptoOpsPerPage(n){ window._cryptoOpsPerPage=parseInt(n); window._c
 }
 
 async function deleteOperation(id){
-  if(!(await kyfAsk('Supprimer cette opération ? Les positions seront recalculées automatiquement.'))) return;
+  if(!(await kyfAsk('Supprimer cette opération ? Les positions seront recalculées automatiquement.', { corbeille:true }))) return;
   const idx = (cryptoState.operations||[]).findIndex(o => o.id === id);
   if(idx === -1) return;
   const item = cryptoState.operations[idx];
@@ -67263,6 +67265,12 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.90 · 18/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Statistiques d'usage : le panneau (détails) et l'invitation disent que le serveur ajoute l'heure d'envoi et que l'historique des jours d'activité (date et heure) est conservé 24 mois. La page de confidentialité est mise à jour de la même façon (et corrigée : un envoi par jour, pas par semaine).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.89 · 18/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Toute suppression qui va dans la corbeille le dit maintenant dans sa boîte de confirmation (« Vous pourrez la restaurer depuis la corbeille »), pas seulement les positions crypto. Les suppressions réellement définitives gardent leur avertissement.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.88 · 18/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Suppression d'une position crypto : le message ne dit plus « irréversible » (faux, la corbeille permet de la restaurer), il l'indique.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.87 · 17/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Les 5 dernières fenêtres de saisie du navigateur (copier la clé de récupération, le lien de partage, l'adresse de don, renommer une vue, corriger une adresse d'urbanisme) passent par la boîte KYF avec un vrai champ de saisie.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.86 · 17/10/2026</div>
@@ -74551,7 +74559,7 @@ function editLivret(id){
 }
 
 async function deleteLivret(id){
-  if(!(await kyfAsk('Supprimer ce livret ?'))) return;
+  if(!(await kyfAsk('Supprimer ce livret ?', { corbeille:true }))) return;
   kyfDeleteWithUndo(livLoad, livSave, id, renderLivrets, 'Livret');
 }
 
@@ -76397,7 +76405,7 @@ function editSCI(id){
 }
 
 async function deleteSCI(id){
-  if(!(await kyfAsk('Supprimer cette SCI ?'))) return;
+  if(!(await kyfAsk('Supprimer cette SCI ?', { corbeille:true }))) return;
   kyfDeleteWithUndo(sciLoad, sciSave, id, renderSCI, 'SCI');
 }
 
@@ -77717,7 +77725,7 @@ function editSCPI(id){
 }
 
 async function deleteSCPI(id){
-  if(!(await kyfAsk('Supprimer cette SCPI ?'))) return;
+  if(!(await kyfAsk('Supprimer cette SCPI ?', { corbeille:true }))) return;
   kyfDeleteWithUndo(scpiLoad, scpiSave, id, renderSCPI, 'SCPI');
 }
 
@@ -78195,7 +78203,7 @@ function cfSessionRemove(i){
 async function deleteCrowdfunding(){
   const id = document.getElementById('cfEditId').value;
   if(!id) return;
-  if(!(await kyfAsk('Supprimer ce projet ?'))) return;
+  if(!(await kyfAsk('Supprimer ce projet ?', { corbeille:true }))) return;
   closeCrowdfunding();
   kyfDeleteWithUndo(cfLoad, cfSave, id, renderCrowdfunding, 'Projet crowdfunding');
 }
@@ -78781,7 +78789,7 @@ function revSetRegime(id, regime){
 }
 
 async function deleteRevenu(id){
-  if(!(await kyfAsk('Supprimer ces revenus ?'))) return;
+  if(!(await kyfAsk('Supprimer ces revenus ?', { corbeille:true }))) return;
   kyfDeleteWithUndo(revenuLoad, revenuSave, id, renderRevenus, 'Revenu locatif');
 }
 
@@ -79514,7 +79522,7 @@ async function creditRenegDelete(cid, rid){
 }
 
 async function deleteCredit(id){
-  if(!(await kyfAsk('Supprimer ce crédit ?'))) return;
+  if(!(await kyfAsk('Supprimer ce crédit ?', { corbeille:true }))) return;
   const _bid = (creditLoad().find(c => c.id === id) || {}).bienId;
   kyfDeleteWithUndo(creditLoad, creditSave, id, renderCredits, 'Crédit');
   // Plus aucun crédit pour ce bien : on efface l'ancienne copie du CRD (bien.crd, écrite par les versions précédentes), sinon elle resterait affichée
@@ -82156,7 +82164,7 @@ function toggleImmoCard(id){
   renderImmo();
 }
 
-async function deleteImmo(id){ if(!(await kyfAsk('Supprimer ce bien ?'))) return; kyfDeleteWithUndo(immoLoad, immoSave, id, function(){ try{ renderKPIs(); }catch(e){} renderImmo(); try{ renderImmoVentesHistorique(); }catch(e){} }, 'Bien'); }
+async function deleteImmo(id){ if(!(await kyfAsk('Supprimer ce bien ?', { corbeille:true }))) return; kyfDeleteWithUndo(immoLoad, immoSave, id, function(){ try{ renderKPIs(); }catch(e){} renderImmo(); try{ renderImmoVentesHistorique(); }catch(e){} }, 'Bien'); }
 
 // ════════════════════════════════════════════════════════════════
 function avFiscAutoFill(){
@@ -83724,7 +83732,7 @@ function peeRetSave(){
   peeRetClose(); renderPee();
 }
 async function deletePee(id){
-  if(!(await kyfAsk('Supprimer ce PEE ?'))) return;
+  if(!(await kyfAsk('Supprimer ce PEE ?', { corbeille:true }))) return;
   kyfDeleteWithUndo(peeLoad, peeSave, id, renderPee, 'PEE');
 }
 function renderPee(){
@@ -85104,7 +85112,7 @@ function kyfAvEtfPurge(contratId, tickers){
   return removed;
 }
 async function deleteAVPos(contratId, posId){
-  if(!(await kyfAsk('Supprimer cette position ?'))) return;
+  if(!(await kyfAsk('Supprimer cette position ?', { corbeille:true }))) return;
   const all = avPosLoad(contratId);
   const idx = all.findIndex(p => p.id === posId);
   if(idx === -1) return;
@@ -85122,7 +85130,7 @@ async function deleteAVPos(contratId, posId){
 }
 
 async function deleteAV(id){
-  if(!(await kyfAsk('Supprimer ce contrat ? Ses lignes dans ETF & Actions seront aussi retirées.'))) return;
+  if(!(await kyfAsk('Supprimer ce contrat ? Ses lignes dans ETF & Actions seront aussi retirées.', { corbeille:true }))) return;
   const _tk = (avPosLoad(id)||[]).map(p=>p.ticker).filter(Boolean);
   const _removed = kyfAvEtfPurge(id, _tk);
   kyfDeleteWithUndo(avLoad, avSave, id, renderAV, 'Contrat');
@@ -86678,7 +86686,7 @@ function saveLivretDCA(){
 }
 
 async function deleteLivDCA(id){
-  if(!(await kyfAsk('Supprimer cette règle ?'))) return;
+  if(!(await kyfAsk('Supprimer cette règle ?', { corbeille:true }))) return;
   kyfDeleteWithUndo(livDCALoad, livDCASave, id, livDCARenderList, 'Règle');
 }
 
@@ -87070,7 +87078,7 @@ function editOr(id){
 }
 
 async function deleteOr(id){
-  if(!(await kyfAsk('Supprimer cette position ?'))) return;
+  if(!(await kyfAsk('Supprimer cette position ?', { corbeille:true }))) return;
   kyfDeleteWithUndo(orLoad, orSave, id, renderOr, 'Position Or');
 }
 
@@ -198906,7 +198914,7 @@ input.kyf-secret-on:hover{border-color:var(--accent)!important;background:var(--
     el.innerHTML =
       '<button class="ksi-x kyf-modal-close" type="button" title="Non merci" aria-label="Non merci"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' +
       '<div class="ksi-h"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>Compter mon appareil, anonymement ?</div>' +
-      '<div class="ksi-t">Un petit signal <strong>une fois par jour</strong> aide à savoir combien de personnes utilisent KYF : un identifiant aléatoire, la version et la date. <strong>Aucune donnée financière, aucune IP stockée.</strong> Modifiable à tout moment dans le panneau cœur, « Statistiques d\'usage ».</div>' +
+      '<div class="ksi-t">Un petit signal <strong>une fois par jour</strong> aide à savoir combien de personnes utilisent KYF : un identifiant aléatoire, la version, la date et l\'heure d\'envoi. <strong>Aucune donnée financière, aucune IP stockée.</strong> Modifiable à tout moment dans le panneau cœur, « Statistiques d\'usage ».</div>' +
       '<div class="ksi-a"><button class="ksi-no" type="button">Non merci</button><button class="ksi-yes" type="button">Oui, compter</button></div>';
     document.body.appendChild(el);
     var r = el.getBoundingClientRect(), top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
