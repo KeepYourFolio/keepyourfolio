@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_6_101.html
+  @file        : KYF_SHARE_beta_2_8_6_102.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.6.101
+  @version     : Beta 2.8.6.102
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6652,7 +6652,7 @@ html:not(.kyf-kbd) .icon-btn:focus-visible,html:not(.kyf-kbd) button:focus-visib
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.6.101</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.6.102</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -43204,7 +43204,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.6.101\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.6.102\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -64767,7 +64767,12 @@ document.addEventListener('keydown', e => {
 // Les montants sont repérés dans le texte affiché (symbole monétaire, ou nombre à séparateurs dans une cellule de tableau) puis marqués .kyf-amt ; un observateur traite aussi les rendus suivants.
 const KYF_DISC_KEY = 'kyf-discreet-mode';
 const KYF_DISC_EXCL = '#modalGuideOverlay,#modalGuide,#infoPanel,#edPanel,#kyfWelcomeModal,#modalContact,.kyf-nodisc';
-const KYF_DISC_CUR = '[+\\-−–]?\\s?\\d[\\d\\s  .,]*\\s?(?:k€|M€|Md€|€|EUR|USD|\\$|£)|[€$£]\\s?\\d[\\d\\s  .,]*';
+const KYF_DISC_CUR = '[+\\-−–]?\\s?\\d[\\d\\s  .,]*\\s?(?:[kKM]|Md|Mi)?\\s?(?:€|EUR|USD|\\$|£)|[€$£]\\s?\\d[\\d\\s  .,]*';
+// Page Heatmap (performances, distribution, meilleures et pires séances) : les pourcentages sont floutés eux aussi, avec les infobulles du calendrier
+const KYF_DISC_PCT_ZONE = '#page-heatmap,#_hmCalTip,#hmTipGlobal';
+const KYF_DISC_PCT = KYF_DISC_CUR.split('(?:')[0] + '%';
+const KYF_DISC_RE_PZ = new RegExp(KYF_DISC_CUR + '|' + KYF_DISC_PCT);
+const KYF_DISC_RE_PZ_G = new RegExp(KYF_DISC_CUR + '|' + KYF_DISC_PCT, 'g');
 const KYF_DISC_RE = new RegExp(KYF_DISC_CUR);
 const KYF_DISC_RE_G = new RegExp(KYF_DISC_CUR, 'g');
 const KYF_DISC_RE_NUM = /^[+\-−–]?\d+(?:[\s  .]\d{3})*(?:[.,]\d+)?$/;
@@ -64781,16 +64786,17 @@ function kyfDiscMarkText(node){
   if(p.classList.contains('kyf-amt') || p.closest('.kyf-amt') || p.closest(KYF_DISC_EXCL)) return;
   const cell = !!p.closest('td,th');
   const tt = t.trim();
-  const hit = KYF_DISC_RE.test(t) || (cell && KYF_DISC_RE_NUM.test(tt) && !kyfDiscIsYear(tt));
+  const pz = !!p.closest(KYF_DISC_PCT_ZONE), reT = pz ? KYF_DISC_RE_PZ : KYF_DISC_RE, reG = pz ? KYF_DISC_RE_PZ_G : KYF_DISC_RE_G;
+  const hit = reT.test(t) || (cell && KYF_DISC_RE_NUM.test(tt) && !kyfDiscIsYear(tt));
   if(!hit) return;
   if(!p.children.length && t.trim().length <= 40){ p.classList.add('kyf-amt'); return; }
   const parts = []; let last = 0, m;
-  KYF_DISC_RE_G.lastIndex = 0;
-  while((m = KYF_DISC_RE_G.exec(t))){
+  reG.lastIndex = 0;
+  while((m = reG.exec(t))){
     if(m.index > last) parts.push(document.createTextNode(t.slice(last, m.index)));
     const sp = document.createElement('span'); sp.className = 'kyf-amt'; sp.setAttribute('data-kyfw', '1'); sp.textContent = m[0];
     parts.push(sp); last = m.index + m[0].length;
-    if(m[0].length === 0) KYF_DISC_RE_G.lastIndex++;
+    if(m[0].length === 0) reG.lastIndex++;
   }
   if(!parts.length) { if(cell && KYF_DISC_RE_NUM.test(tt)) p.classList.add('kyf-amt'); return; }
   if(last < t.length) parts.push(document.createTextNode(t.slice(last)));
@@ -67336,6 +67342,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.102 · 18/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Mode discret : l'ATH (format compact « 170,59 K € », « M € », « Md € ») est maintenant flouté, et sur la page Heatmap les pourcentages (performances, distribution, meilleures et pires séances, infobulles du calendrier) sont floutés eux aussi.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.101 · 18/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Paramètres : la pastille NOUVEAU de l'onglet Immobilier n'est plus coupée (placée à côté du libellé). Guide mis à jour pour toute la partie immobilière : menu ⋯, rendement net, historique du loyer, libellés du bandeau Revenus locatifs, réglage crédits déduits, durée des crédits en mois, modification des prêts et renégociations.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.100 · 18/10/2026</div>
