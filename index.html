@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_6_90.html
+  @file        : KYF_SHARE_beta_2_8_6_101.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.6.90
+  @version     : Beta 2.8.6.101
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6652,7 +6652,7 @@ html:not(.kyf-kbd) .icon-btn:focus-visible,html:not(.kyf-kbd) button:focus-visib
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.6.90</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.6.101</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -7775,8 +7775,8 @@ html:not(.kyf-kbd) .icon-btn:focus-visible,html:not(.kyf-kbd) button:focus-visib
     <!-- KPIs -->
     <div class="kpi-row" id="kpi-row-revenus" data-kpi-row="revenus" style="margin-bottom:28px">
       <div class="kpi" draggable="true" data-kpi-id="rev-brut" style="--band:#06b6d4"><div class="kpi-lbl">REVENUS BRUTS / AN</div><div class="kpi-val" id="revKpiBrut">- €</div><div class="kpi-sub" id="revKpiBrutSub">Loyers bruts</div></div>
-      <div class="kpi g" draggable="true" data-kpi-id="rev-net"><div class="kpi-lbl">REVENUS NETS / AN</div><div class="kpi-val" id="revKpiNet">- €</div><div class="kpi-sub">Après charges</div></div>
-      <div class="kpi" draggable="true" data-kpi-id="rev-cf" style="--band:#9b6dff"><div class="kpi-lbl">CASH-FLOW / MOIS</div><div class="kpi-val" id="revKpiCF">- €</div><div class="kpi-sub">Net - mensualités</div></div>
+      <div class="kpi g" draggable="true" data-kpi-id="rev-net" title="Loyers annuels (vacance déduite) moins toutes les charges saisies : charges non récupérables, taxe foncière, assurance PNO, frais d'agence et travaux. Avant mensualités de crédit et avant impôt."><div class="kpi-lbl">REVENUS NETS / AN</div><div class="kpi-val" id="revKpiNet">- €</div><div class="kpi-sub">Après charges et taxe foncière</div></div>
+      <div class="kpi" draggable="true" data-kpi-id="rev-cf" style="--band:#9b6dff" title="Revenus nets mensuels moins les mensualités de crédit (assurance emprunteur incluse), avant impôt. Le cash-flow net après impôt estimé figure sur chaque bien."><div class="kpi-lbl">CASH-FLOW AVANT IMPÔT / MOIS</div><div class="kpi-val" id="revKpiCF">- €</div><div class="kpi-sub">Revenus nets - mensualités</div></div>
       <div class="kpi" draggable="true" data-kpi-id="rev-rend" style="--band:var(--accent)"><div class="kpi-lbl">RENDEMENT NET MOY.</div><div class="kpi-val" id="revKpiRend">- %</div><div class="kpi-sub">Tous biens locatifs</div></div>
     </div>
 
@@ -16946,6 +16946,16 @@ function kyfFirstTrackingYear(){
 // Ne remplace pas le calcul existant (totalGlobal), juste un second mode
 // d'affichage de la même donnée mémorisée dans window._kLiveNominal.
 let _kLiveMode = localStorage.getItem('kyf-klive-mode') || 'nominal';
+// Réglage Paramètres > Immobilier : valorisation live crédits déduits (actif moins passif). Par défaut : désactivé (comportement historique, immobilier à sa valeur brute).
+// N'agit que sur le KPI Valorisation live et sa composition : allocation, historique et séances restent à la valeur brute, pour ne créer aucun faux écart.
+const KYF_IMMO_LIVE_NET_KEY = 'kyf-immo-live-net';
+function kyfImmoLiveNet(){ try{ return localStorage.getItem(KYF_IMMO_LIVE_NET_KEY) === '1'; }catch(e){ return false; } }
+function kyfImmoLiveNetToggle(){
+  const on = !!(document.getElementById('kyfImmoLiveNetChk') || {}).checked;
+  try{ localStorage.setItem(KYF_IMMO_LIVE_NET_KEY, on ? '1' : '0'); }catch(e){}
+  kyfRenderKLive();
+}
+function kyfImmoLiveNetSync(){ const c = document.getElementById('kyfImmoLiveNetChk'); if(c) c.checked = kyfImmoLiveNet(); }
 // ── TWR (Time-Weighted Return), ETF/Actions uniquement ─────────────────
 // Isole la vraie performance de marché de l'effet des versements/retraits
 // (contrairement à GAIN NET POSITIONS, un simple gain/investi qui mélange
@@ -17320,8 +17330,9 @@ function cryptoFiscCalc(){
 }
 
 function kyfRenderKLive(){
-  const nominal = window._kLiveNominal;
-  if(nominal === undefined) return;
+  if(window._kLiveNominal === undefined) return;
+  const dette = kyfImmoLiveNet() ? (Number(window._kLiveImmoDette) || 0) : 0;
+  const nominal = window._kLiveNominal - dette;
   const valEl = document.getElementById('kLive');
   const subEl = document.getElementById('kLiveSub');
   const lblEl = document.querySelector('#kpi-kLive .kpi-lbl');
@@ -17339,14 +17350,16 @@ function kyfRenderKLive(){
   } else {
     if(lblEl) lblEl.textContent = 'VALORISATION LIVE';
     if(valEl) valEl.textContent = fmt(nominal,2)+' €';
-    if(subEl) subEl.textContent = 'Valorisation live';
+    if(subEl) subEl.textContent = dette > 0.005 ? 'Crédits immobiliers déduits (' + fmt(dette,0) + ' €)' : 'Valorisation live';
   }
 }
 // Clic droit sur « Valorisation live » : de quoi se compose le total affiché
 function kyfKLiveBreakdown(ev){
   ev.preventDefault();
   const old = document.getElementById('kyfKLivePop'); if(old){ old.remove(); document.body.classList.remove('kyf-kpop-open'); }
-  const parts = (window._kLiveParts || []).filter(x => x.v > 0.005).sort((x, y) => y.v - x.v);
+  // Réglage « crédits déduits » : une ligne négative, lue au moment de l'ouverture (le réglage peut changer sans recalcul du tableau de bord)
+  const _dette = kyfImmoLiveNet() ? (Number(window._kLiveImmoDette) || 0) : 0;
+  const parts = (window._kLiveParts || []).concat(_dette > 0.005 ? [{ l:'Crédits immobiliers', v:-_dette }] : []).filter(x => Math.abs(x.v) > 0.005).sort((x, y) => y.v - x.v);
   const tot = parts.reduce((t, x) => t + x.v, 0);
   const rows = parts.length ? parts.map(x => '<div style="display:flex;justify-content:space-between;gap:18px;padding:3px 0"><span style="color:var(--text2)">' + x.l + ' <span style="color:var(--text3);font-size:10px">' + fmt(tot > 0 ? x.v / tot * 100 : 0, 1) + ' %</span></span><span style="color:var(--text);font-weight:600;font-variant-numeric:tabular-nums">' + fmt(x.v, 2) + ' €</span></div>').join('') : '<div style="color:var(--text3)">Aucun actif à additionner.</div>';
   const pop = document.createElement('div'); pop.id = 'kyfKLivePop';
@@ -20799,6 +20812,7 @@ function renderKPIs(lp){
   const gainUnknown = ETF.some(e => (parseFloat(e.qty) || 0) > 0) && !(investiGainGlobal > 0);
   const kv=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
   window._kLiveNominal = totalGlobal; // mémorisé pour le bouton bascule nominal/réel
+  window._kLiveImmoDette = (typeof getImmoNetTotal === 'function') ? Math.max(0, immoGlobal - getImmoNetTotal()) : 0;   // crédits immobiliers en cours, déduits seulement si le réglage est actif
   window._kLiveParts = [
     { l:'ETF & actions', v:total }, { l:'Cryptos', v:cryptoTotal - cryptoStables }, { l:'Stablecoins', v:cryptoStables }, { l:'Assurance vie / PER', v:avGlobal },
     { l:'Immobilier', v:immoGlobal }, { l:'Crowdfunding', v:kyfCrowdfundingTotal() }, { l:'Livrets', v:kyfLivretsTotal() }, { l:'Or & métaux', v:kyfOrTotal() }
@@ -21867,9 +21881,13 @@ function dcaAddRenderList(highlightId){
 }
 async function dcaAddDelete(id){
   const p = _dcaPlans.find(x => x.id === id); if(!p) return;
-  if(!(await kyfAsk('Supprimer le plan "' + p.name + '" ?'))) return;
+  if(!(await kyfAsk('Supprimer le plan "' + p.name + '" ?', { corbeille:true }))) return;
+  const idx = _dcaPlans.findIndex(x => x.id === id);
   _dcaPlans = _dcaPlans.filter(x => x.id !== id);
-  dcaSave(); renderDCA(); dcaAddRenderList(); dcaAddFootSync();
+  dcaSave();
+  const corbId = kyfCorbeillePush('dcaPlans', p.id, idx < 0 ? 0 : idx, p, 'Plan DCA');
+  renderDCA(); dcaAddRenderList(); dcaAddFootSync();
+  kyfShowUndoToast('Plan "' + (p.name || '') + '" supprimé', () => { kyfCorbeilleRestore(corbId); try{ dcaAddRenderList(); dcaAddFootSync(); }catch(_){} }, corbId);
 }
 document.addEventListener('DOMContentLoaded', () => {
   const m = document.getElementById('dcaAddModal'); if(!m) return;
@@ -41014,6 +41032,27 @@ function kyfCorbeilleGetStore(storeKey){
       try{ renderCashKPI(); }catch(_){}
       try{ kyfCashMvtRefresh(); }catch(_){}
     } },
+    avDCALoad: { load: avDCALoad, save: avDCASave, render: function(){ try{ avDCARenderList(); }catch(_){} try{ renderDCA(); }catch(_){} }, label: 'Versement programmé' },
+    cryptoStable: { label: 'Stablecoin', restore: function(entry){
+      cryptoState.stables = cryptoState.stables || [];
+      cryptoState.stables.splice(Math.min(entry.idx, cryptoState.stables.length), 0, entry.item);
+      cryptoSave(); renderCryptoAll();
+    } },
+    creditReneg: { label: 'Renégociation de crédit', restore: function(entry){
+      const it = entry.item || {}, d = creditLoad(), c = d.find(x => x.id === it.cid); if(!c || !it.reneg) return;
+      c.reneg = Array.isArray(c.reneg) ? c.reneg : [];
+      c.reneg.splice(Math.min(entry.idx, c.reneg.length), 0, it.reneg);
+      creditSave(d); renderCredits();
+    } },
+    kyfView: { label: 'Vue', restore: function(entry){
+      const b = entry.item || {}; if(!b.view) return;
+      const st = kyfViewsLoad();
+      if(!st.v.some(x => x.id === b.view.id)) st.v.splice(Math.min(entry.idx, st.v.length), 0, b.view);
+      kyfViewsStore(st);
+      if(b.sc){ const map = kyfScLoad(); map['act:view-' + b.view.id] = b.sc; kyfScStore(map); }
+      if(b.rits && b.rits.length){ const rs = kyfRitLoad(); rs.r = rs.r.concat(b.rits); kyfRitStore(rs); }
+      try{ kyfViewsRender(); kyfRitRender(); if(document.getElementById('kyfScList')) kyfScRender(); }catch(_){}
+    } },
     planned: { restore: function(entry){
       const insertAt = Math.min(entry.idx, _planned.length);
       _planned.splice(insertAt, 0, entry.item);
@@ -41122,7 +41161,11 @@ function kyfCorbeilleModuleLabel(storeKey){
     avPosition:   'AV/PER',
     cryptoPosition: 'Crypto',
     planned:      'Investissement programmé',
-    cashMvt:      'Versements PEA/CTO'
+    cashMvt:      'Versements PEA/CTO',
+    avDCALoad:    'AV/PER (versement programmé)',
+    cryptoStable: 'Crypto',
+    creditReneg:  'Crédit',
+    kyfView:      'Vue'
   };
   return modules[storeKey] || '';
 }
@@ -41133,6 +41176,8 @@ function kyfCorbeilleModuleLabel(storeKey){
 function kyfCorbeilleDisplayItem(storeKey, item){
   if(storeKey === 'etfPosition' || storeKey === 'cryptoPosition') return item?.pos;
   if(storeKey === 'avPosition') return item?.pos;
+  if(storeKey === 'creditReneg' && item) return { nom: 'Renégociation', date: item.reneg && item.reneg.date };
+  if(storeKey === 'kyfView' && item && item.view) return { nom: item.view.n };
   if(storeKey === 'cashMvt' && item) return { nom: item.env + ' · ' + (item.sens === 'in' ? 'Versement' : 'Retrait'), montant: item.montant, date: item.date };
   return item;
 }
@@ -43159,7 +43204,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.6.90\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.6.101\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -47084,6 +47129,7 @@ function showEdTab(name,btn){
   const t=document.getElementById('edTab-'+name);
   if(t){ t.style.display='block'; t.classList.remove('tab-visible'); void t.offsetWidth; t.classList.add('tab-visible'); }
   if(name==='kpi'){ setTimeout(()=>{ try{renderEdKpiOrder();}catch(e){} },0); }
+  if(name==='immo'){ try{ kyfImmoLiveNetSync(); kyfNewBadgeSeen('immo'); }catch(e){} }
   if(name==='tableaux'){ kyfDensitySync(); kyfViewsRender(); kyfRitRender(); kyfDcRender(); kyfWgRender(); }
   if(name==='raccourcis'){ _kyfScRec = null; kyfScMsg('', false); kyfScRender(); }
   if(btn) btn.classList.add('active');
@@ -47127,7 +47173,7 @@ function kyfEdReturnBack(kind){
 
 
 // ══ STUDIO PARAMÈTRES : recherche de réglages (Ctrl K) et aperçu en direct ══
-const ED_TAB_NAMES = { couleurs:'Apparence', typo:'Police', tableaux:'Tableaux et cartes', charts:'Graphiques', donuts:'Donuts', themes:'Tooltip et thèmes', kpi:'Cartes KPI', affichage:'Affichage', api:'Google et avancé', raccourcis:'Raccourcis' };
+const ED_TAB_NAMES = { couleurs:'Apparence', immo:'Immobilier', typo:'Police', tableaux:'Tableaux et cartes', charts:'Graphiques', donuts:'Donuts', themes:'Tooltip et thèmes', kpi:'Cartes KPI', affichage:'Affichage', api:'Google et avancé', raccourcis:'Raccourcis' };
 let _edIndex = null, _edResults = [], _edAct = -1;
 const edNorm = t => String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 function edBuildIndex(){
@@ -49072,15 +49118,13 @@ function openEditStable(idx){
 }
 async function deleteStable(idx){
   const st = (cryptoState.stables||[])[idx]; if(!st) return;
-  if(!(await kyfAsk('Supprimer le stablecoin ' + st.nom + ' ? Cette action est irréversible.'))) return;
+  if(!(await kyfAsk('Supprimer le stablecoin ' + st.nom + ' ?', { corbeille:true }))) return;
   const copy = JSON.parse(JSON.stringify(st));
   cryptoState.stables.splice(idx, 1);
   cryptoSave();
+  const corbId = kyfCorbeillePush('cryptoStable', copy.id || copy.nom, idx, copy, 'Stablecoin');
   renderCryptoAll();
-  kyfShowUndoToast(st.nom + ' supprimé', () => {
-    cryptoState.stables.splice(Math.min(idx, cryptoState.stables.length), 0, copy);
-    cryptoSave(); renderCryptoAll();
-  });
+  kyfShowUndoToast(st.nom + ' supprimé', () => kyfCorbeilleRestore(corbId), corbId);
 }
 
 // ── Supprimer une position crypto ────────────────────────────────
@@ -58163,7 +58207,7 @@ const GUIDE_PAGES = [
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
         <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg> Champs de la fiche</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9">Nom, valeur, surface, DPE, date d'achat, loyer mensuel (si locatif), lien Google Maps, notes libres. Le <strong style="color:var(--text)">rendement brut</strong> se calcule automatiquement dès qu'un loyer et une valeur sont renseignés.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Nom, valeur, surface, DPE, date d'achat, loyer mensuel (si locatif), lien Google Maps, notes libres. Le <strong style="color:var(--text)">rendement brut</strong> se calcule automatiquement dès qu'un loyer et une valeur sont renseignés. Le <strong style="color:var(--text)">rendement net</strong> s'affiche à côté : c'est celui de Revenus locatifs (loyers après vacance, moins charges et taxe foncière, avant impôt). Sans revenu saisi pour le bien, il reste « - » plutôt qu'un chiffre inventé.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
         <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4d9fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> Une image pour votre bien</div>
@@ -58175,11 +58219,11 @@ const GUIDE_PAGES = [
       </div>
       <div style="padding:12px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;margin-bottom:14px">
         <div style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:5px">La carte d'un bien</div>
-        <div style="font-size:12px;color:var(--text3);line-height:1.7">Badge DPE, grille Superficie/Loyer/Rendement, panneau financier (valeur actuelle, patrimoine net, capital restant dû), et un anneau de progression si un crédit est lié.</div>
+        <div style="font-size:12px;color:var(--text3);line-height:1.7">Badge DPE, grille Superficie/Loyer/Rendement brut et net, panneau financier (valeur actuelle, patrimoine net, capital restant dû), et un anneau de progression si un crédit est lié. En haut à droite, le menu <strong style="color:var(--text)">⋯</strong> réunit Modifier, Vendre ce bien et Supprimer (comme partout dans la partie immobilière : SCI, SCPI, Crowdfunding, Revenus locatifs, Crédits).</div>
       </div>
       <div style="padding:14px 16px;background:rgba(240,180,41,0.05);border:1px solid rgba(240,180,41,0.25);border-radius:10px">
         <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3.24H4a1 1 0 0 0-1 1v5.59a2 2 0 0 0 .59 1.41l9.58 9.59a2 2 0 0 0 2.83 0l4.59-4.59a2 2 0 0 0 0-2.83z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg> Bien vendu ?</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9">L'icône rouge présente sur chaque bien actif ouvre un formulaire de vente : date, prix de vente, frais d'agence, autres frais, prix et frais d'acquisition d'origine, travaux éventuels, capital restant dû et indemnités de remboursement anticipé. Un régime fiscal est à choisir parmi Résidence principale, Résidence secondaire, Locatif en détention directe, SCI à l'IR, SCI à l'IS, Autre société ou Non déterminé.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">L'action <strong style="color:var(--text)">Vendre ce bien</strong> du menu ⋯ de chaque bien actif ouvre un formulaire de vente : date, prix de vente, frais d'agence, autres frais, prix et frais d'acquisition d'origine, travaux éventuels, capital restant dû et indemnités de remboursement anticipé. Un régime fiscal est à choisir parmi Résidence principale, Résidence secondaire, Locatif en détention directe, SCI à l'IR, SCI à l'IS, Autre société ou Non déterminé.</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:8px">Chaque régime applique ses propres règles quand elles sont connues avec certitude (exonération totale pour une résidence principale, abattements liés à la durée de détention pour un bien secondaire ou locatif). Quand KYF ne dispose pas d'assez d'informations pour un calcul fiable, comme pour une SCI, le résultat affiche <strong style="color:var(--text)">Estimation fiscale</strong> plutôt qu'un montant présenté comme définitif. Une note rappelle systématiquement que ce n'est pas un avis de notaire ou d'expert-comptable.</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:8px">Une fois la vente enregistrée, le bien passe en statut <strong style="color:var(--text)">Vendu</strong> avec un filigrane sur sa photo, façon panneau d'agence. Il n'est jamais supprimé : il reste consultable dans une section dédiée d'Immobilier ainsi que dans Historique &amp; Snapshots, mais il sort du calcul du patrimoine actuel.</div>
       </div>
@@ -58188,6 +58232,9 @@ const GUIDE_PAGES = [
         <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Revenus locatifs : travaux et intérêts d'emprunt</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9">Le popup Revenus locatifs comprend deux champs en plus des loyers : <strong style="color:var(--text)">TRAVAUX</strong> (case 224 de la déclaration 2044) et <strong style="color:var(--text)">INTÉRÊTS D'EMPRUNT</strong> (case 250), avec une estimation depuis le crédit lié. Les numéros de case sont affichés pour l'année de formulaire en vigueur (aujourd'hui la 2044, revenus 2025) ; KYF vous invite à les contrôler quand le formulaire suivant est sorti.</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">KYF affiche un <strong style="color:var(--text)">résultat foncier indicatif</strong> : loyers moins charges moins intérêts. Les intérêts ne baissent pas le cash-flow, car la mensualité du crédit les contient déjà.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Loyer qui change :</strong> après une revalorisation, saisissez le nouveau loyer et, dans <strong style="color:var(--text)">Loyer à partir du</strong>, la date d'effet. Les loyers précédents restent dans l'historique (pastille sur la carte) et le loyer en vigueur est celui d'aujourd'hui. Sans date, le changement compte à partir d'aujourd'hui ; une date future est refusée.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Les chiffres du bandeau :</strong> « Revenus nets / an » = loyers après vacance moins charges, taxe foncière, assurance PNO, agence et travaux, avant mensualités et impôt. « Cash-flow avant impôt / mois » = revenus nets moins mensualités de crédit. Sur la carte du bien, « Cash-flow net » retire en plus l'impôt estimé selon le régime et la TMI (en LMNP réel, l'estimation fiscale étant indisponible, la carte indique « avant impôt »).</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Valorisation live crédits déduits :</strong> dans Paramètres, onglet Immobilier, la case « Déduire les crédits immobiliers » fait compter vos biens crédits déduits (valeur moins capital restant dû) dans le KPI Valorisation live du tableau de bord. Désactivée par défaut ; l'allocation, l'historique et les séances restent à la valeur brute.</div>
       </div>
 `
   },
@@ -58308,12 +58355,12 @@ const GUIDE_PAGES = [
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
         <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M3 10h18"/><path d="M5 6l7-3 7 3"/><path d="M4 10v11"/><path d="M20 10v11"/><path d="M8 14v3"/><path d="M12 14v3"/><path d="M16 14v3"/></svg> Saisie de base</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9">Bien associé, banque, prix d'achat, apport, taux, assurance emprunteur (%), durée et date de début. KYF calcule seul la mensualité, l'assurance mensuelle, la mensualité totale et le capital restant dû à date.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Bien associé, banque, prix d'achat, apport, taux, assurance emprunteur (%), durée (en années ou en mois : choisissez l'unité à côté du champ, 214 mois n'est plus lu 214 ans) et date de début. Le menu <strong style="color:var(--text)">⋯</strong> de la carte permet de Modifier le prêt ou de le Supprimer. KYF calcule seul la mensualité, l'assurance mensuelle, la mensualité totale et le capital restant dû à date.</div>
       </div>
       <div style="font-size:12px;color:var(--text3);line-height:1.7">Ce crédit peut ensuite être relié à un flux récurrent dans le Calendrier Financier, pour préremplir automatiquement le montant de la mensualité chaque mois.</div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Renégociation d'un prêt</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9">Un crédit renégocié garde ses données d'origine. Le bouton <strong style="color:var(--text)">Renégocier</strong> de la carte du prêt demande la date, le nouveau taux, la durée restante, et facultativement l'assurance et les frais. Plusieurs renégociations sont possibles.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Un crédit renégocié garde ses données d'origine. Le bouton <strong style="color:var(--text)">Renégocier</strong> de la carte du prêt demande la date, le nouveau taux, la durée restante, et facultativement l'assurance et les frais. Plusieurs renégociations sont possibles. Chaque renégociation a son menu ⋯ : la dernière peut être modifiée ou supprimée, les précédentes seulement supprimées.</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:8px">À la date choisie, KYF repart du capital restant dû et applique le nouveau taux : mensualité, capital restant dû, fin prévue et totaux suivent la période en cours. Si vous avez l'échéancier de la banque, vous pouvez saisir <strong style="color:var(--text)">le capital restant dû</strong> et <strong style="color:var(--text)">la mensualité hors assurance</strong> à la place de la durée : KYF repart exactement de ces chiffres et en déduit la durée restante, sans rien deviner. Les deux sont facultatifs. Les frais sont notés pour mémoire et ne changent aucun calcul. Un prêt sans renégociation garde exactement ses chiffres.</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:8px">Le TRI d'un prêt renégocié est affiché « indisponible » plutôt que faussé.</div>
       </div>
@@ -60711,7 +60758,7 @@ function kyfDateIsFuture(y, m, d){
 const KYF_DATE_FIELD_LABELS = { 'etfDateAchat': 'Date d\'achat ETF', 'op-date': 'Nouvelle opération', 'transInputDate': 'Ajout manuel',
   'dcaCoursDate': 'Cours DCA', 'livJournalDate': 'Journal des versements', 'peaFisc_dateOuverture': 'Ouverture PEA',
   'divDate': 'Dividende', 'livDateEffet': 'Date d\'effet', 'livDCADebut': 'Début DCA', 'avDCADebut': 'Début DCA', 'dcaPlanDebut': 'Début DCA',
-  'scpiDateAchat': 'Achat SCPI', 'creditDateDebut': 'Début crédit', 'immoDateAchat': 'Achat du bien',
+  'scpiDateAchat': 'Achat SCPI', 'creditDateDebut': 'Début crédit', 'revLoyerDate': 'Loyer à partir du', 'immoDateAchat': 'Achat du bien',
   'venteDate': 'Vente du bien', 'venteDateAcquisition': 'Acquisition du bien', 'avDateOuverture': 'Ouverture du contrat',
   'cfDateSouscription': 'Souscription crowdfunding', 'cfDateEcheance': 'Échéance crowdfunding',
   'orDate': 'Achat or', 'venteOrDate': 'Vente or' };
@@ -61669,12 +61716,15 @@ async function kyfViewsAction(act, id){
     view.n = nn.trim(); kyfViewsStore(st); kyfViewsRender(); kyfRitRender();
     if(document.getElementById('kyfScList')) kyfScRender();
   } else if(act === 'delete'){
-    if(!(await kyfAsk('Supprimer la vue « ' + view.n + ' » ? La disposition actuelle reste inchangée.'))) return;
+    if(!(await kyfAsk('Supprimer la vue « ' + view.n + ' » ? La disposition actuelle reste inchangée.', { corbeille:true }))) return;
+    const vidx = st.v.findIndex(x => x.id === id);
+    const back = { view: JSON.parse(JSON.stringify(view)), sc: '', rits: [] };
     st.v = st.v.filter(x => x.id !== id); if(st.a === id) st.a = '';
     kyfViewsStore(st);
-    const map = kyfScLoad(); if('act:view-' + id in map){ map['act:view-' + id] = ''; kyfScStore(map); }
-    { const rs = kyfRitLoad(); rs.r = rs.r.filter(x => x.v !== id); kyfRitStore(rs); }
-    kyfViewsMsg('Vue supprimée.', false); kyfViewsRender(); kyfRitRender();
+    const map = kyfScLoad(); if('act:view-' + id in map){ back.sc = map['act:view-' + id]; map['act:view-' + id] = ''; kyfScStore(map); }
+    { const rs = kyfRitLoad(); back.rits = rs.r.filter(x => x.v === id); rs.r = rs.r.filter(x => x.v !== id); kyfRitStore(rs); }
+    kyfCorbeillePush('kyfView', id, vidx < 0 ? 0 : vidx, back, 'Vue');
+    kyfViewsMsg('Vue supprimée (restaurable depuis la corbeille).', false); kyfViewsRender(); kyfRitRender();
     if(document.getElementById('kyfScList')) kyfScRender();
   }
 }
@@ -65097,8 +65147,13 @@ document.addEventListener('DOMContentLoaded', function(){
 // Pour annoncer une nouveauté : AJOUTER EN TÊTE de KYF_NOUVEAUTES.annonces une annonce { id, date (AAAA-MM-JJ), items }. Pas d'annonce = rien d'affiché, quel que soit le nombre de pushes.
 // Chaque utilisateur voit une seule fois les annonces qu'il n'a pas encore vues (les plus récentes d'abord, 3 au plus, 30 jours au plus). Un nouvel utilisateur (écran de bienvenue pas encore vu) ne voit rien : tout est nouveau pour lui.
 const KYF_NOUVEAUTES = {
-  badge: 'arb',   // clé du badge « Nouveau » (span .kyf-new-badge data-new="...") ; vide = aucun badge
+  badge: ['arb', 'immo'],   // clés des badges (une ou plusieurs ; tableau) ; clé du badge « Nouveau » (span .kyf-new-badge data-new="...") ; vide = aucun badge
   annonces: [
+    { id: 'a-2026-10-18', date: '2026-10-18', items: [
+      { titre: 'Immobilier : valorisation crédits déduits (réglage)', version: '2.8.6.100', texte: 'Nouveau dans Paramètres > Immobilier : vous pouvez choisir que le KPI « Valorisation live » du tableau de bord compte vos biens crédits déduits (valeur moins capital restant dû). Désactivé par défaut : rien ne change tant que vous ne l’activez pas.' },
+      { titre: 'Immobilier : rendement net et historique du loyer', version: '2.8.6.99', texte: 'Mes biens affiche maintenant le rendement net à côté du brut. Dans Revenus locatifs, le champ « Loyer à partir du » garde l’historique de vos revalorisations (pastille sur la carte), et les libellés des bandeaux précisent ce qui est compté (cash-flow avant impôt, taxe foncière incluse).' },
+      { titre: 'Immobilier : crédits en mois et menu d’actions', version: '2.8.6.98', texte: 'La durée d’un crédit se saisit en mois ou en années, un prêt (et sa renégociation) se modifie depuis son menu ⋯. Modifier, vendre et supprimer sont rangés dans ce même menu ⋯ sur toute la partie immobilier.' }
+    ] },
     { id: 'a-2026-10-16', date: '2026-10-16', items: [
       { titre: 'Trier les ETF et les cryptos par colonne', version: '2.8.6.37', texte: 'Cliquez sur l’en-tête d’une colonne (nom, valeur, gain, variation du jour...) pour trier vos ETF ou vos cryptos. Une flèche indique le sens du tri : un deuxième clic l’inverse, un troisième revient à l’ordre d’origine.' },
       { titre: 'Plus-value du PEA et du PEA-PME expliquée', version: '2.8.6.45', texte: 'Sur la carte fiscale, la plus-value porte son vrai nom : « plus-value fiscale », c’est la valeur du plan moins le total versé. Dessous, KYF affiche celle des lignes du tableau Portefeuille et l’écart entre les deux (espèces, gains déjà arbitrés), avec un lien vers le guide.' }
@@ -65185,7 +65240,7 @@ function kyfNewBadgesRefresh(){
     document.querySelectorAll('.kyf-new-badge').forEach(el => {
       const k = el.getAttribute('data-new');
       let vu = false; try{ vu = localStorage.getItem(kyfNewBadgeKey_(k)) === '1'; }catch(e){}
-      el.style.display = (k && k === KYF_NOUVEAUTES.badge && !vu) ? 'inline-block' : 'none';
+      el.style.display = (k && [].concat(KYF_NOUVEAUTES.badge || []).indexOf(k) > -1 && !vu) ? 'inline-block' : 'none';
     });
   }catch(e){}
 }
@@ -65230,7 +65285,7 @@ document.addEventListener('DOMContentLoaded', function(){
   try{
     if(!localStorage.getItem(WELCOME_KEY)){   // nouvel utilisateur : rien à annoncer, tout est nouveau
       if(KYF_NOUVEAUTES.annonces.length) localStorage.setItem(KYF_NEW_SEEN_KEY, KYF_NOUVEAUTES.annonces[0].id);
-      if(KYF_NOUVEAUTES.badge) localStorage.setItem(kyfNewBadgeKey_(KYF_NOUVEAUTES.badge), '1');
+      [].concat(KYF_NOUVEAUTES.badge || []).forEach(function(k){ localStorage.setItem(kyfNewBadgeKey_(k), '1'); });
     }
   }catch(e){}
   kyfNewBadgesRefresh();
@@ -65764,7 +65819,7 @@ function kyfCashMvtReverse_(m){
   if(m.verseAjuste) kyfPeaTotalVerseSet(kyfPeaTotalVerse() - m.montant);
 }
 async function kyfCashMvtDelete(id){
-  if(!(await kyfAsk('Supprimer ce mouvement ? Les espèces (et le total versé s\'il avait été ajusté) seront remis comme avant.'))) return;
+  if(!(await kyfAsk('Supprimer ce mouvement ? Les espèces (et le total versé s\'il avait été ajusté) seront remis comme avant.', { corbeille:true }))) return;
   kyfCashMvtUndo(id);
 }
 function kyfCashMvtUndo(id){
@@ -66143,6 +66198,7 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
     <button class="ed-tab kyf-ul" onclick="showEdTab('donuts',this)" title="Donuts"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg><span class="ed-tab-lbl">Donuts</span></button>
     <button class="ed-tab kyf-ul" onclick="showEdTab('themes',this)" title="Tooltip et thèmes"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span class="ed-tab-lbl">Tooltip et thèmes</span></button>
     <button class="ed-tab kyf-ul" onclick="showEdTab('kpi',this)" title="KPI"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg><span class="ed-tab-lbl">Cartes KPI</span></button>
+    <button class="ed-tab kyf-ul" onclick="showEdTab('immo',this)" title="Immobilier" style="position:relative"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><polyline points="9 21 9 12 15 12 15 21"/></svg><span class="ed-tab-lbl">Immobilier</span><span class="kyf-new-badge" data-new="immo" style="display:none;margin-left:8px;flex-shrink:0;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;pointer-events:none">NOUVEAU</span></button>
     <button class="ed-tab kyf-ul" onclick="showEdTab('affichage',this)" title="Affichage des menus"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg><span class="ed-tab-lbl">Affichage</span></button>
     <button class="ed-tab kyf-ul" onclick="showEdTab('api',this)" title="Options avancées"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><span class="ed-tab-lbl">Google et avancé</span></button>
     <button class="ed-tab kyf-ul" onclick="showEdTab('raccourcis',this)" title="Raccourcis clavier"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="10" x2="6.01" y2="10"/><line x1="10" y1="10" x2="10.01" y2="10"/><line x1="14" y1="10" x2="14.01" y2="10"/><line x1="18" y1="10" x2="18.01" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/></svg><span class="ed-tab-lbl">Raccourcis</span></button>
@@ -66524,6 +66580,21 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
         oninput="setKpiBandHeight(this.value);document.getElementById('v-kpiBand').textContent=this.value+'px'">
       <div class="ed-section" style="margin-top:14px">ORDRE DES KPI</div>
       <p style="font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);margin:0 0 6px;line-height:1.7">Glissez directement les KPIs sur le dashboard pour les réorganiser.<br>L'ordre est sauvegardé automatiquement par onglet.</p>
+    </div>
+
+    <!-- ── ONGLET IMMOBILIER ── -->
+    <div id="edTab-immo" class="ed-tab-content" style="display:none">
+      <div class="ed-section">VALORISATION LIVE</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:8px">
+        <div>
+          <div class="ed-lbl" style="font-weight:700">Déduire les crédits immobiliers</div>
+          <div style="font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);line-height:1.6;margin-top:3px;max-width:340px">Le KPI « Valorisation live » compte alors vos biens à leur valeur moins le capital restant dû de vos crédits (actif moins passif). Désactivé : biens à leur valeur brute, comme avant. L'allocation, l'historique et les séances ne changent pas.</div>
+        </div>
+        <label class="kyf-toggle" title="Valorisation live crédits déduits">
+          <input type="checkbox" id="kyfImmoLiveNetChk" onchange="kyfImmoLiveNetToggle()">
+          <span class="kyf-toggle-track"></span><span class="kyf-toggle-thumb"></span>
+        </label>
+      </div>
     </div>
 
     <!-- ── ONGLET AFFICHAGE (ex popup « Personnaliser l'affichage ») ── -->
@@ -67265,6 +67336,28 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.101 · 18/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Paramètres : la pastille NOUVEAU de l'onglet Immobilier n'est plus coupée (placée à côté du libellé). Guide mis à jour pour toute la partie immobilière : menu ⋯, rendement net, historique du loyer, libellés du bandeau Revenus locatifs, réglage crédits déduits, durée des crédits en mois, modification des prêts et renégociations.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.100 · 18/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Immobilier : nouveau réglage Paramètres > Immobilier « Déduire les crédits immobiliers » (pastille NOUVEAU) : le KPI Valorisation live compte les biens crédits déduits (valeur moins capital restant dû). Désactivé par défaut, rien ne change sans action. La composition (clic droit) affiche une ligne « Crédits immobiliers » négative. Allocation, historique et séances restent à la valeur brute. Annonce « Quoi de neuf » pour toute la partie immobilière.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.99 · 18/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Revenus locatifs : historique du loyer avec date d'effet. Nouveau champ « Loyer à partir du » : après une revalorisation, les anciens loyers restent dans l'historique (affiché sur la carte) et le loyer en vigueur est celui d'aujourd'hui. Les loyers déjà cumulés par les locataires suivent cet historique. Sans date, le changement compte à partir d'aujourd'hui ; une date future est refusée.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.98 · 18/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Immobilier : modifier, vendre et supprimer passent dans le menu d'actions ⋯ (comme les crédits, les contrats et les positions) sur Mes biens, SCI, SCPI, Crowdfunding, Revenus locatifs, biens vendus et crédits soldés.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.97 · 18/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Mes biens : le rendement net (celui de Revenus locatifs, après vacance, charges et taxe foncière, avant impôt) s'affiche à côté du rendement brut. Sans revenu saisi pour le bien, il reste indisponible (« - ») avec une infobulle.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.96 · 18/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Revenus locatifs : libellés clarifiés. Le bandeau affiche « Cash-flow avant impôt / mois » (revenus nets moins mensualités) et la carte du bien « Cash-flow net » (après impôt estimé), avec une infobulle qui détaille le calcul. « Revenus nets / an » précise qu'il inclut la taxe foncière. Aucun chiffre modifié.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.95 · 18/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crédit immobilier : le prêt et ses renégociations utilisent le menu « ⋯ » (Modifier / Supprimer) comme le reste de KYF, à la place du crayon et de la poubelle côte à côte.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.94 · 18/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crédit immobilier : un crayon à côté de la poubelle permet de modifier un prêt déjà enregistré (même formulaire, prérempli, renégociations conservées) et la dernière renégociation. Avant, il fallait supprimer et ressaisir.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.93 · 18/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crédit : le sélecteur ANS / MOIS reprend les couleurs des boutons KYF (doré actif, thème clair et sombre).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.92 · 18/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crédit immobilier : la durée du prêt (et la durée restante d'une renégociation) se saisit en ANS ou en MOIS, virgule acceptée (17,5). Les calculs se font au mois exact. Avant, 17,5 était lu 17 et une durée comme 214 mois ne pouvait pas se saisir.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.91 · 18/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Corbeille partout : le plan DCA du popup d'ajout, le versement programmé d'assurance vie, le stablecoin, la renégociation de crédit et les vues vont maintenant dans la corbeille et se restaurent. Leur confirmation le dit.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.90 · 18/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Statistiques d'usage : le panneau (détails) et l'invitation disent que le serveur ajoute l'heure d'envoi et que l'historique des jours d'activité (date et heure) est conservé 24 mois. La page de confidentialité est mise à jour de la même façon (et corrigée : un envoi par jour, pas par semaine).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.89 · 18/10/2026</div>
@@ -75404,11 +75497,12 @@ async function saveAVDCA(){
 }
 
 async function avDCADelete(id){
-  if(!(await kyfAsk('Supprimer ce versement programmé ?'))) return;
-  avDCASave(avDCALoad().filter(r=>r.id!==id));
+  if(!(await kyfAsk('Supprimer ce versement programmé ?', { corbeille:true }))) return;
   if(_avDcaEditId===id) avDcaSetEditMode(null);
-  avDCARenderList();
-  try{ if(typeof renderDCA === 'function') renderDCA(); }catch(e){}
+  kyfDeleteWithUndo(avDCALoad, avDCASave, id, function(){
+    avDCARenderList();
+    try{ if(typeof renderDCA === 'function') renderDCA(); }catch(e){}
+  }, 'Versement programmé');
 }
 
 function avDCAToggle(id){
@@ -76273,8 +76367,7 @@ function sciCard(s){
       <span style="font-family:'Inter',sans-serif;font-size:11px;color:var(--text2)">Quote-part <strong class="kyf-purple-text" style="color:#9b6dff;font-weight:700">${fmt(s.quotePart||0,0)} €</strong></span>
       <span style="font-family:'Inter',sans-serif;font-size:11px;color:var(--text2)">Parts <strong style="color:var(--text);font-weight:700">${parts}%</strong></span>
       <div style="display:flex;gap:2px;flex-shrink:0" onclick="event.stopPropagation()">
-        <button onclick="editSCI('${s.id}')" class="kyf-icon-btn" title="Modifier" style="background:none;border:none;color:var(--text3);cursor:pointer;display:flex;align-items:center;padding:2px">${KYF_ICONS.edit}</button>
-        <button onclick="deleteSCI('${s.id}')" class="kyf-icon-btn" title="Supprimer" style="background:none;border:none;color:var(--text3);cursor:pointer;display:flex;align-items:center;padding:2px;transition:color .15s" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text3)'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg></button>
+        ${kyfActionsMenuHtml_('sci-' + s.id, [{ label: 'Modifier', onclick: "editSCI('" + s.id + "')" }, { label: 'Supprimer', onclick: "deleteSCI('" + s.id + "')", danger: true }])}
       </div>
     </div>`;
   }
@@ -76320,8 +76413,7 @@ function sciCard(s){
       </div>
       <div style="display:flex;gap:2px;flex-shrink:0" onclick="event.stopPropagation()">
         <button onclick="toggleSciCard('${s.id}')" title="Réduire" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;border:none;background:none;color:var(--text3);cursor:pointer;transition:background .15s,color .15s" onmouseover="this.style.background=kyfChevronHoverBg();this.style.color='var(--accent)'" onmouseout="this.style.background='none';this.style.color='var(--text3)'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
-        <button onclick="editSCI('${s.id}')" class="kyf-icon-btn" title="Modifier" style="background:none;border:none;color:var(--text3);cursor:pointer;display:flex;align-items:center;padding:2px">${KYF_ICONS.edit}</button>
-        <button onclick="deleteSCI('${s.id}')" class="kyf-icon-btn" title="Supprimer" style="background:none;border:none;color:var(--text3);cursor:pointer;display:flex;align-items:center;padding:2px;transition:color .15s" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text3)'">${KYF_ICONS.trash}</button>
+        ${kyfActionsMenuHtml_('sci-' + s.id, [{ label: 'Modifier', onclick: "editSCI('" + s.id + "')" }, { label: 'Supprimer', onclick: "deleteSCI('" + s.id + "')", danger: true }])}
       </div>
     </div>
 
@@ -77481,8 +77573,7 @@ function renderSCPI(){
       const infos = [s.td ? 'TD ' + String(s.td).replace('.',',') + ' %' : '', _dj ? 'jouissance ' + _dj + ' mois' : '', s._avContratNom ? escapeHtml(s._avContratNom) : ''].filter(Boolean).join(' · ');
       const actions = s._fromAVContrat
         ? `<span style="font-size:9px;color:var(--text3)" title="Modifiable depuis le contrat">géré dans le contrat</span>`
-        : `<button onclick="event.stopPropagation();editSCPI('${s.id}')" class="kyf-icon-btn" style="display:flex;align-items:center;background:none;border:none;color:var(--text3);cursor:pointer;padding:2px" title="Modifier">${KYF_ICONS.edit}</button>
-           <button onclick="event.stopPropagation();deleteSCPI('${s.id}')" class="kyf-icon-btn" style="display:flex;align-items:center;background:none;border:none;color:var(--text3);cursor:pointer;padding:2px;transition:color .15s" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text3)'" title="Supprimer">${KYF_ICONS.trash}</button>`;
+        : `${kyfActionsMenuHtml_('scpi-' + s.id, [{ label: 'Modifier', onclick: "editSCPI('" + s.id + "')" }, { label: 'Supprimer', onclick: "deleteSCPI('" + s.id + "')", danger: true }])}`;
       detail = `<div onclick="event.stopPropagation()" style="cursor:default;margin-top:10px;padding-top:10px;border-top:1px solid rgba(128,128,128,0.20);display:flex;flex-direction:column;gap:8px;font-family:Inter,sans-serif">
         ${line(svgEuro, resume)}
         ${revente}
@@ -78200,8 +78291,8 @@ function cfSessionRemove(i){
   renderCrowdfunding();
 }
 
-async function deleteCrowdfunding(){
-  const id = document.getElementById('cfEditId').value;
+async function deleteCrowdfunding(idArg){
+  const id = (typeof idArg === 'string' && idArg) ? idArg : document.getElementById('cfEditId').value;
   if(!id) return;
   if(!(await kyfAsk('Supprimer ce projet ?', { corbeille:true }))) return;
   closeCrowdfunding();
@@ -78266,7 +78357,7 @@ function renderCrowdfunding(){
           ${prog}
           <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:2px">
             <span style="font-size:9px;color:var(--text3)">${p.dateSouscription ? 'souscrit le ' + escapeHtml(dateFr(p.dateSouscription)) : ''}</span>
-            <button onclick="event.stopPropagation();editCrowdfunding('${p.id}')" class="kyf-icon-btn" title="Modifier (ou supprimer)" style="display:flex;align-items:center;background:none;border:none;color:var(--text3);cursor:pointer;padding:2px">${KYF_ICONS.edit}</button>
+            ${kyfActionsMenuHtml_('cf-' + p.id, [{ label: 'Modifier', onclick: "editCrowdfunding('" + p.id + "')" }, { label: 'Supprimer', onclick: "deleteCrowdfunding('" + p.id + "')", danger: true }])}
           </div>
         </div>`;
       }
@@ -78359,6 +78450,30 @@ function revInteretsHint(){
 }
 const REVENU_KEY = 'kyf-immo-revenus';
 function revenuLoad(){ return JSON.parse(localStorage.getItem(REVENU_KEY)||'[]'); }
+// Historique des loyers : r.loyers = [{ date: 'AAAA-MM-JJ' ('' = depuis le début), loyer }] trié par date ; r.loyer = loyer en vigueur aujourd'hui.
+// Une date d'effet future est refusée (le loyer en vigueur est celui d'aujourd'hui, rien n'est anticipé).
+function revenuLoyerAt_(r, dateIso){
+  const h = Array.isArray(r && r.loyers) ? r.loyers : [];
+  if(!h.length) return Number(r && r.loyer) || 0;
+  let v = Number(h[0].loyer) || 0;
+  h.forEach(e => { if(!e.date || String(e.date) <= dateIso) v = Number(e.loyer) || 0; });
+  return v;
+}
+// Loyers cumulés depuis une date (mois entiers écoulés), au loyer en vigueur chaque mois ; avant la première entrée datée on garde le premier loyer connu
+function revenuLoyersCumulDepuis_(r, dateDebut){
+  const n = creditMoisEcoules(dateDebut), d0 = new Date(String(dateDebut).slice(0, 10) + 'T12:00:00');
+  if(!n || isNaN(d0.getTime())) return (Number(r && r.loyer) || 0) * n;
+  let tot = 0;
+  for(let k = 0; k < n; k++){ const d = new Date(d0.getFullYear(), d0.getMonth() + k, 15, 12); tot += revenuLoyerAt_(r, d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0')); }
+  return tot;
+}
+// Loyer modifié depuis la fiche du bien : même règle que le formulaire sans date (compte à partir d'aujourd'hui, l'ancien loyer reste dans l'historique)
+function revenuSetLoyerNow_(r, l){
+  const t = kyfParisNow(new Date(Date.now())).date;
+  const h = (Array.isArray(r.loyers) && r.loyers.length ? r.loyers : [{ date: '', loyer: Number(r.loyer) || 0 }]).filter(e => e.date !== t);
+  h.push({ date: t, loyer: l }); h.sort((a, b) => String(a.date).localeCompare(String(b.date)));
+  r.loyers = h; r.loyer = l;
+}
 function revenuSave(d){ localStorage.setItem(REVENU_KEY, JSON.stringify(d)); }
 // Valeurs dérivées d'un revenu locatif, recalculées à partir de ses saisies ET de l'état actuel du bien et du crédit
 // (rendement, TRI) : avant, elles étaient figées à l'enregistrement et restaient fausses si la valeur du bien ou le crédit changeait.
@@ -78509,6 +78624,7 @@ function openAddRevenu(){
   { const _s = document.getElementById('revBienId'); if(_s && _s.tagName === 'SELECT') _s.innerHTML = bienOptions.map(o => '<option value="' + escapeHtml(String(o.value)) + '">' + escapeHtml(o.label) + '</option>').join(''); }
   kyfCSelSetValue('revBienId', bienOptions[0].value, bienOptions[0].label);
   document.getElementById('revEditId').value = '';
+  kyfDateSetValue('revLoyerDate', '', 'JJ/MM/AAAA');
   const revTitreEl = document.getElementById('revTitre'); if(revTitreEl) revTitreEl.value = '';
   ['revLoyer','revVacance','revCharges','revTaxe','revPNO','revAgence','revTravaux','revInterets'].forEach(id=>{
     const e=document.getElementById(id); if(e) e.value='';
@@ -78546,15 +78662,29 @@ function saveRevenu(){
     alert('Ce bien a déjà un revenu locatif. Modifiez-le (crayon) plutôt que d\'en créer un second.'); return;
   }
   const old = editId ? data.find(d => d.id === editId) : null;
-  const rev = { ...(old||{}), id: editId||'rev_'+Date.now(), bienId, titre, loyer, vacance, charges, taxe, pno, agence, travaux, interets };
+  // Historique des loyers (date d'effet facultative, jamais dans le futur)
+  const todayIso = kyfParisNow(new Date(Date.now())).date;
+  const dEff = String(document.getElementById('revLoyerDate')?.value || '').slice(0, 10);
+  if(dEff && dEff > todayIso){ alert('La date d\'effet du loyer ne peut pas être dans le futur.'); return; }
+  let hist = old && Array.isArray(old.loyers) && old.loyers.length ? old.loyers.map(e => ({ ...e })) : (old ? [{ date: '', loyer: Number(old.loyer) || 0 }] : []);
+  const loyerAvant = old ? revenuLoyerAt_({ loyers: hist, loyer: old.loyer }, todayIso) : null;
+  if(!old) hist = [{ date: dEff, loyer }];
+  else if(loyer !== loyerAvant){
+    const dd = dEff || todayIso;
+    hist = hist.filter(e => e.date !== dd); hist.push({ date: dd, loyer });
+    hist.sort((a, b) => String(a.date).localeCompare(String(b.date)));
+  }
+  const loyerEnVigueur = hist.length ? revenuLoyerAt_({ loyers: hist, loyer }, todayIso) : loyer;
+  const rev = { ...(old||{}), id: editId||'rev_'+Date.now(), bienId, titre, loyer: loyerEnVigueur, vacance, charges, taxe, pno, agence, travaux, interets };
+  if(hist.length > 1 || (hist.length === 1 && hist[0].date)) rev.loyers = hist; else delete rev.loyers;
   Object.assign(rev, revenuDerived(rev));
   // Mettre à jour le loyer dans le bien
   const bien = immoLoad().find(b=>b.id===bienId);
   if(bien){
     const biens = immoLoad().map(b=>{
       if(b.id!==bienId) return b;
-      const nb = { ...b, loyerMensuel: loyer };
-      if(nb.valeur) nb.rendBrut = ((loyer * 12) / nb.valeur * 100).toFixed(2);
+      const nb = { ...b, loyerMensuel: rev.loyer };
+      if(nb.valeur) nb.rendBrut = ((rev.loyer * 12) / nb.valeur * 100).toFixed(2);
       return nb;
     });
     immoSave(biens);
@@ -78562,7 +78692,7 @@ function saveRevenu(){
   if(editId){ const i=data.findIndex(d=>d.id===editId); if(i>-1) data[i]=rev; else data.push(rev); }
   else data.push(rev);
   revenuSave(data);
-  revenuSyncRecurrents(bienId, loyer);
+  revenuSyncRecurrents(bienId, rev.loyer);
   closeRevenu();
   renderRevenus();
   try{ if(typeof renderImmo==='function') renderImmo(); }catch(_){}
@@ -78579,6 +78709,7 @@ function editRevenu(id){
   const set = (fid, v) => { const e = document.getElementById(fid); if(e) e.value = (v === undefined || v === null) ? '' : v; };
   set('revLoyer', r.loyer); set('revVacance', r.vacance); set('revCharges', r.charges); set('revTaxe', r.taxe); set('revPNO', r.pno); set('revAgence', r.agence); set('revTravaux', r.travaux); set('revInterets', r.interets);
   const ti = document.getElementById('revModalTitle'); if(ti) ti.innerHTML = KYF_ICONS.edit + ' MODIFIER LE REVENU LOCATIF';
+  kyfDateSetValue('revLoyerDate', '', 'JJ/MM/AAAA');
   calcRevenuAuto();
 }
 
@@ -78739,8 +78870,7 @@ function renderRevenus(){
           <button onclick="event.stopPropagation();toggleRevenuCard('${r.id}')" title="${isRevCollapsed?'Développer':'Réduire'}" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;border:none;background:none;color:var(--text3);cursor:pointer;transition:background .15s" onmouseover="this.style.background=kyfChevronHoverBg();this.querySelector('svg').style.color='var(--accent)'" onmouseout="this.style.background='transparent';this.querySelector('svg').style.color='var(--text3)'">
             <svg id="rev-chevron-${r.id}" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" style="transition:transform .25s ease,color .15s;transform:${isRevCollapsed?'rotate(-90deg)':'rotate(0deg)'}"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
-          <button onclick="event.stopPropagation();editRevenu('${r.id}')" class="kyf-icon-btn" title="Modifier" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 4px;display:inline-flex;align-items:center;transition:color .15s">${KYF_ICONS.edit}</button>
-          <button onclick="event.stopPropagation();deleteRevenu('${r.id}')" class="kyf-icon-btn" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:2px 4px;transition:color .15s" title="Supprimer" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text3)'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg></button>
+          ${kyfActionsMenuHtml_('rev-' + r.id, [{ label: 'Modifier', onclick: "editRevenu('" + r.id + "')" }, { label: 'Supprimer', onclick: "deleteRevenu('" + r.id + "')", danger: true }])}
         </div>
       </div>
 
@@ -78749,7 +78879,7 @@ function renderRevenus(){
         <div><div style="font-size:9px;font-weight:700;letter-spacing:.5px;color:var(--text3);margin-bottom:4px" title="Loyers annuels pleins (12 mois) divisés par la valeur actuelle du bien, avant vacance et charges">REND. BRUT</div><div style="font-size:17px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums">${kyfPctTxt(r.rendBrut)?kyfPctTxt(r.rendBrut).replace('.',',') + ' %':'-'}</div></div>
         <div><div style="font-size:9px;font-weight:700;letter-spacing:.5px;color:var(--text3);margin-bottom:4px">REND. NET</div><div style="font-size:17px;font-weight:700;color:var(--green);font-variant-numeric:tabular-nums">${kyfPctTxt(r.rendNet)?kyfPctTxt(r.rendNet).replace('.',',') + ' %':'-'}</div></div>
         <div><div style="font-size:9px;font-weight:700;letter-spacing:.5px;color:var(--text3);margin-bottom:4px">TRI</div><div class="kyf-purple-text" title="TRI des fonds propres (apport, loyers nets moins mensualités, valeur moins capital restant dû). Indisponible sans crédit daté avec apport, ou avant 6 mois." style="font-size:17px;font-weight:700;color:#9b6dff;font-variant-numeric:tabular-nums">${r.tri||r.tri===0?String(r.tri).replace('.',',')+' %':'-'}</div></div>
-        <div><div style="font-size:9px;font-weight:700;letter-spacing:.5px;color:var(--text3);margin-bottom:4px" ${regime==='lmnp_reel'?'title="Avant impôt : estimation fiscale indisponible en LMNP réel"':''}>${regime==='lmnp_reel'?'CASH-FLOW AVANT IMPÔT':'CASH-FLOW NET'}</div><div style="font-size:17px;font-weight:700;color:${cfNetReel>=0?'var(--green)':'var(--red)'};font-variant-numeric:tabular-nums">${cfNetReel>=0?'+':''}${fmt(cfNetReel,0)} €/mois</div></div>
+        <div><div style="font-size:9px;font-weight:700;letter-spacing:.5px;color:var(--text3);margin-bottom:4px" title="${regime==='lmnp_reel'?'Avant impôt : estimation fiscale indisponible en LMNP réel':'Loyers nets de charges et de taxe foncière, moins mensualités de crédit, moins l\'impôt estimé selon le régime et la TMI'}">${regime==='lmnp_reel'?'CASH-FLOW AVANT IMPÔT':'CASH-FLOW NET'}</div><div style="font-size:17px;font-weight:700;color:${cfNetReel>=0?'var(--green)':'var(--red)'};font-variant-numeric:tabular-nums">${cfNetReel>=0?'+':''}${fmt(cfNetReel,0)} €/mois</div></div>
         ${cfNetReel<0?`<div title="pour constituer un patrimoine de ${fmt(valeur,0)} €"><div style="font-size:9px;font-weight:700;letter-spacing:.5px;color:var(--text3);margin-bottom:4px">EFFORT D'ÉPARGNE</div><div style="font-size:17px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums">${fmt(Math.abs(cfNetReel),0)} €/mois</div></div>`:''}
       </div>
 
@@ -78761,6 +78891,7 @@ function renderRevenus(){
       <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;font-family:'Inter',sans-serif">
         ${dateAutoFin?`<div style="display:inline-flex;align-items:center;gap:6px;font-size:10px;color:var(--text2);padding:6px 11px;border-radius:999px;background:rgba(0,212,136,0.10);border:1px solid rgba(0,212,136,0.35)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Autofinancé à la fin du crédit, en <strong style="color:var(--green)">${dateAutoFin}</strong></span></div>`:''}
         <div style="display:inline-flex;align-items:center;gap:6px;font-size:10px;color:var(--text2);padding:6px 11px;border-radius:999px;background:rgba(128,128,128,0.08);border:1px solid rgba(128,128,128,0.20)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>Chaque semaine sans locataire vous coûte <strong style="color:#f59e0b">${fmt(vacanceSemaine,0)} €</strong></span></div>
+        ${(Array.isArray(r.loyers) && r.loyers.length > 1) ? `<div style="display:inline-flex;align-items:center;gap:6px;font-size:10px;color:var(--text2);padding:6px 11px;border-radius:999px;background:rgba(128,128,128,0.08);border:1px solid rgba(128,128,128,0.20)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg><span>Historique du loyer : ${r.loyers.map(e => '<strong style="color:var(--text)">' + fmt(Number(e.loyer)||0,0) + ' €</strong> ' + (e.date ? 'depuis ' + escapeHtml(new Date(e.date + 'T12:00:00').toLocaleDateString('fr-FR',{month:'2-digit',year:'numeric'})) : 'au départ')).join(' · ')}</span></div>` : ''}
         ${r.vacance>0?`<div style="display:inline-flex;align-items:center;gap:6px;font-size:10px;color:var(--text2);padding:6px 11px;border-radius:999px;background:rgba(128,128,128,0.08);border:1px solid rgba(128,128,128,0.20)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/></svg><span>Vacance estimée <strong style="color:var(--text)">${String(r.vacance).replace('.',',')} mois/an</strong>, soit <strong style="color:var(--red)">${fmt(Math.round((r.loyer||0)*r.vacance),0)} €/an</strong> de manque à gagner</span></div>`:''}
       </div>
       </div>
@@ -79021,10 +79152,38 @@ function bienCrdValue(b){
 
 // Un taux de 0 % est valide (prêt à taux zéro) : seul un taux ABSENT (vide, NaN, négatif) est refusé, pas 0
 function kyfTauxOk(t){ return t !== null && t !== undefined && t !== '' && Number(t) >= 0; }
+// Durée d'un prêt : saisie en ANS (virgule acceptée : 17,5) ou en MOIS (entiers). Une durée en mois est stockée en années (mois / 12) ; les calculs repassent toujours au mois entier.
+function kyfDureeUnitSet(prefix, unit){
+  const inp = document.getElementById(prefix + 'Duree'), hid = document.getElementById(prefix + 'DureeUnit'); if(!inp || !hid) return;
+  const cur = hid.value === 'mois' ? 'mois' : 'ans'; unit = unit === 'mois' ? 'mois' : 'ans';
+  if(cur !== unit){
+    const v = parseNum(inp.value);
+    if(v > 0) inp.value = unit === 'mois' ? String(Math.round(v * 12)) : String(Math.round(v / 12 * 100) / 100).replace('.', ',');
+  }
+  hid.value = unit;
+  inp.placeholder = unit === 'mois' ? (prefix === 'creditReneg' ? '144 ou 150' : '240') : (prefix === 'creditReneg' ? '12 ou 12,5' : '20');
+  ['ans', 'mois'].forEach(u => { const b = document.getElementById(prefix + 'DureeU_' + u); if(b) b.classList.toggle('kyf-toggle-active', u === unit); });
+}
+function kyfDureeAns(prefix){
+  const inp = document.getElementById(prefix + 'Duree'), hid = document.getElementById(prefix + 'DureeUnit'); if(!inp) return 0;
+  const v = parseNum(inp.value);
+  if(!(v > 0)) return 0;
+  return (hid && hid.value === 'mois') ? Math.round(v) / 12 : v;
+}
+function kyfDureeTxt(dureeAns){
+  const m = Math.round((parseFloat(dureeAns) || 0) * 12); if(m <= 0) return '-';
+  if(m % 12 === 0){ const a = m / 12; return a + ' an' + (a > 1 ? 's' : ''); }
+  const a = Math.floor(m / 12);
+  return m + ' mois' + (a > 0 ? ' (' + a + ' an' + (a > 1 ? 's' : '') + ' ' + (m % 12) + ' mois)' : '');
+}
+function kyfDureeSegHtml(prefix, onchange){
+  const b = u => '<button type="button" id="' + prefix + 'DureeU_' + u + '" onclick="kyfDureeUnitSet(\'' + prefix + '\',\'' + u + '\');' + onchange + '" style="font-size:8px;padding:2px 8px">' + u.toUpperCase() + '</button>';
+  return '<span class="kyf-seg" style="vertical-align:middle">' + b('ans') + b('mois') + '</span><input type="hidden" id="' + prefix + 'DureeUnit" value="ans">';
+}
 function calcMensualite(capital, tauxAnnuel, dureeAns){
   if(!capital||!kyfTauxOk(tauxAnnuel)||!dureeAns) return 0;
   const r = tauxAnnuel / 100 / 12;
-  const n = dureeAns * 12;
+  const n = Math.round(dureeAns * 12);
   if(r === 0) return capital / n;
   return capital * r * Math.pow(1+r,n) / (Math.pow(1+r,n)-1);
 }
@@ -79032,7 +79191,7 @@ function calcMensualite(capital, tauxAnnuel, dureeAns){
 function calcCRD(capital, tauxAnnuel, dureeAns, moisEcoules){
   if(!capital||!kyfTauxOk(tauxAnnuel)||!dureeAns) return capital;
   const r = tauxAnnuel / 100 / 12;
-  const n = dureeAns * 12;
+  const n = Math.round(dureeAns * 12);
   if(r === 0) return Math.max(0, capital - (capital/n)*moisEcoules);
   const m = calcMensualite(capital, tauxAnnuel, dureeAns);
   return capital * Math.pow(1+r, moisEcoules) - m * ((Math.pow(1+r,moisEcoules)-1)/r);
@@ -79044,7 +79203,7 @@ function calcCreditAuto(){
   const _tx      = (document.getElementById('creditTaux')?.value||'').trim().replace(',','.');
   const taux     = _tx === '' ? NaN : parseFloat(_tx);   // vide = absent (NaN), 0 = prêt à taux zéro
   const assur    = parseFloat(document.getElementById('creditAssurance')?.value||'0');
-  const duree    = parseFloat(document.getElementById('creditDuree')?.value||'0');
+  const duree    = kyfDureeAns('credit');
   const dateStr  = document.getElementById('creditDateDebut')?.value;
   const res      = document.getElementById('creditCalcResult');
   if(!res) return;
@@ -79082,7 +79241,7 @@ function calcCreditAuto(){
       <div style="text-align:center">
         <div style="font-size:9px;color:var(--text3);margin-bottom:2px">FIN PRÉVUE</div>
         <div style="font-size:14px;font-weight:700;color:var(--text)">${dateFin||'-'}</div>
-        <div style="font-size:9px;color:var(--text3)">${duree} ans</div>
+        <div style="font-size:9px;color:var(--text3)">${kyfDureeTxt(duree)}</div>
       </div>
     </div>
     <div style="height:6px;border-radius:3px;background:var(--border);overflow:hidden">
@@ -79094,7 +79253,15 @@ function calcCreditAuto(){
     </div>`;
 }
 
+function kyfDureeSegInit(){
+  [['credit', 'calcCreditAuto()'], ['creditReneg', 'creditRenegPreview()']].forEach(p => {
+    const h = document.getElementById(p[0] + 'DureeSeg'); if(h && !h.firstChild){ h.innerHTML = kyfDureeSegHtml(p[0], p[1]); kyfDureeUnitSet(p[0], 'ans'); }
+  });
+}
+document.addEventListener('DOMContentLoaded', kyfDureeSegInit);
 function openAddCredit(){
+  kyfDureeSegInit();
+  { const t = document.getElementById('creditModalTitle'); if(t) t.textContent = 'CRÉDIT IMMOBILIER'; }
   const biens = immoLoad();
   const bienOptions = biens.length
     ? biens.map(b=>({value:b.id, label:b.nom}))
@@ -79107,6 +79274,7 @@ function openAddCredit(){
   ['creditPrix','creditApport','creditTaux','creditAssurance','creditDuree'].forEach(id=>{
     const e=document.getElementById(id); if(e) e.value='';
   });
+  kyfDureeUnitSet('credit', 'ans');
   kyfDateSetValue('creditDateDebut', '', 'JJ/MM/AAAA');
   // Reset banque
   const nom = document.getElementById('creditBankNom');
@@ -79118,6 +79286,28 @@ function openAddCredit(){
   document.body.style.overflow = 'hidden';
 }
 
+// Modification d'un prêt déjà enregistré (crayon à côté de la poubelle) : même formulaire, prérempli ; les renégociations sont conservées
+function openEditCredit(id){
+  const c = creditLoad().find(x => x.id === id); if(!c) return;
+  openAddCredit();
+  const s = (i, v) => { const e = document.getElementById(i); if(e) e.value = v; };
+  const num = v => (v === undefined || v === null || v === '' || isNaN(parseFloat(v))) ? '' : String(parseFloat(v)).replace('.', ',');
+  document.getElementById('creditEditId').value = c.id;
+  { const t = document.getElementById('creditModalTitle'); if(t) t.textContent = 'MODIFIER LE CRÉDIT'; }
+  s('creditTitre', c.titre || ''); s('creditBankNom', c.banque || '');
+  const cap = parseFloat(c.capital) || 0, ap = parseFloat(c.apport) || 0;
+  s('creditPrix', num(parseFloat(c.prix) > 0 ? c.prix : cap + ap)); s('creditApport', num(c.apport));
+  s('creditTaux', num(c.taux)); s('creditAssurance', num(c.assur));
+  const m = Math.round((parseFloat(c.duree) || 0) * 12);
+  if(m > 0 && m % 12 !== 0){ kyfDureeUnitSet('credit', 'mois'); s('creditDuree', String(m)); }
+  else { kyfDureeUnitSet('credit', 'ans'); s('creditDuree', m > 0 ? String(m / 12) : ''); }
+  kyfDateSetValue('creditDateDebut', c.dateDebut ? String(c.dateDebut).slice(0, 10) : '', 'JJ/MM/AAAA');
+  try{
+    const b = immoLoad().find(x => x.id === c.bienId);
+    if(b) kyfCSelSetValue('creditBienId', b.id, b.nom);
+  }catch(e){}
+  calcCreditAuto();
+}
 function closeCredit(){
   document.getElementById('creditModal').style.display   = 'none';
   document.getElementById('creditOverlay').style.display = 'none';
@@ -79130,12 +79320,12 @@ function saveCredit(){
   const _tx     = (document.getElementById('creditTaux')?.value||'').trim().replace(',','.');
   const taux    = _tx === '' ? NaN : parseFloat(_tx);   // vide = absent (NaN), 0 = prêt à taux zéro
   const assur   = parseFloat(document.getElementById('creditAssurance')?.value||'0');
-  const duree   = parseFloat(document.getElementById('creditDuree')?.value||'0');
+  const duree   = kyfDureeAns('credit');
   const dateStr = document.getElementById('creditDateDebut')?.value||'';
   const bienId  = document.getElementById('creditBienId')?.value||'';
   const banque  = document.getElementById('creditBankNom')?.value||'';
   const titre   = document.getElementById('creditTitre')?.value.trim()||'';
-  if(!prix||isNaN(taux)||taux<0||!duree){ alert('Veuillez renseigner prix, taux (0 pour un prêt à taux zéro) et durée.'); return; }
+  if(!prix||isNaN(taux)||taux<0||!duree){ alert('Veuillez renseigner prix, taux (0 pour un prêt à taux zéro) et durée (en ans ou en mois).'); return; }
   const capital = prix - apport;
   const mens    = calcMensualite(capital, taux, duree);
   const assurMens = capital * assur / 100 / 12;
@@ -79143,12 +79333,13 @@ function saveCredit(){
   if(dateStr) moisEcoules = creditMoisEcoules(dateStr);
   const crd = Math.max(0, calcCRD(capital, taux, duree, moisEcoules));
   const editId = document.getElementById('creditEditId').value;
-  const credit = {
+  const _prev = editId ? creditLoad().find(d => d.id === editId) : null;
+  const credit = Object.assign({}, _prev || {}, {
     id: editId||'cred_'+Date.now(), bienId, banque, titre,
     prix, apport, capital, taux, assur, duree, dateDebut: dateStr,
     mensualite: Math.round(mens), assurMens: Math.round(assurMens),
     mensTotale: Math.round(mens+assurMens), crd: Math.round(crd),
-  };
+  });
   if(editId){ const _old = creditLoad().find(d => d.id === editId); if(_old && Array.isArray(_old.reneg) && _old.reneg.length) credit.reneg = _old.reneg; }   // 209 : modifier le prêt ne perd pas ses renégociations
   const biens = immoLoad();
   const bien  = biens.find(b=>b.id===bienId);
@@ -79319,7 +79510,7 @@ function renderCredits(){
     // Même logo (Clearbit + repli favicon Google + badge initiale) que Livrets/sélecteur de banque du formulaire crédit - un seul système, pas de doublon.
     const bankBadge = c.banque ? `<span style="display:inline-flex;align-items:center;gap:5px;font-size:10px;color:var(--text3)">${getLivretLogo(c.banque, 15)} ${escapeHtml(c.banque)}</span>` : '';
     const r  = (c.taux||0) / 100 / 12;
-    const n  = (c.duree||0) * 12;
+    const n  = Math.round((c.duree||0) * 12);
     const m  = c.mensualite||0;
     let moisEcoules=0, dateFin='-';
     if(c.dateDebut){
@@ -79375,7 +79566,7 @@ function renderCredits(){
           <button onclick="event.stopPropagation();toggleCreditCard('${c.id}')" title="${isCollapsed?'Développer':'Réduire'}" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;border:none;background:none;color:var(--text3);cursor:pointer;transition:background .15s" onmouseover="this.style.background=kyfChevronHoverBg();this.querySelector('svg').style.color='var(--accent)'" onmouseout="this.style.background='transparent';this.querySelector('svg').style.color='var(--text3)'">
             <svg id="credit-chevron-${c.id}" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" style="transition:transform .25s ease,color .15s;transform:${isCollapsed?'rotate(-90deg)':'rotate(0deg)'}"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
-          <button onclick="event.stopPropagation();deleteCredit('${c.id}')" class="kyf-icon-btn" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:2px 4px;transition:color .15s" title="Supprimer" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text3)'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg></button>
+          ${kyfActionsMenuHtml_('cred-' + c.id, [{ label: 'Modifier', onclick: "openEditCredit('" + c.id + "')" }, { label: 'Supprimer', onclick: "deleteCredit('" + c.id + "')", danger: true }])}
         </div>
       </div>
       <!-- ══ Design « graphique d'amortissement » : chiffres clés sur une ligne (toujours visibles, même carte réduite) ══ -->
@@ -79418,6 +79609,7 @@ function creditRenegHtml_(cRaw){
   const today = kyfParisNow(new Date(Date.now())).date;
   const fr = x => parseFloat(x).toLocaleString('fr-FR', { maximumFractionDigits: 2 });
   const baseOk = creditBaseOk_(cRaw);
+  const lastRid = liste.length ? (function(){ const l = liste.slice().sort((a, b) => String(a.date).localeCompare(String(b.date))).pop(); return l.id || String(l.date).slice(0, 10); })() : '';
   const rows = liste.slice().sort((a, b) => String(a.date).localeCompare(String(b.date))).map(r => {
     const id = r.id || String(r.date).slice(0, 10);
     const d = new Date(String(r.date).slice(0, 10) + 'T12:00:00').toLocaleDateString('fr-FR');
@@ -79425,8 +79617,8 @@ function creditRenegHtml_(cRaw){
     const frais = parseFloat(r.frais) > 0 ? ' · frais payés ' + fr(r.frais) + ' € (pour mémoire)' : '';
     const ass = (r.assurMens !== undefined && r.assurMens !== null && r.assurMens !== '') ? ' · assurance ' + fr(r.assurMens) + ' €/mois' : '';
     return '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:10px;color:var(--text2);padding:5px 0;border-bottom:1px solid var(--border)">'
-      + '<span><strong style="color:var(--text)">' + d + '</strong> : ' + fr(r.taux) + ' % sur ' + (parseFloat(r.mensBanque) > 0 ? Math.round(parseFloat(r.dureeAns) * 12) + ' mois' : fr(r.dureeAns) + ' an' + (parseFloat(r.dureeAns) > 1 ? 's' : '')) + (parseFloat(r.crdBanque) > 0 ? ' · capital restant dû ' + fr(r.crdBanque) + ' € (banque)' : '') + (parseFloat(r.mensBanque) > 0 ? ' · mensualité ' + fr(r.mensBanque) + ' € (banque)' : '') + ass + frais + etat + '</span>'
-      + '<button type="button" class="kyf-icon-btn" title="Supprimer cette renégociation" onclick="event.stopPropagation();creditRenegDelete(\'' + cRaw.id + '\',\'' + id + '\')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:13px;padding:2px 4px;transition:color .15s" onmouseover="this.style.color=\'var(--red)\'" onmouseout="this.style.color=\'var(--text3)\'">' + KYF_ICONS.trash + '</button></div>';
+      + '<span><strong style="color:var(--text)">' + d + '</strong> : ' + fr(r.taux) + ' % sur ' + kyfDureeTxt(r.dureeAns) + (parseFloat(r.crdBanque) > 0 ? ' · capital restant dû ' + fr(r.crdBanque) + ' € (banque)' : '') + (parseFloat(r.mensBanque) > 0 ? ' · mensualité ' + fr(r.mensBanque) + ' € (banque)' : '') + ass + frais + etat + '</span>'
+      + kyfActionsMenuHtml_('rn-' + cRaw.id + '-' + id, (baseOk && id === lastRid ? [{ label: 'Modifier', onclick: "openCreditReneg('" + cRaw.id + "','" + id + "')" }] : []).concat([{ label: 'Supprimer', onclick: "creditRenegDelete('" + cRaw.id + "','" + id + "')", danger: true }])) + '</div>';
   }).join('');
   return '<div style="margin-top:14px;font-family:\'Inter\',sans-serif">'
     + '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px"><span style="font-size:9px;font-weight:700;letter-spacing:.5px;color:var(--text3)">RENÉGOCIATIONS</span>'
@@ -79434,20 +79626,45 @@ function creditRenegHtml_(cRaw){
       : '<span style="font-size:9px;color:var(--text3)">Capital, taux, durée et date de début nécessaires</span>')
     + '</div>' + (rows || '<div style="font-size:10px;color:var(--text3)">Aucune. Taux ou durée changés en cours de route ? Ajoutez la renégociation : KYF repart du capital restant dû à cette date.</div>') + '</div>';
 }
-function openCreditReneg(id){
+function openCreditReneg(id, rid){
   const c = creditLoad().find(x => x.id === id); if(!c || !creditBaseOk_(c)) return;
   document.getElementById('creditRenegCreditId').value = id;
+  document.getElementById('creditRenegEditId').value = rid || '';
+  { const t = document.getElementById('creditRenegModalTitle'); if(t) t.textContent = rid ? 'MODIFIER LA RENÉGOCIATION' : 'RENÉGOCIATION DU PRÊT'; }
   ['creditRenegTaux','creditRenegDuree','creditRenegAssur','creditRenegFrais','creditRenegCrd','creditRenegMens'].forEach(k => { const e = document.getElementById(k); if(e) e.value = ''; });
+  kyfDureeUnitSet('creditReneg', 'ans');
   kyfDateSetValue('creditRenegDate', '', 'JJ/MM/AAAA');
   const t = document.getElementById('creditRenegTitre'); if(t) t.textContent = c.titre || c.banque || 'Prêt';
   const er = document.getElementById('creditRenegErr'); if(er){ er.style.display = 'none'; er.textContent = ''; }
   const pv = document.getElementById('creditRenegPreview'); if(pv){ pv.style.display = 'none'; pv.textContent = ''; }
+  if(rid){
+    const r = (Array.isArray(c.reneg) ? c.reneg : []).find(x => (x.id || String(x.date).slice(0, 10)) === rid);
+    if(r){
+      const s = (k, v) => { const e = document.getElementById(k); if(e) e.value = v; };
+      const num = v => (v === undefined || v === null || v === '' || isNaN(parseFloat(v))) ? '' : String(parseFloat(v)).replace('.', ',');
+      kyfDateSetValue('creditRenegDate', String(r.date).slice(0, 10), 'JJ/MM/AAAA');
+      s('creditRenegTaux', num(r.taux)); s('creditRenegAssur', num(r.assurMens)); s('creditRenegFrais', num(r.frais));
+      s('creditRenegCrd', num(r.crdBanque));
+      if(parseFloat(r.mensBanque) > 0){ s('creditRenegMens', num(r.mensBanque)); }
+      else {
+        const m = Math.round((parseFloat(r.dureeAns) || 0) * 12);
+        if(m > 0 && m % 12 !== 0){ kyfDureeUnitSet('creditReneg', 'mois'); s('creditRenegDuree', String(m)); }
+        else { kyfDureeUnitSet('creditReneg', 'ans'); s('creditRenegDuree', m > 0 ? String(m / 12) : ''); }
+      }
+      creditRenegPreview();
+    }
+  }
   document.getElementById('creditRenegModal').style.display = 'block';
   document.getElementById('creditRenegOverlay').style.display = 'block';
 }
 function closeCreditReneg(){
   document.getElementById('creditRenegModal').style.display = 'none';
   document.getElementById('creditRenegOverlay').style.display = 'none';
+}
+// Copie du prêt sans la renégociation en cours de modification (elle ne doit pas se contrôler elle-même)
+function creditRenegWithout_(c, rid){
+  if(!rid) return c;
+  return Object.assign({}, c, { reneg: (Array.isArray(c.reneg) ? c.reneg : []).filter(x => (x.id || String(x.date).slice(0, 10)) !== rid) });
 }
 // Contrôle commun (aperçu et enregistrement) : renvoie { err } ou { crdD, mens, seg }
 function creditRenegCheck_(c, date, taux, dureeAns, crdB, mensB){
@@ -79456,7 +79673,7 @@ function creditRenegCheck_(c, date, taux, dureeAns, crdB, mensB){
   const hasCrd = crdB > 0, hasMens = mensB > 0;
   if(hasMens && dureeAns > 0) return { err: 'Indiquez la durée restante OU la mensualité de la banque, pas les deux.' };
   if(hasMens && !hasCrd) return { err: 'Avec la mensualité de la banque, indiquez aussi le capital restant dû selon la banque.' };
-  if(!hasMens && !(dureeAns > 0)) return { err: 'Indiquez la durée restante en années (par exemple 12 ou 12,5), ou la mensualité de votre banque.' };
+  if(!hasMens && !(dureeAns > 0)) return { err: 'Indiquez la durée restante (en ans, par exemple 12 ou 12,5, ou en mois), ou la mensualité de votre banque.' };
   const segs = creditSegments(c), last = segs[segs.length - 1];
   const apres = (Array.isArray(c.reneg) ? c.reneg : []).some(r => r && String(r.date).slice(0, 10) >= date);
   if(date <= String(c.dateDebut).slice(0, 10)) return { err: 'La renégociation doit être après le début du prêt (' + new Date(String(c.dateDebut).slice(0, 10) + 'T12:00:00').toLocaleDateString('fr-FR') + ').' };
@@ -79478,10 +79695,10 @@ function creditRenegCheck_(c, date, taux, dureeAns, crdB, mensB){
 function creditRenegPreview(){
   const id = document.getElementById('creditRenegCreditId').value, c = creditLoad().find(x => x.id === id), pv = document.getElementById('creditRenegPreview'); if(!c || !pv) return;
   const g = k => (document.getElementById(k) || {}).value || '';
-  const date = g('creditRenegDate'), taux = parseNum(g('creditRenegTaux')), du = parseNum(g('creditRenegDuree')), crdB = parseNum(g('creditRenegCrd')), mensB = parseNum(g('creditRenegMens'));
+  const date = g('creditRenegDate'), taux = parseNum(g('creditRenegTaux')), du = kyfDureeAns('creditReneg'), crdB = parseNum(g('creditRenegCrd')), mensB = parseNum(g('creditRenegMens'));
   const tx = g('creditRenegTaux').trim() === '' ? NaN : taux;
   if(!date || isNaN(tx) || !(du > 0 || mensB > 0)){ pv.style.display = 'none'; return; }
-  const r = creditRenegCheck_(c, date, tx, du, crdB, mensB);
+  const r = creditRenegCheck_(creditRenegWithout_(c, (document.getElementById('creditRenegEditId') || {}).value), date, tx, du, crdB, mensB);
   if(r.err){ pv.style.display = 'none'; return; }
   const f = x => Math.round(x).toLocaleString('fr-FR'), f2 = x => x.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   pv.textContent = 'Capital restant dû à cette date : ' + (r.crdBanque ? f2(r.crdD) + ' € (selon la banque)' : f(r.crdD) + ' € (calculé par KYF)')
@@ -79497,27 +79714,31 @@ function saveCreditReneg(){
   if(!c) return fail('Prêt introuvable.');
   const date = document.getElementById('creditRenegDate').value;
   const txRaw = (document.getElementById('creditRenegTaux').value || '').trim().replace(',', '.');
-  const taux = txRaw === '' ? NaN : parseFloat(txRaw), du = parseNum(document.getElementById('creditRenegDuree').value || '');
+  const taux = txRaw === '' ? NaN : parseFloat(txRaw), du = kyfDureeAns('creditReneg');
   const crdB = parseNum(document.getElementById('creditRenegCrd').value || ''), mensB = parseNum(document.getElementById('creditRenegMens').value || '');
-  const r = creditRenegCheck_(c, date, taux, du, crdB, mensB); if(r.err) return fail(r.err);
-  const entry = { id: 'rn_' + Date.now(), date, taux, dureeAns: r.dureeAns };
+  const editRid = (document.getElementById('creditRenegEditId') || {}).value || '';
+  const r = creditRenegCheck_(creditRenegWithout_(c, editRid), date, taux, du, crdB, mensB); if(r.err) return fail(r.err);
+  const entry = { id: editRid || ('rn_' + Date.now()), date, taux, dureeAns: r.dureeAns };
   if(r.crdBanque) entry.crdBanque = r.crdBanque;
   if(r.mensBanque) entry.mensBanque = r.mensBanque;
   const as = (document.getElementById('creditRenegAssur').value || '').trim(), fr = (document.getElementById('creditRenegFrais').value || '').trim();
   if(as !== '' && parseNum(as) >= 0) entry.assurMens = parseNum(as);
   if(fr !== '' && parseNum(fr) > 0) entry.frais = parseNum(fr);
-  c.reneg = (Array.isArray(c.reneg) ? c.reneg : []).concat([entry]);
+  c.reneg = (Array.isArray(c.reneg) ? c.reneg : []).filter(x => !editRid || (x.id || String(x.date).slice(0, 10)) !== editRid).concat([entry]);
   creditSave(data);
   closeCreditReneg();
   renderCredits();
   try{ if(typeof renderImmo === 'function') renderImmo(); }catch(e){}
 }
 async function creditRenegDelete(cid, rid){
-  if(!(await kyfAsk('Supprimer cette renégociation ? Le prêt reprend ses données d\'avant.'))) return;
+  if(!(await kyfAsk('Supprimer cette renégociation ? Le prêt reprend ses données d\'avant.', { corbeille:true }))) return;
   const data = creditLoad(), c = data.find(x => x.id === cid); if(!c || !Array.isArray(c.reneg)) return;
+  const ridx = c.reneg.findIndex(r => (r.id || String(r.date).slice(0, 10)) === rid);
+  const removed = ridx >= 0 ? c.reneg[ridx] : null;
   c.reneg = c.reneg.filter(r => (r.id || String(r.date).slice(0, 10)) !== rid);
   if(!c.reneg.length) delete c.reneg;
   creditSave(data);
+  if(removed) kyfCorbeillePush('creditReneg', rid, ridx, { cid: cid, reneg: removed }, 'Renégociation de crédit');
   renderCredits();
 }
 
@@ -79545,7 +79766,7 @@ function creditCardSolde(c){
         <div style="font-family:'Inter',sans-serif;font-size:10px;color:var(--text3)">Soldé${c.dateSolde?' le '+new Date(c.dateSolde).toLocaleDateString('fr-FR'):''} suite à la vente du bien</div>
       </div>
     </div>
-    <button onclick="deleteCredit('${c.id}')" title="Supprimer définitivement" class="immo-icon-btn" style="background:none;border:none;color:var(--text3);cursor:pointer;display:flex;align-items:center;padding:2px;flex-shrink:0;transition:color .15s" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text3)'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg></button>
+    ${kyfActionsMenuHtml_('crs-' + c.id, [{ label: 'Supprimer', onclick: "deleteCredit('" + c.id + "')", danger: true }])}
   </div>`;
 }
 function renderCreditsSoldeSection(soldes){
@@ -79764,7 +79985,7 @@ function renderImmo(){
     totalCapRembourse += capR;
     const rev = revenus.find(r=>r.bienId===c.bienId);
     const moisEcoules = c.dateDebut ? creditMoisEcoules(c.dateDebut) : 0;
-    const loyersCumul = Math.min(capR, (rev?.loyer||0)*moisEcoules);
+    const loyersCumul = Math.min(capR, rev ? revenuLoyersCumulDepuis_(rev, c.dateDebut) : 0);
     totalLocatairesFinance += loyersCumul;
   });
   const pctLocataires = totalCapRembourse>0 ? Math.round(totalLocatairesFinance/totalCapRembourse*100) : 0;
@@ -79833,7 +80054,7 @@ function immoCardVendu(d){
         <div style="font-weight:700;font-size:11px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(d.nom||'Bien immobilier')}</div>
         <div style="font-size:9px;color:var(--text3)">${dateTxt ? 'vendu en ' + dateTxt : 'vendu'}${v.prixVente ? ' · ' + fmt(v.prixVente,0) + ' €' : ''}</div>
       </div>
-      <div class="kyf-pl-acts" style="display:flex;flex-shrink:0"><button onclick="deleteImmo('${d.id}')" title="Supprimer définitivement" class="kyf-icon-btn" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px;display:inline-flex;align-items:center" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text3)'">${KYF_ICONS.trash}</button></div>
+      <div class="kyf-pl-acts" style="display:flex;flex-shrink:0">${kyfActionsMenuHtml_('bv-' + d.id, [{ label: 'Supprimer', onclick: "deleteImmo('" + d.id + "')", danger: true }])}</div>
     </div>
     <div style="display:flex;align-items:baseline;justify-content:space-between;gap:6px">
       <div><div style="font-size:8px;font-weight:700;letter-spacing:.5px;color:var(--text3)">NET RÉCUPÉRÉ</div><div style="font-size:15px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums">${v.netRecupere!==undefined?fmt(v.netRecupere,0)+' €':'-'}</div></div>
@@ -80005,7 +80226,7 @@ function saveImmo(){
   // Le loyer saisi sur la fiche du bien met aussi à jour son revenu locatif (sinon les deux divergeaient)
   try{
     const _l = parseFloat(bien.loyerMensuel)||0, _all = revenuLoad(); let _chg = false;
-    _all.forEach(r => { if(r.bienId === bien.id && _l > 0 && Number(r.loyer) !== _l){ r.loyer = _l; Object.assign(r, revenuDerived(r)); _chg = true; } });
+    _all.forEach(r => { if(r.bienId === bien.id && _l > 0 && Number(r.loyer) !== _l){ revenuSetLoyerNow_(r, _l); Object.assign(r, revenuDerived(r)); _chg = true; } });
     if(_chg){ revenuSave(_all); renderRevenus(); }
     revenuSyncRecurrents(bien.id, _l);
   }catch(_){}
@@ -80591,6 +80812,9 @@ function immoCard(d){
   // Cash-flow mensuel : croisement avec le crédit et le revenu locatif liés à ce bien
   const cred = creditLoad().find(c=>c.bienId===d.id && c.statut!=='vendu');
   const rev  = revenuLoad().find(r=>r.bienId===d.id);
+  // Rendement NET : repris tel quel de « Revenus locatifs » (loyers après vacance moins charges et taxe foncière, avant impôt, sur la valeur actuelle) ; absent si aucun revenu n'est saisi pour ce bien
+  const rendNetTxt = (rev && d.type!=='terrain') ? kyfPctTxt(revenuDerived(rev).rendNet) : null;
+  const RN_TIP = rendNetTxt ? 'Loyers après vacance, moins charges, taxe foncière, assurance PNO, agence et travaux, divisés par la valeur actuelle. Avant impôt : les revenus fonciers sont ensuite imposés.' : 'Indisponible : saisissez les loyers et charges du bien dans Revenus locatifs.';
   const cashflow = (rev && rev.netAn!==undefined && cred && cred.mensTotale!==undefined)
     ? Math.round(rev.netAn/12 - bienMensTotale(d.id)) : null;
 
@@ -80613,12 +80837,11 @@ function immoCard(d){
       </div>
       <span style="font-family:'Inter',sans-serif;font-size:13px;color:var(--text2)">Valeur actuelle <strong style="color:var(--accent);font-weight:800;font-size:16px">${d.valeur?fmt(parseFloat(d.valeur),0)+' €':'-'}</strong></span>
       <span style="font-family:'Inter',sans-serif;font-size:13px;color:var(--text2)">${d.type==='terrain'?'Revenus/an':'Loyer perçu'} <strong style="color:var(--text);font-weight:700">${d.type==='terrain'?(d.revenuAnnuel?fmt(parseFloat(d.revenuAnnuel),0)+' €':'-'):(d.loyerMensuel?fmt(parseFloat(d.loyerMensuel),0)+' €':'-')}</strong></span>
-      <span style="font-family:'Inter',sans-serif;font-size:13px;color:var(--text2)">Rendement <strong style="color:${d.rendBrut?'var(--green)':'var(--text)'};font-weight:700">${kyfPctTxt(d.rendBrut)?kyfPctTxt(d.rendBrut)+'%':'-'}</strong></span>
+      <span style="font-family:'Inter',sans-serif;font-size:13px;color:var(--text2)" title="Loyers annuels pleins divisés par la valeur actuelle, avant vacance et charges">Rendement brut <strong style="color:${d.rendBrut?'var(--green)':'var(--text)'};font-weight:700">${kyfPctTxt(d.rendBrut)?kyfPctTxt(d.rendBrut)+'%':'-'}</strong></span>
+      ${d.type!=='terrain'?`<span style="font-family:'Inter',sans-serif;font-size:13px;color:var(--text2)" title="${RN_TIP}">Rendement net <strong style="color:${rendNetTxt?'var(--green)':'var(--text)'};font-weight:700">${rendNetTxt?rendNetTxt+'%':'-'}</strong></span>`:''}
       <span style="font-family:'Inter',sans-serif;font-size:13px;color:var(--text2)">Acquisition <strong style="color:var(--text);font-weight:700">${d.dateAchat?new Date(d.dateAchat).toLocaleDateString('fr-FR',{month:'short',year:'numeric'}):'-'}</strong></span>
       <div style="display:flex;gap:2px;flex-shrink:0" onclick="event.stopPropagation()">
-        ${d.statut!=='vendu' ? `<button onclick="openVente('${d.id}')" title="Vendre ce bien" class="immo-icon-btn" style="background:none;border:none;color:var(--red);cursor:pointer;display:flex;align-items:center;padding:2px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3.24H4a1 1 0 0 0-1 1v5.59a2 2 0 0 0 .59 1.41l9.58 9.59a2 2 0 0 0 2.83 0l4.59-4.59a2 2 0 0 0 0-2.83z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></button>` : ''}
-        <button onclick="editImmo('${d.id}')" title="Modifier" class="immo-icon-btn" style="background:none;border:none;color:var(--text3);cursor:pointer;display:flex;align-items:center;padding:2px">${KYF_ICONS.edit}</button>
-        <button onclick="deleteImmo('${d.id}')" title="Supprimer" class="immo-icon-btn" style="background:none;border:none;color:var(--text3);cursor:pointer;display:flex;align-items:center;padding:2px;transition:color .15s" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text3)'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg></button>
+        ${kyfActionsMenuHtml_('immo-' + d.id, [{ label: 'Modifier', onclick: "editImmo('" + d.id + "')" }].concat(d.statut!=='vendu' ? [{ label: 'Vendre ce bien', onclick: "openVente('" + d.id + "')", icon: KYF_TAG }] : []).concat([{ label: 'Supprimer', onclick: "deleteImmo('" + d.id + "')", danger: true }]))}
       </div>
     </div>`;
   }
@@ -80648,9 +80871,7 @@ function immoCard(d){
             <button onclick="toggleImmoCard('${d.id}')" title="${isImmoCollapsed?'Développer':'Réduire'}" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;border:none;background:none;color:var(--text3);cursor:pointer;transition:background .15s" onmouseover="this.style.background=kyfChevronHoverBg();this.querySelector('svg').style.color='var(--accent)'" onmouseout="this.style.background='transparent';this.querySelector('svg').style.color='var(--text3)'">
               <svg id="immo-chevron-${d.id}" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" style="transition:transform .25s ease,color .15s;transform:${isImmoCollapsed?'rotate(-90deg)':'rotate(0deg)'}"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
-            <button onclick="editImmo('${d.id}')" title="Modifier" class="immo-icon-btn" style="background:none;border:none;color:var(--text3);cursor:pointer;display:flex;align-items:center;padding:2px">${KYF_ICONS.edit}</button>
-            ${d.statut!=='vendu' ? `<button onclick="openVente('${d.id}')" title="Vendre ce bien" class="immo-icon-btn" style="background:none;border:none;color:var(--red);cursor:pointer;display:flex;align-items:center;padding:2px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3.24H4a1 1 0 0 0-1 1v5.59a2 2 0 0 0 .59 1.41l9.58 9.59a2 2 0 0 0 2.83 0l4.59-4.59a2 2 0 0 0 0-2.83z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></button>` : ''}
-            <button onclick="deleteImmo('${d.id}')" title="Supprimer" class="immo-icon-btn" style="background:none;border:none;color:var(--text3);cursor:pointer;display:flex;align-items:center;padding:2px;transition:color .15s" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text3)'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg></button>
+            ${kyfActionsMenuHtml_('immoX-' + d.id, [{ label: 'Modifier', onclick: "editImmo('" + d.id + "')" }].concat(d.statut!=='vendu' ? [{ label: 'Vendre ce bien', onclick: "openVente('" + d.id + "')", icon: KYF_TAG }] : []).concat([{ label: 'Supprimer', onclick: "deleteImmo('" + d.id + "')", danger: true }]))}
           </div>
         </div>
         ${statutLbl?`<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.06);border:1px solid var(--border2);font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;color:${statutCol};margin-bottom:12px;margin-right:6px"><span style="width:6px;height:6px;border-radius:50%;background:${statutCol};flex-shrink:0"></span> ${statutLbl}</div>`:''}
@@ -80667,7 +80888,8 @@ function immoCard(d){
       <div style="display:flex;flex-wrap:wrap;gap:6px 20px;font-family:'Inter',sans-serif;font-size:12px;color:var(--text3)">
         <span>Superficie <strong style="color:var(--text2)">${immoFormatSurface(d.surface)||'-'}</strong></span>
         <span>${d.type==='terrain'?'Revenus/an':'Loyer'} <strong style="color:var(--text2)">${d.type==='terrain'?(d.revenuAnnuel?fmt(parseFloat(d.revenuAnnuel),0)+' €':'-'):(d.loyerMensuel?fmt(parseFloat(d.loyerMensuel),0)+' €/mois':'-')}</strong></span>
-        <span>Rendement <strong style="color:${d.rendBrut?'var(--green)':'var(--text2)'}">${kyfPctTxt(d.rendBrut)?kyfPctTxt(d.rendBrut).replace('.',',')+' %':'-'}</strong></span>
+        <span>Rendement brut <strong style="color:${d.rendBrut?'var(--green)':'var(--text2)'}">${kyfPctTxt(d.rendBrut)?kyfPctTxt(d.rendBrut).replace('.',',')+' %':'-'}</strong></span>
+        ${d.type!=='terrain'?`<span title="${RN_TIP}">Rendement net <strong style="color:${rendNetTxt?'var(--green)':'var(--text2)'}">${rendNetTxt?rendNetTxt.replace('.',',')+' %':'-'}</strong></span>`:''}
         <span>Acquisition <strong style="color:var(--text2)">${d.dateAchat?new Date(d.dateAchat).toLocaleDateString('fr-FR',{month:'short',year:'numeric'}):'-'}</strong></span>
       </div>
       ${d.maps?`<a href="${immoMapsUrl(d.maps)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" style="display:flex;align-items:center;gap:6px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);text-decoration:none;cursor:pointer" onmouseenter="this.style.color='var(--accent)'" onmouseleave="this.style.color='var(--text3)'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Localisation : ${escapeHtml(d.maps)}</a>`:''}
@@ -85893,6 +86115,15 @@ function avCloseEvMenu(id){
   if(menu) menu.style.display = 'none';
   avCloseAllMenus();
 }
+// Menu « ⋯ » des actions d'une ligne : mêmes gabarit et moteur (avToggleActionsMenu) que les opérations crypto, positions ETF et contrats AV.
+// items : [{ label, onclick, danger }] ; key : identifiant du menu (caractères sûrs).
+const KYF_TAG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3.24H4a1 1 0 0 0-1 1v5.59a2 2 0 0 0 .59 1.41l9.58 9.59a2 2 0 0 0 2.83 0l4.59-4.59a2 2 0 0 0 0-2.83z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>';
+function kyfActionsMenuHtml_(key, items){
+  const k = String(key).replace(/[^A-Za-z0-9_-]/g, '_');
+  const rows = items.map((it, i) => '<div onclick="avCloseActionsMenu(\'' + k + '\');' + it.onclick + '" style="padding:8px 12px;font-family:\'Inter\',sans-serif;font-size:10px;color:' + (it.danger ? '#ff4560' : 'var(--text)') + ';cursor:pointer;display:flex;align-items:center;gap:6px' + (i > 0 ? ';border-top:1px solid var(--border)' : '') + '" onmouseover="this.style.background=\'var(--hov-bg-soft)\'" onmouseout="this.style.background=\'\'">' + (it.icon || (it.danger ? KYF_ICONS.trash : KYF_ICONS.edit)) + ' ' + it.label + '</div>').join('');
+  return '<span style="position:relative;display:inline-block;vertical-align:middle"><button onclick="event.stopPropagation();avToggleActionsMenu(\'' + k + '\')" class="kyf-op-dots" title="Actions">⋯</button>'
+    + '<div id="avActionsMenu-' + k + '" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:130px">' + rows + '</div></span>';
+}
 function avToggleActionsMenu(id){
   const anchorBtn = (window.event && window.event.currentTarget && window.event.currentTarget.getBoundingClientRect) ? window.event.currentTarget : (document.getElementById('avActionsMenu-'+id)||{}).previousElementSibling;
   const menu = document.getElementById('avActionsMenu-'+id);
@@ -88634,6 +88865,11 @@ function orInlineEdit(id, td, currentVal){
         </div>
       </div>
     </div></div>
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-bottom:22px;align-items:end"><div>
+      <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">LOYER À PARTIR DU (facultatif)</div>
+      <input type="hidden" id="revLoyerDate" value="">
+      <button type="button" id="revLoyerDateBtn" class="kyf-csel-btn" data-kyf-date="revLoyerDate" aria-haspopup="dialog" aria-expanded="false"><span id="revLoyerDateBtnLabel">JJ/MM/AAAA</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>
+    </div><div style="font-size:10px;color:var(--text3);line-height:1.4">Après une revalorisation, indiquez la date d'effet du nouveau loyer : les loyers précédents sont conservés dans l'historique. Sans date, le changement compte à partir d'aujourd'hui.</div></div>
     <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-bottom:22px"><div>
       <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">CHARGES NON RÉCUP. (€/an)</div>
       <div style="display:flex;align-items:stretch;border-radius:6px;border:1px solid var(--border2);overflow:hidden;background:var(--btn-secondary-bg);transition:border-color .15s" id="revChargesWrap">
@@ -88783,8 +89019,9 @@ function orInlineEdit(id, td, currentVal){
 <div id="creditRenegOverlay" onclick="closeCreditReneg()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10008"></div>
 <div id="creditRenegModal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(440px,94vw);z-index:10009;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:18px 20px;font-family:'Inter',sans-serif;box-shadow:0 12px 48px rgba(0,0,0,0.4)">
   <input type="hidden" id="creditRenegCreditId">
+  <input type="hidden" id="creditRenegEditId">
   <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px">
-    <div><div style="font-weight:700;font-size:12px;letter-spacing:1px;color:var(--text)">RENÉGOCIATION DU PRÊT</div><div id="creditRenegTitre" style="font-size:10px;color:var(--text3);margin-top:3px"></div></div>
+    <div><div id="creditRenegModalTitle" style="font-weight:700;font-size:12px;letter-spacing:1px;color:var(--text)">RENÉGOCIATION DU PRÊT</div><div id="creditRenegTitre" style="font-size:10px;color:var(--text3);margin-top:3px"></div></div>
     <button type="button" onclick="closeCreditReneg()" class="kyf-modal-close" title="Fermer" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
   <div style="font-size:10px;color:var(--text3);line-height:1.5;margin-bottom:12px">À la date indiquée, KYF repart du capital restant dû (calculé par KYF, ou celui de votre banque si vous le saisissez en bas), au nouveau taux, sur la durée restante (ou celle déduite de la mensualité de la banque). Les frais sont notés pour mémoire, ils ne changent aucun calcul.</div>
@@ -88808,7 +89045,7 @@ function orInlineEdit(id, td, currentVal){
             onmouseenter="this.style.background='var(--hov-bg)'" onmouseleave="this.style.background='transparent'">▼</button>
         </div>
       </div></div>
-    <div><div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">DURÉE RESTANTE (ANS) <span style="opacity:.5">ou mensualité ci-dessous</span></div>
+    <div><div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px;display:flex;align-items:center;justify-content:space-between;gap:6px"><span>DURÉE RESTANTE <span style="opacity:.5">ou mensualité ci-dessous</span></span><span id="creditRenegDureeSeg"></span></div>
       <div style="display:flex;align-items:stretch;border-radius:6px;border:1px solid var(--border2);overflow:hidden;background:var(--btn-secondary-bg);transition:border-color .15s" id="creditRenegDureeWrap">
         <input id="creditRenegDuree" type="text" inputmode="decimal" placeholder="12 ou 12,5" oninput="creditRenegPreview()"
           style="flex:1;min-width:0;background:transparent;border:none;color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;outline:none"
@@ -88872,7 +89109,7 @@ function orInlineEdit(id, td, currentVal){
 <div class="av-wrap">
   <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);flex-shrink:0">
     <div>
-      <span style="font-weight:700;font-size:12px;letter-spacing:1px;color:var(--text);display:flex;align-items:center;gap:8px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg> CRÉDIT IMMOBILIER</span>
+      <span style="font-weight:700;font-size:12px;letter-spacing:1px;color:var(--text);display:flex;align-items:center;gap:8px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg> <span id="creditModalTitle">CRÉDIT IMMOBILIER</span></span>
       <div style="font-size:9px;color:var(--text3);margin-top:3px">Emprunt lié à un bien, avec mensualités calculées</div>
     </div>
     <button type="button" onclick="closeCredit()" class="kyf-modal-close" title="Fermer" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
@@ -89002,7 +89239,7 @@ function orInlineEdit(id, td, currentVal){
       </div>
     </div></div>
     <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-bottom:22px"><div>
-      <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">DURÉE (années)</div>
+      <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px;display:flex;align-items:center;justify-content:space-between;gap:6px"><span>DURÉE</span><span id="creditDureeSeg"></span></div>
       <div style="display:flex;align-items:stretch;border-radius:6px;border:1px solid var(--border2);overflow:hidden;background:var(--btn-secondary-bg);transition:border-color .15s" id="creditDureeWrap">
         <input id="creditDuree" type="text" inputmode="decimal" placeholder="20" oninput="calcCreditAuto()"
           style="flex:1;min-width:0;background:transparent;border:none;color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;outline:none"
