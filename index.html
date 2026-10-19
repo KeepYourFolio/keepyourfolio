@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_6_119.html
+  @file        : KYF_SHARE_beta_2_8_6_120.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.6.119
+  @version     : Beta 2.8.6.120
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -15,6 +15,100 @@
 <!DOCTYPE html>
 <html lang="fr" data-theme="dark">
 <head>
+<script>
+// ── Mode démo : stockage EN MÉMOIRE, installé avant tout le reste ──
+// Quand la démo est active, « localStorage » est remplacé par un stockage en mémoire pré-rempli de données fictives :
+// rien n'est lu dans les vraies données de la personne, rien n'y est écrit, aucune sauvegarde ni synchronisation n'est
+// possible (aucun réglage de sauvegarde n'existe dans ce stockage). Quitter la démo recharge la page : les vraies données,
+// jamais touchées, reviennent telles quelles. Activation : marqueur « [kyfDemo:horodatage] » dans window.name (propre à
+// l'onglet, expire après 2 h) posé par « Essayer avec des données fictives » ou par l'adresse …/#demo.
+(function(){
+  try{
+    var TTL = 2 * 3600 * 1000, now = Date.now(), wn = window.name || '';
+    var m = /\[kyfDemo:(\d+)\]/.exec(wn);
+    if(m && now - parseInt(m[1], 10) > TTL){ window.name = wn = wn.replace(/\[kyfDemo:\d+\]/g, ''); m = null; }
+    if(!m && /(^|[#&])demo($|&)/.test(location.hash || '')){
+      window.name = wn = wn + '[kyfDemo:' + now + ']'; m = /\[kyfDemo:(\d+)\]/.exec(wn);
+      try{ history.replaceState(null, '', location.pathname + location.search); }catch(e){}
+    }
+    if(!m){   // « …/#demo » tapé dans un onglet KYF déjà ouvert : le changement d'ancre ne recharge pas la page, on le fait
+      window.addEventListener('hashchange', function(){ if(/(^|[#&])demo($|&)/.test(location.hash || '')) location.reload(); });
+      return;
+    }
+    var data = Object.create(null);
+    var api = {
+      getItem: function(k){ k = String(k); return k in data ? data[k] : null; },
+      setItem: function(k, v){ data[String(k)] = String(v); },
+      removeItem: function(k){ delete data[String(k)]; },
+      clear: function(){ for(var k in data) delete data[k]; },
+      key: function(i){ var ks = Object.keys(data); return i >= 0 && i < ks.length ? ks[i] : null; }
+    };
+    var mem = new Proxy(api, {
+      get: function(t, p){ if(p === 'length') return Object.keys(data).length; if(p in t) return t[p]; return typeof p === 'string' && p in data ? data[p] : undefined; },
+      set: function(t, p, v){ if(typeof p === 'string') data[p] = String(v); return true; },
+      has: function(t, p){ return p in t || (typeof p === 'string' && p in data); },
+      deleteProperty: function(t, p){ if(typeof p === 'string') delete data[p]; return true; },
+      ownKeys: function(){ return Object.keys(data); },
+      getOwnPropertyDescriptor: function(t, p){ return typeof p === 'string' && p in data ? { value: data[p], writable: true, enumerable: true, configurable: true } : undefined; }
+    });
+    Object.defineProperty(window, 'localStorage', { configurable: true, enumerable: true, get: function(){ return mem; } });
+    if(window.localStorage !== mem){   // le navigateur refuse : on n'entre pas en démo plutôt que d'écrire dans les vraies données
+      window.name = wn.replace(/\[kyfDemo:\d+\]/g, ''); return;
+    }
+    window.__kyfDemo = true;
+    // Jeu de données fictif (aucun chiffre réel)
+    var J = JSON.stringify;
+    data['kyf-welcome-seen'] = '1'; data['kyf-onboarding-choice-seen'] = '1';
+    data['kyf-nouveautes-vue'] = 'a-2026-10-18';   // = KYF_NOUVEAUTES.annonces[0].id (vérifié par le test val_DEMO-isolation)
+    data['kyf-profil-nom'] = 'Démo';
+    data['pea-positions'] = J([
+      { name:'Amundi MSCI World', ticker:'CW8.PA', isin:'LU1681043599', pru:468.3, qty:42, montant:19668.6, enveloppe:'PEA', color:'#4d9fff' },
+      { name:'BNP Paribas S&P 500', ticker:'ESE.PA', isin:'FR0011550185', pru:21.4, qty:120, montant:2568, enveloppe:'PEA', color:'#9b6dff' },
+      { name:'Amundi MSCI Emerging Markets', ticker:'PAEEM.PA', isin:'FR0013412020', pru:22.1, qty:150, montant:3315, enveloppe:'PEA', color:'#f0b429' },
+      { name:'iShares Core MSCI World', ticker:'IWDA.AS', isin:'IE00B4L5Y983', pru:83.5, qty:30, montant:2505, enveloppe:'CTO', color:'#00b894' }
+    ]);
+    // Cours fictifs pré-chargés : la démo se lit tout de suite, même hors ligne ou si les sources de cours sont bloquées
+    // (les vrais cours, s'ils arrivent, prennent le relais comme d'habitude).
+    function px(price, prev){ return { price:price, prev:prev, change:+(price - prev).toFixed(4), pct:(price - prev) / prev, currency:'EUR', source:'gas', _ts:now }; }
+    data['kyf-price-cache-date'] = new Date().toISOString().slice(0, 10);   // sinon la règle « nouveau jour » efface ces cours au démarrage
+    data['kyf-price-cache-v1'] = J({ 'CW8.PA':px(521.4, 519.8), 'ESE.PA':px(27.9, 27.75), 'PAEEM.PA':px(24.6, 24.55), 'IWDA.AS':px(98.2, 97.9) });
+    data['kyf-cg-price-cache-v2'] = J({ _ts:now, _rate:1.09, data:{ bitcoin:{ eur:58200, usd:63400, change24h:1.2 }, ethereum:{ eur:2650, usd:2890, change24h:-0.6 } } });
+    data['kyf-cash-pea'] = '1250'; data['kyf-cash-cto'] = '430'; data['kyf-pea-total-verse'] = '21500';
+    data['pea-crypto-v1'] = J({ positions:[
+      { id:'pos_demo1', ticker:'bitcoin', nom:'Bitcoin', symbol:'BTC', pru:42000, qte:0.05, manual:true },
+      { id:'pos_demo2', ticker:'ethereum', nom:'Ethereum', symbol:'ETH', pru:2300, qte:0.8, manual:true }
+    ], stables:[], pertes:[], achats:[], frais:{}, global:{}, operations:[], recalcV2:true });
+    data['kyf-livrets'] = J([
+      { id:'liv_demo1', banque:'Banque (exemple)', type:'Livret A', solde:12400, taux:1.75, plafond:22950, liquide:1, tauxHistory:[] },
+      { id:'liv_demo2', banque:'Banque (exemple)', type:'LDDS', solde:4200, taux:1.75, plafond:12000, liquide:1, tauxHistory:[] }
+    ]);
+    data['kyf-av'] = J([{ id:'av_demo1', type:'av', contratNom:'Contrat (exemple)', assureur:'Assureur (exemple)', versements:20000, valeur:23800, fondsEuros:14000, uc:9800, dateOuv:'2019-03-01' }]);
+    data['kyf-immo'] = J([{ id:'immo_demo1', nom:'Appartement (exemple)', type:'Appartement', typeTerrain:'', photo:'', statut:'', valeur:210000, surface:48, dateAchat:'', dpe:'', loyerMensuel:0, revenuAnnuel:'', crd:0, maps:'', notes:'Bien fictif pour la démonstration' }]);
+    // Sortie de la démo : on retire le marqueur et on recharge (les vraies données n'ont jamais été touchées)
+    window.kyfDemoExit = function(){
+      window.name = (window.name || '').replace(/\[kyfDemo:\d+\]/g, '');
+      try{ history.replaceState(null, '', location.pathname + location.search); }catch(e){}
+      location.reload();
+    };
+    document.addEventListener('DOMContentLoaded', function(){
+      try{ document.title = 'Démo · ' + document.title; }catch(e){}
+      var st = document.createElement('style');
+      st.textContent = '#kyfDemoBar{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:2147483000;display:flex;align-items:center;gap:14px;max-width:calc(100vw - 24px);padding:9px 10px 9px 18px;border-radius:999px;background:#f0b429;color:#1b1304;font:600 13px/1.3 Inter,system-ui,sans-serif;box-shadow:0 8px 28px rgba(0,0,0,.4)}' +
+        '#kyfDemoBar button{font:700 12px Inter,system-ui,sans-serif;padding:8px 16px;border-radius:999px;border:0;background:#1b1304;color:#f0b429;cursor:pointer;white-space:nowrap}' +
+        '#kyfDemoBar button:hover,#kyfDemoBar button:focus-visible{background:#000;outline:2px solid #1b1304;outline-offset:2px}' +
+        '@media (max-width:600px){#kyfDemoBar{flex-direction:column;border-radius:16px;padding:10px 14px;text-align:center;gap:8px}}';
+      document.head.appendChild(st);
+      var bar = document.createElement('div'); bar.id = 'kyfDemoBar'; bar.setAttribute('role', 'status');
+      var tx = document.createElement('span'); tx.textContent = 'Mode démo : données fictives, rien n’est enregistré.';
+      var bt = document.createElement('button'); bt.type = 'button'; bt.textContent = 'Quitter la démo'; bt.onclick = function(){ window.kyfDemoExit(); };
+      bar.appendChild(tx); bar.appendChild(bt); document.body.appendChild(bar);
+    });
+  }catch(e){}
+})();
+function kyfDemoStart(){
+  try{ window.name = (window.name || '').replace(/\[kyfDemo:\d+\]/g, '') + '[kyfDemo:' + Date.now() + ']'; location.reload(); }catch(e){}
+}
+</script>
 <script>
 // ── Appareil partagé : effacement fait AVANT que KYF ne charge quoi que ce soit ──
 // Après « Sauvegarder et effacer », la page se recharge avec un marqueur de session ; ce bloc, le tout premier exécuté,
@@ -6663,7 +6757,7 @@ html:not(.kyf-kbd) .icon-btn:focus-visible,html:not(.kyf-kbd) button:focus-visib
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.6.119</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.6.120</span>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact-mini" title="Contact &amp; Bugs" aria-label="Contact et bugs">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -43298,7 +43392,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.6.119\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.6.120\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -55792,6 +55886,10 @@ function contactDownloadCopy(){
            lire une explication complète plutôt que découvrir par lui-même.
            Discret (texte souligné), à côté du vrai bouton d'action. -->
       <div class="kyf-footer-right">
+        <a class="kyf-footer-guide-link" onclick="kyfDemoStart()">
+          Essayer avec des données fictives
+        </a>
+
         <a class="kyf-footer-guide-link" onclick="closeKYFWelcome(); if(typeof openGuide==='function') openGuide();">
           Découvrir le guide d'utilisation
         </a>
@@ -67436,6 +67534,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.120 · 19/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Mode démo : « Essayer avec des données fictives » sur l'écran de bienvenue (ou adresse …/#demo). Jeu de données fictif en mémoire (PEA, CTO, crypto, livrets, assurance-vie, immobilier) avec cours fictifs, bannière « Quitter la démo » ; vos vraies données ne sont ni lues ni modifiées</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.119 · 19/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Adresse de contact unique contact@keepyourfolio.fr (Aide, À propos, FAQ, pied de page) à la place des adresses Gmail du projet</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.6.118 · 18/10/2026</div>
