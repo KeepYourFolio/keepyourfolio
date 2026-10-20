@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_8_27.html
+  @file        : KYF_SHARE_beta_2_8_8_30.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.8.27
+  @version     : Beta 2.8.8.30
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6887,7 +6887,7 @@ html:not(.kyf-kbd) .icon-btn:focus-visible,html:not(.kyf-kbd) button:focus-visib
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.8.27</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.8.30</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -13155,12 +13155,47 @@ function kyfTopbarIoToggle(k, on){
 }
 if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', kyfTopbarIoApply); else kyfTopbarIoApply();
 
+// 2.8.8.28 : une synchronisation réussie vers Google Sheets, GitHub, WebDAV ou un dossier local est une sauvegarde complète
+// (toutes les clés). Avant, seul le fichier JSON exporté à la main comptait : le rappel s'affichait même avec une synchro en ligne active.
+function kyfSyncBackupMs(){      // date (ms) à laquelle la sauvegarde en ligne était à jour, 0 si aucune synchro configurée
+  let best = 0;
+  try{
+    const now = Date.now(), lim = now + 86400000;
+    // Google Sheets : tout changement passe par la file d'attente. File vide = tout est parti : la sauvegarde est à jour maintenant,
+    // même si rien n'a changé depuis des semaines. File non vide = des changements n'ont pas pu partir : on retient la dernière synchro réussie.
+    const s = Date.parse(localStorage.getItem('kyf-sheets-last-sync') || '');
+    if(s && !isNaN(s) && s <= lim){
+      let pending = true;
+      try{ pending = Object.keys(typeof kyfQueueLoad === 'function' ? kyfQueueLoad() : { x:1 }).length > 0; }catch(e){}
+      best = pending ? s : now;
+    }
+    // GitHub, WebDAV, dossier local : chaque modification déclenche une synchro, et un échec est noté (kyf-sync-error) jusqu'à la suivante réussie.
+    const b = localStorage.getItem('kyf-storage-backend');
+    if(b && b !== 'local'){
+      const n = Number(localStorage.getItem('kyf-storage-last-sync'));
+      if(n && !isNaN(n) && n <= lim){
+        const c = localStorage.getItem('kyf-sync-error') ? n : now;
+        if(c > best) best = c;
+      }
+    }
+  }catch(e){}
+  return best;
+}
+function kyfSyncOn(){            // une synchro en ligne est-elle configurée sur cet appareil ?
+  try{ const b = localStorage.getItem('kyf-storage-backend'); return !!localStorage.getItem('kyf-sheets-last-sync') || (!!b && b !== 'local'); }catch(e){ return false; }
+}
+function kyfLastBackupIso(){     // la plus récente entre le fichier exporté et la dernière synchro réussie
+  let best = 0;
+  try{ const f = Date.parse(localStorage.getItem('kyf-last-backup') || ''); if(f && !isNaN(f)) best = f; }catch(e){}
+  const s = kyfSyncBackupMs(); if(s > best) best = s;
+  return best ? new Date(best).toISOString() : null;
+}
 function kyfBackupDotRefresh(){
   const dot = document.getElementById('quickBackupDot'), btn = document.getElementById('quickBackupBtn');
   if(!dot || !btn) return;
   let last = null, hasData = false;
   try{
-    last = localStorage.getItem('kyf-last-backup');
+    last = kyfLastBackupIso();
     let size = 0;
     for(const k of Object.keys(localStorage)){ if(kyfAllowedKey(k)){ size += (localStorage.getItem(k)||'').length; if(size > 1500){ hasData = true; break; } } }
   }catch(e){}
@@ -13190,12 +13225,12 @@ function kyfBackupNudgeState(){   // { show, never, days, blocked, notPersisted 
   let blocked = false, hasData = false, last = null;
   try{ localStorage.setItem('kyf-probe', '1'); localStorage.removeItem('kyf-probe'); }catch(e){ blocked = true; }
   try{
-    last = localStorage.getItem('kyf-last-backup'); let size = 0;
+    last = kyfLastBackupIso(); let size = 0;
     for(const k of Object.keys(localStorage)){ if(kyfAllowedKey(k)){ size += (localStorage.getItem(k) || '').length; if(size > 1500){ hasData = true; break; } } }
   }catch(e){}
   const days = last ? Math.floor((Date.now() - new Date(last).getTime()) / 86400000) : null;
   const never = days === null || isNaN(days);
-  return { show: blocked || (hasData && (never || days >= 7)), never:never, days:days, blocked:blocked, notPersisted: window._kyfPersisted === false };
+  return { show: blocked || (hasData && (never || days >= 7)), never:never, days:days, blocked:blocked, notPersisted: window._kyfPersisted === false, syncOn: kyfSyncOn() };
 }
 function kyfBackupNudgeClose(){ document.getElementById('kyfBackupNudge')?.remove(); try{ sessionStorage.setItem('kyf-nudge-off', '1'); }catch(e){} }
 function kyfBackupNudgeNow(){ kyfBackupNudgeClose(); try{ exportConfig({ quick:true }); }catch(e){ kyfQuickToast('Sauvegarde impossible : ' + e.message); } }
@@ -13209,7 +13244,8 @@ function kyfBackupNudge(){
     const head = st.blocked ? 'Votre navigateur bloque le stockage : rien ne sera conservé.' : st.never ? 'Vos données ne sont pas encore sauvegardées.' : 'Dernière sauvegarde il y a ' + st.days + ' jours.';
     const body = st.blocked ? 'Enregistrez un fichier de sauvegarde avant de fermer, et autorisez le stockage du site dans les réglages du navigateur.'
       : 'KYF garde vos données uniquement dans ce navigateur, sans compte ni serveur. Si le navigateur efface les données des sites à la fermeture (ou en navigation privée), tout disparaît. Un fichier de sauvegarde vous permet de tout restaurer.'
-        + (st.notPersisted ? ' Votre navigateur n\'a pas confirmé la conservation durable des données.' : '');
+        + (st.notPersisted ? ' Votre navigateur n\'a pas confirmé la conservation durable des données.' : '')
+        + (st.syncOn && !st.never ? ' Votre synchronisation en ligne n\'a pas abouti depuis ' + st.days + ' jours : vérifiez-la dans les options avancées.' : '');
     b.innerHTML = '<div style="font-weight:700;color:var(--text);font-size:13px;margin-bottom:4px">' + head + '</div><div>' + body + '</div>'
       + '<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button type="button" id="kyfNudgeLater" onclick="kyfBackupNudgeClose()" style="font-family:Inter,sans-serif;font-size:11px;font-weight:700;padding:8px 14px;border-radius:8px;border:1px solid var(--border2);background:none;color:var(--text2);cursor:pointer">Plus tard</button>'
       + '<button type="button" id="kyfNudgeNow" onclick="kyfBackupNudgeNow()" style="font-family:Inter,sans-serif;font-size:11px;font-weight:700;padding:8px 14px;border-radius:8px;border:none;background:#f0b429;color:#000;cursor:pointer">Sauvegarder maintenant</button></div>';
@@ -43646,7 +43682,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.8.27\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.8.30\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -65664,24 +65700,24 @@ const KYF_NOUVEAUTES = {
       { titre: 'Nouvelle page Frais', version: '2.8.7.0', texte: 'Nouvelle page Frais : les frais de vos assureurs par année, et les frais de courtage.' }
     ] },
     { id: 'a-2026-10-18', date: '2026-10-18', items: [
-      { titre: 'Immobilier : valorisation crédits déduits (réglage)', version: '2.8.6.100', texte: 'Nouveau dans Paramètres > Immobilier : vous pouvez choisir que le KPI « Valorisation live » du tableau de bord compte vos biens crédits déduits (valeur moins capital restant dû). Désactivé par défaut : rien ne change tant que vous ne l’activez pas.' },
-      { titre: 'Immobilier : rendement net et historique du loyer', version: '2.8.6.99', texte: 'Mes biens affiche maintenant le rendement net à côté du brut. Dans Revenus locatifs, le champ « Loyer à partir du » garde l’historique de vos revalorisations (pastille sur la carte), et les libellés des bandeaux précisent ce qui est compté (cash-flow avant impôt, taxe foncière incluse).' },
-      { titre: 'Immobilier : crédits en mois et menu d’actions', version: '2.8.6.98', texte: 'La durée d’un crédit se saisit en mois ou en années, un prêt (et sa renégociation) se modifie depuis son menu ⋯. Modifier, vendre et supprimer sont rangés dans ce même menu ⋯ sur toute la partie immobilier.' }
+      { titre: 'Immobilier : valorisation crédits déduits', version: '2.8.6.100', texte: 'Dans Paramètres > Immobilier, vous pouvez compter vos biens crédits déduits dans le KPI « Valorisation live ». Désactivé par défaut.' },
+      { titre: 'Immobilier : rendement net et historique du loyer', version: '2.8.6.99', texte: 'Mes biens affiche le rendement net à côté du brut. Le loyer garde l’historique de vos revalorisations.' },
+      { titre: 'Immobilier : crédits en mois et menu d’actions', version: '2.8.6.98', texte: 'Durée d’un crédit en mois ou en années. Modifier, vendre et supprimer sont rangés dans le menu ⋯.' }
     ] },
     { id: 'a-2026-10-16', date: '2026-10-16', items: [
-      { titre: 'Trier les ETF et les cryptos par colonne', version: '2.8.6.37', texte: 'Cliquez sur l’en-tête d’une colonne (nom, valeur, gain, variation du jour...) pour trier vos ETF ou vos cryptos. Une flèche indique le sens du tri : un deuxième clic l’inverse, un troisième revient à l’ordre d’origine.' },
-      { titre: 'Plus-value du PEA et du PEA-PME expliquée', version: '2.8.6.45', texte: 'Sur la carte fiscale, la plus-value porte son vrai nom : « plus-value fiscale », c’est la valeur du plan moins le total versé. Dessous, KYF affiche celle des lignes du tableau Portefeuille et l’écart entre les deux (espèces, gains déjà arbitrés), avec un lien vers le guide.' }
+      { titre: 'Trier les ETF et les cryptos par colonne', version: '2.8.6.37', texte: 'Cliquez sur l’en-tête d’une colonne pour trier vos ETF ou vos cryptos. Un deuxième clic inverse le tri, un troisième revient à l’ordre d’origine.' },
+      { titre: 'Plus-value du PEA et du PEA-PME expliquée', version: '2.8.6.45', texte: 'La carte fiscale affiche la plus-value fiscale (valeur du plan moins total versé) et l’écart avec celle du tableau Portefeuille.' }
     ] },
     { id: 'a-2026-10-15b', date: '2026-10-15', items: [
-      { titre: 'Versements et retraits sur PEA et CTO', version: '2.8.6.00', texte: 'Vous avez versé de l’argent sur votre PEA ou votre CTO ? Ouvrez la fenêtre des espèces (ligne « Espèces » du module ETF & Actions) : vous pouvez enregistrer un versement ou un retrait avec sa date. Tout est conservé dans « Historique des versements » (page Fiscalité), avec filtres, modification et suppression.' },
-      { titre: 'Plus-value PEA fidèle après un retrait', version: '2.8.6.02', texte: 'Quand le total versé est renseigné, un retrait saisi dans l’historique ne fait plus apparaître une fausse perte : il est ajouté à la plus-value affichée.' },
-      { titre: 'Avertissement avant 5 ans', version: '2.8.6.02', texte: 'Retirer des espèces d’un PEA de moins de 5 ans entraîne en principe la clôture du plan et l’imposition des gains. KYF vous le rappelle et demande confirmation, sans rien clôturer. Pensez à renseigner la date d’ouverture du PEA dans la fiche fiscale.' }
+      { titre: 'Versements et retraits sur PEA et CTO', version: '2.8.6.00', texte: 'Enregistrez un versement ou un retrait sur votre PEA ou CTO avec sa date, depuis la ligne « Espèces ». Tout est dans « Historique des versements » (page Fiscalité).' },
+      { titre: 'Plus-value PEA fidèle après un retrait', version: '2.8.6.02', texte: 'Un retrait saisi dans l’historique ne fait plus apparaître une fausse perte.' },
+      { titre: 'Avertissement avant 5 ans', version: '2.8.6.02', texte: 'Retirer des espèces d’un PEA de moins de 5 ans entraîne en principe sa clôture. KYF vous le rappelle et demande confirmation, sans rien clôturer.' }
     ] },
     { id: 'a-2026-10-15', date: '2026-10-15', items: [
-      { titre: 'Avis d’arbitrage PER et assurance vie', version: '2.8.4.05', texte: 'Vous avez reçu un avis d’opération (Boursorama, Oradéa Vie) ? Passez le PDF dans le convertisseur KYF, puis importez le CSV obtenu avec « Importer un relevé » dans Assurance vie : l’arbitrage est appliqué support par support, à la bonne date, après votre validation.' }
+      { titre: 'Avis d’arbitrage PER et assurance vie', version: '2.8.4.05', texte: 'Passez votre avis d’opération (PDF) dans le convertisseur KYF, puis importez le CSV avec « Importer un relevé » dans Assurance vie.' }
     ] },
     { id: 'a-2026-10-14', date: '2026-10-14', items: [
-      { titre: 'Synchronisation Google plus douce', version: '2.8.4.01', texte: 'Quand le Sheet contient des données plus récentes pendant que vous utilisez KYF, un bandeau vous propose de les appliquer au lieu de recharger la page d’un coup.' },
+      { titre: 'Synchronisation Google plus douce', version: '2.8.4.01', texte: 'Si le Sheet contient des données plus récentes pendant que vous utilisez KYF, un bandeau vous propose de les appliquer.' },
       { titre: 'Alertes par actif plus lisibles', version: '2.8.4.02', texte: 'Les noms des actifs sont raccourcis proprement sur le graphique des alertes, même quand il y en a beaucoup.' }
     ] }
   ]
@@ -66207,12 +66243,12 @@ function cashMigrateIfNeeded(){
 // Le cash disponible ne doit jamais être négatif (ce sont des liquidités réelles) : le plancher à
 // zéro est posé ici, au niveau le plus bas, pour couvrir en une fois la saisie manuelle (popup Cash
 // disponible) ET tous les débits/crédits automatiques (achat, vente, swap...), présents et futurs.
-function getCashPea(){ return Math.max(0, parseFloat(localStorage.getItem(CASH_PEA_KEY) || '0') || 0); }
-function getCashCto(){ return Math.max(0, parseFloat(localStorage.getItem(CASH_CTO_KEY) || '0') || 0); }
-function getCashCcp(){ return Math.max(0, parseFloat(localStorage.getItem(CASH_CCP_KEY) || '0') || 0); }
-function setCashPea(v){ localStorage.setItem(CASH_PEA_KEY, Math.max(0, parseFloat(v) || 0).toString()); }
-function setCashCto(v){ localStorage.setItem(CASH_CTO_KEY, Math.max(0, parseFloat(v) || 0).toString()); }
-function setCashCcp(v){ localStorage.setItem(CASH_CCP_KEY, Math.max(0, parseFloat(v) || 0).toString()); }
+function getCashPea(){ return Math.round(Math.max(0, parseFloat(localStorage.getItem(CASH_PEA_KEY) || '0') || 0) * 100) / 100; }   // arrondi au centime (2.8.8.30) : évite 3680.0699999999997
+function getCashCto(){ return Math.round(Math.max(0, parseFloat(localStorage.getItem(CASH_CTO_KEY) || '0') || 0) * 100) / 100; }   // arrondi au centime (2.8.8.30) : évite 3680.0699999999997
+function getCashCcp(){ return Math.round(Math.max(0, parseFloat(localStorage.getItem(CASH_CCP_KEY) || '0') || 0) * 100) / 100; }   // arrondi au centime (2.8.8.30) : évite 3680.0699999999997
+function setCashPea(v){ localStorage.setItem(CASH_PEA_KEY, (Math.round(Math.max(0, parseFloat(v) || 0) * 100) / 100).toString()); }
+function setCashCto(v){ localStorage.setItem(CASH_CTO_KEY, (Math.round(Math.max(0, parseFloat(v) || 0) * 100) / 100).toString()); }
+function setCashCcp(v){ localStorage.setItem(CASH_CCP_KEY, (Math.round(Math.max(0, parseFloat(v) || 0) * 100) / 100).toString()); }
 
 // Conservées pour compatibilité avec du code existant qui utilise getCash()/setCash() -
 // pointent maintenant sur le compartiment PEA par défaut.
@@ -67896,6 +67932,12 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.30 · 20/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Espèces PEA, CTO et compte courant : les montants sont arrondis au centime. Fini les 3680.0699999999997 dans la fenêtre « Cash disponible ».</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.29 · 20/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Quoi de neuf : les textes les plus longs sont raccourcis (immobilier, tri des colonnes, PEA et CTO, avis d'arbitrage, synchronisation Google).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.28 · 20/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Rappel de sauvegarde : une synchronisation réussie vers Google Sheets, GitHub, WebDAV ou un dossier local compte maintenant comme une sauvegarde. Fini le faux rappel « Dernière sauvegarde il y a 7 jours » quand vos données sont déjà sauvegardées en ligne. Si la synchronisation s'est arrêtée depuis plus de 7 jours, le rappel reste et vous le dit.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.27 · 20/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Mode démo : l'appartement fictif est maintenant loué (850 € par mois) et financé par un crédit de 150 000 € sur 20 ans, pour montrer les pages Crédits et Revenus locatifs, le rendement et l'effort d'épargne.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.26 · 20/10/2026</div>
