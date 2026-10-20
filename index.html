@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_8_02.html
+  @file        : KYF_SHARE_beta_2_8_8_21.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.8.02
+  @version     : Beta 2.8.8.21
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -64,7 +64,7 @@
     // Jeu de données fictif (aucun chiffre réel)
     var J = JSON.stringify;
     data['kyf-welcome-seen'] = '1'; data['kyf-onboarding-choice-seen'] = '1';
-    data['kyf-nouveautes-vue'] = 'a-2026-10-20';   // = KYF_NOUVEAUTES.annonces[0].id (vérifié par le test val_DEMO-isolation)
+    data['kyf-nouveautes-vue'] = 'a-2026-10-20b';   // = KYF_NOUVEAUTES.annonces[0].id (vérifié par le test val_DEMO-isolation)
     data['kyf-profil-nom'] = 'Démo';
     data['pea-positions'] = J([
       { name:'Amundi MSCI World', ticker:'CW8.PA', isin:'LU1681043599', pru:468.3, qty:42, montant:19668.6, enveloppe:'PEA', color:'#4d9fff' },
@@ -573,6 +573,23 @@ body.kyf-kpop-open .kpi{pointer-events:none}
 #avGrilleOv #avGrAnalyse,#avGrilleOv #avGrCancel,#avGrilleOv #avGrSave,#avDCAGrilleBox button{transition:background .15s,opacity .15s}
 #avGrilleOv #avGrPdf:hover,#avGrilleOv #avGrAnalyse:hover,#avGrilleOv #avGrCancel:hover,#avDCAGrilleBox button:hover{background:var(--hov-bg)!important}
 #kyfBackupNudge #kyfNudgeLater:hover{background:var(--hov-bg)!important}
+#idxBandWrap>*{pointer-events:auto}
+.kyf-new-offlink:hover{background:var(--hov-bg)!important;color:var(--text)!important}
+.kyf-tabseg{display:inline-flex;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:10px;padding:3px;gap:2px;max-width:100%;flex-wrap:wrap}
+.kyf-tabseg button{font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:6px 16px;border-radius:7px;border:none;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px;background:transparent;color:var(--text3)}
+.kyf-tabseg button:hover:not(.kyf-toggle-active){background:var(--hov-bg)!important;color:var(--text)}
+.kyf-tabseg button.kyf-toggle-active{background:#f0b429!important;color:#000!important}
+@media (prefers-reduced-motion:reduce){.kyf-tabseg button{transition:none}}
+#fraisTabComp .fc-tg{transition:background .15s ease}
+#fraisTabComp .fc-tg:hover{background:var(--hov-bg)!important}
+#fraisTabComp .fc-tg svg{transition:transform .25s ease,color .15s ease}
+#fraisTabComp .fc-tg:hover svg{color:var(--accent)}
+#fraisTabComp .fc-tg[aria-expanded="true"] svg{transform:rotate(90deg)}
+#fraisTabComp .fc-bd{display:grid;grid-template-rows:0fr;transition:grid-template-rows .28s ease,visibility .28s;visibility:hidden}
+#fraisTabComp .fc-bd[data-open="1"]{grid-template-rows:1fr;visibility:visible}
+#fraisTabComp .fc-bd > div{overflow:hidden;min-height:0}
+@media (prefers-reduced-motion:reduce){#fraisTabComp .fc-tg,#fraisTabComp .fc-tg svg,#fraisTabComp .fc-bd{transition:none}}
+#fraisTabs button:hover,#fraisTabComp button:not(.kyf-icon-btn):not(.fc-tg):hover,#fraisTabSim button:hover{background:var(--hov-bg)!important}
 #avEvoModal #avEvoTabm:hover,#avEvoModal #avEvoTaba:hover,#avEvoModal #evoAdd:hover{background:var(--hov-bg)!important}
 #kyfBackupNudge #kyfNudgeNow:hover{filter:brightness(1.1)}
 #fraisManBtn:hover,#fraisManModal #fmAdd:hover,#fraisManModal #fmCancel:hover{background:var(--hov-bg)!important}
@@ -6589,7 +6606,7 @@ html:not(.kyf-kbd) .icon-btn:focus-visible,html:not(.kyf-kbd) button:focus-visib
 <!-- nav horizontale supprimée - remplacée par sidebar -->
 
 <!-- BANDEAU INDICES -->
-<div id="idxBandWrap" style="display:flex;align-items:center;justify-content:center;height:30px;background:transparent;position:sticky;top:46px;z-index:199">
+<div id="idxBandWrap" style="display:flex;align-items:center;justify-content:center;height:30px;background:transparent;position:sticky;top:46px;z-index:199;pointer-events:none">
   <!-- BANDEAU ANNONCE - remplace les indices quand KYF_ANNONCE_ACTIVE
        est activé en haut du fichier. Transition en fondu + léger
        glissement à l'ouverture/fermeture. -->
@@ -6809,7 +6826,7 @@ html:not(.kyf-kbd) .icon-btn:focus-visible,html:not(.kyf-kbd) button:focus-visib
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.8.02</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.8.21</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -12401,17 +12418,23 @@ document.addEventListener('keydown', (e)=>{
 
 <!-- ══════════ BILAN ANNUEL ══════════ -->
 <div class="page" id="page-frais">
-  <div class="kpi-row" style="margin-top:20px;margin-bottom:20px">
+  <div id="fraisTabs" style="margin-top:20px;margin-bottom:16px"><div class="kyf-tabseg"><button type="button" id="fraisTabBtnMes" onclick="fraisTab('mes')" aria-pressed="true" class="kyf-toggle-active">MES FRAIS</button><button type="button" id="fraisTabBtnComp" onclick="fraisTab('comp')" aria-pressed="false">COMPARATEUR</button><button type="button" id="fraisTabBtnSim" onclick="fraisTab('sim')" aria-pressed="false">SIMULATEUR</button></div></div>
+  <div id="fraisTabMes">
+  <div class="kpi-row" id="fraisKpiRow" style="margin-top:0;margin-bottom:20px;display:none" aria-hidden="true">
     <div class="kpi" style="--band:#f43f5e"><div class="kpi-lbl">ESTIMATION SUR 12 MOIS</div><div class="kpi-val" id="fraisPgEst" style="color:var(--red)">-</div><div class="kpi-sub" id="fraisPgEstSub"></div></div>
     <div class="kpi" style="--band:#f43f5e"><div class="kpi-lbl" id="fraisPgYearLbl">PRÉLEVÉS CETTE ANNÉE</div><div class="kpi-val" id="fraisPgYear">-</div><div class="kpi-sub" id="fraisPgYearSub"></div></div>
     <div class="kpi" style="--band:#f43f5e"><div class="kpi-lbl">CUMUL</div><div class="kpi-val" id="fraisPgCum">-</div><div class="kpi-sub" id="fraisPgCumSub"></div></div>
     <div class="kpi" style="--band:#4d9fff"><div class="kpi-lbl">VALEUR APRÈS 12 MOIS DE FRAIS</div><div class="kpi-val" id="fraisPgNet">-</div><div class="kpi-sub" id="fraisPgNetSub" title="Valeur actuelle moins les frais estimés des 12 prochains mois. Aucune valeur de contrat n'est modifiée."></div></div>
   </div>
-  <div class="card"><div class="card-title">FRAIS PAR ANNÉE · ASSURANCE VIE ET PER</div><div id="fraisPgTable" style="margin:0 -18px"></div>
+  <div class="card" id="fraisUni"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap" id="fraisChips"><div class="kyf-tabseg"><button type="button" class="fr-chip kyf-toggle-active" data-fk="all" onclick="fraisFilter('all')" aria-pressed="true">Tous</button><button type="button" class="fr-chip" data-fk="av" onclick="fraisFilter('av')" aria-pressed="false">Assurance vie et PER</button><button type="button" class="fr-chip" data-fk="man" onclick="fraisFilter('man')" aria-pressed="false">Autres frais</button><button type="button" class="fr-chip" data-fk="oth" onclick="fraisFilter('oth')" aria-pressed="false">Courtage et SCPI</button></div><button type="button" id="fraisManBtn" onclick="fraisManOpen()" style="margin-left:auto;font-size:10px;font-weight:700;padding:7px 14px;border-radius:7px;border:1px solid var(--accent);background:none;color:var(--accent);cursor:pointer;letter-spacing:.4px">AJOUTER UN FRAIS</button></div>
+  <div class="fr-sec" data-fk="av" style="margin-top:16px"><div class="card-title">FRAIS PAR ANNÉE · ASSURANCE VIE ET PER</div><div id="fraisPgTable" style="margin:0 -18px"></div></div>
+  <div class="fr-sec" data-fk="man" style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)"><div class="card-title" style="margin:0">AUTRES FRAIS SAISIS · GARDE, INACTIVITÉ, VERSEMENT</div><div id="fraisPgMan" style="margin-top:8px"></div></div>
+  <div class="fr-sec" data-fk="oth" style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)"><div class="card-title">COURTAGE PEA / CTO ET SOUSCRIPTION SCPI</div><div id="fraisPgOthers"></div>
+    <div style="font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);line-height:1.7;margin-top:8px">Courtage : seuls les frais saisis dans vos transactions sont comptés ; une transaction sans frais saisi n'ajoute rien. Souscription SCPI ≈ : taux de la fiche SCPI multiplié par le montant acheté (achat direct seulement ; en assurance vie, ce sont les frais du contrat). Les frais internes des ETF et des SCPI sont déjà compris dans leur cours et ne sont jamais ajoutés. Ces montants ne sont pas dans l'estimation des frais d'assurance vie et PER.</div></div>
   </div>
-  <div class="card" style="margin-top:14px"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap"><div class="card-title" style="margin:0">AUTRES FRAIS SAISIS · GARDE, INACTIVITÉ, VERSEMENT</div><button type="button" id="fraisManBtn" onclick="fraisManOpen()" style="font-size:10px;font-weight:700;padding:7px 14px;border-radius:7px;border:1px solid var(--accent);background:none;color:var(--accent);cursor:pointer;letter-spacing:.4px">AJOUTER UN FRAIS</button></div><div id="fraisPgMan" style="margin-top:8px"></div></div>
-  <div class="card" style="margin-top:14px"><div class="card-title">COURTAGE PEA / CTO ET SOUSCRIPTION SCPI</div><div id="fraisPgOthers"></div>
-    <div style="font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);line-height:1.7;margin-top:8px">Courtage : seuls les frais saisis dans vos transactions sont comptés ; une transaction sans frais saisi n'ajoute rien. Souscription SCPI ≈ : taux de la fiche SCPI multiplié par le montant acheté (achat direct seulement ; en assurance vie, ce sont les frais du contrat). Les frais internes des ETF et des SCPI sont déjà compris dans leur cours et ne sont jamais ajoutés. Ces montants, comme les frais saisis plus haut, ne sont pas dans les quatre chiffres du haut.</div></div>
+  </div>
+  <div id="fraisTabComp" style="display:none"></div>
+  <div id="fraisTabSim" style="display:none"></div>
 </div>
 
 <div class="page" id="page-bilan">
@@ -14825,7 +14848,7 @@ const SHEETS_SYNC_KEYS = [
   'pea-positions','pea-crypto-v1','pea-dca-v1',
   'kyf-dividendes','kyf-livrets','kyf-scpi',
   'kyf-immo','kyf-immo-credits','kyf-immo-revenus','kyf-sci',
-  'kyf-or','kyf-av','kyf-av-positions','kyf-pee','kyf-av-dca','kyf-av-dca-hist','kyf-av-frais-hist','kyf-frais-manuels','kyf-av-perf','kyf-av-arbitrages','kyf-cash-pea','kyf-cash-cto','kyf-cash-ccp','kyf-cash-mvts','kyf-flux-neutres',
+  'kyf-or','kyf-av','kyf-av-positions','kyf-pee','kyf-av-dca','kyf-av-dca-hist','kyf-av-frais-hist','kyf-frais-manuels','kyf-av-perf','kyf-frais-comp','kyf-av-arbitrages','kyf-cash-pea','kyf-cash-cto','kyf-cash-ccp','kyf-cash-mvts','kyf-flux-neutres',
   'kyf-alerts-seuils','kyf-alerts-index',
   'kyf-etf-transactions','kyf-depense-mensuelle','kyf-per-tmi',
   'pea-etf-settings','pea-crypto-settings',
@@ -18951,6 +18974,7 @@ function openSidebarPrefs(){
 }
 function kyfAffichagePrep(){
   kyfSyncSidebarCheckboxes();
+  try{ kyfNewPopSync(); }catch(e){}
   (function(){ var c=document.getElementById('sbpCrumbChk'); if(c) c.checked=!kyfCrumbHidden(); })();
   // Sous-menus (Trésorerie/Immobilier/AV) repliés par défaut à l'ouverture,
   // pour ne pas allonger le popup - sauf si un sous-menu du groupe est
@@ -19149,9 +19173,9 @@ const KYF_BAD_PAGES = {
   'portfolio':['pea-positions','kyf-etf-transactions'], 'transactions':['kyf-etf-transactions'], 'dividendes':['kyf-dividendes'], 'crypto':['pea-crypto-v1'],
   'livrets':['kyf-livrets','kyf-livrets-transactions'], 'livrets-recurrents':['kyf-recurrents'], 'or':['kyf-or'], 'immobilier':['kyf-immo','kyf-sci'],
   'immo-credits':['kyf-immo-credits'], 'immo-revenus':['kyf-immo-revenus'], 'immo-scpi':['kyf-scpi'], 'immo-scpi-liste':['kyf-scpi'], 'immo-crowdfunding':['kyf-crowdfunding'],
-  'assurance':['kyf-av','kyf-av-positions','kyf-pee','kyf-av-dca','kyf-av-dca-hist','kyf-av-frais-hist','kyf-frais-manuels','kyf-av-perf','kyf-av-arbitrages'], 'dca':['pea-dca-v1'], 'budget':['kyf-depense-mensuelle','kyf-cash-ccp'],
+  'assurance':['kyf-av','kyf-av-positions','kyf-pee','kyf-av-dca','kyf-av-dca-hist','kyf-av-frais-hist','kyf-frais-manuels','kyf-av-perf','kyf-frais-comp','kyf-av-arbitrages'], 'dca':['pea-dca-v1'], 'budget':['kyf-depense-mensuelle','kyf-cash-ccp'],
   'fiscal-pea-cto':['kyf-cash-pea','kyf-cash-cto','kyf-cash-mvts'], 'av-fiscalite':['kyf-per-tmi'], 'heatmap':['kyf-flux-neutres'],
-  'frais':['kyf-av','kyf-av-frais-hist','kyf-frais-manuels'], 'dashboard':'*', 'bilan':'*'
+  'frais':['kyf-av','kyf-av-frais-hist','kyf-frais-manuels','kyf-frais-comp'], 'dashboard':'*', 'bilan':'*'
 };
 function kyfBadStored(keys){
   const out = [];
@@ -27418,7 +27442,7 @@ const KYF_WATCHED_KEYS = new Set([
   'kyf-av-positions',     // AV positions
   'kyf-pee',              // PEE (saisie manuelle)
   'kyf-av-arbitrages',    // AV arbitrages/frais
-  'kyf-av-dca','kyf-av-dca-hist','kyf-av-frais-hist','kyf-frais-manuels','kyf-av-perf',           // AV DCA
+  'kyf-av-dca','kyf-av-dca-hist','kyf-av-frais-hist','kyf-frais-manuels','kyf-av-perf','kyf-frais-comp',           // AV DCA
   'kyf-av-favoris',       // AV favoris
   'kyf-av-ref-contrat',   // AV référence contrat
   'kyf-avcomp-maj-date',  // AV date maj comparateur
@@ -28243,7 +28267,7 @@ async function kyfInitialPush(){
     'pea-positions','pea-crypto-v1','pea-dca-v1',
     'kyf-dividendes','kyf-livrets','kyf-scpi',
     'kyf-immo','kyf-immo-credits','kyf-immo-revenus','kyf-sci',
-    'kyf-or','kyf-av','kyf-av-positions','kyf-pee','kyf-av-dca','kyf-av-dca-hist','kyf-av-frais-hist','kyf-frais-manuels','kyf-av-perf','kyf-av-arbitrages','kyf-cash-pea','kyf-cash-cto','kyf-cash-ccp','kyf-cash-mvts','kyf-flux-neutres',
+    'kyf-or','kyf-av','kyf-av-positions','kyf-pee','kyf-av-dca','kyf-av-dca-hist','kyf-av-frais-hist','kyf-frais-manuels','kyf-av-perf','kyf-frais-comp','kyf-av-arbitrages','kyf-cash-pea','kyf-cash-cto','kyf-cash-ccp','kyf-cash-mvts','kyf-flux-neutres',
     'kyf-alerts-seuils','kyf-alerts-index',
     'kyf-etf-transactions','kyf-depense-mensuelle','kyf-per-tmi',
     'pea-etf-settings','pea-crypto-settings',
@@ -41402,6 +41426,7 @@ function kyfCorbeilleGetStore(storeKey){
     fraisManLoad: { load: fraisManLoad, save: fraisManSave, render: fraisManAfterChange, label: 'Frais saisi' },
     avFraisLigne: { restore: avFraisLigneRestore, label: 'Frais prélevé' },
     avPerfPoint: { restore: avPerfPointRestore, label: 'Valeur de relevé' },
+    fraisCompManLoad: { load: fraisCompManLoad, save: fraisCompManSave, render: fraisCompAfterChange, label: 'Contrat comparé' },
     planned: { restore: function(entry){
       const insertAt = Math.min(entry.idx, _planned.length);
       _planned.splice(insertAt, 0, entry.item);
@@ -41515,6 +41540,7 @@ function kyfCorbeilleModuleLabel(storeKey){
     fraisManLoad: 'Frais',
     avFraisLigne: 'Frais AV/PER',
     avPerfPoint:  'Évolution AV/PER',
+    fraisCompManLoad: 'Comparateur de frais',
     cryptoStable: 'Crypto',
     creditReneg:  'Crédit',
     kyfView:      'Vue'
@@ -43559,7 +43585,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.8.02\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.8.21\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -49552,7 +49578,7 @@ const KYF_STORAGE_KEYS = [
   'kyf-av-positions',
   'kyf-pee',
   'kyf-av-arbitrages',
-  'kyf-av-dca','kyf-av-dca-hist','kyf-av-frais-hist','kyf-frais-manuels','kyf-av-perf',
+  'kyf-av-dca','kyf-av-dca-hist','kyf-av-frais-hist','kyf-frais-manuels','kyf-av-perf','kyf-frais-comp',
   'kyf-av-favoris',
   'kyf-av-ref-contrat',
   'kyf-avcomp-maj-date',
@@ -49656,7 +49682,7 @@ const KYF_SHAPE_LISTE = { 'pea-positions':'ETF & Actions', 'kyf-etf-transactions
   'kyf-livrets-transactions':'Mouvements des livrets', 'kyf-scpi':'SCPI', 'kyf-immo':'Immobilier', 'kyf-immo-credits':'Crédits immobiliers',
   'kyf-immo-revenus':'Revenus locatifs', 'kyf-sci':'SCI', 'kyf-or':'Or et métaux', 'kyf-crowdfunding':'Crowdfunding', 'kyf-av':'Assurance vie / PER', 'kyf-pee':'PEE',
   'kyf-cash-mvts':'Versements et retraits', 'kyf-flux-neutres':'Mouvements internes (arbitrages)', 'kyf-av-dca':'Versements programmés AV', 'kyf-av-arbitrages':'Arbitrages AV', 'kyf-recurrents':'Récurrents', 'kyf-frais-manuels':'Frais saisis à la main' };
-const KYF_SHAPE_OBJET = { 'pea-crypto-v1':'Crypto', 'kyf-av-dca-hist':'Historique des versements programmés AV', 'kyf-av-frais-hist':'Historique des frais AV/PER', 'kyf-av-perf':'Évolution des contrats AV/PER', 'pea-dca-v1':'Investissement programmé (DCA)', 'kyf-av-positions':'Positions des contrats AV/PER' };
+const KYF_SHAPE_OBJET = { 'pea-crypto-v1':'Crypto', 'kyf-av-dca-hist':'Historique des versements programmés AV', 'kyf-av-frais-hist':'Historique des frais AV/PER', 'kyf-av-perf':'Évolution des contrats AV/PER', 'kyf-frais-comp':'Comparateur de frais', 'pea-dca-v1':'Investissement programmé (DCA)', 'kyf-av-positions':'Positions des contrats AV/PER' };
 const KYF_SHAPE_NOMBRE = { 'kyf-cash-pea':'Espèces PEA', 'kyf-cash-cto':'Espèces CTO', 'kyf-cash-ccp':'Compte courant', 'kyf-depense-mensuelle':'Dépense mensuelle', 'kyf-per-tmi':'Tranche marginale (TMI)' };
 // '' si la forme est bonne (ou la clé non concernée), sinon le libellé de la partie et le problème
 function kyfShapeError(key, v){
@@ -58810,15 +58836,23 @@ const GUIDE_PAGES = [
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Page Frais (menu Mon Historique)</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9">Quatre chiffres en haut : l'<strong style="color:var(--text)">estimation sur 12 mois</strong> (la même que la tuile FRAIS / AN : taux de la fiche du contrat multiplié par la valeur, plus les frais d'entrée sur les versements), les frais <strong style="color:var(--text)">prélevés cette année</strong> et le <strong style="color:var(--text)">cumul</strong>, tirés de l'historique des frais de vos contrats, puis la <strong style="color:var(--text)">valeur après 12 mois de frais</strong> : valeur actuelle des contrats à frais connus moins l'estimation des 12 prochains mois, hors performance. La valeur d'un contrat dans KYF est celle de votre relevé, déjà nette des frais passés : rien n'est déduit en double et aucune valeur n'est modifiée. En dessous, le tableau par année et par contrat. La tuile FRAIS / AN de la page Mes Contrats affiche aussi les deux lectures : projection sur 12 mois, puis « Prélevés en 2026 ». Un contrat sans frais saisis ou à deux taux de gestion n'est jamais compté comme zéro : la page indique « Indisponible » ou le nombre de contrats concernés. Un second tableau reprend, par année, le courtage du PEA et du CTO (frais saisis dans vos transactions) et la souscription des SCPI en achat direct (taux de la fiche SCPI, marqué ≈) ; ces montants ne sont pas dans les quatre chiffres du haut, et une SCPI sans taux connu est signalée au lieu d'être comptée zéro. Les frais internes des ETF et des SCPI sont déjà dans leur cours et ne sont jamais ajoutés.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">La page a trois onglets : <strong style="color:var(--text)">Mes frais</strong>, <strong style="color:var(--text)">Comparateur</strong> et <strong style="color:var(--text)">Simulateur</strong> (décrits plus bas). Dans Mes frais, tout tient dans une seule carte : quatre pastilles (<strong style="color:var(--text)">Tous</strong>, <strong style="color:var(--text)">Assurance vie et PER</strong>, <strong style="color:var(--text)">Autres frais</strong>, <strong style="color:var(--text)">Courtage et SCPI</strong>) permettent de n'afficher qu'un type de frais, sans rien supprimer ; le bouton <strong style="color:var(--text)">Ajouter un frais</strong> reste en haut à droite. Le premier bloc donne, par année et par contrat, les frais de vos contrats d'assurance vie et de PER : les frais prélevés lus dans l'historique des frais du contrat, et l'estimation sur 12 mois (taux de la fiche du contrat multiplié par la valeur, plus les frais d'entrée sur les versements ; la tuile FRAIS / AN de la page Mes Contrats affiche la même estimation). La valeur d'un contrat dans KYF est celle de votre relevé, déjà nette des frais passés : rien n'est déduit en double et aucune valeur n'est modifiée. Un contrat sans frais saisis ou à deux taux de gestion n'est jamais compté comme zéro : la page indique « Indisponible » ou le nombre de contrats concernés. Le dernier bloc reprend, par année, le courtage du PEA et du CTO (frais saisis dans vos transactions) et la souscription des SCPI en achat direct (taux de la fiche SCPI, marqué ≈) ; ces montants ne sont pas dans l'estimation des contrats, et une SCPI sans taux connu est signalée au lieu d'être comptée zéro. Les frais internes des ETF et des SCPI sont déjà dans leur cours et ne sont jamais ajoutés.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Autres frais saisis (garde, inactivité, versement)</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9">Certaines banques facturent des droits de garde, des frais d'inactivité ou de tenue de compte sur le PEA et le CTO ; certains contrats prélèvent des frais sur chaque versement. KYF ne peut pas les deviner : sur la page Frais, bouton <strong style="color:var(--text)">Ajouter un frais</strong>, choisissez le placement (contrat assurance vie ou PER, PEE, PEA, CTO), le type, la date et le montant lu sur votre relevé. Le tableau les regroupe par année et par placement ; le crayon corrige un montant, la corbeille le retire (il reste alors dans la Corbeille de KYF, pour l'annuler). Ces frais sont des montants réels, jamais estimés, et ne sont pas dans les quatre chiffres du haut. Un frais dont le placement a été supprimé n'est pas compté.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Certaines banques facturent des droits de garde, des frais d'inactivité ou de tenue de compte sur le PEA et le CTO ; certains contrats prélèvent des frais sur chaque versement. KYF ne peut pas les deviner : sur la page Frais, bouton <strong style="color:var(--text)">Ajouter un frais</strong>, choisissez le placement (contrat assurance vie ou PER, PEE, PEA, CTO), le type, la date et le montant lu sur votre relevé. Le tableau les regroupe par année et par placement ; le crayon corrige un montant, la corbeille le retire (il reste alors dans la Corbeille de KYF, pour l'annuler). Ces frais sont des montants réels, jamais estimés, et ne sont pas dans l'estimation des frais d'assurance vie et PER. Un frais dont le placement a été supprimé n'est pas compté.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Évolution d'un contrat (assurance vie, PER)</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9">Dans le menu <strong style="color:var(--text)">⋯</strong> d'un contrat, <strong style="color:var(--text)">Évolution du contrat</strong> montre sa valeur mois par mois ou année par année, avec le gain net : la variation de la valeur moins les versements de la période (rachats déduits). KYF note la valeur de chaque contrat une fois par jour, à partir du jour où cette version est installée : l'historique se construit donc au fil du temps. Pour remonter dans le passé, ajoutez la valeur d'un relevé (date, valeur, versements cumulés facultatifs) ; un relevé supprimé reste dans la Corbeille de KYF. Sans les versements aux deux dates, le gain de la période est « indisponible » : KYF ne le devine jamais.</div>
+      </div>
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Comparateur de frais (page Frais, onglet Comparateur)</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Il chiffre en euros les frais que chaque contrat prélèverait sur la durée que vous choisissez : frais d'entrée, de gestion (unités de compte et fonds euros selon la part que vous indiquez) et d'arbitrage. Vous comparez vos contrats, des contrats de la base du comparateur AV/PER (données indicatives de finance-heros.fr) et un contrat que vous saisissez vous-même. <strong style="color:var(--text)">Aucun rendement n'est supposé</strong> : le capital reste celui que vous versez (départ, puis versement annuel facultatif), c'est une comparaison de coûts et pas une prévision. Un taux manquant affiche « données incomplètes », jamais un zéro. Les frais des supports (fonds, ETF) ne sont pas inclus. Vos réglages et vos contrats saisis sont conservés ; un contrat saisi supprimé va dans la Corbeille de KYF.</div>
+      </div>
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Simulateur de frais (page Frais, onglet Simulateur)</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Il projette un contrat année par année avec le <strong style="color:var(--text)">rendement brut annuel que vous supposez</strong> : KYF n'en propose aucun et vous devez l'indiquer, à tester avec plusieurs valeurs. Vous voyez les frais retirés, le capital après frais, les frais payés et le rendement que ces frais n'ont pas pu produire. La valeur « <strong style="color:var(--text)">avant frais (théorique)</strong> » sert de repère : aucun contrat n'a zéro frais, ce n'est donc pas un résultat possible. Pour comparer, la ligne <strong style="color:var(--text)">Comparer avec un contrat à ... % de frais de gestion par an</strong> vous laisse choisir le niveau de frais de comparaison (0 %, 0,5 %, 4 %, ce que vous voulez, sans frais d'entrée ni d'arbitrage) : KYF affiche les deux capitaux et l'écart en euros. Laissez la ligne vide pour ne pas comparer. Les frais d'entrée sont retirés de chaque versement, les frais de gestion et d'arbitrage en fin d'année : ils réduisent le capital qui produit ensuite du rendement, d'où un total différent de celui du comparateur (qui ne suppose aucun rendement). Impôts, prélèvements sociaux et frais des supports ne sont pas inclus. Ce n'est ni une prévision ni un conseil. Les contrats simulés sont ceux de l'onglet Comparateur, un taux manquant affiche « données incomplètes ».</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">« Écart à vérifier » sur une carte de contrat</div>
@@ -59095,7 +59129,7 @@ const GUIDE_PAGES = [
 
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg> Quoi de neuf</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9">Après une mise à jour, une fenêtre « Quoi de neuf » liste les nouveautés que vous n'avez pas encore vues : 3 annonces au plus, les plus récentes d'abord, sur 30 jours au plus. Un badge « Nouveau » peut aussi signaler le bouton concerné jusqu'à ce que vous l'ouvriez.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Après une mise à jour, une fenêtre « Quoi de neuf » liste les nouveautés que vous n'avez pas encore vues : 3 annonces au plus, les plus récentes d'abord, sur 30 jours au plus. Un badge « Nouveau » peut aussi signaler le bouton concerné jusqu'à ce que vous l'ouvriez. Vous pouvez désactiver cette fenêtre dans Paramètres, Affichage (case « Fenêtre « Quoi de neuf » après une mise à jour ») : KYF vous prévient alors que vous risquez de rater des nouveautés, qui restent à lire dans À propos, Historique des versions ; les badges « Nouveau » restent affichés.</div>
       </div>
 `
   },
@@ -65559,11 +65593,14 @@ document.addEventListener('DOMContentLoaded', function(){
 const KYF_NOUVEAUTES = {
   badge: ['arb', 'immo', 'avref', 'avfrais', 'fraispg', 'avevo'],   // clés des badges (une ou plusieurs ; tableau) ; clé du badge « Nouveau » (span .kyf-new-badge data-new="...") ; vide = aucun badge
   annonces: [
-    { id: 'a-2026-10-20', date: '2026-10-20', items: [
-      { titre: 'Évolution d’un contrat assurance vie ou PER', version: '2.8.8.00', texte: 'Dans le menu ⋯ d’un contrat, « Évolution du contrat » montre sa valeur mois par mois ou année par année, avec une courbe et le gain net des versements. KYF note la valeur de chaque contrat une fois par jour ; pour remonter dans le temps, ajoutez la valeur d’un relevé passé. Sans les versements, le gain reste « indisponible ».' },
-      { titre: 'Nouvelle page Frais', version: '2.8.7.0', texte: 'Menu Mon Historique, Frais : les frais prélevés par vos assureurs, estimés ou réels, le total sur douze mois, la valeur de vos contrats après ces frais, un tableau par année et les frais de courtage et de SCPI. Vous pouvez corriger une estimation avec le montant lu sur votre relevé, avec sa date réelle, et retirer des parts quand l’assureur prélève ses frais en parts.' },
-      { titre: 'Autres frais : garde, inactivité, versement', version: '2.8.7.10', texte: 'Sur la page Frais, « Ajouter un frais » note les droits de garde, les frais d’inactivité et les frais de versement de vos PEA, CTO, PEE et contrats. Un frais supprimé va dans la Corbeille et peut être rétabli.' },
-      { titre: 'Rappel de sauvegarde', version: '2.8.7.05', texte: 'Un bandeau apparaît quand vous avez des données et aucune sauvegarde récente (plus de 7 jours), avec un bouton « Sauvegarder maintenant ». Il prévient aussi si votre navigateur bloque le stockage : vos données restent uniquement dans ce navigateur.' }
+    { id: 'a-2026-10-20b', date: '2026-10-20', items: [
+      { titre: 'Page Frais : Mes frais en une seule carte', version: '2.8.8.14', texte: 'Mes frais tient sur une seule carte, avec des pastilles pour filtrer.' },
+      { titre: 'Simulateur de frais', version: '2.8.8.13', texte: 'Simulez ce que les frais coûtent avec le rendement de votre choix, et comparez à un niveau de frais que vous fixez.' },
+      { titre: 'Comparateur de frais', version: '2.8.8.03', texte: 'Comparez en euros les frais de vos contrats, de la base du comparateur ou d’un contrat saisi.' },
+      { titre: 'Évolution d’un contrat assurance vie ou PER', version: '2.8.8.00', texte: 'Menu ⋯ d’un contrat, « Évolution du contrat » : sa valeur et son gain mois par mois ou année par année.' },
+      { titre: 'Autres frais : garde, inactivité, versement', version: '2.8.7.10', texte: 'Notez les droits de garde, frais d’inactivité et frais de versement de vos placements.' },
+      { titre: 'Rappel de sauvegarde', version: '2.8.7.05', texte: 'Un bandeau vous rappelle de sauvegarder quand votre dernière sauvegarde a plus de 7 jours.' },
+      { titre: 'Nouvelle page Frais', version: '2.8.7.0', texte: 'Nouvelle page Frais : les frais de vos assureurs par année, et les frais de courtage.' }
     ] },
     { id: 'a-2026-10-18', date: '2026-10-18', items: [
       { titre: 'Immobilier : valorisation crédits déduits (réglage)', version: '2.8.6.100', texte: 'Nouveau dans Paramètres > Immobilier : vous pouvez choisir que le KPI « Valorisation live » du tableau de bord compte vos biens crédits déduits (valeur moins capital restant dû). Désactivé par défaut : rien ne change tant que vous ne l’activez pas.' },
@@ -65679,7 +65716,40 @@ function kyfNewClose(){
   try{ if(KYF_NOUVEAUTES.annonces.length) localStorage.setItem(KYF_NEW_SEEN_KEY, KYF_NOUVEAUTES.annonces[0].id); }catch(e){}
   document.removeEventListener('keydown', kyfNewKey_);
 }
+// « Ne plus afficher cette fenêtre » : ferme sans marquer la nouveauté comme vue, ouvre Paramètres > Affichage sur la case (surlignée 3 s)
+function kyfNewOpenPref(){
+  ['kyfNewModal', 'kyfNewOverlay'].forEach(id => { const e = document.getElementById(id); if(e) e.remove(); });
+  document.body.style.overflow = '';
+  document.removeEventListener('keydown', kyfNewKey_);
+  try{ openSidebarPrefs(); }catch(e){}
+  setTimeout(function(){
+    const row = document.getElementById('sbpNewRow'); if(!row) return;
+    try{ row.scrollIntoView({ block:'center' }); }catch(e){}
+    row.style.transition = 'box-shadow .3s ease'; row.style.boxShadow = '0 0 0 2px var(--accent)';
+    setTimeout(function(){ row.style.boxShadow = ''; }, 3000);
+  }, 120);
+}
 function kyfNewKey_(e){ if(e.key === 'Escape') kyfNewClose(); }
+// Réglage Paramètres > Affichage : ne plus recevoir la fenêtre « Quoi de neuf » (les pastilles NOUVEAU et l'historique des versions restent)
+const KYF_NEW_OFF_KEY = 'kyf-new-off';
+function kyfNewPopOff_(){ try{ return localStorage.getItem(KYF_NEW_OFF_KEY) === '1'; }catch(e){ return false; } }
+function kyfNewPopSync(){
+  const c = document.getElementById('sbpNewChk'), n = document.getElementById('sbpNewNote'), off = kyfNewPopOff_();
+  if(c) c.checked = !off;
+  if(n) n.textContent = off ? 'Désactivée : vous ne voyez plus les nouvelles fonctions ni les corrections après une mise à jour, et vous pouvez passer à côté d’une nouveauté utile. Elles restent à lire dans À propos, Historique des versions. Les pastilles NOUVEAU restent affichées.' : 'Après une mise à jour, une fenêtre résume les nouveautés que vous n’avez pas encore vues.';
+}
+async function kyfNewPopSet(el){
+  if(!el) return;
+  if(!el.checked){
+    let ok = true;
+    try{ ok = await kyfAsk('Désactiver la fenêtre « Quoi de neuf » ?\nVous ne verrez plus les nouvelles fonctions ni les corrections après une mise à jour, et vous risquez de passer à côté d’une nouveauté utile. Vous pourrez toujours les lire dans À propos, Historique des versions. Les pastilles NOUVEAU restent affichées.', { ok:'Désactiver' }); }catch(e){ ok = true; }
+    if(!ok){ el.checked = true; kyfNewPopSync(); return; }
+    try{ localStorage.setItem(KYF_NEW_OFF_KEY, '1'); }catch(e){}
+  } else {
+    try{ localStorage.removeItem(KYF_NEW_OFF_KEY); }catch(e){}
+  }
+  kyfNewPopSync();
+}
 function kyfNewShow(list){
   if(document.getElementById('kyfNewModal')) return;
   list = list || kyfNewPending_(); if(!list.length) return;
@@ -65692,7 +65762,8 @@ function kyfNewShow(list){
     + a.items.map(it => '<div style="display:flex;gap:10px;padding:10px 0;border-top:1px solid rgba(255,255,255,0.06)">' + ico + '<div><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px">' + escapeHtml(it.titre) + (it.version ? ' <span class="kyf-new-ver" style="display:inline-block;font-size:9px;font-weight:700;letter-spacing:.3px;padding:1px 6px;border-radius:6px;margin-left:4px;vertical-align:1px;background:rgba(240,180,41,0.14);color:var(--accent)">' + escapeHtml(it.version) + '</span>' : '') + '</div><div style="font-size:11px;color:var(--text2);line-height:1.7">' + escapeHtml(it.texte) + '</div></div></div>').join('');
   md.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between"><span style="display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--text);letter-spacing:.5px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></svg>QUOI DE NEUF</span><button type="button" onclick="kyfNewClose()" class="kyf-modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'
     + list.map(grp).join('')
-    + '<button type="button" id="kyfNewOk" onclick="kyfNewClose()" style="display:block;width:auto;min-width:96px;margin:14px auto 0;font-family:\'Inter\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.5px;padding:7px 22px;border-radius:8px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:opacity .15s" onmouseover="this.style.opacity=\'.85\'" onmouseout="this.style.opacity=\'1\'">Compris</button>';
+    + '<button type="button" id="kyfNewOk" onclick="kyfNewClose()" style="display:block;width:auto;min-width:96px;margin:14px auto 0;font-family:\'Inter\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.5px;padding:7px 22px;border-radius:8px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:opacity .15s" onmouseover="this.style.opacity=\'.85\'" onmouseout="this.style.opacity=\'1\'">Compris</button>'
+    + '<div style="text-align:center;margin-top:10px"><button type="button" id="kyfNewOffLink" onclick="kyfNewOpenPref()" class="kyf-new-offlink" style="background:none;border:none;font-family:\'Inter\',sans-serif;font-size:10px;color:var(--text3);cursor:pointer;padding:4px 8px;border-radius:6px;transition:background .15s,color .15s">Ne plus afficher cette fenêtre</button></div>';
   document.body.appendChild(ov); document.body.appendChild(md);
   document.body.style.overflow = 'hidden';
   document.addEventListener('keydown', kyfNewKey_);
@@ -65707,6 +65778,7 @@ document.addEventListener('DOMContentLoaded', function(){
   kyfNewBadgesRefresh();
   setTimeout(function(){
     try{
+      if(kyfNewPopOff_()) return;   // réglage Paramètres > Affichage : fenêtre désactivée
       const list = kyfNewPending_(); if(!list.length) return;
       const wm = document.getElementById('kyfWelcomeModal'); if(wm && getComputedStyle(wm).display !== 'none') return;
       if(document.body.style.overflow === 'hidden') return;   // une autre fenêtre est ouverte : on reviendra au prochain lancement
@@ -67032,6 +67104,12 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:var(--text3)"><path d="M4 7h16M4 12h10"/></svg>
         Titre des pages (ex. Mes actifs · Crypto)
       </label>
+      <label id="sbpNewRow" style="display:flex;align-items:center;gap:9px;cursor:pointer;font-size:12px;color:var(--text2);padding:9px 11px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid var(--border)">
+        <input type="checkbox" id="sbpNewChk" checked style="accent-color:var(--accent);width:15px;height:15px;flex-shrink:0" onchange="kyfNewPopSet(this)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:var(--text3)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Fenêtre « Quoi de neuf » après une mise à jour
+      </label>
+      <div id="sbpNewNote" style="font-size:10px;color:var(--text3);line-height:1.6;margin:-2px 2px 2px 4px"></div>
       <label id="sidebarPrefIntradayRow" style="display:flex;align-items:center;gap:9px;cursor:pointer;font-size:12px;color:var(--text2);padding:9px 11px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid var(--border)">
         <input type="checkbox" checked style="accent-color:var(--accent);width:15px;height:15px;flex-shrink:0" onchange="kyfToggleSidebarItem('intraday-widget', this.checked);kyfSbpIntradayRowTouched()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:var(--text3)"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
@@ -67757,6 +67835,44 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.21 · 19/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Quoi de neuf : un lien « Ne plus afficher cette fenêtre » ouvre Paramètres, Affichage, sur la case qui désactive la fenêtre.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.20 · 19/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Paramètres, Affichage : une case permet de ne plus recevoir la fenêtre « Quoi de neuf » après une mise à jour. En la décochant, KYF explique ce qu'on peut rater et où retrouver les nouveautés (À propos, Historique des versions).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.19 · 19/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Quoi de neuf : le comparateur de frais, le simulateur et la page Mes frais en une carte sont annoncés ; les nouveautés sont rangées par numéro de version, de la plus récente à la plus ancienne.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.18 · 19/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre ÉVOLUTION : un point info explique d'où viennent les valeurs, le tableau, le gain net, « indisponible » et comment ajouter un relevé.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.17 · 19/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Guide : cartes Page Frais (une seule carte, pastilles, trois onglets) et Simulateur (avant frais théorique, comparaison à un contrat au niveau de frais choisi) mises à jour.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.16 · 19/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre ÉVOLUTION d'un contrat : plus d'espace entre les blocs, le tableau, les relevés saisis et le formulaire d'ajout.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.15 · 19/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Page Frais : les onglets MES FRAIS / COMPARATEUR / SIMULATEUR et les pastilles de filtre de Mes frais ont le même style que ASSURANCE VIE / PER, CRYPTO, ETF & ACTIONS (même couleur jaune KYF, même survol).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.14 · 19/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Page Mes frais : une seule carte au lieu de trois, avec des pastilles pour filtrer (Tous, Assurance vie et PER, Autres frais, Courtage et SCPI) et la ligne de chiffres du haut supprimée, pour gagner de la place.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.13 · 19/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Frais, simulateur : une seule ligne « Comparer avec un contrat à ... % de frais de gestion par an » où vous choisissez le niveau de frais de comparaison (0 %, 0,5 %, 4 %...), à la place du second contrat. « Sans frais » reste appelé « Avant frais (théorique) ».</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.12 · 19/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Frais, simulateur : « Sans frais » devient « Avant frais (théorique) », puisqu'aucun contrat n'a zéro frais. Le simulateur compare deux vrais contrats (un des vôtres, un de la base, ou des taux que vous saisissez) avec l'écart en euros, et le rappel du contrat à droite est supprimé.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.11 · 19/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Frais, simulateur : les menus MES FRAIS / COMPARATEUR / SIMULATEUR restent cliquables quand ils passent sous la barre des indices, le résumé et les colonnes Sans frais / Après frais sont sur la même ligne (plus besoin de défiler), et vous pouvez choisir vous-même les taux de frais (entrée, gestion, arbitrage, 0 % possible) avec la comparaison aux frais du contrat.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.10 · 19/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comparateur de frais : « Base du comparateur » et « Un contrat que je saisis » sont repliés par défaut avec un chevron animé et un survol ; corbeilles au style KYF (sans bordure, rouge au survol).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.09 · 19/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comparateur de frais : mise en page plus moderne sur deux colonnes (réglages et contrats à gauche, résultat à droite), grands champs, curseurs durée et fonds euros, contrats en pastilles, arbitrages repliables.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.08 · 19/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Simulateur de frais : texte du résultat modernisé (pastilles contrat, durée, rendement et versements, grand chiffre des frais, pastille de perte en %, flèche sans frais vers après frais).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.07 · 19/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Page Frais : un espace est ajouté entre les onglets MES FRAIS, COMPARATEUR, SIMULATEUR et le contenu en dessous.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.06 · 19/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Simulateur de frais refait : saisie à gauche avec grands champs et curseurs (durée, rendement, part en fonds euros), résultat à droite avec deux colonnes sans frais et après frais, taux du contrat affichés, arbitrages repliables.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.05 · 19/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Simulateur de frais plus moderne et sans tuiles : un grand chiffre (ce que les frais vous coûtent à l'arrivée), une barre qui sépare capital, frais prélevés et rendement que ces frais n'ont pas pu produire, une courbe en dégradé avec survol, le détail année par année repliable.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.04 · 19/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Simulateur de frais : nouvel onglet SIMULATEUR dans la page Frais. Projection année par année d'un contrat avec le rendement brut que vous supposez : valeur sans frais, valeur après frais, frais payés, manque à gagner. Le rendement est à indiquer, KYF n'en propose aucun.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.03 · 19/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comparateur de frais : nouvel onglet COMPARATEUR dans la page Frais. Coût des frais en euros sur la durée choisie (entrée, gestion, arbitrage), sans hypothèse de rendement, pour vos contrats, des contrats de la base du comparateur et un contrat saisi à la main. Un taux inconnu donne « données incomplètes ».</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.02 · 19/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Quoi de neuf mis à jour : évolution par contrat, page Frais, autres frais, rappel de sauvegarde.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.01 · 19/10/2026</div>
@@ -72946,7 +73062,7 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
 
         <label class="kyf-reset-row" style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer">
           <input type="checkbox" class="kyf-reset-check" data-module="av-per"
-            data-keys="kyf-av,kyf-av-positions,kyf-pee,kyf-av-arbitrages,kyf-av-dca,kyf-av-dca-hist,kyf-av-frais-hist,kyf-frais-manuels,kyf-av-perf,kyf-av-favoris,kyf-av-card-open-,kyf-av-ref-contrat,kyf-avcomp-maj-date,kyf-avfisc-total-override,kyf-avfisc-cloud-consent,kyf-avfisc-situation,kyf-avfisc-avant2017,kyf-avfisc-apres2017,kyf-avfisc-2uu,kyf-avfisc-2dh,kyf-avfisc-2ch,kyf-per-tmi,kyf-per-revenu"
+            data-keys="kyf-av,kyf-av-positions,kyf-pee,kyf-av-arbitrages,kyf-av-dca,kyf-av-dca-hist,kyf-av-frais-hist,kyf-frais-manuels,kyf-av-perf,kyf-frais-comp,kyf-av-favoris,kyf-av-card-open-,kyf-av-ref-contrat,kyf-avcomp-maj-date,kyf-avfisc-total-override,kyf-avfisc-cloud-consent,kyf-avfisc-situation,kyf-avfisc-avant2017,kyf-avfisc-apres2017,kyf-avfisc-2uu,kyf-avfisc-2dh,kyf-avfisc-2ch,kyf-per-tmi,kyf-per-revenu"
             style="accent-color:var(--accent);flex-shrink:0">
           <div>
             <div style="font-size:12px;font-weight:700;color:var(--text2)">ASSURANCE VIE / PER</div>
@@ -76626,14 +76742,14 @@ function avEvoOpen(id){
   avEvoClose(); _avEvoId = id;
   const ov = document.createElement('div'); ov.id = 'avEvoOverlay'; ov.onclick = avEvoClose; ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10000011';
   const m = document.createElement('div'); m.id = 'avEvoModal';
-  m.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(680px,96vw);max-height:92vh;overflow:auto;z-index:10000012;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;font-family:Inter,sans-serif;box-shadow:0 12px 48px rgba(0,0,0,.4);color:var(--text)';
-  const lbl = 'font-size:10px;color:var(--text2);margin-bottom:4px', fld = 'width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);border-radius:8px;padding:9px 10px;font-size:11px;font-family:Inter,sans-serif;outline:none';
-  m.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border)"><span style="font-weight:700;font-size:13px">ÉVOLUTION <span id="avEvoTitre" style="font-weight:600;color:var(--text3);font-size:11px;margin-left:6px"></span></span>'
+  m.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(720px,96vw);max-height:92vh;overflow:auto;z-index:10000012;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;font-family:Inter,sans-serif;box-shadow:0 12px 48px rgba(0,0,0,.4);color:var(--text)';
+  const lbl = 'font-size:10px;color:var(--text2);margin-bottom:6px', fld = 'width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);border-radius:8px;padding:11px 12px;font-size:11px;font-family:Inter,sans-serif;outline:none';
+  m.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;padding:18px 26px;border-bottom:1px solid var(--border)"><span style="font-weight:700;font-size:13px">ÉVOLUTION <span id="avEvoTitre" style="font-weight:600;color:var(--text3);font-size:11px;margin-left:6px"></span></span>'
     + '<button type="button" onclick="avEvoClose()" class="kyf-modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'
-    + '<div style="padding:16px 18px"><div id="avEvoBody"></div>'
-    + '<div style="font-size:11px;color:var(--accent);font-weight:700;letter-spacing:.5px;margin:16px 0 6px">AJOUTER UNE VALEUR DE RELEVÉ</div>'
-    + '<div style="font-size:10px;color:var(--text2);line-height:1.6;margin-bottom:10px">Pour remonter dans le temps : la valeur du contrat à une date passée, lue sur un relevé. Les versements cumulés à cette date sont facultatifs : sans eux, le gain de la période reste indisponible.</div>'
-    + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px">'
+    + '<div style="padding:24px 26px 28px"><div id="avEvoBody"></div>'
+    + '<div style="font-size:11px;color:var(--accent);font-weight:700;letter-spacing:.5px;margin:32px 0 8px;padding-top:26px;border-top:1px solid var(--border)">AJOUTER UNE VALEUR DE RELEVÉ</div>'
+    + '<div style="font-size:10px;color:var(--text2);line-height:1.7;margin-bottom:18px">Pour remonter dans le temps : la valeur du contrat à une date passée, lue sur un relevé. Les versements cumulés à cette date sont facultatifs : sans eux, le gain de la période reste indisponible.</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:18px">'
     + '<div><div style="' + lbl + '">Date du relevé</div><input type="hidden" id="evoDate" value=""><button type="button" id="evoDateBtn" class="kyf-csel-btn" data-kyf-date="evoDate" aria-haspopup="dialog" aria-expanded="false"><span id="evoDateBtnLabel">JJ/MM/AAAA</span></button></div>'
     + '<div><div style="' + lbl + '">Valeur du contrat (€)</div><input id="evoVal" type="text" inputmode="decimal" placeholder="0,00" style="' + fld + '"></div>'
     + '<div><div style="' + lbl + '">Versements cumulés (€)</div><input id="evoVers" type="text" inputmode="decimal" placeholder="facultatif" style="' + fld + '"></div></div>'
@@ -76647,18 +76763,26 @@ function avEvoRender(){
   const body = document.getElementById('avEvoBody'); if(!body) return;
   const arr = (avPerfLoad().items[_avEvoId] || []).slice(), eur = v => fmt(v, 2) + ' €';
   const tab = (md, t) => '<button type="button" id="avEvoTab' + md + '" onclick="avEvoMode(\'' + md + '\')" aria-pressed="' + (_avEvoMode === md) + '" style="font-size:10px;font-weight:700;padding:6px 14px;border-radius:7px;border:1px solid ' + (_avEvoMode === md ? 'var(--accent)' : 'var(--border2)') + ';background:none;color:' + (_avEvoMode === md ? 'var(--accent)' : 'var(--text3)') + ';cursor:pointer">' + t + '</button>';
-  let h = '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:10px"><div style="display:flex;gap:6px">' + tab('m', 'PAR MOIS') + tab('a', 'PAR ANNÉE') + '</div></div>';
+  const INFO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>', pp = 'margin-bottom:6px';
+  let h = '<div style="position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:20px"><div style="display:flex;gap:8px">' + tab('m', 'PAR MOIS') + tab('a', 'PAR ANNÉE') + '</div>'
+    + '<button type="button" id="avEvoInfoBtn" class="av-info-btn" onclick="avGrInfoToggle(event,\'avEvoPop\')" title="Comment fonctionne cette fenêtre" aria-label="Comment fonctionne la fenêtre Évolution" aria-expanded="false" style="width:22px;height:22px">' + INFO + '</button>'
+    + '<div id="avEvoPop" class="av-gr-pop" style="display:none;position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:60;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:14px 16px;box-shadow:0 10px 32px rgba(0,0,0,.35);font-size:10px;line-height:1.7;color:var(--text2)">'
+    + '<div style="' + pp + '"><strong style="color:var(--text)">D\'où viennent les valeurs.</strong> Chaque jour où vous ouvrez KYF, la valeur de chaque contrat est notée. L\'historique se construit donc à partir du jour où cette version est installée, et reste sur votre appareil.</div>'
+    + '<div style="' + pp + '"><strong style="color:var(--text)">Par mois, par année.</strong> Le tableau donne, pour chaque période, la valeur du contrat en fin de période, les versements nets et le gain net.</div>'
+    + '<div style="' + pp + '"><strong style="color:var(--text)">Gain net.</strong> Variation de la valeur moins les versements de la période (rachats déduits). Les frais sont déjà dans la valeur.</div>'
+    + '<div style="' + pp + '"><strong style="color:var(--text)">« Indisponible ».</strong> Si les versements ne sont pas connus aux deux dates, KYF n\'invente pas le gain de la période.</div>'
+    + '<div><strong style="color:var(--text)">Remonter dans le passé.</strong> En bas, ajoutez la valeur lue sur un relevé (date, valeur, versements cumulés facultatifs). Un relevé supprimé reste dans la Corbeille de KYF.</div></div></div>';
   if(!arr.length){
     h += '<div id="avEvoEmpty" style="font-size:11px;color:var(--text2);line-height:1.6">Aucune valeur enregistrée pour ce contrat : sa valeur n\'est pas connue de KYF. Renseignez-la sur la fiche du contrat ou ajoutez une valeur de relevé.</div>';
   } else {
     const _auto = arr.find(p => !p.m);
-    h += '<div id="avEvoSince" style="font-size:10px;color:var(--text2);line-height:1.6;margin-bottom:10px">' + (_auto ? 'Historique en cours de constitution depuis le ' + avPerfFr(_auto.d) + '. KYF note la valeur du contrat chaque jour où vous l\'ouvrez.' : 'Seuls vos relevés saisis sont affichés : KYF note la valeur du contrat chaque jour où vous l\'ouvrez.') + '</div>' + avEvoChart(arr);
-    const rows = avPerfPeriods(arr, _avEvoMode).reverse(), th = 'text-align:right;padding:6px 8px;font-size:9px;color:var(--text3);font-weight:700;letter-spacing:.4px', td = 'text-align:right;padding:7px 8px;font-size:11px;border-top:1px solid var(--border)';
-    h += '<div style="overflow-x:auto"><table id="avEvoTable" style="width:100%;border-collapse:collapse"><thead><tr><th style="' + th + ';text-align:left">PÉRIODE</th><th style="' + th + '">VALEUR EN FIN</th><th style="' + th + '">VERSEMENTS NETS</th><th style="' + th + '">GAIN NET</th></tr></thead><tbody>'
+    h += '<div id="avEvoSince" style="font-size:10px;color:var(--text2);line-height:1.7;margin-bottom:18px">' + (_auto ? 'Historique en cours de constitution depuis le ' + avPerfFr(_auto.d) + '. KYF note la valeur du contrat chaque jour où vous l\'ouvrez.' : 'Seuls vos relevés saisis sont affichés : KYF note la valeur du contrat chaque jour où vous l\'ouvrez.') + '</div>' + avEvoChart(arr);
+    const rows = avPerfPeriods(arr, _avEvoMode).reverse(), th = 'text-align:right;padding:10px 12px;font-size:9px;color:var(--text3);font-weight:700;letter-spacing:.4px', td = 'text-align:right;padding:13px 12px;font-size:11px;border-top:1px solid var(--border)';
+    h += '<div style="overflow-x:auto;margin-top:24px"><table id="avEvoTable" style="width:100%;border-collapse:collapse"><thead><tr><th style="' + th + ';text-align:left">PÉRIODE</th><th style="' + th + '">VALEUR EN FIN</th><th style="' + th + '">VERSEMENTS NETS</th><th style="' + th + '">GAIN NET</th></tr></thead><tbody>'
       + rows.map(r => '<tr><td style="' + td + ';text-align:left;font-weight:600">' + avPerfLabel(r.k) + '</td><td style="' + td + '">' + eur(r.val) + '</td><td style="' + td + '">' + (r.start ? 'départ' : r.net === null ? 'indisponible' : eur(r.net)) + '</td><td style="' + td + ';font-weight:700;color:' + (r.gain === null ? 'var(--text3)' : r.gain >= 0 ? 'var(--green)' : 'var(--red)') + '">' + (r.start ? 'départ' : r.gain === null ? 'indisponible' : (r.gain > 0 ? '+' : '') + eur(r.gain)) + '</td></tr>').join('')
-      + '</tbody></table></div><div style="font-size:9px;color:var(--text3);line-height:1.6;margin-top:6px">Gain net = variation de la valeur moins les versements de la période (rachats déduits). Frais déjà inclus dans la valeur.</div>';
+      + '</tbody></table></div><div style="font-size:9px;color:var(--text3);line-height:1.7;margin-top:14px">Gain net = variation de la valeur moins les versements de la période (rachats déduits). Frais déjà inclus dans la valeur.</div>';
     const man = arr.filter(p => p.m);
-    if(man.length) h += '<div style="font-size:11px;color:var(--accent);font-weight:700;letter-spacing:.5px;margin:14px 0 6px">RELEVÉS SAISIS</div>' + man.slice().reverse().map(p => '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0;border-top:1px solid var(--border);font-size:11px"><span>' + avPerfFr(p.d) + ' · ' + eur(p.val) + (p.vers !== undefined ? ' · versé ' + eur(p.vers) : '') + '</span><button type="button" class="kyf-icon-btn" aria-label="Supprimer" onclick="avPerfPointDel(\'' + p.d + '\')" style="background:none;border:1px solid var(--border2);border-radius:7px;width:28px;height:28px;color:var(--text3);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0">' + KYF_ICONS.trash + '</button></div>').join('');
+    if(man.length) h += '<div style="font-size:11px;color:var(--accent);font-weight:700;letter-spacing:.5px;margin:32px 0 10px">RELEVÉS SAISIS</div>' + man.slice().reverse().map(p => '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 0;border-top:1px solid var(--border);font-size:11px"><span>' + avPerfFr(p.d) + ' · ' + eur(p.val) + (p.vers !== undefined ? ' · versé ' + eur(p.vers) : '') + '</span><button type="button" class="kyf-icon-btn" title="Supprimer" aria-label="Supprimer" onclick="avPerfPointDel(\'' + p.d + '\')" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;display:inline-flex;align-items:center" onmouseover="this.style.color=\'var(--red)\'" onmouseout="this.style.color=\'var(--text3)\'">' + KYF_ICONS.trash + '</button></div>').join('');
   }
   body.innerHTML = h;
 }
@@ -76910,6 +77034,298 @@ function avFraisKpiPaid(){   // double lecture sous la tuile FRAIS / AN
   e.textContent = p.none ? 'Prélevés ' + p.y + ' : aucun' : 'Prélevés ' + p.y + ' : ' + avFraisAmt({ sum:p.sum, est:p.est });
   e.title = 'Montants inscrits dans l\'historique des frais (menu ⋯ du contrat, « Frais prélevés »). ≈ : au moins une ligne estimée. Le chiffre du dessus est une projection sur 12 mois.';
 }
+// ── 2.8.8.03 : comparateur de frais (onglet de la page Frais) ──
+// Coût en euros des frais sur N années, SANS hypothèse de rendement : le capital reste celui que vous versez (montant de départ, puis un versement annuel facultatif au début de chaque année).
+// Taux : vos contrats (fiche), la base du comparateur AV/PER (finance-heros, indicatif) ou un contrat saisi à la main. Un taux inconnu donne « données incomplètes », jamais un zéro.
+const FRAIS_COMP_KEY = 'kyf-frais-comp';
+let _fraisTab = 'mes', _fcBuilt = false, _fcOpen = { Base:false, Man:false };
+// Page Mes frais : une seule carte, les pastilles filtrent les trois blocs (affichage seulement, rien n'est supprimé)
+function fraisFilter(k){
+  const ok = ['all', 'av', 'man', 'oth'].indexOf(k) > -1 ? k : 'all';
+  document.querySelectorAll('#fraisChips .fr-chip').forEach(b => { const on = b.getAttribute('data-fk') === ok; b.setAttribute('aria-pressed', on ? 'true' : 'false'); b.classList.toggle('kyf-toggle-active', on); });
+  document.querySelectorAll('#fraisUni .fr-sec').forEach((e, i) => { e.style.display = (ok === 'all' || e.getAttribute('data-fk') === ok) ? '' : 'none'; });
+  const vis = [...document.querySelectorAll('#fraisUni .fr-sec')].filter(e => e.style.display !== 'none');
+  vis.forEach((e, i) => { e.style.borderTop = i === 0 ? 'none' : '1px solid var(--border)'; e.style.paddingTop = i === 0 ? '0' : '14px'; });
+}
+function fcNum(v, lo, hi, def){ const x = parseFloat(String(v === undefined || v === null ? '' : v).replace(/[\s  ]/g, '').replace(',', '.')); return (isFinite(x) && x >= lo && x <= hi) ? x : def; }
+function fraisCompLoad(){
+  let o = null; try{ o = JSON.parse(localStorage.getItem(FRAIS_COMP_KEY) || 'null'); }catch(e){}
+  o = (o && typeof o === 'object' && !Array.isArray(o)) ? o : {};
+  const base = new Set(AV_COMPARATEUR_DATA.map(c => c.nom)), ids = new Set(avLoad().map(c => String(c.id)));
+  const man = (Array.isArray(o.man) ? o.man : []).filter(x => x && typeof x === 'object' && typeof x.nom === 'string' && x.nom.trim() && fcNum(x.g, 0, 100, null) !== null).slice(0, 8).map((x, i) => ({
+    id: /^[A-Za-z0-9_-]{1,40}$/.test(String(x.id || '')) ? String(x.id) : 'cm' + i, nom: x.nom.trim().slice(0, 60), fe: fcNum(x.fe, 0, 100, 0), g: fcNum(x.g, 0, 100, 0), gfe: fcNum(x.gfe, 0, 100, null), ar: fcNum(x.ar, 0, 100, null) }));
+  return { m: fcNum(o.m, 0, 1e9, 10000), v: fcNum(o.v, 0, 1e8, 0), n: Math.round(fcNum(o.n, 1, 60, 10)), s: fcNum(o.s, 0, 100, 0), ac: Math.round(fcNum(o.ac, 0, 52, 0)), am: fcNum(o.am, 0, 1e9, 0),
+    r: fcNum(o.r, -50, 100, null), sf: (q => ({ fe: fcNum(q.fe, 0, 100, null), g: fcNum(q.g, 0, 100, null), gfe: fcNum(q.gfe, 0, 100, null), ar: fcNum(q.ar, 0, 100, null) }))((o.sf && typeof o.sf === 'object' && !Array.isArray(o.sf)) ? o.sf : {}), sim: (typeof o.sim === 'string' && o.sim.length < 120) ? o.sim : '', sel: (Array.isArray(o.sel) ? o.sel : []).filter(n => typeof n === 'string' && base.has(n)).slice(0, 8), man: man, off: (Array.isArray(o.off) ? o.off : []).map(String).filter(i => ids.has(i)) };
+}
+function fraisCompSave(o){ try{ localStorage.setItem(FRAIS_COMP_KEY, JSON.stringify(o)); }catch(e){} }
+function fraisCompManLoad(){ return fraisCompLoad().man; }
+function fraisCompManSave(list){ const o = fraisCompLoad(); o.man = (list || []).slice(0, 8); fraisCompSave(o); }
+function fraisCompAfterChange(){ try{ fraisCompRender(); }catch(e){} }
+// Calcul d'un contrat : c = { nom, src, fe, g, gfe, ar } (fe, g, gfe, ar en %, null = inconnu) ; P = paramètres. Renvoie { ok, entree, gestion, arbitrage, total, notes } ou { ok:false, why }.
+function fraisCompCalc(c, P){
+  const isN = x => typeof x === 'number' && isFinite(x);
+  if(!isN(c.g)) return { ok:false, why:'taux de gestion non renseigné' };
+  if(!isN(c.fe)) return { ok:false, why:'frais d\'entrée non renseignés' };
+  const arb = P.ac * P.am;
+  if(arb > 0 && !isN(c.ar)) return { ok:false, why:'frais d\'arbitrage non renseignés' };
+  const gfe = isN(c.gfe) ? c.gfe : c.g, s = P.s / 100, mix = (1 - s) * c.g + s * gfe, notes = [];
+  if(s > 0 && !isN(c.gfe)) notes.push('fonds euros au même taux que les unités de compte');
+  let gestion = 0; for(let k = 1; k <= P.n; k++) gestion += (P.m + P.v * (k - 1)) * mix / 100;
+  const entree = (P.m + P.v * (P.n - 1)) * c.fe / 100, arbitrage = arb > 0 ? arb * P.n * c.ar / 100 : 0;
+  const r2 = x => Math.round(x * 100) / 100;
+  return { ok:true, entree:r2(entree), gestion:r2(gestion), arbitrage:r2(arbitrage), total:r2(entree + gestion + arbitrage), notes:notes };
+}
+function fraisCompRows(O){
+  const rows = [], isN = x => typeof x === 'number' && isFinite(x), P = O;
+  avLoad().forEach(d => {
+    if(O.off.indexOf(String(d.id)) > -1) return;
+    const base = (() => { try{ return avBaseOf(d.contratNom); }catch(e){ return null; } })(), pil = parseFloat(d.fraisPilotage) || 0, gRaw = parseFloat(d.fraisGestion), feRaw = parseFloat(d.fraisEntree), arRaw = parseFloat(d.fraisArbitrage);
+    const g = gRaw > 0 ? gRaw + pil : null, gfe = (g !== null && avDeuxTaux(base)) ? base.fraisGestionFE + pil : null;
+    rows.push({ id:'av:' + d.id, nom:d.contratNom || d.assureur || 'Contrat', src:'mine', fe:isN(feRaw) ? feRaw : null, g:g, gfe:gfe, ar:isN(arRaw) ? arRaw : null });
+  });
+  O.sel.forEach(n => { const c = AV_COMPARATEUR_DATA.find(x => x.nom === n); if(c) rows.push({ id:'base:' + n, nom:c.nom, src:'base', fe:isN(c.fraisEntree) ? c.fraisEntree : null, g:isN(c.fraisGestion) ? c.fraisGestion : null, gfe:isN(c.fraisGestionFE) ? c.fraisGestionFE : null, ar:isN(c.fraisArbitrage) ? c.fraisArbitrage : null }); });
+  O.man.forEach(c => rows.push({ id:'man:' + c.id, nom:c.nom, src:'man', fe:c.fe, g:c.g, gfe:c.gfe, ar:c.ar }));
+  rows.forEach(r => { r.res = fraisCompCalc(r, P); });
+  return rows;
+}
+function fraisTab(t){
+  _fraisTab = t === 'comp' ? 'comp' : t === 'sim' ? 'sim' : 'mes';
+  const a = document.getElementById('fraisTabMes'), b = document.getElementById('fraisTabComp'), c = document.getElementById('fraisTabSim'); if(!a || !b || !c) return;
+  a.style.display = _fraisTab === 'mes' ? '' : 'none'; b.style.display = _fraisTab === 'comp' ? '' : 'none'; c.style.display = _fraisTab === 'sim' ? '' : 'none';
+  [['Mes', 'mes'], ['Comp', 'comp'], ['Sim', 'sim']].forEach(p => { const e = document.getElementById('fraisTabBtn' + p[0]); if(!e) return; const on = _fraisTab === p[1]; e.setAttribute('aria-pressed', on); e.classList.toggle('kyf-toggle-active', on); });
+  if(_fraisTab === 'comp') fraisCompRender(true);
+  if(_fraisTab === 'sim') fraisSimRender(true);
+}
+function fraisCompBuild(){
+  const b = document.getElementById('fraisTabComp'); if(!b) return;
+  const O = fraisCompLoad(), lbl = 'font-size:10px;font-weight:700;letter-spacing:.5px;color:var(--text3);margin-bottom:2px', fld = 'width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);border-radius:10px;padding:9px 10px;font-size:11px;font-family:Inter,sans-serif;outline:none';
+  const big = (id, l, v, unit) => '<div><div style="' + lbl + '">' + l + '</div><div style="display:flex;align-items:baseline;gap:6px;border-bottom:1px solid var(--border2)"><input id="' + id + '" type="text" inputmode="decimal" value="' + escapeHtml(String(v).replace('.', ',')) + '" oninput="fraisCompInput()" style="flex:1;min-width:0;background:none;border:none;outline:none;color:var(--text);font-size:22px;font-weight:600;font-family:Inter,sans-serif;padding:4px 0"><span style="font-size:13px;color:var(--text3)">' + unit + '</span></div></div>';
+  const sld = (id, l, min, max, step, left, right) => '<div style="margin-top:6px"><input id="' + id + '" type="range" min="' + min + '" max="' + max + '" step="' + step + '" oninput="fraisCompSlide(this)" aria-label="' + l + '" style="width:100%;accent-color:var(--accent)"><div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3)"><span>' + left + '</span><span>' + right + '</span></div></div>';
+  const inp = (id, l, v, ph) => '<div><div style="' + lbl + '">' + l + '</div><input id="' + id + '" type="text" inputmode="decimal" value="' + escapeHtml(String(v).replace('.', ',')) + '"' + (ph ? ' placeholder="' + ph + '"' : '') + ' style="' + fld + '"></div>';
+  const tg = (k, t) => '<div style="margin:18px 0 0;padding-top:8px;border-top:1px solid var(--border)"><button type="button" id="fc' + k + 'Toggle" class="fc-tg" onclick="fraisCompToggle(\'' + k + '\')" aria-expanded="' + (_fcOpen[k] ? 'true' : 'false') + '" aria-controls="fc' + k + 'Body" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;background:none;border:none;border-radius:10px;padding:10px 8px;cursor:pointer;color:var(--text3);font-family:inherit"><span style="font-size:10px;font-weight:700;letter-spacing:.6px;text-align:left">' + t + '</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button></div>';
+  const bd = (k, inner) => '<div id="fc' + k + 'Body" class="fc-bd" data-open="' + (_fcOpen[k] ? '1' : '0') + '"><div><div style="padding-top:8px">' + inner + '</div></div></div>';
+  b.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:16px;align-items:start">'
+    + '<div style="min-width:0"><div class="card" style="margin-top:0"><div class="card-title">SIMULATION</div>'
+    + '<div style="font-size:10px;color:var(--text2);line-height:1.7;margin-bottom:14px">Combien de frais chaque contrat prélèverait en euros sur la durée choisie. Le capital reste celui que vous versez : aucun rendement n\'est supposé, c\'est une comparaison de coûts et pas une prévision de performance.</div>'
+    + '<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px 20px">' + big('fcM', 'VERSEMENT DE DÉPART', O.m, '€') + big('fcV', 'VERSEMENT ANNUEL', O.v, '€') + '</div>'
+    + '<div style="margin-top:18px">' + big('fcN', 'DURÉE', O.n, 'ans') + sld('fcNg', 'Durée en années', 1, 40, 1, '1 an', '40 ans') + '</div>'
+    + '<div style="margin-top:18px"><div style="' + lbl + '">RÉPARTITION</div><div id="fcSLbl" style="font-size:12px;color:var(--text);margin:2px 0"></div>' + sld('fcSg', 'Part en fonds euros', 0, 100, 1, 'Unités de compte', 'Fonds euros') + '<input id="fcS" type="hidden" value="' + escapeHtml(String(O.s)) + '"></div>'
+    + '<details style="margin-top:16px"' + ((O.ac > 0 || O.am > 0) ? ' open' : '') + '><summary id="fcAdvBtn" style="cursor:pointer;font-size:11px;font-weight:700;color:var(--accent)">Arbitrages (facultatif)</summary><div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px 20px;margin-top:12px">' + big('fcAc', 'ARBITRAGES PAR AN', O.ac, '') + big('fcAm', 'MONTANT PAR ARBITRAGE', O.am, '€') + '</div></details>'
+    + '<div style="font-size:9px;color:var(--text3);line-height:1.6;margin-top:12px">Le versement annuel s\'ajoute au début de chaque année à partir de la deuxième. Les frais d\'arbitrage ne comptent que si vous indiquez un nombre et un montant d\'arbitrages.</div></div>'
+    + '<div class="card" style="margin-top:16px"><div class="card-title">CONTRATS COMPARÉS</div>'
+    + '<div style="font-size:10px;font-weight:700;letter-spacing:.6px;color:var(--text3);margin-bottom:8px">MES CONTRATS</div><div id="fcMine" style="display:flex;flex-wrap:wrap;gap:8px"></div>'
+    + tg('Base', 'BASE DU COMPARATEUR <span style="font-weight:600">· indicatif, finance-heros.fr</span>')
+    + bd('Base', '<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap"><select id="fcBaseSel" data-kyf-pg-look="field" onchange="try{kyfPgLabel(this)}catch(e){}" style="flex:1;min-width:200px;font-size:11px"></select><button type="button" id="fcBaseAdd" onclick="fraisCompBaseAdd()" style="font-size:10px;font-weight:700;padding:8px 16px;border-radius:999px;border:1px solid var(--accent);background:none;color:var(--accent);cursor:pointer">AJOUTER</button></div>')
+    + '<div id="fcBaseList" style="margin-top:8px"></div>'
+    + tg('Man', 'UN CONTRAT QUE JE SAISIS')
+    + bd('Man', '<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-bottom:10px"><div style="grid-column:1/-1"><div style="' + lbl + '">NOM</div><input id="fcManNom" type="text" maxlength="60" style="' + fld + '"></div>'
+    + inp('fcManFe', 'FRAIS D\'ENTRÉE (%)', '0') + inp('fcManG', 'GESTION UNITÉS DE COMPTE (%/AN)', '', '0,60') + inp('fcManGfe', 'GESTION FONDS EUROS (%/AN)', '', 'facultatif') + inp('fcManAr', 'ARBITRAGE (%)', '', 'facultatif') + '</div>'
+    + '<div style="display:flex;align-items:center;gap:10px"><button type="button" id="fcManAdd" onclick="fraisCompManAdd()" style="font-size:10px;font-weight:700;padding:8px 18px;border-radius:999px;border:1px solid var(--accent);background:none;color:var(--accent);cursor:pointer">AJOUTER</button><span id="fcMsg" style="font-size:10px"></span></div>') + '<div id="fcManList" style="margin-top:8px"></div></div></div>'
+    + '<div class="card" style="margin-top:0;min-width:0;position:sticky;top:12px"><div class="card-title">RÉSULTAT · COÛT DES FRAIS EN EUROS</div><div id="fcRes"></div></div></div>';
+  const sel = document.getElementById('fcBaseSel');
+  sel.innerHTML = '<option value="">Choisir un contrat de la base</option>' + AV_COMPARATEUR_DATA.map(c => '<option value="' + escapeHtml(c.nom) + '">' + escapeHtml(c.nom) + '</option>').join('');
+  try{ if(typeof kyfPgInit === 'function'){ kyfPgInit(sel); kyfPgLabel(sel); } }catch(e){}
+  fraisCompSync(O);
+  _fcBuilt = true;
+}
+function fraisCompToggle(k){
+  if(!(k in _fcOpen)) return;
+  _fcOpen[k] = !_fcOpen[k];
+  const t = document.getElementById('fc' + k + 'Toggle'), b = document.getElementById('fc' + k + 'Body');
+  if(t) t.setAttribute('aria-expanded', _fcOpen[k] ? 'true' : 'false'); if(b) b.setAttribute('data-open', _fcOpen[k] ? '1' : '0');
+}
+function fraisCompSync(O){
+  const set = (id, v) => { const e = document.getElementById(id); if(e && v !== null && v !== undefined) e.value = v; };
+  set('fcNg', O.n); set('fcSg', O.s);
+  const l = document.getElementById('fcSLbl'); if(l) l.textContent = (100 - O.s) + ' % unités de compte · ' + O.s + ' % fonds euros';
+}
+function fraisCompSlide(el){
+  const map = { fcNg:'fcN', fcSg:'fcS' }, t = document.getElementById(map[el.id]); if(!t) return;
+  t.value = String(el.value); fraisCompInput();
+}
+function fraisCompInput(){
+  const o = fraisCompLoad(), g = id => { const e = document.getElementById(id); return e ? e.value : ''; };
+  o.m = fcNum(g('fcM'), 0, 1e9, o.m); o.v = fcNum(g('fcV'), 0, 1e8, o.v); o.n = Math.round(fcNum(g('fcN'), 1, 60, o.n)); o.s = fcNum(g('fcS'), 0, 100, o.s); o.ac = Math.round(fcNum(g('fcAc'), 0, 52, o.ac)); o.am = fcNum(g('fcAm'), 0, 1e9, o.am);
+  fraisCompSave(o); fraisCompSync(o); fraisCompRender();
+}
+function fraisCompBaseAdd(){
+  const sel = document.getElementById('fcBaseSel'), msg = document.getElementById('fcMsg'), n = sel ? sel.value : ''; if(msg){ msg.style.color = 'var(--red)'; msg.textContent = ''; }
+  if(!n) return;
+  const o = fraisCompLoad(); if(o.sel.indexOf(n) > -1) return;
+  if(o.sel.length >= 8){ if(msg) msg.textContent = 'Huit contrats de la base au plus.'; return; }
+  o.sel.push(n); fraisCompSave(o); fraisCompRender();
+}
+function fraisCompBaseDel(i){ const o = fraisCompLoad(); o.sel.splice(i, 1); fraisCompSave(o); fraisCompRender(); }
+function fraisCompMineToggle(id){ const o = fraisCompLoad(), k = o.off.indexOf(String(id)); if(k > -1) o.off.splice(k, 1); else o.off.push(String(id)); fraisCompSave(o); fraisCompRender(); }
+function fraisCompManAdd(){
+  const msg = document.getElementById('fcMsg'), g = id => document.getElementById(id).value; msg.style.color = 'var(--red)';
+  const nom = String(g('fcManNom')).trim(), gv = fcNum(g('fcManG'), 0, 100, null), fe = String(g('fcManFe')).trim() === '' ? 0 : fcNum(g('fcManFe'), 0, 100, null);
+  const gfeS = String(g('fcManGfe')).trim(), arS = String(g('fcManAr')).trim(), gfe = gfeS === '' ? null : fcNum(gfeS, 0, 100, undefined), ar = arS === '' ? null : fcNum(arS, 0, 100, undefined);
+  if(!nom){ msg.textContent = 'Donnez un nom au contrat.'; return; }
+  if(gv === null){ msg.textContent = 'Indiquez le taux de gestion (0 à 100 %).'; return; }
+  if(fe === null || gfe === undefined || ar === undefined){ msg.textContent = 'Un taux doit être compris entre 0 et 100 %.'; return; }
+  const o = fraisCompLoad(); if(o.man.length >= 8){ msg.textContent = 'Huit contrats saisis au plus.'; return; }
+  o.man.push({ id:'cm' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), nom:nom, fe:fe, g:gv, gfe:gfe, ar:ar }); fraisCompSave(o);
+  ['fcManNom', 'fcManG', 'fcManGfe', 'fcManAr'].forEach(i => { document.getElementById(i).value = ''; }); document.getElementById('fcManFe').value = '0';
+  fraisCompRender(); msg.style.color = 'var(--green)'; msg.textContent = 'Contrat ajouté.';
+}
+async function fraisCompManDel(id){
+  const x = fraisCompManLoad().find(y => y.id === id); if(!x) return;
+  if(!(await kyfAsk('Supprimer ce contrat de la comparaison ?', { corbeille:true }))) return;
+  kyfDeleteWithUndo(fraisCompManLoad, fraisCompManSave, x.id, fraisCompAfterChange, 'Contrat comparé · ' + x.nom);
+}
+function fraisCompRender(rebuild){
+  if(rebuild || !_fcBuilt || !document.getElementById('fcRes')) fraisCompBuild();
+  const O = fraisCompLoad(), eur = v => fmt(v, 0) + ' €', pct = v => String(v).replace('.', ',') + ' %';
+  const chip = (html, del) => '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 6px 6px 14px;margin-bottom:6px;border:1px solid var(--border);border-radius:12px;background:var(--btn-secondary-bg);font-size:11px"><span>' + html + '</span>' + del + '</div>';
+  const delBtn = (fn, lab) => '<button type="button" class="kyf-icon-btn" title="' + lab + '" aria-label="' + lab + '" onclick="' + fn + '" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;display:inline-flex;align-items:center" onmouseover="this.style.color=\'var(--red)\'" onmouseout="this.style.color=\'var(--text3)\'">' + KYF_ICONS.trash + '</button>';
+  const mine = avLoad(), mEl = document.getElementById('fcMine');
+  if(mEl) mEl.innerHTML = mine.length ? mine.map(d => '<label style="display:inline-flex;align-items:center;gap:8px;padding:7px 14px;font-size:11px;cursor:pointer;border:1px solid var(--border2);border-radius:999px;background:var(--btn-secondary-bg)"><input type="checkbox" ' + (O.off.indexOf(String(d.id)) > -1 ? '' : 'checked ') + 'onchange="fraisCompMineToggle(this.getAttribute(\'data-id\'))" data-id="' + escapeHtml(String(d.id)) + '" style="accent-color:var(--accent)">' + escapeHtml(d.contratNom || d.assureur || 'Contrat') + '</label>').join('') : '<div style="font-size:11px;color:var(--text3)">Aucun contrat dans Assurance vie / PER.</div>';
+  const bl = document.getElementById('fcBaseList'); if(bl) bl.innerHTML = O.sel.map((n, i) => chip(escapeHtml(n), delBtn('fraisCompBaseDel(' + i + ')', 'Retirer'))).join('');
+  const ml = document.getElementById('fcManList'); if(ml) ml.innerHTML = O.man.map(c => chip(escapeHtml(c.nom) + ' · entrée ' + pct(c.fe) + ' · gestion ' + pct(c.g), delBtn('fraisCompManDel(\'' + c.id + '\')', 'Supprimer'))).join('');
+  const rows = fraisCompRows(O), ok = rows.filter(r => r.res.ok).sort((a, b) => a.res.total - b.res.total), ko = rows.filter(r => !r.res.ok), res = document.getElementById('fcRes'); if(!res) return;
+  if(!rows.length){ res.innerHTML = '<div id="fcEmpty" style="font-size:11px;color:var(--text3);text-align:center;padding:14px;line-height:1.7">Cochez un de vos contrats, ajoutez-en un de la base ou saisissez le vôtre : le comparateur calcule leurs frais en euros.</div>'; return; }
+  const th = 'text-align:right;font-size:9px;font-weight:700;letter-spacing:.5px;color:var(--text3);padding:8px 10px;border-bottom:1px solid var(--border);white-space:nowrap', td = 'text-align:right;font-size:11px;padding:9px 10px;border-top:1px solid var(--border);white-space:nowrap';
+  const tag = { mine:'MON CONTRAT', base:'BASE', man:'SAISI' }, best = ok.length ? ok[0].res.total : 0, mx = ok.length ? ok[ok.length - 1].res.total : 0;
+  const nm = r => '<div style="font-weight:600;white-space:normal;max-width:190px">' + escapeHtml(r.nom) + '</div><span style="font-size:8px;font-weight:700;letter-spacing:.5px;color:var(--text3)">' + tag[r.src] + '</span>';
+  const invested = O.m + O.v * (O.n - 1);
+  let h = '<div style="font-size:10px;color:var(--text2);line-height:1.7;margin-bottom:8px">' + eur(O.m) + ' au départ' + (O.v > 0 ? ', puis ' + eur(O.v) + ' par an' : '') + ', pendant ' + O.n + ' an' + (O.n > 1 ? 's' : '') + ' (' + eur(invested) + ' versés au total), ' + pct(O.s) + ' en fonds euros.</div>';
+  if(ok.length) h += '<div style="overflow-x:auto"><table id="fcTable" style="width:100%;border-collapse:collapse"><thead><tr><th style="' + th + ';text-align:left">CONTRAT</th><th style="' + th + '">ENTRÉE</th><th style="' + th + '">GESTION</th><th style="' + th + '">ARBITRAGE</th><th style="' + th + '">TOTAL</th><th style="' + th + '">ÉCART AU MOINS CHER</th></tr></thead><tbody>'
+    + ok.map((r, i) => '<tr><td style="' + td + ';text-align:left">' + nm(r) + '</td><td style="' + td + '">' + eur(r.res.entree) + '</td><td style="' + td + '">' + eur(r.res.gestion) + '</td><td style="' + td + '">' + (r.res.arbitrage > 0 ? eur(r.res.arbitrage) : '-') + '</td><td style="' + td + ';font-weight:700;color:' + (i === 0 && ok.length > 1 ? 'var(--green)' : 'var(--text)') + '"><div>' + eur(r.res.total) + '</div><div style="height:4px;border-radius:2px;margin-top:4px;background:' + (i === 0 && ok.length > 1 ? 'var(--green)' : 'var(--accent)') + ';width:' + (mx > 0 ? Math.max(4, Math.round(r.res.total / mx * 100)) : 4) + '%;margin-left:auto"></div></td><td style="' + td + '">' + (i === 0 ? (ok.length > 1 ? 'le moins cher' : '-') : '+' + eur(r.res.total - best)) + '</td></tr>').join('') + '</tbody></table></div>';
+  if(ko.length) h += '<div id="fcIncomplete" style="font-size:10px;color:var(--text3);line-height:1.7;margin-top:10px">' + ko.map(r => '· ' + escapeHtml(r.nom) + ' : données incomplètes (' + r.res.why + ')').join('<br>') + '</div>';
+  const nts = []; ok.forEach(r => r.res.notes.forEach(n => { const t = escapeHtml(r.nom) + ' : ' + n; if(nts.indexOf(t) < 0) nts.push(t); }));
+  if(nts.length) h += '<div style="font-size:10px;color:var(--text3);line-height:1.7;margin-top:8px">' + nts.map(n => '· ' + n).join('<br>') + '</div>';
+  h += '<div style="font-size:9px;color:var(--text3);line-height:1.7;margin-top:10px">Frais de gestion calculés chaque année sur le capital versé, sans rendement ni baisse de capital. Les contrats de la base viennent de finance-heros.fr, à titre indicatif : vérifiez toujours la notice du contrat. Les frais des supports eux-mêmes (frais courants des fonds et ETF) ne sont pas inclus.</div>';
+  res.innerHTML = h;
+}
+
+// ── 2.8.8.04 : simulateur de frais (onglet de la page Frais) ──
+// Projection année par année d'UN contrat avec un rendement brut annuel que VOUS supposez (KYF n'en propose aucun) : valeur sans frais, valeur après frais, frais payés, manque à gagner.
+// Ici les frais sont prélevés sur le capital : l'entrée à chaque versement, la gestion et l'arbitrage en fin d'année. Ils réduisent donc le capital qui produit ensuite du rendement (pas le même total que le comparateur, qui ne suppose aucun rendement).
+function fraisSimCalc(c, P){
+  const isN = x => typeof x === 'number' && isFinite(x);
+  const base = fraisCompCalc(c, P); if(!base.ok) return base;
+  if(!isN(P.r)) return { ok:false, why:'rendement annuel à indiquer', needR:true };
+  const gfe = isN(c.gfe) ? c.gfe : c.g, s = P.s / 100, mix = (1 - s) * c.g + s * gfe, r = P.r / 100, arb = (P.ac * P.am > 0) ? P.ac * P.am * c.ar / 100 : 0;
+  let K = 0, G = 0, vers = 0, fr = 0; const rows = [{ y:0, vers:0, gross:0, net:0, fees:0 }];
+  for(let k = 1; k <= P.n; k++){
+    const add = k === 1 ? P.m : P.v, ent = add * c.fe / 100;
+    vers += add; fr += ent; K += add - ent; G += add;
+    K *= (1 + r); G *= (1 + r);
+    const ge = Math.max(0, K) * mix / 100, ar = Math.min(Math.max(0, K), arb);
+    fr += ge + ar; K = K - ge - ar;
+    rows.push({ y:k, vers:vers, gross:G, net:K, fees:fr });
+  }
+  const r2 = x => Math.round(x * 100) / 100;
+  return { ok:true, gross:r2(G), net:r2(K), fees:r2(fr), lost:r2(G - K), vers:r2(vers), rows:rows.map(x => ({ y:x.y, vers:r2(x.vers), gross:r2(x.gross), net:r2(x.net), fees:r2(x.fees) })), notes:base.notes };
+}
+function fraisSimBuild(){
+  const b = document.getElementById('fraisTabSim'); if(!b) return;
+  const O = fraisCompLoad(), lbl = 'font-size:10px;font-weight:700;letter-spacing:.5px;color:var(--text3);margin-bottom:2px';
+  const big = (id, l, v, unit, ph, fs) => '<div><div style="' + lbl + '">' + l + '</div><div style="display:flex;align-items:baseline;gap:6px;border-bottom:1px solid var(--border2)"><input id="' + id + '" type="text" inputmode="decimal" value="' + escapeHtml(String(v === null ? '' : v).replace('.', ',')) + '"' + (ph ? ' placeholder="' + ph + '"' : '') + ' oninput="fraisSimInput(this)" style="flex:1;min-width:0;background:none;border:none;outline:none;color:var(--text);font-size:' + (fs || 22) + 'px;font-weight:600;font-family:Inter,sans-serif;padding:4px 0"><span style="font-size:13px;color:var(--text3)">' + unit + '</span></div></div>';
+  const sf = O.sf, anySf = !!(sf && (sf.fe !== null || sf.g !== null || sf.gfe !== null || sf.ar !== null));
+  const sld = (id, l, min, max, step, left, right) => '<div style="margin-top:6px"><input id="' + id + '" type="range" min="' + min + '" max="' + max + '" step="' + step + '" oninput="fraisSimSlide(this)" aria-label="' + l + '" style="width:100%;accent-color:var(--accent)"><div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3)"><span>' + left + '</span><span>' + right + '</span></div></div>';
+  b.innerHTML = '<div class="card" style="margin-top:0"><div class="card-title">SIMULATEUR</div>'
+    + '<div style="font-size:10px;color:var(--text2);line-height:1.7;margin-bottom:10px">Ce que les frais d\'un contrat vous coûtent avec le rendement que vous supposez. <strong style="color:var(--text)">KYF ne prévoit aucun rendement</strong> : c\'est une hypothèse à vous. Les contrats sont ceux de l\'onglet Comparateur.</div>'
+    + '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:22px;align-items:start">'
+    + '<div id="fsIn" style="min-width:0"><div style="' + lbl + '">CONTRAT SIMULÉ</div><select id="fsSel" data-kyf-pg-look="field" onchange="try{kyfPgLabel(this)}catch(e){};fraisSimInput()" style="width:100%;font-size:11px;margin:4px 0 6px"></select><div id="fsRates" style="font-size:10px;color:var(--text3);line-height:1.6;margin-bottom:12px"></div>'
+    + '<div style="margin-bottom:14px"><div style="' + lbl + '">COMPARER AVEC UN CONTRAT À</div><div style="display:flex;align-items:baseline;gap:6px;border-bottom:1px solid var(--border2)"><input id="fsRef" type="text" inputmode="decimal" value="' + escapeHtml(String(sf.g === null ? '' : sf.g).replace('.', ',')) + '" placeholder="ex. 0 ou 0,5 ou 4" oninput="fraisSimInput(this)" style="flex:1;min-width:0;background:none;border:none;outline:none;color:var(--text);font-size:16px;font-weight:600;font-family:Inter,sans-serif;padding:4px 0"><span style="font-size:13px;color:var(--text3)">% de frais de gestion par an</span></div><div style="font-size:10px;color:var(--text3);line-height:1.6;margin-top:4px">Facultatif. Vous choisissez le niveau de frais du contrat de comparaison (sans frais d\'entrée ni d\'arbitrage). Laissez vide pour ne pas comparer.</div></div>'
+    + '<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px 20px">' + big('fsM', 'VERSEMENT DE DÉPART', O.m, '€') + big('fsV', 'VERSEMENT ANNUEL', O.v, '€') + '</div>'
+    + '<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px 20px;margin-top:14px"><div>' + big('fsN', 'DURÉE', O.n, 'ans') + sld('fsNg', 'Durée en années', 1, 40, 1, '1 an', '40 ans') + '</div><div>' + big('fsR', 'RENDEMENT BRUT / AN', O.r, '%', 'à indiquer') + sld('fsRg', 'Rendement brut annuel', 0, 12, 0.1, '0 %', '12 %') + '</div></div>'
+    + '<div style="margin-top:14px"><div style="' + lbl + '">RÉPARTITION</div><div id="fsSLbl" style="font-size:12px;color:var(--text);margin:2px 0"></div>' + sld('fsSg', 'Part en fonds euros', 0, 100, 1, 'Unités de compte', 'Fonds euros') + '<input id="fsS" type="hidden" value="' + escapeHtml(String(O.s)) + '"></div>'
+    + '<details style="margin-top:14px"' + ((O.ac > 0 || O.am > 0) ? ' open' : '') + '><summary id="fsAdvBtn" style="cursor:pointer;font-size:11px;font-weight:700;color:var(--accent)">Arbitrages (facultatif)</summary><div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px 20px;margin-top:12px">' + big('fsAc', 'ARBITRAGES PAR AN', O.ac, '') + big('fsAm', 'MONTANT PAR ARBITRAGE', O.am, '€') + '</div></details>'
+    + '</div>'
+    + '<div id="fsRes" style="min-width:0"></div></div></div>';
+  fraisSimFillSel(O); fraisSimSync(O);
+  try{ const sel = document.getElementById('fsSel'); if(typeof kyfPgInit === 'function'){ kyfPgInit(sel); kyfPgLabel(sel); } }catch(e){}
+}
+// Curseurs et champs restent d'accord : un curseur écrit dans le champ, un champ déplace le curseur (sans reconstruire la page, pour garder le focus)
+function fraisSimSync(O){
+  const set = (id, v) => { const e = document.getElementById(id); if(e && v !== null && v !== undefined) e.value = v; };
+  set('fsNg', O.n); set('fsRg', O.r === null ? 0 : Math.min(12, Math.max(0, O.r))); set('fsSg', O.s);
+  const l = document.getElementById('fsSLbl'); if(l) l.textContent = (100 - O.s) + ' % unités de compte · ' + O.s + ' % fonds euros';
+}
+function fraisSimSlide(el){
+  const map = { fsNg:'fsN', fsRg:'fsR', fsSg:'fsS' }, t = document.getElementById(map[el.id]); if(!t) return;
+  t.value = String(el.value).replace('.', ','); fraisSimInput();
+}
+function fraisSimFillSel(O){
+  const sel = document.getElementById('fsSel'); if(!sel) return;
+  const rows = fraisCompRows(O); sel.innerHTML = rows.length ? rows.map(r => '<option value="' + escapeHtml(r.id) + '">' + escapeHtml(r.nom) + '</option>').join('') : '<option value="">Aucun contrat : voir l\'onglet Comparateur</option>';
+  if(rows.some(r => r.id === O.sim)) sel.value = O.sim; else if(rows.length) sel.value = rows[0].id;
+}
+function fraisSimInput(){
+  const o = fraisCompLoad(), g = id => { const e = document.getElementById(id); return e ? e.value : ''; };
+  o.m = fcNum(g('fsM'), 0, 1e9, o.m); o.v = fcNum(g('fsV'), 0, 1e8, o.v); o.n = Math.round(fcNum(g('fsN'), 1, 60, o.n)); o.s = fcNum(g('fsS'), 0, 100, o.s); o.ac = Math.round(fcNum(g('fsAc'), 0, 52, o.ac)); o.am = fcNum(g('fsAm'), 0, 1e9, o.am);
+  o.r = String(g('fsR')).trim() === '' ? null : fcNum(g('fsR'), -50, 100, o.r);
+  const fq = id => String(g(id)).trim() === '' ? null : fcNum(g(id), 0, 100, null);
+  o.sf = { fe: null, g: fq('fsRef'), gfe: null, ar: null };
+  const sel = document.getElementById('fsSel'); if(sel && sel.value) o.sim = sel.value;
+  fraisCompSave(o); fraisSimSync(o); fraisSimRender();
+}
+function fraisSimRender(rebuild){
+  if(rebuild || !document.getElementById('fsRes')) fraisSimBuild();
+  const O = fraisCompLoad(), res = document.getElementById('fsRes'); if(!res) return;
+  const eur = v => fmt(v, 0) + ' €', pc1 = v => String(Math.round(v * 10) / 10).replace('.', ',') + ' %', rows = fraisCompRows(O), row = rows.find(r => r.id === O.sim) || rows[0];
+  if(!row){ res.innerHTML = '<div id="fsEmpty" style="font-size:11px;color:var(--text3);text-align:center;padding:14px;line-height:1.7">Aucun contrat à simuler. Cochez un de vos contrats ou ajoutez-en un dans l\'onglet Comparateur.</div>'; return; }
+  const rowB = O.sf.g !== null ? { id:'ref', nom:'Contrat à ' + String(O.sf.g).replace('.', ',') + '\u00A0%', src:'man', fe:0, g:O.sf.g, gfe:null, ar:0 } : null;
+  const rt = document.getElementById('fsRates'), pcs = v => (typeof v === 'number' && isFinite(v)) ? String(v).replace('.', ',') + '\u00A0%' : 'non renseigné';
+  const ratesTxt = c => 'Taux : entrée ' + pcs(c.fe) + ' · gestion UC ' + pcs(c.g) + ' · gestion fonds euros ' + (typeof c.gfe === 'number' ? pcs(c.gfe) : 'même taux') + (O.ac * O.am > 0 ? ' · arbitrage ' + pcs(c.ar) : '');
+  if(rt) rt.textContent = ratesTxt(row);
+  const P = { m:O.m, v:O.v, n:O.n, s:O.s, ac:O.ac, am:O.am, r:O.r }, S = fraisSimCalc(row, P), SB = rowB ? fraisSimCalc(rowB, P) : null, bOk = !!(SB && SB.ok);
+  if(!S.ok){ res.innerHTML = '<div id="fsIncomplete" style="font-size:11px;color:var(--text3);text-align:center;padding:14px;line-height:1.7">' + (S.needR ? 'Indiquez le rendement brut annuel que vous supposez pour lancer la simulation.' : escapeHtml(row.nom) + ' : données incomplètes (' + escapeHtml(S.why) + ')') + '</div>'; return; }
+  const lost = S.lost, forgone = Math.round((S.lost - S.fees) * 100) / 100, hasF = forgone >= 1, gross = S.gross > 0 ? S.gross : 1;
+  const seg = (v, col, id) => v > 0 ? '<div id="' + id + '" style="width:' + Math.max(0.8, v / gross * 100).toFixed(2) + '%;background:' + col + ';height:100%"></div>' : '';
+  const dot = (col) => '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' + col + ';margin-right:6px"></span>';
+  const colH = 120, topV = bOk ? Math.max(S.net, SB.net, 1) : gross, hh = v => Math.max(6, Math.round(colH * Math.max(0, v) / topV)), hg = colH, hn = hh(S.net), hb = bOk ? hh(SB.net) : 0, col = (id, hgt, bg, fg, l, v) => '<div style="flex:0 0 96px;display:flex;flex-direction:column;justify-content:flex-end;height:' + (colH + 4) + 'px"><div id="' + id + '" style="height:' + hgt + 'px;box-sizing:border-box;border-radius:12px;background:' + bg + ';color:' + fg + ';display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:6px;text-align:center"><span style="font-size:10px;font-weight:700;opacity:.85;line-height:1.3;word-break:break-word">' + l + '</span><span style="font-size:15px;font-weight:800">' + v + '</span></div></div>';
+  let cmpH = '';
+  if(SB){
+    const dv = Math.round((SB.net - S.net) * 100) / 100, st = 'margin-top:10px;font-size:11px;color:var(--text2);line-height:1.6;padding:8px 12px;border-radius:10px;background:var(--btn-secondary-bg)';
+    cmpH = SB.ok ? '<div id="fsCmp" style="' + st + '">' + escapeHtml(row.nom) + ' : capital <strong style="color:var(--text)">' + eur(S.net) + '</strong>, frais <strong style="color:var(--text)">' + eur(S.fees) + '</strong><br>' + escapeHtml(rowB.nom) + ' : capital <strong style="color:var(--text)">' + eur(SB.net) + '</strong>, frais <strong style="color:var(--text)">' + eur(SB.fees) + '</strong><br>' + (Math.abs(dv) < 0.5 ? 'Résultats identiques' : 'Écart : <strong style="color:var(--text)">' + eur(Math.abs(dv)) + '</strong> en faveur de ' + escapeHtml(dv > 0 ? rowB.nom : row.nom)) + '</div>' : '<div id="fsCmp" style="margin-top:10px;font-size:10px;color:var(--text3);line-height:1.6">' + escapeHtml(rowB.nom) + ' : données incomplètes (' + escapeHtml(SB.why) + '), comparaison indisponible.</div>';
+  }
+  let h = '<div id="fsTop" style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin:0 0 14px">'
+    + '<div id="fsHero" style="flex:1 1 250px;min-width:0">'
+
+    + '<div style="font-size:12px;color:var(--text3);margin-bottom:2px">Les frais retirent</div>'
+    + '<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap"><span id="fsHeroLost" style="font-size:34px;font-weight:800;letter-spacing:-1px;line-height:1.1;color:var(--text)">' + eur(lost) + '</span>' + (S.gross > 0 && lost > 0 ? '<span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;background:rgba(244,63,94,.12);color:#f43f5e">-' + pc1(lost / S.gross * 100) + ' de la valeur avant frais</span>' : '') + '</div>'
+    + '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:13px;color:var(--text2)"><span><strong id="fsHeroGross" style="color:var(--text);font-size:15px">' + eur(S.gross) + '</strong> avant frais (théorique)</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg><span><strong id="fsHeroNet" style="color:var(--text);font-size:15px">' + eur(S.net) + '</strong> après frais</span></div>'
+    + cmpH
+    + '<div id="fsBar" style="display:flex;height:12px;border-radius:7px;overflow:hidden;background:var(--btn-secondary-bg);margin:12px 0 8px">' + seg(S.net, 'var(--accent)', 'fsBarNet') + seg(S.fees, '#f43f5e', 'fsBarFees') + (hasF ? seg(forgone, '#f0b429', 'fsBarForgone') : '') + '</div>'
+    + '<div style="display:flex;gap:16px;flex-wrap:wrap;font-size:11px;color:var(--text2)"><span>' + dot('var(--accent)') + 'Votre capital après frais <strong style="color:var(--text)">' + eur(S.net) + '</strong></span><span>' + dot('#f43f5e') + 'Frais prélevés <strong id="fsHeroFees" style="color:var(--text)">' + eur(S.fees) + '</strong></span>' + (hasF ? '<span>' + dot('#f0b429') + 'Rendement que ces frais n\'ont pas pu produire <strong id="fsHeroForgone" style="color:var(--text)">' + eur(forgone) + '</strong></span>' : '') + '</div></div>'
+    + '<div id="fsCols" style="display:flex;gap:10px;align-items:flex-end;justify-content:center;padding:10px;border-radius:14px;background:var(--btn-secondary-bg);flex:0 0 auto">' + (bOk ? col('fsColA', hn, 'var(--accent)', '#000', escapeHtml(row.nom), eur(S.net)) + col('fsColB', hb, '#a78bfa', '#000', escapeHtml(rowB.nom), eur(SB.net)) : col('fsColGross', hg, 'transparent;border:1px dashed var(--text3)', 'var(--text2)', 'Avant frais (théorique)', eur(S.gross)) + col('fsColA', hn, 'var(--accent)', '#000', escapeHtml(row.nom), eur(S.net))) + '</div></div>';
+  const W = 600, H = 120, Pd = 8, mx = Math.max.apply(null, S.rows.map(x => x.gross)) || 1, X = y => Pd + y / O.n * (W - 2 * Pd), Y = v => H - Pd - v / mx * (H - 2 * Pd);
+  const pts = f => S.rows.map(x => X(x.y).toFixed(1) + ',' + Y(f(x)).toFixed(1)).join(' ');
+  const last = S.rows[S.rows.length - 1];
+  h += '<div style="position:relative"><svg id="fsChart" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" onmousemove="fraisSimHover(event)" onmouseleave="fraisSimHover(null)" style="width:100%;height:120px;display:block;border-radius:10px;background:linear-gradient(180deg,var(--btn-secondary-bg),transparent)" role="img" aria-label="Valeur du contrat avec et sans frais">'
+    + '<defs><linearGradient id="fsGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--accent)" stop-opacity=".35"/><stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>'
+    + '<polygon fill="url(#fsGrad)" points="' + X(0).toFixed(1) + ',' + (H - Pd) + ' ' + pts(x => x.net) + ' ' + X(O.n).toFixed(1) + ',' + (H - Pd) + '"/>'
+    + '<polyline fill="none" stroke="var(--text3)" stroke-width="1.5" stroke-dasharray="4 4" stroke-linejoin="round" vector-effect="non-scaling-stroke" points="' + pts(x => x.gross) + '"/>'
+    + '<polyline fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" points="' + pts(x => x.net) + '"/>'
+    + (bOk ? '<polyline fill="none" stroke="#a78bfa" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" points="' + SB.rows.map(x => X(x.y).toFixed(1) + ',' + Y(x.net).toFixed(1)).join(' ') + '"/>' : '')
+    + '<line id="fsCursor" x1="0" y1="0" x2="0" y2="' + H + '" stroke="var(--text3)" stroke-width="1" vector-effect="non-scaling-stroke" style="display:none"/></svg>'
+    + '<div id="fsTip" style="display:none;position:absolute;top:8px;pointer-events:none;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:6px 10px;font-size:10px;line-height:1.6;box-shadow:0 6px 20px rgba(0,0,0,.25);white-space:nowrap"></div></div>'
+    + '<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);margin:4px 2px 10px"><span>départ</span><span>année ' + O.n + '</span></div>'
+    + '<div style="display:flex;gap:14px;font-size:10px;color:var(--text3);margin-bottom:12px"><span><span style="display:inline-block;width:14px;height:3px;border-radius:2px;background:var(--accent);vertical-align:middle;margin-right:5px"></span>' + escapeHtml(row.nom) + '</span>' + (bOk ? '<span><span style="display:inline-block;width:14px;height:3px;border-radius:2px;background:#a78bfa;vertical-align:middle;margin-right:5px"></span>' + escapeHtml(rowB.nom) + '</span>' : '') + '<span><span style="display:inline-block;width:14px;border-top:2px dashed var(--text3);vertical-align:middle;margin-right:5px"></span>Avant frais (théorique)</span></div>';
+  window._fsRows = S.rows; window._fsRowsB = bOk ? SB.rows : null; window._fsNames = [row.nom, bOk ? rowB.nom : ''];
+  const th = 'text-align:right;font-size:9px;font-weight:700;letter-spacing:.5px;color:var(--text3);padding:8px 10px;border-bottom:1px solid var(--border);white-space:nowrap', td = 'text-align:right;font-size:11px;padding:7px 10px;border-top:1px solid var(--border);white-space:nowrap';
+  const hd = ['ANNÉE', 'VERSÉ', 'AVANT FRAIS (THÉORIQUE)'].concat(bOk ? [escapeHtml(row.nom), escapeHtml(rowB.nom), 'FRAIS ' + escapeHtml(row.nom), 'FRAIS ' + escapeHtml(rowB.nom)] : ['APRÈS FRAIS', 'FRAIS CUMULÉS']);
+  h += '<details style="margin-top:4px"><summary id="fsDetailsBtn" style="cursor:pointer;font-size:11px;font-weight:700;color:var(--accent);padding:6px 0">Voir année par année</summary><div style="overflow-x:auto"><table id="fsTable" style="width:100%;border-collapse:collapse"><thead><tr>' + hd.map((t, k) => '<th style="' + th + (k === 0 ? ';text-align:left' : '') + '">' + t + '</th>').join('') + '</tr></thead><tbody>'
+    + S.rows.slice(1).map((x, k) => { const y = bOk ? SB.rows[k + 1] : null; return '<tr><td style="' + td + ';text-align:left;font-weight:600">' + x.y + '</td><td style="' + td + '">' + eur(x.vers) + '</td><td style="' + td + '">' + eur(x.gross) + '</td><td style="' + td + ';font-weight:700">' + eur(x.net) + '</td>' + (y ? '<td style="' + td + ';font-weight:700">' + eur(y.net) + '</td>' : '') + '<td style="' + td + ';color:var(--red)">' + eur(x.fees) + '</td>' + (y ? '<td style="' + td + ';color:var(--red)">' + eur(y.fees) + '</td>' : '') + '</tr>'; }).join('') + '</tbody></table></div></details>';
+  const nts = S.notes.map(n => escapeHtml(row.nom) + ' : ' + n);
+  if(nts.length) h += '<div style="font-size:10px;color:var(--text3);line-height:1.7;margin-top:8px">' + nts.map(n => '· ' + n).join('<br>') + '</div>';
+  h += '<div style="font-size:9px;color:var(--text3);line-height:1.7;margin-top:10px">« Avant frais » est un repère théorique : aucun contrat n\'a des frais nuls. Hypothèses : rendement brut identique chaque année (celui que vous avez indiqué, sans aléa), versement de départ la première année puis versement annuel au début de chaque année suivante. Frais d\'entrée retirés de chaque versement, frais de gestion et d\'arbitrage retirés en fin d\'année sur le capital. Frais des supports (fonds, ETF), impôts et prélèvements sociaux non inclus. Ce n\'est ni une prévision ni un conseil.</div>';
+  res.innerHTML = h;
+}
+function fraisSimHover(ev){
+  const svg = document.getElementById('fsChart'), cur = document.getElementById('fsCursor'), tip = document.getElementById('fsTip'), rows = window._fsRows; if(!svg || !cur || !tip || !rows) return;
+  if(!ev){ cur.style.display = 'none'; tip.style.display = 'none'; return; }
+  const b = svg.getBoundingClientRect(), n = rows.length - 1, f = Math.min(1, Math.max(0, (ev.clientX - b.left) / (b.width || 1))), k = Math.round(f * n), x = rows[k], px = 8 + k / n * 584, e = v => fmt(v, 0) + ' €';
+  cur.setAttribute('x1', px); cur.setAttribute('x2', px); cur.style.display = '';
+  const rb = window._fsRowsB, nm = window._fsNames || ['', ''];
+  tip.innerHTML = '<strong>' + (k === 0 ? 'Départ' : 'Année ' + x.y) + '</strong><br>Avant frais (théorique) : ' + e(x.gross) + '<br>' + (rb ? escapeHtml(nm[0]) + ' : ' : 'Après frais : ') + e(x.net) + (rb ? '<br>' + escapeHtml(nm[1]) + ' : ' + e(rb[k].net) : '') + '<br>Frais cumulés : ' + e(x.fees) + (rb ? ' / ' + e(rb[k].fees) : '');
+  tip.style.display = 'block'; const w = tip.offsetWidth, left = (k / n) * b.width + 10; tip.style.left = Math.max(0, Math.min(b.width - w, left > b.width - w - 10 ? left - w - 20 : left)) + 'px';
+}
+
 function renderFraisPage(){
   const E = avFraisEstim12(), A = avFraisAgg(), p = avFraisPaidYear(), set = (id, t) => { const e = document.getElementById(id); if(e) e.textContent = t; };
   const none = !E.nb;
@@ -76925,6 +77341,7 @@ function renderFraisPage(){
   const t = document.getElementById('fraisPgTable'); if(t) t.innerHTML = avFraisTblContent(A, 'avFraisPgPop');
   const o = document.getElementById('fraisPgOthers'); if(o) o.innerHTML = fraisAutresHtml(fraisAutresAgg());
   const mn = document.getElementById('fraisPgMan'); if(mn) mn.innerHTML = fraisManHtml(fraisManAgg());
+  try{ if(_fraisTab === 'comp') fraisCompRender(); if(_fraisTab === 'sim') fraisSimRender(); }catch(e){}
 }
 // ── Autres frais par année (2.8.7.4) : courtage PEA / CTO (frais saisis dans les transactions) et souscription des SCPI en achat direct (taux de la fiche SCPI x montant acheté).
 // Jamais de zéro inventé : « - » = rien d'inscrit ; une SCPI dont le taux ou la date est inconnu est signalée, pas comptée. Les SCPI détenues dans une assurance vie relèvent des frais du contrat.
