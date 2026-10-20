@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_8_21.html
+  @file        : KYF_SHARE_beta_2_8_8_27.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.8.21
+  @version     : Beta 2.8.8.27
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -87,8 +87,69 @@
       { id:'liv_demo1', banque:'Banque (exemple)', type:'Livret A', solde:12400, taux:1.75, plafond:22950, liquide:1, tauxHistory:[] },
       { id:'liv_demo2', banque:'Banque (exemple)', type:'LDDS', solde:4200, taux:1.75, plafond:12000, liquide:1, tauxHistory:[] }
     ]);
-    data['kyf-av'] = J([{ id:'av_demo1', type:'av', contratNom:'Contrat (exemple)', assureur:'Assureur (exemple)', versements:20000, valeur:23800, fondsEuros:14000, uc:9800, dateOuv:'2019-03-01' }]);
-    data['kyf-immo'] = J([{ id:'immo_demo1', nom:'Appartement (exemple)', type:'Appartement', typeTerrain:'', photo:'', statut:'', valeur:210000, surface:48, dateAchat:'', dpe:'', loyerMensuel:0, revenuAnnuel:'', crd:0, maps:'', notes:'Bien fictif pour la démonstration' }]);
+    // Assurance-vie fictive avec frais prélevés (trimestriels) et historique de valeur : alimente la page Frais, le simulateur, le comparateur et la fenêtre Évolution.
+    // Toutes les dates sont calculées par rapport à aujourd'hui : la démo reste vivante, quel que soit le jour où on l'ouvre.
+    function dIso(dt){ return dt.getFullYear() + '-' + ('0' + (dt.getMonth() + 1)).slice(-2) + '-' + ('0' + dt.getDate()).slice(-2); }
+    var today0 = new Date(), todayIso = dIso(today0);
+    var qFirst = new Date(today0.getFullYear() - 2, today0.getMonth(), 15);   // premier prélèvement : il y a 2 ans, le 15
+    data['kyf-av'] = J([{ id:'av_demo1', type:'av', contratNom:'Contrat (exemple)', assureur:'Assureur (exemple)', versements:20000, valeur:23800, fondsEuros:14000, uc:9800, dateOuv:'2019-03-01',
+      fraisGestion:0.75, fraisPilotage:0, fraisEntree:0, fraisSched:{ freq:'t', first:dIso(qFirst) } },
+      { id:'per_demo1', type:'per', contratNom:'PER (exemple)', assureur:'Assureur (exemple)', versements:2100, valeur:2380, fondsEuros:800, uc:1580,
+        dateOuv:dIso(new Date(today0.getFullYear() - 2, today0.getMonth(), 1)), fraisGestion:0.6, fraisPilotage:0, fraisEntree:0 }]);
+    data['kyf-per-revenu'] = '42000'; data['kyf-per-tmi'] = '30';   // plafond de déduction = 10 % du revenu
+    var fr = [], k, due, last = null;   // frais réels des échéances passées ; la plus récente reste en « estimation » (KYF l'inscrit tout seul quelques secondes après l'ouverture)
+    for(k = 0; k < 40; k++){ due = new Date(qFirst.getFullYear(), qFirst.getMonth() + 3 * k, 15); if(dIso(due) > todayIso) break; last = k; }
+    for(k = 0; last !== null && k < last; k++){
+      due = new Date(qFirst.getFullYear(), qFirst.getMonth() + 3 * k, 15);
+      var base = 21600 + k * 270;   // valeur du contrat qui monte doucement
+      fr.push({ id:'fr_demo' + k, c:'av_demo1', date:dIso(due), montant:Math.round(base * 0.75 / 4) / 100, base:base, taux:0.75, statut:'reel', crea:todayIso + 'T08:00:00.000Z' });
+    }
+    data['kyf-av-frais-hist'] = J({ v:1, items:fr });
+    // Un point par mois sur 14 mois, aucun rachat : versements nets +200 €/mois (de 17 200 à 20 000 €), gain mensuel plausible (surtout positif, deux mois de baisse).
+    var pf = [], m, pd, gains = [-140, 95, 160, 70, 210, -90, 120, 85, 150, 60, 180, 110, 75, 130], v = 23800;   // gains[m-1] = gain du mois qui finit à la date m
+    for(m = 1; m <= 14; m++){
+      v = v - 200 - gains[m - 1];   // valeur un mois plus tôt = valeur - versement du mois - gain du mois
+      pd = new Date(today0.getFullYear(), today0.getMonth() - m, 15);
+      pf.unshift({ d:dIso(pd), val:Math.round(v * 100) / 100, vers:20000 - m * 200, rach:0 });
+    }
+    pf.push({ d:todayIso, val:23800, vers:20000, rach:0 });   // le point du jour (même valeur que la fiche : KYF ne le réécrit pas)
+    data['kyf-av-perf'] = J({ v:1, items:{ av_demo1:pf } });
+    // Versements programmés fictifs (AV 200 €, PER 150 €, le 5 de chaque mois depuis 14 mois). Les échéances passées sont déjà notées (derniereExecution + historique),
+    // donc KYF n'ajoute rien aux contrats à l'ouverture : seule la prochaine échéance (future) s'affiche.
+    var dcaDebut = new Date(today0.getFullYear(), today0.getMonth() - 14, 5), dcaHist = [], dcaRules = [], recon = {};
+    [['dca_demo1', 'av_demo1', 'Contrat (exemple)', 'av', 200], ['dca_demo2', 'per_demo1', 'PER (exemple)', 'per', 150]].forEach(function(x){
+      var dcaLast = null, dd;
+      for(k = 0; k < 60; k++){
+        dd = new Date(dcaDebut.getFullYear(), dcaDebut.getMonth() + k, 5);
+        if(dd > today0) break; dcaLast = dd;
+        dcaHist.push({ id:x[0] + '|' + dIso(dd), ruleId:x[0], contratId:x[1], contrat:x[2], type:x[3], date:dIso(dd), montant:x[4], comp:'', recon:false });
+      }
+      dcaRules.push({ id:x[0], contratId:x[1], montant:x[4], freq:'monthly', jour:5, debut:dIso(dcaDebut), actif:true, compartiment:'', allocs:null, alloc:null,
+        derniereExecution:new Date(dcaLast.getFullYear(), dcaLast.getMonth(), dcaLast.getDate(), 12).toISOString(), created:dcaDebut.toISOString() });
+      recon[x[0]] = 1;
+    });
+    data['kyf-av-dca'] = J(dcaRules);
+    data['kyf-av-dca-hist'] = J({ v:1, items:dcaHist, recon:recon });
+    // Appartement loué (850 €/mois) et financé : prix 180 000 €, apport 30 000 €, prêt de 150 000 € à 2 % sur 20 ans, commencé il y a 4 ans (1er du mois).
+    var cDeb = new Date(today0.getFullYear() - 4, today0.getMonth(), 1), cCap = 150000, cTx = 2, cN = 240, cR = cTx / 100 / 12;
+    var cMens = cCap * cR / (1 - Math.pow(1 + cR, -cN)), cEcoules = 48, cAssur = 0.3, cAssurMens = cCap * cAssur / 100 / 12;
+    var cCrd = cCap * Math.pow(1 + cR, cEcoules) - cMens * ((Math.pow(1 + cR, cEcoules) - 1) / cR);
+    data['kyf-immo'] = J([{ id:'immo_demo1', nom:'Appartement (exemple)', type:'Appartement', typeTerrain:'', photo:'', statut:'', valeur:210000, surface:48, dateAchat:dIso(cDeb), dpe:'', loyerMensuel:850, rendBrut:(850 * 12 / 210000 * 100).toFixed(2), revenuAnnuel:'', crd:0, maps:'', notes:'Bien fictif pour la démonstration' }]);
+    data['kyf-immo-credits'] = J([{ id:'cred_demo1', bienId:'immo_demo1', banque:'Banque (exemple)', titre:'Prêt appartement', prix:180000, apport:30000, capital:cCap, taux:cTx, assur:cAssur, duree:20, dateDebut:dIso(cDeb),
+      mensualite:Math.round(cMens), assurMens:Math.round(cAssurMens), mensTotale:Math.round(cMens + cAssurMens), crd:Math.round(cCrd) }]);
+    data['kyf-immo-revenus'] = J([{ id:'rev_demo1', bienId:'immo_demo1', titre:'Appartement (exemple)', loyer:850, vacance:1, charges:600, taxe:900, pno:140, agence:0, travaux:0, interets:2800 }]);
+    // SCPI fictive en direct : prix de souscription 200 €, prix de retrait 192 € (deux valeurs distinctes), dividende trimestriel de 2,40 € par part.
+    data['kyf-scpi'] = J([{ id:'scpi_demo1', nom:'SCPI (exemple)', parts:50, prixAchat:200, prixActuel:192, td:4.8, enveloppe:'direct',
+      dateAchat:dIso(new Date(today0.getFullYear() - 2, today0.getMonth(), 10)), dividendeBrut:2.4, partsJouissance:null, divRecuMois:null, frequence:'Trimestriel',
+      pays:'', secteurs:'', visual:'', visualShape:'diamond', visualBadge:true }]);
+    // Métaux précieux physiques fictifs, avec prix spot préchargés (€/g, fictifs) : la page Or se lit tout de suite, même hors ligne.
+    // Au bout de 30 minutes, KYF recharge les vrais cours comme d'habitude.
+    data['kyf-or-spot-cache'] = J({ _ts:now, _v:2, or:120, argent:1.6, platine:30, palladium:28 });
+    data['kyf-or'] = J([
+      { id:'or_demo1', metal:'or', produit:'krugerrand', produitLbl:'Krugerrand 1oz (31.1g)', qty:2, poids:31.1035, prixAchat:5300, date:dIso(new Date(today0.getFullYear() - 2, today0.getMonth(), 12)), notes:'' },
+      { id:'or_demo2', metal:'or', produit:'lingotin50g', produitLbl:'Lingotin 50g', qty:1, poids:50, prixAchat:4600, date:dIso(new Date(today0.getFullYear() - 1, today0.getMonth(), 3)), notes:'' },
+      { id:'or_demo3', metal:'argent', produit:'piece1oz_ag', produitLbl:'Pièce 1oz (31.1g)', qty:10, poids:31.1035, prixAchat:360, date:dIso(new Date(today0.getFullYear() - 1, today0.getMonth(), 20)), notes:'' }
+    ]);
     // Sortie de la démo : on retire le marqueur et on recharge (les vraies données n'ont jamais été touchées)
     window.kyfDemoExit = function(){
       window.name = (window.name || '').replace(/\[kyfDemo:\d+\]/g, '');
@@ -6826,7 +6887,7 @@ html:not(.kyf-kbd) .icon-btn:focus-visible,html:not(.kyf-kbd) button:focus-visib
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.8.21</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.8.27</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -43585,7 +43646,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.8.21\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.8.27\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -67835,6 +67896,18 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.27 · 20/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Mode démo : l'appartement fictif est maintenant loué (850 € par mois) et financé par un crédit de 150 000 € sur 20 ans, pour montrer les pages Crédits et Revenus locatifs, le rendement et l'effort d'épargne.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.26 · 20/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Mode démo : de l'or et de l'argent physiques fictifs (2 Krugerrand, un lingotin de 50 g, 10 pièces d'argent) avec des prix spot préchargés, pour montrer la page Or et métaux précieux.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.25 · 20/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Mode démo : une SCPI fictive détenue en direct (50 parts, dividende trimestriel, prix de retrait inférieur au prix de souscription) pour montrer les deux valeurs distinctes et le revenu mensuel.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.24 · 20/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Mode démo : un PER fictif (150 € par mois, revenu et tranche d'imposition renseignés) pour essayer la jauge du plafond de versement et le simulateur PER.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.23 · 20/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Mode démo : un versement programmé fictif de 200 € par mois sur le contrat d'assurance-vie, avec son historique d'échéances (onglet Investissement / DCA, fiche du contrat).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.22 · 20/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Mode démo : le contrat d'assurance-vie fictif montre maintenant les frais prélevés (réels et estimés, par trimestre) et un historique de valeur sur 14 mois, pour essayer la page Frais, le simulateur, le comparateur et la fenêtre Évolution.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.21 · 19/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Quoi de neuf : un lien « Ne plus afficher cette fenêtre » ouvre Paramètres, Affichage, sur la case qui désactive la fenêtre.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.8.20 · 19/10/2026</div>
