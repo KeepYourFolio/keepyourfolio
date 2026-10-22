@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_10_85.html
+  @file        : KYF_SHARE_beta_2_8_10_88.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.10.85
+  @version     : Beta 2.8.10.88
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6999,7 +6999,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.10.85</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.10.88</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -45358,7 +45358,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.10.85\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.10.88\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -53079,7 +53079,7 @@ function _applyPriceResults(data, srcTs){
       eur:coin.eur, usd:coin.usd, change24h:coin.change24h,
       image:coin.image||existing?.image||'',
       sparkline:coin.sparkline?.length?coin.sparkline:(existing?.sparkline||[]),
-      sparkTs:coin.sparkline?.length?(coin.sparkTs||srcTs||Date.now()):(existing?.sparkTs||0),   // âge de la courbe horaire gardée
+      sparkTs:coin.sparkline?.length?(coin.sparkTs||(srcTs === 'cache' ? 0 : (srcTs||Date.now()))):(existing?.sparkTs||0),   // âge de la courbe horaire gardée
     };
   });
   if(rateCount>0) window._cryptoEurUsdRate = rateSum/rateCount;
@@ -53220,7 +53220,7 @@ async function fetchCryptoPrices(){
     const cached = JSON.parse(localStorage.getItem(CG_CACHE_KEY)||'{}');
     const _effTTL = (cached.data && _cgCacheHasSparkline(cached.data)) ? CG_CACHE_TTL : CG_CACHE_TTL_NO_SPARKLINE;
     if(!_forceNet && cached._ts && Date.now()-cached._ts < _effTTL && cached.data && _cgCacheUsable(cached.data)){
-      _applyPriceResults(Object.values(cached.data), cached._ts); window._cryFreshTs = cached._ts;
+      _applyPriceResults(Object.values(cached.data), 'cache'); window._cryFreshTs = cached._ts;
       if(cached._rate) window._cryptoEurUsdRate = cached._rate;
       if(ts) ts.innerHTML = kyfCryptoSourceLabel(cached._source, 'Cache '+new Date(cached._ts).toLocaleTimeString('fr-FR'));
       renderCryptoAll(); window._cryptoLoaded = true; tryDailySnapshot();
@@ -53266,9 +53266,14 @@ async function fetchCryptoPrices(){
             }
           }
         }
-        if(source.name === 'Relais KYF' && !_cgCacheHasSparkline(cryptoPrices) && Date.now() - (window._cryEnrichT||0) > 5*60*1000){
+        // Condition sur une courbe RÉCENTE (et non plus sur sa seule présence) : le relais garde l'ancienne courbe dans cryptoPrices, qui comptait alors
+        // comme « présente » et empêchait pour toujours de la rafraîchir chez CoinGecko (courbe et variation du jour figées)
+        if(source.name === 'Relais KYF' && !Object.keys(cryptoPrices).some(k => kyfCrySparkFresh(k).length > 0) && Date.now() - (window._cryEnrichT||0) > 5*60*1000){
           window._cryEnrichT = Date.now();
-          _fetchFromCoinGecko(tickers).then(d2 => { if(d2 && d2.length){ _applyPriceResults(d2); renderCryptoAll(); } }).catch(()=>{});
+          _fetchFromCoinGecko(tickers).then(d2 => { if(d2 && d2.length){ _applyPriceResults(d2); renderCryptoAll(); } }).catch(e => {
+            // Échec en arrière-plan (courbe du jour et logos) : visible dans le journal avec le vrai motif, au lieu d'être avalé en silence
+            console.warn('[KYF Crypto] CoinGecko (courbe du jour) échec : ' + ((e && e.message) || 'réseau') + '. Les prix du relais restent affichés ; la variation du jour utilise la variation sur 24 h.');
+          });
         }
         success = true; window._cryFreshTs = Date.now(); break;
       }
@@ -53277,7 +53282,7 @@ async function fetchCryptoPrices(){
   if(!success){
     try{
       const cached = JSON.parse(localStorage.getItem(CG_CACHE_KEY)||'{}');
-      if(cached.data && _cgCacheUsable(cached.data)){ _applyPriceResults(Object.values(cached.data), cached._ts); if(ts) ts.innerHTML = kyfEmoHtml('⚠️ Cache expiré'); }
+      if(cached.data && _cgCacheUsable(cached.data)){ _applyPriceResults(Object.values(cached.data), 'cache'); if(ts) ts.innerHTML = kyfEmoHtml('⚠️ Cache expiré'); }
       else if(ts) ts.innerHTML = kyfEmoHtml('❌ Prix indisponibles');
     }catch(e){ if(ts) ts.innerHTML = kyfEmoHtml('❌ Prix indisponibles'); }
   }
@@ -54424,7 +54429,7 @@ function renderCryptoTable(){
       pru:        `<td style="cursor:pointer" onclick="cryptoInlineEdit('${tkJs}', this, 'pru', ${pruJs}, {type:'number', step:'0.0001', min:0, width:'90px'})"><span>${fmtCours(pruConv)} ${getCryptoSymbol()}</span></td>`,
       qte:        `<td style="color:var(--text2);cursor:pointer" onclick="cryptoInlineEdit('${tkJs}', this, 'qte', ${qteJs}, {type:'number', step:'any', min:0, width:'100px'})"><span>${fmtCryptoQty(p.qte)}</span></td>`,
       eval:       `<td>${evalV?fmt(evalV,2)+' '+getCryptoSymbol():'-'}</td>`,
-      cours:      `<td id="cours-${p.ticker.replace(/[^a-zA-Z0-9]/g,'_')}" style="white-space:nowrap;text-align:center">${cours?'<div style="font-weight:700;color:var(--text-hi)">'+fmtCours(cours)+' '+getCryptoSymbol()+'</div><div title="'+v24Tip+'" style="font-size:10px;margin-top:2px;font-weight:'+(v24>=0?'700':'400')+';color:'+(v24>=0?'var(--green)':'var(--red)')+'\">'+(v24>=0?'▲':'▼')+' '+Math.abs(v24).toFixed(2)+'%</div>':'-'}</td>`,
+      cours:      `<td id="cours-${p.ticker.replace(/[^a-zA-Z0-9]/g,'_')}" style="white-space:nowrap;text-align:center">${cours?'<div style="font-weight:700;color:var(--text-hi)">'+fmtCours(cours)+' '+getCryptoSymbol()+'</div><div title="'+v24Tip+'" style="font-size:10px;margin-top:2px;font-weight:'+(v24>=0?'700':'400')+';color:'+(v24>=0?'var(--green)':'var(--red)')+'\">'+(v24>=0?'▲':'▼')+' '+Math.abs(v24).toFixed(2)+'%<span class="cry-v24-per" style="font-weight:400;font-size:9px;color:var(--text3);margin-left:5px">'+((_dp !== null && _dp !== undefined) ? 'depuis 0 h' : 'sur 24 h')+'</span></div>':'-'}</td>`,
       varj:       varJEur!==null ? `<td class="${vjcl}" style="white-space:nowrap"${_dayVar.est[p.ticker] ? ' title="Sur 24 h glissantes (courbe du jour indisponible)"' : ''}><span style="font-weight:700">${varJEur>=0?'+':''}${fmt(varJEur,2)} ${getCryptoSymbol()}</span></td>` : `<td style="color:var(--text3)" title="Cours indisponible : valeur non calculée">-</td>`,
       gpe:        _allUnk ? `<td style="color:var(--text3)" title="Coût inconnu : entrée sans valeur. Renseignez la valeur de l'opération.">Coût inconnu</td>` : (cours>0 || !(investi>0)) ? `<td class="${gcl}"${_unkQ>0?' title="Hors '+fmtCryptoQty(_unkQ)+' à coût inconnu"':''}>${gain>=0?'+':''}${fmt(gain,2)} ${getCryptoSymbol()}</td>` : `<td style="color:var(--text3)" title="Cours indisponible : valeur non calculée">-</td>`,
       gpp:        _allUnk ? `<td style="color:var(--text3)" title="Coût inconnu : entrée sans valeur">-</td>` : (cours>0 || !(investi>0)) ? `<td class="${gcl}">${gainP>=0?'+':''}${gainP.toFixed(2)}%</td>` : `<td style="color:var(--text3)" title="Cours indisponible : valeur non calculée">-</td>`,
@@ -69890,6 +69895,12 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.88 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto : la période du pourcentage sous le cours est écrite (depuis 0 h, ou sur 24 h si la courbe du jour manque)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.87 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto : avertissement dans le journal quand CoinGecko échoue en arrière-plan (avec le motif)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.86 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto : la courbe horaire du jour est rafraîchie chez CoinGecko quand elle est ancienne (elle restait figée avec le relais)</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.85 · 22/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Guide : version 1.15 (conditions pour laisser un avis)</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.84 · 22/10/2026</div>
