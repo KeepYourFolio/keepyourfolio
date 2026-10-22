@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_9_41.html
+  @file        : KYF_SHARE_beta_2_8_10_51.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.9.41
+  @version     : Beta 2.8.10.51
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -64,7 +64,7 @@
     // Jeu de données fictif (aucun chiffre réel)
     var J = JSON.stringify;
     data['kyf-welcome-seen'] = '1'; data['kyf-onboarding-choice-seen'] = '1';
-    data['kyf-nouveautes-vue'] = 'a-2026-10-21';   // = KYF_NOUVEAUTES.annonces[0].id (vérifié par le test val_DEMO-isolation)
+    data['kyf-nouveautes-vue'] = 'a-2026-10-22';   // = KYF_NOUVEAUTES.annonces[0].id (vérifié par le test val_DEMO-isolation)
     data['kyf-profil-nom'] = 'Démo';
     data['pea-positions'] = J([
       { name:'Amundi MSCI World', ticker:'CW8.PA', isin:'LU1681043599', pru:468.3, qty:42, montant:19668.6, enveloppe:'PEA', color:'#4d9fff' },
@@ -520,6 +520,11 @@ body.kyf-kpop-open .kpi{pointer-events:none}
    les thèmes clair et sombre. ── */
 .pfr-btn, .pfbm-btn{transition:background .15s ease, color .15s ease}
 .pfr-btn:hover, .pfbm-btn:hover{background:rgba(240,180,41,0.14) !important;color:#f0b429 !important}
+/* Quoi de neuf : nouveauté importante en jaune/orange (sombre : jaune KYF, clair : ambre foncé lisible) */
+.kyf-new-it.kyf-new-imp{background:rgba(240,180,41,0.12);border-left:3px solid #f0b429;border-radius:8px;padding:10px 12px !important;margin:6px 0}
+.kyf-new-it.kyf-new-imp svg{color:#f0b429 !important;fill:#f0b429}
+[data-theme="light"] .kyf-new-it.kyf-new-imp{background:rgba(176,120,0,0.1);border-left-color:#b07800}
+[data-theme="light"] .kyf-new-it.kyf-new-imp svg{color:#b07800 !important;fill:#b07800}
 [data-theme="light"] .pfr-btn:hover, [data-theme="light"] .pfbm-btn:hover{background:rgba(176,120,0,0.1) !important;color:#b07800 !important}
 /* ── Bouton PDF du Guide : survol neutre, léger éclaircissement du fond. ── */
 .guide-pdf-btn:hover{background:var(--hov-bg) !important;border-color:var(--text3) !important}
@@ -1787,6 +1792,54 @@ tr.kyf-row-sel td{background:rgba(240,180,41,0.08);background:color-mix(in srgb,
 /* Carte de la case « Appareil partagé » (survol en CSS, contour en couleur de classe) */
 .kyf-shared-card{border-color:var(--border);cursor:pointer;transition:background .15s,border-color .15s}
 .kyf-shared-card:hover{background:var(--hov-bg);border-color:var(--border2)}
+/* Comptes titres (2.8.10.00) : fiche contrat */
+.ct-band{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 20px;padding:8px 10px 8px 20px;border-radius:999px;background:var(--bg2);border:1px solid var(--border2);font-family:'Inter',sans-serif}
+.ct-band-l{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.ct-lbl{font-size:11px;color:var(--text3);letter-spacing:.3px}
+.ct-big{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--text);line-height:1.2}
+.ct-sub{font-size:12px;font-weight:600}
+.ct-chips{display:flex;flex-wrap:wrap;gap:2px;padding:3px;border-radius:999px;background:rgba(127,140,170,0.12);border:1px solid var(--border)}
+.ct-chip{display:flex;flex-direction:column;justify-content:center;gap:1px;min-width:92px;padding:5px 14px;border-radius:999px;border:1px solid transparent;background:none;color:var(--text2);font-family:'Inter',sans-serif;text-align:left;cursor:pointer;transition:background .2s,box-shadow .2s,transform .2s,color .2s}
+.ct-chip span{font-size:10px;letter-spacing:.3px}
+.ct-chip b{font-size:12px;color:var(--text)}
+.ct-chip[aria-current="true"]{border-color:var(--accent)}
+.ct-chip:hover,.ct-chip:focus-visible{background:#f0b429;color:#000;box-shadow:0 2px 8px rgba(240,180,41,0.35);transform:translateY(-1px);outline:none}
+.ct-chip:hover b,.ct-chip:focus-visible b{color:#000 !important}
+.ct-main{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;font-family:'Inter',sans-serif}
+.ct-left{flex:1 1 360px;min-width:0;display:flex;flex-direction:column;gap:16px}
+.ct-right{flex:1.2 1 400px;min-width:0;background:var(--bg2);border:1px solid var(--border2);border-radius:22px;padding:24px;display:flex;flex-direction:column;gap:18px}
+.ct-hero{border-radius:22px;padding:26px;min-height:210px;box-sizing:border-box;color:#fff;display:flex;flex-direction:column;justify-content:space-between;gap:30px;border:1px solid rgba(255,255,255,0.18)}
+.ct-hero .ct-h-sub{font-size:12px;color:rgba(255,255,255,0.78)}
+.ct-sec{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;align-self:flex-start;width:min(100%,300px);box-sizing:border-box}
+.ct-pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--hov-bg);color:var(--text2)}
+.ct-pill-ok{background:rgba(52,224,161,0.16);color:var(--green)}
+.ct-secrow{display:flex;flex-wrap:wrap;gap:12px;align-items:stretch}
+.ct-secrow .ct-sec{flex:1 1 210px;width:auto;min-width:0;align-self:stretch}   /* les 5 ans et le plafond de versement sur la même ligne (à la ligne si l'écran est étroit) */
+.ct-sec .ct-bar{height:6px}
+.ct-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+.ct-fld{display:flex;flex-direction:column;gap:6px}
+.ct-fld label,.ct-fld .ct-fl{font-size:11px;color:var(--text3)}
+.ct-in2{background:var(--btn-secondary-bg) !important;border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:13px;padding:10px 12px;border-radius:10px;outline:none;min-height:40px;box-sizing:border-box;width:100%}
+.ct-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px}
+.ct-stats>div{display:flex;flex-direction:column;gap:3px}
+.ct-stats b{font-size:16px;color:var(--text)}
+.ct-sep{border-top:1px solid var(--border)}
+.ct-note{font-size:10px;color:var(--text3);line-height:1.6}
+.ct-pick{display:flex;flex-direction:column;gap:6px;padding:12px 14px;border-radius:12px;border:1px solid var(--border2);background:var(--bg2);box-shadow:0 8px 24px rgba(0,0,0,0.18);width:max-content;max-width:min(360px,calc(100vw - 32px))}
+#ctPick{position:absolute;top:100%;right:0;margin-top:6px;z-index:30}
+.ct-pick-row{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer}
+.ct-pick-row input{accent-color:var(--accent);width:15px;height:15px;margin:0}
+.ct-pick-row input:disabled{cursor:not-allowed}
+.ct-bar{height:8px;border-radius:999px;background:rgba(127,140,170,0.25);overflow:hidden}
+.ct-bar>div{height:100%;border-radius:999px}
+.ct-btn{font-family:'Inter',sans-serif;font-size:12px;font-weight:700;padding:10px 18px;border-radius:10px;border:1px solid var(--accent);background:none;color:var(--accent);cursor:pointer;min-height:40px;transition:background .2s,box-shadow .2s,transform .2s,color .2s}
+.ct-btn:hover,.ct-btn:focus-visible{background:#f0b429;color:#000;box-shadow:0 2px 8px rgba(240,180,41,0.35);transform:translateY(-1px);outline:none}
+.ct-btn.ct-btn-main{background:#f0b429;color:#000;border-color:#f0b429;box-shadow:0 2px 8px rgba(240,180,41,0.28)}
+.ct-btn.ct-btn-main:hover,.ct-btn.ct-btn-main:focus-visible{background:#f6c443;border-color:#f6c443}
+.ct-hero{cursor:pointer;transition:box-shadow .2s,transform .2s}
+.ct-hero:hover{box-shadow:0 6px 18px rgba(0,0,0,0.22);transform:translateY(-1px)}
+.ct-hero:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ct-hero-hint{display:inline-flex;align-items:center;gap:5px;margin-left:auto;font-size:11px;font-weight:600;color:rgba(255,255,255,0.85)}
 /* ── Bloc connexion Google Sheets (Paramètres → Options avancées) ──────
    Habillage "premium" : carte élevée avec halo doré subtil, badge de statut
    dans un médaillon dédié, CTA en dégradé avec relief, et un encart neutre
@@ -2453,12 +2506,23 @@ html.kyf-boot #sidebar, html.kyf-boot #mainContent, html.kyf-boot #mainContent .
   overflow: hidden;
   transition: opacity .15s;
 }
+/* 2.8.10.42 : sections repliables (chevron comme les sous-menus) ; barre repliée : toujours ouvertes, le titre reste un simple trait */
+.sb-section { display:flex; align-items:center; justify-content:space-between; cursor:pointer; }
+.sb-section:hover, .sb-section:focus-visible { color: var(--text2); outline: none; }
+.sb-sec-arrow { font-size:9px; color:var(--text3); transition:transform .2s; margin-right:14px; flex-shrink:0; transform:rotate(90deg); }
+.sb-section.collapsed .sb-sec-arrow { transform:none; }
+.sb-sec-collapsed { display:none; }
+#sidebar.mini .sb-sec-collapsed { display:block; }
+#sidebar.mini .sb-sec-arrow { display:none; }
+#sidebar.mini .sb-section { cursor:default; }
 #sidebar.mini .sb-section {
-  opacity: 0;
+  opacity: 1;
   height: 0;
   padding: 0;
-  margin: 0;
+  margin: 10px 14px 8px;
   overflow: hidden;
+  font-size: 0;
+  border-top: 1px solid var(--border2);   /* 2.8.10.41 : trait entre les sections quand la barre est repliée (le titre est masqué) */
 }
 #sidebar.mini .sb-section + .sb-item {
   border-top: 1px solid var(--border2);
@@ -2528,10 +2592,19 @@ html.kyf-boot #sidebar, html.kyf-boot #mainContent, html.kyf-boot #mainContent .
 .sb-item { position: relative; }
 .sb-item .sb-badge { position: absolute; top: 50%; right: 3px; transform: translateY(-50%); min-width: 14px; height: 14px; padding: 0 4px; box-sizing: border-box; border-radius: 8px; background: #e07b00; color: #fff; font: 700 9px/14px Inter, sans-serif; text-align: center; font-variant-numeric: tabular-nums; pointer-events: none; }
 #sidebar:not(.mini) .sb-item:has(> .sb-badge) { gap: 8px; }
-/* 2.8.9.20 : tant que la pastille est à droite, le nom est réduit (police ajustée en JS, kyfSbFitBadge) pour lui laisser la place ; une fois l'item ouvert (actif), le nom reprend sa taille et la pastille passe sur l'angle de l'icône */
-#sidebar:not(.mini) .sb-item:has(> .sb-badge):not(.active) { padding-right: 26px; }
-#sidebar:not(.mini) .sb-item.active > .sb-badge { top: 4px; right: auto; left: 25px; transform: none; box-shadow: 0 0 0 2px var(--bg2); }
+/* 2.8.10.39 : la pastille reste à droite (item actif ou non), le nom est réduit (police ajustée en JS, kyfSbFitBadge) pour lui laisser la place ; elle ne passe sur l'angle de l'icône (classe sb-bl) que si la barre est trop étroite : libellé abrégé ou texte qui ne tient pas même réduit */
+#sidebar:not(.mini) .sb-item:has(> .sb-badge):not(.sb-bl) { padding-right: 26px; }
+#sidebar:not(.mini) .sb-item.sb-bl > .sb-badge { top: 4px; right: auto; left: 25px; transform: none; box-shadow: 0 0 0 2px var(--bg2); }
 #sidebar.mini .sb-item .kyf-new-badge { display: none !important; }
+/* 2.8.10.40 : badge NOUVEAU du menu. Barre large : le nom est réduit pour ne pas passer dessous (badge compact, puis simple point si rien ne tient). Barre repliée : l'icône prend la couleur d'attention ; survol conservé, et une fois le menu ouvert (actif) l'icône reprend la couleur active */
+.sb-item .kyf-new-badge.kyf-new-compact{font-size:7px!important;padding:1px 4px!important;letter-spacing:.2px!important}
+.sb-item .kyf-new-badge.kyf-new-dot{font-size:0!important;padding:0!important;width:8px;height:8px;min-width:8px;letter-spacing:0!important}
+#sidebar.mini .sb-item.sb-has-new .sb-icon svg{stroke:#7c6cff}
+#sidebar.mini .sb-item.sb-has-new:hover .sb-icon svg{stroke:#5b49ff}
+#sidebar.mini .sb-item.sb-has-new.active .sb-icon svg{stroke:var(--sb-active)}
+#sidebar.mini .sb-item.sb-has-new .sb-icon{position:relative}
+#sidebar.mini .sb-item.sb-has-new .sb-icon::after{content:'';position:absolute;top:-4px;right:-5px;width:7px;height:7px;border-radius:50%;background:#7c6cff;box-shadow:0 0 0 2px var(--bg2)}
+#sidebar.mini .sb-item.sb-has-new.active .sb-icon::after{background:var(--sb-active)}
 #sidebar.mini .sb-item .sb-badge { top: 3px; right: 9px; transform: none; box-shadow: 0 0 0 2px var(--bg2); }
 #sidebar.mini .sb-item .sb-icon { width: auto; }
 
@@ -2893,7 +2966,9 @@ html.kyf-boot #sidebar, html.kyf-boot #mainContent, html.kyf-boot #mainContent .
 @media(max-width:900px){
   #sidebar { width: var(--sidebar-mini); min-width: var(--sidebar-mini); }
   #sidebar .sb-label { opacity: 0; width: 0; overflow: hidden; }
-  #sidebar .sb-section { opacity: 0; height: 0; padding: 0; margin: 0; overflow: hidden; }
+  #sidebar .sb-sec-collapsed { display:block; }
+  #sidebar .sb-sec-arrow { display:none; }
+  #sidebar .sb-section { opacity: 1; height: 0; padding: 0; margin: 10px 14px 8px; overflow: hidden; font-size: 0; border-top: 1px solid var(--border2); }
   #sidebar .sb-section + .sb-item { border-top: 1px solid var(--border); margin-top: 4px; padding-top: 14px; }
   #sidebar .sb-item { padding: 10px 0; justify-content: center; border-left-width: 0; }
   #sidebar .sb-item .sb-icon { width: auto; }
@@ -5747,6 +5822,14 @@ html:not(.kyf-kbd) .icon-btn:focus-visible,html:not(.kyf-kbd) button:focus-visib
     </div>
   </div>
 
+  <!-- Total versé (PEA / PEA-PME) : facultatif, remplit la fiche Comptes titres, le plafond et la plus-value fiscale -->
+  <div id="etfVerseWrap" style="margin-bottom:26px;display:none">
+    <div style="font-size:9px;color:var(--text3);letter-spacing:.5px;margin-bottom:8px">TOTAL VERSÉ SUR LE COMPTE (€) · FACULTATIF</div>
+    <input id="etfVerse" type="text" inputmode="decimal" placeholder="Ex : 20 000" autocomplete="off" oninput="kyfFormatMilliersInput(this)"
+      style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:10px 12px;border-radius:8px;outline:none">
+    <div style="font-size:9px;color:var(--text3);margin-top:6px;line-height:1.5;opacity:.85">Somme de tous vos versements depuis l'ouverture (les retraits ne la réduisent pas). Laissé vide, rien ne change.</div>
+  </div>
+
   <!-- Favori -->
   <div style="margin-bottom:26px" id="etfFavPickSlot"></div>
 
@@ -6755,10 +6838,13 @@ html:not(.kyf-kbd) .icon-btn:focus-visible,html:not(.kyf-kbd) button:focus-visib
     </div>
 
     <!-- MES ACTIFS -->
-    <div class="sb-section">Mes Actifs</div>
+    <div class="sb-section" id="sbs-assets" role="button" tabindex="0" aria-expanded="true" aria-controls="sbSectionAssets" onclick="toggleSidebarSection('assets')" onkeydown="if(event.target===this&&(event.keyCode===13||event.keyCode===32)){event.preventDefault();toggleSidebarSection('assets');}"><span>Mes Actifs</span><span class="sb-sec-arrow" aria-hidden="true">▶</span></div>
     <div id="sbSectionAssets">
     <div class="sb-item" data-page="portfolio" data-label="Portefeuille" onclick="showPage('portfolio',null)" oncontextmenu="kyfSidebarHideViaRightClick(event,'portfolio')">
       <span class="sb-icon"><svg viewBox="0 0 24 24"><polyline points="3,17 8,11 13,14 21,5"/><polyline points="17,5 21,5 21,9"/></svg></span><span class="sb-label">Portefeuille</span>
+    </div>
+    <div class="sb-item" data-page="comptes-titres" data-label="Comptes titres" onclick="showPage('comptes-titres',null)" oncontextmenu="kyfSidebarHideViaRightClick(event,'comptes-titres')">
+      <span class="sb-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span><span class="sb-label">Comptes titres</span><span class="kyf-new-badge" data-new="ct" style="display:none;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;margin-left:auto;pointer-events:none">NOUVEAU</span>
     </div>
     <div class="sb-item" data-page="dividendes" data-label="Dividendes" onclick="showPage('dividendes',null)" oncontextmenu="kyfSidebarHideViaRightClick(event,'dividendes')">
       <span class="sb-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/><line x1="8" y1="12" x2="12" y2="12"/></svg></span><span class="sb-label">Dividendes</span>
@@ -6840,7 +6926,7 @@ html:not(.kyf-kbd) .icon-btn:focus-visible,html:not(.kyf-kbd) button:focus-visib
     </div>
 
     <!-- MON HISTORIQUE -->
-    <div class="sb-section">Mon Historique</div>
+    <div class="sb-section" id="sbs-history" role="button" tabindex="0" aria-expanded="true" aria-controls="sbSectionHistory" onclick="toggleSidebarSection('history')" onkeydown="if(event.target===this&&(event.keyCode===13||event.keyCode===32)){event.preventDefault();toggleSidebarSection('history');}"><span>Mon Historique</span><span class="sb-sec-arrow" aria-hidden="true">▶</span></div>
     <div id="sbSectionHistory">
     <div class="sb-item" data-page="historique" data-label="Historique des séances" onclick="showPage('historique',null)" oncontextmenu="kyfSidebarHideViaRightClick(event,'historique')">
       <span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span><span class="sb-label">Historique des séances</span>
@@ -6860,7 +6946,7 @@ html:not(.kyf-kbd) .icon-btn:focus-visible,html:not(.kyf-kbd) button:focus-visib
     </div>
 
     <!-- ANALYSES -->
-    <div class="sb-section">Analyses</div>
+    <div class="sb-section" id="sbs-analyses" role="button" tabindex="0" aria-expanded="true" aria-controls="sbSectionAnalyses" onclick="toggleSidebarSection('analyses')" onkeydown="if(event.target===this&&(event.keyCode===13||event.keyCode===32)){event.preventDefault();toggleSidebarSection('analyses');}"><span>Analyses</span><span class="sb-sec-arrow" aria-hidden="true">▶</span></div>
     <div id="sbSectionAnalyses">
     <div class="sb-item" data-page="heatmap" data-label="Heatmap" onclick="showPage('heatmap',null)" oncontextmenu="kyfSidebarHideViaRightClick(event,'heatmap')">
       <span class="sb-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="4" height="4" rx="0.5"/><rect x="10" y="3" width="4" height="4" rx="0.5"/><rect x="17" y="3" width="4" height="4" rx="0.5"/><rect x="3" y="10" width="4" height="4" rx="0.5"/><rect x="10" y="10" width="4" height="4" rx="0.5"/><rect x="17" y="10" width="4" height="4" rx="0.5"/><rect x="3" y="17" width="4" height="4" rx="0.5"/><rect x="10" y="17" width="4" height="4" rx="0.5"/><rect x="17" y="17" width="4" height="4" rx="0.5"/></svg></span><span class="sb-label">Heatmap</span>
@@ -6878,7 +6964,7 @@ html:not(.kyf-kbd) .icon-btn:focus-visible,html:not(.kyf-kbd) button:focus-visib
       <span class="sb-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span><span class="sb-label">Fiscalité</span>
     </div>
     <div class="sb-item" data-page="avis" data-label="Avis" onclick="showPage('avis',null)" oncontextmenu="kyfSidebarHideViaRightClick(event,'avis')">
-      <span class="sb-icon"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span><span class="sb-label">Avis</span>
+      <span class="sb-icon"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span><span class="sb-label">Avis</span><span class="kyf-new-badge" data-new="avis" style="display:none;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;margin-left:auto;pointer-events:none">À VOUS</span>
     </div>
     </div>
 
@@ -6895,7 +6981,7 @@ html:not(.kyf-kbd) .icon-btn:focus-visible,html:not(.kyf-kbd) button:focus-visib
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.9.41</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.10.51</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -10748,6 +10834,12 @@ function avCompRender(){
 </script>
 
 <!-- ══ PAGE : FISCALITÉ PEA/CTO ═══════════════════════════════════ -->
+<div class="page" id="page-comptes-titres">
+  <div style="padding:10px 0 20px">
+    <div id="ctRoot"></div>
+  </div>
+</div>
+
 <div class="page" id="page-fiscal-pea-cto">
   <div style="padding:20px 0 20px;position:relative;z-index:1">
 
@@ -11011,6 +11103,17 @@ function kyfFiscalGetParam(key, defaut){
   return (brut !== null && !isNaN(val)) ? val : defaut;
 }
 function KYF_PEA_PLAFOND(){      return kyfFiscalGetParam('kyf-pea-plafond',   150000); }
+// PEA jeune (déclaratif) : plan pour les majeurs rattachés au foyer fiscal de leurs parents, versements limités à 20 000 € (service-public.gouv.fr, fiche F2385).
+// À la fin du rattachement le plan devient un PEA classique (plafond 150 000 €, même ancienneté) : la date de fin est saisie par l'utilisateur, KYF ne calcule ni âge ni rattachement.
+const KYF_PEA_JEUNE_PLAFOND = 20000;
+function kyfIsoLocalToday(){ const d = new Date(), p = n => String(n).padStart(2, '0'); return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()); }
+function kyfPeaJeune(){
+  let on = false, fin = '';
+  try{ on = localStorage.getItem('kyf-pea-jeune') === '1'; const f = String(localStorage.getItem('kyf-pea-jeune-fin') || '').slice(0, 10); if(/^\d{4}-\d{2}-\d{2}$/.test(f)) fin = f; }catch(e){}
+  const devenu = on && !!fin && kyfIsoLocalToday() >= fin;   // passage automatique en PEA classique à la date indiquée
+  return { on: on, fin: fin, devenu: devenu, actif: on && !devenu };
+}
+function kyfPeaPlafondEff(){ return kyfPeaJeune().actif ? KYF_PEA_JEUNE_PLAFOND : KYF_PEA_PLAFOND(); }
 function KYF_PME_PLAFOND(){      return kyfFiscalGetParam('kyf-pme-plafond',   225000); }   // total des versements PEA + PEA-PME (economie.gouv.fr)
 function KYF_PEA_TAUX_PFU_IR(){  return kyfFiscalGetParam('kyf-pea-taux-ir',   0.128); }
 function KYF_PEA_TAUX_PS(){      return kyfFiscalGetParam('kyf-pea-taux-ps',   0.186); }
@@ -11020,14 +11123,24 @@ function KYF_CTO_TAUX_PFU(){     return kyfFiscalGetParam('kyf-cto-taux-pfu',  0
 // 150 000). Un <input type="number"> ne peut pas afficher ce format
 // nativement (limite du navigateur, la valeur doit rester un nombre pur),
 // d'où le passage en type="text" avec ce formatage manuel à la saisie.
+// Montant collé ou saisi : séparateur décimal (virgule ou point, 1 ou 2 chiffres en fin) reconnu, milliers (espaces, points ou virgules par 3) ignorés.
+// « 42 143,57 € » -> 42143.57 ; « 1.234 » -> 1234 ; « 1.234,5 » -> 1234.5
+function kyfMontantSplit(valeur){
+  const s = String(valeur === null || valeur === undefined ? '' : valeur).replace(/[\s\u00A0\u202F€]/g, '');
+  const m = /^(.*?)([.,])(\d{0,2})$/.exec(s);
+  const ent = (m ? m[1] : s).replace(/[^\d]/g, '');
+  return { ent: ent, sep: !!m, dec: m ? m[3] : '' };
+}
 function kyfFormatMilliers(valeur){
-  const chiffres = String(valeur).replace(/[^\d]/g, '');
-  if(!chiffres) return '';
-  return chiffres.replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');
+  const p = kyfMontantSplit(valeur);
+  if(!p.ent && !(p.sep && p.dec)) return '';
+  const e = (p.ent || '0').replace(/^0+(?=\d)/, '').replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');
+  return p.sep ? e + ',' + p.dec : e;
 }
 function kyfParseMilliers(valeur){
-  const nettoye = String(valeur || '').replace(/[^\d]/g, '');
-  return nettoye ? parseFloat(nettoye) : NaN;
+  const p = kyfMontantSplit(valeur);
+  if(!p.ent && !p.dec) return NaN;
+  return parseFloat((p.ent || '0') + (p.dec ? '.' + p.dec : ''));
 }
 // Reformate la valeur affichée au fur et à mesure de la saisie, en
 // conservant la position du curseur par rapport à la fin (les espaces
@@ -11093,6 +11206,528 @@ function fiscalParamsReset(){
   try{ cryptoFiscCalc(); }catch(e){}
 }
 
+// ── COMPTES TITRES (2.8.10.00) ─────────────────────────────────────────────────
+// Fiche « contrat » des enveloppes PEA, PEA-PME et CTO, un onglet par compte. AUCUNE donnée en double : date d'ouverture, total versé et
+// espèces sont lus et écrits dans les mêmes clés que la page Fiscalité et le cash ; la valeur et la plus-value d'un compte sont celles de
+// Fiscalité (peaFiscSituation, pmeFiscSituation). Le bandeau du haut reprend le calcul du Portefeuille en direct (valeur des lignes
+// moins coût d'acquisition, cours live), sans les espèces. Seuls l'établissement (texte libre) et la date d'ouverture du CTO sont propres
+// à cette page (clé kyf-ct-info).
+const KYF_CT_INFO_KEY = 'kyf-ct-info';
+const KYF_CT_ENVS = ['PEA','PME','CTO'];
+const KYF_CT_META = {
+  PEA: { tag:'PEA',     titre:'PEA',     sous:"Plan d'épargne en actions",         dateKey:'kyf-pea-date-ouverture', verseKey:'kyf-pea-total-verse', cash:true,  cinq:true,  fond:'linear-gradient(135deg,#2a3f86 0%,#17224a 55%,#3a2a5e 100%)' },
+  PME: { tag:'PEA-PME', titre:'PEA-PME', sous:"Plan d'épargne en actions PME-ETI", dateKey:'kyf-pme-date-ouverture', verseKey:'kyf-pme-total-verse', cash:false, cinq:true,  fond:'linear-gradient(135deg,#1f5f8b 0%,#12304f 55%,#1f4a5e 100%)' },
+  CTO: { tag:'CTO',     titre:'CTO',     sous:'Compte-titres ordinaire',           dateKey:null,                     verseKey:null,                  cash:true,  cinq:false, fond:'linear-gradient(135deg,#1f6b57 0%,#12362f 55%,#2a4a3a 100%)' }
+};
+function ctInfo(){
+  let o = {};
+  try{ const j = JSON.parse(localStorage.getItem(KYF_CT_INFO_KEY) || '{}'); if(j && typeof j === 'object' && !Array.isArray(j)) o = j; }catch(e){}
+  const r = {};
+  KYF_CT_ENVS.forEach(k => { const x = (o[k] && typeof o[k] === 'object') ? o[k] : {};
+    r[k] = { etab: typeof x.etab === 'string' ? x.etab.slice(0,40) : '', date: (typeof x.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(x.date)) ? x.date : '',
+      ignore: Array.isArray(x.ignore) ? x.ignore.filter(v => typeof v === 'string').map(v => v.slice(0,40)).slice(0,50) : [] }; });   // ignore : livrets pour lesquels l'utilisateur a répondu « Non, pas ce compte »
+  return r;
+}
+function ctInfoSet(env, champ, val){ const i = ctInfo(); i[env][champ] = val; localStorage.setItem(KYF_CT_INFO_KEY, JSON.stringify(i)); }
+const KYF_CT_ICO = {
+  PEA: '<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>',
+  PME: '<path d="M3 21h18"/><path d="M5 21V8l7-4 7 4v13"/><path d="M9 21v-6h6v6"/>',
+  CTO: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>'
+};
+const KYF_CT_HIDDEN_KEY = 'kyf-ct-hidden';
+function ctHidden(){   // comptes masqués par l'utilisateur ; jamais les trois à la fois
+  let l = [];
+  try{ const j = JSON.parse(localStorage.getItem(KYF_CT_HIDDEN_KEY) || '[]'); if(Array.isArray(j)) l = j.filter(k => KYF_CT_ENVS.indexOf(k) >= 0); }catch(e){}
+  return l.length >= KYF_CT_ENVS.length ? [] : l;
+}
+function ctHasData(env){   // un compte qui contient quelque chose ne peut pas être masqué : le total resterait faux
+  const M = KYF_CT_META[env], i = ctInfo()[env];
+  if(ctEtatLigne(env).lignes.length > 0) return true;
+  if(M.cash && (env === 'PEA' ? getCashPea() : getCashCto()) > 0) return true;
+  if(M.dateKey ? localStorage.getItem(M.dateKey) : i.date) return true;
+  if(M.verseKey && localStorage.getItem(M.verseKey)) return true;
+  return !!i.etab;
+}
+function ctTabList(){ const h = ctHidden(); return KYF_CT_ENVS.filter(k => h.indexOf(k) < 0).map(k => ({ k, label: KYF_CT_META[k].titre })); }
+function ctToggle(env, voir){
+  const h = ctHidden().filter(k => k !== env);
+  if(!voir){ if(ctHasData(env) || KYF_CT_ENVS.length - h.length <= 1) return; h.push(env); }
+  localStorage.setItem(KYF_CT_HIDDEN_KEY, JSON.stringify(h));
+  if(window._ctTab === env) window._ctTab = '';
+  try{ if(sessionStorage.getItem('kyf-ct-tab') === env) sessionStorage.removeItem('kyf-ct-tab'); }catch(e){}
+  ctRender();
+}
+// Boutons du compte affiché : ouvrent l'import de relevé ou l'ajout d'une ligne avec CE compte déjà choisi (PEA, PEA-PME ou CTO).
+function ctVersPf(){ try{ showPage('portfolio', null); }catch(e){} }
+function ctImporter(){
+  openImportRelevé('etf'); window._ctImportEnv = KYF_CT_META[ctTabGet()].tag;
+}
+function ctAjouterLigne(){
+  openAddETF(); try{ setEnveloppe(KYF_CT_META[ctTabGet()].tag); }catch(e){}
+}
+function ctDetToggle(){   // « Détail du contrat » : fermé par défaut, les chiffres et les boutons du bas restent visibles
+  window._ctDetOpen = !window._ctDetOpen;
+  const b = document.getElementById('ctDetBody'), h = document.getElementById('ctDetHead');
+  if(b) b.style.display = window._ctDetOpen ? 'flex' : 'none';
+  if(h){ h.setAttribute('aria-expanded', window._ctDetOpen ? 'true' : 'false'); const c = h.querySelector('.kyf-vh-chev'); if(c) c.style.transform = window._ctDetOpen ? '' : 'rotate(-90deg)'; }
+}
+function ctPickOpen(){ window._ctPickOpen = !window._ctPickOpen; ctRender(); }
+document.addEventListener('click', e => {   // le choix des comptes est une petite fenêtre sous le bouton : un clic ailleurs la ferme
+  if(!window._ctPickOpen) return;
+  const t = e.target; if(!t || !t.isConnected || (t.closest && (t.closest('#ctPick') || t.closest('#ctPickSeg')))) return;   // cible déjà retirée par un nouveau rendu : c'était un clic dans le choix
+  window._ctPickOpen = false; try{ ctRender(); }catch(err){}
+});
+document.addEventListener('keydown', e => { if(e.key === 'Escape' && window._ctPickOpen){ window._ctPickOpen = false; try{ ctRender(); const b = document.getElementById('ctPickBtn'); if(b) b.focus(); }catch(err){} } });
+function ctToggleInfo(){   // point info : ouvre / ferme le cadre d'explication, comme la page DCA
+  const b = document.getElementById('ctInfo'), btn = document.getElementById('ctInfoBtn'); if(!b) return;
+  const open = b.style.display === 'none'; window._ctInfoOpen = open;
+  if(open && !b.firstChild){
+    ['Cette page rassemble vos PEA, PEA-PME et CTO. Les chiffres sont ceux du Portefeuille, de Fiscalité et du Cash : les modifier ici les modifie là-bas, et inversement.',
+     'Établissement : repris de votre dernier import de relevé, ou d\'un livret d\'épargne que vous rattachez au compte. Espèces : cash du compte plus les livrets rattachés.',
+     'Vous n\'avez pas un des comptes ? « Comptes affichés » permet de le masquer. Un compte qui contient des données reste affiché.'
+    ].forEach((t, i) => { const d = document.createElement('div'); if(i) d.style.marginTop = '4px'; d.textContent = t; b.appendChild(d); });
+  }
+  b.style.display = open ? 'block' : 'none';
+  if(btn){ btn.setAttribute('aria-expanded', open ? 'true' : 'false'); btn.style.color = open ? 'var(--accent)' : 'var(--text3)'; }
+}
+function ctRenderPick(){
+  const box = document.getElementById('ctPick'), seg = document.getElementById('ctPickSeg'); if(!box || !seg) return;
+  box.textContent = ''; seg.textContent = '';
+  const hid = ctHidden(), visibles = KYF_CT_ENVS.length - hid.length, ouvert = !!window._ctPickOpen;
+  const b = document.createElement('button'); b.type = 'button'; b.id = 'ctPickBtn';
+  if(ouvert) b.className = 'kyf-toggle-active';
+  b.setAttribute('aria-expanded', ouvert ? 'true' : 'false'); b.setAttribute('aria-controls', 'ctPickPanel');
+  const ic = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); ic.setAttribute('width', '12'); ic.setAttribute('height', '12'); ic.setAttribute('viewBox', '0 0 24 24'); ic.setAttribute('fill', 'none');
+  ic.setAttribute('stroke', 'currentColor'); ic.setAttribute('stroke-width', '2'); ic.setAttribute('stroke-linecap', 'round'); ic.setAttribute('stroke-linejoin', 'round'); ic.style.flexShrink = '0'; ic.setAttribute('aria-hidden', 'true');
+  ic.innerHTML = '<line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>';
+  b.appendChild(ic); b.appendChild(document.createTextNode('COMPTES AFFICHÉS')); b.onclick = ctPickOpen; seg.appendChild(b);
+  if(!ouvert) return;
+  const p = document.createElement('div'); p.id = 'ctPickPanel'; p.className = 'ct-pick';
+  KYF_CT_ENVS.forEach(env => {
+    const voir = hid.indexOf(env) < 0, data = ctHasData(env), bloque = voir && (data || visibles <= 1);
+    const l = document.createElement('label'); l.className = 'ct-pick-row';
+    const c = document.createElement('input'); c.type = 'checkbox'; c.checked = voir; c.disabled = bloque; c.onchange = () => ctToggle(env, c.checked);
+    c.id = 'ctPick_' + env;
+    const t = document.createElement('span'); t.textContent = KYF_CT_META[env].titre;
+    l.appendChild(c); l.appendChild(t);
+    if(bloque){ const n = document.createElement('span'); n.className = 'ct-lbl'; n.textContent = data ? 'contient des données' : 'au moins un compte'; l.appendChild(n); }
+    p.appendChild(l);
+  });
+  const h = document.createElement('div'); h.className = 'ct-note'; h.textContent = 'Masquez les comptes que vous n\'avez pas. Un compte qui contient des lignes, des espèces ou des informations reste affiché.'; p.appendChild(h);
+  box.appendChild(p);
+}
+function ctTabGet(){
+  let k = window._ctTab || '';
+  if(!k){ try{ k = sessionStorage.getItem('kyf-ct-tab') || ''; }catch(e){} }
+  const l = ctTabList();
+  if(l.some(t => t.k === k)) return k;
+  return (l.find(t => ctHasData(t.k)) || l[0]).k;   // pas de choix en cours : premier compte qui contient des données
+}
+function ctTabSet(k){
+  window._ctTab = k; try{ sessionStorage.setItem('kyf-ct-tab', k); }catch(e){}
+  ctRender();
+  const sel = document.querySelector('#ctTabs [aria-selected="true"]'); if(sel) sel.focus();
+}
+function ctTabKey(e){
+  if(e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+  const l = ctTabList(), i = l.findIndex(t => t.k === ctTabGet()); if(i < 0) return;
+  e.preventDefault(); ctTabSet(l[(i + (e.key === 'ArrowRight' ? 1 : l.length - 1)) % l.length].k);
+}
+function ctBuild(root){
+  root.innerHTML = '<div class="ct-band"><div class="ct-band-l"><span class="ct-lbl">Gains et pertes en direct</span><span class="ct-big" id="ctBandTot">-</span><span class="ct-sub" id="ctBandPct"></span></div><div class="ct-chips" id="ctBandChips" role="group" aria-label="Gains et pertes par compte"></div></div>'
+    + '<div class="ct-note" id="ctBandNote" style="margin-top:6px"></div>'
+    + '<div id="ctTabRow" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 12px;margin:14px 0 20px">'
+    +   '<div style="display:flex;align-items:center;gap:4px"><div class="kyf-tabseg" id="ctTabs" role="tablist" aria-label="Compte titres" onkeydown="ctTabKey(event)"></div>'
+    +   '<button type="button" id="ctInfoBtn" onclick="ctToggleInfo()" aria-expanded="false" aria-controls="ctInfo" title="Comment fonctionne cette page" style="display:flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;border:none;background:transparent;color:var(--text3);cursor:pointer;padding:0;transition:background .15s,color .15s" onmouseover="this.style.background=kyfChevronHoverBg();this.style.color=\'var(--accent)\'" onmouseout="this.style.background=\'transparent\';if(!window._ctInfoOpen)this.style.color=\'var(--text3)\'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></button></div>'
+    +   '<div style="position:relative;margin-left:auto"><div class="kyf-tabseg" id="ctPickSeg"></div><div id="ctPick"></div></div>'
+    + '</div>'
+    + '<div id="ctInfo" style="display:none;margin-bottom:12px;padding:10px 14px;border-radius:8px;background:rgba(77,159,255,0.07);border:1px solid rgba(77,159,255,0.2);width:fit-content;max-width:100%;font-family:\'Inter\',sans-serif;font-size:10px;color:var(--text2);line-height:1.7"></div>'
+    + '<div class="ct-main"><div class="ct-left">'
+    +   '<div class="ct-hero" id="ctHero" role="link" tabindex="0" aria-label="Accéder au portefeuille" onclick="ctVersPf()" onkeydown="if(event.target===this&&(event.keyCode===13||event.keyCode===32)){event.preventDefault();ctVersPf();}"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px"><div style="display:flex;align-items:center;gap:12px;min-width:0"><span id="ctHeroLogo" style="display:none"></span><div style="min-width:0"><div style="font-family:\'Space Grotesk\',sans-serif;font-size:24px;font-weight:700;overflow-wrap:anywhere" id="ctHeroT">PEA</div><div class="ct-h-sub" id="ctHeroE"></div></div></div></div>'
+    +   '<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:14px 18px;flex-wrap:wrap"><div><div class="ct-h-sub">Valeur totale</div><div style="font-family:\'Space Grotesk\',sans-serif;font-size:40px;font-weight:700;letter-spacing:-1px;line-height:1.1" id="ctHeroTot">-</div><div class="ct-h-sub" id="ctHeroEsp" style="margin-top:6px"></div><div style="font-size:14px;font-weight:600;margin-top:16px" id="ctHeroPv"></div><div class="ct-h-sub" id="ctHeroPvL" style="margin-top:3px"></div></div>'
+    +   '<div id="ctHeroJour" style="display:none;align-items:center;gap:8px;margin-left:auto;padding-bottom:4px" aria-live="off"></div></div>'
+    +   '<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap" class="ct-h-sub"><span></span><span class="ct-hero-hint">Cliquer pour accéder au portefeuille<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></span></div></div>'
+    +   '<div class="ct-secrow"><div class="ct-sec" id="ctSec"></div><div class="ct-sec" id="ctSec2" style="display:none"></div></div>'
+    + '</div><div class="ct-right">'
+    +   '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><div id="ctDetHead" class="kyf-vh-head" role="button" tabindex="0" aria-expanded="false" aria-controls="ctDetBody" onclick="ctDetToggle()" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();ctDetToggle()}" style="font-size:15px;letter-spacing:0;color:var(--text)"><span>Détail du contrat</span><span class="kyf-vh-chev" style="transform:rotate(-90deg)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div><div class="ct-lbl">Mêmes données que Fiscalité et le cash</div></div>'
+    +   '<div id="ctDetBody" style="display:none;flex-direction:column;gap:18px">'
+    +   '<div class="ct-form">'
+    +     '<div class="ct-fld" style="position:relative"><label for="ctF_etab">Établissement</label><input type="text" class="ct-in2" id="ctF_etab" maxlength="40" placeholder="Ex : Trade Republic" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="ctEtabDrop" oninput="ctOnEtab(this);ctEtabShow()" onfocus="ctEtabShow()" onblur="ctEtabBlur(this)" onkeydown="ctEtabKey(event)"><div id="ctEtabDrop" role="listbox" style="display:none;position:absolute;left:0;right:0;top:100%;margin-top:2px;z-index:40;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.18);overflow:hidden"></div></div>'
+    +     '<div class="ct-fld"><span class="ct-fl">Date d\'ouverture</span><div><input type="hidden" id="ctF_date" onchange="ctOnDate()" value=""><button type="button" id="ctF_dateBtn" class="kyf-csel-btn" data-kyf-date="ctF_date" aria-haspopup="dialog" aria-expanded="false" style="width:auto;max-width:170px;font-size:12px;padding:9px 10px;min-height:40px"><span id="ctF_dateBtnLabel">JJ/MM/AAAA</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button></div></div>'
+    +     '<div class="ct-fld" id="ctFldJeune" style="display:none"><span class="ct-fl">PEA jeune</span><label style="display:flex;align-items:center;gap:10px;cursor:pointer;min-height:40px"><span class="kyf-toggle"><input type="checkbox" id="ctF_jeune" onchange="ctOnJeune(this)"><span class="kyf-toggle-track"></span><span class="kyf-toggle-thumb"></span></span><span style="font-size:12px;color:var(--text2)">Majeur rattaché au foyer fiscal des parents</span></label></div>'
+    +     '<div class="ct-fld" id="ctFldJeuneFin" style="display:none"><span class="ct-fl">Fin du rattachement</span><div><input type="hidden" id="ctF_jfin" onchange="ctOnJeuneFin()" value=""><button type="button" id="ctF_jfinBtn" class="kyf-csel-btn" data-kyf-date="ctF_jfin" aria-haspopup="dialog" aria-expanded="false" style="width:auto;max-width:170px;font-size:12px;padding:9px 10px;min-height:40px"><span id="ctF_jfinBtnLabel">JJ/MM/AAAA</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button></div></div>'
+    +     '<div class="ct-fld" id="ctFldVerse"><label for="ctF_verse">Total versé (€)</label><input type="text" inputmode="decimal" class="ct-in2" id="ctF_verse" placeholder="Ex : 45 000" oninput="ctOnVerse(this)"></div>'
+    +     '<div class="ct-fld" id="ctFldCash"><label for="ctF_cash">Espèces (€)</label><input type="text" inputmode="decimal" class="ct-in2" id="ctF_cash" placeholder="0" onfocus="kyfUnformatAmountInput(this)" onblur="kyfFormatAmountInput(this)" onchange="ctOnCash(this)"><span id="ctF_cashNo" style="display:none;font-size:12px;color:var(--text3);padding:10px 0">non suivies dans KYF</span></div>'
+    +   '</div>'
+    +   '<div class="ct-note" id="ctJeuneNote" style="display:none"></div>'
+    +   '<div class="ct-note" id="ctCashLiv" style="display:none"></div>'
+    +   '<div id="ctF_plaf"></div>'
+    +   '</div>'
+    +   '<div class="ct-sep"></div>'
+    +   '<div class="ct-stats"><div><span class="ct-lbl">Valeur des lignes</span><b id="ctS_titres">-</b></div><div><span class="ct-lbl">Coût d\'acquisition</span><b id="ctS_cout">-</b></div><div><span class="ct-lbl">Lignes suivies</span><b id="ctS_nb">0</b></div></div>'
+    +   '<div class="ct-note" id="ctNote"></div>'
+    +   '<div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:auto"><button type="button" class="ct-btn ct-btn-main" id="ctBtnImport" onclick="ctImporter()" style="display:inline-flex;align-items:center;gap:7px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Importer un relevé</button><button type="button" class="ct-btn" id="ctBtnAdd" onclick="ctAjouterLigne()" style="display:inline-flex;align-items:center;gap:7px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" style="flex-shrink:0"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Ajouter une ligne</button><button type="button" class="ct-btn" id="ctBtnFisc" onclick="showPage(\'fiscal-pea-cto\',null)">Fiscalité</button></div>'
+    + '</div></div>';
+}
+function ctEtatLigne(env){   // lignes de l'enveloppe, et celles dont le cours (ou la valeur saisie) manque
+  const lp = window._lp || {};
+  const lignes = ETF.filter(e => (e.enveloppe || 'PEA') === KYF_CT_META[env].tag);
+  const ok = lignes.filter(e => !kyfEtfNoPrice(e, lp));
+  return { lp, lignes, ok, sansCours: lignes.length - ok.length,
+    val: ok.reduce((a, e) => a + getEval(e, lp[e.ticker]), 0), cout: ok.reduce((a, e) => a + etfInvestOf(e), 0) };
+}
+function ctDuree(m){ return m < 1 ? 'moins d\'un mois' : (m >= 12 ? Math.floor(m / 12) + ' an' + (m >= 24 ? 's' : '') + (m % 12 ? ' ' + (m % 12) + ' mois' : '') : m + ' mois'); }
+function ctDateFr(iso){ const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso || ''); return m ? m[3] + '/' + m[2] + '/' + m[1] : ''; }
+function ctSigne(v){ return (v >= 0 ? '+' : '') + fmt(v, 2) + ' €'; }
+function ctRenderBand(){
+  const set = (id, v) => { const el = document.getElementById(id); if(el) el.textContent = v; };
+  let g = 0, c = 0, nb = 0, sans = 0;
+  const chips = document.getElementById('ctBandChips'); if(chips) chips.textContent = '';
+  ctTabList().map(t => t.k).forEach(env => {
+    const E = ctEtatLigne(env), n = E.lignes.length, gain = E.val - E.cout;
+    g += gain; c += E.cout; nb += n; sans += E.sansCours;
+    if(!chips) return;
+    const d = document.createElement('button'); d.type = 'button'; d.className = 'ct-chip'; d.onclick = () => ctTabSet(env);
+    if(env === ctTabGet()) d.setAttribute('aria-current', 'true');
+    const l = document.createElement('span'); l.textContent = KYF_CT_META[env].titre;
+    const b = document.createElement('b');
+    if(n === 0){ b.textContent = '-'; }
+    else if(E.ok.length === 0){ b.textContent = 'indisponible'; }
+    else { b.textContent = ctSigne(gain); b.style.color = gain >= 0 ? 'var(--green)' : 'var(--red)'; }
+    d.appendChild(l); d.appendChild(b); d.setAttribute('aria-label', KYF_CT_META[env].titre + ' : ' + b.textContent); chips.appendChild(d);
+  });
+  const tot = document.getElementById('ctBandTot'), pct = document.getElementById('ctBandPct');
+  if(nb === 0){ set('ctBandTot', '-'); set('ctBandPct', 'aucune ligne'); if(tot) tot.style.color = ''; if(pct) pct.style.color = ''; }
+  else if(nb === sans){ set('ctBandTot', 'indisponible'); set('ctBandPct', 'aucun cours connu'); if(tot) tot.style.color = ''; if(pct) pct.style.color = ''; }
+  else {
+    set('ctBandTot', ctSigne(g)); const col = g >= 0 ? 'var(--green)' : 'var(--red)'; if(tot) tot.style.color = col; if(pct) pct.style.color = col;
+    set('ctBandPct', c > 0 ? (g >= 0 ? '+' : '') + (g / c * 100).toFixed(1).replace('.', ',') + ' %' : '');
+  }
+  set('ctBandNote', sans > 0 && sans < nb ? (sans + (sans > 1 ? ' lignes sans cours ne sont pas comptées' : ' ligne sans cours n\'est pas comptée') + ' : le total est sous-évalué. Espèces non comprises.') : (c > 0 ? 'Sur ' + fmt(c, 0) + ' € investis. ' : '') + 'Valeur des lignes moins coût d\'acquisition, au cours en direct, espèces non comprises. La plus-value fiscale d\'un PEA est sur sa fiche.');
+}
+function ctRender(){
+  const root = document.getElementById('ctRoot'); if(!root) return;
+  if(!root.dataset.built){ ctBuild(root); root.dataset.built = '1'; }
+  try{ peaFiscLoadParams(); pmeFiscLoadParams(); peaFiscSimuler(); pmeFiscSimuler(); }catch(e){}
+  const env = ctTabGet(), M = KYF_CT_META[env], info = ctInfo()[env];
+  const set = (id, v) => { const el = document.getElementById(id); if(el) el.textContent = v; };
+  const setIn = (id, v) => { const el = document.getElementById(id); if(el && document.activeElement !== el) el.value = v; };
+  const show = (id, on) => { const el = document.getElementById(id); if(el) el.style.display = on ? '' : 'none'; };
+  const eur = v => fmt(v, 2) + ' €';
+  ctRenderBand(); ctRenderPick();
+  // onglets
+  const tabs = document.getElementById('ctTabs');
+  if(tabs){ tabs.textContent = ''; ctTabList().forEach(t => { const b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'tab');
+    if(t.k === env) b.className = 'kyf-toggle-active';
+    b.setAttribute('aria-selected', t.k === env ? 'true' : 'false'); b.tabIndex = t.k === env ? 0 : -1;
+    const ic = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); ic.setAttribute('width', '12'); ic.setAttribute('height', '12'); ic.setAttribute('viewBox', '0 0 24 24'); ic.setAttribute('fill', 'none');
+    ic.setAttribute('stroke', 'currentColor'); ic.setAttribute('stroke-width', '2'); ic.setAttribute('stroke-linecap', 'round'); ic.setAttribute('stroke-linejoin', 'round'); ic.style.flexShrink = '0'; ic.setAttribute('aria-hidden', 'true'); ic.innerHTML = KYF_CT_ICO[t.k] || '';
+    b.appendChild(ic); b.appendChild(document.createTextNode(t.label)); b.onclick = () => ctTabSet(t.k); tabs.appendChild(b); }); }
+  // chiffres du compte affiché
+  const E = ctEtatLigne(env), nb = E.lignes.length, tousSans = nb > 0 && E.ok.length === 0;
+  let titres, cash = 0, total, pv, base = false, inv = 0;
+  if(env === 'PEA'){ const x = peaFiscSituation(); cash = x.cash; titres = x.valeur - x.cash; total = x.valeur; pv = x.pvTotale; base = x.baseVerse; inv = x.investi; }
+  else if(env === 'PME'){ const x = pmeFiscSituation(); titres = x.valeur; total = x.valeur; pv = x.plusValue; base = x.baseVerse; inv = x.investi; }
+  else { cash = getCashCto(); titres = E.val; total = titres + cash; pv = E.val - E.cout; }
+  const pvLabel = env === 'CTO' ? 'Plus-value latente des lignes (valeur moins coût)' : (base ? 'Plus-value fiscale (valeur moins total versé)' : 'Plus-value latente (estimée sur le coût)');
+  const vide = nb === 0 && !(cash > 0) && !base;
+  // carte principale
+  const hero = document.getElementById('ctHero'); if(hero) hero.style.background = M.fond;
+  ctRenderHeroHead(env); ctRenderJour(env);
+  set('ctHeroTot', tousSans ? 'données incomplètes' : eur(total));
+  const hp = document.getElementById('ctHeroPv'); if(hp){ hp.textContent = tousSans ? 'Plus-value indisponible' : (vide ? '' : ctSigne(pv)); hp.style.color = tousSans || vide ? '' : (pv >= 0 ? '#7be3b4' : '#ff9aa6'); }
+  set('ctHeroPvL', tousSans || vide ? '' : pvLabel);
+  set('ctHeroEsp', tousSans || vide ? '' : (env === 'PME' ? 'Espèces non suivies : valeur des titres seulement' : (cash > 0 ? 'dont espèces ' + eur(cash) : '')));
+  const date = M.dateKey ? (localStorage.getItem(M.dateKey) || '') : info.date;
+  const m = date ? kyfMoisEntiersDepuis(date) : null, mOk = (m !== null && m >= 0);
+  // 2.8.10.48 : la date d'ouverture et le total versé ne vivent plus que dans les deux cartes du dessous (plus de répétition dans la carte principale)
+  const ok5 = !!(M.cinq && mOk && m >= 60);
+  const tickSvg = () => { const ns = 'http://www.w3.org/2000/svg', sv = document.createElementNS(ns, 'svg'); sv.setAttribute('width', 12); sv.setAttribute('height', 12); sv.setAttribute('viewBox', '0 0 24 24'); sv.setAttribute('fill', 'none');
+    sv.setAttribute('stroke', 'currentColor'); sv.setAttribute('stroke-width', '3'); sv.setAttribute('stroke-linecap', 'round'); sv.setAttribute('stroke-linejoin', 'round'); sv.setAttribute('aria-hidden', 'true');
+    const pl = document.createElementNS(ns, 'polyline'); pl.setAttribute('points', '20 6 9 17 4 12'); sv.appendChild(pl); return sv; };
+  // carte : petit titre, valeur, pastille facultative, barre facultative, deux lignes de texte
+  const card = (el, o) => {
+    if(!el) return; el.textContent = '';
+    const lb = document.createElement('div'); lb.style.cssText = 'font-size:12px;color:var(--text3)'; lb.textContent = o.label; el.appendChild(lb);
+    const row = document.createElement('div'); row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap';
+    const val = document.createElement('span'); val.id = o.valId || ''; val.style.cssText = "font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--text);overflow-wrap:anywhere"; val.textContent = o.value; row.appendChild(val);
+    if(o.pill){ const p = document.createElement('span'); p.className = 'ct-pill' + (o.pillOk ? ' ct-pill-ok' : ''); if(o.pillOk) p.appendChild(tickSvg()); p.appendChild(document.createTextNode(o.pill)); row.appendChild(p); }
+    el.appendChild(row);
+    if(o.pct !== undefined){ const bar = document.createElement('div'); bar.className = 'ct-bar'; const f = document.createElement('div'); f.style.width = Math.max(0, Math.min(100, o.pct)) + '%'; if(o.color) f.style.background = o.color; bar.appendChild(f); el.appendChild(bar); }
+    [[o.l1, o.l1Id, o.l1Style], [o.l2, '', o.l2Style]].forEach(x => { if(!x[0]) return; const d = document.createElement('div'); if(x[1]) d.id = x[1]; d.style.cssText = 'font-size:11px;color:var(--text2);' + (x[2] || ''); d.textContent = x[0]; el.appendChild(d); });
+  };
+  // première carte : date d'ouverture ; PEA et PEA-PME : étiquette « 5 ans » et frise, CTO : ancienneté
+  const sec = document.getElementById('ctSec');
+  if(sec){
+    if(M.cinq){
+      const d5 = mOk ? date.slice(0, 4) * 1 + 5 + date.slice(4, 10) : '';
+      card(sec, { label: 'Ouvert le', value: mOk ? ctDateFr(date) : 'À renseigner', pill: ok5 ? '5 ans' : '', pillOk: true, pct: mOk ? m / 60 * 100 : 0, color: ok5 ? 'var(--green)' : 'var(--accent)',
+        l1: mOk ? (ok5 ? '5 ans révolus depuis le ' + ctDateFr(d5) : '5 ans le ' + ctDateFr(d5) + ', encore ' + ctDuree(60 - m)) : 'Renseignez la date d\'ouverture pour suivre les 5 ans.', l1Style: mOk ? 'font-weight:600' : '' });
+    } else {
+      card(sec, { label: 'Ouvert le', value: date ? ctDateFr(date) : 'À renseigner', l1: mOk ? ctDuree(m) : '', l1Id: 'ctHeroA' });
+    }
+  }
+  // deuxième carte : total versé et plafond (PEA 150 000 €, PEA-PME 225 000 € cumulés avec le PEA) ; CTO : coût et valeur des lignes
+  const sec2 = document.getElementById('ctSec2');
+  if(sec2){
+    sec2.style.display = '';
+    if(M.verseKey){
+      const vv = kyfParseMilliers(localStorage.getItem(M.verseKey)) || 0, vp = kyfParseMilliers(localStorage.getItem('kyf-pea-total-verse')) || 0;
+      const pj = kyfPeaJeune(), cumulPme = env === 'PME', plafond = cumulPme ? KYF_PME_PLAFOND() : kyfPeaPlafondEff();
+      if(vv <= 0){ card(sec2, { label: 'Total versé', value: '-', pct: 0, l1: 'Renseignez le total versé pour suivre le plafond.' }); }
+      else if(cumulPme && pj.actif){ card(sec2, { label: 'Total versé PEA-PME', value: eur(vv), pct: 0, l1: 'Cumul avec le PEA non calculé : votre PEA est déclaré PEA jeune (plafond à part).' }); }
+      else if(cumulPme && vp <= 0){ card(sec2, { label: 'Total versé', value: eur(vv), pct: 0, l1: 'Cumul indisponible : renseignez le total versé du PEA (plafond commun ' + fmt(plafond, 0) + ' €).' }); }
+      else {
+        const tot = cumulPme ? vv + vp : vv, pct = tot / plafond * 100, reste = plafond - tot;
+        card(sec2, { label: cumulPme ? 'Total versé PEA-PME' : 'Total versé', value: eur(vv), pill: fmt(Math.min(pct, 999), 0) + ' %', pct: pct, color: pct >= 100 ? 'var(--red)' : (pct >= 90 ? '#f59e0b' : 'var(--accent)'),
+          l1: cumulPme ? 'Avec le PEA (' + fmt(vp, 0) + ' €) : ' + fmt(tot, 0) + ' € sur ' + fmt(plafond, 0) + ' €'
+            : (env === 'PEA' && pj.actif ? 'Plafond PEA jeune ' + fmt(plafond, 0) + ' €' + (pj.fin ? ', classique le ' + ctDateFr(pj.fin) : '') : (env === 'PEA' && pj.devenu ? 'PEA classique depuis le ' + ctDateFr(pj.fin) + ' : plafond ' + fmt(plafond, 0) + ' €' : 'Plafond ' + fmt(plafond, 0) + ' €')),
+          l2: reste >= 0 ? 'Reste ' + fmt(reste, 0) + ' €' : 'Dépassé de ' + fmt(-reste, 0) + ' €', l2Style: 'font-weight:600' + (reste < 0 ? ';color:var(--red)' : '') });
+      }
+    } else if(nb > 0 && !tousSans){
+      const mx = Math.max(E.val, E.cout, 1);
+      card(sec2, { label: 'Lignes du compte', value: eur(E.val), pct: E.val / mx * 100, color: E.val >= E.cout ? 'var(--green)' : 'var(--red)', l1: 'Coût d\'acquisition ' + fmt(E.cout, 0) + ' €' });
+    } else {
+      card(sec2, { label: 'Lignes du compte', value: '-', l1: nb === 0 ? 'Aucune ligne en CTO pour l\'instant.' : 'Aucun cours connu pour ces lignes.' });
+    }
+  }
+  // formulaire
+  setIn('ctF_etab', info.etab || ctEtabAuto(env));
+  try{ kyfDateSetValue('ctF_date', date, 'JJ/MM/AAAA'); }catch(e){}
+  { const pj = kyfPeaJeune(), isPea = env === 'PEA';
+    show('ctFldJeune', isPea); show('ctFldJeuneFin', isPea && pj.on);
+    const cj = document.getElementById('ctF_jeune'); if(cj) cj.checked = pj.on;
+    if(isPea && pj.on){ try{ kyfDateSetValue('ctF_jfin', pj.fin, 'JJ/MM/AAAA'); }catch(e){} }
+    const jn = document.getElementById('ctJeuneNote');
+    if(jn){ jn.style.display = isPea && pj.on ? '' : 'none';
+      jn.textContent = !(isPea && pj.on) ? '' : (pj.devenu ? 'Passé en PEA classique le ' + ctDateFr(pj.fin) + ' (fin du rattachement) : plafond ' + fmt(KYF_PEA_PLAFOND(), 0) + ' €, même date d\'ouverture.'
+        : (pj.fin ? 'PEA jeune : plafond ' + fmt(KYF_PEA_JEUNE_PLAFOND, 0) + ' € jusqu\'au ' + ctDateFr(pj.fin) + '. Ce jour-là, KYF passe le plan en PEA classique (plafond ' + fmt(KYF_PEA_PLAFOND(), 0) + ' €).'
+        : 'PEA jeune : plafond ' + fmt(KYF_PEA_JEUNE_PLAFOND, 0) + ' €. Indiquez la fin du rattachement pour que KYF passe tout seul le plan en PEA classique ce jour-là.')); } }
+  show('ctFldVerse', !!M.verseKey);
+  if(M.verseKey) setIn('ctF_verse', kyfFormatMilliers(localStorage.getItem(M.verseKey) || ''));
+  const ci = document.getElementById('ctF_cash'), cn = document.getElementById('ctF_cashNo');
+  if(ci) ci.style.display = M.cash ? '' : 'none'; if(cn) cn.style.display = M.cash ? 'none' : '';
+  if(M.cash){ const c = (env === 'PEA' ? getCashPea() : getCashCto()) + ctLivretsTotal(env); setIn('ctF_cash', c > 0 ? fmt(c, 2) : ''); }   // espèces du cash + livrets rattachés
+  ctRenderCashLiv(env);
+  const plaf = document.getElementById('ctF_plaf'); if(plaf) plaf.textContent = '';   // le plafond a sa propre carte (ctSec2)
+  set('ctS_titres', tousSans ? 'indisponible' : eur(titres)); set('ctS_cout', tousSans ? 'indisponible' : eur(E.cout)); set('ctS_nb', String(nb));
+  set('ctNote', E.sansCours > 0 && !tousSans ? (E.sansCours + (E.sansCours > 1 ? ' lignes sans cours ne sont pas comptées' : ' ligne sans cours n\'est pas comptée') + ' : valeur et plus-value sont sous-évaluées.') : (tousSans ? 'Aucun cours connu pour ces lignes : valeur et plus-value ne sont pas calculées.' : (env === 'CTO' ? 'KYF suit un seul CTO pour l\'instant.' : '')));
+  set('ctBtnFisc', M.cinq ? 'Fiscalité et retrait' : 'Fiscalité');
+}
+// Espèces et établissement déjà connus ailleurs : livrets d'épargne rattachés à ce compte (créés depuis le cash ou l'import de relevé).
+// Les totaux fiscaux ne changent pas : ils comptent les espèces du cash, pas ceux d'un livret.
+function ctLivretsDe(env){
+  const tag = KYF_CT_META[env].tag; let l = [];
+  try{ l = livLoad(); }catch(e){}
+  return Array.isArray(l) ? l.filter(x => x && x.envCompte === tag && (parseFloat(x.solde) || 0) >= 0) : [];
+}
+function ctLivretsLibres(env){   // livrets de courtier rémunérant les espèces, sans compte titres rattaché : on pose la question, on ne devine pas
+  if(!KYF_CT_META[env].cash) return [];
+  let l = []; try{ l = livLoad(); }catch(e){}
+  const ign = ctInfo()[env].ignore;
+  return Array.isArray(l) ? l.filter(x => x && !x.envCompte && x.liquide && KYF_CASH_BANKS.indexOf(x.banque) >= 0 && ign.indexOf(String(x.id)) < 0) : [];
+}
+function ctRattacher(id){
+  const env = ctTabGet(); let l = [];
+  try{ l = livLoad(); }catch(e){} if(!Array.isArray(l)) return;
+  const x = l.find(y => y && String(y.id) === String(id)); if(!x || x.envCompte) return;
+  x.envCompte = KYF_CT_META[env].tag; livSave(l);
+  try{ renderLivrets(); }catch(e){}
+  ctRender();
+}
+function ctIgnorer(id){
+  const env = ctTabGet(), i = ctInfo(), l = i[env].ignore.filter(v => v !== String(id)); l.push(String(id));
+  ctInfoSet(env, 'ignore', l.slice(-50)); ctRender();
+}
+function ctLivretsTotal(env){ return Math.round(ctLivretsDe(env).reduce((a, x) => a + (parseFloat(x.solde) || 0), 0) * 100) / 100; }
+function ctEtabAuto(env){   // plusieurs livrets : les noms sont réunis, sans couper un nom en deux (40 caractères au plus)
+  let r = ''; ctLivretsDe(env).forEach(x => { const n = String(x.banque || '').slice(0, 40); if(!n || ('|' + r.replace(/, /g, '|') + '|').indexOf('|' + n + '|') >= 0) return; const t = r ? r + ', ' + n : n; if(t.length <= 40) r = t; });
+  return r;
+}
+function ctRenderCashLiv(env){
+  const box = document.getElementById('ctCashLiv'); if(!box) return;
+  box.textContent = '';
+  const M = KYF_CT_META[env], eur = v => fmt(v, 2) + ' €';
+  if(!M.cash){ box.style.display = 'none'; return; }
+  const liens = ctLivretsDe(env), libres = ctLivretsLibres(env);
+  box.style.display = (liens.length || libres.length) ? '' : 'none';
+  const ligne = t => { const d = document.createElement('div'); d.textContent = t; return d; };
+  if(liens.length){
+    const tot = liens.reduce((a, x) => a + (parseFloat(x.solde) || 0), 0);
+    liens.forEach(x => box.appendChild(ligne('+ ' + eur(parseFloat(x.solde) || 0) + ' en livret chez ' + String(x.banque || '').slice(0, 40) + ' (Livrets d\'épargne)')));
+    const cash = env === 'PEA' ? getCashPea() : getCashCto();
+    box.appendChild(ligne('Espèces au total : ' + eur(cash + tot) + ' (cash ' + eur(cash) + ' + livrets ' + eur(tot) + '). Les totaux fiscaux ne comptent que les espèces du cash. Pour changer la part en livret, modifiez le livret dans Livrets d\'épargne.'));
+  }
+  libres.forEach(x => {
+    const d = document.createElement('div'); d.style.cssText = 'margin-top:6px;display:flex;flex-wrap:wrap;align-items:center;gap:6px';
+    const t = document.createElement('span'); t.textContent = 'Livret ' + String(x.banque || '').slice(0, 40) + ' (' + eur(parseFloat(x.solde) || 0) + ') : est-il lié à ce ' + M.titre + ' ?'; d.appendChild(t);
+    const mk = (txt, fn) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'ct-btn'; b.style.cssText = 'min-height:26px;padding:3px 10px;font-size:10px'; b.textContent = txt; b.onclick = fn; d.appendChild(b); };
+    mk('Oui', () => ctRattacher(x.id)); mk('Non', () => ctIgnorer(x.id)); box.appendChild(d);
+  });
+}
+// Logo d'un courtier : même table de domaines que les livrets (LIV_BANK_DOMAINS), jamais un domaine saisi par l'utilisateur.
+// Nom inconnu : pastille avec l'initiale. Tout est construit en DOM (le nom saisi n'est jamais interprété comme du HTML).
+function ctNorm(v){ return String(v || '').toLowerCase().replace(/[\u2019\u2018`]/g, "'").normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').trim(); }
+let _ctDomMap = null;
+function ctDomaineDe(nom){
+  const n = ctNorm(nom); if(!n) return '';
+  if(!_ctDomMap || _ctDomMap.n !== Object.keys(LIV_BANK_DOMAINS).length){ _ctDomMap = { n: Object.keys(LIV_BANK_DOMAINS).length, m: {} }; Object.keys(LIV_BANK_DOMAINS).forEach(k => { _ctDomMap.m[ctNorm(k)] = LIV_BANK_DOMAINS[k]; }); }
+  const m = _ctDomMap.m;
+  if(Object.prototype.hasOwnProperty.call(m, n)) return m[n];
+  const cles = Object.keys(m).filter(k => k.length >= 4).sort((a, b) => b.length - a.length);
+  for(const k of cles){ if(new RegExp('(^|[^a-z])' + k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '($|[^a-z])').test(n)) return m[k]; }
+  return '';
+}
+// Logos fournis avec KYF (aucun chargement réseau) pour les courtiers dont les services d'icônes ne donnent rien de bon. Image PNG recadrée, fond blanc.
+const KYF_CT_LOGOS_LOCAL = { 'boursedirect.fr': 'data:image/png;base64,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' };
+function ctLogoNode(nom, taille){
+  const t = taille || 22, d = ctDomaineDe(nom), w = document.createElement('span');
+  w.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:' + t + 'px;height:' + t + 'px;border-radius:' + Math.round(t / 4) + 'px;overflow:hidden';
+  const ini = () => { w.textContent = ''; w.style.background = 'rgba(77,159,255,0.15)'; w.style.color = 'var(--blue)'; w.style.fontWeight = '700'; w.style.fontSize = Math.max(9, Math.round(t * 0.46)) + 'px'; w.textContent = (String(nom || '?').trim().charAt(0) || '?').toUpperCase(); };
+  if(!d){ ini(); return w; }
+  if(Object.prototype.hasOwnProperty.call(KYF_CT_LOGOS_LOCAL, d)){
+    w.style.width = 'auto'; w.style.background = '#fff';
+    const li = document.createElement('img'); li.alt = ''; li.src = KYF_CT_LOGOS_LOCAL[d]; li.style.cssText = 'height:' + t + 'px;width:auto;display:block;object-fit:contain';
+    w.appendChild(li); return w;
+  }
+  const img = document.createElement('img'); img.alt = ''; img.width = t; img.height = t; img.style.cssText = 'object-fit:contain;display:block';
+  const src = ['https://logo.clearbit.com/' + d, 'https://www.google.com/s2/favicons?domain=' + d + '&sz=64', 'https://icons.duckduckgo.com/ip3/' + d + '.ico'];
+  let i = 0;
+  const suite = () => { i++; if(i < src.length) img.src = src[i]; else ini(); };
+  img.onerror = suite;
+  img.onload = () => { if(i > 0 && img.naturalWidth < 24) suite(); };   // icône par défaut (petit globe) : on passe à la source suivante, puis à l'initiale
+  img.src = src[0];
+  w.appendChild(img); return w;
+}
+function ctRenderHeroHead(env){   // courtier connu : son nom en grand avec son logo, le compte (PEA, CTO...) en petit ; sinon le compte en grand
+  const M = KYF_CT_META[env], e = ctInfo()[env].etab || ctEtabAuto(env);
+  const T = document.getElementById('ctHeroT'), S = document.getElementById('ctHeroE'), L = document.getElementById('ctHeroLogo');
+  if(T) T.textContent = e || M.titre;
+  if(S) S.textContent = (env === 'PEA' && kyfPeaJeune().actif) ? (e ? M.titre + ' jeune' : M.sous + ' (PEA jeune)') : (e ? M.titre : M.sous);
+  if(L){ L.textContent = ''; if(e){ L.appendChild(ctLogoNode(e, 40)); L.style.display = 'inline-flex'; } else L.style.display = 'none'; }
+}
+// Établissement « intelligent » : liste filtrée avec logos (courtiers et banques de KYF), clavier, noms usuels remis à l'orthographe de la liste.
+const KYF_CT_ALIAS = { 'ibkr':'Interactive Brokers', 'ib':'Interactive Brokers', 'bourso':'Boursorama', 'tr':'Trade Republic', 'scalable':'Scalable Capital', 'easy bourse':'EasyBourse', 'ca':'Crédit Agricole', 'sg':'Société Générale' };
+let _ctEtabList = [], _ctEtabIdx = -1;
+function ctEtabAll(){
+  const vu = {}, out = [];
+  KYF_IMPORT_BROKERS.forEach(n => { const k = ctNorm(n); if(!vu[k]){ vu[k] = 1; out.push(n); } });
+  return out;
+}
+function ctEtabCanon(v){
+  const k = ctNorm(v); if(!k) return '';
+  if(Object.prototype.hasOwnProperty.call(KYF_CT_ALIAS, k)) return KYF_CT_ALIAS[k];
+  const f = ctEtabAll().find(n => ctNorm(n) === k); return f || String(v).trim().slice(0, 40);
+}
+function ctEtabShow(){
+  const inp = document.getElementById('ctF_etab'), drop = document.getElementById('ctEtabDrop'); if(!inp || !drop) return;
+  const q = ctNorm(inp.value);
+  const list = (q ? ctEtabAll().filter(n => ctNorm(n).includes(q)) : KYF_IMPORT_BROKERS.slice(0, 6)).slice(0, 8);
+  _ctEtabList = list; _ctEtabIdx = -1; drop.textContent = '';
+  if(!list.length || (list.length === 1 && ctNorm(list[0]) === q)){ drop.style.display = 'none'; return; }
+  if(!q){ const h = document.createElement('div'); h.className = 'ct-lbl'; h.style.padding = '6px 12px 4px'; h.textContent = 'COURTIERS COURANTS'; drop.appendChild(h); }
+  list.forEach((n, i) => {
+    const r = document.createElement('div'); r.className = 'gs-result'; r.dataset.idx = String(i);
+    r.style.cssText = "display:flex;align-items:center;gap:10px;padding:8px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;color:var(--text)";
+    r.onmousedown = ev => { ev.preventDefault(); ctEtabPick(n); };
+    r.appendChild(ctLogoNode(n, 22)); const t = document.createElement('span'); t.textContent = n; r.appendChild(t); drop.appendChild(r);
+  });
+  drop.style.display = 'block';
+}
+function ctEtabPick(n){
+  const inp = document.getElementById('ctF_etab'), drop = document.getElementById('ctEtabDrop'); if(!inp) return;
+  inp.value = n; if(drop) drop.style.display = 'none'; ctOnEtab(inp);
+}
+function ctEtabKey(e){
+  const drop = document.getElementById('ctEtabDrop'); if(!drop || drop.style.display === 'none') return;
+  const rows = Array.from(drop.querySelectorAll('.gs-result'));
+  const maj = () => rows.forEach((r, i) => r.classList.toggle('gs-active', i === _ctEtabIdx));
+  if(e.key === 'ArrowDown'){ e.preventDefault(); _ctEtabIdx = Math.min(_ctEtabIdx + 1, rows.length - 1); maj(); }
+  else if(e.key === 'ArrowUp'){ e.preventDefault(); _ctEtabIdx = Math.max(_ctEtabIdx - 1, 0); maj(); }
+  else if(e.key === 'Enter'){ if(_ctEtabIdx >= 0){ e.preventDefault(); ctEtabPick(_ctEtabList[_ctEtabIdx]); } }
+  else if(e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); drop.style.display = 'none'; }
+}
+function ctEtabBlur(el){
+  setTimeout(() => { const d = document.getElementById('ctEtabDrop'); if(d) d.style.display = 'none'; }, 120);
+  const c = ctEtabCanon(el.value); if(c !== el.value){ el.value = c; } ctOnEtab(el);
+}
+// Variation du jour du compte, en direct : cours du moment moins clôture de la veille, sur les lignes qui ont les deux (même règle que l'envoi Intraday :
+// ni cache, ni cours périmé). Une ligne sans l'un des deux n'est pas comptée et c'est écrit ; aucun cours : « indisponible », jamais un zéro.
+function ctJour(env){
+  const lp = window._lp || {}, lignes = ETF.filter(e => (e.enveloppe || 'PEA') === KYF_CT_META[env].tag && e.qty > 0);
+  let v = 0, b = 0, ok = 0;
+  lignes.forEach(e => {
+    const l = lp[e.ticker];
+    if(!l || !Number.isFinite(l.price) || !Number.isFinite(l.prev) || !(l.prev > 0) || l._stale || l.source === 'cache' || l.source === 'google') return;
+    const cur = l.currency || getTickerCurrency(e.ticker, l), d = toEUR((l.price - l.prev) * e.qty, cur), p = toEUR(l.prev * e.qty, cur);
+    if(!Number.isFinite(d) || !Number.isFinite(p)) return;
+    v += d; b += p; ok++;
+  });
+  return { nb: lignes.length, ok, ko: lignes.length - ok, v, b };
+}
+// Flèche zigzag : montante verte, descendante rouge, horizontale grise si la variation est nulle. Dessinée en DOM (trait gras, pointe pleine).
+function ctJourFleche(sens){
+  const ns = 'http://www.w3.org/2000/svg', svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('width', 40); svg.setAttribute('height', 32); svg.setAttribute('viewBox', '0 0 40 32'); svg.setAttribute('aria-hidden', 'true'); svg.style.flexShrink = '0';
+  const col = sens > 0 ? '#34e0a1' : (sens < 0 ? '#ff6b81' : 'rgba(255,255,255,0.7)');
+  const pts = sens > 0 ? [[3,26],[13,16],[19,22],[31,8]] : (sens < 0 ? [[3,6],[13,16],[19,10],[31,24]] : [[3,16],[31,16]]);
+  const E = pts[pts.length - 1], P = pts[pts.length - 2], dx = E[0] - P[0], dy = E[1] - P[1], L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L, nx = -uy, ny = ux;
+  const fin = [E[0] - ux * 3, E[1] - uy * 3], base = [E[0] - ux * 2, E[1] - uy * 2];
+  const pl = document.createElementNS(ns, 'polyline'); pl.setAttribute('fill', 'none'); pl.setAttribute('stroke', col); pl.setAttribute('stroke-width', '4.5');
+  pl.setAttribute('stroke-linecap', 'round'); pl.setAttribute('stroke-linejoin', 'round');
+  pl.setAttribute('points', pts.slice(0, -1).concat([fin]).map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ')); svg.appendChild(pl);
+  const hd = document.createElementNS(ns, 'polygon'); hd.setAttribute('fill', col); hd.setAttribute('stroke', col); hd.setAttribute('stroke-width', '1.5'); hd.setAttribute('stroke-linejoin', 'round');
+  hd.setAttribute('points', [[E[0] + ux * 5, E[1] + uy * 5], [base[0] + nx * 6, base[1] + ny * 6], [base[0] - nx * 6, base[1] - ny * 6]].map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ')); svg.appendChild(hd);
+  return svg;
+}
+function ctRenderJour(env){
+  const box = document.getElementById('ctHeroJour'); if(!box) return;
+  const j = ctJour(env); box.textContent = '';
+  if(j.nb === 0){ box.style.display = 'none'; return; }
+  box.style.display = 'flex';
+  const txt = (t, css) => { const d = document.createElement('div'); d.style.cssText = css; d.textContent = t; return d; };
+  if(j.ok === 0){ box.appendChild(txt('Variation du jour indisponible', 'font-size:12px;color:rgba(255,255,255,0.78)')); return; }
+  const nul = Math.abs(j.v) < 0.005, up = j.v >= 0, col = nul ? 'rgba(255,255,255,0.85)' : (up ? '#7be3b4' : '#ff9aa6');
+  const pct = j.b > 0 ? ' (' + (up && !nul ? '+' : '') + (j.v / j.b * 100).toFixed(2).replace('.', ',') + ' %)' : '';
+  box.appendChild(ctJourFleche(nul ? 0 : (up ? 1 : -1)));
+  const c = document.createElement('div'); c.style.cssText = 'display:flex;flex-direction:column;gap:1px';
+  c.appendChild(txt(ctSigne(j.v) + pct, 'font-size:12px;font-weight:700;color:' + col));
+  c.appendChild(txt(j.ko > 0 ? 'Aujourd\'hui, ' + j.ko + (j.ko > 1 ? ' lignes non comptées' : ' ligne non comptée') : 'Aujourd\'hui', 'font-size:10px;color:rgba(255,255,255,0.75)'));
+  box.appendChild(c);
+}
+function ctOnEtab(el){ ctInfoSet(ctTabGet(), 'etab', el.value.slice(0, 40)); set_ctHeroE_(); }
+function set_ctHeroE_(){ ctRenderHeroHead(ctTabGet()); }
+function ctOnDate(){
+  const env = ctTabGet(), M = KYF_CT_META[env], v = (document.getElementById('ctF_date') || {}).value || '';
+  if(M.dateKey) localStorage.setItem(M.dateKey, v); else ctInfoSet(env, 'date', v);
+  try{ if(env === 'PEA'){ peaFiscLoadParams(); peaFiscSimuler(); } else if(env === 'PME'){ pmeFiscLoadParams(); pmeFiscSimuler(); } }catch(e){}
+  ctRender();
+}
+function ctOnJeune(el){
+  try{ if(el.checked) localStorage.setItem('kyf-pea-jeune', '1'); else localStorage.removeItem('kyf-pea-jeune'); }catch(e){}
+  try{ peaFiscRenderPlafond(); pmeFiscRenderPlafond(); }catch(e){}
+  ctRender();
+}
+function ctOnJeuneFin(){
+  const v = (document.getElementById('ctF_jfin') || {}).value || '';
+  try{ if(/^\d{4}-\d{2}-\d{2}$/.test(v)) localStorage.setItem('kyf-pea-jeune-fin', v); else localStorage.removeItem('kyf-pea-jeune-fin'); }catch(e){}
+  try{ peaFiscRenderPlafond(); pmeFiscRenderPlafond(); }catch(e){}
+  ctRender();
+}
+function ctOnVerse(el){
+  const env = ctTabGet(); kyfFormatMilliersInput(el);
+  const n = kyfParseMilliers(el.value);
+  localStorage.setItem(KYF_CT_META[env].verseKey, isNaN(n) ? '' : String(n));
+  try{ peaFiscLoadParams(); pmeFiscLoadParams(); peaFiscSimuler(); pmeFiscSimuler(); }catch(e){}   // le plafond du PEA-PME dépend aussi du total versé du PEA
+  ctRender();
+}
+function ctOnCash(el){   // le champ montre les espèces au total : on enregistre dans le cash ce qui dépasse les livrets rattachés (jamais en dessous de zéro)
+  const env = ctTabGet(), v = Math.max(0, (parseNum(el.value) || 0) - ctLivretsTotal(env));
+  if(env === 'PEA') setCashPea(v); else setCashCto(v);
+  try{ renderCashKPI(); }catch(e){}
+  ctRender();
+}
+
 function peaFiscSaveParams(){
   const date = document.getElementById('peaFisc_dateOuverture')?.value || '';
   localStorage.setItem('kyf-pea-date-ouverture', date);
@@ -11115,7 +11750,7 @@ function peaFiscRenderPlafond(){
   const el = document.getElementById('peaFiscPlafondBar');
   if(!el) return;
   const totalVerse = kyfParseMilliers(document.getElementById('peaFisc_totalVerse')?.value) || 0;
-  const plafond = KYF_PEA_PLAFOND();
+  const plafond = kyfPeaPlafondEff();
   if(totalVerse <= 0){ el.innerHTML = ''; return; }
   const pct = Math.min(100, (totalVerse / plafond) * 100);
   const restant = plafond - totalVerse;
@@ -11258,6 +11893,10 @@ function pmeFiscRenderPlafond(){
   const plafond = KYF_PME_PLAFOND();
   if(verse <= 0){ el.innerHTML = ''; return; }
   const note = t => '<div style="font-size:9px;color:var(--text3);line-height:1.6;margin-top:4px">' + t + '</div>';
+  if(kyfPeaJeune().actif){   // PEA jeune : plafond à part, aucun cumul inventé
+    el.innerHTML = '<div style="font-size:9px;color:var(--text3)">' + fmt(verse,0) + ' € versés sur le PEA-PME.</div>' + note('Cumul avec le PEA non calculé : votre PEA est déclaré PEA jeune (plafond à part).');
+    return;
+  }
   // Total versé du PEA inconnu : le cumul ne peut pas être calculé, on ne le fabrique pas
   if(versePea <= 0){
     el.innerHTML = '<div style="font-size:9px;color:var(--text3)">' + fmt(verse,0) + ' € versés sur le PEA-PME.</div>'
@@ -12893,7 +13532,13 @@ function initSidebarOrder(){
     saved.forEach(id => { if(byId[id]) container.appendChild(byId[id]); });
     // Un menu ajouté depuis (nouvelle fonctionnalité) et absent de la
     // sauvegarde atterrit simplement à la fin, jamais perdu.
-    items.forEach(el => { if(!saved.includes(el.dataset.page || '')) container.appendChild(el); });
+    // Un menu nouveau se range juste après celui qui le précède dans la
+    // sidebar d'origine (Comptes titres sous Portefeuille).
+    items.forEach((el, i) => {
+      if(saved.includes(el.dataset.page || '')) return;
+      const prev = items[i - 1];
+      if(prev && prev.parentNode === container) container.insertBefore(el, prev.nextSibling); else container.appendChild(el);
+    });
   });
 }
 // Applique un ordre donné (tableau d'ids data-page) au conteneur réel de la
@@ -13063,12 +13708,13 @@ function setSidebarActive(id){
         if(h.classList.contains('open') !== want){ h.classList.toggle('open', want); if(c) c.classList.toggle('open', want); changed = true; }
       });
       if(changed){
-        const state = {};
+        const state = kyfSbSecState_();
         document.querySelectorAll('.sb-group-header').forEach(h=>{ state[h.id.replace('sbg-','')] = h.classList.contains('open'); });
         localStorage.setItem('kyf-sidebar-groups', JSON.stringify(state));
       }
     }
   }catch(e){}
+  try{ kyfSbSectionReveal(); }catch(e){}   // la section de la page affichée se déplie si elle était repliée
 }
 // Fait défiler la sidebar pour garder l'item actif visible (ex. un module en
 // bas de liste après un rechargement de page, où la sidebar se remettait en
@@ -14962,7 +15608,7 @@ const SHEETS_SYNC_KEYS = [
   'pea-positions','pea-crypto-v1','pea-dca-v1',
   'kyf-dividendes','kyf-livrets','kyf-scpi',
   'kyf-immo','kyf-immo-credits','kyf-immo-revenus','kyf-sci',
-  'kyf-or','kyf-av','kyf-av-positions','kyf-pee','kyf-av-dca','kyf-av-dca-hist','kyf-av-frais-hist','kyf-frais-manuels','kyf-av-perf','kyf-frais-comp','kyf-av-arbitrages','kyf-cash-pea','kyf-cash-cto','kyf-cash-ccp','kyf-cash-mvts','kyf-flux-neutres',
+  'kyf-or','kyf-av','kyf-av-positions','kyf-pee','kyf-av-dca','kyf-av-dca-hist','kyf-av-frais-hist','kyf-frais-manuels','kyf-av-perf','kyf-frais-comp','kyf-av-arbitrages','kyf-cash-pea','kyf-cash-cto','kyf-cash-ccp','kyf-cash-mvts','kyf-flux-neutres','kyf-ct-info','kyf-ct-hidden','kyf-pea-jeune','kyf-pea-jeune-fin',
   'kyf-alerts-seuils','kyf-alerts-index',
   'kyf-etf-transactions','kyf-depense-mensuelle','kyf-per-tmi',
   'pea-etf-settings','pea-crypto-settings',
@@ -18896,6 +19542,7 @@ async function _fetchAllPricesInner(force=false){
       else if(_p === 'dca')          { try{renderDCA(); renderPlanned();}catch(e){} }
       else if(_p === 'geo')          { try{renderGeo();}catch(e){} }
       else if(_p === 'groupes')      { try{kyfGrpRender();}catch(e){} }
+      else if(_p === 'comptes-titres') { try{ctRender();}catch(e){} }
       // Crypto - déclencher fetchCryptoPrices maintenant que ETF est chargé
       else if(_p === 'crypto' && window._restoreCrypto) {
         console.log('[KYF DEBUG] fetchAllPrices terminé → appel fetchCryptoPrices');
@@ -19356,6 +20003,30 @@ function closeSidebarPrefs(){
   const _iwRow = document.getElementById('sidebarPrefIntradayRow');
   if(_iwRow){ _iwRow.classList.remove('sbp-row-flash'); _iwRow.style.display = 'none'; }
 }
+// Sections du menu (Mes actifs, Mon historique, Analyses) : le titre replie ou déplie ses menus, comme un groupe à sous-menus. État mémorisé (clé « sec-… » de kyf-sidebar-groups : true = replié).
+function kyfSbSecState_(){ try{ const o = JSON.parse(localStorage.getItem('kyf-sidebar-groups') || '{}'); return (o && typeof o === 'object') ? o : {}; }catch(e){ return {}; } }
+function kyfSbSecApply_(id, collapsed){
+  const h = document.getElementById('sbs-' + id), w = document.getElementById('sbSection' + id.charAt(0).toUpperCase() + id.slice(1)); if(!h || !w) return;
+  h.classList.toggle('collapsed', collapsed); w.classList.toggle('sb-sec-collapsed', collapsed); h.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+}
+function toggleSidebarSection(id){
+  const h = document.getElementById('sbs-' + id); if(!h) return;
+  const collapsed = !h.classList.contains('collapsed'); kyfSbSecApply_(id, collapsed);
+  const st = kyfSbSecState_(); st['sec-' + id] = collapsed; try{ localStorage.setItem('kyf-sidebar-groups', JSON.stringify(st)); }catch(e){}
+}
+function kyfSbSectionsInit(){ const st = kyfSbSecState_(); ['assets', 'history', 'analyses'].forEach(id => kyfSbSecApply_(id, !!st['sec-' + id])); try{ kyfSbSectionNewReveal(); }catch(e){} }
+function kyfSbSectionNewReveal(){   // un menu qui arrive en NOUVEAU déplie sa section repliée (tant que la nouveauté n'est pas vue)
+  ['assets', 'history', 'analyses'].forEach(id => {
+    const h = document.getElementById('sbs-' + id), w = document.getElementById('sbSection' + id.charAt(0).toUpperCase() + id.slice(1));
+    if(h && w && h.classList.contains('collapsed') && w.querySelector('.sb-has-new')) toggleSidebarSection(id);
+  });
+}
+function kyfSbSectionReveal(){   // la page ouverte doit rester visible : sa section se déplie
+  ['assets', 'history', 'analyses'].forEach(id => {
+    const h = document.getElementById('sbs-' + id), w = document.getElementById('sbSection' + id.charAt(0).toUpperCase() + id.slice(1));
+    if(h && w && h.classList.contains('collapsed') && w.querySelector('.sb-item.active, .sb-child-item.active')) toggleSidebarSection(id);
+  });
+}
 function toggleSidebarGroup(id, evt){
   if(evt) evt.stopPropagation();
   const header   = document.getElementById('sbg-'+id);
@@ -19403,8 +20074,8 @@ function toggleSidebarGroup(id, evt){
     children.classList.add('open');
   }
 
-  // Persister état
-  const state = {};
+  // Persister état (les clés « sec-… » des sections sont conservées)
+  const state = kyfSbSecState_();
   document.querySelectorAll('.sb-group-header').forEach(h=>{
     state[h.id.replace('sbg-','')] = h.classList.contains('open');
   });
@@ -19424,6 +20095,7 @@ document.addEventListener('click', (e)=>{
 });
 
 function initSidebarGroups(){
+  try{ kyfSbSectionsInit(); }catch(e){}
   try{
     const state = JSON.parse(localStorage.getItem('kyf-sidebar-groups')||'{}');
     Object.entries(state).forEach(([id, open])=>{
@@ -19441,7 +20113,7 @@ document.documentElement.classList.toggle('kyf-no-crumb', kyfCrumbHidden());
 function kyfCrumbFill(d,id){
   var alias=(id==='immo-scpi-liste')?'immo-scpi':id;
   var it=document.querySelector('.sb-item[data-page="'+alias+'"],.sb-child-item[data-page="'+alias+'"]'); if(!it) return false;
-  var sec=({portfolio:1,crypto:1,livrets:1,or:1,dividendes:1,historique:2,dca:2,transactions:2,bilan:2,frais:2,heatmap:3,geo:3,groupes:3,alertes:3,'fiscal-pea-cto':3,avis:0})[id];
+  var sec=({portfolio:1,crypto:1,livrets:1,or:1,dividendes:1,historique:2,dca:2,transactions:2,bilan:2,frais:2,heatmap:3,geo:3,groupes:3,alertes:3,'fiscal-pea-cto':3,'comptes-titres':1,avis:0})[id];
   sec=sec===undefined?'':(['','Mes actifs','Mon historique','Analyses'][sec]||'');
   var gc=it.closest('.sb-group-children');
   if(gc){ var gh=document.getElementById('sbg-'+gc.id.replace('sbgc-','')); var gl=gh&&gh.querySelector('.sb-label'); if(gl) sec=gl.textContent.trim(); }
@@ -19456,7 +20128,7 @@ function kyfCrumbFill(d,id){
   if(ic) d.querySelector('.kc-ic').appendChild(ic.cloneNode(true));
   return true;
 }
-var KYF_CRUMB_NEW=['portfolio','crypto','livrets','or','historique','dca','transactions','bilan','frais','heatmap','geo','groupes','alertes','avis'];
+var KYF_CRUMB_NEW=['portfolio','comptes-titres','crypto','livrets','or','historique','dca','transactions','bilan','frais','heatmap','geo','groupes','alertes','avis'];
 var KYF_CRUMB_CONV=['dividendes','budget','livrets-recurrents','immobilier','immo-credits','immo-revenus','immo-scpi','immo-scpi-liste','immo-crowdfunding','assurance','av-comparateur','per-comprendre','av-fiscalite','fiscal-pea-cto'];
 function kyfCrumb(id){
   try{
@@ -19507,7 +20179,7 @@ const KYF_BAD_PAGES = {
   'livrets':['kyf-livrets','kyf-livrets-transactions'], 'livrets-recurrents':['kyf-recurrents'], 'or':['kyf-or'], 'immobilier':['kyf-immo','kyf-sci'],
   'immo-credits':['kyf-immo-credits'], 'immo-revenus':['kyf-immo-revenus'], 'immo-scpi':['kyf-scpi'], 'immo-scpi-liste':['kyf-scpi'], 'immo-crowdfunding':['kyf-crowdfunding'],
   'assurance':['kyf-av','kyf-av-positions','kyf-pee','kyf-av-dca','kyf-av-dca-hist','kyf-av-frais-hist','kyf-frais-manuels','kyf-av-perf','kyf-frais-comp','kyf-av-arbitrages'], 'dca':['pea-dca-v1'], 'budget':['kyf-depense-mensuelle','kyf-cash-ccp'],
-  'fiscal-pea-cto':['kyf-cash-pea','kyf-cash-cto','kyf-cash-mvts'], 'av-fiscalite':['kyf-per-tmi'], 'heatmap':['kyf-flux-neutres'],
+  'fiscal-pea-cto':['kyf-cash-pea','kyf-cash-cto','kyf-cash-mvts'], 'comptes-titres':['pea-positions','kyf-cash-pea','kyf-cash-cto'], 'av-fiscalite':['kyf-per-tmi'], 'heatmap':['kyf-flux-neutres'],
   'frais':['kyf-av','kyf-av-frais-hist','kyf-frais-manuels','kyf-frais-comp'], 'dashboard':'*', 'bilan':'*'
 };
 function kyfBadStored(keys){
@@ -19583,6 +20255,8 @@ function showPage(id,tab,fromPopstate){
   if(id === 'av-comparateur') try{ avCompRender(); }catch(e){}
   if(id === 'av-fiscalite') try{ avFiscLoadParams(); avFiscAutoFill(); avFiscCalc(); avFiscCloudInit(); }catch(e){}
   if(id === 'fiscal-pea-cto') try{ fiscalParamsInit(); peaFiscLoadParams(); peaFiscSimuler(); pmeFiscLoadParams(); pmeFiscSimuler(); ctoFiscCalc(); kyfCashMvtRefresh(); }catch(e){}
+  if(id === 'avis') try{ kyfNewBadgeSeen('avis'); }catch(e){}   // page Avis ouverte : la mise en avant a rempli son rôle
+  if(id === 'comptes-titres'){ try{ ctRender(); }catch(e){} try{ kyfNewBadgeSeen('ct'); }catch(e){} }   // page ouverte : le badge NOUVEAU a rempli son rôle
   if(id === 'budget') try{ renderBudgetPage(); }catch(e){}
   if(id === 'immo-crowdfunding') try{ renderCrowdfunding(); }catch(e){}
   if(id === 'per-comprendre') try{ perLoadParams(); perUpdateAll(); }catch(e){}
@@ -22232,7 +22906,6 @@ function kyfSbDcaBadgeRefresh(){
     if(!b){ b = document.createElement('span'); b.className = 'sb-badge'; b.setAttribute('role', 'status'); host.appendChild(b); }
     const t = [n0 ? n0 + ' DCA à enregistrer' : '', nv ? nv + ' versement' + (nv > 1 ? 's' : '') + ' AV/PER à valider avec le relevé' : '', na ? na + ' versement' + (na > 1 ? 's' : '') + ' AV/PER en attente de crédit' : ''].filter(Boolean).join(' · ');
     b.textContent = String(n); b.title = t; b.setAttribute('aria-label', t);
-    if(!it._kyfFitObs && window.MutationObserver){ it._kyfFitObs = new MutationObserver(() => { try{ kyfSbFitBadge(); }catch(e){} }); it._kyfFitObs.observe(it, { attributes: true, attributeFilter: ['class'] }); }
   });
   try{ kyfSbFitBadge(); }catch(e){}
 }
@@ -22240,11 +22913,16 @@ function kyfSbDcaBadgeRefresh(){
 function kyfSbFitBadge(){
   document.querySelectorAll('.sb-item[data-page="dca"]').forEach(it => {
     const lab = it.querySelector(':scope > .sb-label'); if(!lab) return;
-    lab.style.removeProperty('font-size');
+    lab.style.removeProperty('font-size'); it.classList.remove('sb-bl'); it.style.transition = 'none'; void it.offsetWidth;   // mesure sans transition : la marge réservée à la pastille compte tout de suite
+    setTimeout(() => { try{ it.style.removeProperty('transition'); }catch(e){} }, 60);
     const sb = document.getElementById('sidebar');
-    if(!it.querySelector(':scope > .sb-badge') || it.classList.contains('active') || (sb && sb.classList.contains('mini')) || !lab.clientWidth) return;
+    if(!it.querySelector(':scope > .sb-badge') || (sb && sb.classList.contains('mini')) || !lab.clientWidth) return;
+    if(it.dataset.label) lab.textContent = it.dataset.label;   // on repart du nom complet : il est réduit avant d'être abrégé
     let fs = parseFloat(getComputedStyle(lab).fontSize) || 11;
     while(lab.scrollWidth > lab.clientWidth + 0.5 && fs > 8){ fs -= 0.5; lab.style.setProperty('font-size', fs + 'px', 'important'); }
+    if(lab.scrollWidth > lab.clientWidth + 0.5){   // ne tient pas même réduit : nom abrégé et pastille sur l'icône (barre trop étroite)
+      lab.style.removeProperty('font-size'); if(typeof SB_LABEL_SHORT !== 'undefined' && SB_LABEL_SHORT.dca) lab.textContent = SB_LABEL_SHORT.dca; it.classList.add('sb-bl');
+    }
   });
 }
 try{ window.addEventListener('resize', () => { try{ kyfSbFitBadge(); }catch(e){} }); }catch(e){}
@@ -23633,6 +24311,23 @@ let   _etfSelected  = null; // { name, ticker, type }
 let   _etfSearchTimer = null;
 
 // ── Sélection enveloppe fiscale ───────────────────────────────
+function kyfEtfVerseSync(){   // champ « Total versé » de la fenêtre Ajouter : PEA et PEA-PME seulement, prérempli avec le total déjà connu
+  const w = document.getElementById('etfVerseWrap'), inp = document.getElementById('etfVerse'); if(!w || !inp) return;
+  const r = document.querySelector('input[name="etfEnveloppe"]:checked'), M = KYF_CT_META[kyfImportEnvKey(r ? r.value : 'PEA')];
+  const on = !!(r && M && M.verseKey && (r.value === 'PEA' || r.value === 'PEA-PME'));
+  w.style.display = on ? 'block' : 'none';
+  if(!on){ inp.value = ''; return; }
+  const v = kyfParseMilliers(localStorage.getItem(M.verseKey)) || 0;
+  inp.value = v > 0 ? kyfFormatMilliers(v) : '';
+}
+function kyfEtfVerseSave(enveloppe){   // enregistre le total versé saisi : jamais d'écrasement par du vide, ni réécriture si inchangé
+  const inp = document.getElementById('etfVerse'); if(!inp || (enveloppe !== 'PEA' && enveloppe !== 'PEA-PME')) return;
+  const M = KYF_CT_META[kyfImportEnvKey(enveloppe)]; if(!M || !M.verseKey) return;
+  const v = kyfParseMilliers(inp.value) || 0; if(!(v > 0) || !isFinite(v)) return;
+  if(Math.abs(v - (kyfParseMilliers(localStorage.getItem(M.verseKey)) || 0)) < 0.005) return;
+  if(M.tag === 'PEA') kyfPeaTotalVerseSet(v);
+  else { localStorage.setItem(M.verseKey, String(Math.round(v * 100) / 100)); try{ pmeFiscLoadParams(); pmeFiscSimuler(); }catch(e){} }
+}
 function setEnveloppe(val){
   const opts = { PEA: 'envLblPEA', 'PEA-PME': 'envLblPME', CTO: 'envLblCTO', AV: 'envLblAV', PER: 'envLblPER' };
   const radios = { PEA: 'envPEA', 'PEA-PME': 'envPME', CTO: 'envCTO', AV: 'envAV', PER: 'envPER' };
@@ -23646,6 +24341,7 @@ function setEnveloppe(val){
     el.style.color     = active ? 'var(--accent)' : 'var(--text3)';
     if(rd) rd.checked  = active;
   });
+  try{ kyfEtfVerseSync(); }catch(e){}
 }
 
 // ── Spin fields (▲▼ avec tenue souris) ───────────────────────
@@ -25683,6 +26379,7 @@ function etfLoad(){
 // ── Sauvegarder dans localStorage ────────────────────────────︄︋︅︉︄︆︄︊︄︍︃︂︃︆
 function etfSave(){
   try { localStorage.setItem(ETF_KEY, JSON.stringify(ETF)); } catch(e){}
+  try{ const pg = document.getElementById('page-comptes-titres'); if(pg && pg.classList.contains('active') && typeof ctRender === 'function') ctRender(); }catch(_){}   // la page Comptes titres suit les ajouts et imports
   try{ if(typeof kyfCashHintCheck === 'function') kyfCashHintCheck(); }catch(_){}
 }
 
@@ -28315,7 +29012,7 @@ const KYF_WATCHED_KEYS = new Set([
   'kyf-cto-taux-pfu',     // CTO taux PFU
   'kyf-cash-migrated-v2', // Migration répartition cash
   'kyf-pea-date-ouverture','kyf-pea-plafond','kyf-pea-taux-ir','kyf-pea-taux-ps', // Paramètres fiscaux PEA
-  'kyf-pme-date-ouverture','kyf-pme-total-verse','kyf-pme-plafond','kyf-pea-total-verse','kyf-cash-mvts','kyf-flux-neutres', // PEA-PME et totaux versés (plafond commun)
+  'kyf-pme-date-ouverture','kyf-pme-total-verse','kyf-pme-plafond','kyf-pea-total-verse','kyf-cash-mvts','kyf-flux-neutres','kyf-ct-info','kyf-ct-hidden','kyf-pea-jeune','kyf-pea-jeune-fin', // PEA-PME et totaux versés (plafond commun)
   'kyf-depense-mensuelle',// Dépenses mensuelles
   'kyf-forecast-horizon', // Budget horizon de projection
   'kyf-reccal-size',      // Budget taille calendrier récurrents
@@ -29127,7 +29824,7 @@ async function kyfInitialPush(){
     'pea-positions','pea-crypto-v1','pea-dca-v1',
     'kyf-dividendes','kyf-livrets','kyf-scpi',
     'kyf-immo','kyf-immo-credits','kyf-immo-revenus','kyf-sci',
-    'kyf-or','kyf-av','kyf-av-positions','kyf-pee','kyf-av-dca','kyf-av-dca-hist','kyf-av-frais-hist','kyf-frais-manuels','kyf-av-perf','kyf-frais-comp','kyf-av-arbitrages','kyf-cash-pea','kyf-cash-cto','kyf-cash-ccp','kyf-cash-mvts','kyf-flux-neutres',
+    'kyf-or','kyf-av','kyf-av-positions','kyf-pee','kyf-av-dca','kyf-av-dca-hist','kyf-av-frais-hist','kyf-frais-manuels','kyf-av-perf','kyf-frais-comp','kyf-av-arbitrages','kyf-cash-pea','kyf-cash-cto','kyf-cash-ccp','kyf-cash-mvts','kyf-flux-neutres','kyf-ct-info','kyf-ct-hidden','kyf-pea-jeune','kyf-pea-jeune-fin',
     'kyf-alerts-seuils','kyf-alerts-index',
     'kyf-etf-transactions','kyf-depense-mensuelle','kyf-per-tmi',
     'pea-etf-settings','pea-crypto-settings',
@@ -31930,6 +32627,7 @@ const IMPORT_TYPE_CONFIG = {
 };
 
 async function openImportRelevé(origin){
+  window._ctImportEnv = null;   // posé ensuite par la page Comptes titres quand l'import vient d'elle
   try{ if(origin === 'av-per') kyfNewBadgeSeen('arb'); }catch(e){}
   // Si le popup « Par quoi voulez-vous commencer ? » est ouvert (nouvel utilisateur), on le ferme :
   // sinon il reste dessous et ses 75 % de noir s'ajoutent à ceux de l'import (fond presque noir + cadre gris).
@@ -32348,10 +33046,12 @@ function importGoToStep2(type){
   const destWrap = document.getElementById('importDestWrap');
   const destSel  = document.getElementById('importDest');
   { const _cw = document.getElementById('importCashWrap'); if(_cw){ _cw.style.display = type==='etf' ? 'block' : 'none'; const e=document.getElementById('importEspecesInput'); if(e){ e.value=''; e.dataset.auto=''; } const k=document.getElementById('importEspLivChk'); if(k) k.checked=false; const f=document.getElementById('importEspLivFields'); if(f) f.style.display='none'; const lb=document.getElementById('importCashLivBox'); if(lb) lb.style.display = type==='etf' ? 'block' : 'none'; } }
+  kyfImportBrokerShow(false);
   if(cfg.needsDest){
     destWrap.style.display = 'block';
     if(type==='etf'){
       destSel.innerHTML = '<option value="PEA">PEA</option><option value="PEA-PME">PEA-PME</option><option value="CTO">Compte-Titres (CTO)</option>';
+      kyfImportBrokerShow(true);
     } else if(type==='av' || type==='per'){
       // Un contrat peut être 'av', 'per', 'per-col' (PERCO) ou 'per-ob' (PER
       // obligatoire) - on regroupe tous les sous-types PER sous l'import
@@ -32379,6 +33079,46 @@ function importGoToStep2(type){
   }
 }
 // Totaux du contrat choisi : préremplis avec ce qui est déjà enregistré, pour ne jamais effacer une valeur sans le vouloir
+// Courtier du compte : demandé à chaque import de positions vers un PEA, un PEA-PME ou un CTO, enregistré dans la fiche Comptes titres (clé kyf-ct-info).
+const KYF_IMPORT_BROKERS = ['Trade Republic','Boursorama','Fortuneo','Bourse Direct','Degiro','Interactive Brokers','Scalable Capital','Saxo Banque','EasyBourse','eToro','XTB','Revolut','Freedom24','Lynx','Swissquote','Bitpanda','Vanguard','Crédit Agricole','BNP Paribas','Société Générale','Crédit Mutuel','CIC','LCL','Caisse d\'Épargne','Banque Populaire','La Banque Postale','HSBC','ING','Boursobank','Crédit du Nord','Banque Palatine','Crédit Coopératif','Hello bank!','Bforbank','Monabanq'];
+function kyfImportEnvKey(dest){ return dest === 'PEA-PME' ? 'PME' : (dest === 'CTO' ? 'CTO' : 'PEA'); }
+function kyfImportBrokerShow(on){
+  const w = document.getElementById('importBrokerWrap'); if(!w) return;
+  w.style.display = on ? 'block' : 'none';
+  if(!on){ kyfImportVerseSync(); return; }
+  const dl = document.getElementById('importBrokerList');
+  if(dl && !dl.options.length){ KYF_IMPORT_BROKERS.forEach(n => { const o = document.createElement('option'); o.value = n; dl.appendChild(o); }); }
+  const want = window._ctImportEnv;
+  if(want) setTimeout(() => {   // import lancé depuis un compte de la page Comptes titres : on choisit ce compte
+    const d = document.getElementById('importDest');
+    if(d && Array.prototype.some.call(d.options, o => o.value === want) && d.value !== want){ d.value = want; d.dispatchEvent(new Event('change', { bubbles: true })); }
+  }, 0);
+  kyfImportBrokerFill(); kyfImportVerseSync();
+}
+function kyfImportVerseSync(){   // champ « Total versé » : PEA et PEA-PME seulement, prérempli avec le total déjà connu
+  const w = document.getElementById('importVerseWrap'), inp = document.getElementById('importVerse'), d = document.getElementById('importDest'); if(!w || !inp || !d) return;
+  const env = kyfImportEnvKey(d.value), M = KYF_CT_META[env];
+  const on = _importType === 'etf' && !!(M && M.verseKey);
+  w.style.display = on ? 'block' : 'none';
+  if(!on){ inp.value = ''; return; }
+  const v = kyfParseMilliers(localStorage.getItem(M.verseKey)) || 0;
+  inp.value = v > 0 ? kyfFormatMilliers(v) : '';
+}
+function kyfImportVerseSave(enveloppe){   // enregistre le total versé saisi (jamais d'écrasement par du vide)
+  const inp = document.getElementById('importVerse'); if(!inp) return;
+  const M = KYF_CT_META[kyfImportEnvKey(enveloppe)]; if(!M || !M.verseKey) return;
+  const v = kyfParseMilliers(inp.value) || 0; if(!(v > 0) || !isFinite(v)) return;
+  if(M.tag === 'PEA') kyfPeaTotalVerseSet(v);
+  else { localStorage.setItem(M.verseKey, String(Math.round(v * 100) / 100)); try{ pmeFiscLoadParams(); pmeFiscSimuler(); }catch(e){} }
+}
+document.addEventListener('change', e => { if(e.target && e.target.id === 'importDest') kyfImportVerseSync(); });
+function kyfImportBrokerFill(){   // reprend le nom déjà connu pour la destination choisie (fiche Comptes titres, ou livret rattaché)
+  const inp = document.getElementById('importBroker'), d = document.getElementById('importDest'); if(!inp || !d) return;
+  const k = kyfImportEnvKey(d.value);
+  let n = ''; try{ n = ctInfo()[k].etab || ctEtabAuto(k) || ''; }catch(e){}
+  inp.value = n; inp.style.outline = '';
+}
+document.addEventListener('change', e => { if(e.target && e.target.id === 'importDest' && _importType === 'etf') kyfImportBrokerFill(); });
 function importTotalsPrefill(){
   const a = document.getElementById('importTotInvesti'), b = document.getElementById('importTotRachete');
   if(!a || !b) return;
@@ -34290,6 +35030,13 @@ async function importConfirm(){
   }
   if(_importType==='etf'){
     const enveloppe = document.getElementById('importDest').value;
+    const _brk = String((document.getElementById('importBroker') || {}).value || '').replace(/[\u0000-\u001f\u007f<>]/g, '').replace(/\s+/g, ' ').trim().slice(0, 40);
+    if(!_brk){
+      const st = document.getElementById('importStatus'), bi = document.getElementById('importBroker');
+      if(st) st.innerHTML = '<span style="color:var(--accent)">Indiquez le nom de votre courtier (Trade Republic, Boursorama, Fortuneo...) avant d\'importer.</span>';
+      if(bi){ bi.scrollIntoView({block:'center'}); bi.style.outline = '2px solid var(--accent)'; bi.focus(); }
+      return;
+    }
     let count = 0, updated = 0;
     const perEnvCounts = {};
     const _mode = window._importChangedMode || 'update';
@@ -34367,14 +35114,17 @@ async function importConfirm(){
           const _tx = parseFloat(String(document.getElementById('importEspLivTaux').value || '').replace(',', '.')) || 0;
           const _ty = KYF_CASH_TYPE(_bq);
           const _lv = livLoad(); const _ex = _lv.find(d => String(d.banque).toLowerCase() === _bq.toLowerCase() && d.type === _ty);
-          if(_ex){ _ex.solde = _ev; if(_tx > 0) _ex.taux = _tx; _ex.liquide = 1; }
-          else _lv.push({ id: Date.now().toString(), banque:_bq, type:_ty, solde:_ev, taux:Math.min(20, Math.max(0, _tx)), plafond:0, liquide:1 });
+          const _ec = (enveloppe === 'PEA' || enveloppe === 'CTO') ? enveloppe : undefined;   // compte titres d'où viennent ces espèces
+          if(_ex){ _ex.solde = _ev; if(_tx > 0) _ex.taux = _tx; _ex.liquide = 1; if(_ec) _ex.envCompte = _ec; }
+          else _lv.push({ id: Date.now().toString(), banque:_bq, type:_ty, solde:_ev, taux:Math.min(20, Math.max(0, _tx)), plafond:0, liquide:1, envCompte:_ec });
           livSave(_lv); if(enveloppe === 'CTO') setCashCto(0); else if(enveloppe !== 'PEA-PME') setCashPea(0);
           try{ renderLivrets(); }catch(e){}
         } else if(enveloppe === 'CTO'){ setCashCto(_ev); }
         else if(enveloppe !== 'PEA-PME'){ setCashPea(_ev); }
         if(typeof renderCashKPI==='function') renderCashKPI();
       } }
+    try{ kyfImportVerseSave(enveloppe); }catch(e){}   // total versé saisi : remplit la fiche Comptes titres et le plafond
+    try{ ctInfoSet(kyfImportEnvKey(enveloppe), 'etab', ctEtabCanon(_brk)); }catch(e){}   // même orthographe que dans le Détail du contrat (bourso devient Boursorama), donc même nom et même logo   // courtier saisi : remplit la fiche Comptes titres
     etfSave(); renderETFTable(window._lp||{}); renderDonut(); fetchAllPrices();
     closeImportRelevé();
     const detail = Object.keys(perEnvCounts).length>1 ? ' · ' + Object.entries(perEnvCounts).map(([e,n])=>`${n} en ${e}`).join(' · ') : ` dans votre portefeuille ${enveloppe}`;
@@ -37766,6 +38516,7 @@ async function confirmAddETF(){
     window._etfLastCashDebit = 0;
     const _oldT = ETF[_etfEditIdx]?.ticker;
     ETF[_etfEditIdx] = entry;
+    try{ kyfEtfVerseSave(entry.enveloppe); }catch(e){}
     kyfEtfTickerMigrate(_oldT, entry.ticker);
     kyfFavPickApply('etf', entry.ticker);
     etfSave();
@@ -37805,6 +38556,7 @@ async function confirmAddETF(){
     try{ onIntradayTransaction(); }catch(_){}
   }catch(_){}
   etfSessionAddItem(entry, _etfLastTransId); _etfLastTransId = null;
+  try{ kyfEtfVerseSave(entry.enveloppe); }catch(e){}
 
   // Reset des champs de saisie pour le prochain actif, l'enveloppe choisie
   // est volontairement conservée (pratique pour ajouter plusieurs actifs
@@ -44467,7 +45219,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.9.41\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.10.51\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -44483,7 +45235,7 @@ document.addEventListener('DOMContentLoaded', function(){
     profilRenderAvatar(avatar, nom);
   }catch(e){}
 
-  const validPages = ['dashboard','profil','avis','portfolio','fiscal-pea-cto','budget','dividendes','historique','heatmap','alertes','geo','groupes','transactions','investissement','bilan','frais','crypto','dca','livrets','livrets-recurrents','immobilier','immo-credits','immo-revenus','immo-scpi','immo-scpi-liste','immo-sci','immo-crowdfunding','guide-juridique','or','assurance','av-comparateur','av-fiscalite','per-comprendre'];
+  const validPages = ['dashboard','profil','avis','portfolio','comptes-titres','fiscal-pea-cto','budget','dividendes','historique','heatmap','alertes','geo','groupes','transactions','investissement','bilan','frais','crypto','dca','livrets','livrets-recurrents','immobilier','immo-credits','immo-revenus','immo-scpi','immo-scpi-liste','immo-sci','immo-crowdfunding','guide-juridique','or','assurance','av-comparateur','av-fiscalite','per-comprendre'];
   const hash = window.location.hash.replace('#','').toLowerCase().trim();
   const lastPage = validPages.includes(hash) ? hash :
                    (localStorage.getItem('kyf-last-page') || 'dashboard');
@@ -44554,6 +45306,7 @@ document.addEventListener('DOMContentLoaded', function(){
       else if(lastPage==='immo-sci') try{renderSCI();}catch(e){}
       else if(lastPage==='immobilier') try{renderImmo();}catch(e){}
     }
+    if(lastPage === 'comptes-titres') try{ ctRender(); }catch(e){}
     if(lastPage === 'crypto'){
       // Pas de document.addEventListener('DOMContentLoaded', ...) ici : ce
       // bloc tourne déjà À L'INTÉRIEUR du gestionnaire DOMContentLoaded
@@ -49008,6 +49761,8 @@ function applySidebarLabelTruncation(){
       labelEl.textContent = shortLabel;
     }
   });
+  try{ if(typeof kyfSbFitBadge === 'function') kyfSbFitBadge(); }catch(e){}
+  try{ if(typeof kyfSbFitNew === 'function') kyfSbFitNew(); }catch(e){}
 }
 window.addEventListener('resize', applySidebarLabelTruncation);
 window.addEventListener('load', applySidebarLabelTruncation);
@@ -50474,7 +51229,7 @@ const KYF_STORAGE_KEYS = [
   'kyf-or-settings',
   'kyf-dividendes',
   'kyf-cash',
-  'kyf-cash-ccp','kyf-cash-mvts','kyf-flux-neutres',
+  'kyf-cash-ccp','kyf-cash-mvts','kyf-flux-neutres','kyf-ct-info','kyf-ct-hidden','kyf-pea-jeune','kyf-pea-jeune-fin',
   'kyf-cash-cto',
   'kyf-cash-pea',
   'kyf-cash-migrated-v2',
@@ -57491,6 +58246,7 @@ document.addEventListener('keydown', function(e){
 const KYF_RPT_LIST = [
   { id:'syn', t:'Synthèse du patrimoine',      d:'Total, répartition par classe et par projet' },
   { id:'det', t:'Détail par classe d\'actifs', d:'Toutes les lignes, avec quantité, PRU et gain quand ils existent' },
+  { id:'ct',  t:'Comptes titres',              d:'PEA, PEA-PME et CTO : valeur, plus-value, total versé, plafond et lignes de chaque compte' },
   { id:'his', t:'Historique et performances',  d:'Courbe du portefeuille ETF, actions et crypto, évolution mois par mois' },
   { id:'fis', t:'Fiscalité et objectifs',      d:'Gains latents, dividendes, frais, réglages fiscaux, liberté financière' }
 ];
@@ -57571,10 +58327,10 @@ function kyfRptDet(){
     const its = items.filter(x => x.c === c).sort((a, b) => b.val - a.val); if(!its.length) return;
     h += '<h2><i style="background:' + KYF_RPT_COL[c] + '"></i>' + escapeHtml(KYF_GRP_CLS[c]) + ' <span>' + kyfRptE(byC[c]) + ' · ' + fmt(byC[c] / total * 100, 1) + ' %</span></h2>';
     if(c === 'etf'){
-      h += kyfRptTable(['Ligne', 'Qté', 'PRU', 'Cours', 'Valeur', 'G/P €', 'G/P %'], its.map(it => {
+      h += kyfRptTable(['Ligne', 'Compte', 'Qté', 'PRU', 'Cours', 'Valeur', 'G/P €', 'G/P %'], its.map(it => {
         const e = ETF.find(x => 'etf:' + x.ticker === it.k) || {}, inv = (e.pru || 0) * (e.qty || 0), gp = it.val - inv, px = lp[e.ticker]?.price;
-        return [escapeHtml(it.name), fmt(e.qty || 0, 4).replace(/,?0+$/, ''), kyfRptE(e.pru || 0, 2), px ? fmt(px, 2) : '-', kyfRptE(it.val), inv > 0 ? '<span class="' + kyfRptGpCls(gp) + '">' + kyfRptE(gp) + '</span>' : '-', inv > 0 ? '<span class="' + kyfRptGpCls(gp) + '">' + kyfRptP(gp / inv * 100) + '</span>' : '-'];
-      }), [1, 2, 3, 4, 5, 6]);
+        return [escapeHtml(it.name), escapeHtml(e.enveloppe || 'PEA'), fmt(e.qty || 0, 4).replace(/,?0+$/, ''), kyfRptE(e.pru || 0, 2), px ? fmt(px, 2) : '-', kyfRptE(it.val), inv > 0 ? '<span class="' + kyfRptGpCls(gp) + '">' + kyfRptE(gp) + '</span>' : '-', inv > 0 ? '<span class="' + kyfRptGpCls(gp) + '">' + kyfRptP(gp / inv * 100) + '</span>' : '-'];
+      }), [2, 3, 4, 5, 6, 7]);
     } else if(c === 'cry'){
       h += kyfRptTable(['Ligne', 'Qté', 'PRU', 'Valeur', 'G/P €', 'G/P %'], its.map(it => {
         const p = (cs.positions || []).find(x => 'cry:' + x.ticker === it.k) || {}, inv = (p.pru || 0) * (p.qte || 0), gp = it.val - inv;
@@ -57646,8 +58402,9 @@ function kyfRptFis(){
   h += Object.keys(fy).length ? kyfRptTable(['Année', 'Frais'], Object.keys(fy).sort().reverse().map(y => [y, kyfRptE(fy[y], 2)]), [1]) : '<p class="mu">Aucun frais enregistré.</p>';
   // Réglages fiscaux
   const pf = v => fmt(v * 100, 2) + ' %', fr = [];
-  try{ fr.push(['PEA : plafond de versements', kyfRptE(KYF_PEA_PLAFOND())], ['PEA : prélèvement IR après 5 ans', pf(KYF_PEA_TAUX_PFU_IR())], ['PEA : prélèvements sociaux', pf(KYF_PEA_TAUX_PS())], ['CTO : flat tax (PFU)', pf(KYF_CTO_TAUX_PFU())]); }catch(e){}
+  try{ fr.push([kyfPeaJeune().actif ? 'PEA jeune : plafond de versements' : 'PEA : plafond de versements', kyfRptE(kyfPeaPlafondEff())], ['PEA + PEA-PME : plafond cumulé', kyfRptE(KYF_PME_PLAFOND())], ['PEA : prélèvement IR après 5 ans', pf(KYF_PEA_TAUX_PFU_IR())], ['PEA : prélèvements sociaux', pf(KYF_PEA_TAUX_PS())], ['CTO : flat tax (PFU)', pf(KYF_CTO_TAUX_PFU())]); }catch(e){}
   const od = localStorage.getItem('kyf-pea-date-ouverture'); if(od) fr.push(['PEA : date d\'ouverture', escapeHtml(new Date(od).toLocaleDateString('fr-FR'))]);
+  const odp = localStorage.getItem('kyf-pme-date-ouverture'); if(odp) fr.push(['PEA-PME : date d\'ouverture', escapeHtml(new Date(odp).toLocaleDateString('fr-FR'))]);
   const tmi = localStorage.getItem('kyf-per-tmi'); if(tmi) fr.push(['PER : tranche marginale (TMI)', escapeHtml(tmi) + ' %']);
   h += '<h2>Réglages fiscaux utilisés dans KYF</h2>' + kyfRptTable(['Réglage', 'Valeur'], fr, [1]);
   // Objectifs
@@ -57658,7 +58415,55 @@ function kyfRptFis(){
     + '<div class="kp"><div><span>JOURS DE LIBERTÉ</span><b>' + escapeHtml(tx('profilKpiJours')) + '</b></div><div><span>TRAIN DE VIE COUVERT</span><b>' + escapeHtml(tx('profilKpiTrain')) + '</b></div><div><span>OBJECTIF ATTEINT</span><b>' + escapeHtml(tx('profilKpiObjectif')) + '</b></div></div>';
   return h;
 }
-const KYF_RPT_FN = { syn:kyfRptSyn, det:kyfRptDet, his:kyfRptHis, fis:kyfRptFis };
+// Rapport « Comptes titres » : une section par compte affiché (PEA, PEA-PME, CTO), mêmes chiffres que la page Comptes titres
+function kyfRptCtOne(env){
+  const M = KYF_CT_META[env], E = ctEtatLigne(env), nb = E.lignes.length, tousSans = nb > 0 && E.ok.length === 0, info = ctInfo()[env] || {};
+  let cash = 0, total, pv, base = false, inv = 0, titres;
+  if(env === 'PEA'){ const x = peaFiscSituation(); cash = x.cash; titres = x.valeur - x.cash; total = x.valeur; pv = x.pvTotale; base = x.baseVerse; inv = x.investi; }
+  else if(env === 'PME'){ const x = pmeFiscSituation(); titres = x.valeur; total = x.valeur; pv = x.plusValue; base = x.baseVerse; inv = x.investi; }
+  else { cash = getCashCto(); titres = E.val; total = titres + cash; pv = E.val - E.cout; }
+  const date = M.dateKey ? (localStorage.getItem(M.dateKey) || '') : (info.date || '');
+  const mo = date ? kyfMoisEntiersDepuis(date) : null, moOk = (mo !== null && mo >= 0);
+  const etab = info.etab || ctEtabAuto(env) || '';
+  const pvLab = env === 'CTO' ? 'Plus-value latente des lignes (valeur moins coût)' : (base ? 'Plus-value fiscale (valeur moins total versé)' : 'Plus-value latente (estimée sur le coût)');
+  let h = '<h2>' + escapeHtml(M.titre) + (etab ? ' <span>' + escapeHtml(etab) + '</span>' : '') + '</h2>';
+  if(nb === 0 && !(cash > 0) && !base) return h + '<p class="mu">Aucune ligne ni donnée suivie sur ce compte.</p>';
+  h += '<div class="kp"><div><span>VALEUR TOTALE</span><b>' + (tousSans ? 'indisponible' : kyfRptE(total, 2)) + '</b>' + (cash > 0 && !tousSans ? '<small>dont espèces ' + kyfRptE(cash, 2) + '</small>' : '') + '</div>'
+    + '<div><span>PLUS-VALUE</span><b class="' + (tousSans ? '' : kyfRptGpCls(pv)) + '">' + (tousSans ? 'indisponible' : (pv >= 0 ? '+' : '') + kyfRptE(pv, 2)) + '</b><small>' + escapeHtml(pvLab) + '</small></div>'
+    + (M.verseKey ? '<div><span>TOTAL VERSÉ</span><b>' + (base && inv > 0 ? kyfRptE(inv, 2) : '-') + '</b>' + (base ? '' : '<small>non renseigné</small>') + '</div>' : '') + '</div>';
+  const j = ctJour(env), rows = [];
+  rows.push(['Établissement', etab ? escapeHtml(etab) : 'non renseigné']);
+  rows.push(['Date d\'ouverture', date ? escapeHtml(ctDateFr(date)) + (moOk ? ' (' + escapeHtml(ctDuree(mo)) + ')' : '') : 'non renseignée']);
+  if(M.cinq && moOk){ const d5 = date.slice(0, 4) * 1 + 5 + date.slice(4, 10); rows.push(['5 ans', mo >= 60 ? 'révolus depuis le ' + escapeHtml(ctDateFr(d5)) : 'le ' + escapeHtml(ctDateFr(d5)) + ', encore ' + escapeHtml(ctDuree(60 - mo))]); }
+  rows.push(['Valeur des lignes', tousSans ? 'indisponible' : kyfRptE(titres, 2)]);
+  rows.push(['Coût d\'acquisition', tousSans ? 'indisponible' : kyfRptE(E.cout, 2)]);
+  rows.push(['Lignes suivies', String(nb) + (E.sansCours > 0 ? ' (dont ' + E.sansCours + ' sans cours)' : '')]);
+  if(env === 'PME') rows.push(['Espèces', 'non suivies']);
+  if(j.nb > 0) rows.push(['Variation du jour', j.ok === 0 ? 'indisponible' : (j.v >= 0 ? '+' : '') + kyfRptE(j.v, 2) + (j.b > 0 ? ' (' + (j.v >= 0 ? '+' : '') + fmt(j.v / j.b * 100, 2) + ' %)' : '') + (j.ko > 0 ? ', ' + j.ko + ' ligne(s) non comptée(s)' : '')]);
+  if(M.verseKey){
+    const vv = kyfParseMilliers(localStorage.getItem(M.verseKey)) || 0, vp = kyfParseMilliers(localStorage.getItem('kyf-pea-total-verse')) || 0;
+    if(env === 'PEA') rows.push([kyfPeaJeune().actif ? 'Plafond de versement (PEA jeune)' : 'Plafond de versement', vv > 0 ? kyfRptE(vv) + ' versés sur ' + kyfRptE(kyfPeaPlafondEff()) + ' (reste ' + kyfRptE(kyfPeaPlafondEff() - vv) + ')' : 'total versé non renseigné']);
+    else rows.push(['Plafond cumulé PEA + PEA-PME', vv > 0 && vp > 0 ? kyfRptE(vp) + ' (PEA) + ' + kyfRptE(vv) + ' (PEA-PME) sur ' + kyfRptE(KYF_PME_PLAFOND()) + ' (reste ' + kyfRptE(KYF_PME_PLAFOND() - vp - vv) + ')' : 'indisponible : renseignez le total versé du PEA et du PEA-PME']);
+  }
+  h += kyfRptTable(['Compte', ''], rows, []);
+  if(E.sansCours > 0) h += '<p class="mu">' + E.sansCours + (E.sansCours > 1 ? ' lignes sans cours ne sont pas comptées' : ' ligne sans cours n\'est pas comptée') + ' : valeur et plus-value sont sous-évaluées.</p>';
+  if(nb > 0){
+    const lp = window._lp || {};
+    h += kyfRptTable(['Ligne', 'Qté', 'PRU', 'Cours', 'Valeur', 'G/P €'], E.lignes.map(e => {
+      const nop = kyfEtfNoPrice(e, lp), val = nop ? null : getEval(e, lp[e.ticker]), iv = etfInvestOf(e), gp = val === null ? null : val - iv, px = lp[e.ticker] && lp[e.ticker].price;
+      return [escapeHtml(e.name || e.ticker || ''), fmt(e.qty || 0, 4).replace(/,?0+$/, ''), kyfRptE(e.pru || 0, 2), px ? fmt(px, 2) : '-', val === null ? 'indisponible' : kyfRptE(val), gp === null || !(iv > 0) ? '-' : '<span class="' + kyfRptGpCls(gp) + '">' + kyfRptE(gp) + '</span>'];
+    }), [1, 2, 3, 4, 5]);
+  }
+  return h;
+}
+function kyfRptCt(){
+  try{ peaFiscLoadParams(); pmeFiscLoadParams(); peaFiscSimuler(); pmeFiscSimuler(); }catch(e){}
+  let h = kyfRptHead('Comptes titres', 'PEA, PEA-PME et CTO : mêmes chiffres que la page Comptes titres');
+  h += ctTabList().map(t => kyfRptCtOne(t.k)).join('');
+  h += '<p class="mu">Valeur totale = valeur des lignes au cours du jour plus les espèces suivies. Quand un cours ou un montant manque, la ligne est exclue ou marquée « indisponible » : aucun chiffre n\'est estimé.</p>';
+  return h;
+}
+const KYF_RPT_FN = { syn:kyfRptSyn, det:kyfRptDet, ct:kyfRptCt, his:kyfRptHis, fis:kyfRptFis };
 function kyfRptDoc(ids){
   const g = (n, d) => kyfRptVar(n, d);
   const bg = g('--bg', '#0d1117'), bg2 = g('--bg2', '#161b22'), tx = g('--text', '#e6edf3'), t2 = g('--text2', '#b0b8c4'), t3 = g('--text3', '#8b949e'), ac = g('--accent', '#f0b429'), bd = g('--border', '#30363d'), gr = g('--green', '#00d4aa'), rd = g('--red', '#e5484d');
@@ -58672,6 +59477,7 @@ const GUIDE_PAGES = [
           <div onclick="guideGoTo(7)" class="guide-sommaire-subitem"><span>Cours &amp; Rafraîchissement</span></div>
           <div onclick="guideGoTo(8)" class="guide-sommaire-subitem"><span>Intraday</span></div>
           <div onclick="guideGoTo(50)" class="guide-sommaire-subitem"><span>Fiscalité</span></div>
+          <div onclick="guideGoTo(58)" class="guide-sommaire-subitem"><span>Comptes titres</span></div>
         </div>
         <div style="break-inside:avoid;margin-bottom:12px">
           <div onclick="guideGoTo(9)" style="cursor:pointer;font-size:13px;font-weight:700;color:var(--text)"><span>2. Transactions &amp; DCA</span></div>
@@ -61084,6 +61890,37 @@ const GUIDE_PAGES = [
         <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">Dans tous les menus KYF (dont Pays et Secteurs), taper une lettre saute à l'élément qui commence par elle, plusieurs lettres rapides précisent (« fr » pour France), et Entrée valide.</div>
       </div>
 `
+  },
+  {
+    chapter: 'Chapitre 1',
+    sub: 'Comptes titres',
+    title: 'Comptes <span style="color:var(--accent)">titres</span>',
+    icon: '',
+    body: `
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px">
+          <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> Une fiche par compte</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.9">La page <strong style="color:var(--text)">Comptes titres</strong> se trouve dans la barre latérale, juste sous Portefeuille. Elle présente chaque compte (PEA, PEA-PME, CTO) comme une fiche de contrat, avec les mêmes données que les pages Fiscalité et Cash : rien n'est à ressaisir deux fois.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">Le bouton <strong style="color:var(--text)">Comptes affichés</strong> permet de masquer un compte que vous n'avez pas (par exemple un CTO seul, sans PEA). Un compte masqué réapparaît dès que vous le décidez.</div>
+        </div>
+        <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px">
+          <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,17 8,11 13,14 21,5"/><polyline points="17,5 21,5 21,9"/></svg> La carte principale</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.9"><strong style="color:var(--text)">Courtier</strong> : son nom et son logo s'affichent en grand. KYF le déduit de vos livrets d'épargne ou de votre cash quand il le peut, sinon il vous le demande à l'import d'un relevé, ou vous le saisissez dans le Détail du contrat.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Valeur totale</strong> : valeur des lignes au cours en direct, plus les espèces du compte quand elles sont suivies (« dont espèces »). Le PEA-PME ne suit pas les espèces : sa valeur est celle des titres seulement.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Plus-value</strong> : fiscale (valeur moins total versé) quand vous avez renseigné le total versé, sinon estimée sur le coût d'acquisition. Le libellé dit toujours laquelle des deux vous voyez.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Variation du jour</strong> : flèche verte ou rouge avec le montant et le pourcentage. Si un cours manque ou n'est pas en direct, KYF affiche « indisponible » plutôt qu'un chiffre inventé.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Date d'ouverture</strong> en haut à droite : elle passe au vert avec une coche quand les 5 ans sont révolus (PEA et PEA-PME).</div>
+        </div>
+        <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px">
+          <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7m0-4V3m8 18v-9m0-4V3m8 18v-5m0-4V3"/><circle cx="4" cy="14" r="2"/><circle cx="12" cy="8" r="2"/><circle cx="20" cy="12" r="2"/></svg> Détail du contrat</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.9">Replié par défaut. Il contient l'établissement, la date d'ouverture, le total versé et les espèces (et, pour le PEA, l'interrupteur « PEA jeune » avec la fin du rattachement), ainsi que les boutons <strong style="color:var(--text)">Importer un relevé</strong> et <strong style="color:var(--text)">Ajouter une ligne</strong> qui s'ouvrent déjà sur le compte affiché.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Total versé</strong> : vous pouvez coller un montant tel quel, avec espaces, virgule ou symbole € (par exemple 42 143,57 €). C'est la somme de tous vos versements depuis l'ouverture ; les retraits ne la réduisent pas.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Espèces</strong> : si vos espèces sont placées dans un livret d'épargne rattaché au compte (Trade Republic, Revolut...), KYF vous demande « ce livret est-il lié à ce compte ? ». Votre réponse est mémorisée. Les livrets liés s'ajoutent à l'affichage des espèces ; ils ne changent pas les totaux fiscaux, qui ne comptent que le cash.</div>
+        </div>
+        <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px">
+          <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Les 5 ans et le plafond de versement</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.9">Deux cartes sous la fiche, sans répétition : <strong style="color:var(--text)">Ouvert le</strong> (la date d'ouverture, avec une étiquette verte « 5 ans » une fois les 5 ans révolus et une frise d'avancement) et <strong style="color:var(--text)">Total versé</strong> (le montant versé, sa part du plafond et ce qu'il en reste).</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">Plafonds par défaut : <strong style="color:var(--text)">150 000 €</strong> pour le PEA, et <strong style="color:var(--text)">225 000 €</strong> cumulés pour le PEA et le PEA-PME ensemble. Ils se modifient dans Paramètres fiscaux si la loi change. Sans le total versé du PEA, le cumul n'est pas calculé : KYF l'indique au lieu de le deviner. La barre passe à l'orange à 90 % puis au rouge à 100 %.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">PEA jeune</strong> : dans le Détail du contrat du PEA, activez « PEA jeune » si vous êtes majeur et rattaché au foyer fiscal de vos parents. Le plafond de versement devient <strong style="color:var(--text)">20 000 €</strong>. Indiquez la <strong style="color:var(--text)">fin du rattachement</strong> : ce jour-là, KYF passe tout seul le plan en <strong style="color:var(--text)">PEA classique</strong> (plafond 150 000 €, même date d'ouverture, donc mêmes 5 ans). C'est déclaratif : KYF ne calcule ni votre âge ni votre rattachement, c'est vous qui donnez la date. Tant que le PEA est un PEA jeune, le cumul avec le PEA-PME n'est pas calculé (plafond à part). Règle : service-public.gouv.fr, fiche F2385.</div><div class="gj-orange" style="font-size:12px;color:#f59e0b;line-height:1.8;margin-top:10px">Le PEA Jeunes (18 à 25 ans, plafond de 20 000 €) n'est pas géré par KYF pour le moment.</div>
+        </div>
+        <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px">
+          <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Importer un relevé dans un compte</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.9">À l'import d'un relevé de positions, le <strong style="color:var(--text)">courtier</strong> est obligatoire : il remplit la fiche. Le <strong style="color:var(--text)">total versé</strong> est facultatif et prérempli quand KYF le connaît ; laissé vide, rien n'est modifié. Le champ reprend le total enregistré dans la fiche : le modifier ici le modifie aussi dans la fiche. « Ajouter une ligne » propose le même champ pour un PEA ou un PEA-PME. Les espèces ne figurent jamais dans un relevé de positions : vous pouvez les saisir au même endroit.</div>
+        </div>
+        <div style="padding:14px 16px;background:rgba(77,159,255,0.07);border:1px solid rgba(77,159,255,0.25);border-radius:10px;font-size:13px;color:var(--text2);line-height:1.9"><strong style="color:var(--accent)">À savoir</strong> : toutes ces données (courtier, comptes masqués, livrets liés, total versé, PEA jeune) font partie de vos sauvegardes et de votre synchronisation. Quand un chiffre ne peut pas être calculé, KYF affiche « indisponible » ou « données incomplètes ».</div>
+      </div>
+    `
   }
 ];
 // ── Version du guide ──
@@ -61408,7 +62245,12 @@ function renderGuidePage(){
 // choisit "Enregistrer en PDF" comme destination - pas de génération PDF
 // binaire côté client, juste une mise en page dédiée à l'impression.
 function downloadGuidePDF(){
-  const pages = GUIDE_PAGES.filter(p => !p.isCover);
+  // Ordre du PDF : introduction, chapitres dans l'ordre de leur numéro (les pages ajoutées plus tard sont rangées avec leur chapitre), conclusion
+  const _all = GUIDE_PAGES.filter(p => !p.isCover), _num = p => { const m = /(\d+)/.exec(p.chapter || ''); return m ? parseInt(m[1], 10) : 0; };
+  const _firstCh = _all.findIndex(p => p.chapter);
+  const _intro = _all.filter((p, i) => !p.chapter && i < _firstCh), _outro = _all.filter((p, i) => !p.chapter && i > _firstCh);
+  const _chap = _all.map((p, i) => ({ p, i })).filter(x => x.p.chapter).sort((x, y) => _num(x.p) - _num(y.p) || x.i - y.i).map(x => x.p);
+  const pages = _intro.concat(_chap, _outro);
   let html = `<!doctype html><html><head><meta charset="utf-8"><title>Guide KYF</title>
   <style>
     :root{
@@ -66512,8 +67354,14 @@ document.addEventListener('DOMContentLoaded', function(){
 // Pour annoncer une nouveauté : AJOUTER EN TÊTE de KYF_NOUVEAUTES.annonces une annonce { id, date (AAAA-MM-JJ), items }. Pas d'annonce = rien d'affiché, quel que soit le nombre de pushes.
 // Chaque utilisateur voit une seule fois les annonces qu'il n'a pas encore vues (les plus récentes d'abord, 3 au plus, 30 jours au plus). Un nouvel utilisateur (écran de bienvenue pas encore vu) ne voit rien : tout est nouveau pour lui.
 const KYF_NOUVEAUTES = {
-  badge: ['arb', 'immo', 'avref', 'avfrais', 'fraispg', 'avevo', 'dcaprix'],   // clés des badges (une ou plusieurs ; tableau) ; clé du badge « Nouveau » (span .kyf-new-badge data-new="...") ; vide = aucun badge
+  badge: ['arb', 'immo', 'avref', 'avfrais', 'fraispg', 'avevo', 'dcaprix', 'ct'],   // clés des badges (une ou plusieurs ; tableau) ; clé du badge « Nouveau » (span .kyf-new-badge data-new="...") ; vide = aucun badge
   annonces: [
+    { id: 'a-2026-10-22', date: '2026-10-22', items: [
+      { titre: 'Nouvelle page Comptes titres', version: '2.8.10.37', important: true, texte: 'PEA, PEA-PME et CTO ont chacun leur fiche sous Portefeuille : valeur, plus-value, date d’ouverture, total versé et plafond. Importez un relevé depuis la fiche.' },
+      { titre: 'PEA jeune', version: '2.8.10.50', texte: 'Activez « PEA jeune » dans la fiche du PEA : plafond de 20 000 €, puis passage automatique en PEA classique à la fin du rattachement.' },
+      { titre: 'Total versé à l’import et à l’ajout', version: '2.8.10.47', texte: 'Indiquez le courtier et le total versé en important ou en ajoutant une ligne PEA : la fiche se remplit toute seule.' },
+      { titre: 'Exports PDF par compte', version: '2.8.10.34', texte: 'Nouveau rapport « Comptes titres » et colonne Compte dans le rapport Détail.' }
+    ] },
     { id: 'a-2026-10-21', date: '2026-10-21', items: [
       { titre: 'Prix automatiques pour vos achats programmés (bêta)', version: '2.8.9.14', texte: 'KYF peut retrouver tout seul le prix de vos achats programmés (DCA : un achat régulier d’un même montant) : ETF, actions, crypto et assurance vie. Il faut relier une petite feuille Google à vous, expliquée pas à pas dans Paramètres, Google et avancé. C’est facultatif : sans cela, KYF fonctionne comme avant.' },
       { titre: 'Assurance vie et PER : vérifier un versement avec le relevé', version: '2.8.9.33', texte: 'Un versement programmé est d’abord une estimation. Remplacez-la par ce que votre assureur a vraiment fait, en recopiant ou en collant le détail du mouvement. KYF signale ce qui lui paraît douteux au lieu de le deviner.' },
@@ -66615,15 +67463,45 @@ document.addEventListener('DOMContentLoaded', function(){
 const KYF_NEW_SEEN_KEY = 'kyf-nouveautes-vue';   // id de la dernière annonce vue
 const KYF_NEW_MAX = 3, KYF_NEW_MAX_AGE_DAYS = 30;
 function kyfNewBadgeKey_(k){ return 'kyf-nouveau-badge-' + k; }
+// Menu Avis mis en avant (badge « À VOUS », section dépliée, icône en couleur d'attention en barre repliée) dès que l'utilisateur peut donner son avis : 15 jours depuis sa 1ère utilisation réelle, aucun avis déjà publié, page Avis pas encore ouverte depuis
+function kyfAvisPromoOn_(){
+  try{
+    if(!localStorage.getItem(WELCOME_KEY) || localStorage.getItem(kyfNewBadgeKey_('avis')) === '1') return false;
+    if(typeof kyfAvisGetMine === 'function' && kyfAvisGetMine()) return false;
+    const d = localStorage.getItem('kyf-oauth-first-seen') || localStorage.getItem('kyf-first-asset-date') || '';
+    const t = d ? new Date(d).getTime() : NaN; if(!isFinite(t)) return false;
+    return Math.floor((Date.now() - t) / 86400000) >= 15;
+  }catch(e){ return false; }
+}
 function kyfNewBadgesRefresh(){
   try{
     document.querySelectorAll('.kyf-new-badge').forEach(el => {
       const k = el.getAttribute('data-new');
       let vu = false; try{ vu = localStorage.getItem(kyfNewBadgeKey_(k)) === '1'; }catch(e){}
-      el.style.display = (k && [].concat(KYF_NOUVEAUTES.badge || []).indexOf(k) > -1 && !vu) ? 'inline-block' : 'none';
+      const on = k === 'avis' ? kyfAvisPromoOn_() : !!(k && [].concat(KYF_NOUVEAUTES.badge || []).indexOf(k) > -1 && !vu);
+      el.style.display = on ? 'inline-block' : 'none';
+      const it = el.closest ? el.closest('.sb-item') : null; if(it) it.classList.toggle('sb-has-new', on);   // menu replié : l'icône porte la couleur d'attention
     });
   }catch(e){}
+  try{ kyfSbSectionNewReveal(); }catch(e){}
+  try{ kyfSbFitNew(); }catch(e){}
 }
+// Badge NOUVEAU du menu : le nom est réduit (jusqu'à 8 px) pour ne pas passer dessous ; sinon badge compact, puis simple point
+function kyfSbFitNew(){
+  const sb = document.getElementById('sidebar'), mini = sb && sb.classList.contains('mini');
+  document.querySelectorAll('#sidebar .sb-item').forEach(it => {
+    const b = it.querySelector(':scope > .kyf-new-badge'), lab = it.querySelector(':scope > .sb-label'); if(!b || !lab) return;
+    lab.style.removeProperty('font-size'); b.classList.remove('kyf-new-compact', 'kyf-new-dot');
+    if(mini || b.style.display === 'none' || !lab.clientWidth) return;
+    it.style.transition = 'none'; void it.offsetWidth; setTimeout(() => { try{ it.style.removeProperty('transition'); }catch(e){} }, 60);
+    const over = () => lab.scrollWidth > lab.clientWidth + 0.5;
+    const shrink = min => { let fs = parseFloat(getComputedStyle(lab).fontSize) || 11; while(over() && fs > min){ fs -= 0.5; lab.style.setProperty('font-size', fs + 'px', 'important'); } };
+    shrink(9.5);
+    if(over()){ lab.style.removeProperty('font-size'); b.classList.add('kyf-new-compact'); shrink(8.5); }
+    if(over()){ lab.style.removeProperty('font-size'); b.classList.remove('kyf-new-compact'); b.classList.add('kyf-new-dot'); shrink(8.5); }
+  });
+}
+try{ window.addEventListener('resize', () => { try{ kyfSbFitNew(); }catch(e){} }); }catch(e){}
 function kyfNewBadgeSeen(k){
   try{ localStorage.setItem(kyfNewBadgeKey_(k), '1'); }catch(e){}
   kyfNewBadgesRefresh();
@@ -66686,7 +67564,7 @@ function kyfNewShow(list){
   md.setAttribute('role', 'dialog'); md.setAttribute('aria-label', 'Quoi de neuf');
   md.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(500px,94vw);max-height:86vh;overflow-y:auto;z-index:10071;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:24px;font-family:\'Inter\',sans-serif';
   const grp = a => '<div class="kyf-new-group" style="font-size:10px;font-weight:700;letter-spacing:.6px;color:var(--text3);margin:14px 0 2px">NOUVEAUTÉS DU ' + escapeHtml(a.date.split('-').reverse().join('/')) + '</div>'
-    + a.items.map(it => '<div style="display:flex;gap:10px;padding:10px 0;border-top:1px solid rgba(255,255,255,0.06)">' + ico + '<div><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px">' + escapeHtml(it.titre) + (it.version ? ' <span class="kyf-new-ver" style="display:inline-block;font-size:9px;font-weight:700;letter-spacing:.3px;padding:1px 6px;border-radius:6px;margin-left:4px;vertical-align:1px;background:rgba(240,180,41,0.14);color:var(--accent)">' + escapeHtml(it.version) + '</span>' : '') + '</div><div style="font-size:11px;color:var(--text2);line-height:1.7">' + escapeHtml(it.texte) + '</div></div></div>').join('');
+    + a.items.map(it => '<div class="kyf-new-it' + (it.important ? ' kyf-new-imp' : '') + '" style="display:flex;gap:10px;padding:10px 0;border-top:1px solid rgba(255,255,255,0.06)">' + ico + '<div><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px">' + escapeHtml(it.titre) + (it.version ? ' <span class="kyf-new-ver" style="display:inline-block;font-size:9px;font-weight:700;letter-spacing:.3px;padding:1px 6px;border-radius:6px;margin-left:4px;vertical-align:1px;background:rgba(240,180,41,0.14);color:var(--accent)">' + escapeHtml(it.version) + '</span>' : '') + '</div><div style="font-size:11px;color:var(--text2);line-height:1.7">' + escapeHtml(it.texte) + '</div></div></div>').join('');
   md.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between"><span style="display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--text);letter-spacing:.5px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></svg>QUOI DE NEUF</span><button type="button" onclick="kyfNewClose()" class="kyf-modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'
     + list.map(grp).join('')
     + '<button type="button" id="kyfNewOk" onclick="kyfNewClose()" style="display:block;width:auto;min-width:96px;margin:14px auto 0;font-family:\'Inter\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.5px;padding:7px 22px;border-radius:8px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:opacity .15s" onmouseover="this.style.opacity=\'.85\'" onmouseout="this.style.opacity=\'1\'">Compris</button>'
@@ -67558,9 +68436,9 @@ async function cashEnvToLivret(env){
   const ex = data.find(d => String(d.banque).toLowerCase() === banque.toLowerCase() && d.type === type);
   if(ex){
     if(!(await kyfAsk('« ' + banque + ' » existe déjà dans vos livrets (' + fmt(ex.solde,2) + ' €).\nRemplacer son solde par ' + fmt(amt,2) + ' € ?'))) return;
-    ex.solde = amt; if(taux > 0) ex.taux = taux; ex.liquide = 1;
+    ex.solde = amt; if(taux > 0) ex.taux = taux; ex.liquide = 1; ex.envCompte = E;
   } else {
-    data.push({ id: Date.now().toString(), banque, type, solde: amt, taux, plafond: 0, liquide: 1 });
+    data.push({ id: Date.now().toString(), banque, type, solde: amt, taux, plafond: 0, liquide: 1, envCompte: E });
   }
   livSave(data);
   if(env === 'Pea') setCashPea(0); else setCashCto(0);
@@ -68086,6 +68964,11 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
         <input type="checkbox" checked style="accent-color:var(--accent);width:15px;height:15px;flex-shrink:0" onchange="kyfToggleSidebarItem('portfolio', this.checked)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:var(--text3)"><polyline points="3,17 8,11 13,14 21,5"/><polyline points="17,5 21,5 21,9"/></svg>
         Portefeuille
+      </label>
+      <label style="display:flex;align-items:center;gap:9px;cursor:pointer;font-size:12px;color:var(--text2);padding:9px 11px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid var(--border)">
+        <input type="checkbox" checked style="accent-color:var(--accent);width:15px;height:15px;flex-shrink:0" onchange="kyfToggleSidebarItem('comptes-titres', this.checked)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:var(--text3)"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        Comptes titres
       </label>
       <label style="display:flex;align-items:center;gap:9px;cursor:pointer;font-size:12px;color:var(--text2);padding:9px 11px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid var(--border)">
         <input type="checkbox" checked style="accent-color:var(--accent);width:15px;height:15px;flex-shrink:0" onchange="kyfToggleSidebarItem('dividendes', this.checked)">
@@ -68831,6 +69714,112 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.51 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Guide et Quoi de neuf à jour : Comptes titres, PEA jeune, total versé à l'import et à l'ajout, exports PDF</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.50 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PEA jeune (déclaratif) : plafond 20 000 €, passage automatique en PEA classique à la date de fin du rattachement</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.49 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import PEA/CTO : le courtier saisi prend la même orthographe que dans le Détail du contrat (bourso devient Boursorama) ; précision sur le total versé</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.48 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : date d'ouverture et total versé une seule fois, dans les deux cartes du dessous (piste A)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.47 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Ajouter une ligne : champ Total versé pour le PEA et le PEA-PME (facultatif, prérempli, jamais d'écrasement par du vide)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.46 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : les cadres 5 ans et plafond de versement sur la même ligne</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.45 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Quoi de neuf plus court, nouveautés importantes en jaune/orange selon le thème</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.44 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Menu Avis mis en avant (badge À VOUS, section dépliée) quand l'utilisateur peut donner son avis : 15 jours d'utilisation, aucun avis déjà donné</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.43 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Barre latérale : un menu qui arrive en NOUVEAU déplie automatiquement sa section repliée</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.42 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Barre latérale : Mes actifs, Mon historique et Analyses se replient avec un chevron comme les sous-menus (état mémorisé, la page ouverte déplie sa section)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.41 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Barre latérale repliée : trait de séparation entre les sections (Mes actifs, Mon historique, Analyses)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.40 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Menu : le badge NOUVEAU ne passe plus sur les titres longs (nom réduit, badge compact ou point) ; barre repliée : icône en couleur d'attention tant que la nouveauté n'a pas été vue</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.39 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Menu Investissement / DCA : pastille toujours à droite (nom réduit pour éviter le chevauchement), elle ne passe à gauche que si la barre est trop étroite</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.38 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Quoi de neuf : annonce Comptes titres (page, total versé et courtier à l'import, exports PDF) et badge Nouveau sur le menu</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.37 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : Importer un relevé en bouton principal, carte de gauche cliquable vers le Portefeuille (texte d'aide en bas à droite), bouton Voir le Portefeuille retiré</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.36 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Export PDF Détail : colonne Compte (PEA, PEA-PME, CTO) pour les ETF et actions</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.35 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Export PDF Fiscalité : plafond cumulé PEA + PEA-PME et date d'ouverture du PEA-PME dans les réglages</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.34 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Export PDF : nouveau rapport Comptes titres (PEA, PEA-PME, CTO : valeur, plus-value, total versé, plafond, lignes)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.33 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PDF du guide : pages rangées dans l'ordre des chapitres (Comptes titres, Fiscalité PEA/CTO, Budget... n'étaient imprimées qu'à la fin)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.32 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Guide : nouveau chapitre Comptes titres (fiche, 5 ans, plafond, total versé, import) ; sauvegarde vérifiée</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.31 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Total versé : accepte les montants collés avec virgule (42 143,57 €), et la barre de plafond en double est retirée du Détail du contrat</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.30 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import de relevé PEA / PEA-PME : champ Total versé facultatif, prérempli, qui remplit la fiche Comptes titres, le plafond et la plus-value fiscale</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.29 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : carte Plafond de versement visible sous les 5 ans (PEA 150 000 €, PEA-PME 225 000 € cumulés avec le PEA)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.28 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : bas de la carte principale utile (Total versé du PEA / PEA-PME quand il est saisi), ligne masquée si vide</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.27 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : date d'ouverture en haut à droite de la carte, verte avec coche une fois les 5 ans révolus, et plus d'espace dans la partie gauche</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.26 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : la carte principale indique la part des espèces (dont espèces) et précise que le PEA-PME ne suit pas les espèces</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.25 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Menu : Comptes titres se place sous Portefeuille même avec un ordre de menu déjà enregistré</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.24 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : plus de redondance sur la carte principale (badge Moins de 5 ans et durée retirés pour PEA/PEA-PME, la carte des 5 ans dessous les porte)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.23 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : deux boutons dans la fiche du compte, « Importer un relevé » et « Ajouter une ligne ». Ils ouvrent l'import ou l'ajout avec le compte affiché (PEA, PEA-PME ou CTO) déjà choisi, et la page se met à jour ensuite</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.22 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : la courbe de la journée est remplacée par une flèche zigzag à côté de la valeur totale (verte vers le haut si le compte monte, rouge vers le bas s'il baisse, grise si rien ne bouge), avec la variation en euros et en pourcentage en plus petit</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.21 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : à côté de la valeur totale, courbe de la journée en direct (trait gras vert si le compte monte, rouge s'il baisse) avec la variation du jour en euros et en pourcentage. Calcul : cours du moment moins clôture de la veille, sur les lignes qui ont les deux ; lignes sans ces cours signalées, « indisponible » si aucune</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.20 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : le logo de Bourse Direct est fourni avec KYF (image PNG recadrée, sans chargement depuis internet)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.19 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : EasyBourse utilise maintenant son propre logo (easybourse.com) au lieu de celui de La Banque Postale</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.18 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : liste d'établissements élargie (EasyBourse de La Banque Postale, Saxo Banque, eToro, XTB, Freedom24, Lynx, Swissquote, Bitpanda, Vanguard, banques traditionnelles...), reconnaissance sans accents ni majuscules, et logos plus fiables : si une source ne donne que l'icône par défaut (petit globe), KYF essaie la suivante puis affiche l'initiale</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.17 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : le logo du courtier s'affiche tel quel (image PNG), sans cadre ni marge blanche autour</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.16 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : sur la carte du compte, le nom du courtier passe en grand avec son logo et le compte (PEA, CTO...) en petit. Le champ Établissement devient intelligent : liste filtrée avec logos (courtiers et banques de KYF), navigation au clavier, noms usuels remis à l'orthographe de la liste (IBKR, Bourso, TR...)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.15 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : les cadres « Les 5 ans du PEA », « Les 5 ans du PEA-PME » et « Lignes du compte » sont plus compacts (300 px de large au plus, marges et textes réduits)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.14 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : la carte de droite (Détail du contrat) a sa propre hauteur, elle ne s'étire plus et n'étire plus les cartes de gauche quand on l'ouvre ou la ferme</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.13 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : « Détail du contrat » a un chevron, fermé par défaut. Il replie les champs (établissement, date d'ouverture, total versé, espèces) ; la valeur des lignes, le coût d'acquisition, les lignes suivies et les boutons restent visibles</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.12 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : le choix des comptes affichés s'ouvre en petite fenêtre juste sous le bouton « Comptes affichés » (un clic ailleurs ou Échap la ferme)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.11 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : plus d'espace entre les onglets (PEA, PEA-PME, CTO, Comptes affichés) et les cartes en dessous</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.10 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : le bouton « Comptes affichés » reprend le style des boutons ETF & ACTIONS de la page DCA (même composant, icône réglages, actif quand le panneau est ouvert) et un point info ouvre un cadre d'explication de la page, comme sur la page DCA</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.09 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : le champ Espèces se remplit avec les espèces au total (cash plus livrets rattachés). Plusieurs livrets rattachés : chacun est listé, les montants s'additionnent et les noms des établissements sont réunis. Modifier le champ n'enregistre dans le cash que ce qui dépasse les livrets</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.08 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : un livret de courtier (Trade Republic...) sans compte rattaché fait l'objet d'une question « est-il lié à ce PEA / CTO ? » avec les boutons Oui et Non. Oui le rattache (établissement et espèces en livret s'affichent), Non est mémorisé pour ce compte. Le champ Établissement propose la liste des courtiers</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.07 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import de relevé PEA, PEA-PME ou CTO : le nom du courtier est maintenant demandé et obligatoire (liste de suggestions, repris s'il est déjà connu). Une fois l'import fait, il remplit l'établissement dans la page Comptes titres</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.06 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : plus de devinette sur les livrets. Un livret de courtier (Trade Republic...) n'est plus proposé au rattachement : seuls les livrets créés depuis le Cash ou l'import de relevé pour un PEA ou un CTO remplissent l'établissement et la ligne d'espèces en livret</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.05 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : la proposition de date d'ouverture est retirée. À la place, les espèces et l'établissement déjà connus dans le cash et les Livrets d'épargne remplissent le Détail du contrat : un livret créé depuis le cash ou l'import de relevé est rattaché à son compte (PEA ou CTO), son établissement s'affiche et ses espèces sont listées. Un livret de courtier existant se rattache en un clic</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.04 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres, Détail du contrat : quand la date d'ouverture est vide mais que KYF connaît déjà une première opération du compte (achat, vente ou versement d'espèces), elle est proposée avec le bouton « Utiliser cette date ». Les autres champs (date et total versé du PEA et du PEA-PME, espèces) restent les mêmes données que Fiscalité et le cash, dans les deux sens</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.03 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : possibilité de masquer les comptes inutiles (PEA, PEA-PME, CTO) avec le bouton « Comptes affichés ». Un compte qui contient des données ne peut pas être masqué, au moins un compte reste affiché, et la page s'ouvre sur le premier compte qui contient des données</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.02 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : onglets PEA, PEA-PME et CTO dans le style des onglets ASSURANCE VIE / PER, CRYPTO, ETF & ACTIONS de la page DCA (même composant, avec icônes)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.01 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : bandeau « Gains et pertes en direct » en capsule compacte, pastilles plus petites et cliquables (ouvrent le compte), survol et animation des boutons, pastilles et onglets comme les boutons KYF</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.00 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Page « Comptes titres » refaite en fiche contrat : onglets PEA, PEA-PME et CTO, grande carte avec valeur et plus-value, frise des 5 ans, détail modifiable, et bandeau « Gains et pertes en direct » (toutes les lignes, avec le détail par compte)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.9.42 · 22/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Nouvelle page « Comptes titres » (Mes actifs) : une carte PEA, PEA-PME et CTO avec date d'ouverture, ancienneté, total versé, espèces, valeur et plus-value, modifiable sur place et synchronisée avec Fiscalité et le cash</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.9.41 · 21/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre Partager KYF : nouveau bouton « Copier le lien de la démo » (ouvre KYF avec des données fictives)</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.9.40 · 21/10/2026</div>
@@ -74988,6 +75977,10 @@ const LIV_BANK_DOMAINS = {
   'shine':'shine.fr',
   'nickel':'nickel.eu',
   'cash ly':'cashly.fr',
+  'bourse direct':'boursedirect.fr','degiro':'degiro.fr','interactive brokers':'interactivebrokers.com',
+  'scalable capital':'scalable.capital','saxo':'home.saxo','binck':'binck.fr','crédit du nord':'credit-du-nord.fr',
+  'saxo banque':'saxobanque.fr','easybourse':'easybourse.com','easy bourse':'easybourse.com','etoro':'etoro.com','xtb':'xtb.com','lynx':'lynxbroker.fr','swissquote':'swissquote.com',
+  'bitpanda':'bitpanda.com','freedom24':'freedom24.com','vanguard':'vanguard.fr','banque palatine':'palatine.fr','crédit coopératif':'credit-cooperatif.coop','bunq':'bunq.com',
 };
 
 const LIV_BANKS_ALL = [
@@ -96023,6 +97016,15 @@ function orInlineEdit(id, td, currentVal){
       <select id="importDest" style="width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none"></select>
     </div>
 
+    <!-- Courtier du compte (PEA / PEA-PME / CTO) : obligatoire, il remplit la fiche Comptes titres -->
+    <div id="importBrokerWrap" style="margin-bottom:12px;display:none">
+      <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">COURTIER · OBLIGATOIRE</div>
+      <input id="importBroker" type="text" list="importBrokerList" maxlength="40" autocomplete="off" placeholder="Ex : Trade Republic, Boursorama, Fortuneo" aria-required="true"
+        oninput="this.style.outline=''" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none">
+      <datalist id="importBrokerList"></datalist>
+      <div style="font-size:9px;color:var(--text3);margin-top:5px;line-height:1.5;opacity:.85">Le nom de votre courtier remplit la fiche « Comptes titres » de ce compte. Vous pourrez le modifier à tout moment.</div>
+    </div>
+
     <!-- Espèces du compte (PEA / CTO) : jamais présentes dans un relevé de positions, saisies ici pour que le total colle au courtier -->
     <div id="importCashWrap" style="margin-bottom:12px;display:none">
       <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">ESPÈCES DU COMPTE (€) · FACULTATIF</div>
@@ -96037,6 +97039,14 @@ function orInlineEdit(id, td, currentVal){
           <input id="importEspLivTaux" type="text" inputmode="decimal" placeholder="Taux %" aria-label="Taux" style="flex:1;min-width:0;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 9px;border-radius:6px;outline:none">
         </div>
       </div>
+    </div>
+
+    <!-- Total versé (PEA / PEA-PME) : facultatif, il remplit la fiche Comptes titres, le plafond et la plus-value fiscale -->
+    <div id="importVerseWrap" style="margin-bottom:12px;display:none">
+      <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">TOTAL VERSÉ SUR LE COMPTE (€) · FACULTATIF</div>
+      <input id="importVerse" type="text" inputmode="decimal" placeholder="Ex : 20 000" autocomplete="off" oninput="kyfFormatMilliersInput(this)"
+        style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none">
+      <div style="font-size:9px;color:var(--text3);margin-top:5px;line-height:1.5;opacity:.85">Somme de tous vos versements depuis l'ouverture (les retraits ne la réduisent pas). Elle remplit la fiche « Comptes titres », le plafond et la plus-value fiscale. Le champ reprend le total déjà enregistré : le modifier ici le modifie aussi dans la fiche (Détail du contrat). Laissé vide, rien ne change.</div>
     </div>
 
     <div style="margin-bottom:12px">
