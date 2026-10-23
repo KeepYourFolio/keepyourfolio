@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_10_88.html
+  @file        : KYF_SHARE_beta_2_8_11_15.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.10.88
+  @version     : Beta 2.8.11.15
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -64,7 +64,7 @@
     // Jeu de données fictif (aucun chiffre réel)
     var J = JSON.stringify;
     data['kyf-welcome-seen'] = '1'; data['kyf-onboarding-choice-seen'] = '1';
-    data['kyf-nouveautes-vue'] = 'a-2026-10-22b';   // = KYF_NOUVEAUTES.annonces[0].id (vérifié par le test val_DEMO-isolation)
+    data['kyf-nouveautes-vue'] = 'a-2026-10-23';   // = KYF_NOUVEAUTES.annonces[0].id (vérifié par le test val_DEMO-isolation)
     data['kyf-profil-nom'] = 'Démo';
     data['pea-positions'] = J([
       { name:'Amundi MSCI World', ticker:'CW8.PA', isin:'LU1681043599', pru:468.3, qty:42, montant:19668.6, enveloppe:'PEA', color:'#4d9fff' },
@@ -1817,6 +1817,28 @@ tr.kyf-row-sel td{background:rgba(240,180,41,0.08);background:color-mix(in srgb,
 .ct-chip span{font-size:10px;letter-spacing:.3px}
 .ct-chip b{font-size:12px;color:var(--text)}
 .ct-chip[aria-current="true"]{border-color:var(--accent)}
+#ctDeck{position:relative;touch-action:pan-y}   /* tactile : le défilement vertical reste au navigateur, le geste horizontal change de carte */
+#ctStage{position:relative}
+.ct-deck-l{position:absolute;bottom:0;border-radius:22px;border:1px solid rgba(255,255,255,0.18);cursor:pointer;transition:transform .2s,opacity .2s}
+.ct-deck-l:hover{transform:translateY(-3px);opacity:.85!important}
+#ctDeck .ct-hero{position:relative;z-index:1}
+.ct-deck-arr{position:absolute;top:50%;z-index:3;width:30px;height:30px;margin-top:-15px;border-radius:50%;border:1px solid var(--border2);background:var(--bg2);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,0.18);display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s,background .2s}
+.ct-deck-arr-l{left:-15px}.ct-deck-arr-r{right:-15px}
+#ctDeck:hover .ct-deck-arr,#ctDeck:focus-within .ct-deck-arr{opacity:1;pointer-events:auto}
+.ct-deck-arr:hover,.ct-deck-arr:focus-visible{background:#f0b429;color:#000;outline:none}
+@media (hover:none){.ct-deck-arr{opacity:.75;pointer-events:auto}}
+.ct-fav{position:absolute;right:12px;z-index:3;background:none;border:none;padding:5px 6px;display:inline-flex;align-items:center;cursor:pointer;color:rgba(255,255,255,0.85)}
+.ct-fav.on{color:#f0b429}
+.ct-fav:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.ct-dots{display:flex;justify-content:center;gap:8px;margin-top:10px}
+.ct-dot{width:10px;height:10px;padding:0;border-radius:50%;border:1px solid var(--text3);background:none;cursor:pointer;transition:background .2s,transform .2s}
+.ct-dot.on{background:var(--accent);border-color:var(--accent);transform:scale(1.25)}
+.ct-dot.fav{border-color:#f0b429;box-shadow:0 0 0 2px rgba(240,180,41,0.35)}
+.ct-dot:hover,.ct-dot:focus-visible{background:#f0b429;border-color:#f0b429;outline:none}
+@keyframes ctInR{from{opacity:.35;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes ctInL{from{opacity:.35;transform:translateX(-28px)}to{opacity:1;transform:none}}
+.ct-hero.ct-in-r{animation:ctInR .28s ease}.ct-hero.ct-in-l{animation:ctInL .28s ease}
+@media (prefers-reduced-motion:reduce){.ct-deck-l,.ct-deck-arr,.ct-dot{transition:none}.ct-hero.ct-in-r,.ct-hero.ct-in-l{animation:none}}
 .ct-chip:hover,.ct-chip:focus-visible{background:#f0b429;color:#000;box-shadow:0 2px 8px rgba(240,180,41,0.35);transform:translateY(-1px);outline:none}
 .ct-chip:hover b,.ct-chip:focus-visible b{color:#000 !important}
 .ct-main{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;font-family:'Inter',sans-serif}
@@ -5840,6 +5862,12 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
     </div>
   </div>
 
+  <!-- Compte CTO (2.8.11.01) : seulement quand plusieurs comptes CTO existent -->
+  <div id="etfCptWrap" style="margin-bottom:26px;display:none">
+    <div style="font-size:9px;color:var(--text3);letter-spacing:.5px;margin-bottom:8px">COMPTE CTO</div>
+    <div id="etfCptPills" role="radiogroup" aria-label="Compte CTO" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+  </div>
+
   <!-- Total versé (PEA / PEA-PME) : facultatif, remplit la fiche Comptes titres, le plafond et la plus-value fiscale -->
   <div id="etfVerseWrap" style="margin-bottom:26px;display:none">
     <div style="font-size:9px;color:var(--text3);letter-spacing:.5px;margin-bottom:8px">TOTAL VERSÉ SUR LE COMPTE (€) · FACULTATIF</div>
@@ -6999,7 +7027,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.10.88</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.11.15</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -10198,8 +10226,8 @@ function closeDividende(){
 // Dividende de PEA/CTO : crédit du cash de l'enveloppe. Le montant réellement crédité est mémorisé sur le dividende
 // (cashCredite, cashEnv) pour que modification et suppression rendent exactement cette somme ; un dividende sans ces champs
 // (saisi avant, ou importé) ne touche jamais au cash.
-function kyfDivCashUndo(d){ if(d && d.cashCredite > 0 && d.cashEnv) adjustCashForEnveloppe(d.cashEnv, -d.cashCredite); }
-function kyfDivCashRedo(d){ if(d && d.cashCredite > 0 && d.cashEnv) adjustCashForEnveloppe(d.cashEnv, d.cashCredite); }
+function kyfDivCashUndo(d){ if(d && d.cashCredite > 0 && d.cashEnv) adjustCashForEnveloppe(d.cashEnv, -d.cashCredite, d.cashCpt ? { compte: d.cashCpt } : undefined); }
+function kyfDivCashRedo(d){ if(d && d.cashCredite > 0 && d.cashEnv) adjustCashForEnveloppe(d.cashEnv, d.cashCredite, d.cashCpt ? { compte: d.cashCpt } : undefined); }
 function saveDividende(){
   const date    = document.getElementById('divDate').value;
   const montant = parseNum(document.getElementById('divMontant').value||'0');
@@ -10228,8 +10256,9 @@ function saveDividende(){
     const cashEnv = div.enveloppe === 'pea' ? 'PEA' : div.enveloppe === 'cto' ? 'CTO' : '';
     const cb = document.getElementById('divCashCredit');
     if(cashEnv && cb && cb.checked && montant > 0){
-      const got = adjustCashForEnveloppe(cashEnv, parseFloat(montant.toFixed(2)));
-      if(got > 0){ div.cashCredite = parseFloat(got.toFixed(2)); div.cashEnv = cashEnv; }
+      let _dc; if(cashEnv === 'CTO' && kyfCtoComptes().length > 1){ const cs = [...new Set(ETF.filter(e => e.enveloppe === 'CTO' && String(e.ticker || '').toUpperCase() === String(ticker).toUpperCase()).map(e => kyfCtoCompteOf(e)))]; if(cs.length === 1) _dc = { compte: cs[0] }; }   // le compte qui détient la ligne ; plusieurs : au total
+      const got = adjustCashForEnveloppe(cashEnv, parseFloat(montant.toFixed(2)), _dc);
+      if(got > 0){ div.cashCredite = parseFloat(got.toFixed(2)); div.cashEnv = cashEnv; if(_dc) div.cashCpt = _dc.compte; }
     }
   }
   if(editId){ const i=data.findIndex(d=>d.id===editId); if(i>-1)data[i]=div; else data.push(div); }
@@ -11277,6 +11306,144 @@ function ctInfo(){
   return r;
 }
 function ctInfoSet(env, champ, val){ const i = ctInfo(); i[env][champ] = val; localStorage.setItem(KYF_CT_INFO_KEY, JSON.stringify(i)); }
+// ── PLUSIEURS COMPTES CTO (2.8.11.00) ───────────────────────────────────────────────────────────────────────────────────────────
+// Seul le CTO peut exister en plusieurs exemplaires (un seul PEA, un seul PEA-PME). Chaque ligne CTO porte un champ « compte » ; une ligne sans
+// ce champ (toutes les lignes d'avant) appartient au premier compte, « CTO 1 ». Les espèces CTO restent au total (une seule clé, kyf-cash-cto).
+// L'établissement et la date d'ouverture de CTO 1 restent dans kyf-ct-info (rien à migrer) ; ceux des autres comptes vivent dans la liste.
+const KYF_CTO_KEY = 'kyf-cto-comptes', KYF_CTO_MAX = 6;
+function kyfCtoComptes(){
+  let l = [];
+  try{ const j = JSON.parse(localStorage.getItem(KYF_CTO_KEY) || '[]'); if(Array.isArray(j)) l = j; }catch(e){}
+  const out = [], vus = {};
+  l.forEach(x => {
+    if(!x || typeof x !== 'object' || typeof x.id !== 'string' || !/^c\d{1,2}$/.test(x.id) || vus[x.id] || out.length >= KYF_CTO_MAX) return;
+    vus[x.id] = 1;
+    out.push({ id: x.id, nom: (typeof x.nom === 'string' && x.nom.trim()) ? x.nom.trim().slice(0, 40) : 'CTO ' + x.id.slice(1),
+      etab: typeof x.etab === 'string' ? x.etab.slice(0, 40) : '', date: (typeof x.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(x.date)) ? x.date : '' });
+  });
+  if(!vus.c1) out.unshift({ id: 'c1', nom: 'CTO 1', etab: '', date: '' });
+  return out.slice(0, KYF_CTO_MAX);
+}
+function kyfCtoSave(l){ try{ localStorage.setItem(KYF_CTO_KEY, JSON.stringify(l)); }catch(e){} }
+function kyfCtoCompteOf(e){   // compte d'une ligne ou d'une opération CTO ; inconnu ou absent : CTO 1
+  const id = e && typeof e.compte === 'string' ? e.compte : '';
+  return kyfCtoComptes().some(c => c.id === id) ? id : 'c1';
+}
+function kyfCtoNom(id){ const c = kyfCtoComptes().find(x => x.id === id); return c ? c.nom : 'CTO 1'; }
+function ctCptInfo(id){ if(id === 'c1') { const i = ctInfo().CTO; return { etab: i.etab, date: i.date }; } const c = kyfCtoComptes().find(x => x.id === id) || { etab: '', date: '' }; return { etab: c.etab, date: c.date }; }
+function ctCptInfoSet(id, champ, val){
+  if(id === 'c1') return ctInfoSet('CTO', champ, val);
+  const l = kyfCtoComptes(), c = l.find(x => x.id === id); if(!c) return; c[champ] = val; kyfCtoSave(l);
+}
+function ctCptSel(env){   // compte affiché sur la page CTO : null = « CTO TOTAUX » (ou un seul compte)
+  if(env !== 'CTO') return null;
+  const l = kyfCtoComptes(); if(l.length < 2) return null;
+  let k = window._ctCpt || '';
+  if(!k){ try{ k = sessionStorage.getItem('kyf-ct-cpt') || ''; }catch(e){} }
+  if(!k) k = kyfCtoFav();   // pas de choix en cours : le favori, sinon CTO TOTAUX
+  return l.some(c => c.id === k) ? k : null;
+}
+function ctCptSet(id, sens, focus){   // sens : +1 / -1 anime l'arrivée de la carte ; focus : garder le clavier sur la pile
+  window._ctCpt = id; try{ sessionStorage.setItem('kyf-ct-cpt', id); }catch(e){}
+  ctRender();
+  const h = document.getElementById('ctHero');
+  if(h && sens && !(window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches)){ h.classList.remove('ct-in-l', 'ct-in-r'); void h.offsetWidth; h.classList.add(sens > 0 ? 'ct-in-r' : 'ct-in-l'); }
+  if(focus){ const d = document.getElementById('ctDot_' + id) || document.getElementById('ctDeck'); try{ if(d) d.focus({ preventScroll: true }); }catch(e){} }
+}
+function ctCptAdd(){
+  const l = kyfCtoComptes(); if(l.length >= KYF_CTO_MAX) return;
+  let n = 2; while(l.some(c => c.id === 'c' + n)) n++;
+  l.push({ id: 'c' + n, nom: 'CTO ' + n, etab: '', date: '' }); kyfCtoSave(l);
+  ctCptSet('c' + n);
+}
+function ctCptLignes(id){ return ETF.filter(e => e.enveloppe === 'CTO' && kyfCtoCompteOf(e) === id).length; }
+function ctCptDel(){   // seulement un compte vide, et jamais CTO 1 : aucune ligne ne peut se retrouver sans compte
+  const id = ctCptSel('CTO'); if(!id || id === 'c1' || ctCptLignes(id) > 0) return;
+  if(kyfCtoCashOf(id) > 0){ try{ showToast('Ce compte a encore des espèces : mettez-les à zéro avant de le supprimer.'); }catch(e){} return; }
+  let tr = []; try{ tr = JSON.parse(localStorage.getItem('kyf-etf-transactions') || '[]'); }catch(e){}
+  if(Array.isArray(tr) && tr.some(t => t && t.enveloppe === 'CTO' && t.compte === id)) return;
+  kyfCtoSave(kyfCtoComptes().filter(c => c.id !== id)); ctCptSet('tot');
+}
+function ctOnNom(el){
+  const id = ctCptSel('CTO'); if(!id) return;
+  const v = el.value.trim().slice(0, 40), l = kyfCtoComptes(), c = l.find(x => x.id === id); if(!c) return;
+  c.nom = v || 'CTO ' + id.slice(1); kyfCtoSave(l); ctRender();
+}
+// Pile de cartes (2.8.11.06) : la carte principale (#ctHero) devant, les autres comptes visibles derrière. Changer de carte : glisser, flèches
+// (affichées au survol) ou clavier. L'étoile marque la carte affichée à l'ouverture (« CTO TOTAUX » tant qu'aucun favori).
+const KYF_CTO_FAV_KEY = 'kyf-cto-fav';
+function kyfCtoFav(){
+  let f = ''; try{ f = localStorage.getItem(KYF_CTO_FAV_KEY) || ''; }catch(e){}
+  return (f === 'tot' || kyfCtoComptes().some(c => c.id === f)) ? f : '';
+}
+function ctCptListe(){ return ['tot'].concat(kyfCtoComptes().map(c => c.id)); }
+function ctCptVoisin(sens){   // sens +1 / -1 : carte suivante ou précédente, en boucle
+  const l = ctCptListe(), i = Math.max(0, l.indexOf(ctCptSel('CTO') || 'tot'));
+  ctCptSet(l[(i + sens + l.length) % l.length], sens, true);
+}
+function ctFavToggle(){
+  const k = ctCptSel('CTO') || 'tot';
+  try{ if(kyfCtoFav() === k) localStorage.removeItem(KYF_CTO_FAV_KEY); else localStorage.setItem(KYF_CTO_FAV_KEY, k); }catch(e){}
+  ctRender();
+}
+function ctRenderAcc(env){
+  const root = document.getElementById('ctRoot'), main = root && root.querySelector('.ct-main'), hero = document.getElementById('ctHero'); if(!main || !hero) return;
+  let deck = document.getElementById('ctDeck');
+  if(!deck){
+    deck = document.createElement('div'); deck.id = 'ctDeck'; hero.parentNode.insertBefore(deck, hero);
+    const stg = document.createElement('div'); stg.id = 'ctStage'; deck.appendChild(stg); stg.appendChild(hero);
+    deck.setAttribute('role', 'group'); deck.setAttribute('aria-roledescription', 'carrousel'); deck.setAttribute('aria-label', 'Comptes CTO');
+    deck.addEventListener('keydown', e => {
+      if(!deck.classList.contains('ct-deck-on') || (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName))) return;
+      if(e.key === 'ArrowRight' || e.key === 'ArrowDown'){ e.preventDefault(); ctCptVoisin(1); }
+      else if(e.key === 'ArrowLeft' || e.key === 'ArrowUp'){ e.preventDefault(); ctCptVoisin(-1); }
+      else if(e.key === 'Home'){ e.preventDefault(); ctCptSet('tot', -1, true); }
+      else if(e.key === 'End'){ e.preventDefault(); const l = ctCptListe(); ctCptSet(l[l.length - 1], 1, true); }
+    });
+    // glisser : un geste horizontal d'au moins 50 px change de carte, et ne déclenche pas le clic « accéder au portefeuille »
+    let x0 = null, y0 = 0;
+    deck.addEventListener('pointerdown', e => { if(!deck.classList.contains('ct-deck-on') || e.button > 0 || e.target.closest('button')) return; x0 = e.clientX; y0 = e.clientY; });
+    deck.addEventListener('pointerup', e => {
+      if(x0 === null) return; const dx = e.clientX - x0, dy = e.clientY - y0; x0 = null;
+      if(Math.abs(dx) >= 50 && Math.abs(dx) > Math.abs(dy) * 1.5){ window._ctDragged = Date.now(); ctCptVoisin(dx < 0 ? 1 : -1); }
+    });
+    deck.addEventListener('pointercancel', () => { x0 = null; });
+    deck.addEventListener('click', e => { if(window._ctDragged && Date.now() - window._ctDragged < 400){ e.stopPropagation(); e.preventDefault(); } }, true);
+  }
+  const stage = document.getElementById('ctStage');
+  const comptes = env === 'CTO' ? kyfCtoComptes() : [], multi = comptes.length > 1, sel = ctCptSel(env) || 'tot', liste = multi ? ctCptListe() : [];
+  deck.classList.toggle('ct-deck-on', multi);
+  // cartes visibles derrière (jusqu'à 2) ; un clic sur l'une d'elles l'amène devant
+  deck.querySelectorAll('.ct-deck-l,.ct-deck-arr,.ct-dots,.ct-fav').forEach(n => n.remove());   // (calques et boutons de la scène, pastilles du paquet)
+  const nb = Math.min(2, liste.length - 1);
+  stage.style.paddingTop = multi ? (nb * 11) + 'px' : '';
+  if(multi){
+    const i = liste.indexOf(sel), M = KYF_CT_META.CTO;
+    for(let k = nb; k >= 1; k--){
+      const cible = liste[(i + k) % liste.length], l = document.createElement('div'); l.className = 'ct-deck-l'; l.setAttribute('aria-hidden', 'true');
+      l.style.cssText = 'top:' + ((nb - k) * 11) + 'px;left:' + (k * 14) + 'px;right:' + (k * 14) + 'px;background:' + M.fond + ';opacity:' + (k === 1 ? '.62' : '.38');
+      l.title = cible === 'tot' ? 'CTO TOTAUX' : kyfCtoNom(cible); l.onclick = () => ctCptSet(cible, 1, false); stage.insertBefore(l, hero);
+    }
+    const fl = (sens, svg) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'ct-deck-arr ct-deck-arr-' + (sens > 0 ? 'r' : 'l');
+      b.setAttribute('aria-label', sens > 0 ? 'Compte suivant' : 'Compte précédent'); b.innerHTML = svg; b.style.top = 'calc(50% + ' + (nb * 5.5) + 'px)'; b.onclick = e => { e.stopPropagation(); ctCptVoisin(sens); }; stage.appendChild(b); };
+    fl(-1, '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 6 9 12 15 18"/></svg>');
+    fl(1, '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg>');
+    const fav = kyfCtoFav() === sel, st = document.createElement('button'); st.type = 'button'; st.className = 'ct-fav kyf-icon-btn kyf-favstar' + (fav ? ' on' : ''); st.id = 'ctFavBtn';
+    st.setAttribute('aria-pressed', fav ? 'true' : 'false'); st.setAttribute('aria-label', fav ? 'Retirer des favoris (carte affichée à l\'ouverture)' : 'Mettre en favori (carte affichée à l\'ouverture)');
+    st.title = fav ? 'Favori : affiché à l\'ouverture' : 'Mettre en favori'; st.onclick = e => { e.stopPropagation(); ctFavToggle(); };
+    st.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="' + (fav ? '#f0b429' : 'none') + '" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+    st.style.top = (nb * 11 + 14) + 'px'; stage.appendChild(st);
+    const dots = document.createElement('div'); dots.className = 'ct-dots'; dots.setAttribute('role', 'tablist'); dots.setAttribute('aria-label', 'Choisir un compte');
+    liste.forEach(id => {
+      const nom = id === 'tot' ? 'CTO TOTAUX' : kyfCtoNom(id), d = document.createElement('button'); d.type = 'button'; d.id = 'ctDot_' + id;
+      d.className = 'ct-dot' + (id === sel ? ' on' : '') + (kyfCtoFav() === id ? ' fav' : ''); d.setAttribute('role', 'tab'); d.setAttribute('aria-selected', id === sel ? 'true' : 'false');
+      d.setAttribute('aria-label', nom); d.title = nom;   // jamais de montant dans une infobulle : le mode discret ne peut pas les flouter
+      d.onclick = () => ctCptSet(id, liste.indexOf(id) > liste.indexOf(sel) ? 1 : -1, false); dots.appendChild(d);
+    });
+    deck.appendChild(dots);
+  }
+  const fa = document.getElementById('ctAccAdd'); if(fa) fa.style.display = (env === 'CTO' && comptes.length < KYF_CTO_MAX) ? 'inline-flex' : 'none';   // « ajouter un compte » : à côté d'Importer un relevé
+}
 const KYF_CT_ICO = {
   PEA: '<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>',
   PME: '<path d="M3 21h18"/><path d="M5 21V8l7-4 7 4v13"/><path d="M9 21v-6h6v6"/>',
@@ -11291,6 +11458,7 @@ function ctHidden(){   // comptes masqués par l'utilisateur ; jamais les trois 
 function ctHasData(env){   // un compte qui contient quelque chose ne peut pas être masqué : le total resterait faux
   const M = KYF_CT_META[env], i = ctInfo()[env];
   if(ctEtatLigne(env).lignes.length > 0) return true;
+  if(env === 'CTO' && kyfCtoComptes().length > 1) return true;
   if(M.cash && (env === 'PEA' ? getCashPea() : getCashCto()) > 0) return true;
   if(M.dateKey ? localStorage.getItem(M.dateKey) : i.date) return true;
   if(M.verseKey && localStorage.getItem(M.verseKey)) return true;
@@ -11308,10 +11476,10 @@ function ctToggle(env, voir){
 // Boutons du compte affiché : ouvrent l'import de relevé ou l'ajout d'une ligne avec CE compte déjà choisi (PEA, PEA-PME ou CTO).
 function ctVersPf(){ try{ showPage('portfolio', null); }catch(e){} }
 function ctImporter(){
-  openImportRelevé('etf'); window._ctImportEnv = KYF_CT_META[ctTabGet()].tag;
+  openImportRelevé('etf'); window._ctImportEnv = KYF_CT_META[ctTabGet()].tag; window._importCpt = ctCptSel(ctTabGet()) || '';
 }
 function ctAjouterLigne(){
-  openAddETF(); try{ setEnveloppe(KYF_CT_META[ctTabGet()].tag); }catch(e){}
+  openAddETF(); try{ window._etfCpt = ctCptSel(ctTabGet()) || ''; setEnveloppe(KYF_CT_META[ctTabGet()].tag); }catch(e){}
 }
 function ctDetToggle(){   // « Détail du contrat » : fermé par défaut, les chiffres et les boutons du bas restent visibles
   window._ctDetOpen = !window._ctDetOpen;
@@ -11405,13 +11573,15 @@ function ctBuild(root){
     +   '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><div id="ctDetHead" class="kyf-vh-head" role="button" tabindex="0" aria-expanded="false" aria-controls="ctDetBody" onclick="ctDetToggle()" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();ctDetToggle()}" style="font-size:15px;letter-spacing:0;color:var(--text)"><span>Détail du contrat</span><span class="kyf-vh-chev" style="transform:rotate(-90deg)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div><div class="ct-lbl">Mêmes données que Fiscalité et le cash</div></div>'
     +   '<div id="ctDetBody" style="display:none;flex-direction:column;gap:18px">'
     +   '<div class="ct-form">'
-    +     '<div class="ct-fld" style="position:relative"><label for="ctF_etab">Établissement</label><input type="text" class="ct-in2" id="ctF_etab" maxlength="40" placeholder="Ex : Trade Republic" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="ctEtabDrop" oninput="ctOnEtab(this);ctEtabShow()" onfocus="ctEtabShow()" onblur="ctEtabBlur(this)" onkeydown="ctEtabKey(event)"><div id="ctEtabDrop" role="listbox" style="display:none;position:absolute;left:0;right:0;top:100%;margin-top:2px;z-index:40;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.18);overflow:hidden"></div></div>'
-    +     '<div class="ct-fld"><span class="ct-fl">Date d\'ouverture</span><div><input type="hidden" id="ctF_date" onchange="ctOnDate()" value=""><button type="button" id="ctF_dateBtn" class="kyf-csel-btn" data-kyf-date="ctF_date" aria-haspopup="dialog" aria-expanded="false" style="width:auto;max-width:170px;font-size:12px;padding:9px 10px;min-height:40px"><span id="ctF_dateBtnLabel">JJ/MM/AAAA</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button></div></div>'
+    +     '<div class="ct-fld" id="ctFldNom" style="display:none"><label for="ctF_nom">Nom du compte</label><input type="text" class="ct-in2" id="ctF_nom" maxlength="40" placeholder="Ex : CTO 2" autocomplete="off" onchange="ctOnNom(this)"></div>'
+    +     '<div class="ct-fld" id="ctFldEtab" style="position:relative"><label for="ctF_etab">Établissement</label><input type="text" class="ct-in2" id="ctF_etab" maxlength="40" placeholder="Ex : Trade Republic" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="ctEtabDrop" oninput="ctOnEtab(this);ctEtabShow()" onfocus="ctEtabShow()" onblur="ctEtabBlur(this)" onkeydown="ctEtabKey(event)"><div id="ctEtabDrop" role="listbox" style="display:none;position:absolute;left:0;right:0;top:100%;margin-top:2px;z-index:40;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.18);overflow:hidden"></div></div>'
+    +     '<div class="ct-fld" id="ctFldDate"><span class="ct-fl">Date d\'ouverture</span><div><input type="hidden" id="ctF_date" onchange="ctOnDate()" value=""><button type="button" id="ctF_dateBtn" class="kyf-csel-btn" data-kyf-date="ctF_date" aria-haspopup="dialog" aria-expanded="false" style="width:auto;max-width:170px;font-size:12px;padding:9px 10px;min-height:40px"><span id="ctF_dateBtnLabel">JJ/MM/AAAA</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button></div></div>'
     +     '<div class="ct-fld" id="ctFldJeune" style="display:none"><span class="ct-fl">PEA jeune</span><label style="display:flex;align-items:center;gap:10px;cursor:pointer;min-height:40px"><span class="kyf-toggle"><input type="checkbox" id="ctF_jeune" onchange="ctOnJeune(this)"><span class="kyf-toggle-track"></span><span class="kyf-toggle-thumb"></span></span><span style="font-size:12px;color:var(--text2)">Majeur rattaché au foyer fiscal des parents</span></label></div>'
     +     '<div class="ct-fld" id="ctFldJeuneFin" style="display:none"><span class="ct-fl">Fin du rattachement</span><div><input type="hidden" id="ctF_jfin" onchange="ctOnJeuneFin()" value=""><button type="button" id="ctF_jfinBtn" class="kyf-csel-btn" data-kyf-date="ctF_jfin" aria-haspopup="dialog" aria-expanded="false" style="width:auto;max-width:170px;font-size:12px;padding:9px 10px;min-height:40px"><span id="ctF_jfinBtnLabel">JJ/MM/AAAA</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button></div></div>'
     +     '<div class="ct-fld" id="ctFldVerse"><label for="ctF_verse">Total versé (€)</label><input type="text" inputmode="decimal" class="ct-in2" id="ctF_verse" placeholder="Ex : 45 000" oninput="ctOnVerse(this)"></div>'
     +     '<div class="ct-fld" id="ctFldCash"><label for="ctF_cash">Espèces (€)</label><input type="text" inputmode="decimal" class="ct-in2" id="ctF_cash" placeholder="0" onfocus="kyfUnformatAmountInput(this)" onblur="kyfFormatAmountInput(this)" onchange="ctOnCash(this)"><span id="ctF_cashNo" style="display:none;font-size:12px;color:var(--text3);padding:10px 0">non suivies dans KYF</span></div>'
     +   '</div>'
+    +   '<div class="ct-fld" id="ctFldDel" style="display:none"><span class="ct-fl">Compte</span><div><button type="button" class="ct-btn" id="ctBtnDel" onclick="ctCptDel()">Supprimer ce compte</button><div class="ct-note" id="ctDelNote" style="margin-top:6px"></div></div></div>'
     +   '<div class="ct-note" id="ctJeuneNote" style="display:none"></div>'
     +   '<div class="ct-note" id="ctCashLiv" style="display:none"></div>'
     +   '<div id="ctF_plaf"></div>'
@@ -11419,12 +11589,12 @@ function ctBuild(root){
     +   '<div class="ct-sep"></div>'
     +   '<div class="ct-stats"><div><span class="ct-lbl">Valeur des lignes</span><b id="ctS_titres">-</b></div><div><span class="ct-lbl">Coût d\'acquisition</span><b id="ctS_cout">-</b></div><div><span class="ct-lbl">Lignes suivies</span><b id="ctS_nb">0</b></div></div>'
     +   '<div class="ct-note" id="ctNote"></div>'
-    +   '<div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:auto"><button type="button" class="ct-btn ct-btn-main" id="ctBtnImport" onclick="ctImporter()" style="display:inline-flex;align-items:center;gap:7px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Importer un relevé</button><button type="button" class="ct-btn" id="ctBtnAdd" onclick="ctAjouterLigne()" style="display:inline-flex;align-items:center;gap:7px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" style="flex-shrink:0"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Ajouter une ligne</button><button type="button" class="ct-btn" id="ctBtnFisc" onclick="showPage(\'fiscal-pea-cto\',null)">Fiscalité</button></div>'
+    +   '<div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:auto"><button type="button" class="ct-btn ct-btn-main" id="ctBtnImport" onclick="ctImporter()" style="display:inline-flex;align-items:center;gap:7px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Importer un relevé</button><button type="button" class="ct-btn" id="ctBtnAdd" onclick="ctAjouterLigne()" style="display:inline-flex;align-items:center;gap:7px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" style="flex-shrink:0"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Ajouter une ligne</button><button type="button" class="ct-btn" id="ctAccAdd" onclick="ctCptAdd()" style="display:none;align-items:center;gap:7px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" style="flex-shrink:0"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Ajouter un compte CTO</button><button type="button" class="ct-btn" id="ctBtnFisc" onclick="showPage(\'fiscal-pea-cto\',null)">Fiscalité</button></div>'
     + '</div></div>';
 }
-function ctEtatLigne(env){   // lignes de l'enveloppe, et celles dont le cours (ou la valeur saisie) manque
+function ctEtatLigne(env, cpt){   // lignes de l'enveloppe (cpt : un seul compte CTO), et celles dont le cours (ou la valeur saisie) manque
   const lp = window._lp || {};
-  const lignes = ETF.filter(e => (e.enveloppe || 'PEA') === KYF_CT_META[env].tag);
+  const lignes = ETF.filter(e => (e.enveloppe || 'PEA') === KYF_CT_META[env].tag && (!cpt || kyfCtoCompteOf(e) === cpt));
   const ok = lignes.filter(e => !kyfEtfNoPrice(e, lp));
   return { lp, lignes, ok, sansCours: lignes.length - ok.length,
     val: ok.reduce((a, e) => a + getEval(e, lp[e.ticker]), 0), cout: ok.reduce((a, e) => a + etfInvestOf(e), 0) };
@@ -11463,12 +11633,12 @@ function ctRender(){
   const root = document.getElementById('ctRoot'); if(!root) return;
   if(!root.dataset.built){ ctBuild(root); root.dataset.built = '1'; }
   try{ peaFiscLoadParams(); pmeFiscLoadParams(); peaFiscSimuler(); pmeFiscSimuler(); }catch(e){}
-  const env = ctTabGet(), M = KYF_CT_META[env], info = ctInfo()[env];
+  const env = ctTabGet(), M = KYF_CT_META[env], cpt = ctCptSel(env), tot = env === 'CTO' && kyfCtoComptes().length > 1 && !cpt, info = cpt ? ctCptInfo(cpt) : ctInfo()[env];
   const set = (id, v) => { const el = document.getElementById(id); if(el) el.textContent = v; };
   const setIn = (id, v) => { const el = document.getElementById(id); if(el && document.activeElement !== el) el.value = v; };
   const show = (id, on) => { const el = document.getElementById(id); if(el) el.style.display = on ? '' : 'none'; };
   const eur = v => fmt(v, 2) + ' €';
-  ctRenderBand(); ctRenderPick();
+  ctRenderBand(); ctRenderPick(); ctRenderAcc(env);
   // onglets
   const tabs = document.getElementById('ctTabs');
   if(tabs){ tabs.textContent = ''; ctTabList().forEach(t => { const b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'tab');
@@ -11478,16 +11648,16 @@ function ctRender(){
     ic.setAttribute('stroke', 'currentColor'); ic.setAttribute('stroke-width', '2'); ic.setAttribute('stroke-linecap', 'round'); ic.setAttribute('stroke-linejoin', 'round'); ic.style.flexShrink = '0'; ic.setAttribute('aria-hidden', 'true'); ic.innerHTML = KYF_CT_ICO[t.k] || '';
     b.appendChild(ic); b.appendChild(document.createTextNode(t.label)); b.onclick = () => ctTabSet(t.k); tabs.appendChild(b); }); }
   // chiffres du compte affiché
-  const E = ctEtatLigne(env), nb = E.lignes.length, tousSans = nb > 0 && E.ok.length === 0;
+  const E = ctEtatLigne(env, cpt), nb = E.lignes.length, tousSans = nb > 0 && E.ok.length === 0;
   let titres, cash = 0, total, pv, base = false, inv = 0;
   if(env === 'PEA'){ const x = peaFiscSituation(); cash = x.cash; titres = x.valeur - x.cash; total = x.valeur; pv = x.pvTotale; base = x.baseVerse; inv = x.investi; }
   else if(env === 'PME'){ const x = pmeFiscSituation(); titres = x.valeur; total = x.valeur; pv = x.plusValue; base = x.baseVerse; inv = x.investi; }
-  else { cash = getCashCto(); titres = E.val; total = titres + cash; pv = E.val - E.cout; }
+  else { cash = cpt ? kyfCtoCashOf(cpt) : getCashCto(); titres = E.val; total = titres + cash; pv = E.val - E.cout; }
   const pvLabel = env === 'CTO' ? 'Plus-value latente des lignes (valeur moins coût)' : (base ? 'Plus-value fiscale (valeur moins total versé)' : 'Plus-value latente (estimée sur le coût)');
   const vide = nb === 0 && !(cash > 0) && !base;
   // carte principale
   const hero = document.getElementById('ctHero'); if(hero) hero.style.background = M.fond;
-  ctRenderHeroHead(env); ctRenderJour(env);
+  ctRenderHeroHead(env, cpt, tot); ctRenderJour(env, cpt);
   set('ctHeroTot', tousSans ? 'données incomplètes' : eur(total));
   const hp = document.getElementById('ctHeroPv'); if(hp){ hp.textContent = tousSans ? 'Plus-value indisponible' : (vide ? '' : ctSigne(pv)); hp.style.color = tousSans || vide ? '' : (pv >= 0 ? '#7be3b4' : '#ff9aa6'); }
   set('ctHeroPvL', tousSans || vide ? '' : pvLabel);
@@ -11519,6 +11689,8 @@ function ctRender(){
       const d5 = mOk ? date.slice(0, 4) * 1 + 5 + date.slice(4, 10) : '';
       card(sec, { label: 'Ouvert le', value: mOk ? ctDateFr(date) : 'À renseigner', pill: ok5 ? '5 ans' : '', pillOk: true, pct: mOk ? m / 60 * 100 : 0, color: ok5 ? 'var(--green)' : 'var(--accent)',
         l1: mOk ? (ok5 ? '5 ans révolus depuis le ' + ctDateFr(d5) : '5 ans le ' + ctDateFr(d5) + ', encore ' + ctDuree(60 - m)) : 'Renseignez la date d\'ouverture pour suivre les 5 ans.', l1Style: mOk ? 'font-weight:600' : '' });
+    } else if(tot){
+      card(sec, { label: 'Comptes CTO', value: String(kyfCtoComptes().length), l1: 'Lignes et espèces de tous vos CTO réunis.' });
     } else {
       card(sec, { label: 'Ouvert le', value: date ? ctDateFr(date) : 'À renseigner', l1: mOk ? ctDuree(m) : '', l1Id: 'ctHeroA' });
     }
@@ -11548,7 +11720,9 @@ function ctRender(){
     }
   }
   // formulaire
-  setIn('ctF_etab', info.etab || ctEtabAuto(env));
+  setIn('ctF_etab', info.etab || (cpt ? '' : ctEtabAuto(env)));
+  show('ctFldEtab', !tot); show('ctFldDate', !tot); show('ctFldCash', true); show('ctFldNom', !!cpt); show('ctFldDel', !!cpt && cpt !== 'c1');
+  if(cpt){ setIn('ctF_nom', kyfCtoNom(cpt)); const n = ctCptLignes(cpt), bd = document.getElementById('ctBtnDel'); if(bd) bd.disabled = n > 0; set('ctDelNote', n > 0 ? 'Ce compte contient ' + n + (n > 1 ? ' lignes' : ' ligne') + ' : déplacez-les ou supprimez-les d\'abord.' : ''); }
   try{ kyfDateSetValue('ctF_date', date, 'JJ/MM/AAAA'); }catch(e){}
   { const pj = kyfPeaJeune(), isPea = env === 'PEA';
     show('ctFldJeune', isPea); show('ctFldJeuneFin', isPea && pj.on);
@@ -11563,11 +11737,11 @@ function ctRender(){
   if(M.verseKey) setIn('ctF_verse', kyfFormatMilliers(localStorage.getItem(M.verseKey) || ''));
   const ci = document.getElementById('ctF_cash'), cn = document.getElementById('ctF_cashNo');
   if(ci) ci.style.display = M.cash ? '' : 'none'; if(cn) cn.style.display = M.cash ? 'none' : '';
-  if(M.cash){ const c = (env === 'PEA' ? getCashPea() : getCashCto()) + ctLivretsTotal(env); setIn('ctF_cash', c > 0 ? fmt(c, 2) : ''); }   // espèces du cash + livrets rattachés
-  ctRenderCashLiv(env);
+  if(M.cash){ const c = cpt ? kyfCtoCashOf(cpt) : (env === 'PEA' ? getCashPea() : getCashCto()) + ctLivretsTotal(env); setIn('ctF_cash', c > 0 ? fmt(c, 2) : ''); }   // espèces du cash + livrets rattachés
+  if(cpt){ const lv = document.getElementById('ctCashLiv'); if(lv) lv.style.display = 'none'; } else ctRenderCashLiv(env);
   const plaf = document.getElementById('ctF_plaf'); if(plaf) plaf.textContent = '';   // le plafond a sa propre carte (ctSec2)
   set('ctS_titres', tousSans ? 'indisponible' : eur(titres)); set('ctS_cout', tousSans ? 'indisponible' : eur(E.cout)); set('ctS_nb', String(nb));
-  set('ctNote', E.sansCours > 0 && !tousSans ? (E.sansCours + (E.sansCours > 1 ? ' lignes sans cours ne sont pas comptées' : ' ligne sans cours n\'est pas comptée') + ' : valeur et plus-value sont sous-évaluées.') : (tousSans ? 'Aucun cours connu pour ces lignes : valeur et plus-value ne sont pas calculées.' : (env === 'CTO' ? 'KYF suit un seul CTO pour l\'instant.' : '')));
+  set('ctNote', E.sansCours > 0 && !tousSans ? (E.sansCours + (E.sansCours > 1 ? ' lignes sans cours ne sont pas comptées' : ' ligne sans cours n\'est pas comptée') + ' : valeur et plus-value sont sous-évaluées.') : (tousSans ? 'Aucun cours connu pour ces lignes : valeur et plus-value ne sont pas calculées.' : (tot ? 'Espèces CTO : suivies au total, pas par compte.' : (cpt ? 'Les espèces CTO sont suivies au total (voir CTO TOTAUX).' : ''))));
   set('ctBtnFisc', M.cinq ? 'Fiscalité et retrait' : 'Fiscalité');
 }
 // Espèces et établissement déjà connus ailleurs : livrets d'épargne rattachés à ce compte (créés depuis le cash ou l'import de relevé).
@@ -11655,11 +11829,15 @@ function ctLogoNode(nom, taille){
   img.src = src[0];
   w.appendChild(img); return w;
 }
-function ctRenderHeroHead(env){   // courtier connu : son nom en grand avec son logo, le compte (PEA, CTO...) en petit ; sinon le compte en grand
-  const M = KYF_CT_META[env], e = ctInfo()[env].etab || ctEtabAuto(env);
+function ctRenderHeroHead(env, cpt, tot){   // courtier connu : son nom en grand avec son logo, le compte (PEA, CTO...) en petit ; sinon le compte en grand
+  if(cpt === undefined){ cpt = ctCptSel(env); tot = env === 'CTO' && kyfCtoComptes().length > 1 && !cpt; }
+  const M = KYF_CT_META[env], nom = cpt ? kyfCtoNom(cpt) : '', e = (cpt ? ctCptInfo(cpt) : ctInfo()[env]).etab || (cpt ? '' : ctEtabAuto(env));
   const T = document.getElementById('ctHeroT'), S = document.getElementById('ctHeroE'), L = document.getElementById('ctHeroLogo');
-  if(T) T.textContent = e || M.titre;
-  if(S) S.textContent = (env === 'PEA' && kyfPeaJeune().actif) ? (e ? M.titre + ' jeune' : M.sous + ' (PEA jeune)') : (e ? M.titre : M.sous);
+  if(tot){ if(T) T.textContent = 'CTO TOTAUX'; if(S){ const l = kyfCtoComptes(), seen = {}; let nb = 0, inconnu = 0;   // nombre de banques distinctes parmi les comptes (celles qui sont renseignées)
+      l.forEach(c => { const e = c.id === 'c1' ? (ctInfo().CTO.etab || ctEtabAuto('CTO')) : c.etab, k = ctNorm(e); if(!k) inconnu++; else if(!seen[k]){ seen[k] = 1; nb++; } });
+      S.textContent = l.length + ' comptes' + (nb > 0 ? ' · ' + nb + (nb > 1 ? ' banques' : ' banque') + (inconnu > 0 ? ' renseignée' + (nb > 1 ? 's' : '') : '') : ''); } if(L){ L.textContent = ''; L.style.display = 'none'; } return; }
+  if(T) T.textContent = e || nom || M.titre;
+  if(S) S.textContent = (env === 'PEA' && kyfPeaJeune().actif) ? (e ? M.titre + ' jeune' : M.sous + ' (PEA jeune)') : (e ? (nom || M.titre) : M.sous);
   if(L){ L.textContent = ''; if(e){ L.appendChild(ctLogoNode(e, 40)); L.style.display = 'inline-flex'; } else L.style.display = 'none'; }
 }
 // Établissement « intelligent » : liste filtrée avec logos (courtiers et banques de KYF), clavier, noms usuels remis à l'orthographe de la liste.
@@ -11709,8 +11887,8 @@ function ctEtabBlur(el){
 }
 // Variation du jour du compte, en direct : cours du moment moins clôture de la veille, sur les lignes qui ont les deux (même règle que l'envoi Intraday :
 // ni cache, ni cours périmé). Une ligne sans l'un des deux n'est pas comptée et c'est écrit ; aucun cours : « indisponible », jamais un zéro.
-function ctJour(env){
-  const lp = window._lp || {}, lignes = ETF.filter(e => (e.enveloppe || 'PEA') === KYF_CT_META[env].tag && e.qty > 0);
+function ctJour(env, cpt){
+  const lp = window._lp || {}, lignes = ETF.filter(e => (e.enveloppe || 'PEA') === KYF_CT_META[env].tag && e.qty > 0 && (!cpt || kyfCtoCompteOf(e) === cpt));
   let v = 0, b = 0, ok = 0;
   lignes.forEach(e => {
     const l = lp[e.ticker];
@@ -11736,9 +11914,10 @@ function ctJourFleche(sens){
   hd.setAttribute('points', [[E[0] + ux * 5, E[1] + uy * 5], [base[0] + nx * 6, base[1] + ny * 6], [base[0] - nx * 6, base[1] - ny * 6]].map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ')); svg.appendChild(hd);
   return svg;
 }
-function ctRenderJour(env){
+function ctRenderJour(env, cpt){
   const box = document.getElementById('ctHeroJour'); if(!box) return;
-  const j = ctJour(env); box.textContent = '';
+  if(cpt === undefined) cpt = ctCptSel(env);
+  const j = ctJour(env, cpt); box.textContent = '';
   if(j.nb === 0){ box.style.display = 'none'; return; }
   box.style.display = 'flex';
   const txt = (t, css) => { const d = document.createElement('div'); d.style.cssText = css; d.textContent = t; return d; };
@@ -11751,11 +11930,11 @@ function ctRenderJour(env){
   c.appendChild(txt(j.ko > 0 ? 'Aujourd\'hui, ' + j.ko + (j.ko > 1 ? ' lignes non comptées' : ' ligne non comptée') : 'Aujourd\'hui', 'font-size:10px;color:rgba(255,255,255,0.75)'));
   box.appendChild(c);
 }
-function ctOnEtab(el){ ctInfoSet(ctTabGet(), 'etab', el.value.slice(0, 40)); set_ctHeroE_(); }
-function set_ctHeroE_(){ ctRenderHeroHead(ctTabGet()); }
+function ctOnEtab(el){ const env = ctTabGet(), c = ctCptSel(env); if(c) ctCptInfoSet(c, 'etab', el.value.slice(0, 40)); else ctInfoSet(env, 'etab', el.value.slice(0, 40)); set_ctHeroE_(); }
+function set_ctHeroE_(){ ctRenderHeroHead(ctTabGet()); }   // compte affiché déduit de la sélection
 function ctOnDate(){
   const env = ctTabGet(), M = KYF_CT_META[env], v = (document.getElementById('ctF_date') || {}).value || '';
-  if(M.dateKey) localStorage.setItem(M.dateKey, v); else ctInfoSet(env, 'date', v);
+  if(M.dateKey) localStorage.setItem(M.dateKey, v); else if(ctCptSel(env)) ctCptInfoSet(ctCptSel(env), 'date', v); else ctInfoSet(env, 'date', v);
   try{ if(env === 'PEA'){ peaFiscLoadParams(); peaFiscSimuler(); } else if(env === 'PME'){ pmeFiscLoadParams(); pmeFiscSimuler(); } }catch(e){}
   ctRender();
 }
@@ -11778,7 +11957,9 @@ function ctOnVerse(el){
   ctRender();
 }
 function ctOnCash(el){   // le champ montre les espèces au total : on enregistre dans le cash ce qui dépasse les livrets rattachés (jamais en dessous de zéro)
-  const env = ctTabGet(), v = Math.max(0, (parseNum(el.value) || 0) - ctLivretsTotal(env));
+  const env = ctTabGet(), cp = ctCptSel(env);
+  if(cp){ kyfCtoCashSet(cp, parseNum(el.value) || 0); try{ renderCashKPI(); }catch(e){} ctRender(); return; }   // un compte CTO : ses espèces ; le total suit
+  const v = Math.max(0, (parseNum(el.value) || 0) - ctLivretsTotal(env));
   if(env === 'PEA') setCashPea(v); else setCashCto(v);
   try{ renderCashKPI(); }catch(e){}
   ctRender();
@@ -12112,8 +12293,10 @@ function ctoFiscCalc(){
   } else {
     // L'impôt est calculé année par année (une plus-value se déclare l'année de la vente) ; gainNet vient du formulaire
     // de vente (même valeur que dans Transactions). Moins-value : plancher à 0 par année, le report sur 10 ans n'est pas calculé.
-    const parAn = {};
-    ventesCTO.forEach(t => { const y = String(t.date || '').slice(0,4) || '?'; parAn[y] = (parAn[y] || 0) + (t.gainNet || 0); });
+    const parAn = {}, parAnCpt = {}, multiCto = kyfCtoComptes().length > 1;
+    const cptDe = t => { if(t.enveloppe === 'CTO') return kyfCtoCompteOf(t); const pos = ETF.find(e => e.ticker?.toUpperCase() === (t.ticker||'').toUpperCase()); return pos ? kyfCtoCompteOf(pos) : 'c1'; };   // ancienne vente sans enveloppe : compte de la ligne actuelle
+    ventesCTO.forEach(t => { const y = String(t.date || '').slice(0,4) || '?'; parAn[y] = (parAn[y] || 0) + (t.gainNet || 0);
+      if(multiCto && typeof t.gainNet === 'number'){ const c = cptDe(t); (parAnCpt[y] = parAnCpt[y] || {})[c] = ((parAnCpt[y] || {})[c] || 0) + t.gainNet; } });
     const sansPRU = ventesCTO.filter(t => typeof t.gainNet !== 'number').length;
     const lignes = Object.keys(parAn).sort().reverse().map(y => {
       const pv = parAn[y], pfu = Math.max(0, pv) * KYF_CTO_TAUX_PFU(), net = pv - pfu;
@@ -12122,6 +12305,7 @@ function ctoFiscCalc(){
         <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span style="color:var(--text2)">Plus-value réalisée</span><span style="color:var(--text);font-weight:600">${(pv>=0?'+':'')+fmt(pv,2)} €</span></div>
         <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span style="color:var(--text2)">PFU estimé (${tauxAffiche}%)</span><span style="color:var(--text);font-weight:600">${fmt(pfu,2)} €</span></div>
         <div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:var(--text2)">Net après PFU</span><span style="color:var(--text);font-weight:600">${(net>=0?'+':'')+fmt(net,2)} €</span></div>
+        ${(parAnCpt[y] && Object.keys(parAnCpt[y]).length > 1) ? '<div style="font-size:10px;color:var(--text3);margin-top:5px;line-height:1.6">Part de chaque compte dans cette plus-value : ' + Object.keys(parAnCpt[y]).sort().map(c => escapeHtml(kyfCtoNom(c)) + ' ' + (parAnCpt[y][c] >= 0 ? '+' : '') + fmt(parAnCpt[y][c], 2) + ' €').join(' · ') + '. Le PFU est calculé sur le total.</div>' : ''}
       </div>`; }).join('');
     contenuSpecifique = `
       <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,0.03);border:1px solid var(--border)">
@@ -15664,7 +15848,7 @@ const SHEETS_SYNC_KEYS = [
   'pea-positions','pea-crypto-v1','pea-dca-v1',
   'kyf-dividendes','kyf-livrets','kyf-scpi',
   'kyf-immo','kyf-immo-credits','kyf-immo-revenus','kyf-sci',
-  'kyf-or','kyf-av','kyf-av-positions','kyf-pee','kyf-av-dca','kyf-av-dca-hist','kyf-av-frais-hist','kyf-frais-manuels','kyf-av-perf','kyf-frais-comp','kyf-av-arbitrages','kyf-cash-pea','kyf-cash-cto','kyf-cash-ccp','kyf-cash-mvts','kyf-flux-neutres','kyf-ct-info','kyf-ct-hidden','kyf-pea-jeune','kyf-pea-jeune-fin',
+  'kyf-or','kyf-av','kyf-av-positions','kyf-pee','kyf-av-dca','kyf-av-dca-hist','kyf-av-frais-hist','kyf-frais-manuels','kyf-av-perf','kyf-frais-comp','kyf-av-arbitrages','kyf-cash-pea','kyf-cash-cto','kyf-cash-ccp','kyf-cash-mvts','kyf-flux-neutres','kyf-ct-info','kyf-ct-hidden','kyf-cto-comptes','kyf-cto-fav','kyf-cto-cash','kyf-pea-jeune','kyf-pea-jeune-fin',
   'kyf-alerts-seuils','kyf-alerts-index',
   'kyf-etf-transactions','kyf-depense-mensuelle','kyf-per-tmi',
   'pea-etf-settings','pea-crypto-settings',
@@ -20235,7 +20419,7 @@ const KYF_BAD_PAGES = {
   'livrets':['kyf-livrets','kyf-livrets-transactions'], 'livrets-recurrents':['kyf-recurrents'], 'or':['kyf-or'], 'immobilier':['kyf-immo','kyf-sci'],
   'immo-credits':['kyf-immo-credits'], 'immo-revenus':['kyf-immo-revenus'], 'immo-scpi':['kyf-scpi'], 'immo-scpi-liste':['kyf-scpi'], 'immo-crowdfunding':['kyf-crowdfunding'],
   'assurance':['kyf-av','kyf-av-positions','kyf-pee','kyf-av-dca','kyf-av-dca-hist','kyf-av-frais-hist','kyf-frais-manuels','kyf-av-perf','kyf-frais-comp','kyf-av-arbitrages'], 'dca':['pea-dca-v1'], 'budget':['kyf-depense-mensuelle','kyf-cash-ccp'],
-  'fiscal-pea-cto':['kyf-cash-pea','kyf-cash-cto','kyf-cash-mvts'], 'comptes-titres':['pea-positions','kyf-cash-pea','kyf-cash-cto'], 'av-fiscalite':['kyf-per-tmi'], 'heatmap':['kyf-flux-neutres'],
+  'fiscal-pea-cto':['kyf-cash-pea','kyf-cash-cto','kyf-cash-mvts'], 'comptes-titres':['pea-positions','kyf-cash-pea','kyf-cash-cto','kyf-cto-comptes','kyf-cto-fav','kyf-cto-cash'], 'av-fiscalite':['kyf-per-tmi'], 'heatmap':['kyf-flux-neutres'],
   'frais':['kyf-av','kyf-av-frais-hist','kyf-frais-manuels','kyf-frais-comp'], 'dashboard':'*', 'bilan':'*'
 };
 function kyfBadStored(keys){
@@ -23746,7 +23930,7 @@ function dcaRecordTransaction(plan, cours, date, mode, opts){
       etfSave();
       // Débit du cash de l'enveloppe (PEA/CTO uniquement) et achat visible dans Transactions, comme l'ajout manuel
       let _cashD;   // débit réellement fait sur les espèces (retenu dans la transaction : la suppression rend exactement cette somme)
-      try{ if(!_lvPay && (e.enveloppe==='PEA' || e.enveloppe==='CTO')) _cashD = Math.max(0, -adjustCashForEnveloppe(e.enveloppe, -plan.montant)); }catch(_){}
+      try{ if(!_lvPay && (e.enveloppe==='PEA' || e.enveloppe==='CTO')) _cashD = Math.max(0, -adjustCashForEnveloppe(e.enveloppe, -plan.montant, e)); }catch(_){}
       try{
         const brut = parseFloat(plan.montant.toFixed(2));
         const all = etfTransLoad();
@@ -24398,6 +24582,20 @@ function setEnveloppe(val){
     if(rd) rd.checked  = active;
   });
   try{ kyfEtfVerseSync(); }catch(e){}
+  try{ kyfEtfCptSync(); }catch(e){}
+}
+function kyfEtfCptSync(){   // choix du compte CTO dans la fenêtre Ajouter / Modifier une position
+  const w = document.getElementById('etfCptWrap'), box = document.getElementById('etfCptPills'); if(!w || !box) return;
+  const r = document.querySelector('input[name="etfEnveloppe"]:checked'), l = kyfCtoComptes(), on = !!(r && r.value === 'CTO' && l.length > 1);
+  w.style.display = on ? 'block' : 'none'; box.textContent = ''; if(!on) return;
+  if(!l.some(c => c.id === window._etfCpt)) window._etfCpt = 'c1';
+  l.forEach(c => {
+    const a = c.id === window._etfCpt, b = document.createElement('button'); b.type = 'button'; b.id = 'etfCpt_' + c.id; b.textContent = c.nom;
+    b.setAttribute('role', 'radio'); b.setAttribute('aria-checked', a ? 'true' : 'false');
+    b.style.cssText = 'cursor:pointer;font-family:inherit;padding:7px 14px;border-radius:7px;font-size:11px;font-weight:700;border:1px solid ' + (a ? 'var(--accent)' : 'var(--border2)') + ';background:' + (a ? 'rgba(77,159,255,0.12)' : 'rgba(255,255,255,0.04)') + ';color:' + (a ? 'var(--accent)' : 'var(--text3)');
+    b.onclick = () => { window._etfCpt = c.id; kyfEtfCptSync(); };
+    box.appendChild(b);
+  });
 }
 
 // ── Spin fields (▲▼ avec tenue souris) ───────────────────────
@@ -26457,6 +26655,7 @@ function openAddETF(){
   document.getElementById('etfSelected').style.display      = 'none';
   document.getElementById('etfInvestiPreview').style.display = 'none';
   document.getElementById('etfAddError').style.display      = 'none';
+  window._etfCpt = '';
   setEnveloppe('PEA');
   // Réinitialisation de la session de multi-ajout (voir etfSessionAddItem/etfSessionRender)
   _etfSessionAdded = [];
@@ -26518,6 +26717,7 @@ function openEditETF(idx){
   document.getElementById('etfGoogleCode').value          = e.googleCode||'';
   document.getElementById('etfSuggestions').style.display = 'none';
   document.getElementById('etfAddError').style.display    = 'none';
+  window._etfCpt = e.enveloppe === 'CTO' ? kyfCtoCompteOf(e) : '';
   setEnveloppe(e.enveloppe || 'PEA');
   // Afficher actif sélectionné
   const sel = document.getElementById('etfSelected');
@@ -29069,7 +29269,7 @@ const KYF_WATCHED_KEYS = new Set([
   'kyf-pee-abo-plafond','kyf-pee-abo-plafond-titres','kyf-pee-abo-multiple','kyf-pee-blocage-ans', // PEE limites d'abondement et blocage
   'kyf-cash-migrated-v2', // Migration répartition cash
   'kyf-pea-date-ouverture','kyf-pea-plafond','kyf-pea-taux-ir','kyf-pea-taux-ps', // Paramètres fiscaux PEA
-  'kyf-pme-date-ouverture','kyf-pme-total-verse','kyf-pme-plafond','kyf-pea-total-verse','kyf-cash-mvts','kyf-flux-neutres','kyf-ct-info','kyf-ct-hidden','kyf-pea-jeune','kyf-pea-jeune-fin', // PEA-PME et totaux versés (plafond commun)
+  'kyf-pme-date-ouverture','kyf-pme-total-verse','kyf-pme-plafond','kyf-pea-total-verse','kyf-cash-mvts','kyf-flux-neutres','kyf-ct-info','kyf-ct-hidden','kyf-cto-comptes','kyf-cto-fav','kyf-cto-cash','kyf-pea-jeune','kyf-pea-jeune-fin', // PEA-PME et totaux versés (plafond commun)
   'kyf-depense-mensuelle',// Dépenses mensuelles
   'kyf-forecast-horizon', // Budget horizon de projection
   'kyf-reccal-size',      // Budget taille calendrier récurrents
@@ -29881,7 +30081,7 @@ async function kyfInitialPush(){
     'pea-positions','pea-crypto-v1','pea-dca-v1',
     'kyf-dividendes','kyf-livrets','kyf-scpi',
     'kyf-immo','kyf-immo-credits','kyf-immo-revenus','kyf-sci',
-    'kyf-or','kyf-av','kyf-av-positions','kyf-pee','kyf-av-dca','kyf-av-dca-hist','kyf-av-frais-hist','kyf-frais-manuels','kyf-av-perf','kyf-frais-comp','kyf-av-arbitrages','kyf-cash-pea','kyf-cash-cto','kyf-cash-ccp','kyf-cash-mvts','kyf-flux-neutres','kyf-ct-info','kyf-ct-hidden','kyf-pea-jeune','kyf-pea-jeune-fin',
+    'kyf-or','kyf-av','kyf-av-positions','kyf-pee','kyf-av-dca','kyf-av-dca-hist','kyf-av-frais-hist','kyf-frais-manuels','kyf-av-perf','kyf-frais-comp','kyf-av-arbitrages','kyf-cash-pea','kyf-cash-cto','kyf-cash-ccp','kyf-cash-mvts','kyf-flux-neutres','kyf-ct-info','kyf-ct-hidden','kyf-cto-comptes','kyf-cto-fav','kyf-cto-cash','kyf-pea-jeune','kyf-pea-jeune-fin',
     'kyf-alerts-seuils','kyf-alerts-index',
     'kyf-etf-transactions','kyf-depense-mensuelle','kyf-per-tmi',
     'pea-etf-settings','pea-crypto-settings',
@@ -32684,6 +32884,7 @@ const IMPORT_TYPE_CONFIG = {
 };
 
 async function openImportRelevé(origin){
+  window._importCpt = '';
   window._ctImportEnv = null;   // posé ensuite par la page Comptes titres quand l'import vient d'elle
   try{ if(origin === 'av-per') kyfNewBadgeSeen('arb'); }catch(e){}
   // Si le popup « Par quoi voulez-vous commencer ? » est ouvert (nouvel utilisateur), on le ferme :
@@ -33150,7 +33351,7 @@ function kyfImportBrokerShow(on){
     const d = document.getElementById('importDest');
     if(d && Array.prototype.some.call(d.options, o => o.value === want) && d.value !== want){ d.value = want; d.dispatchEvent(new Event('change', { bubbles: true })); }
   }, 0);
-  kyfImportBrokerFill(); kyfImportVerseSync();
+  kyfImportCptSync(); kyfImportBrokerFill(); kyfImportVerseSync();
 }
 function kyfImportVerseSync(){   // champ « Total versé » : PEA et PEA-PME seulement, prérempli avec le total déjà connu
   const w = document.getElementById('importVerseWrap'), inp = document.getElementById('importVerse'), d = document.getElementById('importDest'); if(!w || !inp || !d) return;
@@ -33168,11 +33369,27 @@ function kyfImportVerseSave(enveloppe){   // enregistre le total versé saisi (j
   if(M.tag === 'PEA') kyfPeaTotalVerseSet(v);
   else { localStorage.setItem(M.verseKey, String(Math.round(v * 100) / 100)); try{ pmeFiscLoadParams(); pmeFiscSimuler(); }catch(e){} }
 }
-document.addEventListener('change', e => { if(e.target && e.target.id === 'importDest') kyfImportVerseSync(); });
+document.addEventListener('change', e => { if(e.target && e.target.id === 'importDest'){ kyfImportVerseSync(); kyfImportCptSync(); } });
+function kyfImportCpt(){   // compte CTO choisi pour l'import (null : pas de choix, un seul CTO ou autre destination)
+  const d = document.getElementById('importDest'), l = kyfCtoComptes();
+  if(_importType !== 'etf' || !d || d.value !== 'CTO' || l.length < 2) return null;
+  return l.some(c => c.id === window._importCpt) ? window._importCpt : 'c1';
+}
+function kyfImportCptSync(){
+  const w = document.getElementById('importCptWrap'), box = document.getElementById('importCptPills'); if(!w || !box) return;
+  const id = kyfImportCpt(); w.style.display = id ? 'block' : 'none'; box.textContent = ''; if(!id) return;
+  kyfCtoComptes().forEach(c => {
+    const a = c.id === id, b = document.createElement('button'); b.type = 'button'; b.id = 'importCpt_' + c.id; b.textContent = c.nom;
+    b.setAttribute('role', 'radio'); b.setAttribute('aria-checked', a ? 'true' : 'false');
+    b.style.cssText = 'cursor:pointer;font-family:inherit;padding:7px 14px;border-radius:7px;font-size:11px;font-weight:700;border:1px solid ' + (a ? 'var(--accent)' : 'var(--border2)') + ';background:' + (a ? 'rgba(77,159,255,0.12)' : 'rgba(255,255,255,0.04)') + ';color:' + (a ? 'var(--accent)' : 'var(--text3)');
+    b.onclick = () => { window._importCpt = c.id; kyfImportCptSync(); kyfImportBrokerFill(); try{ if(_importPendingResolved.length) importRenderPreviewETF(); }catch(e){} };
+    box.appendChild(b);
+  });
+}
 function kyfImportBrokerFill(){   // reprend le nom déjà connu pour la destination choisie (fiche Comptes titres, ou livret rattaché)
   const inp = document.getElementById('importBroker'), d = document.getElementById('importDest'); if(!inp || !d) return;
-  const k = kyfImportEnvKey(d.value);
-  let n = ''; try{ n = ctInfo()[k].etab || ctEtabAuto(k) || ''; }catch(e){}
+  const k = kyfImportEnvKey(d.value), cp = kyfImportCpt();
+  let n = ''; try{ n = cp ? ctCptInfo(cp).etab : (ctInfo()[k].etab || ctEtabAuto(k) || ''); }catch(e){}
   inp.value = n; inp.style.outline = '';
 }
 document.addEventListener('change', e => { if(e.target && e.target.id === 'importDest' && _importType === 'etf') kyfImportBrokerFill(); });
@@ -34064,7 +34281,8 @@ function kyfImportFindExisting(r){
   if(_importType === 'etf'){
     const env = kyfImportRowEnv(r);
     if(!env) return null;
-    return ETF.find(e => e.enveloppe === env && ((isin && String(e.isin || '').toUpperCase() === isin) || (tk && String(e.ticker || '').toUpperCase() === tk))) || null;
+    const cp = env === 'CTO' ? kyfImportCpt() : null;   // plusieurs CTO : seulement les lignes du compte choisi
+    return ETF.find(e => e.enveloppe === env && (!cp || kyfCtoCompteOf(e) === cp) && ((isin && String(e.isin || '').toUpperCase() === isin) || (tk && String(e.ticker || '').toUpperCase() === tk))) || null;
   }
   // assurance vie / PER : positions du contrat choisi
   const cid = kyfImportRowEnv(r);
@@ -35095,6 +35313,7 @@ async function importConfirm(){
       return;
     }
     let count = 0, updated = 0;
+    const _cpt = kyfImportCpt(), _cpE = rowEnv => (rowEnv === 'CTO' && _cpt) ? _cpt : undefined;   // compte des lignes CTO créées
     const perEnvCounts = {};
     const _mode = window._importChangedMode || 'update';
     const _sel = importGetSelectedIndices();
@@ -35109,7 +35328,7 @@ async function importConfirm(){
       const rowEnv = (r._finaEnv==='PEA'||r._finaEnv==='CTO') ? r._finaEnv : enveloppe;
       const _cls = kyfImportClassify(r);
       if(_cls.kind === 'changed' && _mode === 'update'){ kyfImportUpdateEtf(_cls.existing, r); updated++; return; }
-      const entry = { name:r.name, ticker:r.ticker, isin:r.isin, pru:r.pru, qty:r.qty, enveloppe:rowEnv, color:_etfColors[ETF.length%_etfColors.length] };
+      const entry = { name:r.name, ticker:r.ticker, isin:r.isin, pru:r.pru, qty:r.qty, enveloppe:rowEnv, compte:_cpE(rowEnv), color:_etfColors[ETF.length%_etfColors.length] };
       if(!r._needsPru) entry.montant = r.pru*r.qty; // sinon laissé non-défini : recalculé dynamiquement dès que le PRU est corrigé
       ETF.push(entry);
       perEnvCounts[rowEnv] = (perEnvCounts[rowEnv]||0) + 1;
@@ -35126,13 +35345,13 @@ async function importConfirm(){
         const envR = (r._finaEnv==='PEA'||r._finaEnv==='CTO') ? r._finaEnv : enveloppe;
         const isinR = fiNormalizeISIN(document.getElementById('fiMissingIsin'+kyfMissingLead(i))?.value||'') || r.isin || '';
         const nk = kyfImportNameKey(r.name || r.nom);
-        const exR = ETF.find(e => e.enveloppe === envR && !e.ticker && nk && kyfImportNameKey(e.name) === nk);
+        const exR = ETF.find(e => e.enveloppe === envR && (!_cpE(envR) || kyfCtoCompteOf(e) === _cpt) && !e.ticker && nk && kyfImportNameKey(e.name) === nk);
         if(exR){   // déjà là (relevé précédent) : mise à jour, jamais une seconde ligne
           if(Math.abs((exR.qty||0) - (r.qty||0)) < 1e-6 && Math.abs((exR.evalBase||0) - valR) < 0.01){ sameSkipped++; return; }
           exR.qty = r.qty; exR.evalBase = valR; if(!r._needsPru){ exR.pru = r.pru; exR.montant = r.pru * r.qty; }
           updated++; return;
         }
-        const entryR = { name:r.name||r.nom||isinR, ticker:'', isin:isinR, pru:r.pru, qty:r.qty, enveloppe:envR, color:_etfColors[ETF.length%_etfColors.length], evalBase:valR };
+        const entryR = { name:r.name||r.nom||isinR, ticker:'', isin:isinR, pru:r.pru, qty:r.qty, enveloppe:envR, compte:_cpE(envR), color:_etfColors[ETF.length%_etfColors.length], evalBase:valR };
         if(!r._needsPru) entryR.montant = r.pru*r.qty;
         ETF.push(entryR);
         perEnvCounts[envR] = (perEnvCounts[envR]||0) + 1;
@@ -35144,7 +35363,7 @@ async function importConfirm(){
       const _clsM = kyfImportClassify({ ...r, ticker, isin });
       if(_clsM.kind === 'same'){ sameSkipped++; return; }
       if(_clsM.kind === 'changed' && _mode === 'update'){ kyfImportUpdateEtf(_clsM.existing, r); updated++; return; }
-      const entry = { name:r.name||isin, ticker, isin, pru:r.pru, qty:r.qty, enveloppe:rowEnv, color:_etfColors[ETF.length%_etfColors.length] };
+      const entry = { name:r.name||isin, ticker, isin, pru:r.pru, qty:r.qty, enveloppe:rowEnv, compte:_cpE(rowEnv), color:_etfColors[ETF.length%_etfColors.length] };
       if(!r._needsPru) entry.montant = r.pru*r.qty;
       ETF.push(entry);
       perEnvCounts[rowEnv] = (perEnvCounts[rowEnv]||0) + 1;
@@ -35160,7 +35379,7 @@ async function importConfirm(){
       totalEspeces = _importEspecesRows.reduce((s,r)=>s+((r.qty&&r.pru)?r.qty*r.pru:(r.pru||r.qty||0)),0);
       // Jamais additionné : si la colonne « Espèces du compte » est vide (effacée), on enregistre le montant détecté en remplacement
       const _eiv = document.getElementById('importEspecesInput');
-      if(!_eiv || _eiv.value.trim()===''){ if(enveloppe==='PEA-PME'){ /* cash du PEA-PME non suivi */ } else if(enveloppe==='CTO'){ setCashCto(totalEspeces); } else { setCashPea(totalEspeces); } if(typeof renderCashKPI==='function') renderCashKPI(); }
+      if(!_eiv || _eiv.value.trim()===''){ if(enveloppe==='PEA-PME'){ /* cash du PEA-PME non suivi */ } else if(enveloppe==='CTO'){ if(!_cpt) setCashCto(totalEspeces); } else { setCashPea(totalEspeces); } if(typeof renderCashKPI==='function') renderCashKPI(); }
     }
     // Espèces saisies dans le popup : remplacent le cash de l'enveloppe (ou deviennent un livret rémunéré pour un CTO)
     { const _ei = document.getElementById('importEspecesInput');
@@ -35174,14 +35393,14 @@ async function importConfirm(){
           const _ec = (enveloppe === 'PEA' || enveloppe === 'CTO') ? enveloppe : undefined;   // compte titres d'où viennent ces espèces
           if(_ex){ _ex.solde = _ev; if(_tx > 0) _ex.taux = _tx; _ex.liquide = 1; if(_ec) _ex.envCompte = _ec; }
           else _lv.push({ id: Date.now().toString(), banque:_bq, type:_ty, solde:_ev, taux:Math.min(20, Math.max(0, _tx)), plafond:0, liquide:1, envCompte:_ec });
-          livSave(_lv); if(enveloppe === 'CTO') setCashCto(0); else if(enveloppe !== 'PEA-PME') setCashPea(0);
+          livSave(_lv); if(enveloppe === 'CTO'){ if(!_cpt) setCashCto(0); } else if(enveloppe !== 'PEA-PME') setCashPea(0);
           try{ renderLivrets(); }catch(e){}
-        } else if(enveloppe === 'CTO'){ setCashCto(_ev); }
+        } else if(enveloppe === 'CTO'){ if(!_cpt) setCashCto(_ev); }
         else if(enveloppe !== 'PEA-PME'){ setCashPea(_ev); }
         if(typeof renderCashKPI==='function') renderCashKPI();
       } }
     try{ kyfImportVerseSave(enveloppe); }catch(e){}   // total versé saisi : remplit la fiche Comptes titres et le plafond
-    try{ ctInfoSet(kyfImportEnvKey(enveloppe), 'etab', ctEtabCanon(_brk)); }catch(e){}   // même orthographe que dans le Détail du contrat (bourso devient Boursorama), donc même nom et même logo   // courtier saisi : remplit la fiche Comptes titres
+    try{ if(_cpt && enveloppe === 'CTO') ctCptInfoSet(_cpt, 'etab', ctEtabCanon(_brk)); else ctInfoSet(kyfImportEnvKey(enveloppe), 'etab', ctEtabCanon(_brk)); }catch(e){}   // même orthographe que dans le Détail du contrat (bourso devient Boursorama), donc même nom et même logo   // courtier saisi : remplit la fiche Comptes titres
     etfSave(); renderETFTable(window._lp||{}); renderDonut(); fetchAllPrices();
     closeImportRelevé();
     const detail = Object.keys(perEnvCounts).length>1 ? ' · ' + Object.entries(perEnvCounts).map(([e,n])=>`${n} en ${e}`).join(' · ') : ` dans votre portefeuille ${enveloppe}`;
@@ -38502,7 +38721,7 @@ function etfSessionRemove(sessionIdx){
     }
   }catch(_){}
   if(s.entry.enveloppe === 'PEA' || s.entry.enveloppe === 'CTO'){
-    if(s.cashDebited > 0) adjustCashForEnveloppe(s.entry.enveloppe, s.cashDebited); // remboursement de ce qui a réellement été débité (jamais plus)
+    if(s.cashDebited > 0) adjustCashForEnveloppe(s.entry.enveloppe, s.cashDebited, s.entry); // remboursement de ce qui a réellement été débité (jamais plus)
   }
   etfSave();
   _etfSessionAdded.splice(sessionIdx, 1);
@@ -38542,6 +38761,7 @@ async function confirmAddETF(){
     montant: pru * qty,
     enveloppe: document.querySelector('input[name="etfEnveloppe"]:checked')?.value || 'PEA',
     googleCode: (document.getElementById('etfGoogleCode')?.value||'').trim().toUpperCase()||undefined,
+    compte:  (document.querySelector('input[name="etfEnveloppe"]:checked')?.value === 'CTO' && kyfCtoComptes().length > 1) ? (kyfCtoComptes().some(c => c.id === window._etfCpt) ? window._etfCpt : 'c1') : undefined,
     color:   ETF[_etfEditIdx]?.color || _etfColors[ETF.length % _etfColors.length],
   };
   if(window._kyfPruNote){ entry.pruNote = window._kyfPruNote; window._kyfPruNote = null; if(window._kyfPruSrc){ entry.pruSrc = { pru: window._kyfPruSrc.pru, montant: window._kyfPruSrc.pru * qty }; window._kyfPruSrc = null; } }
@@ -38555,14 +38775,14 @@ async function confirmAddETF(){
     const oldQty = _etfEditIdx !== null ? (ETF[_etfEditIdx]?.qty || 0) : 0;
     if(qty > oldQty){
       // Renforcement (ou nouvel ajout) : débit du montant du delta acheté, au PRU saisi
-      window._etfLastCashDebit = -adjustCashForEnveloppe(entry.enveloppe, -(qty - oldQty) * pru);
+      window._etfLastCashDebit = -adjustCashForEnveloppe(entry.enveloppe, -(qty - oldQty) * pru, entry);
     } else if(qty < oldQty){
       // Quantité en baisse : vente partielle OU simple correction de saisie. On ne crédite jamais d'espèces sans le demander
       // (ETF-007), comme pour la suppression d'une ligne : « Annuler » = correction, espèces inchangées.
       const priceNow = (window._lp && window._lp[entry.ticker]?.price) || pru;
       const valVendue = (oldQty - qty) * priceNow;
       if(valVendue > 0 && (await kyfAsk('Quantité baissée de ' + fmt(oldQty, 4) + ' à ' + fmt(qty, 4) + '. Était-ce une vente ?\n\nOui : ajouter ' + fmt(valVendue, 2) + ' € aux espèces ' + entry.enveloppe + '.\nNon : simple correction de la quantité, espèces inchangées.', { ok:'Oui, une vente', cancel:'Non, correction' }))){
-        adjustCashForEnveloppe(entry.enveloppe, valVendue);
+        adjustCashForEnveloppe(entry.enveloppe, valVendue, entry);
       }
     }
     // qty === oldQty : simple correction, aucun mouvement de cash
@@ -38606,7 +38826,7 @@ async function confirmAddETF(){
     _all.push({ id: _etfLastTransId, type:'achat', ticker: entry.ticker, nom: entry.name,
       date: (function(){ const v=(document.getElementById('etfDateAchat')?.value||'').trim(); const t=_d.getFullYear()+'-'+_pad(_d.getMonth()+1)+'-'+_pad(_d.getDate()); return (/^\d{4}-\d{2}-\d{2}$/.test(v) && v<=t) ? v : t; })(),
       qty: entry.qty, prix: parseFloat(entry.pru.toFixed(4)), frais: 0, brut: _brut, net: _brut, ordre: _brut,
-      src: 'ajout-manuel', enveloppe: entry.enveloppe || 'PEA' });
+      src: 'ajout-manuel', enveloppe: entry.enveloppe || 'PEA', compte: entry.compte });
     etfTransSave(_all);
     loadEtfTransactions();
     try{ renderTransactions(); }catch(_){}
@@ -38652,7 +38872,7 @@ async function deleteETF(idx){
     const val = (pos.qty||0) * priceNow;
     if(val > 0 && (await kyfAsk('Était-ce une vente ?\n\nOui : ajouter ' + fmt(val,2) + ' € aux espèces ' + pos.enveloppe + '.\nNon : supprimer la ligne sans toucher aux espèces.', { ok:'Oui, une vente', cancel:'Non' }))){
       cashCredited = val;
-      adjustCashForEnveloppe(pos.enveloppe, cashCredited);
+      adjustCashForEnveloppe(pos.enveloppe, cashCredited, pos);
     }
   }
   ETF.splice(idx, 1);
@@ -39830,6 +40050,7 @@ function renderETFTable(lp){
   const collapsedEnvs = etfCollapsedEnvsLoad();
 
   const _favSet = new Set(kyfFavLoad().etf);
+  const _multiCto = kyfCtoComptes().length > 1;   // plusieurs CTO : le compte est rappelé sur chaque ligne CTO
   let rows = '';
   let lastEnv = null;
   const _grouped = sort === 'manual';   // en-têtes d'enveloppe (et repli) seulement en ordre manuel : trié par G/P, valeur, etc., la liste est à plat
@@ -39888,7 +40109,7 @@ function renderETFTable(lp){
       <td style="font-weight:600;cursor:pointer" onclick="etfInlineEditTicker(${ETF.indexOf(e)}, this, ${kyfJsonAttr(e.name)}, 'name')">
         <div style="display:flex;align-items:center;gap:7px">
           ${showLogo?renderAssetLogo(e.ticker,e.name,20):''}
-          <span>${escapeHtml(e.name)}</span>${_grouped?'':`<span class="kyf-env-chip" title="Enveloppe">${escapeHtml(({AV:'AV','PEA-PME':'PEA-PME'})[env] || envLabels[env] || env)}</span>`}
+          <span>${escapeHtml(e.name)}</span>${(env === 'CTO' && _multiCto) ? `<span class="kyf-env-chip" title="Compte CTO">${escapeHtml(kyfCtoNom(kyfCtoCompteOf(e)))}</span>` : (_grouped?'':`<span class="kyf-env-chip" title="Enveloppe">${escapeHtml(({AV:'AV','PEA-PME':'PEA-PME'})[env] || envLabels[env] || env)}</span>`)}
         </div>
       </td>
       <td style="font-size:9px;color:var(--text3);line-height:1.6;white-space:nowrap">
@@ -41525,16 +41746,20 @@ async function kyfAvisDevicePayload(action){
   const pow = await kyfAvisPow(dk, action); if(!pow) return null;
   return { action: action, deviceKey: dk, pow: pow };
 }
+function kyfAvisLocalFirst(){   // date de première utilisation connue de ce navigateur : le service ne la retient que si elle est plausible et plus ancienne que la sienne
+  const v = localStorage.getItem('kyf-oauth-first-seen') || localStorage.getItem('kyf-first-asset-date') || '';
+  const t = new Date(v).getTime(); return isNaN(t) ? '' : new Date(t).toISOString();
+}
 async function kyfAvisPingSeen(){
   try{
     if(localStorage.getItem(KYF_AVIS_SEEN_KEY) || !navigator.onLine) return;
     let d = null, src = '';
     if(localStorage.getItem('kyf-oauth-email') && window._kyfOAuthCache.token){
-      try{ d = await kyfAvisPost({ action:'avis_seen', token: await kyfGetValidToken() }); src = 'google'; }catch(e){ d = null; }
+      try{ d = await kyfAvisPost({ action:'avis_seen', premiere: kyfAvisLocalFirst(), token: await kyfGetValidToken() }); src = 'google'; }catch(e){ d = null; }
     }
     if(!(d && d.status === 'ok' && d.depuis) && localStorage.getItem('kyf-first-asset-date')){   // sans Google (ou Google refusé) : seulement après une vraie utilisation
       const p = await kyfAvisDevicePayload('avis_seen');
-      if(p){ d = await kyfAvisPost(p); src = 'appareil'; }
+      if(p){ p.premiere = kyfAvisLocalFirst(); d = await kyfAvisPost(p); src = 'appareil'; }
     }
     if(d && d.status === 'ok' && d.depuis){ localStorage.setItem(KYF_AVIS_SEEN_KEY, d.depuis); localStorage.setItem(KYF_AVIS_SEENSRC_KEY, src); }
   }catch(e){}
@@ -43116,7 +43341,7 @@ function kyfCorbeilleGetStore(storeKey){
       }catch(_){}
       // Annuler le crédit de cash avant de restaurer la position, sinon le
       // cash resterait crédité en double (position restaurée + cash gardé).
-      if(cashCredited) adjustCashForEnveloppe(pos.enveloppe, -cashCredited);
+      if(cashCredited) adjustCashForEnveloppe(pos.enveloppe, -cashCredited, pos);
       const insertAt = Math.min(entry.idx, ETF.length);
       ETF.splice(insertAt, 0, pos);
       etfSave();
@@ -43170,7 +43395,7 @@ function kyfCorbeilleGetStore(storeKey){
         try{ renderLivrets(); }catch(_){}
       }
       a.splice(Math.min(entry.idx, a.length), 0, m); kyfCashMvtsSave(a);
-      adjustCashForEnveloppe(m.env, m.sens === 'in' ? m.montant : -m.montant);
+      adjustCashForEnveloppe(m.env, m.sens === 'in' ? m.montant : -m.montant, m.cptCto ? { compte: m.cptCto } : undefined);
       if(m.verseAjuste) kyfPeaTotalVerseSet(kyfPeaTotalVerse() + m.montant);
       try{ renderCashKPI(); }catch(_){}
       try{ kyfCashMvtRefresh(); }catch(_){}
@@ -45358,7 +45583,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.10.88\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.11.15\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -48342,7 +48567,7 @@ function renderTransactions(){
         const nom=r.nom||r.etf||r.ticker||'-';
         const tick=r.ticker||'';
         const orBadge=isOr?`<br><span style="font-size:9px;color:#f0b429;font-weight:700;letter-spacing:.3px">OR</span>`:'';
-        const envB=(!isOr&&r.enveloppe)?` <span style="font-size:8px;font-weight:700;letter-spacing:.4px;color:var(--text3);border:1px solid var(--border2);border-radius:4px;padding:0 4px">${escapeHtml(r.enveloppe)}</span>`:'';
+        const envB=(!isOr&&r.enveloppe)?` <span style="font-size:8px;font-weight:700;letter-spacing:.4px;color:var(--text3);border:1px solid var(--border2);border-radius:4px;padding:0 4px">${escapeHtml(r.enveloppe === 'CTO' && r.compte && kyfCtoComptes().length > 1 ? kyfCtoNom(r.compte) : r.enveloppe)}</span>`:'';
         const nomCell=`<td>${escapeHtml(nom)}${tick?`<br><span style="font-size:9px;color:var(--text3)">${escapeHtml(tick)}</span>${envB}`:''}${orBadge}</td>`;
         const del=`<td><button onclick="deleteTransaction(${kyfJsNum(r.id)})" class="kyf-icon-btn" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;padding:2px 5px;transition:color .15s" title="Supprimer" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text3)'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg></button></td>`;
         if(isA){
@@ -48983,6 +49208,7 @@ input[type=number] { -moz-appearance:textfield; }
 .icon-btn.kyf-on{color:var(--accent);border-color:var(--accent)}
 body.kyf-discreet .kyf-amt{filter:blur(7px);user-select:none;-webkit-user-select:none}
 body.kyf-discreet canvas{filter:blur(5px)}
+body.kyf-discreet #ctF_cash:not(:focus){filter:blur(7px)}
 .kyf-rit-days{display:flex;gap:4px}
 .kyf-rit-day{flex:1;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:6px 0;border-radius:6px;border:1px solid var(--border2);background:none;color:var(--text3);cursor:pointer;transition:background .15s,color .15s}
 .kyf-rit-day:hover{background:rgba(128,128,128,0.16);color:var(--text)}
@@ -51368,7 +51594,7 @@ const KYF_STORAGE_KEYS = [
   'kyf-or-settings',
   'kyf-dividendes',
   'kyf-cash',
-  'kyf-cash-ccp','kyf-cash-mvts','kyf-flux-neutres','kyf-ct-info','kyf-ct-hidden','kyf-pea-jeune','kyf-pea-jeune-fin',
+  'kyf-cash-ccp','kyf-cash-mvts','kyf-flux-neutres','kyf-ct-info','kyf-ct-hidden','kyf-cto-comptes','kyf-cto-fav','kyf-cto-cash','kyf-pea-jeune','kyf-pea-jeune-fin',
   'kyf-cash-cto',
   'kyf-cash-pea',
   'kyf-cash-migrated-v2',
@@ -57202,6 +57428,7 @@ function contactDownloadCopy(){
         <button type="button" data-env="AV" onclick="transSetEnv('AV')" class="trans-env-pill">AV</button>
         <button type="button" data-env="PER" onclick="transSetEnv('PER')" class="trans-env-pill">PER</button>
       </div>
+      <div id="transCptWrap" style="display:none;margin-top:10px"><div style="font-size:9px;color:var(--text3);letter-spacing:.5px;margin-bottom:6px">COMPTE CTO</div><div id="transCptPills" role="radiogroup" aria-label="Compte CTO" style="display:flex;flex-wrap:wrap;gap:6px"></div></div>
       <style>.trans-env-pill{flex:1;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:.5px;padding:6px 0;border-radius:8px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text3);cursor:pointer;transition:all .15s}.trans-env-pill.on{border-color:var(--accent);color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent)}</style>
     </div>
     <!-- Achat payé depuis un livret (ex. Trade Republic) -->
@@ -58508,7 +58735,7 @@ function kyfRptDet(){
     if(c === 'etf'){
       h += kyfRptTable(['Ligne', 'Compte', 'Qté', 'PRU', 'Cours', 'Valeur', 'G/P €', 'G/P %'], its.map(it => {
         const e = ETF.find(x => 'etf:' + x.ticker === it.k) || {}, inv = (e.pru || 0) * (e.qty || 0), gp = it.val - inv, px = lp[e.ticker]?.price;
-        return [escapeHtml(it.name), escapeHtml(e.enveloppe || 'PEA'), fmt(e.qty || 0, 4).replace(/,?0+$/, ''), kyfRptE(e.pru || 0, 2), px ? fmt(px, 2) : '-', kyfRptE(it.val), inv > 0 ? '<span class="' + kyfRptGpCls(gp) + '">' + kyfRptE(gp) + '</span>' : '-', inv > 0 ? '<span class="' + kyfRptGpCls(gp) + '">' + kyfRptP(gp / inv * 100) + '</span>' : '-'];
+        return [escapeHtml(it.name), escapeHtml((e.enveloppe === 'CTO' && kyfCtoComptes().length > 1) ? 'CTO · ' + kyfCtoNom(kyfCtoCompteOf(e)) : (e.enveloppe || 'PEA')), fmt(e.qty || 0, 4).replace(/,?0+$/, ''), kyfRptE(e.pru || 0, 2), px ? fmt(px, 2) : '-', kyfRptE(it.val), inv > 0 ? '<span class="' + kyfRptGpCls(gp) + '">' + kyfRptE(gp) + '</span>' : '-', inv > 0 ? '<span class="' + kyfRptGpCls(gp) + '">' + kyfRptP(gp / inv * 100) + '</span>' : '-'];
       }), [2, 3, 4, 5, 6, 7]);
     } else if(c === 'cry'){
       h += kyfRptTable(['Ligne', 'Qté', 'PRU', 'Valeur', 'G/P €', 'G/P %'], its.map(it => {
@@ -58595,24 +58822,25 @@ function kyfRptFis(){
   return h;
 }
 // Rapport « Comptes titres » : une section par compte affiché (PEA, PEA-PME, CTO), mêmes chiffres que la page Comptes titres
-function kyfRptCtOne(env){
-  const M = KYF_CT_META[env], E = ctEtatLigne(env), nb = E.lignes.length, tousSans = nb > 0 && E.ok.length === 0, info = ctInfo()[env] || {};
+function kyfRptCtOne(env, cpt){   // cpt : un seul compte CTO (plusieurs comptes) ; sans lui : toute l'enveloppe
+  const M = KYF_CT_META[env], E = ctEtatLigne(env, cpt), nb = E.lignes.length, tousSans = nb > 0 && E.ok.length === 0, info = cpt ? ctCptInfo(cpt) : (ctInfo()[env] || {});
+  const multi = env === 'CTO' && !cpt && kyfCtoComptes().length > 1;   // CTO TOTAUX : les lignes sont détaillées compte par compte juste après
   let cash = 0, total, pv, base = false, inv = 0, titres;
   if(env === 'PEA'){ const x = peaFiscSituation(); cash = x.cash; titres = x.valeur - x.cash; total = x.valeur; pv = x.pvTotale; base = x.baseVerse; inv = x.investi; }
   else if(env === 'PME'){ const x = pmeFiscSituation(); titres = x.valeur; total = x.valeur; pv = x.plusValue; base = x.baseVerse; inv = x.investi; }
-  else { cash = getCashCto(); titres = E.val; total = titres + cash; pv = E.val - E.cout; }
+  else { cash = cpt ? kyfCtoCashOf(cpt) : getCashCto(); titres = E.val; total = titres + cash; pv = E.val - E.cout; }
   const date = M.dateKey ? (localStorage.getItem(M.dateKey) || '') : (info.date || '');
   const mo = date ? kyfMoisEntiersDepuis(date) : null, moOk = (mo !== null && mo >= 0);
-  const etab = info.etab || ctEtabAuto(env) || '';
+  const etab = info.etab || (cpt ? '' : ctEtabAuto(env)) || '';
   const pvLab = env === 'CTO' ? 'Plus-value latente des lignes (valeur moins coût)' : (base ? 'Plus-value fiscale (valeur moins total versé)' : 'Plus-value latente (estimée sur le coût)');
-  let h = '<h2>' + escapeHtml(M.titre) + (etab ? ' <span>' + escapeHtml(etab) + '</span>' : '') + '</h2>';
+  let h = '<h2>' + escapeHtml(cpt ? 'CTO · ' + kyfCtoNom(cpt) : (multi ? 'CTO · tous les comptes (' + kyfCtoComptes().length + ')' : M.titre)) + (etab && !multi ? ' <span>' + escapeHtml(etab) + '</span>' : '') + '</h2>';
   if(nb === 0 && !(cash > 0) && !base) return h + '<p class="mu">Aucune ligne ni donnée suivie sur ce compte.</p>';
   h += '<div class="kp"><div><span>VALEUR TOTALE</span><b>' + (tousSans ? 'indisponible' : kyfRptE(total, 2)) + '</b>' + (cash > 0 && !tousSans ? '<small>dont espèces ' + kyfRptE(cash, 2) + '</small>' : '') + '</div>'
     + '<div><span>PLUS-VALUE</span><b class="' + (tousSans ? '' : kyfRptGpCls(pv)) + '">' + (tousSans ? 'indisponible' : (pv >= 0 ? '+' : '') + kyfRptE(pv, 2)) + '</b><small>' + escapeHtml(pvLab) + '</small></div>'
     + (M.verseKey ? '<div><span>TOTAL VERSÉ</span><b>' + (base && inv > 0 ? kyfRptE(inv, 2) : '-') + '</b>' + (base ? '' : '<small>non renseigné</small>') + '</div>' : '') + '</div>';
-  const j = ctJour(env), rows = [];
-  rows.push(['Établissement', etab ? escapeHtml(etab) : 'non renseigné']);
-  rows.push(['Date d\'ouverture', date ? escapeHtml(ctDateFr(date)) + (moOk ? ' (' + escapeHtml(ctDuree(mo)) + ')' : '') : 'non renseignée']);
+  const j = ctJour(env, cpt), rows = [];
+  if(!multi) rows.push(['Établissement', etab ? escapeHtml(etab) : 'non renseigné']);
+  if(!multi) rows.push(['Date d\'ouverture', date ? escapeHtml(ctDateFr(date)) + (moOk ? ' (' + escapeHtml(ctDuree(mo)) + ')' : '') : 'non renseignée']);
   if(M.cinq && moOk){ const d5 = date.slice(0, 4) * 1 + 5 + date.slice(4, 10); rows.push(['5 ans', mo >= 60 ? 'révolus depuis le ' + escapeHtml(ctDateFr(d5)) : 'le ' + escapeHtml(ctDateFr(d5)) + ', encore ' + escapeHtml(ctDuree(60 - mo))]); }
   rows.push(['Valeur des lignes', tousSans ? 'indisponible' : kyfRptE(titres, 2)]);
   rows.push(['Coût d\'acquisition', tousSans ? 'indisponible' : kyfRptE(E.cout, 2)]);
@@ -58626,7 +58854,7 @@ function kyfRptCtOne(env){
   }
   h += kyfRptTable(['Compte', ''], rows, []);
   if(E.sansCours > 0) h += '<p class="mu">' + E.sansCours + (E.sansCours > 1 ? ' lignes sans cours ne sont pas comptées' : ' ligne sans cours n\'est pas comptée') + ' : valeur et plus-value sont sous-évaluées.</p>';
-  if(nb > 0){
+  if(nb > 0 && !multi){
     const lp = window._lp || {};
     h += kyfRptTable(['Ligne', 'Qté', 'PRU', 'Cours', 'Valeur', 'G/P €'], E.lignes.map(e => {
       const nop = kyfEtfNoPrice(e, lp), val = nop ? null : getEval(e, lp[e.ticker]), iv = etfInvestOf(e), gp = val === null ? null : val - iv, px = lp[e.ticker] && lp[e.ticker].price;
@@ -58638,7 +58866,7 @@ function kyfRptCtOne(env){
 function kyfRptCt(){
   try{ peaFiscLoadParams(); pmeFiscLoadParams(); peaFiscSimuler(); pmeFiscSimuler(); }catch(e){}
   let h = kyfRptHead('Comptes titres', 'PEA, PEA-PME et CTO : mêmes chiffres que la page Comptes titres');
-  h += ctTabList().map(t => kyfRptCtOne(t.k)).join('');
+  h += ctTabList().map(t => kyfRptCtOne(t.k) + (t.k === 'CTO' && kyfCtoComptes().length > 1 ? kyfCtoComptes().map(c => kyfRptCtOne('CTO', c.id)).join('') : '')).join('');
   h += '<p class="mu">Valeur totale = valeur des lignes au cours du jour plus les espèces suivies. Quand un cours ou un montant manque, la ligne est exclue ou marquée « indisponible » : aucun chiffre n\'est estimé.</p>';
   return h;
 }
@@ -58949,6 +59177,7 @@ function openAddTransaction(type){
   document.getElementById('transConfirmBtn').style.color = type === 'achat' ? '#000' : '#fff';
   kyfDateSetValue('transInputDate', (function(){ const n=new Date(); return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0'); })());
   document.getElementById('transInputDateBtn')?.classList.remove('kyf-date-future');
+  window._transCpt = '';
   transSetEnv('PEA');
 
   // Construire la liste de suggestions depuis ETF[]
@@ -58967,7 +59196,7 @@ function openAddTransaction(type){
     // Ligne la plus fournie : l'enveloppe est présélectionnée (modifiable ensuite)
     const pos = _tl.slice().sort((a,b)=>(parseFloat(b.qty)||0)-(parseFloat(a.qty)||0))[0];
     if(pos){
-      if(pos.enveloppe) transSetEnv(pos.enveloppe);
+      if(pos.enveloppe){ if(pos.enveloppe === 'CTO') window._transCpt = kyfCtoCompteOf(pos); transSetEnv(pos.enveloppe); }
       document.getElementById('transInputNom').value = pos.name || '';
       if(type === 'vente'){
         document.getElementById('transInputPRU').value = pos.pru || '';
@@ -59114,15 +59343,31 @@ function kyfLivretPay(tx, sign){
     return true;
   }catch(e){ return false; }
 }
+function kyfTransCpt(){   // compte CTO choisi dans le formulaire (null : autre enveloppe ou un seul CTO)
+  const h = document.getElementById('transInputEnv'), l = kyfCtoComptes();
+  if(!h || h.value !== 'CTO' || l.length < 2) return null;
+  return l.some(c => c.id === window._transCpt) ? window._transCpt : 'c1';
+}
+function kyfTransCptRender(){
+  const w = document.getElementById('transCptWrap'), box = document.getElementById('transCptPills'); if(!w || !box) return;
+  const id = kyfTransCpt(); w.style.display = id ? 'block' : 'none'; box.textContent = ''; if(!id) return;
+  kyfCtoComptes().forEach(c => {
+    const b = document.createElement('button'); b.type = 'button'; b.id = 'transCpt_' + c.id; b.textContent = c.nom; b.className = 'trans-env-pill' + (c.id === id ? ' on' : '');
+    b.style.flex = '0 0 auto'; b.style.padding = '6px 14px'; b.setAttribute('role', 'radio'); b.setAttribute('aria-checked', c.id === id ? 'true' : 'false');
+    b.onclick = () => { window._transCpt = c.id; kyfTransCptRender(); };
+    box.appendChild(b);
+  });
+}
 function transSetEnv(env){
   const h = document.getElementById('transInputEnv'); if(h) h.value = env;
   document.querySelectorAll('#transEnvPills .trans-env-pill').forEach(b => b.classList.toggle('on', b.dataset.env === env));
   try{ kyfTransSourceRender(); }catch(_){}
+  try{ kyfTransCptRender(); }catch(_){}
   // En vente, le PRU suit la ligne de l'enveloppe choisie
   try{
     if(typeof _transType !== 'undefined' && _transType === 'vente'){
       const tk = (document.getElementById('transInputTicker')?.value||'').trim().toUpperCase();
-      const l = ETF.find(e => e.ticker?.toUpperCase() === tk && (e.enveloppe||'PEA') === env);
+      const l = ETF.find(e => e.ticker?.toUpperCase() === tk && (e.enveloppe||'PEA') === env && (env !== 'CTO' || !kyfTransCpt() || kyfCtoCompteOf(e) === kyfTransCpt()));
       const pr = document.getElementById('transInputPRU');
       if(l && pr) pr.value = l.pru || '';
     }
@@ -59171,7 +59416,7 @@ function kyfSyncPositionFromTransaction(trans){
   if(!trans || !trans.ticker) return;
   // Enveloppe de la transaction ; une transaction ancienne (sans enveloppe) retombe sur la première ligne du ticker
   const _te = trans.enveloppe || null;
-  const _match = e => e.ticker?.toUpperCase() === trans.ticker.toUpperCase() && (!_te || (e.enveloppe||'PEA') === _te);
+  const _match = e => e.ticker?.toUpperCase() === trans.ticker.toUpperCase() && (!_te || (e.enveloppe||'PEA') === _te) && (!(_te === 'CTO' && trans.compte) || kyfCtoCompteOf(e) === trans.compte);   // plusieurs CTO : la ligne du bon compte
   const idx = ETF.findIndex(_match);
   if(trans.type === 'achat'){
     const costBasis = trans.net; // net = brut + frais pour un achat
@@ -59183,6 +59428,7 @@ function kyfSyncPositionFromTransaction(trans){
         qty: trans.qty,
         montant: parseFloat(costBasis.toFixed(2)),
         enveloppe: _te || 'PEA',
+        compte: (_te === 'CTO' && trans.compte) ? trans.compte : undefined,
         color: _etfColors[ETF.length % _etfColors.length],
       });
     } else {
@@ -59225,14 +59471,14 @@ function kyfReconcilePositionsFromTransactions(){
   all.forEach(t => {
     const tk = t.ticker?.toUpperCase();
     if(!tk) return;
-    const k = tk + '|' + (t.enveloppe || '');
+    const k = tk + '|' + (t.enveloppe || '') + '|' + (t.enveloppe === 'CTO' && t.compte ? t.compte : '');
     (byTicker[k] = byTicker[k] || []).push(t);
   });
   let created = 0;
   Object.keys(byTicker).forEach(key => {
-    const tk = key.split('|')[0], tenv = key.split('|')[1] || '';
+    const tk = key.split('|')[0], tenv = key.split('|')[1] || '', tcpt = key.split('|')[2] || '';
     // Transaction sans enveloppe (ancienne) : ligne existante du ticker quelle qu'elle soit ; sinon, comparaison à l'enveloppe
-    if(ETF.some(e => e.ticker?.toUpperCase() === tk && (!tenv || (e.enveloppe||'PEA') === tenv))) return;
+    if(ETF.some(e => e.ticker?.toUpperCase() === tk && (!tenv || (e.enveloppe||'PEA') === tenv) && (!tcpt || kyfCtoCompteOf(e) === tcpt))) return;
     if(_tomb.has(tk) || (tenv && _tomb.has(tk + '|' + tenv))) return;
     const txs = byTicker[key].slice().sort((a,b) => kyfTwrIsoDate_(a.date).localeCompare(kyfTwrIsoDate_(b.date)) || a.id - b.id);   // dates jj/mm/aaaa converties : sinon triées comme du texte (une vente 10/03/2024 passait avant un achat 20/12/2023)
     let qty = 0, cost = 0, nom = tk;
@@ -59248,6 +59494,7 @@ function kyfReconcilePositionsFromTransactions(){
         qty: qty,
         montant: parseFloat(cost.toFixed(2)),
         enveloppe: tenv || 'PEA',
+        compte: tcpt || undefined,
         color: _etfColors[ETF.length % _etfColors.length],
       });
       created++;
@@ -59278,7 +59525,8 @@ async function confirmAddTransaction(){
   // montant était crédité, même pour une quantité supérieure à la position)
   const _env = document.getElementById('transInputEnv')?.value || 'PEA';
   const _all = ETF.filter(e => e.ticker?.toUpperCase() === ticker);
-  const _lines = _all.filter(e => (e.enveloppe||'PEA') === _env);
+  const _cpt = (_env === 'CTO') ? kyfTransCpt() : null;   // plusieurs CTO : le compte choisi
+  const _lines = _all.filter(e => (e.enveloppe||'PEA') === _env && (!_cpt || kyfCtoCompteOf(e) === _cpt));
   const _held = _lines.reduce((t,e)=>t+(parseFloat(e.qty)||0),0);
   if(_transType === 'vente'){
     if(_lines.length && qty > _held + 1e-9){ alert('Quantité vendue (' + qty + ') supérieure à la quantité détenue en ' + _env + ' (' + _held + ').'); return; }
@@ -59297,7 +59545,7 @@ async function confirmAddTransaction(){
   const trans = {
     id:     Date.now(),
     type:   _transType,
-    ticker, nom, date, qty, enveloppe: _env,
+    ticker, nom, date, qty, enveloppe: _env, compte: _cpt || undefined,
     prix:   parseFloat(prix.toFixed(4)),
     frais:  parseFloat(frais.toFixed(2)),
     brut:   parseFloat(brut.toFixed(2)),
@@ -59310,7 +59558,7 @@ async function confirmAddTransaction(){
   // Achat PEA/CTO : on mémorise le cash réellement débité (le débit s'arrête à 0), pour que l'annulation rende exactement cela
   if(_srcLiv){ trans.livretId = _srcLiv.id; trans.livretDebite = trans.net; }
   if(trans.type === 'achat' && (_env === 'PEA' || _env === 'CTO') && !_srcLiv){
-    const _cur0 = _env === 'CTO' ? getCashCto() : getCashPea();
+    const _cur0 = kyfCashCur(_env, { compte: _cpt });
     trans.cashDebite = _cur0 > 0 ? parseFloat(Math.min(_cur0, trans.net).toFixed(2)) : 0;
   }
   const all = etfTransLoad();
@@ -59326,9 +59574,9 @@ async function confirmAddTransaction(){
   // Avant : toujours le cash PEA, même pour une position détenue en CTO.
   if(_env === 'PEA' || _env === 'CTO'){
     if(_transType === 'achat'){
-      if(trans.cashDebite > 0) adjustCashForEnveloppe(_env, -trans.cashDebite);
+      if(trans.cashDebite > 0) adjustCashForEnveloppe(_env, -trans.cashDebite, trans);
     } else {
-      adjustCashForEnveloppe(_env, parseFloat(trans.net.toFixed(2)));
+      adjustCashForEnveloppe(_env, parseFloat(trans.net.toFixed(2)), trans);
     }
   }
   // Mettre à jour les KPIs INVESTI NET + CASH
@@ -59348,22 +59596,22 @@ function kyfTradeCash(tx, sign){
   if(tx.type === 'achat' && tx.livretId){ kyfLivretPay(tx, sign); return; }   // achat payé par un livret : le cash de l'enveloppe n'a pas été touché
   const env = kyfTradeEnv(tx);
   if(env !== 'PEA' && env !== 'CTO') return;
-  const cur = env === 'CTO' ? getCashCto() : getCashPea();
+  const cur = kyfCashCur(env, tx);
   const net = parseFloat(tx.net) || 0;
   const debit = (tx.type === 'achat') === (sign > 0); // l'effet net est-il un débit ?
   if(debit){
     const d = cur > 0 ? Math.min(cur, net) : 0;
-    if(d > 0) adjustCashForEnveloppe(env, -d);
+    if(d > 0) adjustCashForEnveloppe(env, -d, tx);
     if(tx.type === 'achat'){ // rejeu d'un achat : on garde le débit réellement fait, y compris dans la transaction enregistrée
       tx.cashDebite = parseFloat(d.toFixed(2));
       try{ const all = etfTransLoad(); const st = all.find(x => x.id === tx.id); if(st){ st.cashDebite = tx.cashDebite; etfTransSave(all); } }catch(_){}
     }
   }
-  else if(tx.type === 'achat' && tx.cashDebite !== undefined) adjustCashForEnveloppe(env, Math.min(net, parseFloat(tx.cashDebite) || 0)); // annulation d'un achat : on rend ce qui a réellement été débité
+  else if(tx.type === 'achat' && tx.cashDebite !== undefined) adjustCashForEnveloppe(env, Math.min(net, parseFloat(tx.cashDebite) || 0), tx); // annulation d'un achat : on rend ce qui a réellement été débité
   // R08 (contre-audit 11/10/2026, décision Jerem option A) : ancien achat, enregistré avant le suivi du débit réel (pas de cashDebite).
   // On ne sait pas ce qui avait été retiré des espèces : rien n'est rendu d'office, l'utilisateur choisit le montant (pré-rempli, modifiable).
   else if(tx.type === 'achat'){ if(net > 0) kyfLegacyCashAsk(env, net, tx); }
-  else adjustCashForEnveloppe(env, net);
+  else adjustCashForEnveloppe(env, net, tx);
 }
 // Fenêtre « Remettre du cash ? » pour l'annulation d'un ancien achat (R08)
 function kyfLegacyCashAsk(env, net, tx){
@@ -59392,7 +59640,7 @@ function kyfLegacyCashAsk(env, net, tx){
         if(b.getAttribute('data-a') === 'keep') return keep();
         const v = parseFloat(String(ov.querySelector('input').value || '').replace(/[\s\u00A0\u202F]/g, '').replace(',', '.'));
         const amt = isFinite(v) ? Math.max(0, Math.min(net, v)) : 0;
-        if(amt > 0) adjustCashForEnveloppe(env, parseFloat(amt.toFixed(2)));
+        if(amt > 0) adjustCashForEnveloppe(env, parseFloat(amt.toFixed(2)), tx);
         done();
       });
     });
@@ -59403,7 +59651,7 @@ function kyfLegacyCashAsk(env, net, tx){
 function kyfTradeRevert(tx){
   if(!tx || !tx.ticker) return;
   const tk = tx.ticker.toUpperCase(), env = tx.enveloppe || null;
-  const line = ETF.find(e => e.ticker?.toUpperCase() === tk && (!env || (e.enveloppe||'PEA') === env));
+  const line = ETF.find(e => e.ticker?.toUpperCase() === tk && (!env || (e.enveloppe||'PEA') === env) && (!(env === 'CTO' && tx.compte) || kyfCtoCompteOf(e) === tx.compte));
   if(tx.type === 'achat'){
     if(line){
       const q = parseFloat(line.qty)||0, nq = q - tx.qty;
@@ -59422,7 +59670,7 @@ function kyfTradeRevert(tx){
       line.qty = nq; line.montant = parseFloat((nq * line.pru).toFixed(2));
     } else {
       ETF.push({ name: tx.nom || tx.ticker, ticker: tx.ticker, pru: parseFloat((+pru).toFixed(4)), qty: tx.qty,
-        montant: parseFloat((tx.qty * pru).toFixed(2)), enveloppe: env || 'PEA', color: _etfColors[ETF.length % _etfColors.length] });
+        montant: parseFloat((tx.qty * pru).toFixed(2)), enveloppe: env || 'PEA', compte: (env === 'CTO' && tx.compte) ? tx.compte : undefined, color: _etfColors[ETF.length % _etfColors.length] });
       kyfEtfTombDel(tx.ticker, env || 'PEA');
     }
   }
@@ -59750,7 +59998,7 @@ const GUIDE_PAGES = [
     icon: '',
     body: `
       <div style="background:rgba(77,159,255,0.05);border:1px solid rgba(77,159,255,0.2);border-radius:10px;padding:14px 16px;margin-bottom:14px">
-        <div style="font-size:13px;color:var(--text2);line-height:1.8">Le tableau POSITIONS ETF &amp; ACTIONS regroupe vos lignes par enveloppe : PEA, PEA-PME, CTO, et Assurance Vie/PER (qui y apparaissent aussi, en plus de MES CONTRATS). Le PEA-PME est une enveloppe à part : son cash n'est pas suivi et ne touche jamais celui du PEA.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.8">Le tableau POSITIONS ETF &amp; ACTIONS regroupe vos lignes par enveloppe : PEA, PEA-PME, CTO, et Assurance Vie/PER (qui y apparaissent aussi, en plus de MES CONTRATS). Le PEA-PME est une enveloppe à part : son cash n'est pas suivi et ne touche jamais celui du PEA. Avec plusieurs comptes CTO, ils restent dans un seul groupe CTO et une pastille indique le compte de chaque ligne.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
         <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Ajouter une position</div>
@@ -61819,7 +62067,7 @@ const GUIDE_PAGES = [
 
         <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px">
           <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="12" width="4" height="10"/><rect x="9" y="7" width="4" height="15"/><rect x="16" y="3" width="4" height="19"/></svg> CTO, plus-value déjà réalisée</div>
-          <div style="font-size:13px;color:var(--text2);line-height:1.9">Contrairement au PEA, chaque vente sur un Compte-Titres est un événement imposable, peu importe la durée de détention. KYF calcule la plus-value déjà réalisée sur vos ventes CTO enregistrées, avec le régime par défaut du <strong style="color:var(--text)">PFU (31,4%)</strong>. Vous restez libre d'opter pour le barème progressif de l'IR lors de votre déclaration si c'est plus avantageux pour vous.</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.9">Contrairement au PEA, chaque vente sur un Compte-Titres est un événement imposable, peu importe la durée de détention. KYF calcule la plus-value déjà réalisée sur vos ventes CTO enregistrées (tous comptes CTO réunis), avec le régime par défaut du <strong style="color:var(--text)">PFU (31,4%)</strong>. Avec plusieurs comptes CTO, une ligne indique la part de chaque compte dans la plus-value de l'année. Vous restez libre d'opter pour le barème progressif de l'IR lors de votre déclaration si c'est plus avantageux pour vous.</div>
           <div class="gj-orange" style="font-size:12px;color:#f59e0b;line-height:1.8;margin-top:10px">Limite connue : une position CTO entièrement soldée disparaît de votre portefeuille, KYF ne peut alors plus retrouver son enveloppe d'origine. Ce calcul peut donc sous-estimer votre plus-value réelle si vous avez déjà clôturé des positions CTO.</div>
         </div>
 
@@ -61829,8 +62077,8 @@ const GUIDE_PAGES = [
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V8H6a2 2 0 0 1 0-4h12v4"/><path d="M4 6v12a2 2 0 0 0 2 2h14v-4"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/></svg> Espèces, versements et retraits (PEA et CTO)</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9">Sous le tableau ETF &amp; Actions, la ligne <strong style="color:var(--text)">Espèces</strong> affiche les liquidités de votre PEA et de votre CTO (ou « à renseigner »). Un clic ouvre la fenêtre Cash : à gauche vos espèces, à droite le volet <strong style="color:var(--text)">Versements et retraits</strong>.</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">Choisissez l'enveloppe (PEA ou CTO), Versement ou Retrait, le montant et la date, puis <strong style="color:var(--text)">ENREGISTRER</strong>. Un versement augmente les espèces de l'enveloppe ; pour le PEA, il augmente aussi le « Total versé à ce jour », mais seulement si vous l'avez déjà renseigné : KYF n'invente aucun chiffre. Un retrait diminue les espèces, ne peut jamais dépasser les espèces disponibles et ne modifie pas le total versé.</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">À la saisie d'un dividende PEA ou CTO, la case <strong style="color:var(--text)">Créditer le cash du PEA/CTO</strong> (cochée d'office) ajoute le dividende aux espèces. Modifier ou supprimer le dividende rend exactement la somme créditée ; les dividendes déjà saisis ou importés ne touchent pas au cash.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">Choisissez l'enveloppe (PEA ou CTO, et le compte CTO si vous en avez plusieurs), Versement ou Retrait, le montant et la date, puis <strong style="color:var(--text)">ENREGISTRER</strong>. Un versement augmente les espèces de l'enveloppe ; pour le PEA, il augmente aussi le « Total versé à ce jour », mais seulement si vous l'avez déjà renseigné : KYF n'invente aucun chiffre. Un retrait diminue les espèces, ne peut jamais dépasser les espèces disponibles et ne modifie pas le total versé.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">À la saisie d'un dividende PEA ou CTO, la case <strong style="color:var(--text)">Créditer le cash du PEA/CTO</strong> (cochée d'office) ajoute le dividende aux espèces (avec plusieurs comptes CTO, au compte qui détient le titre, ou au total si plusieurs comptes le détiennent). Modifier ou supprimer le dividende rend exactement la somme créditée ; les dividendes déjà saisis ou importés ne touchent pas au cash.</div>
       </div>
 
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
@@ -62090,6 +62338,10 @@ const GUIDE_PAGES = [
           <div style="font-size:13px;color:var(--text2);line-height:1.9">Replié par défaut. Il contient l'établissement, la date d'ouverture, le total versé et les espèces (et, pour le PEA, l'interrupteur « PEA jeune » avec la fin du rattachement), ainsi que les boutons <strong style="color:var(--text)">Importer un relevé</strong> et <strong style="color:var(--text)">Ajouter une ligne</strong> qui s'ouvrent déjà sur le compte affiché.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Total versé</strong> : vous pouvez coller un montant tel quel, avec espaces, virgule ou symbole € (par exemple 42 143,57 €). C'est la somme de tous vos versements depuis l'ouverture ; les retraits ne la réduisent pas.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Espèces</strong> : si vos espèces sont placées dans un livret d'épargne rattaché au compte (Trade Republic, Revolut...), KYF vous demande « ce livret est-il lié à ce compte ? ». Votre réponse est mémorisée. Les livrets liés s'ajoutent à l'affichage des espèces ; ils ne changent pas les totaux fiscaux, qui ne comptent que le cash.</div>
         </div>
         <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px">
+          <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="14" height="12" rx="2"/><path d="M20 8v8"/></svg> Plusieurs comptes CTO</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.9">Vous avez plusieurs CTO (chez deux courtiers, par exemple) ? Dans la fiche CTO, le bouton <strong style="color:var(--text)">Ajouter un compte CTO</strong> en crée un nouveau (6 au maximum). Les cartes forment alors une pile : <strong style="color:var(--text)">CTO TOTAUX</strong> devant (la somme de tous vos CTO), les comptes derrière. Pour passer de l'un à l'autre : glissez la carte, utilisez les flèches qui apparaissent quand vous la survolez, les touches ← et → du clavier, ou les points sous la pile.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">L'<strong style="color:var(--text)">étoile</strong> marque la carte affichée à l'ouverture ; sans favori, KYF ouvre CTO TOTAUX. Chaque compte a son nom, son établissement et sa date d'ouverture, à régler dans le Détail du contrat.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Espèces</strong> : chaque compte a les siennes. Sur CTO TOTAUX, vous voyez et modifiez le total : CTO 1 prend la différence. Les achats, ventes, versements, retraits, dividendes et plans programmés touchent les espèces du compte concerné, sans jamais les faire passer sous zéro. Vos espèces d'avant restent à CTO 1.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Choisir le compte</strong> : « Ajouter une ligne », « Importer un relevé » et Transactions proposent le compte dès que vous avez plusieurs CTO, préchoisi d'après la carte affichée. Une ligne sans compte appartient à CTO 1. Dans Portefeuille et Transactions, une pastille indique le compte. Importer un relevé de plusieurs comptes ne modifie pas les espèces.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Supprimer</strong> : seulement un compte vide (sans ligne, sans transaction, sans espèces) ; CTO 1 ne se supprime pas. La page Fiscalité montre la part de chaque compte dans les ventes de l'année (le PFU reste calculé sur le total), et le rapport PDF « Comptes titres » détaille chaque compte. Les comptes, le favori et les espèces par compte font partie de vos sauvegardes et de votre synchronisation.</div>
+        </div>
+        <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px">
           <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Les 5 ans et le plafond de versement</div>
           <div style="font-size:13px;color:var(--text2);line-height:1.9">Deux cartes sous la fiche, sans répétition : <strong style="color:var(--text)">Ouvert le</strong> (la date d'ouverture, avec une étiquette verte « 5 ans » une fois les 5 ans révolus et une frise d'avancement) et <strong style="color:var(--text)">Total versé</strong> (le montant versé, sa part du plafond et ce qu'il en reste).</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">Plafonds par défaut : <strong style="color:var(--text)">150 000 €</strong> pour le PEA, et <strong style="color:var(--text)">225 000 €</strong> cumulés pour le PEA et le PEA-PME ensemble. Ils se modifient dans Paramètres fiscaux si la loi change. Sans le total versé du PEA, le cumul n'est pas calculé : KYF l'indique au lieu de le deviner. La barre passe à l'orange à 90 % puis au rouge à 100 %.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">PEA jeune</strong> : dans le Détail du contrat du PEA, activez « PEA jeune » si vous êtes majeur et rattaché au foyer fiscal de vos parents. Le plafond de versement devient <strong style="color:var(--text)">20 000 €</strong>. Indiquez la <strong style="color:var(--text)">fin du rattachement</strong> : ce jour-là, KYF passe tout seul le plan en <strong style="color:var(--text)">PEA classique</strong> (plafond 150 000 €, même date d'ouverture, donc mêmes 5 ans). C'est déclaratif : KYF ne calcule ni votre âge ni votre rattachement, c'est vous qui donnez la date. Tant que le PEA est un PEA jeune, le cumul avec le PEA-PME n'est pas calculé (plafond à part). Règle : service-public.gouv.fr, fiche F2385.</div><div class="gj-orange" style="font-size:12px;color:#f59e0b;line-height:1.8;margin-top:10px">Le PEA Jeunes (18 à 25 ans, plafond de 20 000 €) n'est pas géré par KYF pour le moment.</div>
         </div>
@@ -62097,7 +62349,7 @@ const GUIDE_PAGES = [
           <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Importer un relevé dans un compte</div>
           <div style="font-size:13px;color:var(--text2);line-height:1.9">À l'import d'un relevé de positions, le <strong style="color:var(--text)">courtier</strong> est obligatoire : il remplit la fiche. Le <strong style="color:var(--text)">total versé</strong> est facultatif et prérempli quand KYF le connaît ; laissé vide, rien n'est modifié. Le champ reprend le total enregistré dans la fiche : le modifier ici le modifie aussi dans la fiche. « Ajouter une ligne » propose le même champ pour un PEA ou un PEA-PME. Les espèces ne figurent jamais dans un relevé de positions : vous pouvez les saisir au même endroit.</div>
         </div>
-        <div style="padding:14px 16px;background:rgba(77,159,255,0.07);border:1px solid rgba(77,159,255,0.25);border-radius:10px;font-size:13px;color:var(--text2);line-height:1.9"><strong style="color:var(--accent)">À savoir</strong> : toutes ces données (courtier, comptes masqués, livrets liés, total versé, PEA jeune) font partie de vos sauvegardes et de votre synchronisation. Quand un chiffre ne peut pas être calculé, KYF affiche « indisponible » ou « données incomplètes ».</div>
+        <div style="padding:14px 16px;background:rgba(77,159,255,0.07);border:1px solid rgba(77,159,255,0.25);border-radius:10px;font-size:13px;color:var(--text2);line-height:1.9"><strong style="color:var(--accent)">À savoir</strong> : toutes ces données (courtier, comptes masqués, comptes CTO et espèces par compte, livrets liés, total versé, PEA jeune) font partie de vos sauvegardes et de votre synchronisation. Quand un chiffre ne peut pas être calculé, KYF affiche « indisponible » ou « données incomplètes ».</div>
       </div>
     `
   }
@@ -67535,6 +67787,12 @@ document.addEventListener('DOMContentLoaded', function(){
 const KYF_NOUVEAUTES = {
   badge: ['arb', 'immo', 'avref', 'avfrais', 'fraispg', 'avevo', 'dcaprix', 'ct'],   // clés des badges (une ou plusieurs ; tableau) ; clé du badge « Nouveau » (span .kyf-new-badge data-new="...") ; vide = aucun badge
   annonces: [
+    { id: 'a-2026-10-23', date: '2026-10-23', items: [
+      { titre: 'Plusieurs comptes CTO', version: '2.8.11.00', important: true, texte: 'Ajoutez vos CTO dans la fiche CTO : une pile de cartes montre CTO TOTAUX puis chaque compte (glisser, flèches, étoile favori). Chaque ligne, transaction et import choisit son compte.' },
+      { titre: 'Espèces par compte CTO', version: '2.8.11.11', texte: 'Chaque compte CTO a ses espèces : achats, ventes, versements, retraits et dividendes touchent le bon compte. Le total reste la somme des comptes.' },
+      { titre: 'Fiscalité et PDF par compte', version: '2.8.11.12', texte: 'La page Fiscalité montre la part de chaque compte dans vos ventes CTO de l’année (le PFU reste calculé sur le total), et le rapport PDF Comptes titres détaille chaque compte.' },
+      { titre: 'Et aussi', version: '2.8.11.10', texte: 'Mode discret : le champ Espèces du CTO est flouté. Avis : les jours d’utilisation déjà écoulés sont pris en compte pour le délai de 15 jours.' }
+    ] },
     { id: 'a-2026-10-22b', date: '2026-10-22', items: [
       { titre: 'Avis : Google n’est plus obligatoire', version: '2.8.10.83', texte: 'Vous pouvez donner votre avis sans compte Google : 15 jours depuis votre première utilisation de KYF suffisent. Sans Google, l’avis est publié au bout de 24 h au lieu de 12 h.' },
       { titre: 'PEE : plan d’épargne entreprise', version: '2.8.10.55', important: true, texte: 'Dans Assurance vie, bouton PEE : saisissez vos fonds (parts et valeur de la part), l’abondement de l’entreprise et vos versements avec leur date de disponibilité. Tout est à la main, KYF ne calcule aucun impôt.' },
@@ -67642,7 +67900,7 @@ document.addEventListener('DOMContentLoaded', function(){
   try{ kyfEtfCashLineRender(); }catch(_){}
 });
 const KYF_NEW_SEEN_KEY = 'kyf-nouveautes-vue';   // id de la dernière annonce vue
-const KYF_NEW_MAX = 3, KYF_NEW_MAX_AGE_DAYS = 30;
+const KYF_NEW_MAX = 5, KYF_NEW_MAX_AGE_DAYS = 30, KYF_NEW_PAGE = 4;   // 5 annonces au plus ; la fenêtre montre 4 nouveautés par page, chevrons pour la suite
 function kyfNewBadgeKey_(k){ return 'kyf-nouveau-badge-' + k; }
 // Menu Avis mis en avant (badge « À VOUS », section dépliée, icône en couleur d'attention en barre repliée) dès que l'utilisateur peut donner son avis : 15 jours depuis sa 1ère utilisation réelle, aucun avis déjà publié, page Avis pas encore ouverte depuis
 function kyfAvisPromoOn_(){
@@ -67693,11 +67951,13 @@ function kyfNewPending_(){
   const i = L.findIndex(a => a.id === seen);
   const now = Date.now();
   return (i === -1 ? L.slice() : L.slice(0, i))
-    .filter(a => now - new Date(a.date + 'T12:00:00').getTime() <= KYF_NEW_MAX_AGE_DAYS * 864e5)
+    .filter(a => now - new Date(a.date + 'T12:00:00').getTime() <= KYF_NEW_MAX_AGE_DAYS * 864e5 || a.items.some(it => it.important))   // une nouveauté importante reste annoncée même après 30 jours, tant qu'elle n'a pas été vue
     .slice(0, KYF_NEW_MAX);
 }
 function kyfNewClose(){
+  const _md = document.getElementById('kyfNewModal'), _back = _md && _md._back;
   ['kyfNewModal', 'kyfNewOverlay'].forEach(id => { const e = document.getElementById(id); if(e) e.remove(); });
+  try{ if(_back && _back.isConnected && _back.focus) _back.focus(); }catch(e){}
   document.body.style.overflow = '';
   try{ if(KYF_NOUVEAUTES.annonces.length) localStorage.setItem(KYF_NEW_SEEN_KEY, KYF_NOUVEAUTES.annonces[0].id); }catch(e){}
   document.removeEventListener('keydown', kyfNewKey_);
@@ -67715,7 +67975,7 @@ function kyfNewOpenPref(){
     setTimeout(function(){ row.style.boxShadow = ''; }, 3000);
   }, 120);
 }
-function kyfNewKey_(e){ if(e.key === 'Escape') kyfNewClose(); }
+function kyfNewKey_(e){ if(e.key === 'Escape') kyfNewClose(); else if(e.key === 'ArrowRight') kyfNewPage(1); else if(e.key === 'ArrowLeft') kyfNewPage(-1); }
 // Réglage Paramètres > Affichage : ne plus recevoir la fenêtre « Quoi de neuf » (les pastilles NOUVEAU et l'historique des versions restent)
 const KYF_NEW_OFF_KEY = 'kyf-new-off';
 function kyfNewPopOff_(){ try{ return localStorage.getItem(KYF_NEW_OFF_KEY) === '1'; }catch(e){ return false; } }
@@ -67736,23 +67996,83 @@ async function kyfNewPopSet(el){
   }
   kyfNewPopSync();
 }
+// Liste à plat des nouveautés à montrer : les importantes d'abord, puis les plus récentes ; d'une annonce de plus de 30 jours, seules les importantes restent
+function kyfNewItems_(list){
+  const now = Date.now(), out = [];
+  list.forEach(a => {
+    const vieille = now - new Date(a.date + 'T12:00:00').getTime() > KYF_NEW_MAX_AGE_DAYS * 864e5;
+    a.items.forEach(it => { if(!vieille || it.important) out.push({ a: a, it: it }); });
+  });
+  return out.filter(x => x.it.important).concat(out.filter(x => !x.it.important));
+}
+function kyfNewCss_(){
+  if(document.getElementById('kyfNewCss')) return;
+  const st = document.createElement('style'); st.id = 'kyfNewCss';
+  st.textContent = '.kyf-new-chev{width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--border2);background:none;border-radius:8px;cursor:pointer;color:#f0b429;padding:0;transition:background .15s}'
+    + '.kyf-new-chev:hover:not(:disabled){background:var(--hov-bg)}.kyf-new-chev:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.kyf-new-chev:disabled{opacity:.3;cursor:default}'
+    + '[data-theme="light"] .kyf-new-chev{color:#b07800}';
+  document.head.appendChild(st);
+}
+function kyfNewRender_(){
+  const md = document.getElementById('kyfNewModal'); if(!md) return;
+  const all = md._items || [], n = Math.max(1, Math.ceil(all.length / KYF_NEW_PAGE));
+  const pg = Math.min(Math.max(0, md._page || 0), n - 1); md._page = pg;
+  const ico = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px;color:var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+  let h = '<div style="height:8px"></div>';
+  all.slice(pg * KYF_NEW_PAGE, (pg + 1) * KYF_NEW_PAGE).forEach(x => {
+    const it = x.it;
+    h += '<div class="kyf-new-it' + (it.important ? ' kyf-new-imp' : '') + '" style="display:flex;gap:10px;padding:10px 0;border-top:1px solid rgba(255,255,255,0.06)">' + ico + '<div><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px">' + escapeHtml(it.titre) + (it.version ? ' <span class="kyf-new-ver" style="display:inline-block;font-size:9px;font-weight:700;letter-spacing:.3px;padding:1px 6px;border-radius:6px;margin-left:4px;vertical-align:1px;background:rgba(240,180,41,0.14);color:var(--accent)">' + escapeHtml(it.version) + '</span>' : '') + '</div><div style="font-size:11px;color:var(--text2);line-height:1.7">' + escapeHtml(it.texte) + '</div></div></div>';
+  });
+  md.querySelector('#kyfNewBody').innerHTML = h;
+  const pager = md.querySelector('#kyfNewPager');
+  pager.style.display = n > 1 ? 'flex' : 'none';
+  md.querySelector('#kyfNewPos').textContent = (pg + 1) + ' / ' + n;
+  md.querySelector('#kyfNewPrev').disabled = pg <= 0; md.querySelector('#kyfNewNext').disabled = pg >= n - 1;
+}
+function kyfNewPage(d){ const md = document.getElementById('kyfNewModal'); if(!md) return; md._page = (md._page || 0) + d; kyfNewRender_(); }
 function kyfNewShow(list){
   if(document.getElementById('kyfNewModal')) return;
   list = list || kyfNewPending_(); if(!list.length) return;
-  const ico = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px;color:var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+  kyfNewCss_();
   const ov = document.createElement('div'); ov.id = 'kyfNewOverlay'; ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10070'; ov.onclick = kyfNewClose;
-  const md = document.createElement('div'); md.id = 'kyfNewModal';
+  const md = document.createElement('div'); md.id = 'kyfNewModal'; md._items = kyfNewItems_(list); md._page = 0; md._back = document.activeElement;
   md.setAttribute('role', 'dialog'); md.setAttribute('aria-label', 'Quoi de neuf');
   md.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(500px,94vw);max-height:86vh;overflow-y:auto;z-index:10071;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:24px;font-family:\'Inter\',sans-serif';
-  const grp = a => '<div class="kyf-new-group" style="font-size:10px;font-weight:700;letter-spacing:.6px;color:var(--text3);margin:14px 0 2px">NOUVEAUTÉS DU ' + escapeHtml(a.date.split('-').reverse().join('/')) + '</div>'
-    + a.items.map(it => '<div class="kyf-new-it' + (it.important ? ' kyf-new-imp' : '') + '" style="display:flex;gap:10px;padding:10px 0;border-top:1px solid rgba(255,255,255,0.06)">' + ico + '<div><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px">' + escapeHtml(it.titre) + (it.version ? ' <span class="kyf-new-ver" style="display:inline-block;font-size:9px;font-weight:700;letter-spacing:.3px;padding:1px 6px;border-radius:6px;margin-left:4px;vertical-align:1px;background:rgba(240,180,41,0.14);color:var(--accent)">' + escapeHtml(it.version) + '</span>' : '') + '</div><div style="font-size:11px;color:var(--text2);line-height:1.7">' + escapeHtml(it.texte) + '</div></div></div>').join('');
+  const chev = (id, lab, pts) => '<button type="button" id="' + id + '" class="kyf-new-chev" aria-label="' + lab + '" title="' + lab + '" onclick="kyfNewPage(' + (id === 'kyfNewPrev' ? -1 : 1) + ')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="' + pts + '"/></svg></button>';
   md.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between"><span style="display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--text);letter-spacing:.5px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></svg>QUOI DE NEUF</span><button type="button" onclick="kyfNewClose()" class="kyf-modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'
-    + list.map(grp).join('')
+    + '<div id="kyfNewBody"></div>'
+    + '<div id="kyfNewPager" style="display:none;align-items:center;justify-content:center;gap:12px;margin-top:12px">' + chev('kyfNewPrev', 'Nouveautés précédentes', '15 18 9 12 15 6') + '<span id="kyfNewPos" style="font-size:10px;font-weight:700;letter-spacing:.5px;color:var(--text3);min-width:34px;text-align:center"></span>' + chev('kyfNewNext', 'Nouveautés suivantes', '9 18 15 12 9 6') + '</div>'
     + '<button type="button" id="kyfNewOk" onclick="kyfNewClose()" style="display:block;width:auto;min-width:96px;margin:14px auto 0;font-family:\'Inter\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.5px;padding:7px 22px;border-radius:8px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:opacity .15s" onmouseover="this.style.opacity=\'.85\'" onmouseout="this.style.opacity=\'1\'">Compris</button>'
     + '<div style="text-align:center;margin-top:10px"><button type="button" id="kyfNewOffLink" onclick="kyfNewOpenPref()" class="kyf-new-offlink" style="background:none;border:none;font-family:\'Inter\',sans-serif;font-size:10px;color:var(--text3);cursor:pointer;padding:4px 8px;border-radius:6px;transition:background .15s,color .15s">Ne plus afficher cette fenêtre</button></div>';
   document.body.appendChild(ov); document.body.appendChild(md);
   document.body.style.overflow = 'hidden';
   document.addEventListener('keydown', kyfNewKey_);
+  let x0 = null;   // glisser horizontalement pour changer de page
+  md.addEventListener('pointerdown', e => { x0 = e.clientX; });
+  md.addEventListener('pointerup', e => { if(x0 !== null && Math.abs(e.clientX - x0) >= 50 && !e.target.closest('button')) kyfNewPage(e.clientX < x0 ? 1 : -1); x0 = null; });
+  kyfNewRender_();
+}
+// Ouverture en décalé : la fenêtre attend un moment calme (aucune autre fenêtre, pas de saisie, pas de clic récent, synchro Google terminée) et réessaie toutes les 4 s pendant 10 min
+let _kyfNewAct = 0;
+['pointerdown', 'keydown'].forEach(ev => document.addEventListener(ev, () => { _kyfNewAct = Date.now(); }, true));
+function kyfNewCalme_(){
+  const wm = document.getElementById('kyfWelcomeModal'); if(wm && getComputedStyle(wm).display !== 'none') return false;
+  if(document.body.style.overflow === 'hidden' || document.getElementById('kyfNewModal')) return false;   // une autre fenêtre est ouverte
+  const a = document.activeElement; if(a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) || (a && a.isContentEditable)) return false;   // saisie en cours
+  if(Date.now() - _kyfNewAct < 3000) return false;   // une action vient d'avoir lieu
+  const ring = document.getElementById('sheetsRing'); if(ring && ring.dataset.state === 'saving') return false;   // synchro Google en cours
+  if(document.hidden) return false;
+  return true;
+}
+window.kyfNewBusy = function(){ return !!document.getElementById('kyfNewModal') || !!window._kyfNewWaiting; };   // l'invitation aux statistiques passe après
+function kyfNewTry_(n){
+  try{
+    if(kyfNewPopOff_()){ window._kyfNewWaiting = false; return; }   // réglage Paramètres > Affichage : fenêtre désactivée
+    const list = kyfNewPending_(); if(!list.length){ window._kyfNewWaiting = false; return; }
+    window._kyfNewWaiting = true;
+    if(kyfNewCalme_()){ window._kyfNewWaiting = false; kyfNewShow(list); return; }
+    if(n < 150) setTimeout(function(){ kyfNewTry_(n + 1); }, 4000); else window._kyfNewWaiting = false;   // abandon : l'annonce reste à voir au prochain lancement
+  }catch(e){ window._kyfNewWaiting = false; }
 }
 document.addEventListener('DOMContentLoaded', function(){
   try{
@@ -67762,15 +68082,7 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   }catch(e){}
   kyfNewBadgesRefresh();
-  setTimeout(function(){
-    try{
-      if(kyfNewPopOff_()) return;   // réglage Paramètres > Affichage : fenêtre désactivée
-      const list = kyfNewPending_(); if(!list.length) return;
-      const wm = document.getElementById('kyfWelcomeModal'); if(wm && getComputedStyle(wm).display !== 'none') return;
-      if(document.body.style.overflow === 'hidden') return;   // une autre fenêtre est ouverte : on reviendra au prochain lancement
-      kyfNewShow(list);
-    }catch(e){}
-  }, 2500);
+  setTimeout(function(){ kyfNewTry_(0); }, 2500);
 });
 </script>
 
@@ -68136,7 +68448,46 @@ function getCashPea(){ return Math.round(Math.max(0, parseFloat(localStorage.get
 function getCashCto(){ return Math.round(Math.max(0, parseFloat(localStorage.getItem(CASH_CTO_KEY) || '0') || 0) * 100) / 100; }   // arrondi au centime (2.8.8.30) : évite 3680.0699999999997
 function getCashCcp(){ return Math.round(Math.max(0, parseFloat(localStorage.getItem(CASH_CCP_KEY) || '0') || 0) * 100) / 100; }   // arrondi au centime (2.8.8.30) : évite 3680.0699999999997
 function setCashPea(v){ localStorage.setItem(CASH_PEA_KEY, (Math.round(Math.max(0, parseFloat(v) || 0) * 100) / 100).toString()); }
-function setCashCto(v){ localStorage.setItem(CASH_CTO_KEY, (Math.round(Math.max(0, parseFloat(v) || 0) * 100) / 100).toString()); }
+function setCashCto(v){ localStorage.setItem(CASH_CTO_KEY, (Math.round(Math.max(0, parseFloat(v) || 0) * 100) / 100).toString()); try{ kyfCtoCashClamp(); }catch(e){} }
+// Espèces par compte CTO (2.8.11.11) : kyf-cash-cto reste le TOTAL (tout le reste de KYF le lit tel quel). kyf-cto-cash garde la part des comptes
+// autres que CTO 1 ({c2: 120.5}) ; CTO 1 = total moins ces parts. Les parts ne dépassent jamais le total (voir kyfCtoCashClamp).
+const KYF_CTO_CASH_KEY = 'kyf-cto-cash';
+const kyfRound2 = n => Math.round((parseFloat(n) || 0) * 100) / 100;
+function kyfCtoCashMap(){
+  let o = {}; try{ o = JSON.parse(localStorage.getItem(KYF_CTO_CASH_KEY) || '{}'); }catch(e){}
+  if(!o || typeof o !== 'object' || Array.isArray(o)) o = {};
+  const out = {};
+  kyfCtoComptes().forEach(c => { if(c.id === 'c1') return; const n = parseFloat(o[c.id]); if(isFinite(n) && n > 0) out[c.id] = kyfRound2(n); });
+  let reste = getCashCto();   // jamais plus que le total (donnée abîmée ou restaurée à moitié) : les premiers comptes sont servis d'abord
+  Object.keys(out).forEach(k => { out[k] = kyfRound2(Math.min(out[k], reste)); reste = kyfRound2(reste - out[k]); if(out[k] <= 0) delete out[k]; });
+  return out;
+}
+function kyfCtoCashMapSave(m){
+  const o = {}; Object.keys(m).forEach(k => { if(m[k] > 0) o[k] = kyfRound2(m[k]); });
+  try{ if(Object.keys(o).length) localStorage.setItem(KYF_CTO_CASH_KEY, JSON.stringify(o)); else localStorage.removeItem(KYF_CTO_CASH_KEY); }catch(e){}
+}
+function kyfCtoCashOf(id){
+  const m = kyfCtoCashMap();
+  if(id && id !== 'c1') return m[id] || 0;
+  return kyfRound2(Math.max(0, getCashCto() - Object.keys(m).reduce((a, k) => a + m[k], 0)));
+}
+function kyfCtoCashClamp(){   // si le total baisse sous la somme des parts (saisie du total, remise à zéro), les derniers comptes cèdent d'abord
+  kyfCtoCashMapSave(kyfCtoCashMap());   // la lecture borne déjà les parts au total : on enregistre le résultat
+}
+function kyfCtoCashSet(id, v){   // fixe les espèces d'un compte ; le total suit
+  v = kyfRound2(Math.max(0, parseFloat(v) || 0));
+  const autres = kyfCtoCashMap(), avant = kyfCtoCashOf(id), total = getCashCto();
+  if(!id || id === 'c1'){ setCashCto(total - avant + v); return; }
+  if(v >= (autres[id] || 0)){ setCashCto(total + v - (autres[id] || 0)); autres[id] = v; kyfCtoCashMapSave(autres); }
+  else { autres[id] = v; kyfCtoCashMapSave(autres); setCashCto(total - avant + v); }
+}
+function kyfCtoCashAdjust(id, delta){   // crédit ou débit du compte (jamais sous zéro) ; renvoie la variation réellement faite
+  if(!kyfCtoComptes().some(c => c.id === id)) id = 'c1';
+  const avant = kyfCtoCashOf(id), reel = kyfRound2(delta < 0 ? -Math.min(-delta, avant) : delta);
+  if(reel) kyfCtoCashSet(id, avant + reel);
+  return reel;
+}
+function kyfCashCur(env, item){ return env === 'CTO' ? kyfCtoCashOf(kyfCtoCompteOf(item || {})) : getCashPea(); }
 function setCashCcp(v){ localStorage.setItem(CASH_CCP_KEY, (Math.round(Math.max(0, parseFloat(v) || 0) * 100) / 100).toString()); }
 
 // Conservées pour compatibilité avec du code existant qui utilise getCash()/setCash() -
@@ -68147,9 +68498,10 @@ function setCash(v){ setCashPea(v); }
 // Ajuste le cash du compartiment correspondant à l'enveloppe ('PEA' ou 'CTO').
 // delta positif = crédit (vente), delta négatif = débit (achat).
 // Renvoie la variation réellement appliquée (le cash ne descend jamais sous 0 : un débit peut donc être plus petit que demandé)
-function adjustCashForEnveloppe(enveloppe, delta){
+function adjustCashForEnveloppe(enveloppe, delta, item){
   if(!delta) return 0;
   if(enveloppe === 'PEA-PME') return 0;   // cash du PEA-PME non suivi : jamais rangé dans celui du PEA
+  if(enveloppe === 'CTO' && item){ const r = kyfCtoCashAdjust(kyfCtoCompteOf(item), delta); try{ renderCashKPI(); }catch(e){} return r; }   // 2.8.11.11 : espèces du compte de la ligne
   const before = enveloppe === 'CTO' ? getCashCto() : getCashPea();
   if(enveloppe === 'CTO'){ setCashCto(before + delta); }
   else { setCashPea(before + delta); } // PEA par défaut (AV ne touche pas ce cash)
@@ -68270,11 +68622,13 @@ function kyfPeaTotalVerseSet(v){
 }
 // Règles : un retrait ne dépasse jamais les espèces de l'enveloppe ; un retrait ne modifie pas le total versé (aucune règle fiscale inventée) ;
 // total versé inconnu : il n'est pas touché (pas de chiffre fabriqué), le message le dit.
-function kyfCashMvtAdd(env, sens, montant, dateIso, compteId){
+function kyfCashMvtAdd(env, sens, montant, dateIso, compteId, cptCto){
   env = env === 'CTO' ? 'CTO' : 'PEA'; sens = sens === 'out' ? 'out' : 'in'; montant = Math.round((parseFloat(montant) || 0) * 100) / 100;
   if(!(montant > 0)) return { ok:false, msg:'Saisissez un montant supérieur à 0.' };
-  const avant = env === 'CTO' ? getCashCto() : getCashPea();
-  if(sens === 'out' && montant > avant + 0.005) return { ok:false, msg:'Ce retrait dépasse les espèces du ' + env + ' (' + fmt(avant,2) + ' €).' };
+  if(env !== 'CTO' || kyfCtoComptes().length < 2) cptCto = undefined;   // un seul CTO : rien à préciser
+  else if(!kyfCtoComptes().some(c => c.id === cptCto)) cptCto = 'c1';
+  const avant = env === 'CTO' ? (cptCto ? kyfCtoCashOf(cptCto) : getCashCto()) : getCashPea();
+  if(sens === 'out' && montant > avant + 0.005) return { ok:false, msg:'Ce retrait dépasse les espèces du ' + env + (cptCto ? ' « ' + kyfCtoNom(cptCto) + ' »' : '') + ' (' + fmt(avant,2) + ' €).' };
   // 2.8.9.27 : compte débité (facultatif, versement seulement) : le solde doit couvrir le montant, sinon rien n'est enregistré
   let cpt = null, lvs = null;
   if(sens === 'in' && compteId){
@@ -68283,7 +68637,7 @@ function kyfCashMvtAdd(env, sens, montant, dateIso, compteId){
     const have = parseFloat(cpt.solde) || 0;
     if(montant > have + 0.005) return { ok:false, msg:'Le solde de « ' + (cpt.banque || 'ce compte') + ' » (' + fmt(have,2) + ' €) ne couvre pas ce versement de ' + fmt(montant,2) + ' € : rien n\'a été enregistré.' };
   }
-  adjustCashForEnveloppe(env, sens === 'in' ? montant : -montant);
+  adjustCashForEnveloppe(env, sens === 'in' ? montant : -montant, cptCto ? { compte: cptCto } : undefined);
   let verseAjuste = false, note = '';
   if(env === 'PEA' && sens === 'in'){
     const tv = kyfPeaTotalVerse();
@@ -68292,6 +68646,7 @@ function kyfCashMvtAdd(env, sens, montant, dateIso, compteId){
   }
   const a = kyfCashMvts();
   const mv = { id:'m' + Date.now().toString(36) + Math.random().toString(36).slice(2,5), env, sens, montant, date: dateIso || new Date().toISOString().slice(0,10), verseAjuste };
+  if(cptCto) mv.cptCto = cptCto;
   if(cpt){
     cpt.solde = Math.round(((parseFloat(cpt.solde) || 0) - montant) * 100) / 100; livSave(lvs);
     const tx = livTxLoad(); mv.compteDebite = String(cpt.id); mv.txId = 'tx_cashmvt_' + mv.id;
@@ -68305,7 +68660,7 @@ function kyfCashMvtAdd(env, sens, montant, dateIso, compteId){
   return { ok:true, msg: (sens === 'in' ? 'Versement' : 'Retrait') + ' de ' + fmt(montant,2) + ' € enregistré sur le ' + env + '. ' + note };
 }
 function kyfCashMvtReverse_(m){
-  adjustCashForEnveloppe(m.env, m.sens === 'in' ? -m.montant : m.montant);
+  adjustCashForEnveloppe(m.env, m.sens === 'in' ? -m.montant : m.montant, m.cptCto ? { compte: m.cptCto } : undefined);
   if(m.verseAjuste) kyfPeaTotalVerseSet(kyfPeaTotalVerse() - m.montant);
   if(m.compteDebite){   // 2.8.9.27 : le compte débité est recrédité et le mouvement retiré de son journal
     try{
@@ -68444,14 +68799,15 @@ function kyfCashHistOpen(){
   setTimeout(() => { const e = document.getElementById('cashHistCard'); if(e) e.scrollIntoView({ behavior:'smooth', block:'start' }); }, 350);
 }
 // Modification : le mouvement est remis comme avant (espèces, total versé), puis le nouveau est appliqué ; en cas de refus (retrait trop grand), tout est rétabli
-function kyfCashMvtApplyEdit(id, env, sens, montant, dateIso, compteId){
+function kyfCashMvtApplyEdit(id, env, sens, montant, dateIso, compteId, cptCto){
   const a = kyfCashMvts(), i = a.findIndex(m => m.id === id); if(i < 0) return { ok:false, msg:'Mouvement introuvable.' };
-  const snap = { pea: localStorage.getItem('kyf-cash-pea'), cto: localStorage.getItem('kyf-cash-cto'), tv: localStorage.getItem('kyf-pea-total-verse'), list: localStorage.getItem(KYF_CASH_MVTS_KEY), liv: localStorage.getItem('kyf-livrets'), livtx: localStorage.getItem(LIV_TX_KEY) };
+  const snap = { pea: localStorage.getItem('kyf-cash-pea'), cto: localStorage.getItem('kyf-cash-cto'), ctoSplit: localStorage.getItem('kyf-cto-cash'), tv: localStorage.getItem('kyf-pea-total-verse'), list: localStorage.getItem(KYF_CASH_MVTS_KEY), liv: localStorage.getItem('kyf-livrets'), livtx: localStorage.getItem(LIV_TX_KEY) };
   kyfCashMvtReverse_(a[i]); a.splice(i, 1); kyfCashMvtsSave(a);
-  const r = kyfCashMvtAdd(env, sens, montant, dateIso, compteId);
+  const r = kyfCashMvtAdd(env, sens, montant, dateIso, compteId, cptCto);
   if(!r.ok){
     if(snap.liv !== null) localStorage.setItem('kyf-livrets', snap.liv); if(snap.livtx !== null) localStorage.setItem(LIV_TX_KEY, snap.livtx);
     if(snap.pea !== null) localStorage.setItem('kyf-cash-pea', snap.pea); if(snap.cto !== null) localStorage.setItem('kyf-cash-cto', snap.cto);
+    if(snap.ctoSplit === null) localStorage.removeItem('kyf-cto-cash'); else localStorage.setItem('kyf-cto-cash', snap.ctoSplit);
     localStorage.setItem('kyf-pea-total-verse', snap.tv === null ? '' : snap.tv); if(snap.list !== null) localStorage.setItem(KYF_CASH_MVTS_KEY, snap.list);
     try{ renderCashKPI(); if(typeof peaFiscLoadParams === 'function') peaFiscLoadParams(); }catch(e){}
     return r;
@@ -68465,6 +68821,7 @@ function kyfCashMvtEditStart(id){
   window._cashMvtEditId = id;
   const set = (el, v) => { const e = document.getElementById(el); if(e){ e.value = v; e.dispatchEvent(new Event('change')); } };
   set('cashMvtEnv', m.env); set('cashMvtSens', m.sens);
+  try{ kyfCashMvtCptFill_(); set('cashMvtCpt', m.cptCto || 'c1'); kyfCashMvtCptSync(); }catch(e){}
   try{ kyfCashMvtCompteFill_(); set('cashMvtCompte', m.compteDebite || ''); kyfCashMvtCompteSync(); }catch(e){}
   const mt = document.getElementById('cashMvtMontant'); if(mt){ mt.value = String(m.montant); try{ kyfFormatAmountInput(mt); }catch(e){} }
   try{ kyfDateSetValue('cashMvtDate', m.date); }catch(e){}
@@ -68494,7 +68851,7 @@ async function kyfCashMvtSubmit(){
   const eid = window._cashMvtEditId;
   const gd = await kyfCashMvtPeaGuard_(g('cashMvtEnv'), g('cashMvtSens'), g('cashMvtDate'));
   if(!gd.ok){ const mg = document.getElementById('cashMvtMsg'); if(mg){ mg.textContent = 'Retrait non enregistré.'; mg.style.color = 'var(--text3)'; } return; }
-  const r = eid ? kyfCashMvtApplyEdit(eid, g('cashMvtEnv'), g('cashMvtSens'), parseNum(g('cashMvtMontant')), g('cashMvtDate'), g('cashMvtCompte')) : kyfCashMvtAdd(g('cashMvtEnv'), g('cashMvtSens'), parseNum(g('cashMvtMontant')), g('cashMvtDate'), g('cashMvtCompte'));
+  const r = eid ? kyfCashMvtApplyEdit(eid, g('cashMvtEnv'), g('cashMvtSens'), parseNum(g('cashMvtMontant')), g('cashMvtDate'), g('cashMvtCompte'), g('cashMvtCpt')) : kyfCashMvtAdd(g('cashMvtEnv'), g('cashMvtSens'), parseNum(g('cashMvtMontant')), g('cashMvtDate'), g('cashMvtCompte'), g('cashMvtCpt'));
   if(r.ok && gd.note) r.msg += gd.note;
   const msg = document.getElementById('cashMvtMsg');
   if(msg){ msg.textContent = r.msg; msg.style.color = r.ok ? 'var(--green)' : 'var(--red)'; }
@@ -68517,6 +68874,17 @@ function kyfCashMvtCompteFill_(){   // 2.8.9.24+ : comptes de « Livrets d'épar
   s.value = Array.from(s.options).some(o => o.value === cur) ? cur : '';
   try{ if(typeof kyfPgInit === 'function') kyfPgInit(s); }catch(e){}
 }
+function kyfCashMvtCptFill_(){   // plusieurs CTO : compte CTO concerné par le versement ou le retrait
+  const s = document.getElementById('cashMvtCpt'); if(!s) return;
+  const cur = s.value || (typeof ctCptSel === 'function' ? ctCptSel('CTO') : '') || '';
+  s.innerHTML = kyfCtoComptes().map(c => '<option value="' + c.id + '">' + escapeHtml(kyfCtoNom(c.id)) + '</option>').join('');
+  s.value = Array.from(s.options).some(o => o.value === cur) ? cur : 'c1';
+  try{ if(typeof kyfPgInit === 'function') kyfPgInit(s); }catch(e){}
+}
+function kyfCashMvtCptSync(){
+  const w = document.getElementById('cashMvtCptWrap'), env = (document.getElementById('cashMvtEnv') || {}).value;
+  if(w) w.style.display = (env === 'CTO' && kyfCtoComptes().length > 1) ? 'block' : 'none';
+}
 function kyfCashMvtCompteSync(){   // visible seulement pour un versement
   const w = document.getElementById('cashMvtCompteWrap'), sens = (document.getElementById('cashMvtSens') || {}).value;
   if(w) w.style.display = sens === 'in' ? 'block' : 'none';
@@ -68527,6 +68895,7 @@ function kyfCashMvtInit(){
   if(!window._cashMvtEditKeep){ window._cashMvtEditId = null; kyfCashMvtEditUi_(); }
   const d = document.getElementById('cashMvtDate'); if(d && !d.value && typeof kyfDateSetValue === 'function') kyfDateSetValue('cashMvtDate', '');
   try{ kyfSelectify(document.getElementById('cashMvtEnv')); kyfSelectify(document.getElementById('cashMvtSens')); }catch(e){}
+  try{ kyfCashMvtCptFill_(); const ee = document.getElementById('cashMvtEnv'); if(ee && !ee._kyfCpt){ ee._kyfCpt = 1; ee.addEventListener('change', kyfCashMvtCptSync); } kyfCashMvtCptSync(); }catch(e){}
   try{ kyfCashMvtCompteFill_(); const se = document.getElementById('cashMvtSens'); if(se && !se._kyfCmp){ se._kyfCmp = 1; se.addEventListener('change', kyfCashMvtCompteSync); } kyfCashMvtCompteSync(); }catch(e){}
   const msg = document.getElementById('cashMvtMsg'); if(msg){ msg.textContent = ''; }
   kyfCashMvtRefresh();
@@ -69895,6 +70264,38 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.11.15 · 23/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Quoi de neuf : plus d'en-têtes de date répétés au-dessus des nouveautés.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.11.14 · 23/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Quoi de neuf : 4 nouveautés par page avec chevrons, ouverture en décalé qui attend un moment calme (aucune fenêtre ouverte, pas de saisie, synchro Google terminée), nouveautés importantes gardées même après 30 jours. Annonce multi-CTO.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.11.13 · 23/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Guide : nouvelle carte « Plusieurs comptes CTO » dans le chapitre Comptes titres, et mises à jour des chapitres Portefeuille, Fiscalité et Cash.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.11.12 · 23/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Plusieurs CTO : le rapport PDF Comptes titres détaille chaque compte CTO, le rapport Détail indique le compte, et la page Fiscalité montre la part de chaque compte dans les ventes de l'année (le total imposable reste la somme).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.11.11 · 23/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Plusieurs CTO : espèces par compte. Chaque compte a son solde d'espèces ; le total CTO reste la somme. Achats, ventes, versements et retraits débitent ou créditent le bon compte.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.11.10 · 23/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Mode discret : le champ « Espèces » du compte CTO est flouté tant qu'on ne le modifie pas.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.11.09 · 23/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">L'invitation aux statistiques anonymes n'apparait plus par-dessus un bouton, un lien ou un champ de la page : elle attend d'avoir la place.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.11.08 · 23/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes CTO : les infobulles des pastilles ne montrent plus de montant, pour que le mode discret masque bien tous les chiffres.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.11.07 · 23/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Plusieurs comptes CTO : le nom du compte est rappelé sur chaque ligne CTO du Portefeuille et sur les opérations de la page Transactions.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.11.06 · 23/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes CTO : nouveau design en pile de cartes. La carte « CTO TOTAUX » est devant, les autres comptes sont visibles derrière. On change de carte en glissant ou avec les flèches (visibles au survol), et une étoile choisit le compte affiché à l'ouverture.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.11.05 · 23/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Avis : un utilisateur de longue date garde son ancienneté. À son premier signal, KYF transmet la date de sa première utilisation, que le service retient si elle est plausible et plus ancienne que la sienne.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.11.04 · 23/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Plusieurs comptes CTO : la page Transactions propose aussi le choix du compte CTO pour un achat ou une vente, et l'annulation d'une transaction retrouve la ligne du bon compte.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.11.03 · 23/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Plusieurs comptes CTO : la liste des comptes est incluse dans la sauvegarde, l'export et la remise à zéro.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.11.02 · 23/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Plusieurs comptes CTO : à l'import d'un relevé, on choisit le compte CTO. Les lignes déjà présentes sont comparées compte par compte, et les espèces CTO ne sont pas modifiées par l'import.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.11.01 · 23/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Plusieurs comptes CTO : à l'ajout ou à la modification d'une ligne, on choisit le compte CTO. Une ligne garde son compte.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.11.00 · 23/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Plusieurs comptes CTO : la page CTO devient un accordéon avec une carte « CTO TOTAUX » ouverte par défaut, et un volet par compte (souris ou flèches du clavier). Les lignes déjà en CTO sont dans « CTO 1 ».</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.88 · 22/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto : la période du pourcentage sous le cours est écrite (depuis 0 h, ou sur 24 h si la courbe du jour manque)</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.10.87 · 22/10/2026</div>
@@ -97418,6 +97819,10 @@ function orInlineEdit(id, td, currentVal){
       <select id="cashMvtEnv" data-kyf-pg-look="field" style="flex:1;width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;border-radius:6px;outline:none"><option value="PEA">PEA</option><option value="CTO">CTO</option></select>
       <select id="cashMvtSens" data-kyf-pg-look="field" style="flex:1;width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;border-radius:6px;outline:none"><option value="in">Versement</option><option value="out">Retrait</option></select>
     </div>
+    <div id="cashMvtCptWrap" style="display:none;margin-bottom:12px">
+      <div style="font-size:9px;color:var(--text3);margin-bottom:6px;letter-spacing:.5px">COMPTE CTO</div>
+      <select id="cashMvtCpt" data-kyf-pg-look="field" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;border-radius:6px;outline:none"></select>
+    </div>
     <div style="display:flex;gap:10px;margin-bottom:12px">
       <input id="cashMvtMontant" type="text" inputmode="decimal" placeholder="Montant (€)" onfocus="kyfUnformatAmountInput(this)" onblur="kyfFormatAmountInput(this)" oninput="this.value=this.value.replace(/-/g,'')" style="flex:1;width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;border-radius:6px;outline:none">
       <div style="flex:1;min-width:0"><input type="hidden" id="cashMvtDate" value=""><button type="button" id="cashMvtDateBtn" class="kyf-csel-btn" data-kyf-date="cashMvtDate" aria-haspopup="dialog" aria-expanded="false"><span id="cashMvtDateBtnLabel">JJ/MM/AAAA</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button></div>
@@ -97585,6 +97990,13 @@ function orInlineEdit(id, td, currentVal){
     <div id="importDestWrap" style="margin-bottom:12px;display:none">
       <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">DESTINATION</div>
       <select id="importDest" style="width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none"></select>
+    </div>
+
+    <!-- Compte CTO (2.8.11.02) : seulement quand plusieurs comptes CTO existent -->
+    <div id="importCptWrap" style="margin-bottom:12px;display:none">
+      <div style="font-size:9px;color:var(--text3);margin-bottom:6px;letter-spacing:.5px">COMPTE CTO</div>
+      <div id="importCptPills" role="radiogroup" aria-label="Compte CTO" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+      <div style="font-size:9px;color:var(--text3);margin-top:6px;line-height:1.5">Les espèces CTO sont suivies au total : cet import ne les modifie pas.</div>
     </div>
 
     <!-- Courtier du compte (PEA / PEA-PME / CTO) : obligatoire, il remplit la fiche Comptes titres -->
@@ -204602,6 +205014,7 @@ input.kyf-secret-on:hover{border-color:var(--accent)!important;background:var(--
   function show(){
     if(decided() || opens() < MIN_OPENS || document.getElementById('kyfStatsInvite')) return;
     if(document.getElementById('kyfSafariWarn')){ setTimeout(show, 8000); return; }
+    if(typeof window.kyfNewBusy === 'function' && window.kyfNewBusy()){ setTimeout(show, 6000); return; }   // « Quoi de neuf » d'abord, l'invitation ensuite
     var el = document.createElement('div');
     el.id = 'kyfStatsInvite'; el.setAttribute('role', 'dialog');
     el.innerHTML =
@@ -204612,6 +205025,13 @@ input.kyf-secret-on:hover{border-color:var(--accent)!important;background:var(--
     document.body.appendChild(el);
     var r = el.getBoundingClientRect(), top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
     if(top && !el.contains(top)){ el.parentNode.removeChild(el); setTimeout(show, 6000); return; }
+    // Ne jamais recouvrir un bouton, un lien ou un champ de la page : l'invitation attend (nouvel essai toutes les 6 s, donc dès que la personne change de page ou d'affichage)
+    var cache = false;
+    for(var gx = 1; gx <= 5 && !cache; gx++) for(var gy = 1; gy <= 4 && !cache; gy++){
+      var pile = document.elementsFromPoint(r.left + r.width * gx / 6, r.top + r.height * gy / 5);
+      for(var k = 0; k < pile.length; k++){ if(el.contains(pile[k])) continue; if(pile[k].closest && pile[k].closest('button,a,input,select,textarea,[onclick],[role="button"],[role="link"]')){ cache = true; } break; }
+    }
+    if(cache){ el.parentNode.removeChild(el); setTimeout(show, 6000); return; }
     el.querySelector('.ksi-x').onclick = function(){ answer(false); };
     el.querySelector('.ksi-no').onclick = function(){ answer(false); };
     el.querySelector('.ksi-yes').onclick = function(){ answer(true); };
