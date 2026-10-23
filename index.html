@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_11_15.html
+  @file        : KYF_SHARE_beta_2_8_11_16.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.11.15
+  @version     : Beta 2.8.11.16
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7027,7 +7027,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.11.15</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.11.16</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -30173,9 +30173,9 @@ async function kyfPullOnStartup(){
     const changedAtStart = (window._kyfStartupPull && window._kyfStartupPull.changed) || new Set();
     let   queueTouched = false;
     // Clés « passives » : caches et journaux que l'appli réécrit toute seule à chaque session (cours intraday, index et
-    // instantanés quotidiens, journal des alertes). Leur valeur est reprise du Sheet, mais elles ne justifient jamais de
+    // instantanés quotidiens, journal des alertes, données macro dont les valeurs live sont réécrites toutes les 5 min). Leur valeur est reprise du Sheet, mais elles ne justifient jamais de
     // recharger la page : rien de ce qui est affiché n'en dépend avant la prochaine navigation.
-    const _passive = k => k === 'kyf-intraday-cache' || k === 'pea-crypto-intraday' || k === 'kyf-snapshots-index' || String(k).startsWith('kyf-snapshot-') || String(k).startsWith('kyf-alerts-');
+    const _passive = k => k === 'kyf-macro-data' || k === 'kyf-intraday-cache' || k === 'pea-crypto-intraday' || k === 'kyf-snapshots-index' || String(k).startsWith('kyf-snapshot-') || String(k).startsWith('kyf-alerts-');
     const reloadKeys = [];
     const _defer = !!window._kyfTouched;
     let _deferredAny = false;
@@ -45583,7 +45583,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.11.15\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.11.16\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -61355,6 +61355,11 @@ const GUIDE_PAGES = [
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Profil d'apparence</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9">Dans <strong style="color:var(--accent)">Mon Profil → SAUVEGARDE DES DONNÉES → Export / Import avancé → Profil d'apparence</strong>, <strong style="color:var(--text)">Exporter mon profil</strong> enregistre dans un fichier toute votre personnalisation : couleurs, polices, densité, disposition des cadres et cadres masqués, raccourcis clavier et sidebar. <strong style="color:var(--text)">Importer un profil</strong> l'applique sur un autre appareil ou un autre navigateur. Vos données financières ne sont jamais incluses. Le mode discret reste propre à chaque appareil. À l'import, chaque réglage est vérifié un par un : tout ce qui n'est pas un réglage d'apparence connu (code, lien externe, valeur suspecte) est ignoré.</div>
       </div>
+      <div style="padding:12px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;margin-bottom:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Rapports PDF</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Dans <strong style="color:var(--accent)">Mon Profil</strong>, le bouton <strong style="color:var(--text)">Rapports PDF</strong> propose 5 rapports, à télécharger séparément ou tous ensemble : <strong style="color:var(--text)">Synthèse du patrimoine</strong> (total, répartition par classe et par projet), <strong style="color:var(--text)">Détail par classe d'actifs</strong> (toutes les lignes, avec quantité, PRU et gain quand ils existent, et le compte de chaque ligne), <strong style="color:var(--text)">Comptes titres</strong> (PEA, PEA-PME et CTO : valeur, plus-value, total versé, plafond et lignes de chaque compte, avec une section par compte si vous avez plusieurs CTO), <strong style="color:var(--text)">Historique et performances</strong> (courbe du portefeuille ETF, actions et crypto, évolution mois par mois) et <strong style="color:var(--text)">Fiscalité et objectifs</strong> (gains latents, dividendes, frais, réglages fiscaux, liberté financière).</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">KYF compose le rapport aux couleurs du thème actuel puis ouvre l'impression de votre navigateur : choisissez « Enregistrer au format PDF ». Rien ne quitte votre appareil, aucun service externe n'intervient. Quand un cours ou un montant manque, la ligne est exclue ou marquée « indisponible » : aucun chiffre n'est estimé.</div>
+      </div>
       <div style="background:rgba(240,180,41,0.06);border:1px solid rgba(240,180,41,0.25);border-radius:10px;padding:12px 14px;margin-bottom:14px">
         <div style="font-size:13px;font-weight:700;color:#f0b429;margin-bottom:6px;display:flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Export programmé</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.8">Automatise l'export à intervalle régulier (quotidien, hebdomadaire, mensuel ou tous les 90 jours), en JSON ou en .cgx. Nécessite d'ouvrir le fichier KYF pour se déclencher : Chrome et Edge proposent un dossier de sauvegarde dédié, les autres navigateurs utilisent le dossier Téléchargements. Un rappel agenda (.ics) peut être ajouté en complément pour ne pas oublier d'ouvrir le fichier.</div>
@@ -70264,6 +70269,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.11.16 · 23/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Synchro : une mise à jour des données macro venue de Google ne recharge plus la page et n'affiche plus de bandeau. Guide : les Rapports PDF sont décrits (chapitre Export / Import).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.11.15 · 23/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Quoi de neuf : plus d'en-têtes de date répétés au-dessus des nouveautés.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.11.14 · 23/10/2026</div>
