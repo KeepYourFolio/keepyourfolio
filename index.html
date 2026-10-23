@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_11_16.html
+  @file        : KYF_SHARE_beta_2_8_11_17.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.11.16
+  @version     : Beta 2.8.11.17
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -1835,10 +1835,13 @@ tr.kyf-row-sel td{background:rgba(240,180,41,0.08);background:color-mix(in srgb,
 .ct-dot.on{background:var(--accent);border-color:var(--accent);transform:scale(1.25)}
 .ct-dot.fav{border-color:#f0b429;box-shadow:0 0 0 2px rgba(240,180,41,0.35)}
 .ct-dot:hover,.ct-dot:focus-visible{background:#f0b429;border-color:#f0b429;outline:none}
-@keyframes ctInR{from{opacity:.35;transform:translateX(28px)}to{opacity:1;transform:none}}
-@keyframes ctInL{from{opacity:.35;transform:translateX(-28px)}to{opacity:1;transform:none}}
-.ct-hero.ct-in-r{animation:ctInR .28s ease}.ct-hero.ct-in-l{animation:ctInL .28s ease}
-@media (prefers-reduced-motion:reduce){.ct-deck-l,.ct-deck-arr,.ct-dot{transition:none}.ct-hero.ct-in-r,.ct-hero.ct-in-l{animation:none}}
+@keyframes ctInL{from{opacity:0;transform:translateX(-120%) rotate(-8deg)}to{opacity:1;transform:none}}
+@keyframes ctPileOut{from{opacity:1;transform:none}to{opacity:0;transform:translateX(-120%) rotate(-8deg) scale(.98)}}
+@keyframes ctPileIn{from{opacity:.6;transform:translateY(-14px) scale(.94)}to{opacity:1;transform:none}}
+.ct-pile-out{animation:ctPileOut .55s cubic-bezier(.22,1,.36,1) forwards}
+.ct-hero.ct-pile-in{animation:ctPileIn .55s cubic-bezier(.22,1,.36,1)}
+.ct-hero.ct-in-l{animation:ctInL .55s cubic-bezier(.22,1,.36,1)}
+@media (prefers-reduced-motion:reduce){.ct-deck-l,.ct-deck-arr,.ct-dot{transition:none}.ct-hero.ct-in-l,.ct-hero.ct-pile-in,.ct-pile-out{animation:none}}
 .ct-chip:hover,.ct-chip:focus-visible{background:#f0b429;color:#000;box-shadow:0 2px 8px rgba(240,180,41,0.35);transform:translateY(-1px);outline:none}
 .ct-chip:hover b,.ct-chip:focus-visible b{color:#000 !important}
 .ct-main{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;font-family:'Inter',sans-serif}
@@ -7027,7 +7030,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.11.16</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.11.17</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -11345,9 +11348,19 @@ function ctCptSel(env){   // compte affiché sur la page CTO : null = « CTO TOT
 }
 function ctCptSet(id, sens, focus){   // sens : +1 / -1 anime l'arrivée de la carte ; focus : garder le clavier sur la pile
   window._ctCpt = id; try{ sessionStorage.setItem('kyf-ct-cpt', id); }catch(e){}
+  const calme = !!(window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches);
+  const h0 = document.getElementById('ctHero'), stg = document.getElementById('ctStage');
+  let ghost = null;
+  if(sens > 0 && !calme && h0 && stg && h0.offsetWidth){   // pile : la carte du dessus part à gauche, une copie sans id qui s'efface seule
+    ghost = h0.cloneNode(true); ghost.removeAttribute('id'); ghost.querySelectorAll('[id]').forEach(n => n.removeAttribute('id'));
+    ghost.setAttribute('aria-hidden', 'true'); ghost.classList.remove('ct-in-l', 'ct-in-r', 'ct-pile-in');
+    ghost.style.cssText = 'position:absolute;left:' + h0.offsetLeft + 'px;top:' + h0.offsetTop + 'px;width:' + h0.offsetWidth + 'px;z-index:4;pointer-events:none';
+    ghost.classList.add('ct-pile-out'); stg.appendChild(ghost);
+    const rm = () => { if(ghost && ghost.parentNode) ghost.remove(); }; ghost.addEventListener('animationend', rm); setTimeout(rm, 900);
+  }
   ctRender();
   const h = document.getElementById('ctHero');
-  if(h && sens && !(window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches)){ h.classList.remove('ct-in-l', 'ct-in-r'); void h.offsetWidth; h.classList.add(sens > 0 ? 'ct-in-r' : 'ct-in-l'); }
+  if(h && sens && !calme){ h.classList.remove('ct-in-l', 'ct-in-r', 'ct-pile-in'); void h.offsetWidth; h.classList.add(sens > 0 ? 'ct-pile-in' : 'ct-in-l'); }
   if(focus){ const d = document.getElementById('ctDot_' + id) || document.getElementById('ctDeck'); try{ if(d) d.focus({ preventScroll: true }); }catch(e){} }
 }
 function ctCptAdd(){
@@ -45583,7 +45596,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.11.16\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.11.17\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -70269,6 +70282,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.11.17 · 23/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Compte-titres multiples : le changement de compte s'anime en pile, la carte du dessus part à gauche en pivotant et la suivante monte d'un cran (coupé si les animations sont réduites).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.11.16 · 23/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Synchro : une mise à jour des données macro venue de Google ne recharge plus la page et n'affiche plus de bandeau. Guide : les Rapports PDF sont décrits (chapitre Export / Import).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.11.15 · 23/10/2026</div>
