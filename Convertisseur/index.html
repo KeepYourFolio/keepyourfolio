@@ -6,7 +6,7 @@
   @description : Lit les relevés de courtier PDF entièrement dans le
                  navigateur (aucun envoi) et produit le fichier que le
                  Dashboard KYF importe.
-  @version     : v2.501
+  @version     : v2.503
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -23,6 +23,38 @@
 <title>Convertisseur de relevé bancaire PDF en CSV, en local | Keep Your Folio</title>
 <meta name="description" content="Convertissez un relevé bancaire PDF en CSV dans votre navigateur : le PDF n'est pas envoyé pour la conversion. Gratuit, par Keep Your Folio.">
 <link rel="canonical" href="https://keepyourfolio.fr/Convertisseur/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Comment convertir un relevé bancaire PDF en CSV sans l'envoyer sur un site ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Utilisez ce convertisseur : le PDF est lu dans votre navigateur et le CSV est créé sur votre appareil. Le PDF n'est pas envoyé pour la conversion. Vérifiez le CSV avant de l'importer."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Le convertisseur est-il gratuit ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oui. Il est gratuit, sans compte, et c'est un logiciel libre sous licence AGPL-3.0."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Ma banque ou mon courtier n'est pas lu, que faire ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Cliquez sur « Proposer une banque / un courtier ». Vous masquez d'abord vous-même vos données personnelles avec l'outil de masquage, puis vous pouvez envoyer un exemple pour qu'il soit pris en charge. L'envoi est facultatif."
+      }
+    }
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -930,6 +962,21 @@
   }
   .footer-links a { color: var(--text3); text-decoration: none; transition: color .15s; }
   .footer-links a:hover { color: var(--accent); text-decoration: underline; }
+  /* Texte de présentation sous l'outil (référencement : un texte lisible par les moteurs et les assistants IA). Sans numéro de version dans ce commentaire, pour que tools/bump_conv.py ne le renomme pas. */
+  .seo-guide { max-width: 760px; margin: 40px auto 0; padding: 24px 22px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg2); color: var(--text2); font-size: 13px; line-height: 1.75; }
+  .seo-guide h2 { font-size: 18px; line-height: 1.35; color: var(--text); margin: 0 0 10px; }
+  .seo-guide h3 { font-size: 14px; color: var(--accent); margin: 22px 0 8px; }
+  .seo-guide h4 { font-size: 13px; color: var(--text); margin: 14px 0 4px; }
+  .seo-guide p { margin: 0 0 10px; }
+  .seo-guide ol { margin: 0 0 10px 20px; padding: 0; }
+  .seo-guide li { margin-bottom: 6px; }
+  .seo-guide a { color: var(--accent); font-weight: 600; text-decoration: none; transition: color .15s; }
+  .seo-guide a:hover { color: var(--text); text-decoration: underline; }
+  .seo-guide .seo-guide-date { font-size: 11px; color: var(--text3); margin: 16px 0 0; }
+  /* thème clair : l'accent (#c8860a) manque de contraste sur fond blanc pour du texte ; titres en couleur du texte, liens en ambre foncé soulignés */
+  html[data-theme="light"] .seo-guide h3 { color: var(--text); }
+  html[data-theme="light"] .seo-guide a { color: #8a5a00; text-decoration: underline; }
+  html[data-theme="light"] .seo-guide a:hover { color: var(--text); }
   .footer-sep { color: var(--border2); }
 
   /* Bloc "À savoir" - toujours visible (pas de popup), pour rester le plus honnête possible
@@ -1379,7 +1426,7 @@
   <div class="hero">
     <div class="hero-title">
     <h1>Convertisseur PDF <span>→ CSV</span> <span style="display:inline-block;background:#c99a06;color:#000;font-size:12px;font-weight:800;letter-spacing:.5px;padding:2px 8px;border-radius:6px;vertical-align:middle;">Bêta</span></h1>
-    <p>Détection automatique · v2.501 · Multi PDF en mode Portefeuille</p>
+    <p>Détection automatique · v2.503 · Multi PDF en mode Portefeuille</p>
     </div>
   </div>
 
@@ -1789,6 +1836,30 @@
       </div>
     </div>
   </div>
+
+  <section class="seo-guide" aria-labelledby="seoGuideTitle">
+    <h2 id="seoGuideTitle">Convertir un relevé bancaire PDF en CSV, en local</h2>
+    <p>Le convertisseur de <a href="https://keepyourfolio.fr/" target="_blank" rel="noopener">Keep Your Folio</a> lit votre relevé PDF dans votre navigateur et produit un fichier CSV, à importer dans KYF ou dans un tableur. La conversion se fait sur votre appareil : le PDF n'est pas envoyé pour être converti.</p>
+    <h3>Comment faire, étape par étape</h3>
+    <ol>
+      <li>Choisissez le mode : « Relevé bancaire », « Portefeuille (PEA/AV/Crypto...) » ou « Relevé d'opérations (titres + espèces) ».</li>
+      <li>Déposez le PDF dans le cadre « Déposez votre PDF ici », ou cliquez pour le choisir. Plusieurs PDF sont possibles en mode Portefeuille.</li>
+      <li>Vérifiez la banque ou le courtier reconnu et les lignes extraites, puis décochez ou corrigez ce qui est faux.</li>
+      <li>Cliquez sur « Exporter CSV », ou sur « Télécharger tout (CSV) » si vous avez converti plusieurs documents.</li>
+    </ol>
+    <h3>Ce qui reste sur votre appareil, et ce qui peut en sortir</h3>
+    <p>Le PDF, le texte lu et le CSV restent sur votre appareil. Deux fonctions facultatives peuvent envoyer des informations limitées : la recherche des ISIN manquants envoie le nom des actifs, jamais un montant ni une quantité, et l'envoi d'un exemple de document ne transmet que des images des pages que vous avez noircies vous-même, uniquement si vous le décidez. Le détail est dans la <a href="https://keepyourfolio.fr/privacy.html" target="_blank" rel="noopener">politique de confidentialité</a>.</p>
+    <h3>Limites</h3>
+    <p>Seules certaines banques et certains courtiers sont lus : la liste à jour s'affiche avec le bouton « Voir les banques/courtiers pris en charge ». Le taux de réussite dépend de la qualité du PDF : les documents scannés, certaines polices ou mises en page empêchent parfois l'extraction du texte. L'outil est en bêta : vérifiez toujours le CSV avant de l'importer.</p>
+    <h3>Questions fréquentes</h3>
+    <h4>Comment convertir un relevé bancaire PDF en CSV sans l'envoyer sur un site ?</h4>
+    <p>Utilisez ce convertisseur : le PDF est lu dans votre navigateur et le CSV est créé sur votre appareil. Le PDF n'est pas envoyé pour la conversion. Vérifiez le CSV avant de l'importer.</p>
+    <h4>Le convertisseur est-il gratuit ?</h4>
+    <p>Oui. Il est gratuit, sans compte, et c'est un logiciel libre sous licence AGPL-3.0.</p>
+    <h4>Ma banque ou mon courtier n'est pas lu, que faire ?</h4>
+    <p>Cliquez sur « Proposer une banque / un courtier ». Vous masquez d'abord vous-même vos données personnelles avec l'outil de masquage, puis vous pouvez envoyer un exemple pour qu'il soit pris en charge. L'envoi est facultatif.</p>
+    <p class="seo-guide-date">Texte mis à jour le 24 octobre 2026.</p>
+  </section>
 </main>
 
 <!-- Popups biffage, hors main pour position:fixed correct -->
@@ -2441,7 +2512,7 @@
 <script>
   /**
    * @file        KYF PDF to CSV - Convertisseur PDF intelligent
-   * @version     v2.501
+   * @version     v2.503
    * @description Convertisseur PDF → CSV pour KYF Dashboard.
    *              Détection automatique multi-courtiers, biffage pour les
    *              documents non reconnus (voir kyf_biffer_backend.gs).
@@ -2449,7 +2520,7 @@
    * @copyright   © 2026 Keep Your Folio (KYF) - keepyourfolio.fr
    * @license     AGPL-3.0-or-later
    */
-  console.log('%c Keep Your Folio %c PDF → CSV v2.501 %c keepyourfolio.fr ',
+  console.log('%c Keep Your Folio %c PDF → CSV v2.503 %c keepyourfolio.fr ',
     'background:#1a1f2e;color:#f0b429;font-weight:700;padding:4px 8px;border-radius:4px 0 0 4px',
     'background:#2563eb;color:#fff;font-weight:700;padding:4px 8px',
     'background:#1a1f2e;color:#aaa;padding:4px 8px;border-radius:0 4px 4px 0'
