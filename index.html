@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_12_36.html
+  @file        : KYF_SHARE_beta_2_8_12_38.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.12.36
+  @version     : Beta 2.8.12.38
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7088,7 +7088,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.12.36</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.12.38</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -20587,7 +20587,7 @@ function showPage(id,tab,fromPopstate){
   if(id === 'av-comparateur') try{ avCompRender(); }catch(e){}
   if(id === 'av-fiscalite') try{ avFiscLoadParams(); avFiscAutoFill(); avFiscCalc(); avFiscCloudInit(); }catch(e){}
   if(id === 'fiscal-pea-cto') try{ fiscalParamsInit(); peaFiscLoadParams(); peaFiscSimuler(); pmeFiscLoadParams(); pmeFiscSimuler(); ctoFiscCalc(); kyfCashMvtRefresh(); }catch(e){}
-  if(id === 'avis') try{ kyfNewBadgeSeen('avis'); }catch(e){}   // page Avis ouverte : la mise en avant a rempli son rôle
+  if(id === 'avis') try{ if(kyfAvisPromoOn_()) kyfNewBadgeSeen('avis'); }catch(e){}   // page Avis ouverte ALORS QUE la mise en avant était affichée : elle a rempli son rôle (ouvrir la page avant les 15 jours ne l'éteint plus)
   if(id === 'comptes-titres'){ try{ ctRender(); }catch(e){} try{ kyfNewBadgeSeen('ct'); }catch(e){} }   // page ouverte : le badge NOUVEAU a rempli son rôle
   if(id === 'budget') try{ renderBudgetPage(); }catch(e){}
   if(id === 'immo-crowdfunding') try{ renderCrowdfunding(); }catch(e){}
@@ -42362,8 +42362,12 @@ function kyfAvisShowFeedback(msg, ok){
   const fb = document.getElementById('avisFeedback');
   fb.textContent = msg;
   fb.style.display = 'block';
-  fb.style.background = ok ? kyfSc('rgba(0,212,170,0.12)') : 'rgba(244,63,94,0.12)';
-  fb.style.color = ok ? '#00d4aa' : '#ff4560';
+  kyfAvisFbStyle(fb, ok);
+}
+// Message sous le formulaire d'avis : texte à la couleur du texte du thème (lisible en clair comme en sombre), trait vert (validation) ou rouge (erreur) à gauche, fond légèrement teinté
+function kyfAvisFbStyle(el, ok){
+  el.style.background = ok ? kyfSc('rgba(0,212,170,0.12)') : 'rgba(244,63,94,0.12)';
+  el.style.color = 'var(--text)'; el.style.fontWeight = '600'; el.style.borderLeft = '3px solid ' + (ok ? 'var(--green)' : 'var(--red)');
 }
 function kyfAvisRefreshOpenButton(){
   const l = document.getElementById('avisOpenLabel');
@@ -42452,13 +42456,13 @@ async function submitAvis(){
   if(_avisNoteSelected < 1){
     feedback.textContent = 'Sélectionnez une note de 1 à 5 étoiles.';
     feedback.style.display = 'block';
-    feedback.style.background = 'rgba(244,63,94,0.12)'; feedback.style.color = '#ff4560';
+    kyfAvisFbStyle(feedback, false);
     return;
   }
   if(texte.length < 150){
     feedback.textContent = `Votre avis doit contenir au moins 150 caractères (actuellement ${texte.length}).`;
     feedback.style.display = 'block';
-    feedback.style.background = 'rgba(244,63,94,0.12)'; feedback.style.color = '#ff4560';
+    kyfAvisFbStyle(feedback, false);
     return;
   }
 
@@ -42476,7 +42480,7 @@ async function submitAvis(){
   catch(e){
     feedback.textContent = "Votre navigateur est trop ancien pour envoyer un avis.";
     feedback.style.display = 'block';
-    feedback.style.background = 'rgba(244,63,94,0.12)'; feedback.style.color = '#ff4560';
+    kyfAvisFbStyle(feedback, false);
     return;
   }
   if(surGoogle){ try{ gToken = await kyfGetValidToken(); }catch(e){ gToken = ''; } }
@@ -42506,17 +42510,17 @@ async function submitAvis(){
       if(data.editable === true){ kyfAvisSetMine({ token: newToken, pseudo: pseudo, note: _avisNoteSelected, texte: texte, date: new Date().toISOString() }); kyfAvisRefreshOpenButton(); }
       feedback.innerHTML = kyfEmoHtml('✓ ' + data.message);
       feedback.style.display = 'block';
-      feedback.style.background = kyfSc('rgba(0,212,170,0.12)'); feedback.style.color = '#00d4aa';
+      kyfAvisFbStyle(feedback, true);
       setTimeout(closeAvisModal, 2500);
     } else {
       feedback.textContent = data.raison || data.error || 'Une erreur est survenue.';
       feedback.style.display = 'block';
-      feedback.style.background = 'rgba(244,63,94,0.12)'; feedback.style.color = '#ff4560';
+      kyfAvisFbStyle(feedback, false);
     }
   } catch(e){
     feedback.textContent = 'Erreur de connexion. Réessayez plus tard.';
     feedback.style.display = 'block';
-    feedback.style.background = 'rgba(244,63,94,0.12)'; feedback.style.color = '#ff4560';
+    kyfAvisFbStyle(feedback, false);
   }
   btn.disabled = false; btn.textContent = kyfAvisGetMine() ? 'Enregistrer' : 'Publier';
 }
@@ -46192,7 +46196,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.12.36\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.12.38\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -68548,6 +68552,11 @@ function kyfNewBadgeKey_(k){ return 'kyf-nouveau-badge-' + k; }
 // Menu Avis mis en avant (badge « À VOUS », section dépliée, icône en couleur d'attention en barre repliée) dès que l'utilisateur peut donner son avis : 15 jours depuis sa 1ère utilisation réelle, aucun avis déjà publié, page Avis pas encore ouverte depuis
 function kyfAvisPromoOn_(){
   try{
+    // Une seule fois : la mise en avant éteinte par une simple visite de la page Avis avant d'y avoir droit est rallumée (sauf si un avis est déjà publié depuis ce navigateur)
+    if(!localStorage.getItem('kyf-avis-promo-v2')){
+      localStorage.setItem('kyf-avis-promo-v2', '1');
+      if(!(typeof kyfAvisGetMine === 'function' && kyfAvisGetMine())) localStorage.removeItem(kyfNewBadgeKey_('avis'));
+    }
     if(!localStorage.getItem(WELCOME_KEY) || localStorage.getItem(kyfNewBadgeKey_('avis')) === '1') return false;
     if(typeof kyfAvisGetMine === 'function' && kyfAvisGetMine()) return false;
     const d = localStorage.getItem('kyf-oauth-first-seen') || localStorage.getItem('kyf-first-asset-date') || '';
@@ -70935,6 +70944,10 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.38 · 24/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Avis : la mise en avant « À VOUS » dans le menu ne s'éteint plus quand on ouvre la page Avis avant les 15 jours ; rallumée une fois pour ceux qui l'avaient perdue</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.37 · 24/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Avis : le message de validation (et les erreurs) reprend les couleurs du thème, lisible en thème clair</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.36 · 24/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre Bourse : sélection de deux points sur la courbe (durée et écart de cours entre les deux dates), comme sur les autres graphiques</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.35 · 24/10/2026</div>
