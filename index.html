@@ -64,7 +64,7 @@
     // Jeu de données fictif (aucun chiffre réel)
     var J = JSON.stringify;
     data['kyf-welcome-seen'] = '1'; data['kyf-onboarding-choice-seen'] = '1';
-    data['kyf-nouveautes-vue'] = 'a-2026-10-24';   // = KYF_NOUVEAUTES.annonces[0].id (vérifié par le test val_DEMO-isolation)
+    data['kyf-nouveautes-vue'] = 'a-2026-10-24b';   // = KYF_NOUVEAUTES.annonces[0].id (vérifié par le test val_DEMO-isolation)
     data['kyf-profil-nom'] = 'Démo';
     data['pea-positions'] = J([
       { name:'Amundi MSCI World', ticker:'CW8.PA', isin:'LU1681043599', pru:468.3, qty:42, montant:19668.6, enveloppe:'PEA', color:'#4d9fff' },
@@ -60682,7 +60682,13 @@ const GUIDE_PAGES = [
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Colonnes visibles</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9">9 colonnes activables indépendamment : Investi, PRU, Quantité, Évaluation, Cours, Variation du jour en euros, G/P en euros, G/P en pourcentage, Répartition. Masquez celles qui ne vous intéressent pas pour un tableau plus lisible.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">10 colonnes activables indépendamment : Investi, PRU, Quantité, Évaluation, Cours, Variation du jour en euros, G/P en euros, G/P en pourcentage, Répartition, Tendance. Masquez celles qui ne vous intéressent pas pour un tableau plus lisible.</div>
+      </div>
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Tendance et fenêtre Bourse</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">La colonne <strong style="color:var(--text)">TENDANCE</strong> montre une mini-courbe du cours par ligne (1 M ou 3 M), verte si le cours a monté, rouge s'il a baissé. Un clic ouvre la <strong style="color:var(--text)">fenêtre Bourse</strong> : cours, plus haut, plus bas, votre PRU, et vos achats, ventes et dividendes posés sur la courbe.<br>
+        Les flèches de la fenêtre (ou les touches ← →) passent au titre suivant. Glissez d'un point à l'autre de la courbe pour lire la durée et l'écart de cours. L'étoile fixe la période d'ouverture.<br>
+        Un cours inconnu s'affiche « indisponible » ; un cours isolé aberrant est écarté de la courbe et signalé sous le graphique.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Clôture d'hier : Yahoo ou Google</div>
@@ -68417,13 +68423,10 @@ document.addEventListener('DOMContentLoaded', function(){
 const KYF_NOUVEAUTES = {
   badge: ['arb', 'immo', 'avref', 'avfrais', 'fraispg', 'avevo', 'dcaprix', 'ct', 'tend', 'tipstyle'],   // clés des badges (une ou plusieurs ; tableau) ; clé du badge « Nouveau » (span .kyf-new-badge data-new="...") ; vide = aucun badge
   annonces: [
-    { id: 'a-2026-10-24', date: '2026-10-24', items: [
-      { titre: 'Style des infobulles', version: '2.8.12.27', texte: 'Paramètres, Tooltip et thèmes : choisissez le style des infobulles de tout KYF (Sobre, Navigateur ou Fantaisie KYF), avec la forme et la taille de votre choix et un aperçu en direct. Essayez-les tous : une surprise vous attend.' },
-      { titre: 'Fonds d’un contrat en liste', version: '2.8.12.20', texte: 'Fenêtre Évolution, onglet PAR FONDS : les fonds forment une liste à gauche (nom et valeur) et les graphiques du fonds choisi sont à droite. Au-delà de 8 fonds, la liste passe en pages.' },
-      { titre: 'Vos dividendes sur la courbe Bourse', version: '2.8.12.15', texte: 'Dans la fenêtre Bourse d’un titre, les dividendes que vous avez enregistrés apparaissent en losanges bleus sur la courbe, à leur date de versement, et dans la liste de vos opérations avec leur montant.' },
-      { titre: 'Votre PRU sur la courbe Bourse', version: '2.8.12.14', texte: 'Dans la fenêtre Bourse d’un titre coté en euros, une ligne orange en pointillé marque votre prix de revient unitaire : vous voyez d’un coup d’œil si le cours est au-dessus ou en dessous. Titre coté dans une autre devise : pas de ligne, pour ne pas comparer des euros et des dollars.' },
-      { titre: 'Fenêtre Bourse : le cours et vos opérations', version: '2.8.12.13', texte: 'Cliquez sur la mini-courbe d’un titre (colonne TENDANCE) : la fenêtre Bourse affiche l’historique du cours sur 1 mois à 1 an, avec vos achats (vert) et vos ventes (rouge) posés sur la courbe, et la liste de vos opérations. Sans historique, elle indique « indisponible ».' },
-      { titre: 'Tendance de chaque ligne (ETF & Actions)', version: '2.8.12.12', texte: 'Nouvelle colonne TENDANCE dans le tableau ETF & Actions : une mini-courbe du cours sur 1 ou 3 mois (boutons 1 M / 3 M dans l’en-tête), verte si le cours a monté, rouge s’il a baissé. Elle se met à jour une fois par jour. Sans historique connu, la case affiche « indisponible ». Colonne masquable dans VUE.' }
+    { id: 'a-2026-10-24b', date: '2026-10-24', items: [
+      { titre: 'Suivez chaque titre : TENDANCE et fenêtre Bourse', version: '2.8.12.36', important: true, texte: 'Une mini-courbe par ligne ETF & Actions. Un clic ouvre le cours, votre PRU, vos achats, ventes et dividendes. Flèches pour passer d’un titre à l’autre, deux points pour mesurer un écart.' },
+      { titre: 'Fonds d’un contrat en liste', version: '2.8.12.20', texte: 'Évolution du contrat, onglet PAR FONDS : la liste des fonds à gauche, le graphique du fonds choisi à droite.' },
+      { titre: 'Style des infobulles', version: '2.8.12.27', texte: 'Paramètres, Tooltip et thèmes : 3 styles pour toutes les infobulles. Essayez-les tous.' }
     ] },
     { id: 'a-2026-10-23', date: '2026-10-23', items: [
       { titre: 'Obligations dans vos contrats', version: '2.8.12.11', texte: 'Assurance vie et PER : nouveau type de support « Obligations », à côté des fonds, du private equity et de la dette privée. Il a sa ligne dans le détail du contrat et sa part dans le graphique de répartition. Un fonds dont le nom parle d’obligations ou de « bond » est classé ainsi à l’import.' },
@@ -68603,6 +68606,7 @@ function kyfNewBadgeSeen(k){
 function kyfNewPending_(){
   const L = KYF_NOUVEAUTES.annonces; let seen = '';
   try{ seen = localStorage.getItem(KYF_NEW_SEEN_KEY) || ''; }catch(e){}
+  if(seen === 'a-2026-10-24') seen = 'a-2026-10-23';   // ancien identifiant de l'annonce du 24/10, remplacée par « a-2026-10-24b » : ne pas rouvrir les plus anciennes
   const i = L.findIndex(a => a.id === seen);
   const now = Date.now();
   return (i === -1 ? L.slice() : L.slice(0, i))
