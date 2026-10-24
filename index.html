@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_12_35.html
+  @file        : KYF_SHARE_beta_2_8_12_36.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.12.35
+  @version     : Beta 2.8.12.36
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -1948,6 +1948,9 @@ tr.kyf-row-sel td{background:rgba(240,180,41,0.08);background:color-mix(in srgb,
 .kbYChev{flex:none;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#f0b429;transition:transform .25s ease,color .15s,background .15s}
 [data-theme="light"] .kbYChev{color:#b07800}
 .kbYHead:hover .kbYChev,.kbYHead:focus-visible .kbYChev{color:var(--accent);background:var(--kyf-chev-hover)}
+.kbNavB{width:28px;height:28px;border-radius:50%;border:none;background:transparent;color:#f0b429;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:color .15s,background .15s}[data-theme="light"] .kbNavB{color:#b07800}.kbNavB:hover,.kbNavB:focus-visible{color:var(--accent);background:var(--kyf-chev-hover);outline:none}.kbNavB:focus-visible{box-shadow:0 0 0 1px var(--accent)}
+@keyframes kbSwap{from{opacity:0;transform:translateX(var(--kb-dx,12px))}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){#kyfBourseBody{animation:none !important}}
 .kbYHead:focus-visible{outline:none}
 .kbYHead:focus-visible .kbYChev{box-shadow:0 0 0 1px var(--accent)}
 .kyf-spark-w{display:inline-flex;align-items:center;padding:3px 6px;border-radius:10px;transition:background .18s,box-shadow .18s}
@@ -7085,7 +7088,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.12.35</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.12.36</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -40091,8 +40094,20 @@ function kyfSparkSelRender(){
     '<button type="button" onclick="event.stopPropagation();kyfSparkSetPer(\'' + k + '\')" title="' + t + '" aria-pressed="' + (per === k) + '" class="' + (per === k ? 'kyf-toggle-active' : '') + '" style="padding:3px 7px">' + l + '</button>').join('') + '</span>';
 }
 // Série de la période (jours calendaires) : [[date, cours], ...] triée, ou null si moins de 3 points
+// Cours isolé aberrant dans un historique (ex. 9956,79 entre deux jours à 68) : un point au moins 3 fois plus haut ou plus bas que ses deux voisins, qui sont eux proches l'un de l'autre.
+// Il est écarté de la courbe et des chiffres (jamais corrigé ni remplacé), et signalé sous la courbe. Un début ou une fin de série n'est jamais écarté (pas de voisin pour comparer).
+function kyfHistSpikes(a){
+  const bad = new Set();
+  for(let i = 1; i < a.length - 1; i++){
+    const p = a[i - 1][1], v = a[i][1], n = a[i + 1][1], lo = Math.min(p, n), hi = Math.max(p, n);
+    if(lo > 0 && hi / lo <= 1.5 && (v >= hi * 3 || v <= lo / 3)) bad.add(i);
+  }
+  return bad;
+}
+function kyfHistClean(a){ if(!Array.isArray(a) || a.length < 3) return a; const b = kyfHistSpikes(a); return b.size ? a.filter((_, i) => !b.has(i)) : a; }
 function kyfSparkSeries(ticker){
-  const h = kyfSparkLoad().h[ticker]; if(!Array.isArray(h)) return null;
+  const h0 = kyfSparkLoad().h[ticker]; if(!Array.isArray(h0)) return null;
+  const h = kyfHistClean(h0.filter(x => Array.isArray(x) && Number.isFinite(x[1]) && x[1] > 0));
   const today = kyfParisNow().date, days = kyfSparkPer() === '1m' ? 31 : 92;
   const from = new Date(Date.parse(today + 'T12:00:00Z') - days * 86400000).toISOString().slice(0, 10);
   const pts = h.filter(x => Array.isArray(x) && x[0] >= from && x[0] <= today && Number.isFinite(x[1]) && x[1] > 0);
@@ -40184,6 +40199,17 @@ function kyfTipRadius(style, pill){
 }
 function kyfTipShapeDefault(style){ if(style === 'none') return String((typeof tooltipPrefs !== 'undefined' && tooltipPrefs.radius) || 14); return (style === 'nav') ? '4' : (style === 'kyf' || style === 'saison') ? '14' : '10'; }
 // Dessine la bulle `tip` (position et taille de boîte gérées par l'appelant) : txt = texte simple ; parts {d, v, e} = date, cours, variation pour les styles colorés ; arrow = pointe vers le bas
+// Montants et pourcentages signés d'une infobulle : + en vert KYF, - en rouge KYF (variables du thème, lisibles en clair comme en sombre)
+function kyfTipSetText(tip, txt){
+  tip.textContent = '';
+  const re = /(^|[\s(])([+\-\u2212]\d[\d\s.,]*(?:\s?[%\u20ac])?)/g; let i = 0, m;
+  while((m = re.exec(txt))){
+    const st = m.index + m[1].length; if(st > i) tip.appendChild(document.createTextNode(txt.slice(i, st)));
+    const sp = document.createElement('span'); sp.textContent = m[2]; sp.style.color = m[2][0] === '+' ? 'var(--green)' : 'var(--red)'; sp.style.fontWeight = '700'; tip.appendChild(sp);
+    i = st + m[2].length;
+  }
+  if(i < txt.length) tip.appendChild(document.createTextNode(txt.slice(i)));
+}
 function kyfTipPreset(tip, style, txt, parts, arrow){
   const dark = document.documentElement.getAttribute('data-theme') !== 'light', S = tip.style, f = typeof kyfTipFactor === 'function' ? kyfTipFactor() : 1;
   const px = (n) => Math.round(n * f * 10) / 10 + 'px';
@@ -40198,7 +40224,7 @@ function kyfTipPreset(tip, style, txt, parts, arrow){
     if(sa) pill.appendChild(kyfSaisonIcon(sa.ic, fg)); else pill.appendChild(mk('span', 'width:9px;height:9px;border-radius:50%;background:' + fg + ';box-shadow:0 0 0 3px rgba(255,255,255,.5);flex-shrink:0'));
     if(parts){
       pill.appendChild(mk('span', 'font-weight:600;opacity:.75', parts.d)); pill.appendChild(mk('span', '', parts.v));
-      if(parts.e) pill.appendChild(mk('span', 'background:' + fg + ';color:' + (sa ? '#fff' : '#F7C948') + ';border-radius:999px;padding:1px 7px;font-size:' + px(11), parts.e));
+      if(parts.e) pill.appendChild(mk('span', 'background:' + fg + ';color:' + (/^\+/.test(parts.e) ? '#6EF0C0' : /^[-\u2212]/.test(parts.e) ? '#FF9AAB' : (sa ? '#fff' : '#F7C948')) + ';border-radius:999px;padding:1px 7px;font-size:' + px(11), parts.e));
     } else pill.appendChild(mk('span', '', txt));
     tip.appendChild(pill);
     if(arrow){ const m = sa ? '#E9892B' : tail; tip.appendChild(mk('div', 'width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:9px solid ' + (sa ? 'rgba(120,120,120,.85)' : m) + ';margin:-1px 0 0 26px')); }
@@ -40212,10 +40238,10 @@ function kyfTipPreset(tip, style, txt, parts, arrow){
     const tp = (typeof tooltipPrefs !== 'undefined') ? tooltipPrefs : {}, bd = typeof getTipBorderColor === 'function' ? getTipBorderColor() : 'transparent';
     S.background = typeof getTipBg === 'function' ? getTipBg() : 'rgba(8,12,20,0.82)'; S.color = typeof getTipTextColor === 'function' ? getTipTextColor() : '#fff';
     S.border = '1px solid ' + (tp.border === 'none' ? 'transparent' : bd); S.borderRadius = (tp.radius || 14) + 'px'; S.padding = px(6) + ' ' + px(10);
-    S.font = '600 ' + px(11) + ' Inter,sans-serif'; S.boxShadow = '0 6px 24px rgba(0,0,0,0.35)'; S.lineHeight = '1.45'; tip.textContent = txt; return;
+    S.font = '600 ' + px(11) + ' Inter,sans-serif'; S.boxShadow = '0 6px 24px rgba(0,0,0,0.35)'; S.lineHeight = '1.45'; kyfTipSetText(tip, txt); return;
   }
   S.background = 'var(--bg2)'; S.border = '1px solid var(--border2)'; S.borderRadius = kyfTipRadius('sobre') || '8px'; S.padding = px(5) + ' ' + px(9); S.font = '600 ' + px(11) + ' Inter,sans-serif'; S.color = 'var(--text)';
-  S.boxShadow = '0 6px 18px rgba(0,0,0,.28)'; S.lineHeight = '1.45'; tip.textContent = txt;
+  S.boxShadow = '0 6px 18px rgba(0,0,0,.28)'; S.lineHeight = '1.45'; kyfTipSetText(tip, txt);
 }
 function kyfSparkHover(ev, leave){
   const svg = ev.target.closest && ev.target.closest('svg.kyf-spark'); if(!svg) return;
@@ -40266,7 +40292,25 @@ function kyfBourseClose(){
   document.getElementById('kyfBourseModal')?.remove(); document.getElementById('kyfBourseOverlay')?.remove(); document.body.style.overflow = '';
   document.removeEventListener('keydown', kyfBourseKey); try{ kyfSparkMarkActive(); }catch(_){} const tip = document.getElementById('kyfBourseTip'); if(tip) tip.remove();
 }
-function kyfBourseKey(ev){ if(ev.key === 'Escape') kyfBourseClose(); }
+function kyfBourseKey(ev){
+  if(ev.key === 'Escape'){ if(_kbR) kyfBourseRangeClear(); else kyfBourseClose(); }
+  else if((ev.key === 'ArrowLeft' || ev.key === 'ArrowRight') && !(ev.target && ev.target.matches && ev.target.matches('input,textarea,select'))){ ev.preventDefault(); kyfBourseNav(ev.key === 'ArrowRight' ? 1 : -1); }
+}
+// Passer au titre précédent / suivant de la colonne TENDANCE (dans l'ordre affiché du tableau), sans fermer la fenêtre
+function kyfBourseList(){ const a = []; document.querySelectorAll('#etfTbody svg.kyf-spark[data-t]').forEach(sv => { const t = sv.dataset.t; if(t && !a.includes(t)) a.push(t); }); return a; }
+function kyfBourseNav(d){
+  const l = kyfBourseList(), i = l.indexOf(_kyfBourseT); if(l.length < 2 || i < 0 || _kyfBourseNavBusy) return;
+  const m = document.getElementById('kyfBourseModal'), b = document.getElementById('kyfBourseBody'), nxt = l[(i + d + l.length) % l.length];
+  if(!m || !b){ kyfBourseOpen(nxt, d); return; }
+  // Sortie courte (le contenu glisse de 14 px en s'effaçant), puis le nouveau titre arrive du même côté ; la hauteur de la fenêtre est figée pendant le passage pour qu'elle ne saute pas
+  // La fenêtre ne bouge plus pendant la navigation : ancrée par le haut (plus centrée, sinon elle monte et descend avec sa hauteur) et hauteur jamais réduite
+  if(!m.dataset.fixed){ const r = m.getBoundingClientRect(); m.style.top = r.top + 'px'; m.style.transform = 'translateX(-50%)'; m.style.maxHeight = 'calc(100vh - ' + Math.round(r.top + 12) + 'px)'; m.dataset.fixed = '1'; }
+  m.style.overflow = 'hidden';   // pas de barre de défilement qui clignote pendant le glissement ; rendue à la fin du passage
+  _kyfBourseNavBusy = true; m.style.minHeight = Math.max(parseFloat(m.style.minHeight) || 0, m.offsetHeight) + 'px';
+  b.style.animation = 'none'; b.style.transition = 'opacity .11s ease-in,transform .11s ease-in'; b.style.opacity = '0'; b.style.transform = 'translateX(' + (d > 0 ? -14 : 14) + 'px)';
+  setTimeout(() => { _kyfBourseNavBusy = false; if(document.getElementById('kyfBourseModal')) kyfBourseOpen(nxt, d); }, 115);
+}
+let _kyfBourseNavBusy = false;
 function kyfBourseSetPer(v){ _kyfBourseP = KYF_BOURSE_PER[v] ? v : '3m'; kyfBourseRender(); }
 // PRU tracé seulement si le titre cote en euros ET qu'une quantité est détenue : le PRU de KYF est en euros, le comparer à un cours en dollars ou en livres serait faux
 function kyfBoursePru(t){
@@ -40286,19 +40330,26 @@ function kyfBourseDiv(t){
 function kyfBourseTx(t){
   return etfTransLoad().filter(x => x && x.ticker === t && (x.type === 'achat' || x.type === 'vente')).map(x => ({ d: kyfTwrIsoDate_(x.date), type: x.type, q: parseFloat(x.qty), p: parseFloat(x.prix) })).filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x.d)).sort((a, b) => a.d < b.d ? 1 : -1);
 }
-async function kyfBourseOpen(t){
+async function kyfBourseOpen(t, dir){
   try{ kyfNewBadgeSeen('tend'); }catch(_){}
   t = String(t || ''); if(!/^[A-Za-z0-9.\-=^_]{1,24}$/.test(t) || !kyfBourseOpt('bourseOn')) return;
-  kyfBourseClose(); _kyfBourseT = t; _kyfBourseYOpen = new Set(); _kyfBourseP = kyfBourseFavPer() || kyfSparkPer();
+  const keep = !!dir && !!document.getElementById('kyfBourseModal');   // navigation d'un titre à l'autre : la fenêtre reste, la période choisie aussi
+  if(!keep){ kyfBourseClose(); _kyfBourseP = kyfBourseFavPer() || kyfSparkPer(); }
+  _kyfBourseT = t; _kyfBourseYOpen = new Set();
   const e = ETF.find(x => x.ticker === t);
+  if(!keep){
   const ov = document.createElement('div'); ov.id = 'kyfBourseOverlay'; ov.onclick = kyfBourseClose; ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10000011';
   const m = document.createElement('div'); m.id = 'kyfBourseModal'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true');
   m.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(760px,96vw);max-height:92vh;overflow:auto;z-index:10000012;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;font-family:Inter,sans-serif;box-shadow:0 24px 70px rgba(0,0,0,.5)';
   m.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;padding:18px 26px;border-bottom:1px solid var(--border)"><span style="font-weight:700;font-size:13px;display:inline-flex;align-items:center;gap:8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none"><polyline points="3 17 9 11 13 14 21 6"/><polyline points="15 6 21 6 21 12"/></svg><span>BOURSE <span id="kyfBourseTitre" style="font-weight:600;color:var(--text2)"></span></span></span>'
-    + '<button type="button" onclick="kyfBourseClose()" class="kyf-modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'
+    + '<span style="display:inline-flex;align-items:center;gap:6px"><span id="kyfBourseNav" style="display:none;align-items:center;gap:2px"><button type="button" class="kbNavB" onclick="kyfBourseNav(-1)" aria-label="Titre précédent" title="Titre précédent"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button><button type="button" class="kbNavB" onclick="kyfBourseNav(1)" aria-label="Titre suivant" title="Titre suivant"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button></span>'
+    + '<button type="button" onclick="kyfBourseClose()" class="kyf-modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span></div>'
     + '<div id="kyfBourseBody" style="padding:22px 26px 26px"></div>';
   document.body.appendChild(ov); document.body.appendChild(m); document.body.style.overflow = 'hidden'; document.addEventListener('keydown', kyfBourseKey);
-  m.querySelector('#kyfBourseTitre').textContent = '· ' + ((e && e.name) || t) + ' (' + t + ')';
+  }
+  document.getElementById('kyfBourseTitre').textContent = '· ' + ((e && e.name) || t) + ' (' + t + ')';
+  const nv = document.getElementById('kyfBourseNav'); if(nv) nv.style.display = kyfBourseList().length > 1 ? 'inline-flex' : 'none';
+  if(keep){ const b = document.getElementById('kyfBourseBody'); if(b){ b.style.transition = 'none'; b.style.opacity = ''; b.style.transform = ''; b.style.animation = 'none'; void b.offsetWidth; b.style.setProperty('--kb-dx', (dir > 0 ? 14 : -14) + 'px'); b.style.animation = 'kbSwap .22s ease-out'; } }
   // Historique déjà connu (cache de la colonne TENDANCE) en attendant la lecture complète
   if(!_kyfBourseH[t]) _kyfBourseH[t] = { pts: kyfSparkLoad().h[t] || [], full: false };
   try{ kyfSparkMarkActive(); }catch(_){}
@@ -40319,12 +40370,14 @@ async function kyfBourseOpen(t){
     finally{ delete _kyfBourseBusy[t]; }
     if(_kyfBourseT === t) kyfBourseRender();
   }
+  if(keep) setTimeout(() => { const mm = document.getElementById('kyfBourseModal'); if(mm){ mm.style.overflowX = 'hidden'; mm.style.overflowY = 'auto'; } }, 300);
 }
 function kyfBourseRender(){
   const body = document.getElementById('kyfBourseBody'); if(!body) return;
+  _kbR = null;
   const t = _kyfBourseT, per = kyfBoursePer(), H = _kyfBourseH[t] || { pts: [], full: false };
   const today = kyfParisNow().date, from = new Date(Date.parse(today + 'T12:00:00Z') - KYF_BOURSE_PER[per] * 86400000).toISOString().slice(0, 10);
-  const pts = H.pts.filter(x => x[0] >= from && x[0] <= today);
+  const hClean = kyfHistClean(H.pts), pts = hClean.filter(x => x[0] >= from && x[0] <= today), nSpk = H.pts.length - hClean.length ? (() => { const b = kyfHistSpikes(H.pts); return H.pts.filter((x, i) => b.has(i) && x[0] >= from && x[0] <= today); })() : [];
   const covered = H.full || (H.pts.length > 0 && H.pts[0][0] <= from), waiting = !!_kyfBourseBusy[t] && !covered;
   const tx = kyfBourseTx(t), txIn = kyfBourseOpt('bourseTx') ? tx.filter(x => x.d >= from && x.d <= today) : [], dv = kyfBourseDiv(t), dvIn = dv.filter(x => x.d >= from && x.d <= today);
   const fr = d => d.slice(8, 10) + '/' + d.slice(5, 7) + '/' + d.slice(2, 4), nf = (v, n) => v.toFixed(n == null ? 2 : n).replace('.', ',');
@@ -40356,7 +40409,7 @@ function kyfBourseRender(){
     g += '<path d="' + area + '" fill="url(#kbA)" clip-path="url(#kbCa)"/><path d="' + area + '" fill="url(#kbB)" clip-path="url(#kbCb)"/>'
       + '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y0.toFixed(1) + '" y2="' + y0.toFixed(1) + '" stroke="var(--text3)" stroke-width=".9" stroke-dasharray="3 4"/>'
       + '<path d="' + line + '" fill="none" stroke="' + col + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
-    if(pru) g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(pru).toFixed(1) + '" y2="' + Y(pru).toFixed(1) + '" stroke="var(--accent)" stroke-width="1.4" stroke-dasharray="6 4"/><text x="' + (W - R - 4) + '" y="' + (Y(pru) - 5).toFixed(1) + '" text-anchor="end" font-size="10" font-weight="700" fill="var(--accent)">PRU ' + nf(pru) + '</text>';
+    if(pru) g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(pru).toFixed(1) + '" y2="' + Y(pru).toFixed(1) + '" stroke="var(--accent)" stroke-width="1.4" stroke-dasharray="6 4"/>' + (() => { const lb = 'PRU ' + nf(pru), w = lb.length * 6.4 + 12, yy = Y(pru), top = yy - 22 >= T, ry = top ? yy - 22 : yy + 6; return '<rect x="' + (W - R - 4 - w + 6).toFixed(1) + '" y="' + ry.toFixed(1) + '" width="' + w.toFixed(1) + '" height="16" rx="5" fill="var(--bg2)" stroke="var(--accent)" stroke-width="1" style="pointer-events:none"/><text x="' + (W - R - 4).toFixed(1) + '" y="' + (ry + 11.5).toFixed(1) + '" text-anchor="end" font-size="10.5" font-weight="800" fill="var(--accent)" style="pointer-events:none">' + lb + '</text>'; })();
     // Repères : achat = rond vert plein, vente = rond rouge plein, posés SUR la courbe au dernier cours connu à la date de l'opération (le prix exact de l'opération est dans la bulle et la liste)
     txIn.forEach(x => { let q = null; pts.forEach(z => { if(z[0] <= x.d) q = z; }); if(!q) q = pts[0]; const c = x.type === 'achat' ? 'var(--green)' : 'var(--red)'; g += '<circle class="kb-tx" data-i="' + tx.indexOf(x) + '" cx="' + X(x.d).toFixed(1) + '" cy="' + Y(q[1]).toFixed(1) + '" r="5.5" fill="' + c + '" stroke="var(--bg2)" stroke-width="2" style="cursor:pointer"/>'; });
     // Dividendes : losange bleu posé sur la courbe, au dernier cours connu à la date du versement
@@ -40369,7 +40422,7 @@ function kyfBourseRender(){
       + (kyfBourseOpt('bourseTx') ? lg('<svg width="10" height="10"><circle cx="5" cy="5" r="4.5" fill="var(--green)"/></svg>', 'Achat') + lg('<svg width="10" height="10"><circle cx="5" cy="5" r="4.5" fill="var(--red)"/></svg>', 'Vente') : '')
       + (dv.length ? lg('<svg width="10" height="10"><path d="M5 0L10 5L5 10L0 5Z" fill="var(--blue)"/></svg>', 'Dividende') : '')
       + '<span>Pointillé gris : cours du début de période</span>' + (pru ? '<span style="color:var(--accent)">Pointillé orange : votre PRU</span>' : pru0 ? '<span style="color:var(--accent)">Votre PRU : ' + nf(pru0) + ' (hors du graphique)</span>' : '')
-      + (nOut ? '<span>' + nOut + ' opération' + (nOut > 1 ? 's' : '') + ' hors période</span>' : '') + (!H.full ? '<span>Historique partiel (100 jours)</span>' : '') + '</div>';
+      + (nOut ? '<span>' + nOut + ' opération' + (nOut > 1 ? 's' : '') + ' hors période</span>' : '') + (!H.full ? '<span>Historique partiel (100 jours)</span>' : '') + (nSpk.length ? '<span title="Un cours isolé, au moins 3 fois plus haut ou plus bas que la veille et le lendemain, est écarté de la courbe et des chiffres">' + nSpk.length + ' cours aberrant' + (nSpk.length > 1 ? 's' : '') + ' ignoré' + (nSpk.length > 1 ? 's' : '') + ' : ' + nSpk.map(x => fr(x[0]) + ' (' + nf(x[1]) + ')').join(', ') + '</span>' : '') + '</div>';
   }
   // Vos opérations sur ce titre
   h += '<div style="font-size:11px;color:var(--accent);font-weight:700;letter-spacing:.5px;margin:26px 0 8px;padding-top:20px;border-top:1px solid var(--border)">VOS OPÉRATIONS</div>';
@@ -40394,14 +40447,70 @@ function kyfBourseRender(){
 }
 // Quantité lisible : 4 décimales au plus, virgule française, zéros de fin retirés (une quantité de 0,2701242571582928 s'affiche 0,2701)
 function kyfBourseQty(q){ return Number.isFinite(q) ? (Math.round(q * 10000) / 10000).toLocaleString('fr-FR', { maximumFractionDigits: 4 }) : '?'; }
+// ── Deux points sur la courbe de la fenêtre Bourse : on appuie sur le point A, on glisse jusqu'au point B, la bulle donne la durée et l'écart de cours entre les deux (sans devise : la devise du titre n'est pas toujours connue) ──
+let _kbR = null;
+function kyfBourseGeom(){
+  const svg = document.getElementById('kyfBourseSvg'), H = _kyfBourseH[_kyfBourseT]; if(!svg || !H) return null;
+  const per = kyfBoursePer(), today = kyfParisNow().date, from = new Date(Date.parse(today + 'T12:00:00Z') - KYF_BOURSE_PER[per] * 86400000).toISOString().slice(0, 10);
+  const pts = kyfHistClean(H.pts).filter(x => x[0] >= from && x[0] <= today); if(pts.length < 3) return null;
+  const W = 700, HT = 280, L = 52, R = 14, T = 14, B = 26, iw = W - L - R, ih = HT - T - B, r = svg.getBoundingClientRect();
+  const t0 = Date.parse(pts[0][0] + 'T12:00:00Z'), t1 = Date.parse(pts[pts.length - 1][0] + 'T12:00:00Z'), dt = (t1 - t0) || 1;
+  const pru0 = kyfBoursePru(_kyfBourseT), base = pts.map(x => x[1]), pru = kyfBoursePruIn(pru0, base) ? pru0 : null, px = base.concat(pru ? [pru] : []); let mn = Math.min(...px), mx = Math.max(...px); const pd = (mx - mn || mx * 0.02) * 0.1; mn -= pd; mx += pd;
+  const X = d => L + (Date.parse(d + 'T12:00:00Z') - t0) / dt * iw, Y = v => T + (1 - (v - mn) / (mx - mn)) * ih;
+  const idxAt = cx => { const mxv = ((cx - r.left) / r.width * W - L) / iw * dt + t0; let k = 0, bd = Infinity; pts.forEach((x, i) => { const d = Math.abs(Date.parse(x[0] + 'T12:00:00Z') - mxv); if(d < bd){ bd = d; k = i; } }); return k; };
+  return { svg, pts, X, Y, idxAt, T, HT, B };
+}
+// Place la bulle près du curseur sans jamais dépasser de la fenêtre Bourse : à droite du curseur, sinon à gauche, puis recadrée dans la fenêtre
+function kyfBourseTipPlace(tip, ev, dx){
+  const m = document.getElementById('kyfBourseModal'), r = m ? m.getBoundingClientRect() : { left: 0, right: window.innerWidth, top: 0, bottom: window.innerHeight };
+  const w = tip.offsetWidth, h = tip.offsetHeight, lo = Math.max(r.left, 0) + 8, hi = Math.min(r.right, window.innerWidth) - 8 - w;
+  let x = ev.clientX + dx; if(x > hi) x = ev.clientX - dx - w;
+  x = Math.max(lo, Math.min(x, hi));
+  tip.style.left = x + 'px'; tip.style.top = Math.max(r.top + 6, ev.clientY - h - 12) + 'px';
+}
+function kyfBourseRangeClear(){
+  const svg = document.getElementById('kyfBourseSvg'); const o = svg && svg.querySelector('#kbRange'); if(o) o.remove();
+  hideRangeTooltip();
+  _kbR = null;
+}
+function kyfBourseRangeMove(ev){
+  if(!_kbR) return; const G = kyfBourseGeom(); if(!G){ kyfBourseRangeClear(); return; }
+  const a = _kbR.a, b = G.idxAt(ev.clientX), lo = Math.min(a, b), hi = Math.max(a, b);
+  let o = G.svg.querySelector('#kbRange'); if(o) o.remove();
+  const hov = G.svg.querySelector('#kbHov'); if(hov) hov.style.display = 'none';
+  if(lo === hi){ hideRangeTooltip(); return; }
+  const pa = G.pts[lo], pb = G.pts[hi], d = pb[1] - pa[1], pc = pa[1] > 0 ? d / pa[1] * 100 : null, up = d >= 0, col = up ? 'var(--green)' : 'var(--red)';
+  const xa = G.X(pa[0]).toFixed(1), xb = G.X(pb[0]).toFixed(1), ya = G.Y(pa[1]).toFixed(1), yb = G.Y(pb[1]).toFixed(1);
+  o = document.createElementNS('http://www.w3.org/2000/svg', 'g'); o.id = 'kbRange'; o.setAttribute('style', 'pointer-events:none');
+  o.innerHTML = '<rect x="' + xa + '" y="' + G.T + '" width="' + (xb - xa).toFixed(1) + '" height="' + (G.HT - G.B - G.T) + '" fill="' + col + '" opacity=".13"/>'
+    + '<line x1="' + xa + '" x2="' + xa + '" y1="' + G.T + '" y2="' + (G.HT - G.B) + '" stroke="' + col + '" stroke-width="1.2" stroke-dasharray="4 3"/><line x1="' + xb + '" x2="' + xb + '" y1="' + G.T + '" y2="' + (G.HT - G.B) + '" stroke="' + col + '" stroke-width="1.2" stroke-dasharray="4 3"/>'
+    + '<circle cx="' + xa + '" cy="' + ya + '" r="3.5" fill="var(--bg2)" stroke="' + col + '" stroke-width="2"/><circle cx="' + xb + '" cy="' + yb + '" r="3.5" fill="var(--bg2)" stroke="' + col + '" stroke-width="2"/>';
+  G.svg.insertBefore(o, hov || null);
+  const fr = x => x.slice(8, 10) + '/' + x.slice(5, 7) + '/' + x.slice(2, 4);
+  const days = Math.round((Date.parse(pb[0] + 'T12:00:00Z') - Date.parse(pa[0] + 'T12:00:00Z')) / 86400000);
+  const dur = days < 14 ? days + ' j' : days < 60 ? Math.round(days / 7) + ' sem.' : days < 730 ? Math.round(days / 30.4) + ' mois' : (days / 365).toFixed(1).replace('.', ',') + ' ans';
+  // Même bulle que COURBE DE VALORISATION et l'intraday (sans devise : celle du titre n'est pas toujours connue), gardée dans la fenêtre Bourse
+  const mdl = document.getElementById('kyfBourseModal');
+  showRangeTooltip(ev, { lblA: fr(pa[0]), lblB: fr(pb[0]), diff: d, diffPct: pc == null ? 0 : pc, durationStr: dur, colLine: getCSSVar(up ? '--green' : '--red'), unit: '', bounds: mdl ? mdl.getBoundingClientRect() : null });
+}
+document.addEventListener('mousedown', ev => {
+  if(ev.button !== 0 || !(ev.target.closest && ev.target.closest('#kyfBourseSvg'))) return;
+  const G = kyfBourseGeom(); if(!G) return; ev.preventDefault(); _kbR = { a: G.idxAt(ev.clientX) }; const ht = document.getElementById('kyfBourseTip'); if(ht) ht.style.display = 'none';
+});
+document.addEventListener('mousemove', kyfBourseRangeMove);
+document.addEventListener('mouseup', () => { if(_kbR) kyfBourseRangeClear(); });
+window.addEventListener('blur', () => { if(_kbR) kyfBourseRangeClear(); });
+// Échap pendant la sélection : annule la sélection seulement (en phase de capture, avant les autres fermetures par Échap : la fenêtre reste ouverte)
+document.addEventListener('keydown', ev => { if(ev.key === 'Escape' && _kbR){ ev.stopImmediatePropagation(); ev.preventDefault(); kyfBourseRangeClear(); } }, true);
 function kyfBourseHover(ev, leave){
+  if(_kbR) return;
   const svg = document.getElementById('kyfBourseSvg'); if(!svg) return;
   let tip = document.getElementById('kyfBourseTip');
   const g = svg.querySelector('#kbHov');
   if(leave){ if(tip) tip.style.display = 'none'; if(g) g.style.display = 'none'; return; }
   const t = _kyfBourseT, per = kyfBoursePer(), H = _kyfBourseH[t]; if(!H) return;
   const today = kyfParisNow().date, from = new Date(Date.parse(today + 'T12:00:00Z') - KYF_BOURSE_PER[per] * 86400000).toISOString().slice(0, 10);
-  const pts = H.pts.filter(x => x[0] >= from && x[0] <= today); if(pts.length < 3) return;
+  const pts = kyfHistClean(H.pts).filter(x => x[0] >= from && x[0] <= today); if(pts.length < 3) return;
   const W = 700, HT = 280, L = 52, R = 14, T = 14, B = 26, iw = W - L - R, ih = HT - T - B, r = svg.getBoundingClientRect();
   const tx = kyfBourseTx(t), txIn = kyfBourseOpt('bourseTx') ? tx.filter(x => x.d >= from && x.d <= today) : [], dv = kyfBourseDiv(t);
   const t0 = Date.parse(pts[0][0] + 'T12:00:00Z'), t1 = Date.parse(pts[pts.length - 1][0] + 'T12:00:00Z'), dt = (t1 - t0) || 1;
@@ -40415,7 +40524,7 @@ function kyfBourseHover(ev, leave){
   const txt = dvo ? 'Dividende du ' + dvo.d.slice(8, 10) + '/' + dvo.d.slice(5, 7) + '  ·  ' + dvo.m.toFixed(2).replace('.', ',') + ' €' : o ? (o.type === 'achat' ? 'Achat' : 'Vente') + ' du ' + o.d.slice(8, 10) + '/' + o.d.slice(5, 7) + '  ·  ' + kyfBourseQty(o.q) + ' × ' + (o.p > 0 ? o.p.toFixed(2).replace('.', ',') : 'prix inconnu')
     : dd.slice(8, 10) + '/' + dd.slice(5, 7) + '  ·  ' + pts[k][1].toFixed(2).replace('.', ',') + '  ·  ' + (e >= 0 ? '+' : '') + e.toFixed(1).replace('.', ',') + ' %';
   { kyfTipPreset(tip, kyfSparkStyle(), txt, (dvo || o) ? null : { d: dd.slice(8, 10) + '/' + dd.slice(5, 7), v: pts[k][1].toFixed(2).replace('.', ','), e: (e >= 0 ? '+' : '') + e.toFixed(1).replace('.', ',') + ' %' }, true); }
-  tip.style.display = 'block'; tip.style.left = Math.min(window.innerWidth - tip.offsetWidth - 8, ev.clientX + 12) + 'px'; tip.style.top = Math.max(4, ev.clientY - tip.offsetHeight - 12) + 'px';
+  tip.style.display = 'block'; kyfBourseTipPlace(tip, ev, 12);
 }
 document.addEventListener('mousemove', ev => { if(ev.target.closest && ev.target.closest('#kyfBourseSvg')) kyfBourseHover(ev); });
 document.addEventListener('mouseout', ev => { const s = ev.target.closest && ev.target.closest('#kyfBourseSvg'); if(s && !(ev.relatedTarget && s.contains(ev.relatedTarget))) kyfBourseHover(ev, true); });
@@ -45001,8 +45110,9 @@ function showRangeTooltip(e, data){
   _rangeTip.innerHTML =
     '<div style="display:flex;align-items:center;gap:7px;margin-bottom:6px;color:var(--accent)">' + icon
       + '<span style="font-size:12px;font-weight:800;letter-spacing:.3px">' + data.lblA + (isTime ? ' à ' : ' au ') + data.lblB + '</span>' + dur + '</div>'+
-    '<div style="font-size:14px;font-weight:800;color:'+col+';margin-bottom:2px">'+sign+fmt(data.diff,2)+' €</div>'+
+    '<div style="font-size:14px;font-weight:800;color:'+col+';margin-bottom:2px">'+sign+fmt(data.diff,2)+(data.unit == null ? ' €' : data.unit)+'</div>'+
     '<div style="font-size:11px;font-weight:700;color:'+col+'">'+(data.diffPct>=0?'+':'')+data.diffPct.toFixed(2)+' %</div>';
+  _rangeTip.style.zIndex = data.bounds ? '10000030' : '9998';   // au-dessus d'une fenêtre (Bourse)
   _rangeTip.style.display = 'block';
   const tipW = _rangeTip.offsetWidth;
   const tipH = _rangeTip.offsetHeight;
@@ -45010,7 +45120,8 @@ function showRangeTooltip(e, data){
   let x = e.clientX + 18;
   if(x + tipW > window.innerWidth - 8) x = e.clientX - 18 - tipW;
   x = Math.max(8, x);
-  const y = Math.min(Math.max(8, e.clientY - 10), window.innerHeight - tipH - 8);
+  let y = Math.min(Math.max(8, e.clientY - 10), window.innerHeight - tipH - 8);
+  if(data.bounds){ const b = data.bounds; x = e.clientX + 18; if(x + tipW > b.right - 8) x = e.clientX - 18 - tipW; x = Math.max(b.left + 8, Math.min(x, b.right - 8 - tipW)); y = Math.max(b.top + 6, Math.min(y, b.bottom - 8 - tipH)); }   // jamais hors de la fenêtre qui contient le graphique
   _rangeTip.style.left = x + 'px';
   _rangeTip.style.top  = y + 'px';
 }
@@ -46081,7 +46192,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.12.35\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.12.36\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -70820,6 +70931,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.36 · 24/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre Bourse : sélection de deux points sur la courbe (durée et écart de cours entre les deux dates), comme sur les autres graphiques</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.35 · 24/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Sélection de deux points sur un graphique : relâcher à côté du cadre efface les barres pointillées ; la bulle de la sélection ne passe plus sous le curseur au bord droit</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.34 · 24/10/2026</div>
