@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_12_50.html
+  @file        : KYF_SHARE_beta_2_8_12_53.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.12.50
+  @version     : Beta 2.8.12.53
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7147,7 +7147,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.12.50</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.12.53</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -46266,7 +46266,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.12.50\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.12.53\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -51426,7 +51426,9 @@ function executeReset(){
 }
 
 async function resetAll(){
-  if(!(await kyfAsk('TOUT EFFACER : toutes vos données KYF seront supprimées (positions, transactions, crypto, historique, préférences). Cette action est irréversible.'))) return;
+  if(!(await kyfAsk('TOUT EFFACER : toutes vos données KYF seront supprimées (positions, transactions, crypto, historique, préférences), ainsi que les points de restauration de cet appareil. Cette action est irréversible.'))) return;
+  kyfRpDeleteAll();
+  try{ kyfImpDraftDeleteAll(); }catch(e){}
   const keys = Object.keys(localStorage).filter(k => 
     (k.startsWith('pea-') || k.startsWith('kyf-') || k.startsWith('cg-')) &&
     k !== 'kyf-beta-unlocked' && k !== 'kyf-sheets-url' && k !== 'kyf-bugfix-seen' && k !== 'kyf-last-page'
@@ -51435,6 +51437,300 @@ async function resetAll(){
   addLog('infos', 'Toutes les données locales ont été effacées', 'io', 'ok');
   kyfAlert('Données effacées. Rechargement...').then(function(){ location.reload(); });
 }
+
+// ── Points de restauration locaux (2.8.12.51) ───────────────────────────────
+// Instantanés de toutes les données KYF, gardés dans IndexedDB (le localStorage est limité à ~5 Mo) : un par jour
+// (les 7 derniers) + un avant chaque restauration ou réinitialisation (les 5 derniers). Ils restent sur cet appareil.
+// « Tout effacer » les supprime aussi. Ils protègent d'une panne, d'une erreur ou d'un fichier abîmé, pas d'un
+// nettoyage des « cookies et données de sites » du navigateur (IndexedDB part avec).
+const KYF_RP_DB = 'kyf-restore-points', KYF_RP_STORE = 'points', KYF_RP_AUTO_MAX = 7, KYF_RP_OTHER_MAX = 5;
+const KYF_RP_MOTIFS = { 'auto':'Automatique (quotidien)', 'avant-restauration':'Avant une restauration', 'avant-reinit':'Avant une réinitialisation', 'avant-point':'Avant un retour à un point' };
+function kyfRpOpen(){
+  return new Promise((res, rej) => {
+    try{
+      const r = indexedDB.open(KYF_RP_DB, 1);
+      r.onupgradeneeded = () => { try{ r.result.createObjectStore(KYF_RP_STORE, { keyPath:'id' }); }catch(e){} };
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error || new Error('IndexedDB indisponible'));
+    }catch(e){ rej(e); }
+  });
+}
+function kyfRpTx(db, mode, fn){
+  return new Promise((res, rej) => {
+    let rq;
+    try{ const tx = db.transaction(KYF_RP_STORE, mode); rq = fn(tx.objectStore(KYF_RP_STORE));
+      tx.oncomplete = () => { db.close(); res(rq && 'result' in rq ? rq.result : undefined); };
+      tx.onerror = tx.onabort = () => { try{ db.close(); }catch(e){} rej(tx.error || new Error('transaction annulée')); };
+    }catch(e){ try{ db.close(); }catch(e2){} rej(e); }
+  });
+}
+function kyfRpHash(s){ let h = 5381; for(let i = 0; i < s.length; i++){ h = ((h << 5) + h + s.charCodeAt(i)) | 0; } return h + ':' + s.length; }
+function kyfRpUnpack(r){
+  if(!r.lz) return r.d;
+  const o = (typeof LZString !== 'undefined') ? LZString.decompressFromUTF16(r.d) : null;
+  if(o == null) throw new Error('point de restauration illisible');
+  return o;
+}
+function kyfRpList(){
+  return kyfRpOpen().then(db => kyfRpTx(db, 'readonly', st => st.getAll())).then(a => (a || []).sort((x, y) => y.ts - x.ts));
+}
+// La collecte des données est synchrone (faite avant tout changement), l'écriture se termine ensuite toute seule.
+function kyfRpTake(motif){
+  let json, n;
+  try{ const c = window.KYF.storage.collect(); n = c.meta.keys; json = JSON.stringify(c); }catch(e){ return Promise.resolve(false); }
+  if(!(n >= 3)) return Promise.resolve(false);   // presque rien à protéger
+  const ts = Date.now(), h = kyfRpHash(json);
+  const jour = d => { const x = new Date(d); return x.getFullYear() + '-' + (x.getMonth() + 1) + '-' + x.getDate(); };
+  return kyfRpList().then(all => {
+    const autos = all.filter(r => r.motif === 'auto');
+    if(motif === 'auto'){
+      if(autos.some(r => jour(r.ts) === jour(ts))) return false;                              // déjà un point aujourd'hui
+      if(autos[0] && json.length < autos[0].size * 0.5) return false;                         // données très réduites : on garde le dernier bon point
+    } else if(all[0] && all[0].h === h) return false;                                         // rien n'a changé depuis le dernier point
+    let rec = { id: ts + '-' + motif, ts, motif, n, size: json.length, h, lz: 0, d: json };
+    try{ if(typeof LZString !== 'undefined') rec = Object.assign(rec, { lz:1, d: LZString.compressToUTF16(json) }); }catch(e){}
+    return kyfRpOpen().then(db => kyfRpTx(db, 'readwrite', st => st.put(rec))).then(() => kyfRpList()).then(l => {
+      const garde = new Set([...l.filter(r => r.motif === 'auto').slice(0, KYF_RP_AUTO_MAX), ...l.filter(r => r.motif !== 'auto').slice(0, KYF_RP_OTHER_MAX)].map(r => r.id));
+      const aSupprimer = l.filter(r => !garde.has(r.id));
+      return aSupprimer.length ? kyfRpOpen().then(db => kyfRpTx(db, 'readwrite', st => { aSupprimer.forEach(r => st.delete(r.id)); return null; })).then(() => true) : true;
+    });
+  }).catch(e => { console.warn('[KYF] point de restauration:', e); return false; });
+}
+function kyfRpDeleteAll(){ try{ indexedDB.deleteDatabase(KYF_RP_DB); }catch(e){} }
+function kyfRpClose(){ const x = document.getElementById('kyfRpOverlay'); if(x) x.remove(); }
+async function kyfRpOpenUI(){
+  let box = document.getElementById('kyfRpOverlay');
+  if(!box){
+    box = document.createElement('div'); box.id = 'kyfRpOverlay';
+    box.style.cssText = 'position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:16px';
+    document.body.appendChild(box);
+  }
+  let list = [], err = false;
+  try{ list = await kyfRpList(); }catch(e){ err = true; }
+  const fmtD = ts => new Date(ts).toLocaleString('fr-FR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+  const ko = s => Math.max(1, Math.round(s / 1024)) + ' Ko';
+  const body = err ? '<div style="padding:14px 4px;font-size:11px;color:var(--text2)">Les points de restauration ne sont pas disponibles dans ce navigateur (navigation privée ou stockage bloqué).</div>'
+    : !list.length ? '<div style="padding:14px 4px;font-size:11px;color:var(--text2);line-height:1.6">Aucun point pour l\'instant. KYF en crée un automatiquement une fois par jour, à l\'ouverture, ainsi qu\'avant une restauration ou une réinitialisation.</div>'
+    : list.map(r => '<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px"><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:700;color:var(--text)">' + fmtD(r.ts) + '</div><div style="font-size:10px;color:var(--text3)">' + escapeHtml(KYF_RP_MOTIFS[r.motif] || r.motif) + ' · ' + r.n + ' données · ' + ko(r.size) + '</div></div>' +
+        '<button onclick="kyfRpRestore(\'' + escJsAttr(r.id) + '\')" style="border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text);border-radius:6px;padding:6px 12px;font-size:10px;font-weight:700;cursor:pointer">Restaurer</button></div>').join('');
+  box.innerHTML = '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:12px;max-width:520px;width:100%;max-height:88vh;overflow:auto;padding:18px;font-family:\'Inter\',sans-serif">' +
+    '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px"><div style="font-size:13px;font-weight:700;color:var(--text)">Points de restauration</div><button onclick="kyfRpClose()" aria-label="Fermer" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;line-height:1">×</button></div>' +
+    '<div style="font-size:10px;color:var(--text3);line-height:1.6;margin-bottom:10px">Copies automatiques de vos données, gardées uniquement sur cet appareil. Restaurer un point remplace vos données actuelles ; l\'état actuel est d\'abord gardé dans un point « Avant un retour à un point ». Ces points disparaissent si vous effacez les données du site dans votre navigateur ou si vous utilisez « Tout effacer ». Pour une copie durable, utilisez aussi une sauvegarde en fichier ou dans le cloud.</div>' +
+    body + '</div>';
+}
+async function kyfRpRestore(id){
+  let rec;
+  try{ rec = (await kyfRpList()).find(r => r.id === id); }catch(e){}
+  if(!rec){ kyfAlert('Ce point n\'est plus disponible.'); return; }
+  const when = new Date(rec.ts).toLocaleString('fr-FR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+  if(!(await kyfAsk('Restaurer le point du ' + when + ' ?\n\nVos données actuelles seront remplacées par celles de ce point. Leur état actuel est gardé dans un point « Avant un retour à un point ».'))) return;
+  let payload;
+  try{ payload = JSON.parse(kyfRpUnpack(rec)); }catch(e){ kyfAlert('Ce point est illisible : rien n\'a été modifié.'); return; }
+  await kyfRpTake('avant-point');
+  window._kyfRpSkipHook = true;
+  try{ window.KYF.storage.restore(payload, { replace: true }); }
+  catch(err){ window._kyfRpSkipHook = false; kyfAlert(kyfRestoreFailMsg(err)); return; }
+  window._kyfRpSkipHook = false;
+  kyfAlert('Données restaurées. Rechargement...').then(function(){ location.reload(); });
+}
+setTimeout(() => { try{ kyfRpTake('auto'); }catch(e){} }, 15000);
+
+// ── Brouillons des formulaires (2.8.12.52) ──────────────────────────────────
+// Ce que vous saisissez dans une fenêtre de saisie est gardé au fil de la frappe (sur cet appareil seulement, clé
+// 'kyf-draft-v1', jamais envoyée ni synchronisée). Fermer la fenêtre (enregistrer ou annuler) efface le brouillon : il ne
+// reste donc que celui d'une saisie interrompue (panne, plantage). À la réouverture du même formulaire, KYF propose de
+// reprendre. Les champs de mot de passe, jeton ou clé ne sont jamais gardés. Brouillon effacé au bout de 7 jours.
+(function(){
+  const KEY = 'kyf-draft-v1', MAX_AGE = 7 * 864e5;
+  const SKIP_MODAL = /oauth|github|webdav|passw|secure|crypt|export|pwd|token|restore|login|connexion|search|beta|gate|guide|notif|share|heart|comparateur/i;
+  const SKIP_FIELD = /pass|pwd|token|secret|passphrase|mot.?de.?passe|cle.?de|jeton/i;
+  const seen = new Set(), pending = {}, offered = new Set();
+  const load = () => { try{ const o = JSON.parse(localStorage.getItem(KEY) || '{}'); return (o && typeof o === 'object') ? o : {}; }catch(e){ return {}; } };
+  const save = o => { try{ if(Object.keys(o).length) localStorage.setItem(KEY, JSON.stringify(o)); else localStorage.removeItem(KEY); }catch(e){} };
+  const shown = el => { if(!el || !el.getClientRects().length) return false; const cs = getComputedStyle(el); return cs.display !== 'none' && cs.visibility !== 'hidden'; };
+  const modalOfEl = el => { let e = el; while(e && e !== document.body){ if(e.id && getComputedStyle(e).position === 'fixed' && e.querySelector('.kyf-modal-close') && !SKIP_MODAL.test(e.id)) return e; e = e.parentElement; } return null; };
+  const fields = m => Array.prototype.filter.call(m.querySelectorAll('input,select,textarea'), x =>
+    !/^(password|file|button|submit|image|reset)$/.test(x.type) && !SKIP_FIELD.test((x.id || '') + ' ' + (x.name || '') + ' ' + (x.placeholder || '')));
+  const keyOf = (x, i) => x.id || ('#' + i);
+  const nameOf = m => m.getAttribute('aria-label') || (document.getElementById(m.id + 'Title') || {}).textContent || m.id;
+  const extras = {
+    avisModal: {
+      get: () => ({ note: (typeof _avisNoteSelected !== 'undefined') ? _avisNoteSelected : 0 }),
+      set: x => { try{ if(x && x.note > 0){ _avisNoteSelected = x.note; avisRenderStars(document.getElementById('avisStarsInput'), x.note, 26, true); } }catch(e){} }
+    }
+  };
+  const timers = {};
+  function snapshot(m){
+    const f = {}; let n = 0;
+    fields(m).forEach((x, i) => {
+      let v = (x.type === 'checkbox' || x.type === 'radio') ? !!x.checked : String(x.value == null ? '' : x.value);
+      if(typeof v === 'string' && v.length > 5000) v = v.slice(0, 5000);
+      f[keyOf(x, i)] = v; if(typeof v === 'string' && v.trim()) n++;
+    });
+    const o = load();
+    if(!n){ delete o[m.id]; save(o); return; }
+    const d = { ts: Date.now(), n: nameOf(m), f };
+    if(extras[m.id]){ try{ d.x = extras[m.id].get(); }catch(e){} }
+    o[m.id] = d;
+    const ks = Object.keys(o); if(ks.length > 8){ ks.sort((a, b) => o[a].ts - o[b].ts).slice(0, ks.length - 8).forEach(k => delete o[k]); }
+    save(o);
+  }
+  function onEdit(ev){
+    const t = ev.target; if(!t || !t.matches || !t.matches('input,select,textarea')) return;
+    const m = modalOfEl(t); if(!m) return;
+    if(SKIP_FIELD.test((t.id || '') + ' ' + (t.name || '') + ' ' + (t.placeholder || '')) || t.type === 'password') return;
+    seen.add(m.id);
+    clearTimeout(timers[m.id]); timers[m.id] = setTimeout(() => { try{ snapshot(m); }catch(e){} }, 400);
+  }
+  document.addEventListener('input', onEdit, true);
+  document.addEventListener('change', onEdit, true);
+  function fill(m, d){
+    fields(m).forEach((x, i) => {
+      const k = keyOf(x, i); if(!(k in d.f)) return;
+      const v = d.f[k];
+      if(x.type === 'checkbox' || x.type === 'radio') x.checked = !!v; else x.value = v;
+      if(x.type !== 'hidden'){ x.dispatchEvent(new Event('input', { bubbles: true })); x.dispatchEvent(new Event('change', { bubbles: true })); }
+    });
+    if(d.x && extras[m.id]) extras[m.id].set(d.x);
+  }
+  function offer(m, d){
+    if(m.querySelector('.kyf-draft-banner')) return;
+    offered.add(m.id); pending[m.id] = d;
+    const when = new Date(d.ts).toLocaleString('fr-FR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
+    const b = document.createElement('div'); b.className = 'kyf-draft-banner';
+    b.style.cssText = 'display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 12px;background:rgba(77,159,255,0.10);border-bottom:1px solid rgba(77,159,255,0.3);font-family:Inter,sans-serif;font-size:11px;color:var(--text)';
+    b.innerHTML = '<span style="flex:1;min-width:160px">Une saisie du ' + when + ' n\'a pas été terminée.</span>';
+    const mk = (txt, fn) => { const x = document.createElement('button'); x.type = 'button'; x.textContent = txt; x.style.cssText = 'border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text);border-radius:6px;padding:4px 10px;font-size:10px;font-weight:700;cursor:pointer'; x.onclick = fn; return x; };
+    b.appendChild(mk('Reprendre', () => { fill(m, pending[m.id] || d); delete pending[m.id]; b.remove(); }));
+    b.appendChild(mk('Ignorer', () => { const o = load(); delete o[m.id]; save(o); delete pending[m.id]; b.remove(); }));
+    m.insertBefore(b, m.firstChild);
+  }
+  function tick(){
+    const o = load(); let ch = false;
+    Object.keys(o).forEach(id => {
+      const m = document.getElementById(id), vis = shown(m);
+      if(vis){
+        if(!seen.has(id) && !offered.has(id)) offer(m, o[id]);
+      } else if(seen.has(id)){ delete o[id]; ch = true; seen.delete(id); offered.delete(id); }   // fenêtre fermée : brouillon inutile
+      else offered.delete(id);
+    });
+    if(ch) save(o);
+  }
+  setInterval(() => { try{ tick(); }catch(e){} }, 1500);
+  setTimeout(() => {
+    try{
+      const o = load(); let ch = false;
+      Object.keys(o).forEach(id => { if(!o[id] || Date.now() - o[id].ts > MAX_AGE){ delete o[id]; ch = true; } });
+      if(ch) save(o);
+      const noms = Object.keys(o).map(k => o[k].n).filter(Boolean);
+      if(noms.length && typeof showToast === 'function') showToast('Une saisie n\'avait pas été terminée (' + noms.join(', ') + '). Rouvrez ce formulaire pour la reprendre.');
+    }catch(e){}
+  }, 8000);
+  window.kyfDraftDebug = { load, snapshot, tick, offer, fill };
+})();
+
+// ── Reprise d'un import de relevé interrompu (2.8.12.53) ─────────────────────
+// Au choix d'un fichier (ETF, Assurance vie, PER, crypto, or), KYF garde ce fichier et les réglages de l'étape 2
+// (compte, courtier...) dans IndexedDB, sur cet appareil seulement. Fermer le popup d'import ou terminer l'import
+// efface cette copie ; elle ne reste qu'après une panne. À la réouverture de l'import, KYF propose de reprendre
+// (la lecture du fichier est refaite : les corrections faites à la main dans l'aperçu ne sont pas gardées).
+// Copie effacée au bout de 7 jours et par « Tout effacer ».
+(function(){
+  const DB = 'kyf-import-draft', ST = 'd', META = 'kyf-import-draft-meta', MAX_AGE = 7 * 864e5, TYPES = ['etf','av','per','crypto','or'];
+  const open = () => new Promise((res, rej) => { try{ const r = indexedDB.open(DB, 1); r.onupgradeneeded = () => { try{ r.result.createObjectStore(ST); }catch(e){} }; r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }catch(e){ rej(e); } });
+  const tx = (mode, fn) => open().then(db => new Promise((res, rej) => {
+    let rq; try{ const t = db.transaction(ST, mode); rq = fn(t.objectStore(ST));
+      t.oncomplete = () => { db.close(); res(rq && 'result' in rq ? rq.result : undefined); };
+      t.onerror = t.onabort = () => { try{ db.close(); }catch(e){} rej(t.error); };
+    }catch(e){ try{ db.close(); }catch(e2){} rej(e); }
+  }));
+  const getMeta = () => { try{ return JSON.parse(localStorage.getItem(META) || 'null'); }catch(e){ return null; } };
+  const setMeta = m => { try{ if(m) localStorage.setItem(META, JSON.stringify(m)); else localStorage.removeItem(META); }catch(e){} };
+  const clear = () => { setMeta(null); return tx('readwrite', s => s.clear()).catch(() => {}); };
+  window.kyfImpDraftDeleteAll = () => { setMeta(null); try{ indexedDB.deleteDatabase(DB); }catch(e){} };
+  const shown = el => !!el && !!el.getClientRects().length && getComputedStyle(el).display !== 'none';
+  function fields(){
+    const f = {};
+    document.querySelectorAll('#importStep2 input[id],#importStep2 select[id],#importStep2 textarea[id]').forEach(x => {
+      if(x.type === 'file' || x.type === 'password' || x.id === 'importFile') return;
+      f[x.id] = (x.type === 'checkbox' || x.type === 'radio') ? !!x.checked : String(x.value == null ? '' : x.value);
+    });
+    return f;
+  }
+  function save(file){
+    const rec = { ts: Date.now(), type: _importType, origin: _importOrigin, maison: window._importMaison || null, cpt: window._importCpt || '',
+      env: (typeof window._ctImportEnv === 'string') ? window._ctImportEnv : null, fields: fields(), file };
+    return tx('readwrite', s => s.put(rec, 'cur')).then(() => setMeta({ ts: rec.ts, name: file.name, type: rec.type })).catch(() => {});
+  }
+  async function resume(){
+    let rec; try{ rec = await tx('readonly', s => s.get('cur')); }catch(e){}
+    if(!rec || !rec.file){ await clear(); return false; }
+    await openImportRelevé(rec.origin);
+    if(rec.maison && typeof importGoToStep2Maison === 'function') importGoToStep2Maison(rec.maison); else importGoToStep2(rec.type);
+    window._importCpt = rec.cpt || '';
+    if(typeof rec.env === 'string') window._ctImportEnv = rec.env;
+    Object.keys(rec.fields || {}).forEach(id => {
+      const x = document.getElementById(id); if(!x) return; const v = rec.fields[id];
+      if(x.type === 'checkbox' || x.type === 'radio') x.checked = !!v; else x.value = v;
+      x.dispatchEvent(new Event('input', { bubbles: true })); x.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    const f = (rec.file instanceof File) ? rec.file : new File([rec.file], (getMeta() || {}).name || 'releve.csv');
+    await window.importHandleFile({ files: [f], value: '' });
+    return true;
+  }
+  function wrap(){
+    const o1 = window.importHandleFile;
+    if(typeof o1 === 'function' && !o1._kyfImp){
+      const w = async function(input){
+        try{ const f = input && input.files && input.files[0]; if(f && TYPES.includes(_importType) && f.size <= 8 * 1024 * 1024) save(f); }catch(e){}
+        return o1.apply(this, arguments);
+      };
+      w._kyfImp = true; window.importHandleFile = w;
+    }
+    const o2 = window.closeImportRelevé;
+    if(typeof o2 === 'function' && !o2._kyfImp){
+      const w = async function(){
+        const r = await o2.apply(this, arguments);
+        try{ if(!shown(document.getElementById('importRelevéModal'))) await clear(); }catch(e){}
+        return r;
+      };
+      w._kyfImp = true; window.closeImportRelevé = w;
+    }
+    const o3 = window.importConfirm;
+    if(typeof o3 === 'function' && !o3._kyfImp){
+      const w = async function(){
+        const r = await o3.apply(this, arguments);
+        try{ if(typeof importHasPendingPreview === 'function' && !importHasPendingPreview()) await clear(); }catch(e){}
+        return r;
+      };
+      w._kyfImp = true; window.importConfirm = w;
+    }
+  }
+  setTimeout(wrap, 500);
+  let offered = false;
+  setInterval(() => {
+    try{
+      const m = getMeta(); if(!m) { offered = false; return; }
+      if(Date.now() - m.ts > MAX_AGE){ clear(); return; }
+      const modal = document.getElementById('importRelevéModal');
+      if(!shown(modal) || modal.querySelector('.kyf-impdraft-banner')) return;
+      if(typeof importHasPendingPreview === 'function' && importHasPendingPreview()) return;
+      const when = new Date(m.ts).toLocaleString('fr-FR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
+      const b = document.createElement('div'); b.className = 'kyf-impdraft-banner';
+      b.style.cssText = 'display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 12px;background:rgba(77,159,255,0.10);border-bottom:1px solid rgba(77,159,255,0.3);font-family:Inter,sans-serif;font-size:11px;color:var(--text)';
+      const sp = document.createElement('span'); sp.style.cssText = 'flex:1;min-width:200px'; sp.textContent = 'Un import n\'avait pas été terminé : « ' + (m.name || 'relevé') + ' » (' + when + '). Reprendre relance la lecture du fichier ; vos corrections dans l\'aperçu ne sont pas gardées.'; b.appendChild(sp);
+      const mk = (txt, fn) => { const x = document.createElement('button'); x.type = 'button'; x.textContent = txt; x.style.cssText = 'border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text);border-radius:6px;padding:4px 10px;font-size:10px;font-weight:700;cursor:pointer'; x.onclick = fn; return x; };
+      b.appendChild(mk('Reprendre', async () => { b.remove(); try{ await resume(); }catch(e){ console.warn('[KYF] reprise import:', e); } }));
+      b.appendChild(mk('Ignorer', async () => { b.remove(); await clear(); }));
+      modal.insertBefore(b, modal.firstChild);
+    }catch(e){}
+  }, 1500);
+  setTimeout(() => {
+    try{ const m = getMeta(); if(m && Date.now() - m.ts <= MAX_AGE && typeof showToast === 'function') showToast('Un import de relevé n\'avait pas été terminé (« ' + (m.name || 'relevé') + ' »). Rouvrez « Importer un relevé » pour le reprendre.'); }catch(e){}
+  }, 11000);
+  window.kyfImpDraftDebug = { getMeta, resume, clear };
+})();
+
 
 // ── Réinitialisation personnalisée (modal à cases à cocher) ─────────────
 // IMPORTANT : EN CAS DE NOUVELLE FONCTIONNALITÉ (nouveau module, nouvelle
@@ -51478,7 +51774,8 @@ async function confirmSelectiveReset(){
   }
 
   const moduleNames = checked.map(cb => cb.closest('.kyf-reset-row').querySelector('div > div').textContent.trim());
-  if(!(await kyfAsk('Réinitialiser ' + checked.length + ' module(s) sélectionné(s) :\n\n' + moduleNames.join('\n') + '\n\nCette action est irréversible.'))) return;
+  if(!(await kyfAsk('Réinitialiser ' + checked.length + ' module(s) sélectionné(s) :\n\n' + moduleNames.join('\n') + '\n\nUn point de restauration est créé juste avant (INFORMATIONS → Données locales → Points de restauration).'))) return;
+  await kyfRpTake('avant-reinit');
 
   // Cases cochées → clés exactes et préfixes à supprimer (les tokens
   // finissant par "-" sont traités comme des préfixes, les autres comme
@@ -52490,6 +52787,7 @@ function kyfFieldError(key, list){
   return '';
 }
 function kyfRestoreAtomic(data, opts){
+  if(!window._kyfRpSkipHook){ try{ kyfRpTake('avant-restauration'); }catch(e){} }   // point de restauration pris avant tout changement (collecte synchrone)
   const replace = !!(opts && opts.replace);
   if(!data || typeof data !== 'object') throw new Error('Données de restauration invalides');
   const _shapeErr = Object.keys(data).filter(k => kyfAllowedKey(k)).map(k => kyfShapeError(k, data[k])).filter(Boolean);
@@ -62488,6 +62786,11 @@ const GUIDE_PAGES = [
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Les confirmations restent</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9">Ce n'est pas un remplacement des popups "Êtes-vous sûr ?" existantes : la Corbeille vient s'ajouter en filet de sécurité supplémentaire, après confirmation.</div>
       </div>
+      <div style="padding:14px 16px;background:rgba(77,159,255,0.05);border:1px solid rgba(77,159,255,0.2);border-radius:10px;margin-top:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Points de restauration : après une panne ou une erreur</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Si votre PC plante ou si vous supprimez ou remplacez des données par erreur, KYF garde sur votre appareil des copies automatiques de l'ensemble de vos données : <strong style="color:var(--text)">une par jour</strong> (les 7 derniers jours) et <strong style="color:var(--text)">une juste avant chaque restauration ou réinitialisation</strong>. Pour y revenir : INFORMATIONS → Données locales → <strong style="color:var(--text)">Points de restauration</strong>, choisissez une date puis Restaurer. L'état actuel est d'abord gardé dans un nouveau point, vous pouvez donc annuler.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:8px">Ces copies restent dans le navigateur de cet appareil. Elles disparaissent si vous effacez les « Cookies et données de sites » du navigateur ou si vous utilisez « Tout effacer ». Pour une protection durable, gardez aussi une sauvegarde en fichier ou dans le cloud (chapitre Export / Import). Ce que vous saisissez dans un formulaire est aussi gardé au fil de la frappe, sur cet appareil seulement : si la fenêtre n'a pas été fermée avant la panne, KYF propose de reprendre votre saisie à la réouverture du même formulaire (jamais les mots de passe, jetons ou clés). Un import de relevé interrompu peut aussi être repris : rouvrez « Importer un relevé » et cliquez sur Reprendre (le fichier est relu, vos corrections faites à la main dans l'aperçu ne sont pas gardées).</div>
+      </div>
     `
   },
   {
@@ -69010,6 +69313,10 @@ const FAQ_DATA = [
   {
     q: "Pourquoi un achat de crypto fait aujourd'hui ne change-t-il pas la variation du jour ?",
     a: "La variation du jour (carte <strong style='color:var(--faq-strong);font-weight:700'>VAR. 24H</strong> de la page Cryptomonnaies, graphique <strong style='color:var(--faq-strong);font-weight:700'>VARIATION DU JOUR</strong>, colonne <strong style='color:var(--faq-strong);font-weight:700'>VAR.J</strong> du tableau POSITIONS CRYPTO) mesure ce que vos cryptos ont gagné ou perdu depuis 00 h 00 : <strong style='color:var(--faq-strong);font-weight:700'>prix actuel moins prix de minuit, pour les quantités que vous déteniez à minuit</strong>.<br><br>Un achat fait dans la journée ajoute de l'argent, ce n'est pas un gain : il n'est pas compté, et une vente n'est pas comptée comme une perte. Les cryptos achetées aujourd'hui entrent dans la variation dès demain. Une petite note sous le graphique le rappelle les jours où vous avez acheté ou vendu.<br><br>Les trois chiffres sont calculés de la même façon : le total de la colonne VAR.J est toujours égal à la carte. Le petit pourcentage affiché sous le cours d'une crypto est lui aussi la variation depuis 00 h 00 (il a donc toujours le même sens que VAR.J) ; seulement si la courbe du jour n'est pas disponible, c'est la variation sur 24 h glissantes du service de prix (indiqué au survol)."
+  },
+  {
+    q: "Mon PC plante ou je fais une erreur : puis-je récupérer mes données ?",
+    a: "<strong style='color:var(--faq-strong);font-weight:700'>Oui, dans la plupart des cas.</strong> KYF enregistre vos données dans votre navigateur à chaque modification : un plantage, une coupure d'internet ou d'électricité ne les efface donc pas. Il garde en plus, sur votre appareil, des <strong style='color:var(--faq-strong);font-weight:700'>points de restauration</strong> : une copie automatique par jour (les 7 derniers jours), et une copie juste avant une restauration ou une réinitialisation.<br><br><strong style='color:var(--faq-strong);font-weight:700'>Pour revenir à un point :</strong> INFORMATIONS → Données locales → Points de restauration, choisissez la date puis Restaurer. L'état actuel est d'abord gardé dans un nouveau point : vous pouvez donc revenir en arrière.<br><br><strong style='color:var(--faq-strong);font-weight:700'>À savoir :</strong><br>• ces points restent dans le navigateur de cet appareil : ils disparaissent si vous effacez les « Cookies et données de sites » ou si vous utilisez « Tout effacer » ;<br>• pour une protection durable, ajoutez une sauvegarde en fichier (de préférence l'export sécurisé .cgx) ou dans votre Google Drive ou GitHub ;<br>• ce que vous saisissez dans un formulaire est aussi gardé au fil de la frappe, sur cet appareil : si la fenêtre n'a pas été fermée avant la panne, KYF propose de reprendre votre saisie quand vous rouvrez le même formulaire (les champs de mot de passe, jeton ou clé ne sont jamais gardés) ;<br>• un import de relevé (ETF, assurance vie, PER, crypto, or) interrompu peut être repris : rouvrez « Importer un relevé » et cliquez sur Reprendre. KYF relit le fichier, mais vos corrections faites à la main dans l'aperçu ne sont pas gardées."
   }
 ]
 
@@ -69043,7 +69350,7 @@ function renderFAQ(){
   // ── Mots-clés lecture rapide ──────────────────────────────────
   const FAQ_SECTIONS = [
     { title: 'GÉNÉRAL',              color: 'var(--sb-active)', colorBg: 'var(--sb-active-bg)', border: 'var(--sb-active-border)',  indices: [0,1,2,3,4] },
-    { title: 'SÉCURITÉ & DONNÉES',   color: 'var(--sb-active)', colorBg: 'var(--sb-active-bg)', border: 'var(--sb-active-border)',   indices: [5,6,7,8,9,24,25,26,27,29,37] },
+    { title: 'SÉCURITÉ & DONNÉES',   color: 'var(--sb-active)', colorBg: 'var(--sb-active-bg)', border: 'var(--sb-active-border)',   indices: [5,6,7,8,9,24,25,26,27,29,37,45] },
     { title: 'UTILISATION',          color: 'var(--sb-active)', colorBg: 'var(--sb-active-bg)', border: 'var(--sb-active-border)',  indices: [10,11,12,13,14,15,16,17,18,19,20,28,30,31,32,33,34,35,36,38,39,40,42,43] },
     { title: 'PROBLÈMES',            color: 'var(--sb-active)', colorBg: 'var(--sb-active-bg)', border: 'var(--sb-active-border)',  indices: [21,22,23,41] },
   ];
@@ -69122,7 +69429,7 @@ function renderFAQ(){
 
   const sections = [
     { title: "<svg width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:-2px'><path d='M9 18h6'/><path d='M10 22h4'/><path d='M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5.6.6 1.27 1.34 1.41 2.5' stroke='#f0b429'/><circle cx='12' cy='8' r='2' fill='#f0b429' stroke='none'/></svg> GÉNÉRAL",              color: 'var(--accent)',  indices: [0,1,2,3,4] },
-    { title: "<svg width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='#f0b429' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:-2px'><rect x='4' y='11' width='16' height='10' rx='2'/><path d='M8 11V7a4 4 0 0 1 8 0v4'/><line x1='12' y1='15' x2='12' y2='17'/></svg> SÉCURITÉ &amp; DONNÉES",   color: 'var(--green)',   indices: [5,6,7,8,9,24,25,26,27,29,37] },
+    { title: "<svg width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='#f0b429' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:-2px'><rect x='4' y='11' width='16' height='10' rx='2'/><path d='M8 11V7a4 4 0 0 1 8 0v4'/><line x1='12' y1='15' x2='12' y2='17'/></svg> SÉCURITÉ &amp; DONNÉES",   color: 'var(--green)',   indices: [5,6,7,8,9,24,25,26,27,29,37,45] },
     { title: "<svg width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:-2px'><circle cx='12' cy='12' r='3'/><path d='M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z'/></svg> UTILISATION",          color: 'var(--blue)',    indices: [10,11,12,13,14,15,16,17,18,19,20,28,30,31,32,33,34,35,36,38,39,40,42,43] },
     { title: "<svg width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:-2px'><path d='M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z'/></svg> PROBLÈMES &amp; MAINTENANCE", color: '#e84393',     indices: [21,22,23,41] },
   ];
@@ -70923,6 +71230,13 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px">
         <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;padding:8px 12px">
           <div>
+            <div style="font-family:'Inter',sans-serif;font-size:12px;font-weight:700;color:var(--text2)">POINTS DE RESTAURATION</div>
+            <div style="font-family:'Inter',sans-serif;font-size:11px;color:var(--text3)">Revenir à une copie automatique de vos données, après une panne ou une erreur</div>
+          </div>
+          <button onclick="kyfRpOpenUI()" style="background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;font-weight:700;padding:5px 10px;border-radius:6px;cursor:pointer;white-space:nowrap">Voir</button>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;padding:8px 12px">
+          <div>
             <div style="font-family:'Inter',sans-serif;font-size:12px;font-weight:700;color:var(--text2)">RÉINITIALISATION PERSONNALISÉE</div>
             <div style="font-family:'Inter',sans-serif;font-size:11px;color:var(--text3)">Choisissez précisément les modules à effacer</div>
           </div>
@@ -71014,6 +71328,12 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.53 · 25/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Reprise après une panne, étape 3 : un import de relevé (ETF, assurance vie, PER, crypto, or) interrompu peut être repris. KYF garde le fichier et les réglages sur l'appareil jusqu'à la fermeture du popup d'import ; à la réouverture, bouton Reprendre. Les corrections faites à la main dans l'aperçu ne sont pas gardées.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.52 · 25/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Reprise après une panne, étape 2 : ce que vous saisissez dans une fenêtre de saisie (avis, position, transaction, etc.) est gardé au fil de la frappe sur l'appareil. Si la fenêtre n'a pas été fermée avant une panne, KYF propose de reprendre la saisie à la réouverture du même formulaire. Jamais les mots de passe, jetons ou clés.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.51 · 25/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Points de restauration automatiques : une copie de vos données par jour (7 derniers jours) et une avant chaque restauration ou réinitialisation, gardées sur l'appareil. INFORMATIONS, Données locales, Points de restauration pour revenir à une copie après une panne ou une erreur. « Tout effacer » les supprime aussi. Ajoutés au guide (Corbeille &amp; Annuler) et à la FAQ.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.50 · 25/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Avis : un clic à côté de la fenêtre ne la ferme plus, pour ne plus perdre le texte en cours. Fermeture par le bouton ×, le bouton Annuler ou la touche Échap (confirmation si du texte est saisi).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.49 · 25/10/2026</div>
