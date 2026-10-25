@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_12_69.html
+  @file        : KYF_SHARE_beta_2_8_12_72.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.12.69
+  @version     : Beta 2.8.12.72
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -2125,12 +2125,17 @@ button.kyf-toggle-active[style],.kyf-seg button.kyf-toggle-active{background:#f0
 /* Bandeaux « reprendre une saisie / un import » : fond bleu léger, texte à gauche, boutons à droite, léger survol */
 .kyf-draft-banner,.kyf-impdraft-banner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;text-align:left;background:rgba(77,159,255,0.10);border-bottom:1px solid rgba(77,159,255,0.3);border-left:3px solid var(--blue,#4d9fff);font-family:Inter,sans-serif;font-size:11px;line-height:1.5;color:var(--text);transition:background .15s}
 .kyf-draft-banner:hover,.kyf-impdraft-banner:hover{background:rgba(77,159,255,0.16)}
+/* Fenêtre d'import à deux volets : sa règle « #importRelevéModal.imp2p>div » mettait le bandeau en colonne sans marge ; on le remet en ligne (texte à gauche, boutons à droite) */
+#importRelevéModal.imp2p>.kyf-impdraft-banner,#importRelevéModal.imp2p>.kyf-draft-banner{flex-direction:row!important;flex-wrap:wrap;align-items:center!important;padding:10px 14px!important;overflow:visible!important;flex-shrink:0}
 .kyf-draft-banner>span,.kyf-impdraft-banner>span{flex:1;min-width:200px}
 .kyf-draft-banner .kyf-draft-btn,.kyf-impdraft-banner .kyf-draft-btn{flex-shrink:0;margin:0;font-family:'Inter',sans-serif;font-size:9px;text-transform:uppercase;padding:8px 18px;border-radius:7px;border:1px solid var(--border2);background:none;color:var(--text3);cursor:pointer;transition:background .15s}
 .kyf-draft-banner .kyf-draft-btn:hover,.kyf-impdraft-banner .kyf-draft-btn:hover{background:var(--hov-bg)}
 .kyf-draft-banner .kyf-draft-btn,.kyf-impdraft-banner .kyf-draft-btn{order:1}
 .kyf-draft-banner .kyf-draft-btn.is-main,.kyf-impdraft-banner .kyf-draft-btn.is-main{order:2;font-weight:700;border:none;background:#f0b429;color:#000;transition:opacity .15s}
 .kyf-draft-banner .kyf-draft-btn.is-main:hover,.kyf-impdraft-banner .kyf-draft-btn.is-main:hover{background:#f0b429;opacity:.85}
+/* Boutons principaux de l'import (IMPORTER, TOUT IMPORTER, boutons du récapitulatif, REPRENDRE) : survol léger et visible, au clavier aussi */
+#importConfirmBtn,#importAllBtn,.kyf-fina-btn{transition:opacity .15s,box-shadow .15s}
+#importConfirmBtn:hover,#importAllBtn:hover,.kyf-fina-btn:hover,.kyf-draft-btn.is-main:hover,#importConfirmBtn:focus-visible,#importAllBtn:focus-visible,.kyf-fina-btn:focus-visible{opacity:.85;box-shadow:0 0 0 3px rgba(240,180,41,.28);outline:none}
 /* Récapitulatif d'import Finary : ligne de groupe cliquable, léger survol */
 .kyf-fina-tg{border-radius:8px;padding:4px 6px;margin:-4px -6px;transition:background .15s}
 .kyf-fina-tg:hover,.kyf-fina-tg:focus-visible{background:var(--hov-bg);outline:none}
@@ -7186,7 +7191,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.12.69</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.12.72</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -30155,16 +30160,7 @@ async function kyfFlushGAS(queue){
   const KYF_TOAST_STACK_GAP = 54;
   const _kyfObservedToasts = new Set();
 
-  function kyfRestackToasts(){
-    let rank = 0;
-    KYF_TOAST_STACK_ORDER.forEach(id=>{
-      const el = document.getElementById(id);
-      if(el && el.classList.contains('kyf-toast-visible')){
-        el.style.setProperty('--stack-offset', (rank * KYF_TOAST_STACK_GAP) + 'px');
-        rank++;
-      }
-    });
-  }
+  function kyfRestackToasts(){ if(typeof kyfNotifLayout === 'function') kyfNotifLayout(); }   // l'empilement se fait maintenant avec la hauteur réelle de chaque notification (kyfNotifLayout)
   function kyfWatchToastElement(el){
     if(_kyfObservedToasts.has(el)) return;
     _kyfObservedToasts.add(el);
@@ -30181,6 +30177,56 @@ async function kyfFlushGAS(queue){
   new MutationObserver(kyfScanForToasts).observe(document.body, {childList:true});
   kyfScanForToasts();
   kyfRestackToasts();
+})();
+
+// ── Notifications flottantes : jamais l'une sur l'autre ──
+// Au centre en bas : Annuler, bandeau « Données plus récentes », erreur de synchro, toast d'opération, rattrapage, message
+// court (showToast), barre de démo. Dans le coin droit : widget intraday, invitation statistiques, alerte Safari.
+// Chaque groupe est empilé de bas en haut dans l'ordre ci-dessous, avec la hauteur réelle de chaque élément (un texte sur deux
+// lignes ne recouvre plus le suivant). Seules les notifications réellement affichées comptent ; elles redescendent quand l'une disparaît.
+(function(){
+  const GAP = 10;
+  const on = {
+    kyfDemoBar: el => el.style.display !== 'none',
+    kyfUndoToast: el => el.classList.contains('kyf-toast-visible'),
+    kyfPullBanner: el => el.classList.contains('kpb-in'),
+    kyfSyncToast: el => el.classList.contains('kyf-toast-visible'),
+    kyfRitToast: el => el.classList.contains('kyf-toast-visible'),
+    _catchupBanner: el => el.classList.contains('kyf-toast-visible'),
+    _scheduleToast: el => el.style.display !== 'none' && el.style.opacity !== '0',
+    intradayWidget: el => el.style.display !== 'none',
+    kyfStatsInvite: el => el.classList.contains('on'),
+    kyfSafariWarn: el => el.classList.contains('on')
+  };
+  const CENTRE = ['kyfDemoBar','kyfUndoToast','kyfPullBanner','kyfSyncToast','kyfRitToast','_catchupBanner','_scheduleToast'];
+  const COIN = ['intradayWidget','kyfStatsInvite','kyfSafariWarn'];
+  // Écran large : deux piles (centre et coin droit). Écran étroit : le coin et le centre se toucheraient, donc une seule pile, widget en bas.
+  const groups = () => window.innerWidth < 900 ? [{ base: 16, ids: COIN.slice(0,1).concat(CENTRE, COIN.slice(1)) }] : [{ base: 24, ids: CENTRE }, { base: 20, ids: COIN }];
+  const watched = new Set(); let raf = 0;
+  function watch(el){
+    if(watched.has(el)) return; watched.add(el);
+    try{ new MutationObserver(plan).observe(el, { attributes:true, attributeFilter:['class','style'] }); }catch(e){}
+    try{ if(window.ResizeObserver) new ResizeObserver(plan).observe(el); }catch(e){}
+  }
+  function plan(){ if(!raf) raf = requestAnimationFrame(() => { raf = 0; kyfNotifLayoutNow(); }); }
+  function kyfNotifLayoutNow(){
+    groups().forEach(g => {
+      let y = g.base;
+      g.ids.forEach(id => {
+        const el = document.getElementById(id); if(!el) return;
+        watch(el);
+        if(!on[id](el)) return;
+        const v = y + 'px';
+        if(el.style.getPropertyValue('bottom') !== v || el.style.getPropertyPriority('bottom') !== 'important') el.style.setProperty('bottom', v, 'important');
+        if(el.style.getPropertyValue('--stack-offset') !== '0px') el.style.setProperty('--stack-offset', '0px');
+        y += el.offsetHeight + GAP;
+      });
+    });
+  }
+  window.kyfNotifLayout = plan;
+  new MutationObserver(plan).observe(document.body, { childList:true });
+  window.addEventListener('resize', plan);
+  plan();
 })();
 
 // Indicateur visuel - point discret dans la topbar + toast uniquement sur erreur/avertissement
@@ -33215,6 +33261,7 @@ async function closeImportRelevé(){
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
 function importBackToStep1(){
+  { const _ab = document.getElementById('importAllBtn'); if(_ab) _ab.style.display = 'none'; }
   kyfImportTopReset();
   { const _m = document.getElementById('importRelevéModal'); if(_m && _m.dataset.w0 !== undefined) _m.style.width = _m.dataset.w0; }
   document.getElementById('importStep1').style.display = 'block';
@@ -33496,6 +33543,7 @@ function importStep2GoBack(){
 
 function importGoToStep2(type){
   window._finaMode = false;
+  { const _ab = document.getElementById('importAllBtn'); if(_ab) _ab.style.display = 'none'; }
   kyfImportTopReset();
   window._importMaison = null;   // remis par importGoToStep2Maison juste après, si c'est ce bouton
   try{ if(typeof kyfXlsxWorkerGet === 'function') setTimeout(kyfXlsxWorkerGet, 50); }catch(e){} // prépare la pièce isolée de lecture Excel pendant le choix du fichier
@@ -33802,7 +33850,7 @@ function kyfFinaRecapRender(){
       + `<div role="button" tabindex="0" class="kyf-fina-tg" onclick="kyfFinaToggle('${g.k}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();kyfFinaToggle('${g.k}')}" title="Voir le détail des lignes" style="flex:1;min-width:0;display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--text)">${chev(open)}`
       + `<div style="min-width:0"><div style="font-size:12px;font-weight:600">${escapeHtml(g.lbl)}</div><div style="font-size:10px;color:var(--text3);margin-top:2px;font-weight:400">${list.length} ligne(s)${det ? ' · ' + escapeHtml(det) : ''}</div></div></div>`
       + (done ? `<span style="font-size:10px;font-weight:700;color:var(--green)">Fait</span>`
-              : `<button type="button" onclick="kyfFinaGo('${g.k}')" style="font-family:'Inter',sans-serif;font-size:9px;padding:8px 18px;border-radius:7px;cursor:pointer;font-weight:700;border:none;background:#f0b429;color:#000;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">IMPORTER</button>`)
+              : `<button type="button" class="kyf-fina-btn" onclick="kyfFinaGo('${g.k}')" style="font-family:'Inter',sans-serif;font-size:9px;padding:8px 18px;border-radius:7px;cursor:pointer;font-weight:700;border:none;background:#f0b429;color:#000;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">IMPORTER</button>`)
       + `</div>${open ? list.map(i => kyfFinaLineHtml_(R, g.k, i)).join('') : ''}</div>`;
   }).join('');
   st.innerHTML = KYF_CHECK_SVG + ' Fichier Finary lu : ' + (R.rows.length - 1) + ' ligne(s). Cliquez sur un groupe pour voir et corriger ses lignes, puis importez-le : KYF revient ici entre deux.';
@@ -33810,6 +33858,8 @@ function kyfFinaRecapRender(){
     + (R.skipped.length ? `<div style="padding:10px 0;font-size:10px;line-height:1.5;color:var(--text3)">Non repris par cet import : ${escapeHtml(R.skipped.join(', '))}. À saisir à la main.</div>` : '')
     + (nDel ? `<div style="padding:0 0 10px;font-size:10px;color:var(--text3)">${nDel} ligne(s) retirée(s) de l'import. <button type="button" onclick="kyfFinaRestore()" class="kyf-hint-link" style="background:none;border:none;padding:0;font:inherit;font-size:10px;font-weight:600;cursor:pointer">Tout rétablir</button></div>` : '');
   document.getElementById('importConfirmBtn').style.display = 'none';
+  const ab = document.getElementById('importAllBtn');
+  if(ab) ab.style.display = KYF_FINA_GROUPS.some(g => (R.groups[g.k]||[]).length && !R.done[g.k]) ? '' : 'none';
 }
 function kyfFinaName_(i){ const R = window._finaRecap; return R ? String(R.rows[i][R.X.nom] || '').trim() : ''; }
 function kyfFinaSearch(i){ const n = kyfFinaName_(i); if(n) kyfIsinSearch(n, ''); }
@@ -33843,7 +33893,29 @@ function kyfFinaGo(k){
   importGoToStep2(k);
   window._finaFrom = k;
   const lb = document.getElementById('importStep2BackLabel'); if(lb) lb.textContent = 'Retour au récapitulatif';
-  importHandleFile({ files: [new File([csv], R.name || 'finary.csv', { type: 'text/csv' })], value: '' });
+  return importHandleFile({ files: [new File([csv], R.name || 'finary.csv', { type: 'text/csv' })], value: '' });
+}
+// TOUT IMPORTER : SCPI, bien, or et crypto s'importent seuls quand rien ne manque ; les actions et fonds (courtier), le PER et
+// l'assurance vie (contrat) demandent un choix : KYF ouvre chaque groupe à son tour et passe au suivant dès que tu valides.
+async function kyfFinaAll(){
+  const R = window._finaRecap; if(!R) return;
+  R.all = true;
+  await kyfFinaNext();
+}
+async function kyfFinaNext(){
+  const R = window._finaRecap; if(!R || !R.all) return;
+  for(const k of ['scpi','bien','or','crypto','etf','per','av']){
+    if(!(R.groups[k]||[]).length || R.done[k]) continue;
+    if(k === 'scpi' || k === 'bien'){ kyfFinaGo(k); continue; }
+    try{ await kyfFinaGo(k); }catch(e){ R.all = false; return; }
+    if((k === 'or' || k === 'crypto') && !_importResolutionInProgress && _importPendingResolved.length && !_importPendingMissing.length
+       && document.getElementById('importConfirmBtn').style.display !== 'none'){
+      await importConfirm();   // le wrapper marque le groupe « Fait », rouvre le récapitulatif et relance kyfFinaNext
+      return;
+    }
+    return;   // choix à faire (courtier, contrat) ou lignes à compléter : KYF attend ta validation
+  }
+  R.all = false;
 }
 // Après un import réussi d'un groupe, la fenêtre se referme : on la rouvre sur le récapitulatif, le groupe marqué « Fait »
 (function(){
@@ -33859,6 +33931,7 @@ function kyfFinaGo(k){
         try{ document.querySelectorAll('#importRelevéModal .kyf-impdraft-banner, #importRelevéModal .kyf-draft-banner').forEach(x => x.remove()); }catch(e){}   // bandeau posé pendant l'import, devenu faux
         window._finaRecap = R;
         importGoToStep2Finary();
+        if(R.all) setTimeout(kyfFinaNext, 300);
       }
     }catch(e){}
     return r;
@@ -46516,7 +46589,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.12.69\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.12.72\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -51792,7 +51865,7 @@ setTimeout(() => { try{ kyfRpTake('auto'); }catch(e){} }, 15000);
 // reprendre. Les champs de mot de passe, jeton ou clé ne sont jamais gardés. Brouillon effacé au bout de 7 jours.
 (function(){
   const KEY = 'kyf-draft-v1', MAX_AGE = 7 * 864e5;
-  const SKIP_MODAL = /oauth|github|webdav|passw|secure|crypt|export|pwd|token|restore|login|connexion|search|beta|gate|guide|notif|share|heart|comparateur/i;
+  const SKIP_MODAL = /oauth|github|webdav|passw|secure|crypt|export|pwd|token|restore|login|connexion|search|beta|gate|guide|notif|share|heart|comparateur|importrelev/i;
   const SKIP_FIELD = /pass|pwd|token|secret|passphrase|mot.?de.?passe|cle.?de|jeton/i;
   const seen = new Set(), pending = {}, offered = new Set();
   const load = () => { try{ const o = JSON.parse(localStorage.getItem(KEY) || '{}'); return (o && typeof o === 'object') ? o : {}; }catch(e){ return {}; } };
@@ -71635,6 +71708,12 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.72 · 25/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Notifications : les messages flottants (Annuler, « Données plus récentes sur Google », erreurs de synchro, confirmations, widget intraday, invitations) s'empilent selon leur vraie hauteur et ne se chevauchent plus ; la fenêtre d'import n'affiche plus un second bandeau « saisie non terminée ».</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.71 · 25/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Bandeau « reprendre un import » dans la fenêtre d'import à deux volets : le texte est à gauche et les boutons IGNORER et REPRENDRE à droite, sur une ligne (une règle de la fenêtre les empilait).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.70 · 25/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Finary : bouton TOUT IMPORTER en bas du récapitulatif (SCPI, bien, or et crypto s'importent seuls, puis KYF te fait valider le courtier ou le contrat des actions, du PER et de l'assurance vie) ; survol visible sur les boutons IMPORTER.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.69 · 25/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre d'import : tous les boutons principaux sont jaunes comme partout ailleurs sur KYF (une règle les passait en orange sauf ceux que le code modifiait, ce qui mélangeait les deux couleurs).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.68 · 25/10/2026</div>
@@ -100114,6 +100193,7 @@ function orInlineEdit(id, td, currentVal){
       <button id="importPrevBtn" type="button" onclick="importStep2GoBack()" style="font-family:'Inter',sans-serif;font-size:9px;padding:8px 18px;border-radius:7px;cursor:pointer;border:1px solid var(--border2);background:none;color:var(--text3);transition:background .15s" onmouseover="this.style.background='var(--hov-bg)'" onmouseout="this.style.background='none'">‹ PRÉCÉDENT</button>
       <button onclick="closeImportRelevé()" style="font-family:'Inter',sans-serif;font-size:9px;padding:8px 18px;border-radius:7px;cursor:pointer;border:1px solid var(--border2);background:none;color:var(--text3);transition:background .15s" onmouseover="this.style.background='var(--hov-bg)'" onmouseout="this.style.background='none'">ANNULER</button>
       <button id="importConfirmBtn" onclick="importConfirm()" style="display:none;font-family:'Inter',sans-serif;font-size:9px;padding:8px 18px;border-radius:7px;cursor:pointer;font-weight:700;border:none;background:#f0b429;color:#000;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">IMPORTER</button>
+      <button id="importAllBtn" onclick="kyfFinaAll()" style="display:none;font-family:'Inter',sans-serif;font-size:9px;padding:8px 18px;border-radius:7px;cursor:pointer;font-weight:700;border:none;background:#f0b429;color:#000;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">TOUT IMPORTER</button>
     </div>
   </div>
   </div>
