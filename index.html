@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_12_53.html
+  @file        : KYF_SHARE_beta_2_8_12_63.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.12.53
+  @version     : Beta 2.8.12.63
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -1725,6 +1725,29 @@ select:focus {
 .kyf-dlg-seg.danger{color:var(--red)}
 .kyf-dlg-seg.danger:hover{background:color-mix(in srgb,var(--red) 14%,transparent);color:var(--red)}
 .kyf-dlg-seg:focus-visible{outline:2px solid var(--accent);outline-offset:-3px}
+/* Suivi mensuel d'un support (assurance vie) : champs et boutons aux couleurs KYF (survol, focus orange) */
+.avs-in{width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:6px 8px;font-size:11px;font-family:inherit;outline:none;transition:border-color .15s}
+.avs-in:focus{border-color:var(--accent)}
+.avs-btn{border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text);border-radius:6px;padding:6px 12px;font-family:inherit;font-size:10px;font-weight:700;cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+.avs-btn:hover{background:var(--hov-bg);color:var(--accent);border-color:var(--accent)}
+.avs-btn.danger{color:var(--red)}
+.avs-btn.danger:hover{background:color-mix(in srgb,var(--red) 14%,transparent);color:var(--red);border-color:var(--red)}
+.avs-btn:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.avs-info{width:17px;height:17px;flex-shrink:0;padding:0;border:1px solid currentColor;border-radius:50%;background:none;color:var(--text3);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:color .15s,background .15s}
+.avs-info:hover,.avs-info[aria-expanded=true]{color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.avs-box{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;width:100%;max-width:1000px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;font-family:'Inter',sans-serif;box-shadow:0 12px 48px rgba(0,0,0,.4)}
+.avs-body{display:flex;flex:1;min-height:0}
+.avs-body.multi{height:min(620px,calc(90vh - 56px))}
+.avs-side{width:300px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;min-height:0}
+.avs-main{flex:1;min-width:0;padding:16px 18px;overflow-y:auto}
+.avs-li{display:flex;align-items:center;gap:8px;width:100%;box-sizing:border-box;padding:9px 8px;border-radius:8px;border:1px solid transparent;background:none;color:var(--text);cursor:pointer;font-family:inherit;transition:background .15s,border-color .15s}
+.avs-li:hover{background:var(--hov-bg)}
+.avs-li.sel{background:color-mix(in srgb,var(--accent) 14%,transparent);border-color:var(--accent)}
+.avs-kpi{flex:1;min-width:110px;border:1px solid var(--border);border-radius:10px;padding:10px}
+.avs-tab{padding:6px 12px;border-radius:7px;font-family:inherit;font-size:10px;font-weight:700;border:1px solid var(--border2);background:none;color:var(--text2);cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+.avs-tab:hover:not(:disabled){background:var(--hov-bg);color:var(--accent)}
+.avs-tab.on{background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent);border-color:var(--accent)}
+@media(max-width:720px){.avs-body.multi{flex-direction:column;height:auto;overflow-y:auto}.avs-side{width:auto;max-height:220px;border-right:none;border-bottom:1px solid var(--border)}.avs-main{overflow:visible}}
 /* Valeurs modifiables des autres pages (Crypto, Livrets, Or, Profil, Cash) : survol visible à la place des bulles « Cliquer pour modifier » */
 td[onclick*="cryptoInlineEdit("],td[onclick*="editStablePlateforme("],td[onclick*="livInlineEdit("],td[onclick*="livInlineTaux("],td[onclick*="orInlineEdit("],div[onclick*="profilEditNom("],div[onclick*="openCashEdit("]{transition:background .15s}
 td[onclick*="cryptoInlineEdit("]:hover,td[onclick*="editStablePlateforme("]:hover,td[onclick*="livInlineEdit("]:hover,td[onclick*="livInlineTaux("]:hover,td[onclick*="orInlineEdit("]:hover{background:var(--hov-bg)}
@@ -2735,6 +2758,11 @@ html.kyf-boot #sidebar, html.kyf-boot #mainContent, html.kyf-boot #mainContent .
 /* 2.8.10.40 : badge NOUVEAU du menu. Barre large : le nom est réduit pour ne pas passer dessous (badge compact, puis simple point si rien ne tient). Barre repliée : l'icône prend la couleur d'attention ; survol conservé, et une fois le menu ouvert (actif) l'icône reprend la couleur active */
 .sb-item .kyf-new-badge.kyf-new-compact{font-size:7px!important;padding:1px 4px!important;letter-spacing:.2px!important}
 .sb-item .kyf-new-badge.kyf-new-dot{font-size:0!important;padding:0!important;width:8px;height:8px;min-width:8px;letter-spacing:0!important}
+/* Section repliée : la pastille du menu qu'elle cache (À VOUS, NOUVEAU) est écrite sur le titre de la section ; menu réduit : le point sur l'icône suffit */
+.sb-section .kyf-sec-badge{display:none;font-size:7px;font-weight:800;letter-spacing:.4px;padding:1px 4px;border-radius:999px;background:#f0b429;color:#000;margin-left:8px;pointer-events:none;vertical-align:middle;white-space:nowrap;flex-shrink:0;line-height:1.4}
+.sb-section.collapsed.sb-sec-has-new .kyf-sec-badge{display:inline-block}
+.sb-section .sb-sec-arrow{margin-left:auto}
+#sidebar.mini .sb-section .kyf-sec-badge{display:none!important}
 #sidebar.mini .sb-item.sb-has-new .sb-icon svg{stroke:#7c6cff}
 #sidebar.mini .sb-item.sb-has-new:hover .sb-icon svg{stroke:#5b49ff}
 #sidebar.mini .sb-item.sb-has-new.active .sb-icon svg{stroke:var(--sb-active)}
@@ -7147,7 +7175,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.12.53</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.12.63</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -13223,6 +13251,7 @@ document.addEventListener('keydown', (e)=>{
           <div style="font-size:10px;color:var(--text3)" id="avisTotalCount">Chargement des avis...</div>
         </div>
       </div>
+      <div id="avisSnoozeBox" style="display:none;order:5;flex-basis:100%;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:2px;padding-top:14px;border-top:1px solid var(--border)"></div>
       <button id="avisOpenBtn" onclick="openAvisModal()" style="border:1px solid var(--accent);background:var(--btn-secondary-bg);border-radius:8px;padding:10px 18px;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;color:var(--accent);cursor:pointer;letter-spacing:.5px;flex-shrink:0;transition:background .2s,box-shadow .2s,transform .2s"
         onmouseover="this.style.background='#f0b429';this.style.color='#000';this.style.boxShadow='0 2px 8px rgba(240,180,41,0.35)';this.style.transform='translateY(-1px)'"
         onmouseout="this.style.background='var(--btn-secondary-bg)';this.style.color='var(--accent)';this.style.boxShadow='none';this.style.transform='translateY(0)'"><span id="avisOpenLabel">+ DONNER MON AVIS</span></button>
@@ -16005,7 +16034,7 @@ const SHEETS_SYNC_KEYS = [
   'pea-etf-settings','pea-crypto-settings',
   'kyf-snapshots-index',
   'pea-style-v2','pea-accent-dark','pea-accent-light',
-  'kyf-sidebar-mini','kyf-sidebar-groups','kyf-card-layout-v2','kyf-card-hidden-v1','kyf-shortcuts-v1','kyf-views-v1','kyf-rituals-v1','kyf-columns-v1','kyf-groups-v1','kyf-favs-v1','kyf-geo-v1','kyf-display-cur','kyf-widgets-v1',
+  'kyf-sidebar-mini','kyf-sidebar-groups','kyf-avis-snooze','kyf-card-layout-v2','kyf-card-hidden-v1','kyf-shortcuts-v1','kyf-views-v1','kyf-rituals-v1','kyf-columns-v1','kyf-groups-v1','kyf-favs-v1','kyf-geo-v1','kyf-display-cur','kyf-widgets-v1',
   'kyf-idx-band-mode','kyf-pf-view','kyf-pf-range',
   'kyf-indices-sel',
   'kyf-objectif-liberte','kyf-horizon-retraite',
@@ -20399,6 +20428,7 @@ function kyfSbSecState_(){ try{ const o = JSON.parse(localStorage.getItem('kyf-s
 function kyfSbSecApply_(id, collapsed){
   const h = document.getElementById('sbs-' + id), w = document.getElementById('sbSection' + id.charAt(0).toUpperCase() + id.slice(1)); if(!h || !w) return;
   h.classList.toggle('collapsed', collapsed); w.classList.toggle('sb-sec-collapsed', collapsed); h.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+  try{ kyfSbSectionNewReveal(); }catch(e){}
 }
 function toggleSidebarSection(id){
   const h = document.getElementById('sbs-' + id); if(!h) return;
@@ -20406,10 +20436,15 @@ function toggleSidebarSection(id){
   const st = kyfSbSecState_(); st['sec-' + id] = collapsed; try{ localStorage.setItem('kyf-sidebar-groups', JSON.stringify(st)); }catch(e){}
 }
 function kyfSbSectionsInit(){ const st = kyfSbSecState_(); ['assets', 'history', 'analyses'].forEach(id => kyfSbSecApply_(id, !!st['sec-' + id])); try{ kyfSbSectionNewReveal(); }catch(e){} }
-function kyfSbSectionNewReveal(){   // un menu qui arrive en NOUVEAU déplie sa section repliée (tant que la nouveauté n'est pas vue)
+function kyfSbSectionNewReveal(){   // section repliée qui cache un menu en NOUVEAU / À VOUS : la pastille s'écrit sur le titre de la section (la section n'est plus dépliée de force)
   ['assets', 'history', 'analyses'].forEach(id => {
-    const h = document.getElementById('sbs-' + id), w = document.getElementById('sbSection' + id.charAt(0).toUpperCase() + id.slice(1));
-    if(h && w && h.classList.contains('collapsed') && w.querySelector('.sb-has-new')) toggleSidebarSection(id);
+    const h = document.getElementById('sbs-' + id), w = document.getElementById('sbSection' + id.charAt(0).toUpperCase() + id.slice(1)); if(!h || !w) return;
+    const txt = [];
+    w.querySelectorAll(':scope > .sb-item').forEach(it => { const b = it.querySelector(':scope > .kyf-new-badge'); if(b && b.style.display !== 'none' && it.classList.contains('sb-has-new')){ const t = (b.textContent || '').trim(); if(t && txt.indexOf(t) < 0) txt.push(t); } });
+    let sp = h.querySelector('.kyf-sec-badge');
+    if(!sp){ sp = document.createElement('span'); sp.className = 'kyf-sec-badge'; sp.setAttribute('aria-hidden', 'true'); const ar = h.querySelector('.sb-sec-arrow'); h.insertBefore(sp, ar); }
+    sp.textContent = txt.length === 1 ? txt[0] : 'NOUVEAU';
+    h.classList.toggle('sb-sec-has-new', txt.length > 0);
   });
 }
 function kyfSbSectionReveal(){   // la page ouverte doit rester visible : sa section se déplie
@@ -20646,6 +20681,7 @@ function showPage(id,tab,fromPopstate){
   if(id === 'av-comparateur') try{ avCompRender(); }catch(e){}
   if(id === 'av-fiscalite') try{ avFiscLoadParams(); avFiscAutoFill(); avFiscCalc(); avFiscCloudInit(); }catch(e){}
   if(id === 'fiscal-pea-cto') try{ fiscalParamsInit(); peaFiscLoadParams(); peaFiscSimuler(); pmeFiscLoadParams(); pmeFiscSimuler(); ctoFiscCalc(); kyfCashMvtRefresh(); }catch(e){}
+  if(id === 'avis') try{ kyfAvisSnoozeRender(); kyfAvisSnoozePull(); }catch(e){}
   if(id === 'avis') try{ if(kyfAvisPromoOn_()) kyfNewBadgeSeen('avis'); }catch(e){}   // page Avis ouverte ALORS QUE la mise en avant était affichée : elle a rempli son rôle (ouvrir la page avant les 15 jours ne l'éteint plus)
   if(id === 'comptes-titres'){ try{ ctRender(); }catch(e){} try{ kyfNewBadgeSeen('ct'); }catch(e){} }   // page ouverte : le badge NOUVEAU a rempli son rôle
   if(id === 'budget') try{ renderBudgetPage(); }catch(e){}
@@ -29442,7 +29478,7 @@ const KYF_WATCHED_KEYS = new Set([
   'kyf-snapshots-index',  // Index des dates snapshot
   'kyf-last-snapshot',    // Dernier snapshot (accès rapide)
   'pea-style-v2','pea-accent-dark','pea-accent-light',
-  'kyf-sidebar-mini','kyf-sidebar-groups','kyf-card-layout-v2','kyf-card-hidden-v1','kyf-shortcuts-v1','kyf-views-v1','kyf-rituals-v1','kyf-columns-v1','kyf-groups-v1','kyf-favs-v1','kyf-geo-v1','kyf-display-cur','kyf-widgets-v1',
+  'kyf-sidebar-mini','kyf-sidebar-groups','kyf-avis-snooze','kyf-card-layout-v2','kyf-card-hidden-v1','kyf-shortcuts-v1','kyf-views-v1','kyf-rituals-v1','kyf-columns-v1','kyf-groups-v1','kyf-favs-v1','kyf-geo-v1','kyf-display-cur','kyf-widgets-v1',
   'kyf-idx-band-mode','kyf-pf-view','kyf-pf-range','kyf-pf-hidden','kyf-pf-bm','kyf-perf-asset-filter',
   'kyf-indices-sel',
   'kyf-objectif-liberte','kyf-horizon-retraite',
@@ -30241,7 +30277,7 @@ async function kyfInitialPush(){
     'pea-etf-settings','pea-crypto-settings',
     'kyf-snapshots-index',
     'pea-style-v2','pea-accent-dark','pea-accent-light',
-    'kyf-sidebar-mini','kyf-sidebar-groups','kyf-card-layout-v2','kyf-card-hidden-v1','kyf-shortcuts-v1','kyf-views-v1','kyf-rituals-v1','kyf-columns-v1','kyf-groups-v1','kyf-favs-v1','kyf-geo-v1','kyf-display-cur','kyf-widgets-v1',
+    'kyf-sidebar-mini','kyf-sidebar-groups','kyf-avis-snooze','kyf-card-layout-v2','kyf-card-hidden-v1','kyf-shortcuts-v1','kyf-views-v1','kyf-rituals-v1','kyf-columns-v1','kyf-groups-v1','kyf-favs-v1','kyf-geo-v1','kyf-display-cur','kyf-widgets-v1',
     'kyf-idx-band-mode','kyf-pf-view','kyf-pf-range',
     'kyf-indices-sel',
     'kyf-objectif-liberte','kyf-horizon-retraite',
@@ -46266,7 +46302,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.12.53\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.12.63\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -51512,9 +51548,9 @@ async function kyfRpOpenUI(){
   const body = err ? '<div style="padding:14px 4px;font-size:11px;color:var(--text2)">Les points de restauration ne sont pas disponibles dans ce navigateur (navigation privée ou stockage bloqué).</div>'
     : !list.length ? '<div style="padding:14px 4px;font-size:11px;color:var(--text2);line-height:1.6">Aucun point pour l\'instant. KYF en crée un automatiquement une fois par jour, à l\'ouverture, ainsi qu\'avant une restauration ou une réinitialisation.</div>'
     : list.map(r => '<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px"><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:700;color:var(--text)">' + fmtD(r.ts) + '</div><div style="font-size:10px;color:var(--text3)">' + escapeHtml(KYF_RP_MOTIFS[r.motif] || r.motif) + ' · ' + r.n + ' données · ' + ko(r.size) + '</div></div>' +
-        '<button onclick="kyfRpRestore(\'' + escJsAttr(r.id) + '\')" style="border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text);border-radius:6px;padding:6px 12px;font-size:10px;font-weight:700;cursor:pointer">Restaurer</button></div>').join('');
+        '<button class="avs-btn" onclick="kyfRpRestore(\'' + escJsAttr(r.id) + '\')">Restaurer</button></div>').join('');
   box.innerHTML = '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:12px;max-width:520px;width:100%;max-height:88vh;overflow:auto;padding:18px;font-family:\'Inter\',sans-serif">' +
-    '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px"><div style="font-size:13px;font-weight:700;color:var(--text)">Points de restauration</div><button onclick="kyfRpClose()" aria-label="Fermer" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;line-height:1">×</button></div>' +
+    '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px"><div style="font-size:13px;font-weight:700;color:var(--text)">Points de restauration</div><button type="button" onclick="kyfRpClose()" class="kyf-modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>' +
     '<div style="font-size:10px;color:var(--text3);line-height:1.6;margin-bottom:10px">Copies automatiques de vos données, gardées uniquement sur cet appareil. Restaurer un point remplace vos données actuelles ; l\'état actuel est d\'abord gardé dans un point « Avant un retour à un point ». Ces points disparaissent si vous effacez les données du site dans votre navigateur ou si vous utilisez « Tout effacer ». Pour une copie durable, utilisez aussi une sauvegarde en fichier ou dans le cloud.</div>' +
     body + '</div>';
 }
@@ -52644,6 +52680,7 @@ const KYF_STORAGE_KEYS = [
   // barre latérale réduite, groupes de la barre latérale, date de première connexion (« Mon histoire »).
   'kyf-sidebar-mini',
   'kyf-sidebar-groups',
+  'kyf-avis-snooze',
   'kyf-oauth-first-seen',
 ];
 // Préfixes de clés dynamiques (une clé par date) : mêmes familles que
@@ -62069,6 +62106,10 @@ const GUIDE_PAGES = [
         <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 21l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg> Arbitrer entre supports</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9">Le bouton arbitrage déplace un montant (en euros ou en pourcentage) d'un support vers un autre, à l'intérieur d'un même contrat. Un second mode, <strong style="color:var(--text)">Frais / Prélèvement</strong>, gère les frais prélevés par désinvestissement (gestion pilotée notamment) en un seul mouvement, sans devoir inventer une fausse destination.</div>
       </div>
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Suivi mensuel d'un support</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Chaque mois, à la première ouverture de KYF, un instantané est pris automatiquement pour chaque support (quantité, prix de revient et cours disponibles). Le bouton <strong style="color:var(--text)">⋯</strong> du contrat (ou celui de la ligne d'un support), puis <strong style="color:var(--text)">Suivi mensuel</strong>, ouvre la liste de vos fonds à gauche (recherche, mini-courbe, rendement cumulé) et le détail du fonds choisi à droite : trois graphiques (rendement cumulé, montant et apport, rendement mensuel) et un tableau. L'historique commence à l'activation. Les valeurs sont calculées par KYF ; dans le tableau, le crayon permet de les remplacer par celles de l'assureur, mois par mois (mois marqué d'une étoile).</div>
+      </div>
     `
   },
   {
@@ -68798,7 +68839,7 @@ document.addEventListener('DOMContentLoaded', function(){
 // Pour annoncer une nouveauté : AJOUTER EN TÊTE de KYF_NOUVEAUTES.annonces une annonce { id, date (AAAA-MM-JJ), items }. Pas d'annonce = rien d'affiché, quel que soit le nombre de pushes.
 // Chaque utilisateur voit une seule fois les annonces qu'il n'a pas encore vues (les plus récentes d'abord, 3 au plus, 30 jours au plus). Un nouvel utilisateur (écran de bienvenue pas encore vu) ne voit rien : tout est nouveau pour lui.
 const KYF_NOUVEAUTES = {
-  badge: ['arb', 'immo', 'avref', 'avfrais', 'fraispg', 'avevo', 'dcaprix', 'ct', 'tend', 'tipstyle'],   // clés des badges (une ou plusieurs ; tableau) ; clé du badge « Nouveau » (span .kyf-new-badge data-new="...") ; vide = aucun badge
+  badge: ['arb', 'immo', 'avref', 'avfrais', 'fraispg', 'avevo', 'avsuivi', 'dcaprix', 'ct', 'tend', 'tipstyle'],   // clés des badges (une ou plusieurs ; tableau) ; clé du badge « Nouveau » (span .kyf-new-badge data-new="...") ; vide = aucun badge
   annonces: [
     { id: 'a-2026-10-24b', date: '2026-10-24', items: [
       { titre: 'Suivez chaque titre : TENDANCE et fenêtre Bourse', version: '2.8.12.36', important: true, texte: 'Une mini-courbe par ligne ETF & Actions. Un clic ouvre le cours, votre PRU, vos achats, ventes et dividendes. Flèches pour passer d’un titre à l’autre, deux points pour mesurer un écart.' },
@@ -68923,6 +68964,53 @@ const KYF_NEW_SEEN_KEY = 'kyf-nouveautes-vue';   // id de la dernière annonce v
 const KYF_NEW_MAX = 5, KYF_NEW_MAX_AGE_DAYS = 30, KYF_NEW_PAGE = 4;   // 5 annonces au plus ; la fenêtre montre 4 nouveautés par page, chevrons pour la suite
 function kyfNewBadgeKey_(k){ return 'kyf-nouveau-badge-' + k; }
 // Menu Avis mis en avant (badge « À VOUS », section dépliée, icône en couleur d'attention en barre repliée) dès que l'utilisateur peut donner son avis : 15 jours depuis sa 1ère utilisation réelle, aucun avis déjà publié, page Avis pas encore ouverte depuis
+function kyfAvisSnoozeSet(mode){
+  try{
+    if(mode === 'never') localStorage.setItem('kyf-avis-snooze', 'never');
+    else if(mode === 'month') localStorage.setItem('kyf-avis-snooze', new Date(Date.now() + 30 * 864e5).toISOString());
+    else localStorage.removeItem('kyf-avis-snooze');
+  }catch(e){}
+  try{ kyfNewBadgesRefresh(); }catch(e){}
+  try{ kyfAvisSnoozeRender(); }catch(e){}
+  try{ kyfAvisSnoozePush(mode); }catch(e){}
+}
+// Compte Google connecté : le choix est aussi retenu par le service des avis, il suit donc l'utilisateur d'un PC ou d'un navigateur à l'autre
+function kyfAvisSnoozeGoogle_(){ try{ return !!(localStorage.getItem('kyf-oauth-email') && window._kyfOAuthCache && window._kyfOAuthCache.token && navigator.onLine); }catch(e){ return false; } }
+async function kyfAvisSnoozePush(mode){
+  if(!kyfAvisSnoozeGoogle_()) return;
+  let v = 'off'; try{ v = localStorage.getItem('kyf-avis-snooze') || 'off'; }catch(e){}
+  try{ await kyfAvisPost({ action:'avis_rappel', premiere: kyfAvisLocalFirst(), token: await kyfGetValidToken(), rappel: v }); }catch(e){}
+}
+async function kyfAvisSnoozePull(){
+  if(!kyfAvisSnoozeGoogle_()) return;
+  if(window._kyfAvisPullAt && Date.now() - window._kyfAvisPullAt < 300000) return;
+  window._kyfAvisPullAt = Date.now();
+  try{
+    const d = await kyfAvisPost({ action:'avis_rappel', premiere: kyfAvisLocalFirst(), token: await kyfGetValidToken(), rappel: '__get__' });
+    if(!d || d.status !== 'ok') return;
+    const srv = String(d.rappel || ''), loc = localStorage.getItem('kyf-avis-snooze') || '';
+    if(srv === 'off'){ if(loc) localStorage.removeItem('kyf-avis-snooze'); }
+    else if(srv){ if(srv !== loc) localStorage.setItem('kyf-avis-snooze', srv); }
+    else if(loc){ await kyfAvisPost({ action:'avis_rappel', token: await kyfGetValidToken(), rappel: loc }); }   // choix fait avant la connexion Google : on le transmet
+    try{ kyfNewBadgesRefresh(); }catch(e){}
+    try{ kyfAvisSnoozeRender(); }catch(e){}
+  }catch(e){}
+}
+function kyfAvisSnoozeRender(){
+  const box = document.getElementById('avisSnoozeBox'); if(!box) return;
+  let sn = ''; try{ sn = localStorage.getItem('kyf-avis-snooze') || ''; }catch(e){}
+  let mine = null; try{ mine = (typeof kyfAvisGetMine === 'function') ? kyfAvisGetMine() : null; }catch(e){}
+  if(mine){ box.style.display = 'none'; box.innerHTML = ''; return; }
+  const t = Date.parse(sn), pending = sn === 'never' || (isFinite(t) && Date.now() < t);
+  const txt = sn === 'never' ? 'La mise en avant « À VOUS » du menu est désactivée.'
+    : pending ? 'Rappel prévu à partir du ' + new Date(t).toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' }) + '.'
+    : 'Pas envie de donner votre avis maintenant ? Le menu cesse de vous le rappeler.';
+  box.style.display = 'flex';
+  box.innerHTML = '<div style="flex:1;min-width:200px;font-size:11px;color:var(--text2);line-height:1.6">' + txt + '</div>' +
+    '<div style="display:flex;gap:8px;flex-wrap:wrap">' + (pending
+      ? '<button type="button" class="avs-btn" onclick="kyfAvisSnoozeSet(\'off\')">Réactiver le rappel</button>'
+      : '<button type="button" class="avs-btn" onclick="kyfAvisSnoozeSet(\'month\')">Me le redemander dans 1 mois</button><button type="button" class="avs-btn" onclick="kyfAvisSnoozeSet(\'never\')">Ne plus me le redemander</button>') + '</div>';
+}
 function kyfAvisPromoOn_(){
   try{
     // Une seule fois : la mise en avant éteinte par une simple visite de la page Avis avant d'y avoir droit est rallumée (sauf si un avis est déjà publié depuis ce navigateur)
@@ -68930,6 +69018,9 @@ function kyfAvisPromoOn_(){
       localStorage.setItem('kyf-avis-promo-v2', '1');
       if(!(typeof kyfAvisGetMine === 'function' && kyfAvisGetMine())) localStorage.removeItem(kyfNewBadgeKey_('avis'));
     }
+    const sn = localStorage.getItem('kyf-avis-snooze');   // « ne plus me redemander » (jamais) ou « dans 1 mois » (date), choisi sur la page Avis
+    if(sn === 'never') return false;
+    if(sn){ const t = Date.parse(sn); if(isFinite(t)){ if(Date.now() < t) return false; localStorage.removeItem('kyf-avis-snooze'); localStorage.removeItem(kyfNewBadgeKey_('avis')); } }
     if(!localStorage.getItem(WELCOME_KEY) || localStorage.getItem(kyfNewBadgeKey_('avis')) === '1') return false;
     if(typeof kyfAvisGetMine === 'function' && kyfAvisGetMine()) return false;
     const d = localStorage.getItem('kyf-oauth-first-seen') || localStorage.getItem('kyf-first-asset-date') || '';
@@ -69317,6 +69408,10 @@ const FAQ_DATA = [
   {
     q: "Mon PC plante ou je fais une erreur : puis-je récupérer mes données ?",
     a: "<strong style='color:var(--faq-strong);font-weight:700'>Oui, dans la plupart des cas.</strong> KYF enregistre vos données dans votre navigateur à chaque modification : un plantage, une coupure d'internet ou d'électricité ne les efface donc pas. Il garde en plus, sur votre appareil, des <strong style='color:var(--faq-strong);font-weight:700'>points de restauration</strong> : une copie automatique par jour (les 7 derniers jours), et une copie juste avant une restauration ou une réinitialisation.<br><br><strong style='color:var(--faq-strong);font-weight:700'>Pour revenir à un point :</strong> INFORMATIONS → Données locales → Points de restauration, choisissez la date puis Restaurer. L'état actuel est d'abord gardé dans un nouveau point : vous pouvez donc revenir en arrière.<br><br><strong style='color:var(--faq-strong);font-weight:700'>À savoir :</strong><br>• ces points restent dans le navigateur de cet appareil : ils disparaissent si vous effacez les « Cookies et données de sites » ou si vous utilisez « Tout effacer » ;<br>• pour une protection durable, ajoutez une sauvegarde en fichier (de préférence l'export sécurisé .cgx) ou dans votre Google Drive ou GitHub ;<br>• ce que vous saisissez dans un formulaire est aussi gardé au fil de la frappe, sur cet appareil : si la fenêtre n'a pas été fermée avant la panne, KYF propose de reprendre votre saisie quand vous rouvrez le même formulaire (les champs de mot de passe, jeton ou clé ne sont jamais gardés) ;<br>• un import de relevé (ETF, assurance vie, PER, crypto, or) interrompu peut être repris : rouvrez « Importer un relevé » et cliquez sur Reprendre. KYF relit le fichier, mais vos corrections faites à la main dans l'aperçu ne sont pas gardées."
+  },
+  {
+    q: "Comment suivre mes supports d'assurance vie mois par mois ?",
+    a: "<strong style='color:var(--faq-strong);font-weight:700'>KYF le fait tout seul.</strong> À la première ouverture de chaque mois, il prend un instantané de chaque support de vos contrats d'assurance vie : apport cumulé, montant, plus-value cumulée, rendement cumulé et rendement mensuel. Pour le voir, cliquez sur le bouton <strong style='color:var(--faq-strong);font-weight:700'>⋯</strong> du contrat (ou celui de la ligne d'un support) puis sur <strong style='color:var(--faq-strong);font-weight:700'>Suivi mensuel</strong> : la liste de vos fonds est à gauche, le détail et les graphiques à droite. Pour qu'un mois soit enregistré, le support doit avoir une quantité, un prix de revient et un cours disponible. L'historique commence le jour où la fonction est active : les mois passés ne sont pas reconstitués. Les valeurs sont calculées par KYF (montant moins apport) : elles peuvent différer légèrement de celles de votre assureur. Dans l'onglet <strong style='color:var(--faq-strong);font-weight:700'>Tableau</strong>, le crayon permet de les remplacer par celles de l'assureur, mois par mois. Pour récupérer le cours d'un fonds, KYF envoie son code ISIN à StatsAVie, jamais vos quantités ni vos montants. Tout reste sur votre appareil."
   }
 ]
 
@@ -69351,7 +69446,7 @@ function renderFAQ(){
   const FAQ_SECTIONS = [
     { title: 'GÉNÉRAL',              color: 'var(--sb-active)', colorBg: 'var(--sb-active-bg)', border: 'var(--sb-active-border)',  indices: [0,1,2,3,4] },
     { title: 'SÉCURITÉ & DONNÉES',   color: 'var(--sb-active)', colorBg: 'var(--sb-active-bg)', border: 'var(--sb-active-border)',   indices: [5,6,7,8,9,24,25,26,27,29,37,45] },
-    { title: 'UTILISATION',          color: 'var(--sb-active)', colorBg: 'var(--sb-active-bg)', border: 'var(--sb-active-border)',  indices: [10,11,12,13,14,15,16,17,18,19,20,28,30,31,32,33,34,35,36,38,39,40,42,43] },
+    { title: 'UTILISATION',          color: 'var(--sb-active)', colorBg: 'var(--sb-active-bg)', border: 'var(--sb-active-border)',  indices: [10,11,12,13,14,15,16,17,18,19,20,28,30,31,32,33,34,35,36,38,39,40,42,43,46] },
     { title: 'PROBLÈMES',            color: 'var(--sb-active)', colorBg: 'var(--sb-active-bg)', border: 'var(--sb-active-border)',  indices: [21,22,23,41] },
   ];
 
@@ -69430,7 +69525,7 @@ function renderFAQ(){
   const sections = [
     { title: "<svg width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:-2px'><path d='M9 18h6'/><path d='M10 22h4'/><path d='M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5.6.6 1.27 1.34 1.41 2.5' stroke='#f0b429'/><circle cx='12' cy='8' r='2' fill='#f0b429' stroke='none'/></svg> GÉNÉRAL",              color: 'var(--accent)',  indices: [0,1,2,3,4] },
     { title: "<svg width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='#f0b429' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:-2px'><rect x='4' y='11' width='16' height='10' rx='2'/><path d='M8 11V7a4 4 0 0 1 8 0v4'/><line x1='12' y1='15' x2='12' y2='17'/></svg> SÉCURITÉ &amp; DONNÉES",   color: 'var(--green)',   indices: [5,6,7,8,9,24,25,26,27,29,37,45] },
-    { title: "<svg width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:-2px'><circle cx='12' cy='12' r='3'/><path d='M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z'/></svg> UTILISATION",          color: 'var(--blue)',    indices: [10,11,12,13,14,15,16,17,18,19,20,28,30,31,32,33,34,35,36,38,39,40,42,43] },
+    { title: "<svg width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:-2px'><circle cx='12' cy='12' r='3'/><path d='M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z'/></svg> UTILISATION",          color: 'var(--blue)',    indices: [10,11,12,13,14,15,16,17,18,19,20,28,30,31,32,33,34,35,36,38,39,40,42,43,46] },
     { title: "<svg width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:-2px'><path d='M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z'/></svg> PROBLÈMES &amp; MAINTENANCE", color: '#e84393',     indices: [21,22,23,41] },
   ];
 
@@ -71228,12 +71323,12 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
         Plusieurs systèmes de sauvegarde sont disponibles depuis <a onclick="document.getElementById('aboutPanel').style.display='none';document.getElementById('aboutOverlay').style.display='none';document.body.style.overflow='';document.querySelector('.topbar').classList.remove('topbar--blurred');kyfOpenStorageCard();" style="color:#ff9f43;text-decoration:underline;cursor:pointer;font-weight:700">Mon Profil</a>.
       </div>
       <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px">
-        <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;padding:8px 12px">
+        <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:10px 12px">
           <div>
-            <div style="font-family:'Inter',sans-serif;font-size:12px;font-weight:700;color:var(--text2)">POINTS DE RESTAURATION</div>
-            <div style="font-family:'Inter',sans-serif;font-size:11px;color:var(--text3)">Revenir à une copie automatique de vos données, après une panne ou une erreur</div>
+            <div style="font-family:'Inter',sans-serif;font-size:12px;font-weight:700;color:var(--text2)">Points de restauration</div>
+            <div style="font-family:'Inter',sans-serif;font-size:10px;color:var(--text3)">Revenir à une copie automatique de vos données, après une panne ou une erreur</div>
           </div>
-          <button onclick="kyfRpOpenUI()" style="background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;font-weight:700;padding:5px 10px;border-radius:6px;cursor:pointer;white-space:nowrap">Voir</button>
+          <button onclick="kyfRpOpenUI()" style="background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text3);font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:6px 10px;border-radius:6px;cursor:pointer;transition:background .15s,color .15s;white-space:nowrap" onmouseover="this.style.background='rgba(0,0,0,0.15)';this.style.color='var(--text2)'" onmouseout="this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text3)'">Voir</button>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;padding:8px 12px">
           <div>
@@ -71328,6 +71423,26 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.63 · 25/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Avis : avec un compte Google connecté, le choix « me le redemander dans 1 mois / ne plus me le redemander » est retenu par le service des avis et te suit sur tes autres PC et navigateurs. Il faut déployer la nouvelle version du script Avis (v6).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.62 · 25/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Avis : la page propose « Me le redemander dans 1 mois » ou « Ne plus me le redemander » ; ce choix suit tes sauvegardes et synchronisations. Menu : quand la section Analyses est repliée, « À VOUS » (ou NOUVEAU) s'écrit sur son titre, au lieu de déplier la section de force.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.61 · 25/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Points de restauration : la ligne de la fiche Informations a le même gabarit que « Premiers pas », et dans la fenêtre les boutons Restaurer ont le survol orange et la croix le survol rose habituel.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.60 · 25/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Suivi mensuel : la pastille NOUVEAU est aussi sur le bouton ⋯ du contrat et sur celui de la ligne d'un support, pour trouver l'entrée du menu. Elle disparaît dès que tu ouvres le suivi mensuel.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.59 · 25/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Suivi mensuel : titre de la fenêtre au même format que « Évolution » (icône neutre, majuscules), chevron de repli au même survol que les boutons ⋯ de la carte.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.58 · 25/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Suivi mensuel : entrée « Suivi mensuel » ajoutée au menu ⋯ du contrat (avec le badge NOUVEAU), icône dans le titre de la fenêtre, texte d'explication placé derrière un point d'information, et chevron pour replier le cadre « Valeurs de l'assureur ».</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.57 · 25/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">FAQ et guide : le suivi mensuel des supports d'assurance vie est expliqué (instantané automatique, liste des fonds, graphiques, valeurs calculées par KYF et correction par le crayon).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.56 · 25/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Suivi mensuel d'un contrat d'assurance vie : la fenêtre affiche la liste des fonds à gauche (recherche, mini-courbe, rendement cumulé) et le détail du fonds choisi à droite, avec un onglet par graphique et le tableau. Elle reste lisible avec 12 ou 40 fonds ; sur petit écran la liste passe au-dessus.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.55 · 25/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Suivi mensuel d'un support d'assurance vie : trois graphiques sous le tableau, comme dans le tableur (rendement cumulé, montant et apport cumulé, rendement mensuel). Ils apparaissent dès deux mois d'historique ; un mois manquant laisse un trou sur l'axe et la courbe relie les mois connus.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.54 · 25/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Suivi mensuel d'un support d'assurance vie : la fenêtre reprend les codes de KYF. La page derrière ne défile plus, la croix a son survol rouge, le crayon est l'icône habituelle, les champs s'entourent d'orange, les boutons ont leur survol et « Supprimer ce mois » ouvre la boîte KYF au lieu de celle du navigateur.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.53 · 25/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Reprise après une panne, étape 3 : un import de relevé (ETF, assurance vie, PER, crypto, or) interrompu peut être repris. KYF garde le fichier et les réglages sur l'appareil jusqu'à la fermeture du popup d'import ; à la réouverture, bouton Reprendre. Les corrections faites à la main dans l'aperçu ne sont pas gardées.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.52 · 25/10/2026</div>
@@ -92303,10 +92418,76 @@ function avSuiviRows(ent){
     prev = row; return row;
   });
 }
-function avSuiviClose(){ const x = document.getElementById('avSuiviOverlay'); if(x) x.remove(); }
-function avSuiviOpen(contratId, posId){
-  const o = avSuiviLoad(), key = contratId + '|' + posId, ent = o.items[key];
-  const p = avPosLoad(contratId).find(x => String(x.id) === String(posId));
+// Graphique en courbe du suivi mensuel (SVG, axe des mois continu : un mois sans instantané reste un trou, la courbe relie les points existants)
+function avSuiviChart(titre, rows, series, o){
+  o = o || {};
+  const idx = k => { const a = k.split('-').map(Number); return a[0] * 12 + a[1] - 1; };
+  const i0 = idx(rows[0].k), i1 = idx(rows[rows.length - 1].k), n = Math.max(1, i1 - i0);
+  const W = 640, H = 230, L = 58, R = 18, T = 14, B = 44, pw = W - L - R, ph = H - T - B;
+  let vals = []; series.forEach(se => rows.forEach(r => { const v = se.f(r); if(v != null && isFinite(v)) vals.push(v); }));
+  if(!vals.length) return '';
+  let mn = Math.min.apply(null, vals), mx = Math.max.apply(null, vals);
+  if(o.zero){ mn = Math.min(mn, 0); mx = Math.max(mx, 0); }
+  if(mn === mx){ mn -= 1; mx += 1; }
+  const span = mx - mn, raw = span / 4, mag = Math.pow(10, Math.floor(Math.log10(raw))), st = [1, 2, 2.5, 5, 10].map(x => x * mag).find(x => x >= raw) || raw;
+  const lo = Math.floor((mn - span * 0.08) / st) * st, hi = Math.ceil((mx + span * 0.12) / st) * st;
+  const X = i => L + 16 + (i - i0) / n * (pw - 32), Y = v => T + (hi - v) / (hi - lo) * ph;
+  const dec = o.dec == null ? 2 : o.dec, lab = v => fmt(v, dec) + (o.suffix || '');
+  let g = '';
+  for(let v = lo; v <= hi + st / 1000; v += st){
+    g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(v).toFixed(1) + '" y2="' + Y(v).toFixed(1) + '" stroke="var(--border2)" stroke-width="1" opacity=".6"/>' +
+         '<text x="' + (L - 6) + '" y="' + (Y(v) + 3).toFixed(1) + '" text-anchor="end" font-size="9" fill="var(--text3)">' + escapeHtml(fmt(v, st < 1 ? 1 : 0) + (o.suffix || '')) + '</text>';
+  }
+  const pas = Math.ceil((n + 1) / 12);
+  for(let i = i0; i <= i1; i += 1){
+    if((i - i0) % pas) continue;
+    const y = Math.floor(i / 12), m = i % 12, k = y + '-' + String(m + 1).padStart(2, '0');
+    g += '<text transform="translate(' + X(i).toFixed(1) + ',' + (H - B + 12) + ') rotate(-40)" text-anchor="end" font-size="9" fill="var(--text3)">' + escapeHtml(avSuiviMoisLabel(k)) + '</text>';
+  }
+  series.forEach(se => {
+    const pts = rows.map(r => ({ i: idx(r.k), v: se.f(r) })).filter(q => q.v != null && isFinite(q.v));
+    if(!pts.length) return;
+    g += '<polyline fill="none" stroke="' + se.color + '" stroke-width="2.2" stroke-linejoin="round" points="' + pts.map(q => X(q.i).toFixed(1) + ',' + Y(q.v).toFixed(1)).join(' ') + '"/>';
+    pts.forEach(q => {
+      g += '<circle cx="' + X(q.i).toFixed(1) + '" cy="' + Y(q.v).toFixed(1) + '" r="3.4" fill="' + se.color + '"/>';
+      if(se.labels) g += '<text x="' + X(q.i).toFixed(1) + '" y="' + (Y(q.v) - 8).toFixed(1) + '" text-anchor="middle" font-size="9.5" font-weight="600" fill="' + (q.v < 0 ? 'var(--red)' : 'var(--text2)') + '">' + escapeHtml(lab(q.v)) + '</text>';
+    });
+  });
+  const leg = series.map(se => '<span style="display:inline-flex;align-items:center;gap:5px;margin:0 8px"><i style="display:inline-block;width:16px;height:3px;border-radius:2px;background:' + se.color + '"></i>' + escapeHtml(se.nom) + '</span>').join('');
+  return '<div style="margin-top:14px;border:1px solid var(--border2);border-radius:10px;padding:10px 8px 8px"><div style="text-align:center;font-size:11px;font-weight:700;color:var(--text);margin-bottom:2px">' + escapeHtml(titre) + '</div>' +
+    '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block" role="img" aria-label="' + escapeHtml(titre) + '">' + g + '</svg>' +
+    '<div style="text-align:center;font-size:10px;color:var(--text3)">' + leg + '</div></div>';
+}
+function avSuiviClose(){ const x = document.getElementById('avSuiviOverlay'); if(x) x.remove(); document.body.style.overflow = ''; }
+function avSuiviSpark(rows){
+  const v = rows.map(r => r.rc).filter(x => x != null); if(v.length < 2) return '';
+  const mn = Math.min.apply(null, v), mx = Math.max.apply(null, v), sp = (mx - mn) || 1;
+  const pts = v.map((x, i) => (i / (v.length - 1) * 46).toFixed(1) + ',' + (16 - (x - mn) / sp * 14).toFixed(1)).join(' ');
+  return '<svg width="46" height="18" viewBox="0 0 46 18" aria-hidden="true" style="flex-shrink:0"><polyline fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" points="' + pts + '"/></svg>';
+}
+function avSuiviOpenContrat(contratId){
+  const o = avSuiviLoad(), cid = String(contratId), poss = avPosLoad(contratId);
+  const k = Object.keys(o.items).filter(x => x.split('|')[0] === cid && Object.keys(o.items[x].mois || {}).length)
+    .sort((a, b) => String(o.items[a].nom || '').localeCompare(String(o.items[b].nom || ''), 'fr'))[0];
+  if(k){ avSuiviOpen(cid, k.split('|')[1]); return; }
+  const p = poss.find(x => ['etf','action','fonds','obl','pe','dp'].indexOf(x.type) >= 0);
+  if(p){ avSuiviOpen(cid, p.id); return; }
+  kyfAlert('Aucun support à suivre dans ce contrat\nAjoutez un ETF, une action ou un fonds : KYF prendra un instantané chaque mois.');
+}
+function avSuiviInfoToggle(b){
+  const d = document.getElementById('avSuiviInfo'); if(!d) return;
+  const on = d.style.display === 'none'; d.style.display = on ? 'block' : 'none'; b.setAttribute('aria-expanded', on ? 'true' : 'false');
+}
+function avSuiviFilter(q){
+  window._avSuiviQ = q; const s = String(q || '').toLowerCase().trim();
+  document.querySelectorAll('#avSuiviOverlay .avs-li').forEach(el => { el.style.display = (!s || (el.getAttribute('data-n') || '').indexOf(s) >= 0) ? '' : 'none'; });
+}
+function avSuiviOpen(contratId, posId, tab){
+  const o = avSuiviLoad(), cid = String(contratId), key = cid + '|' + posId, ent = o.items[key];
+  if(tab) window._avSuiviTab = tab;
+  const T = window._avSuiviTab || 'rc';
+  const poss = avPosLoad(contratId);
+  const p = poss.find(x => String(x.id) === String(posId));
   const nom = (ent && ent.nom) || (p && (p.nom || p.ticker)) || 'Support';
   let box = document.getElementById('avSuiviOverlay');
   if(!box){
@@ -92315,14 +92496,20 @@ function avSuiviOpen(contratId, posId){
     box.addEventListener('click', ev => { if(ev.target === box) avSuiviClose(); });
     document.body.appendChild(box);
   }
+  document.body.style.overflow = 'hidden';
+  const oldList = document.getElementById('avSuiviList'), oldTop = oldList ? oldList.scrollTop : 0;
   const rows = ent ? avSuiviRows(ent) : [];
+  const last = rows.length ? rows[rows.length - 1] : null;
   const cls = v => v == null ? '' : (v >= 0 ? 'up' : 'dn');
   const eur = v => v == null ? '-' : fmt(v, 2) + ' €';
   const pct = v => v == null ? '-' : fmt(v, 2) + ' %';
+  const sgn = (v, f) => v == null ? '-' : (v > 0 ? '+' : '') + f(v);
+  const col = v => v == null ? 'var(--text)' : (v >= 0 ? 'var(--green)' : 'var(--red)');
   const th = 'padding:6px 10px;text-align:right;font-size:10px;font-weight:700;color:var(--text);white-space:nowrap;border-bottom:1px solid var(--border2)';
   const td = 'padding:6px 10px;text-align:right;font-size:11px;white-space:nowrap';
   const lab = 'padding:6px 10px;text-align:left;font-size:10px;color:var(--text3);white-space:nowrap;position:sticky;left:0;background:var(--bg2)';
-  let table;
+  const ek = escJsAttr(key);
+  let table = '';
   if(!rows.length){
     table = '<div style="padding:18px 6px;font-size:11px;color:var(--text2);line-height:1.6">Aucun mois enregistré pour l\'instant. KYF prend un instantané par mois, automatiquement, à la première ouverture du mois, dès que le cours du support est disponible. Il faut que la position ait une quantité et un prix de revient.</div>';
   } else {
@@ -92334,29 +92521,63 @@ function avSuiviOpen(contratId, posId){
       line('Plus-value cumulée', r => '<td style="' + td + '" class="' + cls(r.pv) + '">' + eur(r.pv) + '</td>') +
       line('Rendement cumulé', r => '<td style="' + td + '" class="' + cls(r.rc) + '">' + pct(r.rc) + '</td>') +
       line('Rendement mensuel', r => '<td style="' + td + '" class="' + cls(r.rm) + '">' + pct(r.rm) + '</td>') +
-      line('', r => '<td style="' + td + '"><button onclick="avSuiviEdit(\'' + escJsAttr(key) + '\',\'' + r.k + '\')" title="Corriger avec les valeurs de l\'assureur" style="background:none;border:1px solid var(--border2);border-radius:5px;color:var(--text3);cursor:pointer;font-size:10px;padding:2px 7px">✎</button></td>') +
+      line('', r => '<td style="' + td + '"><button onclick="avSuiviEdit(\'' + ek + '\',\'' + r.k + '\')" class="kyf-icon-btn" title="Corriger avec les valeurs de l\'assureur" aria-label="Corriger" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;display:inline-flex;align-items:center" onmouseover="this.style.color=\'var(--text)\'" onmouseout="this.style.color=\'var(--text3)\'">' + KYF_ICONS.edit + '</button></td>') +
       '</tbody></table></div>';
   }
-  box.innerHTML = '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:12px;max-width:760px;width:100%;max-height:90vh;overflow:auto;padding:18px 18px 14px;font-family:\'Inter\',sans-serif">' +
-    '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px"><div style="font-size:13px;font-weight:700;color:var(--text)">Suivi mensuel : ' + escapeHtml(nom) + '</div>' +
-    '<button onclick="avSuiviClose()" aria-label="Fermer" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;line-height:1">×</button></div>' +
-    '<div style="font-size:10px;color:var(--text3);line-height:1.6;margin-bottom:10px">Un instantané est pris automatiquement à la première ouverture de KYF chaque mois. Les valeurs sont calculées par KYF (montant − apport) : elles peuvent différer légèrement de celles de votre assureur. Le bouton ✎ permet de les remplacer mois par mois (mois marqué *). Le rendement mensuel est l\'écart entre deux rendements cumulés consécutifs.</div>' +
-    table + '<div id="avSuiviEditBox"></div></div>';
+  // Liste des supports du contrat (seulement s'il y en a plusieurs)
+  const items = [];
+  Object.keys(o.items).forEach(k => { const a = k.split('|'); if(a[0] !== cid) return; const it = o.items[k], rr = avSuiviRows(it), pp = poss.find(x => String(x.id) === a[1]); if(rr.length) items.push({ pid:a[1], nom:it.nom || (pp && (pp.nom || pp.ticker)) || 'Support', rows:rr }); });
+  if(ent && rows.length && !items.some(x => x.pid === String(posId))) items.push({ pid:String(posId), nom:nom, rows:rows });
+  items.sort((a, b) => a.nom.localeCompare(b.nom, 'fr'));
+  const multi = items.length > 1;
+  let side = '';
+  if(multi){
+    side = '<div class="avs-side"><div style="padding:12px"><input class="avs-in" type="search" placeholder="Rechercher un fonds…" aria-label="Rechercher un fonds" value="' + escapeHtml(window._avSuiviQ || '') + '" oninput="avSuiviFilter(this.value)"></div>' +
+      '<div style="padding:0 14px 6px;display:flex;justify-content:space-between;font-size:9px;font-weight:700;letter-spacing:.6px;color:var(--text3)"><span>' + items.length + ' FONDS</span><span>RENDEMENT CUMULÉ</span></div>' +
+      '<div id="avSuiviList" style="flex:1;min-height:0;overflow-y:auto;padding:0 6px 8px">' + items.map(x => {
+        const l = x.rows[x.rows.length - 1], sel = String(x.pid) === String(posId);
+        return '<button type="button" class="avs-li' + (sel ? ' sel' : '') + '" data-n="' + escapeHtml(x.nom.toLowerCase()) + '" onclick="avSuiviOpen(\'' + escJsAttr(cid) + '\',\'' + escJsAttr(x.pid) + '\')" style="' + (window._avSuiviQ && (x.nom.toLowerCase().indexOf(String(window._avSuiviQ).toLowerCase().trim()) < 0) ? 'display:none;' : '') + '">' +
+          '<span style="flex:1;min-width:0;text-align:left"><span style="display:block;font-size:11px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHtml(x.nom) + '</span><span style="display:block;font-size:9px;color:var(--text3)">' + fmt(l.m, 0) + ' € · apport ' + fmt(l.a, 0) + ' €</span></span>' +
+          '<span style="color:' + (sel ? 'var(--accent)' : 'var(--blue)') + ';display:inline-flex">' + avSuiviSpark(x.rows) + '</span>' +
+          '<span style="font-size:11px;font-weight:700;min-width:54px;text-align:right;color:' + col(l.rc) + '">' + sgn(l.rc, v => fmt(v, 2) + ' %') + '</span></button>';
+      }).join('') + '</div></div>';
+  }
+  // Détail du fonds choisi
+  const kpi = (lbl, val, c) => '<div class="avs-kpi"><div style="font-size:9px;color:var(--text3);font-weight:700;letter-spacing:.5px">' + lbl + '</div><div style="font-size:15px;font-weight:700;margin-top:3px;color:' + c + '">' + val + '</div></div>';
+  const tabs = [['rc', 'Rendement cumulé'], ['m', 'Montant et apport'], ['rm', 'Rendement mensuel'], ['tab', 'Tableau']];
+  const canChart = rows.length >= 2;
+  const eff = (!canChart && T !== 'tab') ? 'tab' : T;
+  let body;
+  if(eff === 'rc') body = avSuiviChart('Rendement cumulé', rows, [{ nom:'Rendement cumulé (%)', color:'var(--accent)', labels:true, f:r => r.rc }], { zero:true });
+  else if(eff === 'm') body = avSuiviChart('Montant et apport cumulé', rows, [{ nom:'Montant (€)', color:'var(--blue)', f:r => r.m }, { nom:'Apport cumulé (€)', color:'var(--accent)', f:r => r.a }], { dec:0 });
+  else if(eff === 'rm') body = avSuiviChart('Rendement mensuel', rows, [{ nom:'Rendement mensuel (%)', color:'var(--blue)', labels:true, f:r => r.rm }], { zero:true });
+  else body = table;
+  const detail = '<div class="avs-main"><div style="font-size:14px;font-weight:700;color:var(--text)">' + escapeHtml(nom) + '</div>' +
+    '<div style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text3);margin:2px 0 6px">' + (p && p.ticker ? escapeHtml(p.ticker) + ' · ' : '') + rows.length + ' mois d\'historique · valeurs calculées par KYF, elles peuvent différer de celles de l\'assureur' +
+    '<button type="button" class="avs-info" aria-label="Comment ça marche" aria-expanded="false" title="Comment ça marche" onclick="avSuiviInfoToggle(this)"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="17" x2="12" y2="11"/><circle cx="12" cy="7" r="0.5" fill="currentColor" stroke="none"/></svg></button></div>' +
+    '<div id="avSuiviInfo" style="display:none;font-size:10px;color:var(--text2);line-height:1.6;margin:0 0 10px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--hov-bg-soft)">Un instantané est pris automatiquement à la première ouverture de KYF chaque mois. Le crayon permet de remplacer les valeurs mois par mois (mois marqué *). Le rendement mensuel est l\'écart entre deux rendements cumulés consécutifs.</div><div style="height:6px"></div>' +
+    (last ? '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">' + kpi('MONTANT', eur(last.m), 'var(--text)') + kpi('PLUS-VALUE', sgn(last.pv, eur), col(last.pv)) + kpi('RENDEMENT CUMULÉ', sgn(last.rc, pct), col(last.rc)) + kpi('CE MOIS', sgn(last.rm, pct), col(last.rm)) + '</div>' : '') +
+    (rows.length ? '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">' + tabs.map(t => '<button type="button" class="avs-tab' + (t[0] === eff ? ' on' : '') + '"' + ((t[0] !== 'tab' && !canChart) ? ' disabled style="opacity:.4;cursor:default"' : '') + ' onclick="avSuiviOpen(\'' + escJsAttr(cid) + '\',\'' + escJsAttr(String(posId)) + '\',\'' + t[0] + '\')">' + t[1] + '</button>').join('') + '</div>' : '') +
+    body + '' +
+    '<div id="avSuiviEditBox"></div></div>';
+  box.innerHTML = '<div class="avs-box"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:18px 26px;border-bottom:1px solid var(--border)"><span style="font-weight:700;font-size:13px;display:inline-flex;align-items:center;gap:8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>SUIVI MENSUEL' + (multi ? ' <span style="font-weight:600;color:var(--text3);font-size:11px;margin-left:6px">· ' + items.length + ' fonds</span>' : '') + '</span></span>' +
+    '<button type="button" onclick="avSuiviClose()" class="kyf-modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>' +
+    '<div class="avs-body' + (multi ? ' multi' : '') + '">' + side + detail + '</div></div>';
+  const nl = document.getElementById('avSuiviList'); if(nl) nl.scrollTop = oldTop;
 }
 function avSuiviEdit(key, k){
   const o = avSuiviLoad(), ent = o.items[key]; if(!ent || !ent.mois[k]) return;
   const r = avSuiviRows(ent).find(x => x.k === k); if(!r) return;
   const e = ent.mois[k], ov = e.ov || {};
-  const inp = 'width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:6px 8px;font-size:11px';
-  const f = (id, label, v) => '<div style="flex:1;min-width:130px"><div style="font-size:9px;color:var(--text3);margin-bottom:3px">' + label + '</div><input id="' + id + '" value="' + (v == null ? '' : String(v).replace('.', ',')) + '" placeholder="auto" inputmode="decimal" style="' + inp + '"></div>';
-  const btn = 'border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text);border-radius:6px;padding:6px 12px;font-size:10px;font-weight:700;cursor:pointer';
+  const f = (id, label, v) => '<div style="flex:1;min-width:130px"><div style="font-size:9px;color:var(--text3);margin-bottom:3px">' + label + '</div><input id="' + id + '" value="' + (v == null ? '' : String(v).replace('.', ',')) + '" placeholder="auto" inputmode="decimal" class="avs-in"></div>';
   document.getElementById('avSuiviEditBox').innerHTML =
-    '<div style="margin-top:12px;padding:12px;border:1px solid var(--border2);border-radius:8px"><div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px">Valeurs de l\'assureur : ' + avSuiviMoisLabel(k) + '</div>' +
+    '<div style="margin-top:12px;padding:12px;border:1px solid var(--border2);border-radius:8px"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px"><div style="font-size:11px;font-weight:700;color:var(--text)">Valeurs de l\'assureur : ' + avSuiviMoisLabel(k) + '</div>' +
+    '<button type="button" class="kyf-icon-btn" aria-label="Replier" title="Replier" onclick="document.getElementById(\'avSuiviEditBox\').innerHTML=\'\'" style="background:none;border:1px solid var(--border2);box-sizing:border-box;border-radius:8px;width:28px;height:28px;color:var(--text3);cursor:pointer;padding:0;display:inline-flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg></button></div>' +
     '<div style="display:flex;gap:10px;flex-wrap:wrap">' + f('avSuiviM', 'Montant (€)', ov.m) + f('avSuiviPV', 'Plus-value cumulée (€)', ov.pv) + f('avSuiviRC', 'Rendement cumulé (%)', ov.rc) + '</div>' +
     '<div style="font-size:9px;color:var(--text3);margin-top:6px">Laissez vide pour garder le calcul automatique. Calcul actuel : ' + fmt(r.m, 2) + ' € · ' + fmt(r.pv, 2) + ' € · ' + (r.rc == null ? '-' : fmt(r.rc, 2) + ' %') + '</div>' +
-    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button style="' + btn + '" onclick="avSuiviEditSave(\'' + escJsAttr(key) + '\',\'' + k + '\')">Enregistrer</button>' +
-    '<button style="' + btn + '" onclick="avSuiviEditReset(\'' + escJsAttr(key) + '\',\'' + k + '\')">Remettre l\'automatique</button>' +
-    '<button style="' + btn + ';color:#ff4560" onclick="avSuiviMonthDelete(\'' + escJsAttr(key) + '\',\'' + k + '\')">Supprimer ce mois</button></div></div>';
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="avs-btn" onclick="avSuiviEditSave(\'' + escJsAttr(key) + '\',\'' + k + '\')">Enregistrer</button>' +
+    '<button class="avs-btn" onclick="avSuiviEditReset(\'' + escJsAttr(key) + '\',\'' + k + '\')">Remettre l\'automatique</button>' +
+    '<button class="avs-btn danger" onclick="avSuiviMonthDelete(\'' + escJsAttr(key) + '\',\'' + k + '\')">Supprimer ce mois</button></div></div>';
 }
 function avSuiviReopen(key){ const a = key.split('|'); avSuiviOpen(a[0], a[1]); }
 function avSuiviEditSave(key, k){
@@ -92370,8 +92591,8 @@ function avSuiviEditReset(key, k){
   const o = avSuiviLoad(), ent = o.items[key]; if(!ent || !ent.mois[k]) return;
   delete ent.mois[k].ov; avSuiviSave(o); avSuiviReopen(key);
 }
-function avSuiviMonthDelete(key, k){
-  if(!confirm('Supprimer le mois ' + avSuiviMoisLabel(k) + ' de ce suivi ?')) return;
+async function avSuiviMonthDelete(key, k){
+  if(!(await kyfAsk('Supprimer le mois ' + avSuiviMoisLabel(k) + ' de ce suivi ?'))) return;
   const o = avSuiviLoad(), ent = o.items[key]; if(!ent) return;
   delete ent.mois[k]; if(!Object.keys(ent.mois).length) delete o.items[key];
   avSuiviSave(o); avSuiviReopen(key);
@@ -93704,11 +93925,11 @@ function renderAV(){
           <span style="font-size:13px;flex-shrink:0;min-width:50px;text-align:right">${rendStr}</span>
           ${kyfFondsLike(p.type) && p.ticker ? `<button id="avPosRefreshBtn-${p.id}" onclick="event.stopPropagation();avPosRefreshFondsPrice('${d.id}','${p.id}')" title="Actualiser le cours" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 4px;display:inline-flex;align-items:center;flex-shrink:0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button>` : ''}
           <span style="position:relative;flex-shrink:0">
-            <button onclick="event.stopPropagation();avToggleActionsMenu('pos-${p.id}')" title="Actions" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 6px;display:inline-flex;align-items:center;font-size:16px;letter-spacing:1px">⋯</button>
+            <button onclick="event.stopPropagation();avToggleActionsMenu('pos-${p.id}')" title="Actions" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 6px;display:inline-flex;align-items:center;font-size:16px;letter-spacing:1px">⋯</button>${(['etf','action','fonds','obl','pe','dp'].includes(p.type) && (()=>{ let vu = false; try{ vu = localStorage.getItem('kyf-nouveau-badge-avsuivi') === '1'; }catch(e){} return !vu && [].concat(KYF_NOUVEAUTES.badge || []).indexOf('avsuivi') >= 0; })()) ? '<span class="kyf-new-badge" data-new="avsuivi" style="display:inline-block;position:absolute;top:-8px;right:-8px;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.25)">NOUVEAU</span>' : ''}
             <div id="avActionsMenu-pos-${p.id}" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:130px">
               <div onclick="avCloseActionsMenu('pos-${p.id}');editAVPos('${d.id}','${p.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.edit} Modifier</div>
               ${['etf','action','fonds'].includes(p.type) ? `<div onclick="avCloseActionsMenu('pos-${p.id}');avReplaceSupport('${d.id}','${p.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3l4 4-4 4"/><path d="M3 7h18"/><path d="M7 21l-4-4 4-4"/><path d="M21 17H3"/></svg> Remplacer le support</div>` : ''}
-              ${['etf','action','fonds','obl','pe','dp'].includes(p.type) ? `<div onclick="avCloseActionsMenu('pos-${p.id}');avSuiviOpen('${d.id}','${p.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Suivi mensuel</div>` : ''}
+              ${['etf','action','fonds','obl','pe','dp'].includes(p.type) ? `<div onclick="avCloseActionsMenu('pos-${p.id}');avSuiviOpen('${d.id}','${p.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Suivi mensuel${(()=>{ let vu = false; try{ vu = localStorage.getItem('kyf-nouveau-badge-avsuivi') === '1'; }catch(e){} return (vu || [].concat(KYF_NOUVEAUTES.badge || []).indexOf('avsuivi') < 0) ? '' : '<span class="kyf-new-badge" data-new="avsuivi" style="display:inline-block;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;margin-left:auto;pointer-events:none">NOUVEAU</span>'; })()}</div>` : ''}
               <div onclick="avCloseActionsMenu('pos-${p.id}');deleteAVPos('${d.id}','${p.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:#ff4560;cursor:pointer;display:flex;align-items:center;gap:6px;border-top:1px solid var(--border)" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg aria-hidden="true" style="vertical-align:-.18em;flex-shrink:0" width="1.1em" height="1.1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg> Supprimer</div>
             </div>
           </span>
@@ -93769,7 +93990,7 @@ function renderAV(){
         </div>
         <div class="kyf-hd-actions"><div onclick="event.stopPropagation()" style="white-space:nowrap;position:relative;display:flex;align-items:center;gap:6px">
           <div style="position:relative">
-            <button onclick="avToggleActionsMenu('${d.id}')" title="Plus d'actions" class="kyf-icon-btn" style="background:none;border:1px solid var(--border2);box-sizing:border-box;border-radius:8px;width:34px;height:34px;justify-content:center;color:var(--text3);cursor:pointer;padding:0;display:inline-flex;align-items:center;font-size:16px;letter-spacing:1px">⋯</button>${(()=>{ let vu = false; try{ vu = localStorage.getItem('kyf-nouveau-badge-avref') === '1'; }catch(e){} return (vu || [].concat(KYF_NOUVEAUTES.badge || []).indexOf('avref') < 0) ? '' : '<span class="kyf-new-badge" data-new="avref" id="avRefDot-' + d.id + '" style="display:inline-block;position:absolute;top:-8px;right:-8px;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.25)">NOUVEAU</span>'; })()}
+            <button onclick="avToggleActionsMenu('${d.id}')" title="Plus d'actions" class="kyf-icon-btn" style="background:none;border:1px solid var(--border2);box-sizing:border-box;border-radius:8px;width:34px;height:34px;justify-content:center;color:var(--text3);cursor:pointer;padding:0;display:inline-flex;align-items:center;font-size:16px;letter-spacing:1px">⋯</button>${(()=>{ let vu = false; try{ vu = localStorage.getItem('kyf-nouveau-badge-avref') === '1'; }catch(e){} return (vu || [].concat(KYF_NOUVEAUTES.badge || []).indexOf('avref') < 0) ? '' : '<span class="kyf-new-badge" data-new="avref" id="avRefDot-' + d.id + '" style="display:inline-block;position:absolute;top:-8px;right:-8px;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.25)">NOUVEAU</span>'; })()}${(()=>{ let v1 = false, v2 = false; try{ v1 = localStorage.getItem('kyf-nouveau-badge-avref') === '1'; v2 = localStorage.getItem('kyf-nouveau-badge-avsuivi') === '1'; }catch(e){} const B = [].concat(KYF_NOUVEAUTES.badge || []); return (v2 || B.indexOf('avsuivi') < 0 || !(v1 || B.indexOf('avref') < 0)) ? '' : '<span class="kyf-new-badge" data-new="avsuivi" id="avSuiviDot-' + d.id + '" style="display:inline-block;position:absolute;top:-8px;right:-8px;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.25)">NOUVEAU</span>'; })()}
             <div id="avActionsMenu-${d.id}" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:190px">
 ${isPER ? `              <div onclick="avCloseActionsMenu('${d.id}');openAddAVPosComp('${d.id}','ev-ded')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.arrowIn} Versement déductible</div>              <div onclick="avCloseActionsMenu('${d.id}');openAddAVPosComp('${d.id}','ev-non-ded')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.arrowOut} Versement non déductible</div>` : `              <div onclick="avCloseActionsMenu('${d.id}');openAddAVPos('${d.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">+ Ajouter une position</div>`}
               <div onclick="avCloseActionsMenu('${d.id}');avOpenDCAFor('${d.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Versement programmé</div>
@@ -93779,6 +94000,7 @@ ${(d.type==='per-col'||d.type==='per-ob') ? `<div onclick="avCloseActionsMenu('$
               <div id="avRefMenu-${d.id}" onclick="avCloseActionsMenu('${d.id}');try{kyfNewBadgeSeen('avref')}catch(e){};avRefreshContrat('${d.id}')" title="Remet à jour d'un coup les fonds du contrat qui ont un ISIN" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Actualiser les cours du contrat${(()=>{ let vu = false; try{ vu = localStorage.getItem('kyf-nouveau-badge-avref') === '1'; }catch(e){} return (vu || [].concat(KYF_NOUVEAUTES.badge || []).indexOf('avref') < 0) ? '' : '<span class="kyf-new-badge" data-new="avref" style="display:inline-block;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;margin-left:auto;pointer-events:none">NOUVEAU</span>'; })()}</div>
               <div id="avFraisMenu-${d.id}" onclick="avCloseActionsMenu('${d.id}');try{kyfNewBadgeSeen('avfrais')}catch(e){};avFraisOpen('${d.id}')" title="Calendrier et historique des frais prélevés par l'assureur" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg> Frais prélevés${(()=>{ let vu = false; try{ vu = localStorage.getItem('kyf-nouveau-badge-avfrais') === '1'; }catch(e){} return (vu || [].concat(KYF_NOUVEAUTES.badge || []).indexOf('avfrais') < 0) ? '' : '<span class="kyf-new-badge" data-new="avfrais" style="display:inline-block;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;margin-left:auto;pointer-events:none">NOUVEAU</span>'; })()}</div>
               <div id="avEvoMenu-${d.id}" onclick="avCloseActionsMenu('${d.id}');try{kyfNewBadgeSeen('avevo')}catch(e){};avEvoOpen('${d.id}')" title="Valeur du contrat mois par mois ou année par année, gain net des versements" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg> Évolution du contrat${(()=>{ let vu = false; try{ vu = localStorage.getItem('kyf-nouveau-badge-avevo') === '1'; }catch(e){} return (vu || [].concat(KYF_NOUVEAUTES.badge || []).indexOf('avevo') < 0) ? '' : '<span class="kyf-new-badge" data-new="avevo" style="display:inline-block;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;margin-left:auto;pointer-events:none">NOUVEAU</span>'; })()}</div>
+              <div id="avSuiviMenu-${d.id}" onclick="avCloseActionsMenu('${d.id}');try{kyfNewBadgeSeen('avsuivi')}catch(e){};avSuiviOpenContrat('${d.id}')" title="Rendement de chaque support, mois par mois, avec graphiques" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Suivi mensuel${(()=>{ let vu = false; try{ vu = localStorage.getItem('kyf-nouveau-badge-avsuivi') === '1'; }catch(e){} return (vu || [].concat(KYF_NOUVEAUTES.badge || []).indexOf('avsuivi') < 0) ? '' : '<span class="kyf-new-badge" data-new="avsuivi" style="display:inline-block;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;margin-left:auto;pointer-events:none">NOUVEAU</span>'; })()}</div>
               <div class="kyf-menu-sep" role="separator"></div>
               <div onclick="avCloseActionsMenu('${d.id}');openArbitrageModal('${d.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">⇄ Arbitrer entre supports</div>
               <div class="kyf-menu-sep" role="separator"></div>
@@ -94614,6 +94836,7 @@ async function saveOr(){
   orSave(data);
   kyfTrackFirstAsset(); // 1ère utilisation réelle (condition d'ancienneté pour Donner mon avis)
   setTimeout(() => { try{ kyfAvisPingSeen(); }catch(e){} }, 6000);
+  setTimeout(() => { try{ kyfAvisSnoozePull(); }catch(e){} }, 9000);
 
   // Le popup reste ouvert pour enchaîner plusieurs métaux sans avoir à le
   // rouvrir à chaque fois.
