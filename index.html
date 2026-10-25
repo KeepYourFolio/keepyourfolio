@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_12_49.html
+  @file        : KYF_SHARE_beta_2_8_12_50.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.12.49
+  @version     : Beta 2.8.12.50
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7147,7 +7147,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.12.49</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.12.50</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -42332,6 +42332,17 @@ function openAvisModal(){
   document.getElementById('avisOverlay').style.display = 'block';
   document.body.style.overflow = 'hidden';
 }
+// 2.8.12.50 : un clic à côté de la fenêtre ne la ferme plus (le texte tapé se perdait). Fermeture : bouton ×, bouton Annuler, ou la touche Échap.
+// Si du texte est saisi, Échap demande confirmation avant de fermer.
+document.addEventListener('keydown', function(ev){
+  if(ev.key !== 'Escape') return;
+  const m = document.getElementById('avisModal');
+  if(!m || m.style.display === 'none' || !m.style.display) return;
+  const t = document.getElementById('avisTexteInput');
+  ev.preventDefault();   // le gestionnaire général d'Échap (qui clique sur la croix) ne doit pas fermer la fenêtre en plus
+  if(t && t.value.trim().length && !confirm('Fermer sans envoyer votre avis ? Le texte saisi sera perdu.')) return;
+  closeAvisModal();
+});
 function closeAvisModal(){
   document.getElementById('avisModal').style.display = 'none';
   document.getElementById('avisOverlay').style.display = 'none';
@@ -46255,7 +46266,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.12.49\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.12.50\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -71003,6 +71014,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.50 · 25/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Avis : un clic à côté de la fenêtre ne la ferme plus, pour ne plus perdre le texte en cours. Fermeture par le bouton ×, le bouton Annuler ou la touche Échap (confirmation si du texte est saisi).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.49 · 25/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance vie / PER : suivi mensuel automatique d'un support (apport, montant, plus-value, rendement cumulé, rendement mensuel). Un instantané est pris à la première ouverture de chaque mois ; menu ⋯ de la ligne, « Suivi mensuel ». Les valeurs de l'assureur peuvent remplacer le calcul mois par mois.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.48 · 25/10/2026</div>
@@ -76900,7 +76913,7 @@ async function activateBeta(){
      leur propre contexte d'empilement, ce qui piégeait cet overlay et
      empêchait son z-index élevé de dépasser topbar/#sidebar malgré un
      voile visuellement correct (souris passant à travers, cf. changelog). -->
-<div id="avisOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:10500" onclick="closeAvisModal()"></div>
+<div id="avisOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:10500"></div>
 <div id="avisModal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
   width:min(480px,92vw);max-height:88vh;z-index:10501;background:var(--bg2);border:1px solid var(--border2);
   border-radius:16px;overflow:hidden;flex-direction:column;font-family:'Inter',sans-serif">
