@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_12_47.html
+  @file        : KYF_SHARE_beta_2_8_12_48.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.12.47
+  @version     : Beta 2.8.12.48
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7147,7 +7147,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.12.47</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.12.48</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -46255,7 +46255,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.12.47\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.12.48\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -71003,6 +71003,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.48 · 25/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance vie / PER, « Modifier la position » : si un ETF n'est pas trouvé dans la base ETF/actions, la recherche regarde aussi le référentiel StatsAVie (nom ou ISIN). Choisir un résultat passe la position en « Fonds géré » pour que le cours soit suivi.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.47 · 25/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">FAQ : les réponses sur les données ne disent plus que « aucun serveur ne reçoit vos données personnelles » (trop large) : elles parlent du patrimoine (positions, montants, historique) et renvoient vers la politique de confidentialité pour les fonctions optionnelles (avis, contact, statistiques, partage communautaire).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.46 · 24/10/2026</div>
@@ -91638,7 +91640,37 @@ function avPosSearch(q){
   const results = (_etfHints||[]).filter(h=>{
     return normalize(h.name).includes(qn) || normalize(h.ticker).includes(qn) || (h.isin&&h.isin.toLowerCase().includes(q.toLowerCase()));
   }).slice(0,7);
-  if(!results.length){ drop.style.display='none'; return; }
+  if(!results.length){
+    // Repli (2.8.12.48) : un ETF absent de la base ETF/actions (Yahoo) est cherché dans le référentiel StatsAVie, par nom ou ISIN.
+    // Choisir un résultat passe la position en « Fonds géré », le seul type dont le cours est suivi par ISIN via StatsAVie.
+    if(document.getElementById('avPosType')?.value === 'etf'){
+      const dbF = _opcvmDB || [];
+      if(!dbF.length){
+        if(!window._avPosFbTry || Date.now() - window._avPosFbTry > 30000){
+          window._avPosFbTry = Date.now();
+          loadOpcvmDB().catch(()=>null).then(()=>{
+            const inputEl = document.getElementById('avPosSearchInput');
+            if(inputEl && inputEl.value === q) avPosSearch(q);
+          });
+        }
+        drop.style.display='none'; return;
+      }
+      const qf = kyfSansAccent(q.trim()), qi = q.trim().toLowerCase();
+      const fb = dbF.filter(f => kyfSansAccent(f.nom).includes(qf) || f.isin.toLowerCase().includes(qi)).slice(0,6);
+      if(fb.length){
+        drop.innerHTML = `<div style="padding:6px 12px;font-family:'Inter',sans-serif;font-size:9px;color:var(--text3);border-bottom:1px solid var(--border)">Pas dans les ETF : fonds du référentiel StatsAVie (la position passera en « Fonds géré »)</div>` + fb.map(f=>`
+          <div onclick="avPosSelectOpcvmDepuisEtf(${kyfJsonAttr(f)})"
+            style="padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--border);font-family:'Inter',sans-serif"
+            onmouseover="this.style.background='rgba(240,180,41,0.08)'" onmouseout="this.style.background=''">
+            <div style="font-size:11px;font-weight:700;color:var(--text)">${escapeHtml(f.nom)}</div>
+            <span style="font-size:9px;color:var(--text3)">${escapeHtml(f.isin)}${f.cat?' · '+escapeHtml(f.cat):''}</span>
+          </div>`).join('');
+        drop.style.display = 'block';
+        return;
+      }
+    }
+    drop.style.display='none'; return;
+  }
   drop.innerHTML = results.map(h=>
     `<div onclick="avPosSelectAsset('${escJsAttr(h.ticker)}','${escJsAttr(h.name)}')"
       style="padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--border);font-family:'Inter',sans-serif"
@@ -91657,6 +91689,12 @@ function avPosSetNom(name){
   const editing = !!(document.getElementById('avPosEditIdH')||{}).value;
   if(editing && el.value.trim() && el.dataset.auto !== '1') return;
   el.value = name || '';
+}
+// Choix d'un fonds StatsAVie depuis la recherche d'un ETF : le type passe à « Fonds géré » puis la sélection se déroule comme pour un fonds.
+function avPosSelectOpcvmDepuisEtf(f){
+  const sel = document.getElementById('avPosType');
+  if(sel){ sel.value = 'fonds'; avPosTypeChange(); }
+  avPosSelectOpcvm(f);
 }
 function avPosSelectAsset(ticker, name){
   document.getElementById('avPosSearchInput').value = name+' ('+ticker+')';
