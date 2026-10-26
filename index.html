@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_12_140.html
+  @file        : KYF_SHARE_beta_2_8_12_141.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.12.140
+  @version     : Beta 2.8.12.141
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7213,7 +7213,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.12.140</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.12.141</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -19650,8 +19650,20 @@ async function fetchPrice(ticker, googleCode){
   const sheetPrice = kyfDBGetPrice(tk);
   if(sheetPrice){ priceCacheSet(tk, sheetPrice); return sheetPrice; }
   if(_pendingFetches[tk])return _pendingFetches[tk];
-  _pendingFetches[tk]=_doFetchPrice(tk,googleCode).finally(()=>delete _pendingFetches[tk]);
+  _pendingFetches[tk]=_doFetchPrice(tk,googleCode).then(p=>p||kyfFetchSansSuffixe(tk,googleCode)).finally(()=>delete _pendingFetches[tk]);
   return _pendingFetches[tk];
+}
+// Code sans place de cotation (WBLD au lieu de WBLD.PA, erreur possible dans la base communautaire) et aucun cours trouve :
+// on essaie les places en euros (Paris, Milan, Xetra, Amsterdam) ; le premier cours trouve est range sous le code d'origine
+async function kyfFetchSansSuffixe(tk,googleCode){
+  if(!/^[A-Z0-9]{2,6}$/.test(tk))return null;   // deja un suffixe (.PA, -, =, ^) ou ISIN : rien a deviner
+  for(const sfx of ['.PA','.MI','.DE','.AS']){
+    try{
+      const p=await _doFetchPrice(tk+sfx,googleCode);
+      if(p&&p.price>0){ priceCacheSet(tk,p); return p; }
+    }catch(e){}
+  }
+  return null;
 }
 async function _doFetchPrice(ticker,googleCode){
   const t=encodeURIComponent(ticker);
@@ -47135,7 +47147,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.12.140\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.12.141\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -72375,6 +72387,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.141 · 26/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Cours : un code sans place de cotation (WBLD au lieu de WBLD.PA) trouve maintenant son prix tout seul</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.140 · 26/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">POSITIONS ETF & ACTIONS : correctif issu du test de non-régression : un compte affiché seul (en ordre manuel) peut de nouveau être replié à la main avec le chevron de sa ligne de titre.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.139 · 26/10/2026</div>
