@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_12_143.html
+  @file        : KYF_SHARE_beta_2_8_12_145.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.12.143
+  @version     : Beta 2.8.12.145
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7213,7 +7213,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.12.143</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.12.145</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -20117,6 +20117,7 @@ async function _fetchAllPricesInner(force=false){
     updateMarketIndicator();
     const upd = document.getElementById('lastUpd');
     if(upd) upd.textContent = 'MÀJ '+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+    try{ kyfAvFondsAutoRefresh(false); }catch(e){}   // fonds d'assurance vie : une verification par heure, sans rien faire a la main
     const tag = document.getElementById('liveTagP');
     if(tag){
       const mStatus = getMarketStatus();
@@ -22141,6 +22142,7 @@ function renderBilan(){
 // ════════════════════════════════════════════════════════════════
 function fullRefresh(){
   fetchAllPrices();
+  try{ kyfAvFondsAutoRefresh(true); }catch(e){}   // clic sur la pastille LIVE : les fonds d'assurance vie aussi, sans delai
   if(typeof currentPage !== 'undefined' && currentPage === 'crypto'){
     // Juste rafraîchir les prix CoinGecko, pas reinitialiser
     if(typeof fetchCryptoPrices === 'function') fetchCryptoPrices();
@@ -47162,7 +47164,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.12.143\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.12.145\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -72402,6 +72404,10 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.145 · 26/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance vie : le NOUVEAU des lignes de fonds devient un seul petit point (au lieu d'un mot sur chaque ligne)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.144 · 26/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance vie : les fonds avec ISIN se mettent a jour tout seuls (une fois par heure, et au clic sur la pastille LIVE du haut)</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.143 · 26/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : le point info de la plus-value n'ouvre plus le portefeuille au clic</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.142 · 26/10/2026</div>
@@ -93478,6 +93484,35 @@ async function avPosRefreshFondsPrice(contratId, posId){
     if(btn) btn.style.opacity = '1';
   }
 }
+// Mise a jour automatique des fonds d'assurance vie (lignes avec ISIN ET nombre de parts) : leur valeur liquidative change une fois par jour,
+// donc une verification par heure suffit. Appelee a chaque rafraichissement des cours (avec un delai d'une heure) et, sans delai, par un clic
+// sur la pastille LIVE du haut. Une ligne dont le cours est introuvable garde sa valeur ; une ligne sans nombre de parts n'est jamais touchee
+// (sa « valeur » est alors le total saisi a la main, pas un cours).
+async function kyfAvFondsAutoRefresh(force){
+  if(window._avFondsAutoBusy || window._avRefBusy) return;
+  const K = 'kyf-av-fonds-auto-t';
+  let last = 0; try{ last = parseInt(localStorage.getItem(K) || '0', 10) || 0; }catch(e){}
+  if(!force && Date.now() - last < 3600000) return;
+  const cibles = [];
+  try{ avLoad().forEach(c => avPosLoad(c.id).forEach(p => { if(kyfFondsLike(p.type) && p.ticker && (parseFloat(p.qty) || 0) > 0) cibles.push({ c:c.id, p:p.id }); })); }catch(e){ return; }
+  if(!cibles.length) return;
+  window._avFondsAutoBusy = true;
+  try{
+    let majs = 0, ok = 0;
+    for(const t of cibles.slice(0, 40)){
+      const pos = avPosLoad(t.c).find(x => x.id === t.p); if(!pos) continue;
+      const r = await avPosFondsValeur(pos);
+      if(!(r && r.ok && r.valeur > 0)) continue;
+      ok++;
+      if(r.valeur === pos.valeur) continue;
+      const L = avPosLoad(t.c), i = L.findIndex(x => x.id === t.p); if(i < 0) continue;
+      L[i] = Object.assign({}, L[i], { valeur:r.valeur }); avPosSave(t.c, L); majs++;
+    }
+    if(ok){ try{ localStorage.setItem(K, String(Date.now())); }catch(e){} }
+    if(majs){ try{ if(document.getElementById('page-assurance')?.classList.contains('active')) renderAV(); }catch(e){} }
+    if(force){ try{ showToast(majs ? majs + ' fonds d\'assurance vie actualisé' + (majs > 1 ? 's' : '') : (ok ? 'Fonds d\'assurance vie déjà à jour' : 'Cours des fonds d\'assurance vie indisponibles pour le moment')); }catch(e){} }
+  } finally { window._avFondsAutoBusy = false; }
+}
 // Actualise d'un coup toutes les lignes de fonds du contrat qui ont un ISIN (menu ⋯ du contrat). Une ligne dont le cours est introuvable garde sa valeur : rien n'est inventé.
 async function avRefreshContrat(contratId){
   if(window._avRefBusy) return;
@@ -94944,6 +94979,7 @@ function avSummaryStrip(d, val, pv, pvPct, rach){
   return `<div style="display:flex;flex-wrap:wrap;gap:8px;padding:12px 14px 6px">${cells.join('')}</div>`;
 }
 function renderAV(){
+  window._avDotN = 0;   // le point NOUVEAU des lignes de fonds ne s'affiche qu'une fois par affichage
   const allData = avLoad();
   const PER_TYPES = ['per','per-col','per-ob'];
   const data    = _avFilter==='all' ? allData : allData.filter(d=>{
@@ -95177,7 +95213,7 @@ function renderAV(){
           <span style="font-size:13px;flex-shrink:0;min-width:50px;text-align:right">${rendStr}</span>
           ${kyfFondsLike(p.type) && p.ticker ? `<button id="avPosRefreshBtn-${p.id}" onclick="event.stopPropagation();avPosRefreshFondsPrice('${d.id}','${p.id}')" title="Actualiser le cours" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 4px;display:inline-flex;align-items:center;flex-shrink:0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button>` : ''}
           <span style="position:relative;flex-shrink:0">
-            <button onclick="event.stopPropagation();avToggleActionsMenu('pos-${p.id}')" title="Actions" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 6px;display:inline-flex;align-items:center;font-size:16px;letter-spacing:1px">⋯</button>${(['etf','action','fonds','obl','pe','dp'].includes(p.type) && (()=>{ let vu = false; try{ vu = localStorage.getItem('kyf-nouveau-badge-avsuivi') === '1'; }catch(e){} return !vu && [].concat(KYF_NOUVEAUTES.badge || []).indexOf('avsuivi') >= 0; })()) ? '<span class="kyf-new-badge" data-new="avsuivi" style="display:inline-block;position:absolute;top:-8px;right:-8px;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.25)">NOUVEAU</span>' : ''}
+            <button onclick="event.stopPropagation();avToggleActionsMenu('pos-${p.id}')" title="Actions" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 6px;display:inline-flex;align-items:center;font-size:16px;letter-spacing:1px">⋯</button>${(['etf','action','fonds','obl','pe','dp'].includes(p.type) && (()=>{ let vu = false; try{ vu = localStorage.getItem('kyf-nouveau-badge-avsuivi') === '1'; }catch(e){} return !vu && [].concat(KYF_NOUVEAUTES.badge || []).indexOf('avsuivi') >= 0 && (window._avDotN = (window._avDotN || 0) + 1) === 1; })()) ? '<span class="kyf-new-badge" data-new="avsuivi" title="Nouveau : suivi du rendement de ce fonds" style="display:inline-block;position:absolute;top:-2px;right:0;width:8px;height:8px;font-size:0;padding:0;border-radius:50%;background:#f0b429;pointer-events:none;box-shadow:0 0 0 2px var(--bg2)"></span>' : ''}
             <div id="avActionsMenu-pos-${p.id}" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:130px">
               <div onclick="avCloseActionsMenu('pos-${p.id}');editAVPos('${d.id}','${p.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.edit} Modifier</div>
               ${['etf','action','fonds'].includes(p.type) ? `<div onclick="avCloseActionsMenu('pos-${p.id}');avReplaceSupport('${d.id}','${p.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3l4 4-4 4"/><path d="M3 7h18"/><path d="M7 21l-4-4 4-4"/><path d="M21 17H3"/></svg> Remplacer le support</div>` : ''}
