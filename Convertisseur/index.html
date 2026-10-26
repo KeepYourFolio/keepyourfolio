@@ -6,7 +6,7 @@
   @description : Lit les relevés de courtier PDF entièrement dans le
                  navigateur (aucun envoi) et produit le fichier que le
                  Dashboard KYF importe.
-  @version     : v2.503
+  @version     : v2.511
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -143,6 +143,12 @@
   html[data-theme="light"] .logo .kyf-keep  { color: #7a90b8; }
   html[data-theme="light"] .logo .kyf-your  { color: #4a5e80; }
   .logo-tag { color: var(--text3); font-weight: 400; font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase; }
+  /* v2.511 - Pastille « note moyenne » : même style que celle du Dashboard KYF */
+  .kyf-avis-pill { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; white-space: nowrap; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; color: var(--text2); padding: 4px 11px; border-radius: 999px; border: 1px solid var(--border2, var(--border)); background: transparent; cursor: pointer; transition: opacity .15s; }
+  .kyf-avis-pill:hover { opacity: .85; }
+  .kyf-avis-pill b { color: var(--text); font-weight: 700; }
+  .kyf-avis-pill .kap-n { font-weight: 500; color: var(--text3); }
+  @media (max-width: 760px) { .kyf-avis-pill .kap-n { display: none; } }
   .topbar-actions { display: flex; align-items: center; gap: 8px; }
   .btn-icon {
     background: rgba(255,255,255,0.07); border: 1px solid var(--border);
@@ -381,6 +387,8 @@
   @supports (-moz-appearance: none) {
     * { scrollbar-width: thin !important; scrollbar-color: var(--kyf-sb-thumb) transparent !important; }
   }
+  /* La barre de défilement réserve toujours sa place : ouvrir le texte du guide (la page s'allonge) ne décale plus la mise en page vers la droite. */
+  html { scrollbar-gutter: stable; }
   /* Chrome, Edge, Safari : pilule via ::-webkit-scrollbar. scrollbar-width et scrollbar-color
      doivent rester sur "auto" : dès qu'ils sont définis, Chrome récent ignore ::-webkit-scrollbar. */
   @supports not (-moz-appearance: none) {
@@ -835,6 +843,25 @@
   .courtiers-info-long-item > div { min-width: 0; }
   .courtiers-info-long-item strong { display: block; font-size: 11.5px; color: var(--text); }
   .courtiers-info-long-item .detail { display: block; font-size: 10px; color: var(--text3); line-height: 1.5; margin-top: 2px; }
+  /* v2.511 - Fenêtre en deux parties : liste des courtiers à gauche, avis du courtier choisi à droite */
+  .isin-candidates-box.courtiers-wide { max-width: 960px; }
+  .courtiers-info-body { display: flex; gap: 18px; flex: 1; min-height: 0; margin-bottom: 16px; }
+  .courtiers-info-body .isin-candidates-list { flex: 0 0 360px; margin-bottom: 0; min-width: 0; }
+  .courtiers-avis-pane { flex: 1; min-width: 0; overflow-y: auto; border-left: 1px solid var(--border); padding-left: 18px; display: flex; flex-direction: column; gap: 10px; }
+  .courtiers-info-long-item[data-courtier-rating] { cursor: pointer; transition: border-color .15s, background-color .15s; }
+  .courtiers-info-long-item[data-courtier-rating]:hover { border-color: var(--accent); }
+  .courtiers-info-long-item[data-courtier-rating] > div { flex: 1; }
+  .courtiers-note-pill { margin-left: auto; align-self: center; flex-shrink: 0; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: var(--text); padding: 3px 9px; border-radius: 999px; background: rgba(240,180,41,0.16); border: 1px solid rgba(240,180,41,0.55); }
+  .courtiers-note-none { margin-left: auto; align-self: center; flex-shrink: 0; white-space: nowrap; font-size: 10px; color: var(--text3); }
+  .courtiers-info-long-item.sel { border-color: var(--accent); background: rgba(240,180,41,0.08); }
+  .courtiers-avis-card { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; background: rgba(255,255,255,0.03); }
+  .courtiers-avis-tag { font-size: 9px; font-weight: 700; color: var(--green); border: 1px solid var(--green); border-radius: 4px; padding: 1px 5px; letter-spacing: .3px; }
+  @media (max-width: 760px) {
+    .isin-candidates-box.courtiers-wide { overflow-y: auto; }
+    .courtiers-info-body { flex-direction: column; flex: none; overflow: visible; }
+    .courtiers-info-body .isin-candidates-list { flex: none; overflow-y: auto; min-width: 0; }
+    .courtiers-avis-pane { flex: none; border-left: none; padding-left: 0; border-top: 1px solid var(--border); padding-top: 12px; overflow: visible; }
+  }
   .courtiers-info-note { font-size: 10.5px; color: var(--text3); line-height: 1.6; padding: 8px 12px; border: 1px dashed var(--border); border-radius: 10px; margin-top: 8px; }
   .mode-warning-box p { font-size: 12px; color: var(--text2); line-height: 1.7; margin-bottom: 16px; }
   .mode-warning-actions { display: flex; gap: 8px; justify-content: flex-end; }
@@ -964,7 +991,16 @@
   .footer-links a:hover { color: var(--accent); text-decoration: underline; }
   /* Texte de présentation sous l'outil (référencement : un texte lisible par les moteurs et les assistants IA). Sans numéro de version dans ce commentaire, pour que tools/bump_conv.py ne le renomme pas. */
   .seo-guide { max-width: 760px; margin: 40px auto 0; padding: 24px 22px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg2); color: var(--text2); font-size: 13px; line-height: 1.75; }
-  .seo-guide h2 { font-size: 18px; line-height: 1.35; color: var(--text); margin: 0 0 10px; }
+  .seo-guide h2 { font-size: 18px; line-height: 1.35; color: var(--text); margin: 0; }
+  /* Texte replié par défaut : seul le titre reste visible, avec une flèche (même style que « À savoir » du pied de page) */
+  .seo-guide { padding-top: 18px; padding-bottom: 18px; }
+  .seo-sum { display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; width: fit-content; list-style: none; border-radius: 6px; padding: 3px 6px; margin: -3px -6px; transition: color .15s, background-color .15s; }
+  .seo-sum::-webkit-details-marker { display: none; }
+  .seo-sum svg.chevron { flex-shrink: 0; transition: transform .2s, color .15s; color: var(--text3); transform: rotate(-90deg); }
+  .seo-details[open] > .seo-sum svg.chevron { transform: none; }
+  .seo-details[open] > .seo-sum { margin-bottom: 10px; }
+  .seo-sum:hover { background: var(--hov-bg-soft); }
+  .seo-sum:hover svg.chevron { color: var(--accent); }
   .seo-guide h3 { font-size: 14px; color: var(--accent); margin: 22px 0 8px; }
   .seo-guide h4 { font-size: 13px; color: var(--text); margin: 14px 0 4px; }
   .seo-guide p { margin: 0 0 10px; }
@@ -1372,6 +1408,7 @@
 </div>
 
 <div class="topbar">
+  <div class="topbar-left" style="display:flex;align-items:center;gap:16px;min-width:0">
   <a class="logo" href="#">
     <div class="logo" style="display:flex;flex-direction:column;gap:2px;min-width:0">
       <div style="display:flex;align-items:baseline;gap:0px">
@@ -1387,6 +1424,8 @@
       </div>
     </div>
   </a>
+  <button type="button" class="kyf-avis-pill" id="convAvisPill" onclick="openCourtiersInfoModal()" title="Lire les avis sur les courtiers" aria-label="Lire les avis sur les courtiers" style="display:none"></button>
+  </div>
   <div class="topbar-actions">
     <button class="btn-icon btn-report-issue" onclick="reportIssue()" title="Signaler un problème" style="color:var(--red);">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="6" width="8" height="12" rx="4"/><path d="M8 10H4M8 14H4M16 10h4M16 14h4M9 6l-1.5-2M15 6l1.5-2M12 6V4"/></svg>
@@ -1426,7 +1465,7 @@
   <div class="hero">
     <div class="hero-title">
     <h1>Convertisseur PDF <span>→ CSV</span> <span style="display:inline-block;background:#c99a06;color:#000;font-size:12px;font-weight:800;letter-spacing:.5px;padding:2px 8px;border-radius:6px;vertical-align:middle;">Bêta</span></h1>
-    <p>Détection automatique · v2.503 · Multi PDF en mode Portefeuille</p>
+    <p>Détection automatique · v2.511 · Avis général sur le convertisseur</p>
     </div>
   </div>
 
@@ -1838,7 +1877,8 @@
   </div>
 
   <section class="seo-guide" aria-labelledby="seoGuideTitle">
-    <h2 id="seoGuideTitle">Convertir un relevé bancaire PDF en CSV, en local</h2>
+    <details class="seo-details">
+    <summary class="seo-sum"><h2 id="seoGuideTitle">Convertir un relevé bancaire PDF en CSV, en local</h2><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></summary>
     <p>Le convertisseur de <a href="https://keepyourfolio.fr/" target="_blank" rel="noopener">Keep Your Folio</a> lit votre relevé PDF dans votre navigateur et produit un fichier CSV, à importer dans KYF ou dans un tableur. La conversion se fait sur votre appareil : le PDF n'est pas envoyé pour être converti.</p>
     <h3>Comment faire, étape par étape</h3>
     <ol>
@@ -1859,6 +1899,7 @@
     <h4>Ma banque ou mon courtier n'est pas lu, que faire ?</h4>
     <p>Cliquez sur « Proposer une banque / un courtier ». Vous masquez d'abord vous-même vos données personnelles avec l'outil de masquage, puis vous pouvez envoyer un exemple pour qu'il soit pris en charge. L'envoi est facultatif.</p>
     <p class="seo-guide-date">Texte mis à jour le 24 octobre 2026.</p>
+    </details>
   </section>
 </main>
 
@@ -2098,7 +2139,7 @@
   <div class="learn-box" style="max-width:440px">
     <h2>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
-      Votre export s'est bien passé ?
+      <span id="ratingTitle">Votre export s'est bien passé ?</span>
     </h2>
     <p>Votre avis sur <strong id="ratingCourtierLabel">ce courtier</strong> aide les futurs utilisateurs à savoir si le lecteur est fiable pour eux aussi.</p>
 
@@ -2346,7 +2387,7 @@
 </div>
 
 <div class="mode-warning-overlay" id="courtiersInfoOverlay">
-  <div class="mode-warning-box isin-candidates-box">
+  <div class="mode-warning-box isin-candidates-box courtiers-wide">
     <button class="modal-close-x" onclick="closeCourtiersInfoModal()" aria-label="Fermer">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
@@ -2355,7 +2396,10 @@
       Courtiers supportés
     </h3>
     <p>Liste à jour automatiquement : les fiables ont un parseur dédié testé, les autres sont en cours de validation via les contributions de la communauté.</p>
-    <div class="isin-candidates-list" id="courtiersInfoList"></div>
+    <div class="courtiers-info-body">
+      <div class="isin-candidates-list" id="courtiersInfoList"></div>
+      <div class="courtiers-avis-pane" id="courtiersAvisPane" aria-live="polite"></div>
+    </div>
     <div class="mode-warning-actions">
       <button class="btn btn-primary" onclick="closeCourtiersInfoModal()">Fermer</button>
     </div>
@@ -2512,7 +2556,7 @@
 <script>
   /**
    * @file        KYF PDF to CSV - Convertisseur PDF intelligent
-   * @version     v2.503
+   * @version     v2.511
    * @description Convertisseur PDF → CSV pour KYF Dashboard.
    *              Détection automatique multi-courtiers, biffage pour les
    *              documents non reconnus (voir kyf_biffer_backend.gs).
@@ -2520,7 +2564,7 @@
    * @copyright   © 2026 Keep Your Folio (KYF) - keepyourfolio.fr
    * @license     AGPL-3.0-or-later
    */
-  console.log('%c Keep Your Folio %c PDF → CSV v2.503 %c keepyourfolio.fr ',
+  console.log('%c Keep Your Folio %c PDF → CSV v2.511 %c keepyourfolio.fr ',
     'background:#1a1f2e;color:#f0b429;font-weight:700;padding:4px 8px;border-radius:4px 0 0 4px',
     'background:#2563eb;color:#fff;font-weight:700;padding:4px 8px',
     'background:#1a1f2e;color:#aaa;padding:4px 8px;border-radius:0 4px 4px 0'
@@ -7858,8 +7902,18 @@
   // courtierLabel : nom du courtier concerné, ou '' si non applicable (ex.
   // relevé bancaire générique) - dans ce cas la notation est ignorée, on ne
   // veut pas noter "un courtier" qui n'existe pas.
+  // v2.511 : le libellé venait parfois du badge de l'écran, avec le pourcentage de confiance collé (« Boursobank PEA/CTO 60% ») : on le retire
+  // v2.511 : quand le courtier n'est pas reconnu, l'avis portait « Structure détectée automatiquement » ; il devient un avis général sur le convertisseur
+  const KYF_RATING_GENERAL = 'Convertisseur : avis général';
+  function ratingBaseLabel(l) {
+    const b = String(l || '').replace(/\s+\d{1,3}\s*%\s*$/, '').trim();
+    return b === 'Structure détectée automatiquement' ? KYF_RATING_GENERAL : b;
+  }
   function kyfConvMaybeShowRating(courtierLabel) {
+    courtierLabel = ratingBaseLabel(courtierLabel);
     if (!courtierLabel) return;
+    ratingMarkExported(KYF_RATING_GENERAL);   // v2.511 : toute conversion réussie permet de donner un avis général
+    ratingMarkExported(courtierLabel);   // v2.511 : on retient les courtiers dont un relevé a vraiment été converti (seuls ceux-là peuvent être notés depuis la liste)
     const count = (parseInt(localStorage.getItem(KYF_RATING_KEYS.count) || '0', 10)) + 1;
     localStorage.setItem(KYF_RATING_KEYS.count, String(count));
     const pref = localStorage.getItem(KYF_RATING_KEYS.pref);
@@ -7873,7 +7927,8 @@
   function openRatingModal(courtierLabel, count) {
     _ratingCurrentCourtier = courtierLabel;
     localStorage.setItem(KYF_RATING_KEYS.lastShown, String(count));
-    document.getElementById('ratingCourtierLabel').textContent = courtierLabel;
+    document.getElementById('ratingCourtierLabel').textContent = courtierLabel === KYF_RATING_GENERAL ? 'le convertisseur en général' : courtierLabel;
+    document.getElementById('ratingTitle').textContent = "Votre export s'est bien passé ?";
     document.querySelectorAll('input[name="ratingStarInput"]').forEach(r => r.checked = false);
     document.getElementById('ratingComment').value = '';
     ratingUpdateCharCount();
@@ -7952,19 +8007,134 @@
     try {
       const res = await fetch(`${KYF_RATING_URL}?action=rating_read_all`);
       const data = await res.json();
-      if (data.ratings) _ratingCache = data.ratings;
+      if (data.ratings) {
+        const m = {};
+        Object.keys(data.ratings).forEach(k => {
+          const b = ratingBaseLabel(k), r = data.ratings[k];
+          if (!b || !r || !r.total) return;
+          if (!m[b]) m[b] = { somme: 0, total: 0 };
+          m[b].somme += r.moyenne * r.total; m[b].total += r.total;
+        });
+        _ratingCache = {};
+        Object.keys(m).forEach(b => { _ratingCache[b] = { moyenne: m[b].somme / m[b].total, total: m[b].total }; });
+      }
       _ratingsLoaded = true;
     } catch (e) {}
     return _ratingCache;
   }
 
+  function ratingStarOne(size) { return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="#f0b429" stroke="#f0b429" stroke-width="1" aria-hidden="true"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>'; }
+  function ratingFmt(n) { return Number(n).toFixed(1).replace('.', ','); }
   function ratingBadgeHtml(courtierLabel) {
     const r = _ratingCache[courtierLabel];
     if (!r || !r.total) return '';
     return `<span style="display:inline-flex;align-items:center;gap:3px;font-size:10px;color:var(--text3);margin-left:6px">
       <svg width="10" height="10" viewBox="0 0 24 24" fill="#f0b429" stroke="#f0b429" stroke-width="1"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
-      ${r.moyenne.toFixed(1)}/5 sur ${r.total} avis vérifié${r.total>1?'s':''}
+      ${ratingFmt(r.moyenne)}/5 sur ${r.total} avis vérifié${r.total>1?'s':''}
     </span>`;
+  }
+
+  // v2.511 - Note moyenne de tous les avis, dans la barre du haut. Dernier chiffre gardé pour s'afficher tout de suite à l'ouverture.
+  const KYF_CONV_PILL_CACHE = 'kyf-conv-avis-cache';
+  function convAvisPillSet(g) {
+    const el = document.getElementById('convAvisPill'); if (!el) return;
+    if (!g || !(g.total > 0) || !(g.moyenne > 0)) { el.style.display = 'none'; return; }
+    const txt = ratingFmt(g.moyenne) + ' sur 5, ' + g.total + ' avis';
+    el.textContent = '';
+    const st = document.createElement('span'); st.style.cssText = 'display:inline-flex'; st.setAttribute('aria-hidden', 'true'); st.innerHTML = ratingStarOne(12); el.appendChild(st);
+    const b = document.createElement('b'); b.textContent = ratingFmt(g.moyenne); el.appendChild(b);
+    const n = document.createElement('span'); n.className = 'kap-n'; n.textContent = '· ' + g.total + ' avis'; el.appendChild(n);
+    el.setAttribute('aria-label', txt + ', lire les avis'); el.title = 'Lire les avis (' + txt + ')'; el.style.display = '';
+  }
+  function convAvisGlobal(ratings) {
+    let somme = 0, total = 0;
+    Object.keys(ratings || {}).forEach(k => { const r = ratings[k]; if (r && r.total > 0) { somme += r.moyenne * r.total; total += r.total; } });
+    return total ? { moyenne: somme / total, total } : null;
+  }
+  async function convAvisPillBoot() {
+    try { const c = JSON.parse(localStorage.getItem(KYF_CONV_PILL_CACHE) || 'null'); if (c && c.total > 0) convAvisPillSet(c); } catch (e) {}
+    const g = convAvisGlobal(await loadAllRatings());
+    if (g) { convAvisPillSet(g); try { localStorage.setItem(KYF_CONV_PILL_CACHE, JSON.stringify(g)); } catch (e) {} }
+  }
+  setTimeout(convAvisPillBoot, 400);
+
+  // v2.511 - Lire les avis d'un courtier depuis la fenêtre « Courtiers supportés » (liste à gauche, avis à droite).
+  // Les avis d'un courtier ne sont demandés qu'au clic, puis gardés pour la session.
+  const KYF_EXPORTED_KEY = 'kyf-conv-exported-courtiers';
+  function ratingExportedList() { try { const a = JSON.parse(localStorage.getItem(KYF_EXPORTED_KEY) || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+  function ratingMarkExported(label) { try { const a = ratingExportedList(); if (!a.includes(label)) { a.push(label); localStorage.setItem(KYF_EXPORTED_KEY, JSON.stringify(a.slice(-100))); } } catch (e) {} }
+  function ratingHasExported(label) { return ratingExportedList().includes(label); }
+  let _avisCache = {};   // { courtier: [ {date, note, texte} ] }
+  let _avisCur = '';
+  function ratingNormLabel(l) { return String(l || '').replace(/[<>&"]/g, '').replace(/\s+/g, ' ').trim().slice(0, 60); }
+  function ratingTimeAgo(iso) {
+    const t = new Date(iso).getTime(); if (!t) return '';
+    const h = Math.floor(Math.max(0, Date.now() - t) / 3600000);
+    if (h < 1) return "il y a moins d'une heure";
+    if (h < 24) return `il y a ${h} h`;
+    const d = Math.floor(h / 24);
+    if (d < 7) return `il y a ${d} jour${d > 1 ? 's' : ''}`;
+    if (d < 30) { const w = Math.floor(d / 7); return `il y a ${w} semaine${w > 1 ? 's' : ''}`; }
+    if (d < 365) return `il y a ${Math.floor(d / 30)} mois`;
+    const y = Math.floor(d / 365); return `il y a ${y} an${y > 1 ? 's' : ''}`;
+  }
+  function ratingStarsHtml(n, size) {
+    n = Math.max(0, Math.min(5, parseInt(n, 10) || 0)); size = size || 12;
+    return '<span style="display:inline-flex;gap:1px">' + [1, 2, 3, 4, 5].map(i =>
+      `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${i <= n ? '#f0b429' : 'var(--text3)'}" fill-opacity="${i <= n ? 1 : 0.35}" aria-hidden="true"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>`).join('') + '</span>';
+  }
+  function courtiersAvisReset() {
+    _avisCur = '';
+    const p = document.getElementById('courtiersAvisPane');
+    if (p) p.innerHTML = '<div style="color:var(--text3);font-size:11px;line-height:1.7">Cliquez sur un courtier de la liste pour lire les avis des utilisateurs.</div>';
+  }
+  function courtiersAvisRender(label) {
+    const p = document.getElementById('courtiersAvisPane'); if (!p) return;
+    const r = _ratingCache[label] || _ratingCache[ratingNormLabel(label)];
+    const st = _avisCache[label];
+    const titre = `<div style="font-size:17px;font-weight:700;color:var(--text);line-height:1.3;overflow-wrap:anywhere">${escHtml(label)}</div>`;
+    const head = (r && r.total)
+      ? titre + `<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <div style="font-size:28px;font-weight:700;color:var(--text);line-height:1">${ratingFmt(r.moyenne)}</div>
+          <div style="display:flex;flex-direction:column;gap:3px">${ratingStarsHtml(Math.round(r.moyenne), 14)}<span style="font-size:11px;color:var(--text3)">${r.total} avis vérifié${r.total > 1 ? 's' : ''}</span></div>
+        </div>`
+      : titre;
+    const give = ratingHasExported(label)
+      ? '<div style="margin:6px 0 8px"><button type="button" class="btn btn-primary" style="font-size:10px;padding:7px 14px;min-height:0;letter-spacing:.5px" onclick="courtiersAvisGive()">Donner mon avis</button></div>'
+      : '<div style="margin:6px 0 8px;font-size:11px;color:var(--text3);line-height:1.7">Vous pourrez donner votre avis sur ce courtier après avoir converti l\'un de ses relevés.</div>';
+    let body;
+    if (st === 'err') body = '<div style="color:var(--text3);font-size:11px;line-height:1.7">Les avis ne peuvent pas être chargés pour le moment. Réessayez dans un instant.</div>';
+    else if (!Array.isArray(st)) body = '<div style="color:var(--text3);font-size:11px">Chargement des avis…</div>';
+    else if (!st.length) body = '<div style="color:var(--text3);font-size:11px;line-height:1.7">Aucun avis pour le moment. Soyez le premier à partager votre expérience !</div>';
+    else body = st.map(a => `<div class="courtiers-avis-card">
+        <div style="display:flex;align-items:center;gap:8px">${ratingStarsHtml(a.note, 12)}<span class="courtiers-avis-tag">VÉRIFIÉ</span><span style="margin-left:auto;font-size:10px;color:var(--text3);white-space:nowrap">${escHtml(ratingTimeAgo(a.date))}</span></div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.7;overflow-wrap:anywhere">${escHtml(a.texte || '')}</div>
+      </div>`).join('');
+    p.innerHTML = head + give + body;
+  }
+  async function courtiersAvisSelect(el) {
+    const label = el.getAttribute('data-courtier-rating');
+    if (!label) return;
+    _avisCur = label;
+    document.querySelectorAll('#courtiersInfoList .courtiers-info-long-item.sel').forEach(x => x.classList.remove('sel'));
+    el.classList.add('sel');
+    courtiersAvisRender(label);
+    loadAllRatings().then(() => { if (_avisCur === label) courtiersAvisRender(label); });
+    if (Array.isArray(_avisCache[label])) return;
+    try {
+      const res = await fetch(`${KYF_RATING_URL}?action=rating_read_avis&courtier=${encodeURIComponent(ratingNormLabel(label))}`);
+      const data = await res.json();
+      if (!data || !Array.isArray(data.avis)) throw new Error('réponse invalide');
+      _avisCache[label] = data.avis;
+    } catch (e) { _avisCache[label] = 'err'; }
+    if (_avisCur === label) courtiersAvisRender(label);
+    if (_avisCache[label] === 'err') delete _avisCache[label];   // une erreur n'est pas gardée : le prochain clic réessaie
+  }
+  function courtiersAvisGive() {
+    const l = _avisCur; if (!l || !ratingHasExported(l)) return;
+    closeCourtiersInfoModal();
+    openRatingModal(l, parseInt(localStorage.getItem(KYF_RATING_KEYS.lastShown) || '0', 10));   // même fenêtre qu'après un export ; la cadence des rappels ne change pas
+    document.getElementById('ratingTitle').textContent = 'Votre avis sur ce courtier';
   }
 
   // ── Guide, moteur copié à l'identique du Dashboard KYF.html ──────────────
@@ -8279,7 +8449,7 @@
           <div style="font-size:12.5px;color:var(--text2);line-height:2">Contrairement à ce qu'on pourrait attendre, le commentaire n'est pas facultatif : il faut au moins 30 caractères pour publier un avis. C'est le vrai frein contre le spam de notes isolées, bien plus dur à faire en boucle qu'un simple clic sur des étoiles. Ce principe reprend celui déjà utilisé par le système d'avis du Dashboard KYF.</div>
 
           <div style="font-size:13px;font-weight:700;color:var(--text);letter-spacing:.5px;text-transform:uppercase;margin-top:6px;display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Où voir les moyennes</div>
-          <div style="font-size:12.5px;color:var(--text2);line-height:2">La note moyenne et le nombre d'avis s'affichent à deux endroits : juste à côté du courtier détecté sur l'écran de résultat, et dans chaque entrée du popup "Voir les banques/courtiers pris en charge".</div>
+          <div style="font-size:12.5px;color:var(--text2);line-height:2">La note moyenne et le nombre d'avis s'affichent à deux endroits : juste à côté du courtier détecté sur l'écran de résultat, et dans chaque entrée du popup "Voir les banques/courtiers pris en charge". Dans ce popup, un clic sur un courtier affiche à droite ses avis en entier (note, étoiles, commentaire, ancienneté), et le bouton "Donner mon avis" permet d'en ajouter un.</div>
 
           <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:11.5px;color:var(--text3);line-height:1.8">Comme pour le biffage, aucune inscription n'est nécessaire pour laisser un avis.</div>
         </div>
@@ -9199,7 +9369,7 @@
     let html = `<div class="courtiers-info-group-title">${kyfIcoCheck(11, 'var(--green)')}Fiables (${fiables.length}), parseur dédié, mode Portefeuille</div>`;
     html += '<div class="courtiers-info-longlist">' + fiables.map(label => {
       const detail = fiablesMap.get(label);
-      return `<div class="courtiers-info-long-item" data-courtier-rating="${escHtml(label)}"><span class="dot"></span><div><strong>${escHtml(label)}</strong>${detail ? `<span class="detail">${escHtml(detail)}</span>` : ''}</div></div>`;
+      return `<div class="courtiers-info-long-item" data-courtier-rating="${escHtml(label)}" role="button" tabindex="0" onclick="courtiersAvisSelect(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();courtiersAvisSelect(this)}"><span class="dot"></span><div><strong>${escHtml(label)}</strong>${detail ? `<span class="detail">${escHtml(detail)}</span>` : ''}</div></div>`;
     }).join('') + '</div>';
     if (hasCrypto) {
       html += `<div class="courtiers-info-note">Cryptomonnaies : suivies en direct sur 12 exchanges depuis le Tableau de bord (page Crypto de KYF), pas dans ce convertisseur PDF.</div>`;
@@ -9218,6 +9388,7 @@
         <div><strong>${escHtml(p.name)}</strong>${p.detail ? `<span class="detail">${escHtml(p.detail)}</span>` : ''}</div>
       </div>`).join('') + '</div>';
     list.innerHTML = html;
+    courtiersAvisReset();
 
     document.getElementById('courtiersInfoOverlay').classList.add('visible');
     document.body.style.overflow = 'hidden';
@@ -9225,10 +9396,18 @@
     // Notes chargées en tâche de fond, injectées une fois prêtes - le popup s'ouvre
     // immédiatement avec la liste, pas d'attente réseau pour son affichage initial.
     loadAllRatings().then(ratings => {
+      const deja = new Set([...document.querySelectorAll('#courtiersInfoList [data-courtier-rating]')].map(e => e.getAttribute('data-courtier-rating')));
+      const autres = [...new Set([KYF_RATING_GENERAL, ...Object.keys(ratings || {})])].filter(l => l && !deja.has(l)).sort((a, b) => a === KYF_RATING_GENERAL ? -1 : b === KYF_RATING_GENERAL ? 1 : a.localeCompare(b));
+      const premiere = document.querySelector('#courtiersInfoList .courtiers-info-longlist');
+      if (autres.length && premiere && !document.getElementById('courtiersAutresNotes')) {
+        premiere.insertAdjacentHTML('afterend', `<div id="courtiersAutresNotes"><div class="courtiers-info-group-title">Avis généraux et autres relevés (relevés d'opérations, détection automatique)</div><div class="courtiers-info-longlist">` + autres.map(l => `<div class="courtiers-info-long-item" data-courtier-rating="${escHtml(l)}" role="button" tabindex="0" onclick="courtiersAvisSelect(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();courtiersAvisSelect(this)}"><span class="dot"></span><div><strong>${escHtml(l)}</strong>${l === KYF_RATING_GENERAL ? '<span class="detail">Votre avis sur l\'outil dans son ensemble, quel que soit le relevé converti</span>' : ''}</div></div>`).join('') + '</div></div>');
+      }
       document.querySelectorAll('#courtiersInfoList [data-courtier-rating]').forEach(el => {
         const label = el.getAttribute('data-courtier-rating');
-        const badge = ratingBadgeHtml(label);
-        if (badge) el.querySelector('div').insertAdjacentHTML('beforeend', badge);
+        const r = ratings && ratings[label];
+        el.insertAdjacentHTML('beforeend', (r && r.total)
+          ? `<span class="courtiers-note-pill">${ratingStarOne(11)}${ratingFmt(r.moyenne)} · ${r.total} avis</span>`
+          : '<span class="courtiers-note-none">pas encore d\'avis</span>');
       });
     });
   }
