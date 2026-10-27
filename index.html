@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_12_147.html
+  @file        : KYF_SHARE_beta_2_8_13_23.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.12.147
+  @version     : Beta 2.8.13.23
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -64,7 +64,7 @@
     // Jeu de données fictif (aucun chiffre réel)
     var J = JSON.stringify;
     data['kyf-welcome-seen'] = '1'; data['kyf-onboarding-choice-seen'] = '1';
-    data['kyf-nouveautes-vue'] = 'a-2026-10-24b';   // = KYF_NOUVEAUTES.annonces[0].id (vérifié par le test val_DEMO-isolation)
+    data['kyf-nouveautes-vue'] = 'a-2026-10-27';   // = KYF_NOUVEAUTES.annonces[0].id (vérifié par le test val_DEMO-isolation)
     data['kyf-profil-nom'] = 'Démo';
     data['pea-positions'] = J([
       { name:'Amundi MSCI World', ticker:'CW8.PA', isin:'LU1681043599', pru:468.3, qty:42, montant:19668.6, enveloppe:'PEA', color:'#4d9fff' },
@@ -585,6 +585,29 @@ body.kyf-kpop-open .kpi{pointer-events:none}
 [data-theme="light"] .kyf-new-it.kyf-new-imp{background:rgba(176,120,0,0.1);border-left-color:#b07800}
 [data-theme="light"] .kyf-new-it.kyf-new-imp svg{color:#b07800 !important;fill:#b07800}
 [data-theme="light"] .pfr-btn:hover, [data-theme="light"] .pfbm-btn:hover{background:rgba(176,120,0,0.1) !important;color:#b07800 !important}
+.pf-tab{font-family:'Inter',sans-serif;font-size:11px;font-weight:600;padding:6px 13px 4px;border:none;border-bottom:2px solid transparent;background:none;color:var(--text2);cursor:pointer;transition:color .15s,border-color .15s}
+.pf-tab:hover{color:var(--text);border-bottom-color:var(--border2)}
+.pf-tab.on{color:var(--accent);border-bottom-color:var(--accent)}
+.pf-ibtn{width:20px;height:20px;border-radius:50%;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;padding:0;display:inline-flex;align-items:center;justify-content:center;transition:background .15s,color .15s,border-color .15s}
+.pf-hv{cursor:pointer;border-radius:8px;transition:color .15s,background .15s;outline:none}
+.pf-hv:hover,.pf-hv:focus-visible{color:var(--accent) !important;background:rgba(240,180,41,0.10)}
+.pf-hv-off{cursor:default;pointer-events:none}
+.pf-ibtn:hover,.pf-ibtn[aria-expanded="true"]{background:rgba(240,180,41,0.18);color:var(--accent);border-color:var(--accent)}
+#pfFoot .pfv-btn,#pfFoot .pfh-btn{padding:5px 10px !important;font-size:9px !important;line-height:1.3 !important}
+#pfFoot #pfbmTrigger,#pfFoot #kyfDcChip{padding:5px 12px !important;font-size:9px !important;line-height:1.3 !important}
+#pfFoot #pfbmTrigger{gap:6px !important}
+#courbeValorisationCard>#pfFoot{padding-bottom:13px !important}   /* la règle générale .card>:not(.cw):last-child imposait 16px : on égalise l'espace au-dessus et en dessous du pied */
+.pf-pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;border-radius:999px;padding:4px 10px}
+.pf-cash-btn{font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;padding:5px 10px;border-radius:4px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text);cursor:pointer;transition:background .15s,border-color .15s}
+.pf-cash-btn:hover{background:var(--hov-bg);border-color:var(--accent)}
+.pf-cash-btn.off,.pf-cash-btn.off:hover{opacity:.7;cursor:default;background:var(--btn-secondary-bg);border-color:var(--border2)}
+.pf-cash-btn.off svg{display:none}
+.pf-cash-opt{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;text-align:left;font-family:'Inter',sans-serif;padding:9px 11px;border:none;border-radius:6px;background:none;color:var(--text);cursor:pointer;transition:background .15s}
+.pf-cash-opt:hover{background:var(--hov-bg)}
+.pf-cash-opt.on{background:rgba(240,180,41,0.14)}
+.pf-cash-opt.on .pf-cash-t{color:var(--accent)}
+.pf-cash-t{display:block;font-size:12px;font-weight:600}
+.pf-cash-s{display:block;font-size:10.5px;color:var(--text2);margin-top:2px;font-weight:400}
 /* ── Bouton PDF du Guide : survol neutre, léger éclaircissement du fond. ── */
 .guide-pdf-btn:hover{background:var(--hov-bg) !important;border-color:var(--text3) !important}
 /* ── Sommaire du guide : nombre de colonnes et visibilité des noms de
@@ -752,6 +775,20 @@ body.kyf-kpop-open .kpi{pointer-events:none}
 .av-wrap{display:flex;flex-direction:column;height:100%}
 #ioPanel .av-wrap{width:100%}#ioPanel .av-side{width:50%;flex:1 1 50%;min-width:0}#ioPanel .av-main{flex:1 1 50%}
 #livJournalModal .av-wrap{width:100%}
+#livJournalModal .av-side{width:340px;padding:18px 20px 14px}
+.ljr{display:flex;align-items:center;gap:12px;padding:9px 8px;border-radius:9px;transition:background .15s}
+.ljr:hover{background:var(--hov-bg)}
+.ljr-ic{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ljp{font-family:'Inter',sans-serif;font-size:10px;font-weight:600;padding:4px 11px;border-radius:999px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+.ljp:hover{background:var(--hov-bg);color:var(--text)}
+.ljp.on{background:color-mix(in srgb,var(--accent) 16%,transparent);border-color:var(--accent);color:var(--accent)}
+.ljp.in{color:var(--green);border-color:color-mix(in srgb,var(--green) 55%,transparent)}
+.ljp.in:hover,.ljp.in.on{background:color-mix(in srgb,var(--green) 18%,transparent);border-color:var(--green);color:var(--green)}
+.ljp.out{color:var(--red);border-color:color-mix(in srgb,var(--red) 55%,transparent)}
+.ljp.out:hover,.ljp.out.on{background:color-mix(in srgb,var(--red) 18%,transparent);border-color:var(--red);color:var(--red)}
+.ljchip{display:inline-block;padding:3px 9px;border-radius:999px;background:var(--bg3,rgba(128,128,128,.1));color:var(--text2);font-size:9px;font-weight:600}
+#livJournalModal .kyf-import-dropzone{transition:background .15s,border-color .15s,color .15s}
+#livJournalModal .kyf-import-dropzone:hover{background:var(--hov-bg);border-color:var(--accent);color:var(--text)}
 .av-body{display:flex;flex:1;min-height:0}
 .av-side{width:330px;flex-shrink:0;overflow-y:auto;padding:16px 16px 12px;border-right:1px solid var(--border);background:rgba(255,255,255,0.015)}
 .av-main{flex:1;min-width:0;overflow-y:auto;padding:14px 20px 12px}
@@ -6299,41 +6336,49 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 <div id="livJournalOverlay" onclick="closeLivretJournal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9994"></div>
 <div id="livJournalModal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(900px,96vw);height:min(620px,94vh);z-index:9995;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:0;overflow:hidden;font-family:'Inter',sans-serif;font-size:11px;color:var(--text);box-shadow:0 12px 48px rgba(0,0,0,0.4)">
 <div class="av-wrap">
-  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);flex-shrink:0"><div style="min-width:0;flex:1"><div style="display:flex;align-items:center;justify-content:space-between">
-    <span style="display:flex;align-items:center;gap:6px">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
-      <span style="font-weight:700;font-size:13px;color:var(--text)" id="livJournalTitle">JOURNAL DES MOUVEMENTS</span>
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 18px;border-bottom:1px solid var(--border);flex-shrink:0">
+    <span style="display:flex;align-items:center;gap:8px;min-width:0">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+      <span style="font-weight:700;font-size:12px;letter-spacing:1px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="livJournalTitle">JOURNAL DES MOUVEMENTS</span>
     </span>
-    <button type="button" onclick="closeLivretJournal()" class="kyf-modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <span style="display:flex;align-items:center;gap:14px;flex-shrink:0">
+      <span style="display:flex;flex-direction:column;align-items:flex-end;gap:1px"><span style="font-size:8px;letter-spacing:.7px;color:var(--text3);text-transform:uppercase;font-weight:600">Solde du compte</span><span id="livJournalSolde" style="font-size:15px;font-weight:700;color:var(--text)">-</span></span>
+      <button type="button" onclick="closeLivretJournal()" class="kyf-modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </span>
   </div>
-  <div style="font-size:9px;color:var(--text3);margin-top:3px">Saisie manuelle, ou import d'un relevé : PDF BoursoBank, Hello bank, Société Générale, Fortuneo, Nickel ou La Banque Postale lu directement, ou CSV produit par le convertisseur de relevé bancaire.</div>
-  </div></div>
   <div class="av-body">
     <div class="av-side" style="padding:18px 18px 14px">
 <input type="hidden" id="livJournalCompteId" value="">
   <input type="file" id="livJournalCsvInput" accept=".csv,.pdf,application/pdf" style="display:none" onchange="importLivretCsv(this.files[0])">
-  <label style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;padding:6px 8px;border-radius:6px;background:rgba(240,180,41,0.1);border:1px solid rgba(240,180,41,0.3);cursor:pointer;font-family:'Inter',sans-serif;font-size:9px;color:var(--text2);line-height:1.35">
-    <span class="kyf-toggle" style="flex-shrink:0;margin-top:1px"><input type="checkbox" id="importCertifyOwn2"><span class="kyf-toggle-track"></span><span class="kyf-toggle-thumb"></span></span>
-    <span>Ce fichier vient bien de l'espace client officiel de ma banque, jamais un fichier reçu d'un tiers.</span>
-  </label>
-  <button type="button" onclick="if(kyfConfirmImportOrigin('importCertifyOwn2')) document.getElementById('livJournalCsvInput').click()" class="kyf-import-dropzone" style="width:100%;margin-bottom:10px;padding:8px;border-radius:6px;border:1px dashed var(--border2);background:transparent;color:var(--text2);cursor:pointer;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Importer un relevé (PDF ou CSV)</button>
-  <div id="livBanksSupported" style="margin:-4px 0 10px;padding:8px 10px;border-radius:6px;background:var(--bg3,rgba(128,128,128,.08));font-size:9px;line-height:1.7;color:var(--text3)">
-    <div style="font-weight:700;color:var(--text2);margin-bottom:2px">Relevés PDF lus directement</div>
-    <div>✓ <b>BoursoBank</b> · ✓ <b>Hello bank (BNP Paribas)</b> · ✓ <b>Société Générale</b> · ✓ <b>Fortuneo</b> · ✓ <b>Nickel</b> · ✓ <b>La Banque Postale</b> : compte individuel ou compte joint</div>
-    <div style="margin-top:2px">Autres banques : <b>lecture générique</b> du PDF, à vérifier dans l'aperçu (le contrôle des soldes dit si elle tombe juste). Si elle échoue, passez le PDF par le <a href="https://keepyourfolio.fr/Convertisseur/" target="_blank" rel="noopener noreferrer" style="color:var(--accent);font-weight:600">Convertisseur</a> puis importez le CSV.</div>
+  <div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Ajouter des mouvements</div>
+  <div class="kyf-tabseg" role="tablist" aria-label="Façon d'ajouter des mouvements" style="display:flex;width:100%;box-sizing:border-box;margin-bottom:16px">
+    <button type="button" role="tab" id="livJTabImport" aria-selected="true" onclick="livJournalTab('import')" class="kyf-toggle-active" style="flex:1;justify-content:center;padding:7px 8px">Importer un relevé</button>
+    <button type="button" role="tab" id="livJTabManuel" aria-selected="false" onclick="livJournalTab('manuel')" style="flex:1;justify-content:center;padding:7px 8px">Saisie manuelle</button>
   </div>
 
-  
-<div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px;margin-top:6px">Ajouter un mouvement à la main</div>
-
-  <div style="display:grid;grid-template-columns:minmax(0,100px) minmax(0,1fr) minmax(0,72px) 34px;gap:6px;margin-bottom:12px">
-    <input type="hidden" id="livJournalDate" value="">
-    <button type="button" id="livJournalDateBtn" class="kyf-csel-btn" data-kyf-date="livJournalDate" aria-haspopup="dialog" aria-expanded="false" style="font-size:10px;padding:6px 4px"><span id="livJournalDateBtnLabel">JJ/MM/AA</span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>
-    <input id="livJournalLabel" type="text" placeholder="Libellé" style="box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:6px 8px;border-radius:6px;outline:none">
-    <input id="livJournalAmount" type="number" step="0.01" placeholder="±€" oninput="var d=this.value.split('.')[1];if(d&&d.length>2)this.value=Math.round(parseFloat(this.value)*100)/100" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:6px 6px;border-radius:6px;outline:none">
-    <button onclick="addLivretTransaction()" style="width:34px;padding:0;border-radius:6px;border:none;background:#f0b429;color:#000;cursor:pointer;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">+</button>
+  <div id="livJPaneImport">
+    <button type="button" onclick="if(kyfConfirmImportOrigin('importCertifyOwn2')) document.getElementById('livJournalCsvInput').click()" class="kyf-import-dropzone" style="width:100%;margin-bottom:12px;padding:20px 12px;border-radius:12px;border:1.5px dashed var(--border2);background:transparent;color:var(--text2);cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><polyline points="7 9 12 4 17 9"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg><span>Importer un relevé (PDF ou CSV)</span></button>
+    <label style="display:flex;align-items:flex-start;gap:10px;margin-bottom:14px;padding:10px 12px;border-radius:9px;background:rgba(240,180,41,0.1);border:1px solid rgba(240,180,41,0.35);cursor:pointer;font-family:'Inter',sans-serif;font-size:10px;color:var(--text2);line-height:1.5">
+      <span class="kyf-toggle" style="flex-shrink:0;margin-top:1px"><input type="checkbox" id="importCertifyOwn2"><span class="kyf-toggle-track"></span><span class="kyf-toggle-thumb"></span></span>
+      <span>Ce fichier vient bien de l'espace client officiel de ma banque, jamais un fichier reçu d'un tiers.</span>
+    </label>
+    <div id="livBanksSupported" style="margin:0 0 6px;font-size:9px;line-height:1.7;color:var(--text3)">
+      <div style="font-weight:700;color:var(--text2);margin-bottom:6px">Relevés PDF lus directement</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px"><span class="ljchip">BoursoBank</span><span class="ljchip">Hello bank (BNP Paribas)</span><span class="ljchip">Société Générale</span><span class="ljchip">Fortuneo</span><span class="ljchip">Nickel</span><span class="ljchip">La Banque Postale</span></div>
+      <div>Compte individuel ou compte joint. Autres banques : <b>lecture générique</b> du PDF, à vérifier dans l'aperçu (le contrôle des soldes dit si elle tombe juste). Si elle échoue, passez le PDF par le <a href="https://keepyourfolio.fr/Convertisseur/" target="_blank" rel="noopener noreferrer" style="color:var(--accent);font-weight:600">Convertisseur</a> puis importez le CSV.</div>
+    </div>
   </div>
-  <div style="font-size:9px;color:var(--text3);margin-top:-6px;margin-bottom:10px">Montant positif = entrée, négatif = sortie (ex: -13.99)</div>
+
+  <div id="livJPaneManuel" style="display:none">
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin-bottom:8px">
+      <input type="hidden" id="livJournalDate" value="">
+      <button type="button" id="livJournalDateBtn" class="kyf-csel-btn" data-kyf-date="livJournalDate" aria-haspopup="dialog" aria-expanded="false" style="font-size:10px;padding:8px 8px"><span id="livJournalDateBtnLabel">JJ/MM/AA</span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>
+      <input id="livJournalAmount" type="number" step="0.01" placeholder="Montant ±€" oninput="var d=this.value.split('.')[1];if(d&&d.length>2)this.value=Math.round(parseFloat(this.value)*100)/100" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 8px;border-radius:6px;outline:none">
+    </div>
+    <input id="livJournalLabel" type="text" placeholder="Libellé" style="width:100%;box-sizing:border-box;margin-bottom:8px;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 8px;border-radius:6px;outline:none">
+    <button type="button" onclick="addLivretTransaction()" class="kyf-primary-hover" style="width:100%;padding:9px;border-radius:7px;border:none;background:#f0b429;color:#000;cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Ajouter le mouvement</button>
+    <div style="font-size:9px;color:var(--text3);margin-top:8px;line-height:1.5">Montant positif = entrée, négatif = sortie (ex: -13.99).</div>
+  </div>
 
   <div id="livJournalSuggestions"></div>
   
@@ -6353,8 +6398,20 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
   </div>
 
   
-<div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px">Mouvements du compte</div>
-<div id="livJournalList" style="border-top:1px solid var(--border)"></div>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px">
+  <span style="display:flex;align-items:baseline;gap:8px"><span style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px">Mouvements du compte</span><span id="livJournalCount" style="font-size:9px;color:var(--text3)"></span></span>
+  <span id="livJournalFilters" style="display:flex;gap:5px"></span>
+</div>
+<div id="livJournalNav" style="display:none;align-items:center;gap:8px;margin-bottom:6px">
+  <div style="position:relative;width:150px"><button type="button" id="livJMoisBtn" class="kyf-csel-btn" data-kyf-csel="livJMois" aria-label="Filtrer par mois" style="font-size:10px;padding:6px 9px"><span id="livJMoisBtnLabel">Tous les mois</span><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polyline points="6 9 12 15 18 9"/></svg></button><input type="hidden" id="livJMois" value="" onchange="livJournalNav()"></div>
+  <div style="position:relative;width:130px"><button type="button" id="livJAnneeBtn" class="kyf-csel-btn" data-kyf-csel="livJAnnee" aria-label="Filtrer par année" style="font-size:10px;padding:6px 9px"><span id="livJAnneeBtnLabel">Toutes les années</span><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polyline points="6 9 12 15 18 9"/></svg></button><input type="hidden" id="livJAnnee" value="" onchange="livJournalNav()"></div>
+</div>
+<div id="livJournalList"></div>
+<div id="livJournalPag" style="display:none;align-items:center;justify-content:center;flex-wrap:wrap;gap:14px;padding:10px 4px 4px 4px;border-top:1px solid var(--border);margin-top:8px">
+  <button type="button" onclick="livJournalPage(-1)" id="livJPrevBtn" class="kyf-mini-btn">← PRÉC.</button>
+  <div style="display:flex;align-items:center;gap:6px"><span id="livJPageInfo" style="font-family:'Inter',sans-serif;font-size:9px;color:var(--text3)"></span><div id="livJPageNumbers" style="display:flex;align-items:center;justify-content:center;gap:3px;min-width:120px"></div></div>
+  <button type="button" onclick="livJournalPage(1)" id="livJNextBtn" class="kyf-mini-btn">SUIV. →</button>
+</div>
 
     </div>
   </div>
@@ -7213,7 +7270,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.12.147</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.13.23</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -7643,7 +7700,6 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- KPIs -->
   <div class="kpi-row" id="kpi-row-dashboard" data-kpi-row="portfolio" style="margin-top:10px;margin-bottom:26px">
-    <div class="kpi g" id="kpi-kLive" draggable="true" data-kpi-id="kLive" onclick="kyfToggleKLiveMode()" oncontextmenu="kyfKLiveBreakdown(event)" title="Patrimoine hors cash. Clic : nominal / pouvoir d'achat réel. Clic droit : détail" style="cursor:pointer"><div class="kpi-lbl">VALORISATION LIVE</div><div class="kpi-val" id="kLive"><div class="spin"></div></div><div class="kpi-sub" id="kLiveSub"></div></div>
     <div class="kpi g" id="kpi-kGain" draggable="true" data-kpi-id="kGain"><div class="kpi-lbl">GAIN NET POSITIONS</div><div class="kpi-val" id="kGain"><div class="spin"></div></div><div class="kpi-sub" id="kGainSub"></div></div>
     <div class="kpi g" id="kpi-kTwr" draggable="true" data-kpi-id="kTwr" title="Performance réelle, isolée de vos versements/retraits. Porte sur ETF/Actions et Crypto (pas encore AV, immobilier, or)"><div class="kpi-lbl">PERF. RÉELLE (TWR)</div><div class="kpi-val" id="kTwr">-</div><div class="kpi-sub" id="kTwrSub">ETF/Actions + Crypto</div></div>
     <div class="kpi" id="kpi-kAth" draggable="true" data-kpi-id="kAth" style="border-color:#f0b429"><div class="kpi-lbl">ATH <svg aria-hidden="true" style="vertical-align:-.18em;flex-shrink:0" width="1.1em" height="1.1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M7 5H4a2 2 0 0 0 0 4h1M17 5h3a2 2 0 0 1 0 4h-1"/></svg></div><div class="kpi-val kyf-gold-text" id="kAth" style="color:#f0b429;text-shadow:0 0 8px rgba(240,180,41,0.4)">-</div><div class="kpi-sub" id="kAthDate"></div></div>
@@ -7669,59 +7725,29 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
     <!-- Courbe de valorisation -->
     <div class="card" id="courbeValorisationCard" style="flex:0 1 70%;max-width:70%;min-width:0;box-sizing:border-box">
-      <div class="card-title" style="display:flex;align-items:center;justify-content:space-between">
-        <span>COURBE DE VALORISATION</span>
-        <div style="display:flex;gap:4px;align-items:center">
-          <!-- Période dropdown -->
-          <div style="position:relative;margin-right:6px" id="pfrWrap">
-            <button onclick="togglePfrMenu()" id="pfrTrigger" class="kyf-fixed-accent" style="font-family:'Inter',sans-serif;font-size:9px;padding:2px 8px;border-radius:4px;border:1px solid var(--border2);background:var(--btn-secondary-bg);cursor:pointer;display:flex;align-items:center;gap:4px">
-              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              <span id="pfrLabel">MAX</span>
-              <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-            <div id="pfrMenu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:999;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:4px;min-width:100px;box-shadow:0 6px 20px rgba(0,0,0,.35)">
-              <button onclick="setPfr('5j','5 Jours')"   id="pfr-5j"  title="Les 5 dernières séances" class="pfr-btn" style="display:block;width:100%;text-align:left;font-family:'Inter',sans-serif;font-size:9px;padding:5px 10px;border:none;border-radius:5px;background:none;color:var(--text2);cursor:pointer">5 Jours</button>
-              <button onclick="setPfr('15j','15 Jours')" id="pfr-15j" class="pfr-btn" style="display:block;width:100%;text-align:left;font-family:'Inter',sans-serif;font-size:9px;padding:5px 10px;border:none;border-radius:5px;background:none;color:var(--text2);cursor:pointer">15 Jours</button>
-              <button onclick="setPfr('30j','30 Jours')" id="pfr-30j" class="pfr-btn" style="display:block;width:100%;text-align:left;font-family:'Inter',sans-serif;font-size:9px;padding:5px 10px;border:none;border-radius:5px;background:none;color:var(--text2);cursor:pointer">30 Jours</button>
-              <button onclick="setPfr('6m','6 Mois')"   id="pfr-6m"  class="pfr-btn" style="display:block;width:100%;text-align:left;font-family:'Inter',sans-serif;font-size:9px;padding:5px 10px;border:none;border-radius:5px;background:none;color:var(--text2);cursor:pointer">6 Mois</button>
-              <button onclick="setPfr('1a','1 An')"     id="pfr-1a"  class="pfr-btn" style="display:block;width:100%;text-align:left;font-family:'Inter',sans-serif;font-size:9px;padding:5px 10px;border:none;border-radius:5px;background:none;color:var(--text2);cursor:pointer">1 An</button>
-              <button onclick="setPfr('max','MAX')"      id="pfr-max" class="pfr-btn kyf-fixed-accent" style="display:block;width:100%;text-align:left;font-family:'Inter',sans-serif;font-size:9px;padding:5px 10px;border:none;border-radius:5px;background:rgba(77,159,255,0.12);cursor:pointer;font-weight:700">MAX</button>
+      <div id="pfTop" style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:12px 20px;margin-bottom:14px">
+        <div id="pfTitleRow" style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;min-width:0">
+          <div class="card-title" style="margin-bottom:0"><span>COURBE DE VALORISATION</span></div>
+          <div id="pfChipRow" style="display:none;align-items:center;gap:8px">
+            <div id="pfCashWrap" style="position:relative;display:inline-block">
+              <button id="pfCashTrigger" type="button" class="pf-cash-btn" onclick="kyfPfCashToggle(event)" aria-haspopup="listbox" aria-expanded="false" title="Choisir ce que montre la courbe">
+                <span id="pfCashLabel">Total, espèces comprises</span>
+                <svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div id="pfCashMenu" role="listbox" aria-label="Affichage de la courbe" style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:999;min-width:310px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:4px;box-shadow:0 6px 20px rgba(0,0,0,.35)">
+                <button type="button" role="option" id="pfCash-tot" class="pf-cash-opt" onclick="kyfPfCashPick('tot')"><span><span class="pf-cash-t">Total, espèces comprises</span><span class="pf-cash-s">Tout ce que vous possédez, cash des comptes inclus</span></span><svg class="pf-cash-ck" aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></button>
+                <button type="button" role="option" id="pfCash-hors" class="pf-cash-opt" onclick="kyfPfCashPick('hors')"><span><span class="pf-cash-t">Hors espèces</span><span class="pf-cash-s">Vos placements, sans le cash des comptes</span></span><svg class="pf-cash-ck" aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></button>
+              </div>
             </div>
-          </div>
-          <div style="display:flex;gap:2px;margin-right:6px;border:1px solid var(--border2);border-radius:5px;overflow:hidden">
-            <button id="pfv-total"  onclick="setPfView('total')"  title="Tout le patrimoine (comme la carte VALORISATION)" class="pfv-btn kyf-toggle-active" style="font-family:'Inter',sans-serif;font-size:9px;padding:2px 7px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:background .15s,color .15s" onmouseover="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--hov-bg)';this.style.color='var(--text)'}" onmouseout="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)'}">TOTAL</button>
-            <button id="pfv-etf"    onclick="setPfView('etf')"    class="pfv-btn" style="font-family:'Inter',sans-serif;font-size:9px;padding:2px 7px;border:none;background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;transition:background .15s,color .15s" onmouseover="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--hov-bg)';this.style.color='var(--text)'}" onmouseout="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)'}">ETF</button>
-            <button id="pfv-crypto" onclick="setPfView('crypto')" class="pfv-btn" style="font-family:'Inter',sans-serif;font-size:9px;padding:2px 7px;border:none;background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;transition:background .15s,color .15s" onmouseover="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--hov-bg)';this.style.color='var(--text)'}" onmouseout="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)'}">CRYPTO</button>
-          </div>
-          <!-- Benchmark dropdown -->
-          <div style="position:relative" id="pfbmWrap">
-            <button onclick="toggleBmMenu()" id="pfbmTrigger" style="font-family:'Inter',sans-serif;font-size:9px;padding:2px 8px;border-radius:4px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:4px">
-              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
-              <span id="pfbmLabel">INDICE</span>
-              <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-            <div id="pfbmMenu" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:999;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:4px;min-width:110px;box-shadow:0 6px 20px rgba(0,0,0,.35)">
-              <button onclick="setBm('none','INDICE')"  class="pfbm-btn" id="pfbm-none"      style="display:block;width:100%;text-align:left;font-family:'Inter',sans-serif;font-size:9px;padding:5px 10px;border:none;border-radius:5px;background:none;color:var(--text2);cursor:pointer">Aucun</button>
-              <button onclick="setBm('SP500','S&P500')" class="pfbm-btn" id="pfbm-SP500"     style="display:block;width:100%;text-align:left;font-family:'Inter',sans-serif;font-size:9px;padding:5px 10px;border:none;border-radius:5px;background:none;color:var(--text2);cursor:pointer">S&amp;P 500</button>
-              <button onclick="setBm('CAC40','CAC40')"  class="pfbm-btn" id="pfbm-CAC40"     style="display:block;width:100%;text-align:left;font-family:'Inter',sans-serif;font-size:9px;padding:5px 10px;border:none;border-radius:5px;background:none;color:var(--text2);cursor:pointer">CAC 40</button>
-              <button onclick="setBm('MSCIWorld','WORLD')" class="pfbm-btn" id="pfbm-MSCIWorld" style="display:block;width:100%;text-align:left;font-family:'Inter',sans-serif;font-size:9px;padding:5px 10px;border:none;border-radius:5px;background:none;color:var(--text2);cursor:pointer">MSCI World</button>
-              <div style="height:1px;background:var(--border2);margin:4px 2px"></div>
-              <button onclick="setBm('INFLATION','Inflation')" class="pfbm-btn" id="pfbm-INFLATION" title="Patrimoine total (versements compris) vs inflation cumulée - pas une mesure de performance des placements" style="display:block;width:100%;text-align:left;font-family:'Inter',sans-serif;font-size:9px;padding:5px 10px;border:none;border-radius:5px;background:none;color:var(--text2);cursor:pointer">Inflation</button>
-            </div>
-          </div>
-          <!-- Devise d'affichage : raccourci vers Paramètres → Tableaux -->
-          <button type="button" id="kyfDcChip" class="kyf-dc-chip" onclick="openEditorToDevise()" title="Devise d'affichage : EUR (cliquer pour changer)" style="font-family:'Inter',sans-serif;font-size:9px;padding:2px 8px;margin-left:6px;border-radius:4px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:4px">
-            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-            <span id="kyfDcChipLabel">EUR</span>
-          </button>
-          <!-- Hauteur courbe -->
-          <div style="display:flex;gap:2px;margin-left:4px;border:1px solid var(--border2);border-radius:5px;overflow:hidden">
-            <button onclick="setChartH('pfFullWrap',180,'pfh')" id="pfh-s" title="Petit" class="pfh-btn kyf-toggle-active" style="font-family:'Inter',sans-serif;font-size:9px;padding:2px 7px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:background .15s,color .15s" onmouseover="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--hov-bg)';this.style.color='var(--text)'}" onmouseout="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)'}">S</button>
-            <button onclick="setChartH('pfFullWrap',320,'pfh')" id="pfh-m" title="Moyen" class="pfh-btn" style="font-family:'Inter',sans-serif;font-size:9px;padding:2px 7px;border:none;background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;transition:background .15s,color .15s" onmouseover="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--hov-bg)';this.style.color='var(--text)'}" onmouseout="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)'}">M</button>
-            <button onclick="setChartH('pfFullWrap',380,'pfh')" id="pfh-l" title="Grand" class="pfh-btn" style="font-family:'Inter',sans-serif;font-size:9px;padding:2px 7px;border:none;background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;transition:background .15s,color .15s" onmouseover="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--hov-bg)';this.style.color='var(--text)'}" onmouseout="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)'}">L</button>
+            <button id="pfInfoBtn" type="button" class="pf-ibtn" onclick="kyfPfInfoToggle(event)" aria-expanded="false" aria-label="Comprendre ce chiffre" title="Comprendre ce chiffre"><svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="11" x2="12" y2="17"/><circle cx="12" cy="7.2" r="0.6" fill="currentColor"/></svg></button>
           </div>
         </div>
+        <div id="pfHead" style="display:none;flex-direction:column;align-items:flex-end;gap:8px;margin-left:auto">
+          <div id="pfHeadVal" class="pf-hv" role="button" tabindex="0" onclick="kyfPfHeadClick(event)" onkeydown="if(event.key==='Enter'||event.key===' '){kyfPfHeadClick(event);}" aria-label="Voir de quoi se compose votre patrimoine" style="padding:2px 6px;margin-right:-6px;font-family:'Inter',sans-serif;font-size:34px;font-weight:600;line-height:1;letter-spacing:-.5px;color:var(--text);white-space:nowrap"></div>
+          <div id="pfHeadSub" style="display:flex;align-items:center;gap:10px;font-family:'Inter',sans-serif;font-size:12px;color:var(--text2)"></div>
+        </div>
       </div>
+      <div id="pfInfoPop" role="note" style="display:none;position:absolute;left:16px;top:58px;z-index:998;max-width:340px;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.4);font-family:'Inter',sans-serif;font-size:11px;line-height:1.55;color:var(--text2)"></div>
       <div class="cw s" id="pfFullWrap">
         <canvas id="pfFullChart"></canvas>
         <!-- État vide (nouvel utilisateur) : courbe d'exemple qui se construit, un petit personnage la gravit -->
@@ -7766,6 +7792,50 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
         <div id="pfFullChartLoading" style="position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(10,14,22,0.45);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);border-radius:12px;z-index:5;pointer-events:none;opacity:0;transition:opacity .25s">
           <div class="pf-glass-shine"></div>
           <div class="spin" style="width:22px;height:22px;border-width:3px"></div>
+        </div>
+      </div>
+      <div id="pfFoot" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;border-top:1px solid var(--border);margin-top:12px;padding:13px 4px 10px">
+        <div id="pfrTabs" role="group" aria-label="Période" style="display:flex;gap:2px;flex-wrap:wrap">
+          <button type="button" id="pfr-5j"  class="pf-tab" onclick="setPfr('5j','5 Jours')" title="Les 5 dernières séances">5J</button>
+          <button type="button" id="pfr-15j" class="pf-tab" onclick="setPfr('15j','15 Jours')" title="15 jours">15J</button>
+          <button type="button" id="pfr-30j" class="pf-tab" onclick="setPfr('30j','30 Jours')" title="30 jours">30J</button>
+          <button type="button" id="pfr-6m"  class="pf-tab" onclick="setPfr('6m','6 Mois')" title="6 mois">6M</button>
+          <button type="button" id="pfr-1a"  class="pf-tab" onclick="setPfr('1a','1 An')" title="1 an">1A</button>
+          <button type="button" id="pfr-max" class="pf-tab on" onclick="setPfr('max','MAX')" title="Tout l'historique">MAX</button>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center">
+          <div style="display:flex;gap:2px;border:1px solid var(--border2);border-radius:5px;overflow:hidden">
+            <button id="pfv-total"  onclick="setPfView('total')"  title="Tout le patrimoine (comme la carte VALORISATION)" class="pfv-btn kyf-toggle-active" style="font-family:'Inter',sans-serif;font-size:9px;padding:2px 7px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:background .15s,color .15s" onmouseover="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--hov-bg)';this.style.color='var(--text)'}" onmouseout="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)'}">TOTAL</button>
+            <button id="pfv-etf"    onclick="setPfView('etf')"    class="pfv-btn" style="font-family:'Inter',sans-serif;font-size:9px;padding:2px 7px;border:none;background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;transition:background .15s,color .15s" onmouseover="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--hov-bg)';this.style.color='var(--text)'}" onmouseout="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)'}">ETF</button>
+            <button id="pfv-crypto" onclick="setPfView('crypto')" class="pfv-btn" style="font-family:'Inter',sans-serif;font-size:9px;padding:2px 7px;border:none;background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;transition:background .15s,color .15s" onmouseover="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--hov-bg)';this.style.color='var(--text)'}" onmouseout="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)'}">CRYPTO</button>
+          </div>
+          <!-- Benchmark dropdown -->
+          <div style="position:relative" id="pfbmWrap">
+            <button onclick="toggleBmMenu()" id="pfbmTrigger" style="font-family:'Inter',sans-serif;font-size:9px;padding:2px 8px;border-radius:4px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:4px">
+              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
+              <span id="pfbmLabel">INDICE</span>
+              <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div id="pfbmMenu" style="display:none;position:absolute;bottom:calc(100% + 4px);right:0;z-index:999;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:4px;min-width:110px;box-shadow:0 6px 20px rgba(0,0,0,.35)">
+              <button onclick="setBm('none','INDICE')"  class="pfbm-btn" id="pfbm-none"      style="display:block;width:100%;text-align:left;font-family:'Inter',sans-serif;font-size:9px;padding:5px 10px;border:none;border-radius:5px;background:none;color:var(--text2);cursor:pointer">Aucun</button>
+              <button onclick="setBm('SP500','S&P500')" class="pfbm-btn" id="pfbm-SP500"     style="display:block;width:100%;text-align:left;font-family:'Inter',sans-serif;font-size:9px;padding:5px 10px;border:none;border-radius:5px;background:none;color:var(--text2);cursor:pointer">S&amp;P 500</button>
+              <button onclick="setBm('CAC40','CAC40')"  class="pfbm-btn" id="pfbm-CAC40"     style="display:block;width:100%;text-align:left;font-family:'Inter',sans-serif;font-size:9px;padding:5px 10px;border:none;border-radius:5px;background:none;color:var(--text2);cursor:pointer">CAC 40</button>
+              <button onclick="setBm('MSCIWorld','WORLD')" class="pfbm-btn" id="pfbm-MSCIWorld" style="display:block;width:100%;text-align:left;font-family:'Inter',sans-serif;font-size:9px;padding:5px 10px;border:none;border-radius:5px;background:none;color:var(--text2);cursor:pointer">MSCI World</button>
+              <div style="height:1px;background:var(--border2);margin:4px 2px"></div>
+              <button onclick="setBm('INFLATION','Inflation')" class="pfbm-btn" id="pfbm-INFLATION" title="Patrimoine total (versements compris) vs inflation cumulée - pas une mesure de performance des placements" style="display:block;width:100%;text-align:left;font-family:'Inter',sans-serif;font-size:9px;padding:5px 10px;border:none;border-radius:5px;background:none;color:var(--text2);cursor:pointer">Inflation</button>
+            </div>
+          </div>
+          <!-- Devise d'affichage : raccourci vers Paramètres → Tableaux -->
+          <button type="button" id="kyfDcChip" class="kyf-dc-chip" onclick="openEditorToDevise()" title="Devise d'affichage : EUR (cliquer pour changer)" style="font-family:'Inter',sans-serif;font-size:9px;padding:2px 8px;margin-left:6px;border-radius:4px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:4px">
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <span id="kyfDcChipLabel">EUR</span>
+          </button>
+          <!-- Hauteur courbe -->
+          <div style="display:flex;gap:2px;margin-left:4px;border:1px solid var(--border2);border-radius:5px;overflow:hidden">
+            <button onclick="setChartH('pfFullWrap',180,'pfh')" id="pfh-s" title="Petit" class="pfh-btn kyf-toggle-active" style="font-family:'Inter',sans-serif;font-size:9px;padding:2px 7px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:background .15s,color .15s" onmouseover="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--hov-bg)';this.style.color='var(--text)'}" onmouseout="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)'}">S</button>
+            <button onclick="setChartH('pfFullWrap',320,'pfh')" id="pfh-m" title="Moyen" class="pfh-btn" style="font-family:'Inter',sans-serif;font-size:9px;padding:2px 7px;border:none;background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;transition:background .15s,color .15s" onmouseover="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--hov-bg)';this.style.color='var(--text)'}" onmouseout="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)'}">M</button>
+            <button onclick="setChartH('pfFullWrap',380,'pfh')" id="pfh-l" title="Grand" class="pfh-btn" style="font-family:'Inter',sans-serif;font-size:9px;padding:2px 7px;border:none;background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;transition:background .15s,color .15s" onmouseover="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--hov-bg)';this.style.color='var(--text)'}" onmouseout="if(!this.classList.contains('kyf-toggle-active')){this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)'}">L</button>
+          </div>
         </div>
       </div>
     </div>
@@ -10432,7 +10502,9 @@ function divEnvSync(keepHint){
     const on = !!(canR && rc && rc.checked);
     if(rf) rf.style.display = on ? 'block' : 'none';
     if(cb) cb.style.display = ((ev === 'pea' || ev === 'cto') && !on) ? 'block' : 'none';
-    set('divCashCreditLbl', 'Créditer le cash du ' + (ev === 'cto' ? 'CTO' : 'PEA')); }
+    { const lvT = (ev === 'cto' || ev === 'pea') ? kyfDivLivretCible(ev === 'cto' ? 'CTO' : 'PEA') : null;
+      set('divCashCreditLbl', lvT ? 'Créditer le livret ' + lvT.banque : 'Créditer le cash du ' + (ev === 'cto' ? 'CTO' : 'PEA'));
+      set('divCashHint', lvT ? 'Le montant s\'ajoute au solde du livret rattaché au ' + (ev === 'cto' ? 'CTO' : 'PEA') + '. Décochez si vous l\'avez déjà ajouté à la main.' : 'Le montant s\'ajoute aux espèces de l\'enveloppe. Décochez si vous l\'avez déjà ajouté à la main.'); } }
   const t = document.getElementById('divTicker'); if(t) t.placeholder = sc ? 'ex: Corum Origin' : 'ex: TTE.PA, AAPL, CW8.PA...';
   { const ab = document.getElementById('divAssetBox'), ac = document.getElementById('divAssetChips'), l = sc ? [] : kyfDivAssets(env ? env.value : '');
     if(ab && ac){ ab.style.display = l.length ? 'block' : 'none';
@@ -10478,8 +10550,50 @@ function closeDividende(){
 // Dividende de PEA/CTO : crédit du cash de l'enveloppe. Le montant réellement crédité est mémorisé sur le dividende
 // (cashCredite, cashEnv) pour que modification et suppression rendent exactement cette somme ; un dividende sans ces champs
 // (saisi avant, ou importé) ne touche jamais au cash.
-function kyfDivCashUndo(d){ if(d && d.cashCredite > 0 && d.cashEnv) adjustCashForEnveloppe(d.cashEnv, -d.cashCredite, d.cashCpt ? { compte: d.cashCpt } : undefined); }
-function kyfDivCashRedo(d){ if(d && d.cashCredite > 0 && d.cashEnv) adjustCashForEnveloppe(d.cashEnv, d.cashCredite, d.cashCpt ? { compte: d.cashCpt } : undefined); }
+// Si l'enveloppe a UN livret rattaché (ex. Trade Republic rattaché au CTO), c'est lui qui reçoit le dividende : ses espèces sont ce livret, pas le cash saisi à part.
+// Le dividende garde alors livretId + livretCredite (et aucun cashCredite) : modification, suppression et annulation rendent exactement cette somme.
+function kyfDivLivretCible(cashEnv){
+  try{ const l = ctLivretsDe(cashEnv === 'CTO' ? 'CTO' : 'PEA'); return l.length === 1 ? l[0] : null; }catch(e){ return null; }
+}
+function kyfDivLivretAdjust(d, sign){   // sign +1 : crédite le livret et note la ligne au journal ; -1 : rend la somme et retire la ligne
+  try{
+    if(!d || !(d.livretCredite > 0) || !d.livretId) return false;
+    const lv = livLoad(), c = lv.find(x => String(x.id) === String(d.livretId));
+    if(!c) return true;   // livret supprimé entre-temps : rien à ajuster
+    c.solde = parseFloat(((parseFloat(c.solde) || 0) + sign * d.livretCredite).toFixed(2));
+    livSave(lv);
+    const tag = 'div:' + d.id, j = livTxLoad().filter(t => t.src !== tag);
+    if(sign > 0) j.push({ id: 'tx_' + Date.now() + '_d', compteId: c.id, date: kyfTwrIsoDate_(d.date), label: 'Dividende ' + (d.ticker || ''), amount: d.livretCredite, src: tag });
+    livTxSave(j);
+    try{ renderLivrets(); }catch(_){}
+    return true;
+  }catch(e){ return false; }
+}
+function kyfDivCashUndo(d){ if(d && d.cashCredite > 0 && d.cashEnv) adjustCashForEnveloppe(d.cashEnv, -d.cashCredite, d.cashCpt ? { compte: d.cashCpt } : undefined); kyfDivLivretAdjust(d, -1); }
+function kyfDivCashRedo(d){ if(d && d.cashCredite > 0 && d.cashEnv) adjustCashForEnveloppe(d.cashEnv, d.cashCredite, d.cashCpt ? { compte: d.cashCpt } : undefined); kyfDivLivretAdjust(d, +1); }
+// Dividendes déjà crédités au cash alors qu'un livret est (ou vient d'être) rattaché à l'enveloppe : la somme passe du cash au livret, une seule fois.
+// Ce qui a déjà été dépensé du cash n'est pas redemandé : le montant déplacé ne dépasse jamais ce que le cash contient encore.
+function kyfDivVersLivretMig_(){
+  try{
+    const data = divLoad(); let n = 0, tot = 0, nom = '';
+    data.forEach(d => {
+      if(!d || !(d.cashCredite > 0) || !d.cashEnv || d.livretCredite > 0) return;
+      const lv = kyfDivLivretCible(d.cashEnv); if(!lv) return;
+      const got = adjustCashForEnveloppe(d.cashEnv, -d.cashCredite, d.cashCpt ? { compte: d.cashCpt } : undefined);
+      const amt = parseFloat((-got).toFixed(2));
+      if(!(amt > 0)) return;
+      delete d.cashCredite; delete d.cashCpt;
+      d.livretId = lv.id; d.livretCredite = amt; kyfDivLivretAdjust(d, +1);
+      n++; tot += amt; nom = lv.banque;
+    });
+    if(n){
+      divSave(data);
+      try{ renderCashKPI(); }catch(e){} try{ renderLivrets(); }catch(e){} try{ renderDividendes(); }catch(e){}
+      try{ showToast(n + (n > 1 ? ' dividendes' : ' dividende') + ' (' + fmt(tot, 2) + ' €) ajouté' + (n > 1 ? 's' : '') + ' au livret ' + nom); }catch(e){}
+    }
+  }catch(e){}
+}
+window.addEventListener('load', () => setTimeout(kyfDivVersLivretMig_, 2500));
 function saveDividende(){
   const date    = document.getElementById('divDate').value;
   const montant = parseNum(document.getElementById('divMontant').value||'0');
@@ -10538,9 +10652,13 @@ function saveDividende(){
     const cashEnv = div.enveloppe === 'pea' ? 'PEA' : div.enveloppe === 'cto' ? 'CTO' : '';
     const cb = document.getElementById('divCashCredit');
     if(cashEnv && cb && cb.checked && montant > 0 && !_reinv){
+      const _lvC = kyfDivLivretCible(cashEnv);
+      if(_lvC){ div.livretId = _lvC.id; div.livretCredite = parseFloat(montant.toFixed(2)); div.cashEnv = cashEnv; kyfDivLivretAdjust(div, +1); }
+      else {
       let _dc; if(cashEnv === 'CTO' && kyfCtoComptes().length > 1){ const cs = [...new Set(ETF.filter(e => e.enveloppe === 'CTO' && String(e.ticker || '').toUpperCase() === String(ticker).toUpperCase()).map(e => kyfCtoCompteOf(e)))]; if(cs.length === 1) _dc = { compte: cs[0] }; }   // le compte qui détient la ligne ; plusieurs : au total
       const got = adjustCashForEnveloppe(cashEnv, parseFloat(montant.toFixed(2)), _dc);
       if(got > 0){ div.cashCredite = parseFloat(got.toFixed(2)); div.cashEnv = cashEnv; if(_dc) div.cashCpt = _dc.compte; }
+      }
     }
   }
   if(editId){ const i=data.findIndex(d=>d.id===editId); if(i>-1)data[i]=div; else data.push(div); }
@@ -10563,7 +10681,7 @@ function editDividende(id){
   set('divEnveloppe', d.enveloppe || 'cto');
   { const envSel = document.getElementById('divEnveloppe'); if(envSel && typeof kyfPgLabel === 'function') kyfPgLabel(envSel); }
   divEnvSync();
-  { const cc = document.getElementById('divCashCredit'); if(cc) cc.checked = !!(d.cashCredite > 0); }   // un dividende sans crédit n'en reçoit pas en étant modifié, sauf si on coche
+  { const cc = document.getElementById('divCashCredit'); if(cc) cc.checked = !!(d.cashCredite > 0 || d.livretCredite > 0); }   // un dividende sans crédit n'en reçoit pas en étant modifié, sauf si on coche
   if(typeof kyfDateSetValue === 'function' && document.querySelector('[data-kyf-date="divDate"]')) kyfDateSetValue('divDate', d.date);
 }
 
@@ -11854,7 +11972,7 @@ function ctTabKey(e){
   e.preventDefault(); ctTabSet(l[(i + (e.key === 'ArrowRight' ? 1 : l.length - 1)) % l.length].k);
 }
 function ctBuild(root){
-  root.innerHTML = '<div class="ct-band"><div class="ct-band-l"><span class="ct-lbl">Gains et pertes en direct</span><span class="ct-big" id="ctBandTot">-</span><span class="ct-sub" id="ctBandPct"></span><button type="button" id="ctBandInfoBtn" class="ct-ibtn" onclick="ctBandInfoToggle()" aria-expanded="false" aria-controls="ctBandNote" title="Comment est calculé ce gain"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></button></div><div class="ct-chips" id="ctBandChips" role="group" aria-label="Gains et pertes par compte"></div></div>'
+  root.innerHTML = '<div class="ct-band"><div class="ct-band-l"><span class="ct-lbl">Gain sur les titres, tous comptes confondus</span><span class="ct-big" id="ctBandTot">-</span><span class="ct-sub" id="ctBandPct"></span><button type="button" id="ctBandInfoBtn" class="ct-ibtn" onclick="ctBandInfoToggle()" aria-expanded="false" aria-controls="ctBandNote" title="Comment est calculé ce gain"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></button></div><div class="ct-chips" id="ctBandChips" role="group" aria-label="Gains et pertes par compte"></div></div>'
     + '<div id="ctBandNote" style="display:none;margin:8px auto 0;padding:10px 14px;border-radius:8px;background:rgba(77,159,255,0.07);border:1px solid rgba(77,159,255,0.2);width:fit-content;max-width:100%;box-sizing:border-box;font-family:\'Inter\',sans-serif;font-size:10px;color:var(--text2);line-height:1.7"></div>'
     + '<div id="ctTabRow" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 12px;margin:14px 0 20px">'
     +   '<div style="display:flex;align-items:center;gap:4px"><div class="kyf-tabseg" id="ctTabs" role="tablist" aria-label="Compte titres" onkeydown="ctTabKey(event)"></div>'
@@ -11887,7 +12005,7 @@ function ctBuild(root){
     +   '<div id="ctF_plaf"></div>'
     +   '</div>'
     +   '<div class="ct-sep"></div>'
-    +   '<div class="ct-stats"><div><span class="ct-lbl">Valeur des lignes</span><b id="ctS_titres">-</b></div><div><span class="ct-lbl">Coût d\'acquisition</span><b id="ctS_cout">-</b></div><div><span class="ct-lbl">Lignes suivies</span><b id="ctS_nb">0</b></div></div>'
+    +   '<div class="ct-stats"><div><span class="ct-lbl">Valeur des titres</span><b id="ctS_titres">-</b></div><div><span class="ct-lbl">Prix d\'achat total</span><b id="ctS_cout">-</b></div><div><span class="ct-lbl">Titres suivis</span><b id="ctS_nb">0</b></div></div>'
     +   '<div class="ct-note" id="ctNote"></div>'
     +   '<div class="ct-acts" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:auto"><button type="button" class="ct-btn ct-btn-main" id="ctBtnImport" onclick="ctImporter()" style="display:inline-flex;align-items:center;gap:7px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Importer un relevé</button><button type="button" class="ct-btn" id="ctBtnAdd" onclick="ctAjouterLigne()" style="display:inline-flex;align-items:center;gap:7px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" style="flex-shrink:0"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Ajouter une ligne</button><button type="button" class="ct-btn" id="ctAccAdd" onclick="ctCptAdd()" style="display:none;align-items:center;gap:7px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" style="flex-shrink:0"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Ajouter un compte CTO</button><button type="button" class="ct-btn" id="ctBtnFisc" onclick="showPage(\'fiscal-pea-cto\',null)">Fiscalité</button></div>'
     + '</div></div>';
@@ -11958,7 +12076,7 @@ function ctRenderBand(){
     set('ctBandTot', ctSigne(g)); const col = g >= 0 ? 'var(--green)' : 'var(--red)'; if(tot) tot.style.color = col; if(pct) pct.style.color = col;
     set('ctBandPct', c > 0 ? (g >= 0 ? '+' : '') + (g / c * 100).toFixed(1).replace('.', ',') + ' %' : '');
   }
-  set('ctBandNote', sans > 0 && sans < nb ? (sans + (sans > 1 ? ' lignes sans cours ne sont pas comptées' : ' ligne sans cours n\'est pas comptée') + ' : le total est sous-évalué. Espèces non comprises.') : (c > 0 ? 'Sur ' + fmt(c, 0) + ' € investis. ' : '') + 'Valeur des lignes moins coût d\'acquisition, au cours en direct, espèces non comprises. La plus-value fiscale d\'un PEA est sur sa fiche.');
+  set('ctBandNote', sans > 0 && sans < nb ? (sans + (sans > 1 ? ' lignes sans cours ne sont pas comptées' : ' ligne sans cours n\'est pas comptée') + ' : le total est sous-évalué. Espèces non comprises.') : (c > 0 ? 'Sur ' + fmt(c, 0) + ' € payés pour ces titres. ' : '') + 'Gain = valeur actuelle moins prix d\'achat, espèces non comprises.');
   { const bb = document.getElementById('ctBandInfoBtn'); if(bb){ const w = sans > 0 && sans < nb; if(w) bb.dataset.warn = '1'; else delete bb.dataset.warn; bb.title = w ? 'Total sous-évalué : voir le détail' : 'Comment est calculé ce gain'; } }   // alerte visible même replié : le point info passe en orange
 }
 function ctRender(){
@@ -11982,28 +12100,26 @@ function ctRender(){
   // chiffres du compte affiché
   const E = ctEtatLigne(env, cpt), nb = E.lignes.length, tousSans = nb > 0 && E.ok.length === 0;
   let titres, cash = 0, total, pv, base = false, inv = 0;
-  if(env === 'PEA'){ const x = peaFiscSituation(); cash = x.cash; titres = x.valeur - x.cash; total = x.valeur; pv = x.pvTotale; base = x.baseVerse; inv = x.investi; }
-  else if(env === 'PME'){ const x = pmeFiscSituation(); titres = x.valeur; total = x.valeur; pv = x.plusValue; base = x.baseVerse; inv = x.investi; }
+  if(env === 'PEA'){ const x = peaFiscSituation(); cash = x.cash; titres = E.val; total = E.val + x.cash; pv = E.val - E.cout; base = x.baseVerse; inv = x.investi; }
+  else if(env === 'PME'){ const x = pmeFiscSituation(); titres = E.val; total = E.val; pv = E.val - E.cout; base = x.baseVerse; inv = x.investi; }
   else { cash = cpt ? kyfCtoCashOf(cpt) : getCashCto(); titres = E.val; total = titres + cash; pv = E.val - E.cout; }
-  const pvLabel = env === 'CTO' ? 'Plus-value latente des lignes (valeur moins coût)' : (base ? 'Plus-value fiscale (valeur moins total versé)' : 'Plus-value latente (estimée sur le coût)');
+  const pvLabel = 'Gain sur les titres', gT = E.val - E.cout, noT = E.ok.length === 0;   // un seul gain affiché : celui des titres (valeur moins prix d'achat), espèces non comprises
   const vide = nb === 0 && !(cash > 0) && !base;
   // carte principale
   const hero = document.getElementById('ctHero'); if(hero) hero.style.background = M.fond;
   ctRenderHeroHead(env, cpt, tot); ctRenderJour(env, cpt);
   set('ctHeroTot', tousSans ? 'données incomplètes' : eur(total));
-  const hp = document.getElementById('ctHeroPv'); if(hp){ hp.textContent = tousSans ? 'Plus-value indisponible' : (vide ? '' : ctSigne(pv)); hp.style.color = tousSans || vide ? '' : (pv >= 0 ? '#7be3b4' : '#ff9aa6'); }
-  set('ctHeroPvL', tousSans || vide ? '' : pvLabel);
+  const hp = document.getElementById('ctHeroPv'); if(hp){ hp.textContent = tousSans ? 'Plus-value indisponible' : (vide || noT ? '' : ctSigne(gT) + (E.cout > 0 ? ' (' + (gT >= 0 ? '+' : '') + (gT / E.cout * 100).toFixed(1).replace('.', ',') + ' %)' : '')); hp.style.color = tousSans || vide || noT ? '' : (gT >= 0 ? '#7be3b4' : '#ff9aa6'); }
+  set('ctHeroPvL', tousSans || vide || noT ? '' : pvLabel);
   { // point info : d'où vient la plus-value affichée (la plus-value fiscale compte les espèces, le bandeau du haut non)
-    const ib = document.getElementById('ctHeroPvInfoBtn'), inote = document.getElementById('ctHeroPvNote'), vis = !(tousSans || vide);
+    const ib = document.getElementById('ctHeroPvInfoBtn'), inote = document.getElementById('ctHeroPvNote'), vis = !(tousSans || vide || noT);
     if(ib) ib.style.display = vis ? 'inline-flex' : 'none';
     if(inote){
-      inote.textContent = base && env !== 'CTO'
-        ? 'Valeur totale du compte (lignes et espèces) moins le total versé. Les espèces en font partie : ce sont surtout des gains déjà réalisés (ventes, dividendes) restés dans le compte, que vous n\'avez pas versés. Le bandeau du haut ne compte que les lignes : valeur moins coût d\'acquisition, espèces non comprises.'
-        : 'Valeur des lignes moins leur coût d\'acquisition, au cours en direct. Les espèces ne sont pas comprises.';
+      inote.textContent = 'Valeur actuelle de vos titres moins leur prix d\'achat, au cours en direct. Les espèces ne sont pas comprises. Pour un retrait, le calcul qui tient compte de vos versements est dans « Fiscalité et retrait ».';
       if(!vis){ inote.style.display = 'none'; if(ib){ ib.setAttribute('aria-expanded', 'false'); } }
     }
   }
-  set('ctHeroEsp', tousSans || vide ? '' : (env === 'PME' ? 'Espèces non suivies : valeur des titres seulement' : (cash > 0 ? 'dont espèces ' + eur(cash) : '')));
+  set('ctHeroEsp', tousSans || vide ? '' : (env === 'PME' ? 'Espèces non suivies : valeur des titres seulement' : (cash > 0 ? eur(titres) + ' de titres + ' + eur(cash) + ' d\'espèces' : '')));
   const date = M.dateKey ? (localStorage.getItem(M.dateKey) || '') : info.date;
   const m = date ? kyfMoisEntiersDepuis(date) : null, mOk = (m !== null && m >= 0);
   // 2.8.10.48 : la date d'ouverture et le total versé ne vivent plus que dans les deux cartes du dessous (plus de répétition dans la carte principale)
@@ -12056,7 +12172,7 @@ function ctRender(){
       }
     } else if(nb > 0 && !tousSans){
       const mx = Math.max(E.val, E.cout, 1);
-      card(sec2, { label: 'Lignes du compte', value: eur(E.val), pct: E.val / mx * 100, color: E.val >= E.cout ? 'var(--green)' : 'var(--red)', l1: 'Coût d\'acquisition ' + fmt(E.cout, 0) + ' €' });
+      card(sec2, { label: 'Lignes du compte', value: eur(E.val), pct: E.val / mx * 100, color: E.val >= E.cout ? 'var(--green)' : 'var(--red)', l1: 'Prix d\'achat total ' + fmt(E.cout, 0) + ' €' });
     } else {
       card(sec2, { label: 'Lignes du compte', value: '-', l1: nb === 0 ? 'Aucune ligne en CTO pour l\'instant.' : 'Aucun cours connu pour ces lignes.' });
     }
@@ -12106,6 +12222,7 @@ function ctRattacher(id){
   const x = l.find(y => y && String(y.id) === String(id)); if(!x || x.envCompte) return;
   x.envCompte = KYF_CT_META[env].tag; livSave(l);
   try{ renderLivrets(); }catch(e){}
+  try{ kyfDivVersLivretMig_(); }catch(e){}
   ctRender();
 }
 function ctIgnorer(id){
@@ -12178,10 +12295,13 @@ function ctRenderHeroHead(env, cpt, tot){   // courtier connu : son nom en grand
   const T = document.getElementById('ctHeroT'), S = document.getElementById('ctHeroE'), L = document.getElementById('ctHeroLogo');
   if(tot){ if(T) T.textContent = 'CTO TOTAUX'; if(S){ const l = kyfCtoComptes(), seen = {}; let nb = 0, inconnu = 0;   // nombre de banques distinctes parmi les comptes (celles qui sont renseignées)
       l.forEach(c => { const e = c.id === 'c1' ? (ctInfo().CTO.etab || ctEtabAuto('CTO')) : c.etab, k = ctNorm(e); if(!k) inconnu++; else if(!seen[k]){ seen[k] = 1; nb++; } });
-      S.textContent = l.length + ' comptes' + (nb > 0 ? ' · ' + nb + (nb > 1 ? ' banques' : ' banque') + (inconnu > 0 ? ' renseignée' + (nb > 1 ? 's' : '') : '') : ''); } if(L){ L.textContent = ''; L.style.display = 'none'; } return; }
+      S.textContent = l.length + ' comptes' + (nb > 0 ? ' · ' + nb + (nb > 1 ? ' banques' : ' banque') + (inconnu > 0 ? ' renseignée' + (nb > 1 ? 's' : '') : '') : ''); } if(L){ L.textContent = ''; L.style.display = 'none'; L.dataset.logoKey = ''; } return; }
   if(T) T.textContent = e || nom || M.titre;
   if(S) S.textContent = (env === 'PEA' && kyfPeaJeune().actif) ? (e ? M.titre + ' jeune' : M.sous + ' (PEA jeune)') : (e ? (nom || M.titre) : M.sous);
-  if(L){ L.textContent = ''; if(e){ L.appendChild(ctLogoNode(e, 40)); L.style.display = 'inline-flex'; } else L.style.display = 'none'; }
+  // Le logo n'est reconstruit que si l'établissement change : sinon chaque clic de la page le recréait et il clignotait
+  if(L){ const cle = e ? String(e) : '';
+    if(cle && L.dataset.logoKey === cle && L.firstChild){ L.style.display = 'inline-flex'; }
+    else { L.textContent = ''; L.dataset.logoKey = cle; if(e){ L.appendChild(ctLogoNode(e, 40)); L.style.display = 'inline-flex'; } else L.style.display = 'none'; } }
 }
 // Établissement « intelligent » : liste filtrée avec logos (courtiers et banques de KYF), clavier, noms usuels remis à l'orthographe de la liste.
 const KYF_CT_ALIAS = { 'ibkr':'Interactive Brokers', 'ib':'Interactive Brokers', 'bourso':'Boursorama', 'tr':'Trade Republic', 'scalable':'Scalable Capital', 'easy bourse':'EasyBourse', 'ca':'Crédit Agricole', 'sg':'Société Générale' };
@@ -12289,7 +12409,7 @@ function ctRenderJour(env, cpt){
   box.appendChild(ctJourFleche(nul ? 0 : (up ? 1 : -1)));
   const c = document.createElement('div'); c.style.cssText = 'display:flex;flex-direction:column;gap:1px';
   c.appendChild(txt(ctSigne(j.v) + pct, 'font-size:12px;font-weight:700;color:' + col));
-  const quand = ctJourQuand(j.seance);
+  const quand = ctJourQuand(j.seance) + ', titres seuls';
   c.appendChild(txt(j.ko > 0 ? quand + ', ' + j.ko + (j.ko > 1 ? ' lignes non comptées' : ' ligne non comptée') : quand, 'font-size:10px;color:rgba(255,255,255,0.75)'));
   box.appendChild(c);
 }
@@ -18759,7 +18879,6 @@ function kyfFirstTrackingYear(){
 // ── KPI "Valorisation Live" basculable : nominal <-> pouvoir d'achat réel.󠁋󠁙󠁆󠁊󠁍󠀲󠀶
 // Ne remplace pas le calcul existant (totalGlobal), juste un second mode
 // d'affichage de la même donnée mémorisée dans window._kLiveNominal.
-let _kLiveMode = localStorage.getItem('kyf-klive-mode') || 'nominal';
 // Réglage Paramètres > Immobilier : valorisation live crédits déduits (actif moins passif). Par défaut : désactivé (comportement historique, immobilier à sa valeur brute).
 // N'agit que sur le KPI Valorisation live et sa composition : allocation, historique et séances restent à la valeur brute, pour ne créer aucun faux écart.
 const KYF_IMMO_LIVE_NET_KEY = 'kyf-immo-live-net';
@@ -19143,29 +19262,31 @@ function cryptoFiscCalc(){
   `;
 }
 
+// Espèces des comptes ajoutées à la Valorisation live : PEA + CTO + compte courant saisi. Les livrets liquides et les stablecoins sont déjà dans les classes d'actifs, pas recomptés ici.
+function kyfKLiveCash(){
+  let pea = 0, cto = 0, ccp = 0;
+  try{ pea = getCashPea(); cto = getCashCto(); ccp = getCashCcp(); }catch(e){}
+  return { pea, cto, ccp, total: pea + cto + ccp };
+}
 function kyfRenderKLive(){
   if(window._kLiveNominal === undefined) return;
   const dette = kyfImmoLiveNet() ? (Number(window._kLiveImmoDette) || 0) : 0;
-  const nominal = window._kLiveNominal - dette;
+  const nominal = window._kLiveNominal + kyfKLiveCash().total - dette;   // total espèces comprises : placements + espèces des comptes (livrets et stablecoins sont déjà dans les placements)
   const valEl = document.getElementById('kLive');
   const subEl = document.getElementById('kLiveSub');
   const lblEl = document.querySelector('#kpi-kLive .kpi-lbl');
-  if(_kLiveMode === 'reel'){
-    const refYear = kyfFirstTrackingYear();
-    const nowYear = new Date().getFullYear();
-    const reel = kyfPouvoirAchatReel(nominal, refYear);
-    if(lblEl) lblEl.textContent = 'POUVOIR D\'ACHAT RÉEL';
-    if(valEl) valEl.textContent = fmt(reel,2)+' €';
-    if(subEl) subEl.textContent = refYear < nowYear
-      ? (nowYear > KYF_INFLATION_LAST_YEAR
-          ? `Exprimé en euros ${refYear} · inflation INSEE jusqu'en ${KYF_INFLATION_LAST_YEAR} · ${nowYear} non comptée`
-          : `Exprimé en euros ${refYear} · inflation INSEE`)
-      : 'Pas assez de recul pour corriger (1ère année de suivi)';
-  } else {
-    if(lblEl) lblEl.textContent = 'VALORISATION LIVE';
-    if(valEl) valEl.textContent = fmt(nominal,2)+' €';
-    if(subEl) subEl.textContent = dette > 0.005 ? 'Crédits immobiliers déduits (' + fmt(dette,0) + ' €)' : 'Valorisation live';
-  }
+  if(lblEl) lblEl.textContent = 'VALORISATION LIVE';
+  if(valEl) valEl.textContent = fmt(nominal,2)+' €';
+  if(subEl) subEl.textContent = dette > 0.005 ? 'Espèces comprises · crédits déduits (' + fmt(dette,0) + ' €)' : 'Patrimoine total, espèces comprises';
+  try{ kyfPfEmptyHead(); kyfPfHeadRefreshVal(); }catch(e){}
+}
+// Met à jour le seul montant de l'en-tête de la courbe quand les espèces ou les prix changent (sans redessiner la courbe)
+function kyfPfHeadRefreshVal(){
+  const st = window._pfHeadState, v = document.getElementById('pfHeadVal');
+  if(!st || !st.isTot || st.hasBm || !v || window._kLiveNominal === undefined || !isFinite(window._kLiveNominal)) return;
+  const emp = document.getElementById('pfEmptyState'); if(emp && emp.style.display !== 'none') return;
+  const conv = (typeof kyfDc === 'function') ? kyfDc : (x => x), sym = (typeof kyfDcSym === 'function') ? kyfDcSym() : '€';
+  v.textContent = fmt(conv(window._kLiveNominal + (st.eff === 'tot' ? kyfKLiveCash().total - (kyfImmoLiveNet() ? (Number(window._kLiveImmoDette) || 0) : 0) : 0)), 2) + ' ' + sym;
 }
 // Clic droit sur « Valorisation live » : de quoi se compose le total affiché
 function kyfKLiveBreakdown(ev){
@@ -19173,25 +19294,34 @@ function kyfKLiveBreakdown(ev){
   const old = document.getElementById('kyfKLivePop'); if(old){ old.remove(); document.body.classList.remove('kyf-kpop-open'); }
   // Réglage « crédits déduits » : une ligne négative, lue au moment de l'ouverture (le réglage peut changer sans recalcul du tableau de bord)
   const _dette = kyfImmoLiveNet() ? (Number(window._kLiveImmoDette) || 0) : 0;
-  const parts = (window._kLiveParts || []).concat(_dette > 0.005 ? [{ l:'Crédits immobiliers', v:-_dette }] : []).filter(x => Math.abs(x.v) > 0.005).sort((x, y) => y.v - x.v);
+  const _kc = kyfKLiveCash();
+  const _sansEsp = (window._kLiveParts || []).reduce((t, x) => t + x.v, 0);   // = le chiffre de la courbe (valeur brute, crédits non déduits)
+  const parts = (window._kLiveParts || []).concat([{ l:'Espèces PEA', v:_kc.pea }, { l:'Espèces CTO', v:_kc.cto }, { l:'Compte courant', v:_kc.ccp }]).concat(_dette > 0.005 ? [{ l:'Crédits immobiliers', v:-_dette }] : []).filter(x => Math.abs(x.v) > 0.005).sort((x, y) => y.v - x.v);
   const tot = parts.reduce((t, x) => t + x.v, 0);
   const rows = parts.length ? parts.map(x => '<div style="display:flex;justify-content:space-between;gap:18px;padding:3px 0"><span style="color:var(--text2)">' + x.l + ' <span style="color:var(--text3);font-size:10px">' + fmt(tot > 0 ? x.v / tot * 100 : 0, 1) + ' %</span></span><span style="color:var(--text);font-weight:600;font-variant-numeric:tabular-nums">' + fmt(x.v, 2) + ' €</span></div>').join('') : '<div style="color:var(--text3)">Aucun actif à additionner.</div>';
+  // Pouvoir d'achat : le total d'aujourd'hui exprimé en euros de la première année de suivi (inflation INSEE). Ligne affichée seulement quand il y a au moins un an de recul.
+  let _paLine = '';
+  try{
+    const _ry = kyfFirstTrackingYear(), _ny = new Date().getFullYear();
+    if(_ry < _ny && tot > 0){
+      _paLine = '<div style="border-top:1px solid var(--border2);margin-top:8px;padding-top:8px"><div style="display:flex;justify-content:space-between;gap:18px"><span style="color:var(--text2)">En euros ' + _ry + ' (après inflation)</span><span style="color:var(--text);font-weight:600;font-variant-numeric:tabular-nums">' + fmt(kyfPouvoirAchatReel(tot, _ry), 2) + ' €</span></div>' +
+        (_ny > KYF_INFLATION_LAST_YEAR ? '<div style="margin-top:3px;font-size:10px;color:var(--text3)">Inflation INSEE connue jusqu\'en ' + KYF_INFLATION_LAST_YEAR + ' : ' + _ny + ' non comptée.</div>' : '') + '</div>';
+    }
+  }catch(e){}
   const pop = document.createElement('div'); pop.id = 'kyfKLivePop';
   pop.style.cssText = 'position:fixed;z-index:100000;min-width:230px;max-width:92vw;padding:12px 14px;border-radius:10px;border:1px solid var(--border2);background:var(--bg2);box-shadow:0 8px 28px rgba(0,0,0,.35);font-size:12px;line-height:1.4';
-  pop.innerHTML = '<div style="font-size:9px;letter-spacing:.6px;color:var(--text3);margin-bottom:6px">VALORISATION LIVE · COMPOSITION</div>' + rows +
+  pop.innerHTML = '<div style="font-size:9px;letter-spacing:.6px;color:var(--text3);margin-bottom:6px">PATRIMOINE · COMPOSITION</div>' + rows +
     '<div style="display:flex;justify-content:space-between;gap:18px;border-top:1px solid var(--border2);margin-top:6px;padding-top:7px"><span style="color:var(--text2)">Total</span><span style="color:var(--accent);font-weight:700;font-variant-numeric:tabular-nums">' + fmt(tot, 2) + ' €</span></div>' +
-    '<div style="margin-top:6px;font-size:10px;color:var(--text3)">Espèces et stablecoins comptés à part (KPI Cash).</div>';
+    '<div style="display:flex;justify-content:space-between;gap:18px;margin-top:6px;font-size:10px;color:var(--text3)"><span>Hors espèces (chiffre de la courbe)</span><span style="font-variant-numeric:tabular-nums">' + fmt(_sansEsp, 2) + ' €</span></div>' +
+    '<div style="margin-top:4px;font-size:10px;color:var(--text3)">Livrets et stablecoins sont déjà dans leurs lignes.</div>' + _paLine;
   document.body.appendChild(pop); document.body.classList.add('kyf-kpop-open');
   const r = pop.getBoundingClientRect();
-  pop.style.left = Math.max(8, Math.min(ev.clientX, innerWidth - r.width - 8)) + 'px';
-  pop.style.top = Math.max(8, Math.min(ev.clientY, innerHeight - r.height - 8)) + 'px';
+  let _px = ev.clientX, _py = ev.clientY;
+  if(!(_px > 0) && !(_py > 0)){ const _b = ((ev.currentTarget || ev.target) || document.body).getBoundingClientRect(); _px = _b.left; _py = _b.bottom + 6; }   // ouverture au clavier : sous l'élément
+  pop.style.left = Math.max(8, Math.min(_px, innerWidth - r.width - 8)) + 'px';
+  pop.style.top = Math.max(8, Math.min(_py, innerHeight - r.height - 8)) + 'px';
   const close = e => { if(e && e.type === 'keydown' && e.key !== 'Escape') return; if(e && e.type === 'mousedown' && pop.contains(e.target)) return; pop.remove(); document.body.classList.remove('kyf-kpop-open'); ['mousedown', 'keydown', 'scroll', 'resize'].forEach(t => window.removeEventListener(t, close, true)); };
   setTimeout(() => ['mousedown', 'keydown', 'scroll', 'resize'].forEach(t => window.addEventListener(t, close, true)), 0);
-}
-function kyfToggleKLiveMode(){
-  _kLiveMode = _kLiveMode === 'nominal' ? 'reel' : 'nominal';
-  localStorage.setItem('kyf-klive-mode', _kLiveMode);
-  kyfRenderKLive();
 }
 
 // Série d'inflation cumulée au même format que SP500/CAC40/MSCIWorld
@@ -30868,6 +30998,172 @@ let _pfBenchmark = localStorage.getItem('kyf-pf-bm') || 'none';
 // pour ne pas réapparaître à chaque changement de filtre 5J/15J/30J/6M/1A/MAX (le chart est recréé à chaque fois)
 let _pfHiddenLabels = (()=>{ try{ return JSON.parse(localStorage.getItem('kyf-pf-hidden')||'{}'); }catch(e){ return {}; } })();
 
+// Courbe : « Total, espèces comprises » (tot) ou « Hors espèces » (hors). Les points enregistrés avant la version 148 n'ont pas les espèces :
+// la courbe espèces comprises ne retient que les séances qui les ont, et reste hors espèces tant qu'il n'y en a pas 2.
+let _pfCash = (function(){ try{ return localStorage.getItem('kyf-pf-cash') === 'hors' ? 'hors' : 'tot'; }catch(e){ return 'tot'; } })();
+function kyfPfCashClose(){
+  const m = document.getElementById('pfCashMenu'), t = document.getElementById('pfCashTrigger');
+  if(m) m.style.display = 'none'; if(t) t.setAttribute('aria-expanded', 'false');
+  document.removeEventListener('mousedown', kyfPfCashOutside, true); document.removeEventListener('keydown', kyfPfCashKey, true);
+}
+function kyfPfCashOutside(e){ const w = document.getElementById('pfCashWrap'); if(w && !w.contains(e.target)) kyfPfCashClose(); }
+function kyfPfCashKey(e){ if(e.key === 'Escape') kyfPfCashClose(); }
+function kyfPfCashToggle(ev){
+  if(ev) ev.stopPropagation();
+  const m = document.getElementById('pfCashMenu'), t = document.getElementById('pfCashTrigger'); if(!m) return;
+  if(t && t.classList.contains('off')){ kyfPfCashClose(); return; }   // face à un indice : pas de choix d'espèces
+  if(m.style.display === 'block'){ kyfPfCashClose(); return; }
+  m.style.display = 'block'; if(t) t.setAttribute('aria-expanded', 'true');
+  document.addEventListener('mousedown', kyfPfCashOutside, true); document.addEventListener('keydown', kyfPfCashKey, true);
+}
+function kyfPfCashPick(v){
+  _pfCash = v === 'hors' ? 'hors' : 'tot';
+  try{ localStorage.setItem('kyf-pf-cash', _pfCash); }catch(e){}
+  kyfPfCashClose(); renderPfFullChart();
+}
+// ── Espèces du passé : estimation d'après le journal ──────────────────────────────────────────
+// Les séances d'avant la version 148 n'ont pas les espèces. On les estime en remontant le temps depuis un point connu :
+// espèces d'un jour passé = espèces connues - tout ce qui est entré ou sorti après ce jour (versements, retraits, achats, ventes, dividendes crédités).
+// Prudence : on s'arrête avant un achat sans débit connu (ancien achat) et avant un jour où les espèces deviendraient négatives ;
+// et on renonce si l'estimation contredit des espèces déjà enregistrées. Compte courant saisi à la main : supposé constant (aucun journal).
+function kyfCashEventsLog(){
+  const ev = [], inconnus = [];
+  const okDate = d => /^\d{4}-\d{2}-\d{2}/.test(String(d || '')) ? String(d).slice(0, 10) : null;
+  try{ kyfCashMvts().forEach(m => { const d = m && okDate(m.date); if(d && (m.env === 'PEA' || m.env === 'CTO') && isFinite(m.montant)) ev.push({ d, v:(m.sens === 'in' ? 1 : -1) * m.montant }); }); }catch(e){}
+  try{ etfTransLoad().forEach(t => {
+    const d = t && okDate(t.date); if(!d) return;
+    const env = kyfTradeEnv(t); if(env !== 'PEA' && env !== 'CTO') return;
+    if(t.type === 'achat'){
+      if(t.livretId) return;                                    // payé par un livret : les espèces n'ont pas bougé
+      if(t.cashDebite === undefined){ inconnus.push(d); return; } // ancien achat : débit réel inconnu
+      ev.push({ d, v:-(parseFloat(t.cashDebite) || 0) });
+    } else if(t.type === 'vente') ev.push({ d, v:parseFloat(t.net) || 0 });
+  }); }catch(e){}
+  try{ divLoad().forEach(x => { const d = x && okDate(x.date); if(d && x.cashCredite > 0 && x.cashEnv) ev.push({ d, v:x.cashCredite }); }); }catch(e){}
+  return { ev, inconnus };
+}
+function kyfCashEstimate(snaps){
+  try{
+    const { ev, inconnus } = kyfCashEventsLog();
+    const sum = (a, b) => ev.reduce((t, e) => (e.d > a && e.d <= b) ? t + e.v : t, 0);   // événements dans (a, b]
+    const real = snaps.filter(x => typeof x.cash === 'number');
+    let aDate, aCash;
+    if(real.length){ aDate = real[0].date; aCash = real[0].cash; }
+    else { aDate = (typeof kyfParisNow === 'function') ? kyfParisNow().date : new Date().toISOString().slice(0, 10); aCash = getCashPea() + getCashCto() + getCashCcp(); }
+    // contrôle : depuis le point connu, le journal doit retrouver les espèces enregistrées plus tard
+    for(let i = 1; i < real.length; i++){
+      const pred = aCash + sum(aDate, real[i].date);
+      if(Math.abs(pred - real[i].cash) > Math.max(5, 0.02 * Math.abs(real[i].cash))) return null;
+    }
+    const minOk = inconnus.length ? inconnus.slice().sort().pop() : '';
+    const est = {}; let depuis = null, n = 0;
+    const older = snaps.filter(x => typeof x.cash !== 'number' && x.date <= aDate).sort((a, b) => b.date.localeCompare(a.date));
+    for(const x of older){
+      if(x.date < minOk) break;
+      const c = aCash - sum(x.date, aDate);
+      if(c < -0.5) break;
+      est[x.date] = Math.round(Math.max(0, c) * 100) / 100; depuis = x.date; n++;
+    }
+    return n ? { est, depuis, n } : null;
+  }catch(e){ return null; }
+}
+
+// Bulle de prix d'une courbe : toujours à l'intérieur du cadre (carte) qui la contient, et de l'écran.
+// À droite du point par défaut ; sans place à droite, elle passe à gauche ; au-dessus du point, sinon en dessous.
+function kyfTipInCard(tip, canvas, px, py){
+  const card = (canvas && canvas.closest('.card')) || (canvas && canvas.parentElement);
+  const b = card ? card.getBoundingClientRect() : { left:0, top:0, right:window.innerWidth, bottom:window.innerHeight };
+  const L = Math.max(b.left, 0) + 6, R = Math.min(b.right, window.innerWidth) - 6, T = Math.max(b.top, 0) + 6, B = Math.min(b.bottom, window.innerHeight) - 6;
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  let x = px + 16; if(x + w > R) x = px - 16 - w;
+  x = Math.max(L, Math.min(x, R - w));
+  let y = py - h - 8; if(y < T) y = py + 16;
+  y = Math.max(T, Math.min(y, B - h));
+  tip.style.left = x + 'px'; tip.style.top = y + 'px';
+}
+// Point info de l'en-tête : le texte d'explication, rangé ici plutôt que sous le chiffre
+function kyfPfInfoClose(){
+  const p = document.getElementById('pfInfoPop'), t = document.getElementById('pfInfoBtn');
+  if(p) p.style.display = 'none'; if(t) t.setAttribute('aria-expanded', 'false');
+  document.removeEventListener('mousedown', kyfPfInfoOutside, true); document.removeEventListener('keydown', kyfPfInfoKey, true);
+}
+function kyfPfInfoOutside(e){ const p = document.getElementById('pfInfoPop'), t = document.getElementById('pfInfoBtn'); if(p && !p.contains(e.target) && t && !t.contains(e.target)) kyfPfInfoClose(); }
+function kyfPfInfoKey(e){ if(e.key === 'Escape') kyfPfInfoClose(); }
+function kyfPfInfoToggle(ev){
+  if(ev) ev.stopPropagation();
+  const p = document.getElementById('pfInfoPop'), t = document.getElementById('pfInfoBtn'); if(!p) return;
+  if(p.style.display === 'block'){ kyfPfInfoClose(); return; }
+  kyfPfCashClose();
+  p.style.display = 'block'; if(t) t.setAttribute('aria-expanded', 'true');
+  document.addEventListener('mousedown', kyfPfInfoOutside, true); document.addEventListener('keydown', kyfPfInfoKey, true);
+}
+// En-tête de la courbe : choix d'affichage, chiffre actuel et évolution sur la période affichée
+function kyfPfHeadRender(o){
+  const head = document.getElementById('pfHead'); if(!head) return;
+  const isTot = _pfView === 'total';
+  // Mode réellement affiché : « espèces comprises » demandé mais courbe pas encore disponible → hors espèces, et le chiffre suit la courbe
+  const eff = (isTot && _pfCash === 'tot' && !o.useCash) ? 'hors' : _pfCash;
+  head.style.display = 'flex';
+  const chipRow = document.getElementById('pfChipRow'); if(chipRow) chipRow.style.display = isTot ? 'flex' : 'none';
+  const locked = !!(o.idxMode && isTot);
+  const trig = document.getElementById('pfCashTrigger');
+  if(trig){ trig.classList.toggle('off', locked); trig.setAttribute('aria-disabled', locked ? 'true' : 'false'); trig.title = locked ? 'Face à un indice : performance de vos placements, hors versements et hors espèces' : 'Choisir ce que montre la courbe'; }
+  if(locked) kyfPfCashClose();
+  const lbl = document.getElementById('pfCashLabel'); if(lbl) lbl.textContent = locked ? 'Hors versements' : (eff === 'hors' ? 'Hors espèces' : 'Total, espèces comprises');
+  ['tot', 'hors'].forEach(k => { const bt = document.getElementById('pfCash-' + k); if(!bt) return; const on = k === _pfCash; bt.classList.toggle('on', on); bt.setAttribute('aria-selected', on ? 'true' : 'false'); const ck = bt.querySelector('.pf-cash-ck'); if(ck) ck.style.visibility = on ? 'visible' : 'hidden'; });
+  const optTot = document.querySelector('#pfCash-tot .pf-cash-s');
+  if(optTot) optTot.textContent = o.useCash || !isTot ? 'Tout ce que vous possédez, cash des comptes inclus' : 'En construction : disponible dès 2 séances avec les espèces';
+  const conv = (typeof kyfDc === 'function') ? kyfDc : (x => x), sym = (typeof kyfDcSym === 'function') ? kyfDcSym() : '€';
+  const money = v => fmt(v, 2) + ' ' + sym;
+  const cash = (typeof kyfKLiveCash === 'function') ? kyfKLiveCash().total : 0;
+  const liveHors = (window._kLiveNominal !== undefined && isFinite(window._kLiveNominal)) ? window._kLiveNominal : null;
+  const dateTxt = o.lastTs ? new Date(o.lastTs).toLocaleDateString('fr-FR') : '';
+  let val = o.lastVal, liveTxt = dateTxt;
+  if(isTot && liveHors !== null){ val = conv(liveHors + (eff === 'tot' ? cash - (kyfImmoLiveNet() ? (Number(window._kLiveImmoDette) || 0) : 0) : 0)); liveTxt = new Date().toLocaleDateString('fr-FR'); }
+  const pct = x => (x >= 0 ? '+' : '-') + Math.abs(x).toFixed(2).replace('.', ',') + ' %';
+  window._pfHeadState = { isTot, eff, hasBm: !!o.hasBm };
+  const v = document.getElementById('pfHeadVal'); if(v) v.classList.toggle('pf-hv-off', !!o.hasBm);
+  if(v) v.textContent = (o.hasBm && isFinite(o.mainLast)) ? pct(o.mainLast) : (isFinite(val) ? money(val) : '-');
+  const sub = document.getElementById('pfHeadSub');
+  if(sub){
+    sub.innerHTML = '';
+    if(o.hasBm){
+      if(isFinite(o.bmLast) && isFinite(o.mainLast)){
+        const nm = document.createElement('span'); nm.textContent = o.bmName + ' ' + pct(o.bmLast); sub.appendChild(nm);
+        const ec = o.mainLast - o.bmLast, up2 = ec >= 0, col2 = up2 ? 'var(--green)' : 'var(--red)';
+        const pl = document.createElement('span'); pl.className = 'pf-pill'; pl.style.cssText = 'color:' + col2 + ';background:color-mix(in srgb,' + col2 + ' 15%, transparent)';
+        pl.innerHTML = '<svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="' + (up2 ? '6 15 12 9 18 15' : '6 9 12 15 18 9') + '"/></svg>';
+        pl.appendChild(document.createTextNode(Math.abs(ec).toFixed(2).replace('.', ',') + ' pt'));
+        pl.title = (up2 ? 'Vous devancez ' : 'Vous êtes derrière ') + o.bmName + ' de ' + Math.abs(ec).toFixed(2).replace('.', ',') + ' point(s)'; sub.appendChild(pl);
+      }
+    } else if(o.firstVal > 0 && isFinite(o.lastVal)){
+      const dl = o.lastVal - o.firstVal, pc = dl / o.firstVal * 100, up = dl >= 0, col = up ? 'var(--green)' : 'var(--red)';
+      const m = document.createElement('span'); m.textContent = (up ? '+' : '') + money(dl); sub.appendChild(m);
+      const pill = document.createElement('span'); pill.className = 'pf-pill';
+      pill.style.cssText = 'color:' + col + ';background:color-mix(in srgb,' + col + ' 15%, transparent)';
+      pill.innerHTML = '<svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="' + (up ? '6 15 12 9 18 15' : '6 9 12 15 18 9') + '"/></svg>';
+      pill.appendChild(document.createTextNode(Math.abs(pc).toFixed(2).replace('.', ',') + ' %'));
+      sub.appendChild(pill);
+    }
+  }
+  const pop = document.getElementById('pfInfoPop');
+  if(pop){
+    const lines = [];
+    if(o.hasBm){
+      const since = o.firstTs ? ' depuis le ' + new Date(o.firstTs).toLocaleDateString('fr-FR') : '';
+      lines.push(o.idxMode ? 'Face à un indice : performance de vos placements' + since + ', hors versements et hors espèces, comme l\'indice.' : 'Face à l\'inflation : évolution de votre patrimoine' + since + ', versements compris.');
+      lines.push('L\'écart est la différence, en points de pourcentage, entre votre courbe et la comparaison.');
+    }
+    if(liveTxt && !o.hasBm) lines.push('Chiffre du ' + liveTxt + (isTot ? (eff === 'tot' ? ', espèces des comptes comprises' + (cash > 0.005 ? ' (' + money(conv(cash)) + ')' : '') : ', sans les espèces des comptes') : '') + '.');
+    if(!o.hasBm) lines.push('Évolution sur la période affichée, versements compris.');
+    if(isTot && _pfCash === 'tot' && !o.useCash && !o.idxMode) lines.push('La courbe espèces comprises se construit séance après séance : d\'ici là, la courbe et ce chiffre sont hors espèces. Le total espèces comprises est dans la composition (clic sur le montant).');
+    else if(isTot && _pfCash === 'tot' && !o.idxMode){
+      if(o.estCount > 0) lines.push('Pointillés : espèces estimées d\'après votre journal (versements, retraits, achats, ventes, dividendes). Ce sont des estimations, pas des valeurs enregistrées.');
+      if(o.partial && o.firstCashDate) lines.push('Courbe espèces comprises depuis le ' + new Date(o.firstCashDate).toLocaleDateString('fr-FR') + ' (avant : espèces non suivies de façon sûre).');
+    }
+    pop.innerHTML = lines.map(t => '<div style="margin:0 0 6px">' + t.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</div>').join('').replace(/<div style="margin:0 0 6px">([^]*?)<\/div>$/, '<div>$1</div>');
+  }
+}
 function setPfView(v){ _pfView=v; localStorage.setItem('kyf-pf-view',v); renderPfFullChart(); }
 function setPfRange(r){ _pfRange=r; localStorage.setItem('kyf-pf-range',r); renderPfFullChart(); }
 
@@ -30954,18 +31250,7 @@ function togglePfrMenu(){
   m.style.display = m.style.display === 'block' ? 'none' : 'block';
 }
 function setPfr(val, label){
-  setPfRange(val);
-  const lbl = document.getElementById('pfrLabel');
-  if(lbl) lbl.textContent = label;
-  document.querySelectorAll('#pfrMenu .pfr-btn').forEach(b => {
-    b.style.background = 'none';
-    b.style.color = 'var(--text2)';
-    b.style.fontWeight = '';
-    b.classList.remove('kyf-fixed-accent');
-  });
-  const active = document.getElementById('pfr-' + val);
-  if(active){ active.style.background = 'rgba(77,159,255,0.12)'; active.style.color = ''; active.classList.add('kyf-fixed-accent'); active.style.fontWeight = '700'; }
-  document.getElementById('pfrMenu').style.display = 'none';
+  setPfRange(val);   // la mise en forme de l'onglet actif est faite par le rendu de la courbe
 }
 function setBm(val, label){
   setPfBenchmark(val);
@@ -31215,7 +31500,23 @@ var KYF_PFE = (function(){
 })();
 
 // État vide de la courbe : affiché tant qu'il y a moins de 2 séances enregistrées, avec le compteur « Séance n sur 2 »
+// Pas encore de courbe (moins de 2 séances) : le montant du patrimoine et sa composition restent accessibles, seule la variation manque
+function kyfPfEmptyHead(){
+  const emp = document.getElementById('pfEmptyState'); if(!emp || emp.style.display === 'none') return;
+  const head = document.getElementById('pfHead'), v = document.getElementById('pfHeadVal'), sub = document.getElementById('pfHeadSub');
+  if(!head || !v || window._kLiveNominal === undefined || !isFinite(window._kLiveNominal)) return;
+  const tot = window._kLiveNominal + kyfKLiveCash().total - (kyfImmoLiveNet() ? (Number(window._kLiveImmoDette) || 0) : 0);
+  if(!(tot > 0.005)){ head.style.display = 'none'; return; }
+  const conv = (typeof kyfDc === 'function') ? kyfDc : (x => x), sym = (typeof kyfDcSym === 'function') ? kyfDcSym() : '€';
+  head.style.display = 'flex'; v.classList.remove('pf-hv-off'); v.textContent = fmt(conv(tot), 2) + ' ' + sym;
+  if(sub) sub.textContent = 'La variation apparaîtra avec la courbe';
+}
+function kyfPfHeadClick(ev){
+  const v = document.getElementById('pfHeadVal'); if(!v || v.classList.contains('pf-hv-off')) return;
+  kyfKLiveBreakdown(ev);
+}
 function kyfPfEmpty(show){
+  if(show){ ['pfHead', 'pfChipRow'].forEach(id => { const _h = document.getElementById(id); if(_h) _h.style.display = 'none'; }); }
   const el = document.getElementById('pfEmptyState'); if(!el) return;
   if(!show){ el.style.display = 'none'; return; }
   let n = 0; try{ n = getSnapshotsAll().length; }catch(e){}
@@ -31227,6 +31528,7 @@ function kyfPfEmpty(show){
     : 'Séance ' + n + ' sur 2 : revenez demain, votre courbe apparaîtra dès la deuxième séance.';
   if(dots) dots.innerHTML = [0,1].map(i => '<span style="width:8px;height:8px;border-radius:50%;background:' + (has && i < n ? 'var(--accent)' : 'transparent') + ';border:1.5px solid ' + (has && i < n ? 'var(--accent)' : 'var(--text3)') + '"></span>').join('');
   el.style.display = 'flex';
+  kyfPfEmptyHead();
   // Le personnage est piloté en JS dès l'affichage : montée en boucle, puis assis au bout d'une minute, couché et ronflant à 2 minutes
   if(window.KYF_PFE) KYF_PFE.resume(el);
 }
@@ -31252,6 +31554,9 @@ function renderPfFullChart(){
   // Seul un historique venu du Google Sheet (_fromGAS) reste prioritaire.
   const useSnap = !(HIST && HIST.length > 0 && HIST[0] && HIST[0]._fromGAS);
   let rawData;
+  let _useCash = false, _partialCash = false, _firstCashDate = null, _estCount = 0, _estFlag = null, _cashOfFn = null;
+  // Face à un indice boursier, la courbe est une performance hors versements des placements : les espèces n'y entrent pas
+  const _idxMode = _pfBenchmark !== 'none' && _pfBenchmark !== 'INFLATION' && !!(BENCHMARK_DATA[_pfBenchmark] && BENCHMARK_DATA[_pfBenchmark].length > 0);
   const snaps = useSnap ? (getSnapshotsAll ? getSnapshotsAll() : []) : [];
   if(useSnap){
     if(!snaps || snaps.length < 2){ if(charts.pfFull) charts.pfFull.destroy(); kyfPfEmpty(true); return; }
@@ -31259,13 +31564,18 @@ function renderPfFullChart(){
     // utilisé pour comparer à un indice. Avant : (valeur − valeur de départ) ÷ départ → un versement comptait comme un gain.
     const _twrMode = _pfView==='etf' ? 'etf' : _pfView==='crypto' ? 'crypto' : 'all';
     let _twrIdx = 1, _prevSnap = null;
-    rawData = [...snaps].sort((a,b)=>a.ts-b.ts).map(s => {
+    const _estCash = (_pfView === 'total' && _pfCash === 'tot' && !_idxMode) ? kyfCashEstimate(snaps) : null;
+    const _cashOf = s => typeof s.cash === 'number' ? s.cash : (_estCash && _estCash.est[s.date] !== undefined ? _estCash.est[s.date] : undefined);
+    const _cashSnaps = snaps.filter(s => _cashOf(s) !== undefined);
+    _useCash = _pfView === 'total' && _pfCash === 'tot' && !_idxMode && _cashSnaps.length >= 2;
+    if(_useCash){ _partialCash = _cashSnaps.length < snaps.length; _firstCashDate = [..._cashSnaps].sort((a, b) => a.ts - b.ts)[0].ts; _estCount = _cashSnaps.filter(s => typeof s.cash !== 'number').length; _estFlag = s => typeof s.cash !== 'number'; _cashOfFn = _cashOf; }
+    rawData = [...(_useCash ? _cashSnaps : snaps)].sort((a,b)=>a.ts-b.ts).map(s => {
       if(_prevSnap){ try{ const dl = kyfSnapDelta(_prevSnap, s, _twrMode); if(dl.base > 0 && isFinite(dl.varEur)) _twrIdx *= 1 + dl.varEur / dl.base; }catch(e){} }
       _prevSnap = s;
       // « Total » = TOUT le patrimoine (ETF, crypto, AV/PER, immobilier, livrets, or, crowdfunding), comme la carte VALORISATION.
       // Avant : s.total seul, sans livrets / or / crowdfunding → un chiffre qui ne correspondait à aucune autre carte.
-      const v = _pfView==='etf' ? (s.valorisation||0) : _pfView==='crypto' ? (s.crypto||0) : kyfSnapView(s, 'all').val;
-      return [s.ts, v, _twrIdx];
+      const v = _pfView==='etf' ? (s.valorisation||0) : _pfView==='crypto' ? (s.crypto||0) : kyfSnapView(s, 'all').val + (_useCash ? (_cashOfFn(s) || 0) : 0);
+      return [s.ts, v, _twrIdx, !!(_useCash && _estFlag && _estFlag(s))];
     });
   } else {
     rawData = [...HIST].reverse();
@@ -31280,6 +31590,7 @@ function renderPfFullChart(){
     if(charts.pfFull){ charts.pfFull.destroy(); charts.pfFull = null; }
     ['total','etf','crypto'].forEach(v=>{ const btn=document.getElementById('pfv-'+v); if(!btn) return; const active=v===_pfView; btn.classList.toggle('kyf-toggle-active', active); btn.style.background=active?'#f0b429':'var(--btn-secondary-bg)'; btn.style.color=active?'#000':'var(--text2)'; });
     kyfPfGrey(ctx, _pfGreyCfg, true);
+    ['pfHead', 'pfChipRow'].forEach(id => { const _h = document.getElementById(id); if(_h) _h.style.display = 'none'; });
     return;
   }
   kyfPfGrey(ctx, _pfGreyCfg, false);
@@ -31316,7 +31627,7 @@ function renderPfFullChart(){
   // Utilise chartPrefs.lineColor pour TOTAL (évite le flash jaune par défaut avant applyChartPrefs)
   const viewColDefault = _pfView==='etf' ? '#4d9fff' : _pfView==='crypto' ? '#00d4aa' : (typeof chartPrefs !== 'undefined' && chartPrefs.lineColor ? chartPrefs.lineColor : '#f0b429');
   const viewCol = viewColDefault;
-  const viewLbl = (_pfView==='etf' ? 'ETF/Actions' : _pfView==='crypto' ? 'Crypto' : 'Total')
+  const viewLbl = (_pfView==='etf' ? 'ETF/Actions' : _pfView==='crypto' ? 'Crypto' : (_useCash ? 'Total, espèces comprises' : 'Total'))
     + ((_pfBenchmark !== 'none' && _pfBenchmark !== 'INFLATION' && BENCHMARK_DATA[_pfBenchmark]?.length > 0) ? ' (hors versements)' : '');
   const r=parseInt(viewCol.slice(1,3),16), g=parseInt(viewCol.slice(3,5),16), b=parseInt(viewCol.slice(5,7),16);
   const labels   = data.map(h => exD(h[0]));
@@ -31343,7 +31654,8 @@ function renderPfFullChart(){
     borderWidth: (typeof chartPrefs !== 'undefined' && chartPrefs.borderWidth !== undefined) ? chartPrefs.borderWidth : 1.5,
     pointRadius: (typeof chartPrefs !== 'undefined' && chartPrefs.pointRadius !== undefined) ? chartPrefs.pointRadius : 0,
     pointHoverRadius: 0,
-    spanGaps:true
+    spanGaps:true,
+    segment: { borderDash: c2 => (data[c2.p1DataIndex] && data[c2.p1DataIndex][3]) ? [5, 4] : undefined }   // jours aux espèces estimées
   }];
 
   if(hasBm){
@@ -31377,7 +31689,15 @@ function renderPfFullChart(){
     datasets.push({ label:_pfBenchmark, data:bmData, borderColor:bmCol, borderWidth:1.5, borderDash:[4,3], backgroundColor:'transparent', fill:false, tension:0.1, pointRadius:0, pointHoverRadius:0, spanGaps:true, hidden: !!_pfHiddenLabels[_pfBenchmark] });
   }
 
-  ['5j','15j','30j','6m','1a','max'].forEach(r2=>{ const btn=document.getElementById('pfr-'+r2); if(!btn) return; btn.style.background=r2===_pfRange?'#f0b429':'var(--btn-secondary-bg)'; btn.style.color=r2===_pfRange?'#000':'var(--text2)'; });
+  try{
+    const _lastOf = arr => { for(let k = arr.length - 1; k >= 0; k--){ if(typeof arr[k] === 'number' && isFinite(arr[k])) return arr[k]; } return NaN; };
+    const _bmNames = { SP500:'S&P 500', CAC40:'CAC 40', MSCIWorld:'MSCI World', INFLATION:'Inflation' };
+    kyfPfHeadRender({ lastVal: rawMain[rawMain.length - 1], firstVal: rawMain[0], lastTs: data.length ? (data[data.length-1][0] > 1e11 ? data[data.length-1][0] : data[data.length-1][0] * 1000) : 0,
+      firstTs: data.length ? (data[0][0] > 1e11 ? data[0][0] : data[0][0] * 1000) : 0,
+      hasBm, idxMode: _idxMode, mainLast: _lastOf(mainData), bmLast: datasets[1] ? _lastOf(datasets[1].data) : NaN, bmName: _bmNames[_pfBenchmark] || _pfBenchmark,
+      useCash: _useCash, partial: _partialCash, firstCashDate: _firstCashDate, estCount: _estCount });
+  }catch(e){}
+  ['5j','15j','30j','6m','1a','max'].forEach(r2=>{ const btn=document.getElementById('pfr-'+r2); if(!btn) return; btn.classList.toggle('on', r2===_pfRange); btn.setAttribute('aria-pressed', r2===_pfRange ? 'true' : 'false'); });
   ['total','etf','crypto'].forEach(v=>{ const btn=document.getElementById('pfv-'+v); if(!btn) return; const active=v===_pfView; btn.classList.toggle('kyf-toggle-active', active); btn.style.background=active?'#f0b429':'var(--btn-secondary-bg)'; btn.style.color=active?'#000':'var(--text2)'; });
   ['none','SP500','CAC40','MSCIWorld','INFLATION'].forEach(b=>{ const btn=document.getElementById('pfbm-'+b); if(!btn) return; const active=b===_pfBenchmark; btn.style.background=active?'#f0b429':'var(--btn-secondary-bg)'; btn.style.color=active?'#000':'var(--text2)'; btn.style.borderColor=active?'#f0b429':'var(--border2)'; });
 
@@ -31458,7 +31778,7 @@ function renderPfFullChart(){
         tip.innerHTML=html; tip.style.display='block';
         const pt0=chart.getDatasetMeta(0)?.data[idx], cr=chart.canvas.getBoundingClientRect();
         const tx=pt0?cr.left+pt0.x+16:e.native.clientX+16, ty=pt0?cr.top+pt0.y-tip.offsetHeight-8:e.native.clientY-tip.offsetHeight-8;
-        tip.style.left=Math.min(tx,window.innerWidth-tip.offsetWidth-10)+'px'; tip.style.top=Math.max(ty,6)+'px';
+        kyfTipInCard(tip, chart.canvas, pt0 ? cr.left + pt0.x : e.native.clientX, pt0 ? cr.top + pt0.y : e.native.clientY);
         if(_pfFullHoveredIdx !== idx){
           _pfFullHoveredIdx = idx;
           if(!_pfFullPulseAnim) startPfFullPulse(chart);
@@ -31466,7 +31786,7 @@ function renderPfFullChart(){
       }
     }))()],
     data:{labels,datasets},
-    options:{...d,plugins:{...d.plugins,legend:{display:hasBm,position:'top',labels:{color:getCSSVar('--text2'),font:{size:9,family:'Inter'},padding:8,usePointStyle:true},
+    options:{...d,layout:{padding:{top:6,left:8,right:14,bottom:2}},plugins:{...d.plugins,legend:{display:hasBm,position:'top',labels:{color:getCSSVar('--text2'),font:{size:9,family:'Inter'},padding:8,usePointStyle:true},
         onClick:(e,legendItem,legend)=>{
           const ci=legend.chart, idx=legendItem.datasetIndex, lbl=legendItem.text;
           if(ci.isDatasetVisible(idx)){
@@ -31477,7 +31797,7 @@ function renderPfFullChart(){
           try{ localStorage.setItem('kyf-pf-hidden', JSON.stringify(_pfHiddenLabels)); }catch(e){}
         }
       },tooltip:{enabled:false}},
-      scales:{x:{...d.scales.x,ticks:{...d.scales.x.ticks,maxTicksLimit:10,maxRotation:0,callback:function(v){const l=this.getLabelForValue(v)||'';const p=l.split('/');if(p.length<3)return l;const moisCourt=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];if(_pfShortSpan){return p[0]+' '+moisCourt[parseInt(p[1])-1];}return moisCourt[parseInt(p[1])-1]+' '+p[2];}},grid:{display:false},border:{display:false}},y:{...d.scales.y,ticks:{...d.scales.y.ticks,callback:v=>hasBm?(v>=0?'+':'')+v.toFixed(2)+'%':fmt(v,0)+'€'}}}
+      scales:{x:{...d.scales.x,ticks:{...d.scales.x.ticks,padding:8,maxTicksLimit:10,maxRotation:0,callback:function(v){const l=this.getLabelForValue(v)||'';const p=l.split('/');if(p.length<3)return l;const moisCourt=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];if(_pfShortSpan){return p[0]+' '+moisCourt[parseInt(p[1])-1];}return moisCourt[parseInt(p[1])-1]+' '+p[2];}},grid:{display:false},border:{display:false}},y:{...d.scales.y,ticks:{...d.scales.y.ticks,padding:14,maxTicksLimit:6,callback:v=>hasBm?(v>=0?'+':'')+v.toFixed(2)+' %':fmt(v,0)+' €'}}}
     }
   });
 }
@@ -43085,7 +43405,6 @@ function updateMarketIndicator(){
 }
 // ══ KPI DRAG & DROP ═══════════════════════════════════════════
 const KPI_DEFAULT = [
-  {id:'kLive',    label:'Valorisation Live'},
   {id:'kGain',    label:'Gain Net Positions'},
   {id:'kAth',     label:'ATH'},
   {id:'kVarCard', label:'Var. Journalière'},
@@ -43097,7 +43416,7 @@ let kpiOrder = loadKpiOrder();
 function loadKpiOrder(){
   try {
     const s = localStorage.getItem('pea-kpi-order');
-    if(s){ const p=JSON.parse(s); if(p.length===KPI_DEFAULT.length) return p; }
+    if(s){ const p=JSON.parse(s).filter(k => k && k.id !== 'kLive'); if(p.length===KPI_DEFAULT.length) return p; }   // le KPI Valorisation Live a disparu (le montant est sur la courbe) : on le retire de l'ordre enregistré
   } catch(e){}
   return [...KPI_DEFAULT];
 }
@@ -47164,7 +47483,7 @@ analyticsPing();
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.12.147\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.13.23\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -47379,6 +47698,7 @@ function kyfSnapExtras(etfInvesti, cryptoInvesti){
     autres: parseFloat(autres.toFixed(2)),
     invEtf: parseFloat((etfInvesti||0).toFixed(2)),
     invCrypto: parseFloat((cryptoInvesti||0).toFixed(2)),
+    cash: (function(){ try{ return parseFloat((getCashPea() + getCashCto() + getCashCcp()).toFixed(2)); }catch(e){ return 0; } })(),   // espèces PEA + CTO + compte courant saisi (livrets et stablecoins sont déjà dans autres / crypto) : permet la courbe « espèces comprises »
     invAllV: 2,   // TRA-004 : version du calcul de invAll (absente = ancien calcul, coût AV compté deux fois)
     invAll: parseFloat(((etfInvesti||0) + (cryptoInvesti||0) + avCost + immo + liv + cf + orCost).toFixed(2))
   };
@@ -47747,7 +48067,7 @@ function tryDailySnapshot(){
     if(((snap.total||0) + (snap.autres||0)) <= 0) return;
 
     // Rien n'a changé : pas d'écriture
-    const _sig = x => JSON.stringify([x.valorisation, x.crypto, x.av, x.immo, x.autres, x.invAll, !!x._etfFinal, !!x._cryFinal]);
+    const _sig = x => JSON.stringify([x.valorisation, x.crypto, x.av, x.immo, x.autres, x.cash, x.invAll, !!x._etfFinal, !!x._cryFinal]);
     if(old && _sig(old) === _sig(snap)) return;
     const flagsChanged = !old || !!old._etfFinal !== etfFinal || !!old._cryFinal !== cryFinal;
 
@@ -59266,7 +59586,7 @@ function contactDownloadCopy(){
     </div>
     <div id="divCashBox" style="grid-column:span 2;display:none">
       <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:11px;color:var(--text2)"><input type="checkbox" id="divCashCredit" checked style="accent-color:var(--accent);cursor:pointer"><span id="divCashCreditLbl">Créditer le cash du PEA</span></label>
-      <div style="font-size:9px;color:var(--text3);margin-top:8px;line-height:1.5">Le montant s'ajoute aux espèces de l'enveloppe. Décochez si vous l'avez déjà ajouté à la main.</div>
+      <div id="divCashHint" style="font-size:9px;color:var(--text3);margin-top:8px;line-height:1.5">Le montant s'ajoute aux espèces de l'enveloppe. Décochez si vous l'avez déjà ajouté à la main.</div>
     </div>
     <div style="grid-column:span 2">
       <div style="font-size:9px;color:var(--text3);margin-bottom:8px;letter-spacing:.5px">NOTE <span style="opacity:.5">optionnel</span></div>
@@ -60644,7 +60964,7 @@ function kyfRptSyn(){
   let h = kyfRptHead('Synthèse du patrimoine', 'Montants en euros, valeurs du jour');
   h += '<div class="kp"><div><span>PATRIMOINE TOTAL</span><b>' + kyfRptE(total) + '</b></div><div><span>LIGNES SUIVIES</span><b>' + items.length + '</b></div><div><span>DONT LIQUIDITÉS</span><b>' + kyfRptE((typeof getCashTotal === 'function') ? getCashTotal().total : 0) + '</b></div></div>';
   if(!(total > 0)) return h + '<p class="mu">Aucune donnée dans le patrimoine pour le moment.</p>';
-  h += '<p class="mu">Ce total compte toutes les classes suivies, espèces et stablecoins compris. La « Valorisation live » du tableau de bord laisse les espèces et stablecoins dans le KPI Cash.</p>';
+  h += '<p class="mu">Ce total compte toutes les classes suivies, espèces et stablecoins compris. Le montant de la courbe de valorisation, sur le tableau de bord, compte aussi les espèces des comptes.</p>';
   h += '<h2>Répartition par classe d\'actifs</h2><div class="row"><div>' + kyfRptDonut(parts) + '</div><div class="fx">'
     + kyfRptTable(['Classe', 'Valeur', 'Part'], parts.map(x => ['<i style="background:' + x.c + '"></i>' + escapeHtml(x.n), kyfRptE(x.v), fmt(x.v / total * 100, 1) + ' %']).concat([['<b>Total</b>', '<b>' + kyfRptE(total) + '</b>', '100 %']]), [1, 2]) + '</div></div>';
   if(st.g.length){
@@ -60759,25 +61079,26 @@ function kyfRptCtOne(env, cpt){   // cpt : un seul compte CTO (plusieurs comptes
   const M = KYF_CT_META[env], E = ctEtatLigne(env, cpt), nb = E.lignes.length, tousSans = nb > 0 && E.ok.length === 0, info = cpt ? ctCptInfo(cpt) : (ctInfo()[env] || {});
   const multi = env === 'CTO' && !cpt && kyfCtoComptes().length > 1;   // CTO TOTAUX : les lignes sont détaillées compte par compte juste après
   let cash = 0, total, pv, base = false, inv = 0, titres;
-  if(env === 'PEA'){ const x = peaFiscSituation(); cash = x.cash; titres = x.valeur - x.cash; total = x.valeur; pv = x.pvTotale; base = x.baseVerse; inv = x.investi; }
-  else if(env === 'PME'){ const x = pmeFiscSituation(); titres = x.valeur; total = x.valeur; pv = x.plusValue; base = x.baseVerse; inv = x.investi; }
+  if(env === 'PEA'){ const x = peaFiscSituation(); cash = x.cash; titres = E.val; total = E.val + x.cash; pv = E.val - E.cout; base = x.baseVerse; inv = x.investi; }
+  else if(env === 'PME'){ const x = pmeFiscSituation(); titres = E.val; total = E.val; pv = E.val - E.cout; base = x.baseVerse; inv = x.investi; }
   else { cash = cpt ? kyfCtoCashOf(cpt) : getCashCto(); titres = E.val; total = titres + cash; pv = E.val - E.cout; }
+  pv = E.val - E.cout;   // le rapport affiche aussi le gain des titres seuls
   const date = M.dateKey ? (localStorage.getItem(M.dateKey) || '') : (info.date || '');
   const mo = date ? kyfMoisEntiersDepuis(date) : null, moOk = (mo !== null && mo >= 0);
   const etab = info.etab || (cpt ? '' : ctEtabAuto(env)) || '';
-  const pvLab = env === 'CTO' ? 'Plus-value latente des lignes (valeur moins coût)' : (base ? 'Plus-value fiscale (valeur moins total versé)' : 'Plus-value latente (estimée sur le coût)');
+  const pvLab = 'Gain sur les titres';
   let h = '<h2>' + escapeHtml(cpt ? 'CTO · ' + kyfCtoNom(cpt) : (multi ? 'CTO · tous les comptes (' + kyfCtoComptes().length + ')' : M.titre)) + (etab && !multi ? ' <span>' + escapeHtml(etab) + '</span>' : '') + '</h2>';
   if(nb === 0 && !(cash > 0) && !base) return h + '<p class="mu">Aucune ligne ni donnée suivie sur ce compte.</p>';
   h += '<div class="kp"><div><span>VALEUR TOTALE</span><b>' + (tousSans ? 'indisponible' : kyfRptE(total, 2)) + '</b>' + (cash > 0 && !tousSans ? '<small>dont espèces ' + kyfRptE(cash, 2) + '</small>' : '') + '</div>'
-    + '<div><span>PLUS-VALUE</span><b class="' + (tousSans ? '' : kyfRptGpCls(pv)) + '">' + (tousSans ? 'indisponible' : (pv >= 0 ? '+' : '') + kyfRptE(pv, 2)) + '</b><small>' + escapeHtml(pvLab) + '</small></div>'
+    + '<div><span>GAIN SUR LES TITRES</span><b class="' + (tousSans ? '' : kyfRptGpCls(pv)) + '">' + (tousSans ? 'indisponible' : (pv >= 0 ? '+' : '') + kyfRptE(pv, 2)) + '</b><small>' + escapeHtml(pvLab) + '</small></div>'
     + (M.verseKey ? '<div><span>TOTAL VERSÉ</span><b>' + (base && inv > 0 ? kyfRptE(inv, 2) : '-') + '</b>' + (base ? '' : '<small>non renseigné</small>') + '</div>' : '') + '</div>';
   const j = ctJour(env, cpt), rows = [];
   if(!multi) rows.push(['Établissement', etab ? escapeHtml(etab) : 'non renseigné']);
   if(!multi) rows.push(['Date d\'ouverture', date ? escapeHtml(ctDateFr(date)) + (moOk ? ' (' + escapeHtml(ctDuree(mo)) + ')' : '') : 'non renseignée']);
   if(M.cinq && moOk){ const d5 = date.slice(0, 4) * 1 + 5 + date.slice(4, 10); rows.push(['5 ans', mo >= 60 ? 'révolus depuis le ' + escapeHtml(ctDateFr(d5)) : 'le ' + escapeHtml(ctDateFr(d5)) + ', encore ' + escapeHtml(ctDuree(60 - mo))]); }
-  rows.push(['Valeur des lignes', tousSans ? 'indisponible' : kyfRptE(titres, 2)]);
-  rows.push(['Coût d\'acquisition', tousSans ? 'indisponible' : kyfRptE(E.cout, 2)]);
-  rows.push(['Lignes suivies', String(nb) + (E.sansCours > 0 ? ' (dont ' + E.sansCours + ' sans cours)' : '')]);
+  rows.push(['Valeur des titres', tousSans ? 'indisponible' : kyfRptE(titres, 2)]);
+  rows.push(['Prix d\'achat total', tousSans ? 'indisponible' : kyfRptE(E.cout, 2)]);
+  rows.push(['Titres suivis', String(nb) + (E.sansCours > 0 ? ' (dont ' + E.sansCours + ' sans cours)' : '')]);
   if(env === 'PME') rows.push(['Espèces', 'non suivies']);
   if(j.nb > 0) rows.push(['Variation du jour', j.ok === 0 ? 'indisponible' : (j.v >= 0 ? '+' : '') + kyfRptE(j.v, 2) + (j.b > 0 ? ' (' + (j.v >= 0 ? '+' : '') + fmt(j.v / j.b * 100, 2) + ' %)' : '') + (j.ko > 0 ? ', ' + j.ko + ' ligne(s) non comptée(s)' : '') + (ctJourQuand(j.seance) !== 'Aujourd\'hui' ? ' (' + ctJourQuand(j.seance).toLowerCase().replace('séance', 'séance') + ')' : '')]);
   if(M.verseKey){
@@ -61947,14 +62268,22 @@ const GUIDE_PAGES = [
         <div style="font-size:13px;color:var(--text2);line-height:1.9">Chaque groupe d'enveloppe est rétractable en cliquant sur son en-tête. Le réordonnancement manuel se fait par glisser-déposer, limité à l'intérieur d'un même groupe : une ligne ne change pas d'enveloppe en la déplaçant.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+        <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg> Courbe de valorisation : votre patrimoine</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Le gros montant en haut à droite de la carte est la valeur de votre patrimoine à l'instant, <strong style="color:var(--text)">espèces comprises</strong> : vos placements, plus l'argent qui dort sur vos comptes PEA, CTO et compte courant. Les livrets et les stablecoins sont déjà dans leurs lignes, ils ne sont pas comptés deux fois. Juste dessous, le gain et la variation sur la période choisie avec les onglets du bas (5J à MAX).</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Un clic sur ce montant</strong> ouvre sa composition : ce que pèse chaque famille d'actifs, puis vos espèces, vos crédits immobiliers si vous avez choisi de les déduire (Paramètres, onglet Immobilier), et le total. Dès que vous avez plus d'un an de suivi, une dernière ligne donne ce total en euros de votre première année, corrigé de l'inflation.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">Le menu à côté du titre choisit ce que dessine la courbe : <strong style="color:var(--text)">Total, espèces comprises</strong> ou <strong style="color:var(--text)">Hors espèces</strong> (vos seuls placements). Le petit « i » rappelle ce que montre le chiffre.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Et le passé ?</strong> KYF note vos espèces chaque jour, mais il n'a pas pu le faire avant d'avoir cette fonction. Pour les jours plus anciens, il les <strong style="color:var(--text)">estime à partir de votre journal</strong> (versements, retraits, achats, ventes, dividendes) et les trace en <strong style="color:var(--text)">pointillés</strong> : ce sont des estimations, pas des valeurs enregistrées. Si votre journal se contredit (des espèces qui deviendraient négatives, un ancien achat sans débit connu), KYF s'arrête avant plutôt que d'inventer.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">Tant que vous n'avez pas deux jours de suivi, la carte affiche déjà votre montant et sa composition, la courbe se dessine dès la deuxième séance.</div>
+      </div>
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Pouvoir d'achat réel</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9">Cliquez sur le KPI <strong style="color:var(--text)">Valorisation Live</strong> pour le basculer en <strong style="color:var(--text)">Pouvoir d'achat réel</strong> : votre patrimoine actuel, exprimé en euros de votre première année de suivi dans KYF, corrigé de l'inflation INSEE réelle (pas un taux isolé, un indice composé sur plusieurs années). Un second clic revient à la valeur nominale.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Cliquez sur le montant de la <strong style="color:var(--text)">Courbe de valorisation</strong> (en haut à droite de la carte) pour voir de quoi se compose votre patrimoine. Dès que vous avez plus d'un an de suivi, une dernière ligne y donne votre patrimoine exprimé en euros de votre première année dans KYF, corrigé de l'inflation INSEE réelle (pas un taux isolé, un indice composé sur plusieurs années).</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg> Comparateur sur la courbe</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9">Le menu déjà présent au-dessus de la courbe de valorisation (S&amp;P 500, CAC 40, MSCI World) inclut aussi <strong style="color:var(--text)">Inflation</strong>, séparée des indices boursiers dans le menu. Elle affiche l'évolution cumulée de l'inflation en pourcentage, à comparer visuellement à celle de votre patrimoine total sur la même période.</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">Cette comparaison montre l'évolution de la valeur totale de votre patrimoine, versements compris, face à l'inflation. Ce n'est pas une mesure de la performance de vos placements : tant que les versements et retraits ne sont pas neutralisés dans le calcul, KYF ne présente aucun chiffre comme une performance réelle.</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">Face au <strong style="color:var(--text)">S&amp;P 500, au CAC 40 ou au MSCI World</strong>, c'est l'inverse : la courbe montre la performance <strong style="color:var(--text)">hors versements</strong> (la légende l'indique), la même mesure que l'indice. Un versement ou un achat n'y compte pas comme un gain. Sans indice, la courbe est en euros ; « Total » y représente tout le patrimoine, comme la carte VALORISATION, et « 5 Jours » les 5 dernières séances.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">Face au <strong style="color:var(--text)">S&amp;P 500, au CAC 40 ou au MSCI World</strong>, c'est l'inverse : la courbe montre la performance <strong style="color:var(--text)">hors versements</strong> (la légende l'indique), la même mesure que l'indice. Un versement ou un achat n'y compte pas comme un gain. Sans indice, la courbe est en euros ; « Total » y représente tout le patrimoine, et « 5 Jours » les 5 dernières séances. Face à un indice, le menu « espèces comprises / hors espèces » est grisé (l'indice ne compte pas les espèces) ; face à l'inflation, il reste disponible.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg> Performance réelle (TWR)</div>
@@ -62702,7 +63031,7 @@ const GUIDE_PAGES = [
         <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">KYF affiche un <strong style="color:var(--text)">résultat foncier indicatif</strong> : loyers moins charges moins intérêts. Les intérêts ne baissent pas le cash-flow, car la mensualité du crédit les contient déjà.</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Loyer qui change :</strong> après une revalorisation, saisissez le nouveau loyer et, dans <strong style="color:var(--text)">Loyer à partir du</strong>, la date d'effet. Les loyers précédents restent dans l'historique (pastille sur la carte) et le loyer en vigueur est celui d'aujourd'hui. Sans date, le changement compte à partir d'aujourd'hui ; une date future est refusée.</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Les chiffres du bandeau :</strong> « Revenus nets / an » = loyers après vacance moins charges, taxe foncière, assurance PNO, agence et travaux, avant mensualités et impôt. « Cash-flow avant impôt / mois » = revenus nets moins mensualités de crédit. Sur la carte du bien, « Cash-flow net » retire en plus l'impôt estimé selon le régime et la TMI (en LMNP réel, l'estimation fiscale étant indisponible, la carte indique « avant impôt »).</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Valorisation live crédits déduits :</strong> dans Paramètres, onglet Immobilier, la case « Déduire les crédits immobiliers » fait compter vos biens crédits déduits (valeur moins capital restant dû) dans le KPI Valorisation live du tableau de bord. Désactivée par défaut ; l'allocation, l'historique et les séances restent à la valeur brute.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Valorisation live crédits déduits :</strong> dans Paramètres, onglet Immobilier, la case « Déduire les crédits immobiliers » fait compter vos biens crédits déduits (valeur moins capital restant dû) dans le montant de la courbe de valorisation du tableau de bord et dans sa composition. Désactivée par défaut ; l'allocation, l'historique et les séances restent à la valeur brute.</div>
       </div>
 `
   },
@@ -64045,7 +64374,7 @@ const GUIDE_PAGES = [
         <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V8H6a2 2 0 0 1 0-4h12v4"/><path d="M4 6v12a2 2 0 0 0 2 2h14v-4"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/></svg> Espèces, versements et retraits (PEA et CTO)</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9">Sous le tableau ETF &amp; Actions, la ligne <strong style="color:var(--text)">Espèces</strong> affiche les liquidités de votre PEA et de votre CTO (ou « à renseigner »). Un clic ouvre la fenêtre Cash : à gauche vos espèces, à droite le volet <strong style="color:var(--text)">Versements et retraits</strong>.</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">Choisissez l'enveloppe (PEA ou CTO, et le compte CTO si vous en avez plusieurs), Versement ou Retrait, le montant et la date, puis <strong style="color:var(--text)">ENREGISTRER</strong>. Un versement augmente les espèces de l'enveloppe ; pour le PEA, il augmente aussi le « Total versé à ce jour », mais seulement si vous l'avez déjà renseigné : KYF n'invente aucun chiffre. Un retrait diminue les espèces, ne peut jamais dépasser les espèces disponibles et ne modifie pas le total versé.</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">À la saisie d'un dividende PEA ou CTO, la case <strong style="color:var(--text)">Créditer le cash du PEA/CTO</strong> (cochée d'office) ajoute le dividende aux espèces (avec plusieurs comptes CTO, au compte qui détient le titre, ou au total si plusieurs comptes le détiennent). Modifier ou supprimer le dividende rend exactement la somme créditée ; les dividendes déjà saisis ou importés ne touchent pas au cash.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">À la saisie d'un dividende PEA ou CTO, la case <strong style="color:var(--text)">Créditer le cash du PEA/CTO</strong> (cochée d'office) ajoute le dividende aux espèces (avec plusieurs comptes CTO, au compte qui détient le titre, ou au total si plusieurs comptes le détiennent). Si un livret est rattaché à l'enveloppe (Trade Republic rattaché au CTO, par exemple), la case devient « Créditer le livret » et le dividende s'ajoute au solde de ce livret, avec une ligne dans son journal. Modifier ou supprimer le dividende rend exactement la somme créditée ; les dividendes déjà saisis ou importés ne touchent pas au cash.</div>
       </div>
 
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
@@ -69787,6 +70116,9 @@ document.addEventListener('DOMContentLoaded', function(){
 const KYF_NOUVEAUTES = {
   badge: ['arb', 'immo', 'avref', 'avfrais', 'fraispg', 'avevo', 'avsuivi', 'dcaprix', 'ct', 'tend', 'tipstyle', 'ptf', 'pee', 'ctlg', 'vue'],   // clés des badges (une ou plusieurs ; tableau) ; clé du badge « Nouveau » (span .kyf-new-badge data-new="...") ; vide = aucun badge
   annonces: [
+    { id: 'a-2026-10-27', date: '2026-10-27', items: [
+      { titre: 'Courbe de valorisation : votre patrimoine, espèces comprises', version: '2.8.13.07', important: true, texte: 'Auparavant, deux cartes affichaient des montants différents pour votre patrimoine, ce qui pouvait prêter à confusion.\nDésormais, le montant principal de la courbe représente votre patrimoine total, espèces comprises. Cliquez dessus pour découvrir sa composition.\nLe KPI « Valorisation live » a été supprimé, car il faisait doublon. Un menu permet toujours d’afficher la courbe hors espèces.\nEnfin, l’historique des espèces est estimé à partir de votre journal et représenté en pointillés, afin de distinguer cette reconstitution de l’évolution du reste du patrimoine.' }
+    ] },
     { id: 'a-2026-10-26', date: '2026-10-26', items: [
       { titre: 'Comptes titres : LIGNES DU COMPTE', texte: 'Un tableau liste les lignes de chaque compte, triées par valeur.' },
       { titre: 'PEE : suivi des actifs', texte: 'Suivez aussi les actifs de votre PEE.' },
@@ -69898,7 +70230,7 @@ function kyfEtfCashLineRender(){
 function kyfCashLineLier(id, env){
   let l = []; try{ l = livLoad(); }catch(e){} if(!Array.isArray(l)) return;
   const x = l.find(y => y && String(y.id) === String(id)); if(!x || x.envCompte) return;
-  x.envCompte = KYF_CT_META[env === 'PEA' ? 'PEA' : 'CTO'].tag; livSave(l);
+  x.envCompte = KYF_CT_META[env === 'PEA' ? 'PEA' : 'CTO'].tag; livSave(l); try{ kyfDivVersLivretMig_(); }catch(e){}
   try{ renderLivrets(); }catch(e){}
   try{ kyfEtfCashLineRender(); }catch(e){}
   try{ if(typeof ctRender === 'function') ctRender(); }catch(e){}
@@ -70134,7 +70466,7 @@ function kyfNewRender_(){
   let h = '<div style="height:8px"></div>';
   all.slice(pg * KYF_NEW_PAGE, (pg + 1) * KYF_NEW_PAGE).forEach(x => {
     const it = x.it;
-    h += '<div class="kyf-new-it' + (it.important ? ' kyf-new-imp' : '') + '" style="display:flex;gap:10px;padding:10px 0;border-top:1px solid rgba(255,255,255,0.06)">' + ico + '<div><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px">' + escapeHtml(it.titre) + (it.version ? ' <span class="kyf-new-ver" style="display:inline-block;font-size:9px;font-weight:700;letter-spacing:.3px;padding:1px 6px;border-radius:6px;margin-left:4px;vertical-align:1px;background:rgba(240,180,41,0.14);color:var(--accent)">' + escapeHtml(it.version) + '</span>' : '') + '</div><div style="font-size:11px;color:var(--text2);line-height:1.7">' + escapeHtml(it.texte) + '</div></div></div>';
+    h += '<div class="kyf-new-it' + (it.important ? ' kyf-new-imp' : '') + '" style="display:flex;gap:10px;padding:10px 0;border-top:1px solid rgba(255,255,255,0.06)">' + ico + '<div><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px">' + escapeHtml(it.titre) + (it.version ? ' <span class="kyf-new-ver" style="display:inline-block;font-size:9px;font-weight:700;letter-spacing:.3px;padding:1px 6px;border-radius:6px;margin-left:4px;vertical-align:1px;background:rgba(240,180,41,0.14);color:var(--accent)">' + escapeHtml(it.version) + '</span>' : '') + '</div><div style="font-size:11px;color:var(--text2);line-height:1.7;white-space:pre-line">' + escapeHtml(it.texte) + '</div></div></div>';
   });
   md.querySelector('#kyfNewBody').innerHTML = h;
   const pager = md.querySelector('#kyfNewPager');
@@ -70686,6 +71018,7 @@ function kyfCashCcpDoublon(){
 }
 function renderCashKPI(){
   cashMigrateIfNeeded();
+  try{ kyfRenderKLive(); }catch(e){}   // la Valorisation live compte les espèces : elle suit leur saisie
   const { pea, cto, livretsCcp, stables, total } = getCashTotal();
   const el  = document.getElementById('kCashVal');
   const sub = document.getElementById('kCashSub');
@@ -71116,6 +71449,7 @@ async function cashEnvToLivret(env){
   const f = document.getElementById('cashEdit' + env); if(f) f.value = '';
   try{ renderLivrets(); }catch(e){}
   renderCashKPI();
+  try{ kyfDivVersLivretMig_(); }catch(e){}
   msg('Enregistré dans vos livrets (' + banque + ', ' + fmt(amt,2) + ' €).', false);
 }
 function saveCashEdit(){
@@ -71600,11 +71934,11 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
 
     <!-- ── ONGLET IMMOBILIER ── -->
     <div id="edTab-immo" class="ed-tab-content" style="display:none">
-      <div class="ed-section">VALORISATION LIVE</div>
+      <div class="ed-section">PATRIMOINE TOTAL</div>
       <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:8px">
         <div>
           <div class="ed-lbl" style="font-weight:700">Déduire les crédits immobiliers</div>
-          <div style="font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);line-height:1.6;margin-top:3px;max-width:340px">Le KPI « Valorisation live » compte alors vos biens à leur valeur moins le capital restant dû de vos crédits (actif moins passif). Désactivé : biens à leur valeur brute, comme avant. L'allocation, l'historique et les séances ne changent pas.</div>
+          <div style="font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);line-height:1.6;margin-top:3px;max-width:340px">Le patrimoine total du tableau de bord compte alors vos biens à leur valeur moins le capital restant dû de vos crédits (actif moins passif). Désactivé : biens à leur valeur brute, comme avant. L'allocation, l'historique et les séances ne changent pas.</div>
         </div>
         <label class="kyf-toggle" title="Valorisation live crédits déduits">
           <input type="checkbox" id="kyfImmoLiveNetChk" onchange="kyfImmoLiveNetToggle()">
@@ -72404,6 +72738,60 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.23 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : le bandeau du haut s'intitule « Gain sur les titres, tous comptes confondus ».</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.22 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : une seule source de calcul. Valeur totale, titres et gain de la carte viennent des mêmes lignes que le bandeau (plus du module fiscal). Même nom « Gain sur les titres » partout.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.21 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : plus simple. Un seul gain affiché, celui des titres (valeur moins prix d'achat), le même dans le bandeau et dans la carte. Le gain « depuis vos versements » est retiré de la carte (il reste dans Fiscalité et retrait). Valeur totale = titres + espèces, toujours visible.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.20 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : même design, chiffres plus clairs. Valeur = titres + espèces affichés, gain total avec détail et total versé, nouveau chiffre « Gain sur les titres », mots simplifiés (prix d'achat total, titres suivis), variation du jour précisée « titres seuls ».</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.19 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : chiffres plus clairs. Le bandeau devient « Gain sur les titres détenus », la plus-value fiscale devient « Gain total depuis vos versements » avec une ligne de détail (part des titres détenus + part déjà encaissée).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.18 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : le logo de la banque (Fortuneo...) ne clignote plus quand on clique sur un bouton de la page (il n'est refait que si la banque change).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.17 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Journal d'un compte : titre en couleur neutre comme les autres fenêtres, boutons flux récurrent et corbeille avec les icônes et le style des autres tableaux de KYF.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.16 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Journal d'un compte : menus Mois et Année pour se repérer, et pagination de 10 lignes par page (même système que les autres tableaux). Le bilan du mois reste celui du mois entier.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.15 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Journal d'un compte : le filtre Entrées est en vert et le filtre Sorties en rouge.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.14 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre Journal d'un compte (livrets) : nouveau visuel. Solde du compte en tête, un onglet à la fois à gauche (Importer un relevé / Saisie manuelle) avec la case de certification, les banques lues en pastilles ; à droite les mouvements regroupés par mois (bilan du mois, icône entrée ou sortie, origine de la ligne, filtres Tous / Entrées / Sorties).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.13 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Dividendes PEA/CTO déjà crédités au cash : dès qu'un livret est rattaché à l'enveloppe (au démarrage ou à son rattachement), leur montant passe automatiquement du cash au livret, une seule fois, avec une ligne au journal du livret et un message. Le montant déplacé ne dépasse jamais ce que le cash contient encore.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.12 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Dividendes PEA/CTO : quand un seul livret est rattaché à l'enveloppe (ex. Trade Republic rattaché au CTO), la case devient « Créditer le livret » et le dividende s'ajoute au solde de ce livret (ligne au journal du livret), au lieu du cash saisi à part. Modification, suppression et annulation rendent exactement la somme. Sans livret rattaché, ou avec plusieurs, rien ne change. Guide mis à jour.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.11 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Courbe de valorisation : le menu « Total, espèces comprises » et son point info passent à droite du titre, sur la même ligne, avec un espace net entre les deux (retour à la ligne propre sur petit écran).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.10 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Quoi de neuf : annonce importante du 27/10/2026 expliquant pourquoi la courbe de valorisation a évolué (montant espèces comprises, clic = composition, KPI Valorisation live retiré). La démo est marquée comme ayant déjà vu cette annonce.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.09 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Guide, page « Gérer votre Portefeuille » : nouvelle fiche « Courbe de valorisation : votre patrimoine » (montant espèces comprises, clic = composition, menu Total / Hors espèces, passé estimé en pointillés d'après le journal, courbe qui démarre à la 2e séance) et précision sur le menu face à un indice ou à l'inflation. Annonce des versions 2.8.13.00 à 2.8.13.08 regroupée ici : courbe espèces comprises, KPI Valorisation live fusionné dans la courbe, pied de carte aéré.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.08 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Courbe de valorisation, pied de carte : onglets de période et boutons centrés sur la même ligne et un peu plus petits, espace identique au-dessus et en dessous.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.07 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Tableau de bord : le KPI « Valorisation live » est retiré (il doublait le montant de la courbe de valorisation, qui devient le chiffre de référence du patrimoine, espèces comprises). Clic sur ce montant : composition. Ordre des KPI déjà enregistré conservé. Réglage « crédits déduits » : le montant de la courbe le suit. Guide et textes mis à jour.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.06 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Courbe de valorisation : le montant en haut à droite est cliquable (et au clavier) et ouvre la composition du patrimoine, avec survol. Sans courbe encore (moins de 2 séances), la carte affiche quand même le montant du patrimoine et sa composition. Étape avant la suppression du KPI Valorisation live (doublon).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.05 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Valorisation live : le clic sur la carte ne bascule plus en « pouvoir d'achat réel » (deux chiffres sous un même titre prêtaient à confusion). Le clic ouvre la composition du total ; dès plus d'un an de suivi, une dernière ligne y donne le patrimoine en euros de la première année (inflation INSEE). Guide mis à jour.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.04 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Courbe de valorisation : pied de carte plus aéré (onglets de période et boutons plus grands, plus d'espace autour) et montants de l'axe de gauche plus espacés, avec une espace avant le signe euro.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.03 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Courbe de valorisation, comparaison : face à un indice (S&P 500, CAC 40, MSCI World) ou à l'inflation, l'en-tête affiche maintenant la performance en %, celle de l'indice et l'écart en points. Face à un indice, la courbe mesure la performance de vos placements hors versements et hors espèces : le sélecteur d'espèces se verrouille sur « Hors versements » au lieu d'afficher un choix sans effet. Face à l'inflation, le choix d'espèces reste actif.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.02 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Courbe de valorisation : la bulle de prix qui suit la souris ne sort plus jamais du cadre de la carte. Près du bord droit elle passe à gauche du point, près du haut elle passe en dessous.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.01 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Courbe de valorisation « espèces comprises » : le passé est maintenant estimé d'après votre journal (versements et retraits d'espèces, achats, ventes, dividendes crédités), à partir des espèces d'aujourd'hui. Les jours estimés sont dessinés en pointillés. KYF n'estime que ce qui est cohérent : il s'arrête avant un achat ancien dont le débit n'est pas connu ou si les espèces deviendraient négatives, et renonce si l'estimation contredit des espèces déjà enregistrées.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.00 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Courbe de valorisation entièrement redessinée : le chiffre actuel et son évolution (pastille + montant) passent à droite de l'en-tête, le choix « espèces comprises / hors espèces » et un point info à gauche, plus de lignes de texte. Les périodes (5J à MAX) deviennent des onglets sous la courbe, avec les réglages (Total/ETF/Crypto, indice, devise, hauteur). Quand la courbe espèces comprises n'est pas encore disponible, le chiffre suit la courbe (hors espèces) au lieu de la contredire.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.150 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Courbe de valorisation : un sélecteur au-dessus de la courbe permet de choisir « Total, espèces comprises » ou « Hors espèces », avec la date, le chiffre actuel et l'évolution sur la période. La courbe espèces comprises se construit au fil des séances (les anciens points n'avaient pas les espèces) ; en attendant elle reste hors espèces et une phrase le dit.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.149 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Tableau de bord : le KPI « Valorisation live » affiche maintenant le patrimoine total, espèces comprises (espèces du PEA, du CTO et du compte courant saisi), pour ne plus avoir à les ajouter à la main. Le sous-titre le précise. Clic droit : la composition ajoute les lignes d'espèces et rappelle le montant hors espèces (celui de la courbe). Les livrets et stablecoins étaient déjà comptés, aucun double compte.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.148 · 27/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Courbe de valorisation, première étape : chaque point enregistré garde maintenant aussi les espèces des comptes (PEA, CTO, compte courant saisi à la main), en plus de la valeur des placements. Rien ne change à l'écran : cela prépare l'affichage « espèces comprises » de la courbe, qui se construira au fil des jours.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.147 · 27/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Frais, Simulateur : presentation plus aeree (espaces plus grands entre les champs, les blocs et le resultat)</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.12.146 · 27/10/2026</div>
@@ -79648,7 +80036,8 @@ function livTxSave(list){ localStorage.setItem(LIV_TX_KEY, JSON.stringify(list))
 function openLivretJournal(compteId){
   const compte = livLoad().find(c=>c.id===compteId);
   document.getElementById('livJournalCompteId').value = compteId;
-  document.getElementById('livJournalTitle').textContent = 'JOURNAL ' + (compte?compte.banque:'Compte');
+  document.getElementById('livJournalTitle').textContent = 'JOURNAL · ' + (compte?compte.banque:'Compte');
+  window._livJFilter = 'tous'; window._livJMois = ''; window._livJAnnee = ''; window._livJPage = 0; livJournalTab('import');
   kyfDateSetValue('livJournalDate', new Date().toISOString().slice(0,10));
   document.getElementById('livJournalLabel').value = '';
   document.getElementById('livJournalAmount').value = '';
@@ -80468,19 +80857,87 @@ function renderLivretJournalList(compteId){
     </div>`).join('');
 
   const box = document.getElementById('livJournalList');
-  const list = livTxLoad().filter(t=>t.compteId===compteId).sort((a,b)=>b.date.localeCompare(a.date));
-  if(!list.length){
-    box.innerHTML = '<div style="text-align:center;color:var(--text3);font-size:10px;padding:20px 0">Aucun mouvement saisi</div>';
+  const all = livTxLoad().filter(t=>t.compteId===compteId).sort((a,b)=>b.date.localeCompare(a.date));
+  { const c = livLoad().find(x => x.id === compteId), el = document.getElementById('livJournalSolde'); if(el) el.textContent = c ? fmt(parseFloat(c.solde) || 0, 2) + ' €' : '-'; }
+  const flt = window._livJFilter || 'tous';
+  const fb = document.getElementById('livJournalFilters');
+  if(fb) fb.innerHTML = [['tous','Tous'],['in','Entrées'],['out','Sorties']].map(f => '<button type="button" class="ljp ' + f[0] + (flt === f[0] ? ' on' : '') + '" aria-pressed="' + (flt === f[0]) + '" onclick="livJournalFilter(\'' + f[0] + '\')">' + f[1] + '</button>').join('');
+  const nav = document.getElementById('livJournalNav'), pag = document.getElementById('livJournalPag');
+  const cnt = document.getElementById('livJournalCount');
+  if(!all.length){
+    if(cnt) cnt.textContent = ''; if(nav) nav.style.display = 'none'; if(pag) pag.style.display = 'none';
+    box.innerHTML = '<div style="text-align:center;color:var(--text3);font-size:10px;padding:24px 0">Aucun mouvement saisi</div>';
     return;
   }
-  box.innerHTML = list.map(t => `
-    <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)">
-      <span style="font-size:9px;color:var(--text3);width:60px;flex-shrink:0">${new Date(t.date).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'})}</span>
-      <span style="flex:1;font-size:10px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(t.label)}</span>
-      <span style="font-size:10px;font-weight:700;color:${t.amount>=0?'var(--green)':'var(--text)'}">${t.amount>=0?'+':''}${fmt(t.amount,2)} €</span>
-      <button onclick="livCreateRecurringFromTx('${t.id}')" title="Créer un flux récurrent depuis cette ligne" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:11px;padding:2px 4px">↻</button>
-      <button onclick="deleteLivretTransaction('${t.id}')" class="kyf-icon-btn" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:2px 4px;transition:color .15s" title="Supprimer" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text3)'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg></button>
-    </div>`).join('');
+  // Menus Mois et Année (moteur kyfCSel de KYF) : seules les années et les mois qui ont des lignes sont proposés
+  const MOIS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const annees = Array.from(new Set(all.map(t => t.date.slice(0,4)))).sort().reverse();
+  if(window._livJAnnee && annees.indexOf(window._livJAnnee) < 0) window._livJAnnee = '';
+  const moisDispo = Array.from(new Set(all.filter(t => !window._livJAnnee || t.date.slice(0,4) === window._livJAnnee).map(t => t.date.slice(5,7)))).sort().reverse();
+  if(window._livJMois && moisDispo.indexOf(window._livJMois) < 0) window._livJMois = '';
+  if(nav){
+    nav.style.display = 'flex';
+    kyfCSelEnsureDrop('livJMois'); kyfCSelEnsureDrop('livJAnnee');
+    kyfCSelBuildDrop('livJMois', [{ value:'', label:'Tous les mois' }].concat(moisDispo.map(m => ({ value:m, label:MOIS_FR[+m - 1] }))));
+    kyfCSelBuildDrop('livJAnnee', [{ value:'', label:'Toutes les années' }].concat(annees.map(a => ({ value:a, label:a }))));
+    const hm = document.getElementById('livJMois'), ha = document.getElementById('livJAnnee');
+    if(hm) hm.value = window._livJMois || ''; if(ha) ha.value = window._livJAnnee || '';
+    kyfCSelSetLabel('livJMois', window._livJMois || '', window._livJMois ? MOIS_FR[+window._livJMois - 1] : 'Tous les mois');
+    kyfCSelSetLabel('livJAnnee', window._livJAnnee || '', window._livJAnnee || 'Toutes les années');
+  }
+  const list = all.filter(t => (flt === 'in' ? t.amount >= 0 : flt === 'out' ? t.amount < 0 : true) && (!window._livJAnnee || t.date.slice(0,4) === window._livJAnnee) && (!window._livJMois || t.date.slice(5,7) === window._livJMois));
+  if(cnt) cnt.textContent = list.length + (list.length > 1 ? ' lignes' : ' ligne');
+  if(!list.length){ if(pag) pag.style.display = 'none'; box.innerHTML = '<div style="text-align:center;color:var(--text3);font-size:10px;padding:24px 0">Aucun mouvement pour cette sélection</div>'; return; }
+  // Pagination : 10 lignes par page, même système que les autres tableaux de KYF
+  const PER = 10, pages = Math.ceil(list.length / PER);
+  window._livJPage = Math.max(0, Math.min(window._livJPage || 0, pages - 1));
+  const sumMois = {}; list.forEach(t => { const k = t.date.slice(0,7); sumMois[k] = (sumMois[k] || 0) + t.amount; });
+  if(pag){
+    pag.style.display = 'flex';
+    document.getElementById('livJPageInfo').textContent = list.length + (list.length > 1 ? ' lignes' : ' ligne');
+    document.getElementById('livJPageNumbers').innerHTML = kyfBuildPageNumbersHtml(window._livJPage, pages, 'livJournalGoTo');
+    const pb = document.getElementById('livJPrevBtn'), nb = document.getElementById('livJNextBtn');
+    pb.style.opacity = window._livJPage === 0 ? '0.3' : '1'; pb.style.pointerEvents = window._livJPage === 0 ? 'none' : 'auto';
+    nb.style.opacity = window._livJPage >= pages - 1 ? '0.3' : '1'; nb.style.pointerEvents = window._livJPage >= pages - 1 ? 'none' : 'auto';
+  }
+  const pageRows = list.slice(window._livJPage * PER, (window._livJPage + 1) * PER);
+  const sub = t => { const s = String(t.src || ''); return s.indexOf('div:') === 0 ? 'Dividende · ajouté automatiquement' : s.indexOf('trade:') === 0 ? 'Achat de titres' : s === 'cash-mvt' ? 'Versement vers un compte titres' : s === 'dca-av' ? 'Versement programmé' : s === 'dca-liv' ? 'Virement programmé' : s ? 'Achat' : 'Saisie ou relevé'; };
+  const mois = t => new Date(t.date).toLocaleDateString('fr-FR', { month:'long', year:'numeric' });
+  const groups = []; pageRows.forEach(t => { const m = mois(t); let g = groups[groups.length - 1]; if(!g || g.m !== m){ g = { m, rows:[], sum:sumMois[t.date.slice(0,7)] }; groups.push(g); } g.rows.push(t); });
+  const LJ_IB = 'background:none;border:none;color:var(--text3);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:5px;transition:color .15s';
+  const ICO_IN = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+  const ICO_OUT = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="7" x2="17" y2="17"/><polyline points="17 8 17 17 8 17"/></svg>';
+  box.innerHTML = groups.map(g => {
+    const nm = g.m.charAt(0).toUpperCase() + g.m.slice(1);
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 8px 6px"><span style="font-size:11px;font-weight:700;color:var(--text)">' + escapeHtml(nm) + '</span><span style="font-size:10px;color:var(--text3)">Bilan du mois : <span style="font-weight:700;color:' + (g.sum >= 0 ? 'var(--green)' : 'var(--text2)') + '">' + (g.sum >= 0 ? '+' : '') + fmt(g.sum, 2) + ' €</span></span></div>'
+    + '<div style="border-top:1px solid var(--border)">' + g.rows.map(t => `
+    <div class="ljr">
+      <span class="ljr-ic" style="background:${t.amount >= 0 ? 'color-mix(in srgb,var(--green) 16%,transparent)' : 'var(--btn-secondary-bg)'};color:${t.amount >= 0 ? 'var(--green)' : 'var(--text2)'}">${t.amount >= 0 ? ICO_IN : ICO_OUT}</span>
+      <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(t.label)}</span><span style="font-size:9px;color:var(--text3)">${new Date(t.date).toLocaleDateString('fr-FR',{day:'numeric',month:'long'})} · ${sub(t)}</span></span>
+      <span style="font-size:12px;font-weight:700;color:${t.amount>=0?'var(--green)':'var(--text)'};white-space:nowrap">${t.amount>=0?'+':''}${fmt(t.amount,2)} €</span>
+      <button type="button" onclick="livCreateRecurringFromTx('${t.id}')" class="kyf-icon-btn" title="Créer un flux récurrent depuis cette ligne" aria-label="Créer un flux récurrent depuis cette ligne" style="${LJ_IB}" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">${KYF_ICONS.refresh}</button>
+      <button type="button" onclick="deleteLivretTransaction('${t.id}')" class="kyf-icon-btn" title="Supprimer" aria-label="Supprimer" style="${LJ_IB}" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text3)'">${KYF_ICONS.trash}</button>
+    </div>`).join('') + '</div>';
+  }).join('');
+}
+function livJournalTab(t){
+  const imp = t !== 'manuel';
+  const set = (id, on) => { const e = document.getElementById(id); if(!e) return; e.classList.toggle('kyf-toggle-active', on); e.setAttribute('aria-selected', on ? 'true' : 'false'); };
+  set('livJTabImport', imp); set('livJTabManuel', !imp);
+  const p1 = document.getElementById('livJPaneImport'), p2 = document.getElementById('livJPaneManuel');
+  if(p1) p1.style.display = imp ? 'block' : 'none'; if(p2) p2.style.display = imp ? 'none' : 'block';
+}
+function livJournalNav(){
+  window._livJMois = (document.getElementById('livJMois') || {}).value || '';
+  window._livJAnnee = (document.getElementById('livJAnnee') || {}).value || '';
+  window._livJPage = 0;
+  const id = (document.getElementById('livJournalCompteId') || {}).value; if(id) renderLivretJournalList(id);
+}
+function livJournalPage(dir){ window._livJPage = Math.max(0, (window._livJPage || 0) + dir); const id = (document.getElementById('livJournalCompteId') || {}).value; if(id) renderLivretJournalList(id); }
+function livJournalGoTo(p){ window._livJPage = parseInt(p); const id = (document.getElementById('livJournalCompteId') || {}).value; if(id) renderLivretJournalList(id); }
+function livJournalFilter(f){
+  window._livJFilter = f; window._livJPage = 0;
+  const id = (document.getElementById('livJournalCompteId') || {}).value; if(id) renderLivretJournalList(id);
 }
 
 function editLivret(id){
