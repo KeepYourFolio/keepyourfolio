@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_13_60.html
+  @file        : KYF_SHARE_beta_2_8_13_65.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.13.60
+  @version     : Beta 2.8.13.65
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -807,6 +807,8 @@ body.kyf-kpop-open .kpi{pointer-events:none}
 #livJournalModal .av-side{width:340px;padding:18px 20px 14px}
 .ljr{display:flex;align-items:center;gap:12px;padding:9px 8px;border-radius:9px;transition:background .15s}
 .ljr:hover{background:var(--hov-bg)}
+.ljr-dots{background:none;border:1px solid transparent;color:var(--text3);cursor:pointer;width:28px;height:28px;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;letter-spacing:1px;padding:0;transition:background .15s,color .15s,border-color .15s}
+.ljr-dots:hover{background:var(--hov-bg);color:var(--text);border-color:var(--border2)}
 .ljr-ic{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .ljp{font-family:'Inter',sans-serif;font-size:10px;font-weight:600;padding:4px 11px;border-radius:999px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;transition:background .15s,color .15s,border-color .15s}
 .ljp:hover{background:var(--hov-bg);color:var(--text)}
@@ -2112,6 +2114,8 @@ tr.kyf-row-sel td{background:rgba(240,180,41,0.08);background:color-mix(in srgb,
 .kbFav[aria-pressed=true]{color:var(--text);border-color:#f0b429}
 .kbFav:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .kyf-menu-sep{height:1px;margin:4px 0;background:var(--border)}
+.kyf-menu-h{font-family:'Inter',sans-serif;font-size:8.5px;font-weight:700;letter-spacing:.9px;color:var(--text3);padding:8px 12px 3px;pointer-events:none;user-select:none}
+.kyf-menu-h:not(:first-child){padding-top:6px}
 .kyf-menu-sep:first-child,.kyf-menu-sep+.kyf-menu-sep{display:none}
 .kbYChev{flex:none;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#f0b429;transition:transform .25s ease,color .15s,background .15s}
 [data-theme="light"] .kbYChev{color:#b07800}
@@ -6430,11 +6434,13 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
     <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin-bottom:8px">
       <input type="hidden" id="livJournalDate" value="">
       <button type="button" id="livJournalDateBtn" class="kyf-csel-btn" data-kyf-date="livJournalDate" aria-haspopup="dialog" aria-expanded="false" style="font-size:10px;padding:8px 8px"><span id="livJournalDateBtnLabel">JJ/MM/AA</span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>
-      <input id="livJournalAmount" type="number" step="0.01" placeholder="Montant ±€" oninput="var d=this.value.split('.')[1];if(d&&d.length>2)this.value=Math.round(parseFloat(this.value)*100)/100" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 8px;border-radius:6px;outline:none">
+      <input id="livJournalAmount" type="text" inputmode="decimal" autocomplete="off" placeholder="Montant ±€" oninput="this.value=this.value.replace(/[^0-9\-+,.\s\u00A0]/g,'')" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 8px;border-radius:6px;outline:none">
     </div>
     <input id="livJournalLabel" type="text" placeholder="Libellé" style="width:100%;box-sizing:border-box;margin-bottom:8px;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 8px;border-radius:6px;outline:none">
-    <button type="button" onclick="addLivretTransaction()" class="kyf-primary-hover" style="width:100%;padding:9px;border-radius:7px;border:none;background:#f0b429;color:#000;cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Ajouter le mouvement</button>
-    <div style="font-size:9px;color:var(--text3);margin-top:8px;line-height:1.5">Montant positif = entrée, négatif = sortie (ex: -13.99).</div>
+    <button type="button" onclick="addLivretTransaction()" class="kyf-primary-hover" style="width:100%;padding:9px;border-radius:7px;border:none;background:#f0b429;color:#000;cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span id="livJournalAddLbl">Ajouter le mouvement</span></button>
+    <button type="button" id="livJournalEditCancel" onclick="livJournalEditCancel()" class="kyf-primary-hover" style="display:none;width:100%;margin-top:6px;padding:8px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;transition:background .15s,color .15s" onmouseover="this.style.background='var(--hov-bg)';this.style.color='var(--text)'" onmouseout="this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)'">Annuler la modification</button>
+    <label style="display:flex;align-items:center;gap:7px;margin-top:10px;font-size:10px;color:var(--text2);cursor:pointer"><input type="checkbox" id="livJournalAdjSolde" checked style="cursor:pointer;accent-color:var(--accent)"> Mettre à jour le solde du compte</label>
+    <div style="font-size:9px;color:var(--text3);margin-top:6px;line-height:1.5">Montant positif = entrée, négatif = sortie (ex : -13,99 ou 1 000). Décochez la case si le solde du compte contient déjà ce mouvement (en modification, le solde suit la différence).</div>
   </div>
 
   <div id="livJournalSuggestions"></div>
@@ -7324,7 +7330,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.13.60</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.13.65</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -10173,7 +10179,7 @@ const AV_COMPARATEUR_DATA = [
   {nom:'ASAC-FAPES PER',assureur:'Apicil',fraisEntree:0.0,fraisGestion:0.5,fraisGestionFE:2.0,fraisArbitrage:0.0,tauxFE:'2.20',etf:true,immo:true,type:'per'},
   {nom:'PER Placement-direct',assureur:'Swiss Life',fraisEntree:0.0,fraisGestion:0.6,fraisGestionFE:0.6,fraisArbitrage:0.0,tauxFE:'1.90–3.45',etf:true,immo:true,type:'per'},
   {nom:'MIF PER',assureur:'MIF',fraisEntree:0.0,fraisGestion:0.6,fraisGestionFE:0.6,fraisArbitrage:0.0,tauxFE:'3.45',etf:true,immo:true,type:'per'},
-  {nom:'Suravenir PER',assureur:'Suravenir (Crédit Mutuel)',fraisEntree:0.0,fraisGestion:0.6,fraisGestionFE:0.8,fraisArbitrage:0.0,tauxFE:'3.00',etf:true,immo:true,type:'per'},
+  {nom:'Linxea Suravenir PER',alias:'suravenir per',assureur:'Suravenir (Crédit Mutuel)',fraisEntree:0.0,fraisGestion:0.6,fraisGestionFE:0.8,fraisArbitrage:0.0,tauxFE:'3.00',etf:true,immo:true,type:'per'},
   {nom:'PER Objectif retraite by epargnissimo',assureur:'Apicil',fraisEntree:0.0,fraisGestion:0.6,fraisGestionFE:0.85,fraisArbitrage:0.0,tauxFE:'3.00',etf:true,immo:true,type:'per'},
   {nom:'Evolution PER',assureur:'Apicil',fraisEntree:0.0,fraisGestion:0.6,fraisGestionFE:0.6,fraisArbitrage:0.0,tauxFE:'2.96',etf:false,immo:false,type:'per'},
   {nom:'P-PER',assureur:'Apicil',fraisEntree:0.0,fraisGestion:0.6,fraisGestionFE:0.85,fraisArbitrage:0.0,tauxFE:'2.50',etf:true,immo:true,type:'per'},
@@ -47624,7 +47630,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.13.60\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.13.65\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -72894,6 +72900,16 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.65 · 28/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Journal d'un compte : chaque ligne a un bouton ⋯ (Modifier l'opération, Créer un flux récurrent, Supprimer). Modifier reprend la date, le libellé et le montant dans la saisie manuelle ; le solde du compte suit la différence (case « Mettre à jour le solde du compte »). Les lignes automatiques (dividende, versement vers un compte titres, programmé) ne se modifient pas.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.64 · 28/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Journal d'un compte (Mes livrets et comptes) : une saisie manuelle met maintenant à jour le solde du compte, donc les espèces suivent (case « Mettre à jour le solde du compte », cochée par défaut ; décochez-la si votre solde contient déjà le mouvement). Le champ montant accepte l'espace des milliers et la virgule (1 000 ou 1000,50), il lisait mal « 1 000 ».</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.63 · 28/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance vie et PER, menu ⋯ d'un contrat : deux blocs clairs, OPÉRATIONS (versements, retrait, arbitrage) puis OUTILS (mise à jour des fonds, frais, évolution, suivi mensuel, modifier). Rien ne change dans les actions, seul le rangement change. Demande d'un utilisateur du forum Linxea.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.62 · 28/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance vie et PER, recherche de contrat : le PER de Linxea s'appelle maintenant « Linxea Suravenir PER » dans la liste (il y figurait sous « Suravenir PER » et ne sortait pas en tapant Linxea). Frais inchangés (0 % versement, 0,6 % UC, 0,8 % fonds euros), l'ancien nom reste trouvable. Demande d'un utilisateur du forum Linxea.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.61 · 28/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Arbitrage (assurance vie et PER) : le champ « Vers » propose maintenant, en plus des lignes du contrat, les ETF, actions et fonds du référentiel (par nom, ticker ou ISIN). Choisir un résultat crée la nouvelle ligne déjà identifiée (ticker, ISIN, type), sans passer par « Modifier » ensuite. Demande d'un utilisateur du forum Linxea.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.60 · 28/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Livrets et comptes : nouveau type « Compte individuel » (à côté de Compte courant, joint, pro et jeune) ; la recherche de banque ignore les accents et les majuscules (« credit agricole » trouve Crédit Agricole). AV et PER : le cours affiché sous chaque ligne a deux décimales.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.59 · 28/10/2026</div>
@@ -80273,6 +80289,8 @@ function openLivretJournal(compteId){
   kyfDateSetValue('livJournalDate', new Date().toISOString().slice(0,10));
   document.getElementById('livJournalLabel').value = '';
   document.getElementById('livJournalAmount').value = '';
+  { const _a = document.getElementById('livJournalAdjSolde'); if(_a) _a.checked = true; }
+  livJournalEditReset();
   renderLivretJournalList(compteId);
   document.getElementById('livJournalModal').style.display = 'flex';
   document.getElementById('livJournalOverlay').style.display = 'block';
@@ -80999,14 +81017,51 @@ function addLivretTransaction(){
   const compteId = document.getElementById('livJournalCompteId').value;
   const date  = document.getElementById('livJournalDate').value;
   const label = document.getElementById('livJournalLabel').value.trim();
-  const amount = parseFloat(document.getElementById('livJournalAmount').value);
+  // Montant : espaces des milliers et virgule acceptés (« 1 000 », « 1 000,50 », « -13,99 »)
+  const _raw = String(document.getElementById('livJournalAmount').value || '').replace(/[\s\u00A0]/g,'').replace(',','.');
+  const amount = /^[+-]?(\d+\.?\d*|\.\d+)$/.test(_raw) ? Math.round(parseFloat(_raw) * 100) / 100 : NaN;
   if(!date || !label || isNaN(amount)){ alert('Renseignez la date, le libellé et le montant.'); return; }
   const list = livTxLoad();
-  list.push({ id:'tx_'+Date.now(), compteId, date, label, amount });
+  const _editId = window._livJEditId || '';
+  const _old = _editId ? list.find(t => t.id === _editId && t.compteId === compteId) : null;
+  const _prev = _old ? (parseFloat(_old.amount) || 0) : 0;   // en modification, le solde suit seulement la différence
+  if(_old){ _old.date = date; _old.label = label; _old.amount = amount; }
+  else list.push({ id:'tx_'+Date.now(), compteId, date, label, amount });
   livTxSave(list);
+  // Le solde du compte suit le mouvement (les espèces du portefeuille en dépendent), sauf si l'utilisateur décoche la case
+  const _adj = document.getElementById('livJournalAdjSolde');
+  if(!_adj || _adj.checked){
+    const lv = livLoad(), c = lv.find(x => x.id === compteId);
+    if(c){ c.solde = Math.round(((parseFloat(c.solde) || 0) + amount - _prev) * 100) / 100; livSave(lv); try{ renderLivrets(); }catch(e){} try{ renderETFTable(window._lp || {}); }catch(e){} }
+  }
   document.getElementById('livJournalLabel').value = '';
   document.getElementById('livJournalAmount').value = '';
+  livJournalEditReset();
   renderLivretJournalList(compteId);
+}
+// Modifier une opération du journal : on reprend ses valeurs dans la saisie manuelle
+function livJournalEdit(id){
+  const t = livTxLoad().find(x => x.id === id); if(!t || t.src) return;
+  window._livJEditId = id;
+  livJournalTab('manuel');
+  kyfDateSetValue('livJournalDate', String(t.date || '').slice(0,10));
+  document.getElementById('livJournalLabel').value = t.label || '';
+  document.getElementById('livJournalAmount').value = String(t.amount).replace('.', ',');
+  const adj = document.getElementById('livJournalAdjSolde'); if(adj) adj.checked = true;
+  const l = document.getElementById('livJournalAddLbl'); if(l) l.textContent = 'Enregistrer la modification';
+  const c = document.getElementById('livJournalEditCancel'); if(c) c.style.display = 'block';
+  const f = document.getElementById('livJournalLabel'); if(f){ try{ f.focus(); }catch(e){} }
+}
+function livJournalEditReset(){
+  window._livJEditId = '';
+  const l = document.getElementById('livJournalAddLbl'); if(l) l.textContent = 'Ajouter le mouvement';
+  const c = document.getElementById('livJournalEditCancel'); if(c) c.style.display = 'none';
+}
+function livJournalEditCancel(){
+  livJournalEditReset();
+  document.getElementById('livJournalLabel').value = '';
+  document.getElementById('livJournalAmount').value = '';
+  kyfDateSetValue('livJournalDate', new Date().toISOString().slice(0,10));
 }
 function deleteLivretTransaction(id){
   kyfDeleteWithUndo(livTxLoad, livTxSave, id, () => renderLivretJournalList(document.getElementById('livJournalCompteId').value), 'Transaction');
@@ -81147,8 +81202,14 @@ function renderLivretJournalList(compteId){
       <span class="ljr-ic" style="background:${t.amount >= 0 ? 'color-mix(in srgb,var(--green) 16%,transparent)' : 'var(--btn-secondary-bg)'};color:${t.amount >= 0 ? 'var(--green)' : 'var(--text2)'}">${t.amount >= 0 ? ICO_IN : ICO_OUT}</span>
       <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(t.label)}</span><span style="font-size:9px;color:var(--text3)">${new Date(t.date).toLocaleDateString('fr-FR',{day:'numeric',month:'long'})} · ${sub(t)}</span></span>
       <span style="font-size:12px;font-weight:700;color:${t.amount>=0?'var(--green)':'var(--text)'};white-space:nowrap">${t.amount>=0?'+':''}${fmt(t.amount,2)} €</span>
-      <button type="button" onclick="livCreateRecurringFromTx('${t.id}')" class="kyf-icon-btn" title="Créer un flux récurrent depuis cette ligne" aria-label="Créer un flux récurrent depuis cette ligne" style="${LJ_IB}" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">${KYF_ICONS.refresh}</button>
-      <button type="button" onclick="deleteLivretTransaction('${t.id}')" class="kyf-icon-btn" title="Supprimer" aria-label="Supprimer" style="${LJ_IB}" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text3)'">${KYF_ICONS.trash}</button>
+      <span style="position:relative;display:inline-block;flex-shrink:0">
+        <button type="button" onclick="event.stopPropagation();avToggleActionsMenu('livtx-${t.id}')" class="ljr-dots" title="Actions" aria-label="Actions sur cette opération">⋯</button>
+        <div id="avActionsMenu-livtx-${t.id}" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:200px">
+          ${t.src ? '' : `<div onclick="avCloseActionsMenu('livtx-${t.id}');livJournalEdit('${t.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.edit} Modifier l'opération</div>`}
+          <div onclick="avCloseActionsMenu('livtx-${t.id}');livCreateRecurringFromTx('${t.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.refresh} Créer un flux récurrent</div>
+          <div onclick="avCloseActionsMenu('livtx-${t.id}');deleteLivretTransaction('${t.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:#ff4560;cursor:pointer;display:flex;align-items:center;gap:6px;border-top:1px solid var(--border)" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.trash} Supprimer</div>
+        </div>
+      </span>
     </div>`).join('') + '</div>';
   }).join('');
 }
@@ -93479,6 +93540,7 @@ function avArbSaveEntry(entry){
 let _avArbContratId = null;
 let _avArbUnit = 'eur';
 let _avArbMode = 'arbitrage'; // 'arbitrage' | 'frais'
+let _avArbDestPick = null;   // 2.8.13.61 : support choisi dans le référentiel ({ticker,isin,nom,type}) pour la nouvelle ligne de destination
 
 function avArbSetMode(mode){
   _avArbMode = mode;
@@ -93537,6 +93599,7 @@ function openArbitrageModal(contratId){
   document.getElementById('avArbFrais').value = '0';
   document.getElementById('avArbDestInput').value = '';
   document.getElementById('avArbDestIdx').value = 'new';
+  _avArbDestPick = null;
   document.getElementById('avArbDestSuggestions').style.display = 'none';
   document.getElementById('avArbNewRow').style.display = 'block';
   avArbSetNewType('etf');
@@ -93604,6 +93667,7 @@ function avArbDestSearch(q){
   // Tant qu'on tape, on considère que c'est une nouvelle ligne jusqu'à sélection explicite d'une suggestion
   document.getElementById('avArbDestIdx').value = 'new';
   document.getElementById('avArbNewRow').style.display = 'block';
+  _avArbDestPick = null;
 
   if(!q || !q.trim()){ drop.style.display='none'; hint.textContent=''; return; }
 
@@ -93611,24 +93675,82 @@ function avArbDestSearch(q){
   const candidates = positions
     .map((p,i)=>({p,i}))
     .filter(({i}) => i !== srcIdx)
-    .filter(({p}) => (p.nom||p.ticker||'').toLowerCase().includes(qn));
+    .filter(({p}) => (p.nom||p.ticker||'').toLowerCase().includes(qn) || String(p.isin||'').toLowerCase().includes(qn) || String(p.ticker||'').toLowerCase().includes(qn));
 
-  if(!candidates.length){
+  // 2.8.13.61 : suggestions du référentiel (ETF / actions de la base, fonds StatsAVie), par nom, ticker ou ISIN
+  const cat = q.trim().length >= 2 ? avArbCatalogSearch(q.trim(), positions) : [];
+  const head = t => `<div style="padding:5px 12px;font-size:9px;letter-spacing:.5px;color:var(--text3);background:var(--btn-secondary-bg);border-bottom:1px solid var(--border)">${t}</div>`;
+
+  if(!candidates.length && !cat.length){
     drop.style.display = 'none';
     hint.textContent = 'Ligne non trouvée - sera créée comme nouvelle position';
     return;
   }
 
-  drop.innerHTML = candidates.map(({p,i}) =>
+  let html = '';
+  if(candidates.length){
+    html += head('DANS CE CONTRAT') + candidates.map(({p,i}) =>
     `<div onclick="avArbSelectDest(${i})"
       style="padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--border);font-family:'Inter',sans-serif"
       onmouseover="this.style.background='rgba(6,182,212,0.08)'" onmouseout="this.style.background=''">
       <span style="font-size:11px;font-weight:700;color:var(--text)">${AV_ARB_TYPE_LBL[p.type]||''} ${escapeHtml(p.nom||p.ticker)}</span>
       <span style="font-size:9px;color:var(--text3);margin-left:6px">${fmt(p.valeur||0,0)} €</span>
-    </div>`
-  ).join('');
+    </div>`).join('');
+  }
+  if(cat.length){
+    html += head('NOUVELLE LIGNE, DEPUIS LE RÉFÉRENTIEL') + cat.map(c =>
+    `<div onclick="avArbSelectCat(${kyfJsonAttr(c)})"
+      style="padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--border);font-family:'Inter',sans-serif"
+      onmouseover="this.style.background='rgba(240,180,41,0.08)'" onmouseout="this.style.background=''">
+      <div style="font-size:11px;font-weight:700;color:var(--text)">${escapeHtml(c.nom)}</div>
+      <span style="font-size:9px;color:var(--text3)">${escapeHtml(c.type === 'fonds' ? c.isin : c.ticker)}${c.type !== 'fonds' && c.isin ? ' · ' + escapeHtml(c.isin) : ''}${c.type === 'fonds' ? ' · Fonds géré' : ''}</span>
+    </div>`).join('');
+  }
+  drop.innerHTML = html;
   drop.style.display = 'block';
-  hint.textContent = candidates.length+' ligne(s) existante(s) trouvée(s) - cliquez pour sélectionner, ou continuez à taper pour créer une nouvelle ligne';
+  hint.textContent = (candidates.length ? candidates.length+' ligne(s) existante(s) dans le contrat. ' : '') + (cat.length ? 'Choisissez un support du référentiel pour créer la ligne identifiée, ou continuez à taper.' : 'Continuez à taper pour créer une nouvelle ligne.');
+}
+
+// Résultats du référentiel pour la destination : ETF / actions (base locale + communauté, _etfHints) puis fonds StatsAVie (_opcvmDB).
+// On écarte les supports déjà présents dans le contrat (ils sont proposés plus haut comme lignes existantes).
+function avArbCatalogSearch(q, positions){
+  const out = [];
+  const up = x => String(x||'').trim().toUpperCase();
+  const have = new Set(); positions.forEach(p => { if(p.ticker) have.add(up(p.ticker)); if(p.isin) have.add(up(p.isin)); });
+  const norm = s => kyfSansAccent(s).replace(/[-_.\s]+/g,' ').trim();
+  const qn = norm(q), qi = q.toLowerCase();
+  (Array.isArray(_etfHints) ? _etfHints : []).filter(h => h && h.name && h.ticker && (norm(h.name).includes(qn) || norm(h.ticker).includes(qn) || (h.isin && h.isin.toLowerCase().includes(qi)))).forEach(h => {
+    if(out.filter(o => o.type === 'etf').length >= 5) return;
+    if(have.has(up(h.ticker)) || (h.isin && have.has(up(h.isin)))) return;
+    out.push({ type:'etf', nom:h.name, ticker:up(h.ticker), isin:h.isin ? up(h.isin) : '' });
+  });
+  const db = Array.isArray(_opcvmDB) ? _opcvmDB : [];
+  if(!db.length){
+    if(!window._avArbDbTry || Date.now() - window._avArbDbTry > 30000){
+      window._avArbDbTry = Date.now();
+      try{ loadOpcvmDB().catch(()=>null).then(()=>{ const inp = document.getElementById('avArbDestInput'); if(inp && inp.value === q && document.getElementById('avArbitrageModal').style.display !== 'none') avArbDestSearch(q); }); }catch(e){}
+    }
+  } else {
+    db.filter(f => f && f.nom && f.isin && (kyfSansAccent(f.nom).includes(qn) || f.isin.toLowerCase().includes(qi))).forEach(f => {
+      if(out.filter(o => o.type === 'fonds').length >= 5) return;
+      if(have.has(up(f.isin))) return;
+      out.push({ type:'fonds', nom:f.nom, ticker:up(f.isin), isin:up(f.isin) });
+    });
+  }
+  return out;
+}
+
+// Choix d'un support du référentiel : la nouvelle ligne est créée avec son ticker, son ISIN et son type (plus besoin de « Modifier » ensuite)
+function avArbSelectCat(c){
+  if(!c) return;
+  _avArbDestPick = { type: c.type, nom: c.nom, ticker: c.ticker, isin: c.isin };
+  document.getElementById('avArbDestInput').value = c.nom;
+  document.getElementById('avArbDestIdx').value = 'new';
+  document.getElementById('avArbDestSuggestions').style.display = 'none';
+  document.getElementById('avArbNewRow').style.display = 'block';
+  avArbSetNewType(c.type === 'fonds' ? 'fonds' : 'etf');
+  document.getElementById('avArbDestHint').textContent = 'Nouvelle ligne identifiée : ' + (c.type === 'fonds' ? c.isin : c.ticker + (c.isin ? ' · ' + c.isin : ''));
+  avArbUpdateSummary();
 }
 
 function avArbSelectDest(idx){
@@ -93747,13 +93869,18 @@ function validerArbitrage(){
     if(!nom){ alert('Veuillez saisir le nom de la ligne de destination.'); return; }
     const type = document.getElementById('avArbNewType').value;
     // Vérifie qu'aucune ligne existante ne porte exactement ce nom (sécurité, évite les doublons accidentels)
-    const exactMatchIdx = positions.findIndex((p,i)=> i!==srcIdx && (p.nom||p.ticker||'').toLowerCase() === nom.toLowerCase());
+    const _pk = (_avArbDestPick && _avArbDestPick.nom === nom) ? _avArbDestPick : null;
+    const _up = x => String(x||'').trim().toUpperCase();
+    const exactMatchIdx = positions.findIndex((p,i)=> i!==srcIdx && ((p.nom||p.ticker||'').toLowerCase() === nom.toLowerCase() || (_pk && _pk.ticker && _up(p.ticker) === _pk.ticker)));
     if(exactMatchIdx !== -1){
       kyfAvArbEntree(_avArbContratId, positions[exactMatchIdx], positions[exactMatchIdx].valeur||0, Math.max(0, netRecu));   // D12
       positions[exactMatchIdx].valeur = (positions[exactMatchIdx].valeur||0) + Math.max(0, netRecu);
       destNomFinal = positions[exactMatchIdx].nom||positions[exactMatchIdx].ticker; destTypeFinal = positions[exactMatchIdx].type;
     } else {
-      positions.push({ id: Date.now().toString() + Math.random().toString(36).slice(2,5), type, nom, valeur: Math.max(0, netRecu) });
+      const _np = { id: Date.now().toString() + Math.random().toString(36).slice(2,5), type, nom, valeur: Math.max(0, netRecu) };
+      if(_pk){ _np.ticker = _pk.ticker; if(_pk.isin) _np.isin = _pk.isin; }   // 2.8.13.61 : ligne identifiée par le référentiel
+      positions.push(_np);
+      if(_pk && _pk.type === 'fonds' && _pk.isin){ try{ fetch(GAS_STATSAVIE_, { method:'POST', body:new URLSearchParams({ action:'marquer_detenu', isin:_pk.isin }) }).catch(()=>{}); }catch(e){} }   // suivi du cours, comme dans « Ajouter une position »
       destNomFinal = nom; destTypeFinal = type;
     }
   } else {
@@ -96130,17 +96257,18 @@ function renderAV(){
           <div style="position:relative">
             <button onclick="avToggleActionsMenu('${d.id}')" title="Plus d'actions" class="kyf-icon-btn" style="background:none;border:1px solid var(--border2);box-sizing:border-box;border-radius:8px;width:34px;height:34px;justify-content:center;color:var(--text3);cursor:pointer;padding:0;display:inline-flex;align-items:center;font-size:16px;letter-spacing:1px">⋯</button>${(()=>{ let vu = false; try{ vu = localStorage.getItem('kyf-nouveau-badge-avref') === '1'; }catch(e){} return (vu || [].concat(KYF_NOUVEAUTES.badge || []).indexOf('avref') < 0) ? '' : '<span class="kyf-new-badge" data-new="avref" id="avRefDot-' + d.id + '" style="display:inline-block;position:absolute;top:-8px;right:-8px;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.25)">NOUVEAU</span>'; })()}${(()=>{ let v1 = false, v2 = false; try{ v1 = localStorage.getItem('kyf-nouveau-badge-avref') === '1'; v2 = localStorage.getItem('kyf-nouveau-badge-avsuivi') === '1'; }catch(e){} const B = [].concat(KYF_NOUVEAUTES.badge || []); return (v2 || B.indexOf('avsuivi') < 0 || !(v1 || B.indexOf('avref') < 0)) ? '' : '<span class="kyf-new-badge" data-new="avsuivi" id="avSuiviDot-' + d.id + '" style="display:inline-block;position:absolute;top:-8px;right:-8px;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.25)">NOUVEAU</span>'; })()}
             <div id="avActionsMenu-${d.id}" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:190px">
+              <div class="kyf-menu-h">OPÉRATIONS</div>
 ${isPER ? `              <div onclick="avCloseActionsMenu('${d.id}');openAddAVPosComp('${d.id}','ev-ded')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.arrowIn} Versement déductible</div>              <div onclick="avCloseActionsMenu('${d.id}');openAddAVPosComp('${d.id}','ev-non-ded')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.arrowOut} Versement non déductible</div>` : `              <div onclick="avCloseActionsMenu('${d.id}');openAddAVPos('${d.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">+ Ajouter une position</div>`}
               <div onclick="avCloseActionsMenu('${d.id}');avOpenDCAFor('${d.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Versement programmé</div>
               <div onclick="avCloseActionsMenu('${d.id}');avOpenDCAFor('${d.id}',{freq:'once'})" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Versement exceptionnel</div>
 ${(d.type==='per-col'||d.type==='per-ob') ? `<div onclick="avCloseActionsMenu('${d.id}');avOpenRetrait('${d.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Retrait exceptionnel</div>` : ''}
+              <div onclick="avCloseActionsMenu('${d.id}');openArbitrageModal('${d.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">⇄ Arbitrer entre supports</div>
               <div class="kyf-menu-sep" role="separator"></div>
+              <div class="kyf-menu-h">OUTILS</div>
               <div id="avRefMenu-${d.id}" onclick="avCloseActionsMenu('${d.id}');try{kyfNewBadgeSeen('avref')}catch(e){};avRefreshContrat('${d.id}')" title="Remet à jour d'un coup les fonds du contrat qui ont un ISIN" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Actualiser les cours du contrat${(()=>{ let vu = false; try{ vu = localStorage.getItem('kyf-nouveau-badge-avref') === '1'; }catch(e){} return (vu || [].concat(KYF_NOUVEAUTES.badge || []).indexOf('avref') < 0) ? '' : '<span class="kyf-new-badge" data-new="avref" style="display:inline-block;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;margin-left:auto;pointer-events:none">NOUVEAU</span>'; })()}</div>
               <div id="avFraisMenu-${d.id}" onclick="avCloseActionsMenu('${d.id}');try{kyfNewBadgeSeen('avfrais')}catch(e){};avFraisOpen('${d.id}')" title="Calendrier et historique des frais prélevés par l'assureur" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg> Frais prélevés${(()=>{ let vu = false; try{ vu = localStorage.getItem('kyf-nouveau-badge-avfrais') === '1'; }catch(e){} return (vu || [].concat(KYF_NOUVEAUTES.badge || []).indexOf('avfrais') < 0) ? '' : '<span class="kyf-new-badge" data-new="avfrais" style="display:inline-block;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;margin-left:auto;pointer-events:none">NOUVEAU</span>'; })()}</div>
               <div id="avEvoMenu-${d.id}" onclick="avCloseActionsMenu('${d.id}');try{kyfNewBadgeSeen('avevo')}catch(e){};avEvoOpen('${d.id}')" title="Valeur du contrat mois par mois ou année par année, gain net des versements" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg> Évolution du contrat${(()=>{ let vu = false; try{ vu = localStorage.getItem('kyf-nouveau-badge-avevo') === '1'; }catch(e){} return (vu || [].concat(KYF_NOUVEAUTES.badge || []).indexOf('avevo') < 0) ? '' : '<span class="kyf-new-badge" data-new="avevo" style="display:inline-block;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;margin-left:auto;pointer-events:none">NOUVEAU</span>'; })()}</div>
               <div id="avSuiviMenu-${d.id}" onclick="avCloseActionsMenu('${d.id}');try{kyfNewBadgeSeen('avsuivi')}catch(e){};avSuiviOpenContrat('${d.id}')" title="Rendement de chaque support, mois par mois, avec graphiques" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Suivi mensuel${(()=>{ let vu = false; try{ vu = localStorage.getItem('kyf-nouveau-badge-avsuivi') === '1'; }catch(e){} return (vu || [].concat(KYF_NOUVEAUTES.badge || []).indexOf('avsuivi') < 0) ? '' : '<span class="kyf-new-badge" data-new="avsuivi" style="display:inline-block;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;margin-left:auto;pointer-events:none">NOUVEAU</span>'; })()}</div>
-              <div class="kyf-menu-sep" role="separator"></div>
-              <div onclick="avCloseActionsMenu('${d.id}');openArbitrageModal('${d.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">⇄ Arbitrer entre supports</div>
               <div class="kyf-menu-sep" role="separator"></div>
               <div onclick="avCloseActionsMenu('${d.id}');editAV('${d.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.edit} Modifier</div>
               <div onclick="avCloseActionsMenu('${d.id}');deleteAV('${d.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:#ff4560;cursor:pointer;display:flex;align-items:center;gap:6px;border-top:1px solid var(--border)" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg aria-hidden="true" style="vertical-align:-.18em;flex-shrink:0" width="1.1em" height="1.1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg> Supprimer</div>
@@ -97937,7 +98065,7 @@ function orInlineEdit(id, td, currentVal){
   <div style="margin-bottom:12px">
     <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">VERS (DESTINATION)</div>
     <div style="position:relative">
-      <input id="avArbDestInput" type="text" placeholder="Tapez un nom existant ou nouveau..." autocomplete="off"
+      <input id="avArbDestInput" type="text" placeholder="Nom, ticker ou ISIN (ex : CW8, Indépendance et Expansion)..." autocomplete="off"
         style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none"
         oninput="avArbDestSearch(this.value)" onfocus="avArbDestSearch(this.value)">
       <div id="avArbDestSuggestions" style="display:none;position:absolute;top:calc(100%+2px);left:0;right:0;z-index:99999;
