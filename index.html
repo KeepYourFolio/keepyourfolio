@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_9_0_30.html
+  @file        : KYF_SHARE_beta_2_9_0_33.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.9.0.30
+  @version     : Beta 2.9.0.33
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7333,7 +7333,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.9.0.30</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.9.0.33</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -8030,7 +8030,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
           <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text)">VUE</div>
           <label style="display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--text3)">Masquer sous<select id="etfFavMin" data-kyf-pg-look="field" data-kyf-pg-compact="1" onchange="kyfFavSetMin('etf',this.value)" style="min-width:0px;padding:5px 6px;border-radius:8px;font-size:10px;font-family:'Inter',sans-serif"><option value="0">Aucun seuil</option><option value="500">500 €</option><option value="1000">1 000 €</option><option value="2500">2 500 €</option><option value="5000">5 000 €</option><option value="10000">10 000 €</option><option value="25000">25 000 €</option><option value="50000">50 000 €</option><option value="100000">100 000 €</option></select></label>
           <label id="etfEnvSepRow" style="display:none;align-items:center;justify-content:space-between;gap:8px;font-size:11px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--text3);cursor:pointer" title="Cochée : un bloc par enveloppe, avec son titre. Décochée : une seule liste.">Séparer par enveloppe<span class="kyf-toggle"><input type="checkbox" id="etfEnvSepChk" onchange="kyfEnvViewToggle()"><span class="kyf-toggle-track"></span><span class="kyf-toggle-thumb"></span></span></label>
-          <label id="etfCtRow" style="display:none;align-items:center;justify-content:space-between;gap:8px;font-size:11px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--text3);cursor:pointer" title="Coché : les lignes ETF et actions rangées dans vos contrats d'assurance vie et de PER sont dans la liste. Décoché : la liste ne montre que vos PEA, PEA-PME et CTO (les cartes et le total suivent).">Lignes AV et PER<span class="kyf-toggle"><input type="checkbox" id="etfCtChk" checked onchange="kyfEtfHideCtSet(this.checked)"><span class="kyf-toggle-track"></span><span class="kyf-toggle-thumb"></span></span></label>
+
           <button id="etfVueCols" type="button" onclick="kyfVueClose();openETFSettings()" style="background:none;border:none;padding:0;text-align:left;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--text2);cursor:pointer;text-decoration:underline;text-underline-offset:2px">Colonnes, sous-totaux…</button>
         </div>
         </span>
@@ -14680,8 +14680,8 @@ function kyfQuickToast(msg){
       t.style.cssText = 'bottom:28px;z-index:2147483000;box-sizing:border-box;width:max-content;max-width:min(420px,calc(100vw - 32px))';
       document.body.appendChild(t);
     }
-    t.innerHTML = '<span class="kyf-toast-icon">' + KYF_NOTIF_INFO_SVG + '</span><span></span>'; t.lastChild.textContent = msg; void t.offsetWidth; t.classList.add('kyf-toast-visible');
-    clearTimeout(t._h); t._h = setTimeout(() => { t.classList.remove('kyf-toast-visible'); }, msg.length > 80 ? 7000 : 3200);
+    t.innerHTML = '<span class="kyf-toast-icon">' + KYF_NOTIF_INFO_SVG + '</span><span></span>'; t.lastChild.textContent = msg; t.style.cursor = 'pointer'; t.onclick = () => { clearTimeout(t._h); t.classList.remove('kyf-toast-visible'); }; void t.offsetWidth; t.classList.add('kyf-toast-visible');
+    clearTimeout(t._h); t._h = setTimeout(() => { t.classList.remove('kyf-toast-visible'); }, Math.max(kyfToastMs(msg), 4500));
   }catch(e){}
 }
 document.addEventListener('DOMContentLoaded', () => setTimeout(() => { try{ kyfBackupDotRefresh(); }catch(e){} }, 2500));
@@ -15012,6 +15012,8 @@ document.addEventListener('keyup', e => {
 document.addEventListener('focusout', e => { if(e.target && e.target.classList && e.target.classList.contains('pwd-eye')) kyfPwdHideAll(); });
 
 const KYF_NOTIF_INFO_SVG = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+// Durée d'une notification : proportionnelle à la longueur du message (2.9.0.32), pour avoir le temps de la lire. 4,5 s minimum, 14 s maximum.
+function kyfToastMs(msg){ const n = String(msg == null ? '' : msg).length; return Math.min(14000, Math.max(4500, 3000 + n * 60)); }
 function showToast(msg){
   let toast = document.getElementById('_scheduleToast');
   if(!toast){
@@ -15020,6 +15022,10 @@ function showToast(msg){
     toast.className = 'kyf-glass-notif';
     toast.style.cssText = 'bottom:90px;z-index:2147483000;white-space:normal;box-sizing:border-box;width:max-content;max-width:min(420px,calc(100vw - 32px));text-align:left;';
     document.body.appendChild(toast);
+    // Survol : la notification reste tant que la souris est dessus (on peut la relire) ; un clic la ferme.
+    toast.addEventListener('mouseenter', () => { clearTimeout(toast._t); });
+    toast.addEventListener('mouseleave', () => { clearTimeout(toast._t); toast._t = setTimeout(() => kyfToastHide(toast), 2500); });
+    toast.addEventListener('click', () => { clearTimeout(toast._t); kyfToastHide(toast); });
   }
   // Réutilise la bibliothèque d'icônes du panneau de notifications (kyfNotifNormalize /
   // kyfNotifIconSvg) : un emoji en tête de message devient une icône SVG cohérente avec
@@ -15030,7 +15036,7 @@ function showToast(msg){
   toast.innerHTML = '<span class="kyf-toast-icon" style="color:'+iconColor+';background:color-mix(in srgb,'+iconColor+' 16%,transparent)">'+(iconSvg || KYF_NOTIF_INFO_SVG)+'</span><span>'+escapeHtml(norm.text)+'</span>';
   void toast.offsetWidth; toast.classList.add('kyf-toast-visible');
   clearTimeout(toast._t);
-  toast._t = setTimeout(()=>kyfToastHide(toast), 4000);
+  toast._t = setTimeout(()=>kyfToastHide(toast), kyfToastMs(msg));
 }
 function kyfToastHide(t){ if(!t) return; t.classList.remove('kyf-toast-visible'); setTimeout(()=>{ if(!t.classList.contains('kyf-toast-visible')){ t.style.maxWidth = 'min(420px,calc(100vw - 32px))'; } }, 900); }
 
@@ -22999,7 +23005,7 @@ function renderKPIs(lp){
 
   // ── KPIs page ETF ──────────────────────────────────────────󠁋󠁙󠁆󠁊󠁍󠀲󠀶
   try {
-    const _hcK = kyfEtfHideCt(), _kf = kyfFamFiltre() || _hcK, _E = _kf ? ETF.filter(e => kyfFamFiltreOk(kyfFamTiOf(e)) && !(_hcK && kyfEtfIsCt(e))) : ETF;   // 2.9.0.06 : une personne choisie, les cartes ne portent que sur ses lignes
+    const _kf = kyfFamFiltre(), _E = _kf ? ETF.filter(e => kyfFamFiltreOk(kyfFamTiOf(e))) : ETF;   // 2.9.0.06 : une personne choisie, les cartes ne portent que sur ses lignes
     let kTotal = total, kInvesti = investi, kInvGain = investiGain, kVarJ = varJ, kVarJKnown = varJKnown, kVarJPct = varJPct, kNoVal = noValMsgEtf;
     if(_kf){
       kTotal = _E.reduce((s,e)=>s+getEval(e,lp[e.ticker]),0); kInvesti = _E.reduce((s,e)=>s+etfInvestOf(e),0);
@@ -25396,21 +25402,9 @@ function kyfEnvUnifRender(){
   try{ kyfEnvDonutDraw(rows, tot); }catch(e){}
   try{ kyfFamBarSync(); }catch(_){}
 }
-// ── Lignes des contrats AV / PER dans le tableau des positions : afficher oui / non (2.9.0.28, menu Vue) ──
-const KYF_ETF_HIDECT_KEY = 'kyf-etf-hidect';
-function kyfEtfHideCt(){ try{ return localStorage.getItem(KYF_ETF_HIDECT_KEY) === '1'; }catch(_){ return false; } }
+// Nettoyage 2.9.0.33 : le réglage « Lignes AV et PER » du menu Vue est supprimé ; on efface sa valeur pour que personne ne reste avec des lignes masquées.
+try{ localStorage.removeItem('kyf-etf-hidect'); }catch(_){}
 function kyfEtfIsCt(e){ return !!(e && (e.contratId || /^(AV|PER)$/i.test(String(e.enveloppe || '')))); }
-function kyfEtfHasCt(){ try{ return (Array.isArray(ETF) ? ETF : []).some(kyfEtfIsCt); }catch(_){ return false; } }
-function kyfEtfHideCtSet(show){
-  try{ localStorage.setItem(KYF_ETF_HIDECT_KEY, show ? '0' : '1'); }catch(_){}
-  try{ renderETFTable(window._lp || {}); }catch(_){}
-  try{ renderKPIs(window._lp || {}); }catch(_){}
-}
-function kyfEtfCtRowSync(){
-  const r = document.getElementById('etfCtRow'), c = document.getElementById('etfCtChk'); if(!r) return;
-  r.style.display = kyfEtfHasCt() ? 'flex' : 'none';
-  if(c) c.checked = !kyfEtfHideCt();
-}
 // ── Supports d'un contrat, dépliables dans la vue Par enveloppe (2.9.0.27) ──
 const KYF_ENV_ETFONLY_KEY = 'kyf-env-etfonly';
 const KYF_ENV_TYPE_LBL = { fe:'Fonds euros', etf:'ETF et Actions', action:'ETF et Actions', immo:'Immobilier', fonds:'Fonds gérés', obl:'Obligations', pe:'Private equity', dp:'Dette privée' };
@@ -42263,8 +42257,6 @@ function renderETFTable(lp){
   try{ kyfFamBarSync(); }catch(_){}
   const _per = kyfFamFiltre();   // une personne affichée (sélecteur sous le titre)
   if(_per) etfSorted = etfSorted.filter(e => kyfFamFiltreOk(kyfFamTiOf(e)));
-  const _hc = kyfEtfHideCt();   // lignes des contrats masquées (menu Vue)
-  if(_hc) etfSorted = etfSorted.filter(e => !kyfEtfIsCt(e));
   const _grouped = !_solo && kyfEnvViewSep(sort);
   const _fold = _grouped || (_solo && sort === 'manual');   // repli d'une enveloppe : vue séparée, ou un compte affiché seul en ordre manuel (comme avant)   // vue séparée : titres d'enveloppe (et repli) ; vue mélangée : liste à plat
   if(_grouped && sort !== 'manual'){   // tri par colonne conservé à l'intérieur de chaque enveloppe (tri stable)
@@ -42272,7 +42264,6 @@ function renderETFTable(lp){
     etfSorted = etfSorted.map((e, i) => [e, i]).sort((a, b) => (_eo(a[0]) - _eo(b[0])) || (a[1] - b[1])).map(x => x[0]);
   }
   try{ kyfEnvViewBtnSync(_grouped, _solo); }catch(_){}
-  try{ kyfEtfCtRowSync(); }catch(_){}
   const cols = _s.cols || {};
   const showCol = k => {
     if(k in cols) return cols[k];
@@ -42284,7 +42275,7 @@ function renderETFTable(lp){
   });
   try{ kyfSparkSelRender(); kyfSparkRefresh(); }catch(_){}
   // Calculer le total éval pour la répartition
-  const _totalEval = ((_solo || _per || _hc) ? ETF : etfSorted).reduce((s,e)=>s+getEval(e,lp[e.ticker]),0);
+  const _totalEval = ((_solo || _per) ? ETF : etfSorted).reduce((s,e)=>s+getEval(e,lp[e.ticker]),0);
   const _fa = kyfFavApply('etf', etfSorted, e=>e.ticker, e=>[e.name,e.ticker,e.isin||getISIN(e.ticker)||''].join(' '), _fold ? (e=>e.enveloppe||'PEA') : null, e=>getEval(e,lp[e.ticker]), e=>etfCollapsedEnvsLoad().includes(e.enveloppe||'PEA'));
   kyfFavBar('etf', ETF.length, _fa.favCount);
 
@@ -42412,7 +42403,6 @@ function renderETFTable(lp){
   });
   rows += kyfFavMoreRow('etf', colCount, _fa, '€');
   let _tt = _solo ? ETF.filter(e => (e.enveloppe || 'PEA') === _solo) : ETF;
-  if(_hc) _tt = _tt.filter(e => !kyfEtfIsCt(e));
   if(_per) _tt = _tt.filter(e => kyfFamFiltreOk(kyfFamTiOf(e)));   // v2.8.12.92 : la ligne TOTAL suit l'enveloppe affichée (avant : toujours tout le portefeuille)
   if(_solo !== 'PEE') rows += `<tr class="etf-total-row" style="border-top:2px solid var(--accent)">
     <td style="font-weight:800;font-size:11px;letter-spacing:1px;color:var(--text-hi)">TOTAL${_solo ? ' ' + escapeHtml(_solo) : ''}${_per ? ' ' + escapeHtml(_per === 'none' ? 'NON ATTRIBUÉ' : String(KYF_TITU[_per][0]).toUpperCase()) : ''}</td>
@@ -42422,11 +42412,11 @@ function renderETFTable(lp){
     ${showCol('qte')?'<td></td>':''}
     ${showCol('eval')?`<td>${fmt(_tt.reduce((s,e)=>s+getEval(e,lp[e.ticker]),0),2)} €</td>`:''}
     ${showCol('cours')?'<td></td>':''}
-    ${showCol('varje')?`<td class="${(()=>{ const h=((_solo || _per || _hc) ? null : window.PORTFOLIO_VARJ_EUR); if(h!==undefined&&h!==null) return h>=0?'up':'dn'; const v=_tt.reduce((s,e)=>{const p=lp[e.ticker];return s+(p&&p.change!==undefined?toEUR(p.change*kyfEtfHeldQty(e),p.currency||getTickerCurrency(e.ticker,p)):0);},0);const hasAny=_tt.some(e=>lp[e.ticker]&&lp[e.ticker].change!==undefined);return hasAny?(v>=0?'up':'dn'):''; })()}" style="font-weight:700">${(()=>{ const h=((_solo || _per || _hc) ? null : window.PORTFOLIO_VARJ_EUR); if(h!==undefined&&h!==null) return (h>=0?'+':'')+fmt(h,2)+' €'; const v=_tt.reduce((s,e)=>{const p=lp[e.ticker];return s+(p&&p.change!==undefined?toEUR(p.change*kyfEtfHeldQty(e),p.currency||getTickerCurrency(e.ticker,p)):0);},0);const hasAny=_tt.some(e=>lp[e.ticker]&&lp[e.ticker].change!==undefined);if(!hasAny) return '';return(v>=0?'+':'')+fmt(v,2)+' €'; })()}</td>`:''}
+    ${showCol('varje')?`<td class="${(()=>{ const h=((_solo || _per) ? null : window.PORTFOLIO_VARJ_EUR); if(h!==undefined&&h!==null) return h>=0?'up':'dn'; const v=_tt.reduce((s,e)=>{const p=lp[e.ticker];return s+(p&&p.change!==undefined?toEUR(p.change*kyfEtfHeldQty(e),p.currency||getTickerCurrency(e.ticker,p)):0);},0);const hasAny=_tt.some(e=>lp[e.ticker]&&lp[e.ticker].change!==undefined);return hasAny?(v>=0?'up':'dn'):''; })()}" style="font-weight:700">${(()=>{ const h=((_solo || _per) ? null : window.PORTFOLIO_VARJ_EUR); if(h!==undefined&&h!==null) return (h>=0?'+':'')+fmt(h,2)+' €'; const v=_tt.reduce((s,e)=>{const p=lp[e.ticker];return s+(p&&p.change!==undefined?toEUR(p.change*kyfEtfHeldQty(e),p.currency||getTickerCurrency(e.ticker,p)):0);},0);const hasAny=_tt.some(e=>lp[e.ticker]&&lp[e.ticker].change!==undefined);if(!hasAny) return '';return(v>=0?'+':'')+fmt(v,2)+' €'; })()}</td>`:''}
     ${showCol('tend')?'<td></td>':''}
     ${showCol('gpe')?`<td title="${(()=>{const n=_tt.filter(e=>kyfEtfNoPrice(e,lp)).length;return (n&&_tt.some(e=>lp&&lp[e.ticker]))?kyfNoPriceMsg(n):'';})()}" class="${(()=>{const g=_tt.reduce((s,e)=>s+(kyfEtfNoPrice(e,lp)?0:getEval(e,lp[e.ticker])-(e.montant!==undefined?e.montant:e.pru*e.qty)),0);return g>=0?'up':'dn';})()}">${(()=>{const g=_tt.reduce((s,e)=>s+(kyfEtfNoPrice(e,lp)?0:getEval(e,lp[e.ticker])-(e.montant!==undefined?e.montant:e.pru*e.qty)),0);return(g>=0?'+':'')+fmt(g,2)+' €';})()}</td>`:''}
     ${showCol('gpp')?`<td class="${(()=>{const t=_tt.reduce((s,e)=>s+(kyfEtfNoPrice(e,lp)?0:(e.montant!==undefined?e.montant:e.pru*e.qty)),0);const g=_tt.reduce((s,e)=>s+(kyfEtfNoPrice(e,lp)?0:getEval(e,lp[e.ticker])-(e.montant!==undefined?e.montant:e.pru*e.qty)),0);return g>=0?'up':'dn';})()}">${(()=>{const t=_tt.reduce((s,e)=>s+(kyfEtfNoPrice(e,lp)?0:(e.montant!==undefined?e.montant:e.pru*e.qty)),0);const g=_tt.reduce((s,e)=>s+(kyfEtfNoPrice(e,lp)?0:getEval(e,lp[e.ticker])-(e.montant!==undefined?e.montant:e.pru*e.qty)),0);if(!t||isNaN(g/t)) return '-';return(g>=0?'+':'')+((g/t)*100).toFixed(2)+' %';})()}</td>`:''}
-    ${showCol('repartition')?`<td style="color:var(--text2);font-weight:700">${(_solo || _per || _hc) && _totalEval > 0 ? ((_tt.reduce((s,e)=>s+getEval(e,lp[e.ticker]),0)/_totalEval)*100).toFixed(2)+'%' : '100%'}</td>`:''}
+    ${showCol('repartition')?`<td style="color:var(--text2);font-weight:700">${(_solo || _per) && _totalEval > 0 ? ((_tt.reduce((s,e)=>s+getEval(e,lp[e.ticker]),0)/_totalEval)*100).toFixed(2)+'%' : '100%'}</td>`:''}
     <td></td>
   </tr>`;
   try{ if(!_per && (!_solo || _solo === 'PEE') && !(_fa.filtering || (_kyfFavUi.etf && _kyfFavUi.etf.only))) rows += kyfPeeTableRows(showCol, showLogo, (_s.subtot || {}).PEE !== false, collapsedEnvs.includes('PEE')); }catch(e){ console.error('PEE tableau', e); }
@@ -48007,7 +47997,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.9.0.30\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.9.0.33\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -62889,8 +62879,7 @@ const GUIDE_PAGES = [
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Assurance vie et PER : quels supports passent dans le Portefeuille ?</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9">Un support d'un contrat remonte dans <strong style="color:var(--text)">Portefeuille</strong> (ETF et actions) seulement s'il est de type <strong style="color:var(--text)">ETF ou Action</strong> et qu'il a un <strong style="color:var(--text)">ticker</strong>. Il suit alors le cours du jour. Les autres types (fonds euros, SCPI, obligations, private equity, dette privée) restent dans la page du contrat, à la valeur du relevé.<br><br>
-        Un fonds rangé en « Fonds géré » reste lui aussi dans le contrat. S'il a un ticker (par exemple <strong style="color:var(--text)">0P…</strong>), ouvrez la ligne, passez son type en ETF et saisissez le ticker : il remontera avec son cours du jour. Si vous supprimez une ligne du Portefeuille, le contrat revient à la valeur du relevé pour ce support.<br><br>
-        Dans Portefeuille, le menu <strong style="color:var(--text)">Vue</strong> (l'œil) a un réglage « Lignes AV et PER » : il affiche ou masque ces lignes dans la liste des positions, et le total suit.</div>
+        Un fonds rangé en « Fonds géré » reste lui aussi dans le contrat. S'il a un ticker (par exemple <strong style="color:var(--text)">0P…</strong>), ouvrez la ligne, passez son type en ETF et saisissez le ticker : il remontera avec son cours du jour. Si vous supprimez une ligne du Portefeuille, le contrat revient à la valeur du relevé pour ce support.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Ma famille : prénoms, naissances et filtre par personne</div>
@@ -70740,12 +70729,12 @@ const KYF_NOUVEAUTES = {
   badge: ['envvue', 'famille', 'avjrn', 'arb', 'immo', 'avref', 'avfrais', 'fraispg', 'avevo', 'avsuivi', 'dcaprix', 'ct', 'tend', 'tipstyle', 'ptf', 'pee', 'ctlg', 'vue'],   // clés des badges (une ou plusieurs ; tableau) ; clé du badge « Nouveau » (span .kyf-new-badge data-new="...") ; vide = aucun badge
   annonces: [
     { id: 'a-2026-10-28', date: '2026-10-28', items: [
-      { titre: 'Contrats : un support ETF ajouté à la main apparaît dans le Portefeuille', version: '2.9.0.30', important: true, texte: 'Avant, un ETF ou une action ajouté à la main dans un contrat d’assurance vie ou de PER restait seulement dans le contrat, à la valeur du relevé, sans cours du jour. Désormais, en enregistrant la ligne (type ETF ou Action avec un ticker), elle apparaît aussi dans Portefeuille et suit le cours du jour. Pour une ligne déjà ajoutée avant, ouvrez-la et enregistrez-la : elle remonte.' },
-      { titre: 'Contrats : quels supports remontent dans le Portefeuille', version: '2.9.0.29', texte: 'Dans la fenêtre d’ajout ou de modification d’un support de contrat, une note explique quand la ligne remonte dans le Portefeuille : seulement les types ETF et Action avec un ticker, qui suivent alors le cours du jour. Les autres types restent à la valeur du relevé. Le menu Vue du Portefeuille a aussi un réglage « Lignes AV et PER » pour afficher ou masquer ces lignes dans la liste (2.9.0.28).' },
-      { titre: 'Portefeuille : vue Par enveloppe', version: '2.9.0.23', important: true, texte: 'Portefeuille, bouton PAR ENVELOPPE : PEA, PEA-PME, CTO, assurance vie et PER dans une seule liste, avec la valeur, la plus-value et la part de chacun, et un anneau de répartition. Un contrat est compté avec ses fonds, et sa flèche déplie tous ses supports (avec un réglage pour ne garder que les ETF et actions). Cliquez sur un contrat pour l’ouvrir ; le filtre par personne s’applique aussi à cette vue.' },
-      { titre: 'Rapports PDF : famille et journal assurance vie', version: '2.9.0.18', texte: 'Mon compte, Rapports PDF : la synthèse montre la répartition par personne, le détail ajoute la colonne « À qui », et un nouveau rapport « Journal assurance vie et PER » donne pour chaque contrat la valeur, le total versé, le rendement annuel et les dernières opérations.' },
-      { titre: 'Ma famille : prénoms, naissances et filtre par personne', version: '2.9.0.13', important: true, texte: 'Mon compte, carte « Ma famille » : donnez un prénom à Moi, Conjoint(e) et Enfant, indiquez les dates de naissance et ajoutez jusqu’à 4 autres membres. Chaque membre affiche le patrimoine qui lui est rattaché.\nLe champ « À qui » existe maintenant sur les positions, les contrats AV/PER, les livrets et comptes, les biens immobiliers, les SCPI, les SCI et chaque lot d’or. La crypto a un seul choix pour tout le module (page Crypto).\nSur chacune de ces pages, un sélecteur n’affiche que les éléments d’une personne, cartes du haut et totaux compris. Rien n’est envoyé nulle part : ces données restent chez vous.' },
-      { titre: 'Journal des opérations : assurance vie et PER', version: '2.8.13.81', important: true, texte: 'Menu ⋯ d’un contrat, OUTILS, « Journal des opérations ». Il réunit en une liste datée vos versements, arbitrages, frais et retraits, avec des filtres et des totaux.\nLes versements programmés actifs dans DCA y apparaissent : l’échéance à venir est grisée et ne compte pas dans les totaux.\nOnglet Rendement : le rendement annuel du contrat (TRI), calculé avec la date de chaque versement et rachat, et le rendement de chaque SCPI loyers compris.' },
+      { titre: 'Notifications : plus de temps pour lire', version: '2.9.0.32', texte: 'Une notification reste affichée plus longtemps quand son texte est long, et tant que la souris est dessus. Un clic la ferme.' },
+      { titre: 'Contrats : un support ETF ajouté à la main apparaît dans le Portefeuille', version: '2.9.0.30', important: true, texte: 'Un ETF ou une action ajouté à la main dans un contrat AV ou PER (avec un ticker) suit maintenant le cours du jour et apparaît dans Portefeuille. Une ligne ajoutée avant : ouvrez-la et enregistrez-la.' },
+      { titre: 'Portefeuille : vue Par enveloppe', version: '2.9.0.23', important: true, texte: 'Bouton PAR ENVELOPPE : tous vos comptes dans une seule liste, avec la valeur, la plus-value, la part du total et un anneau de répartition. Cliquez sur la flèche d’un contrat pour voir ses supports.' },
+      { titre: 'Rapports PDF : famille et journal assurance vie', version: '2.9.0.18', texte: 'Mon compte, Rapports PDF : répartition par personne, colonne « À qui », et un rapport « Journal assurance vie et PER ».' },
+      { titre: 'Ma famille : prénoms, naissances et filtre par personne', version: '2.9.0.13', important: true, texte: 'Mon compte, carte « Ma famille » : prénoms, dates de naissance et jusqu’à 4 autres membres. Le champ « À qui » et un filtre par personne sont disponibles sur les positions, contrats, livrets, immobilier, SCPI, SCI et or. Tout reste chez vous.' },
+      { titre: 'Journal des opérations : assurance vie et PER', version: '2.8.13.81', important: true, texte: 'Menu ⋯ d’un contrat, OUTILS, « Journal des opérations » : versements, arbitrages, frais et retraits en une liste datée, avec filtres, totaux et un onglet Rendement (TRI).' },
       { titre: 'Loyer SCPI reçu', version: '2.8.13.74', texte: 'Un loyer de SCPI détenue dans un contrat arrive dans le fonds euros : saisissez-le depuis le journal, KYF l’ajoute au fonds euros et le rattache à la SCPI, sans toucher au total versé. Modifiable et supprimable avec annulation.' },
       { titre: 'Rachat en assurance vie', version: '2.8.13.74', texte: 'Menu ⋯ d’un contrat d’assurance vie : « Rachat ». Choisissez les lignes à vendre, KYF baisse leur valeur et ajoute le montant au total racheté.' }
     ] },
@@ -73385,6 +73374,12 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.33 · 28/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Portefeuille, menu Vue : suppression du réglage Lignes AV et PER (affichage vide en vue Assurance vie)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.32 · 28/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Notifications : durée proportionnelle au texte, pause au survol, clic pour fermer</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.31 · 28/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Quoi de neuf du 28 octobre : textes raccourcis</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.30 · 28/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Contrats AV et PER : un support ETF ou Action ajouté ou enregistré à la main crée sa ligne dans le Portefeuille (cours du jour)</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.29 · 28/10/2026</div>
