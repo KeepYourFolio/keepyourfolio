@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_13_58.html
+  @file        : KYF_SHARE_beta_2_8_13_60.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.13.58
+  @version     : Beta 2.8.13.60
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7324,7 +7324,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.13.58</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.13.60</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -26271,7 +26271,7 @@ function _openAddRecurrentCore(id){
 
   // Peupler le sélecteur de compte - uniquement les comptes courants (CCP/joint/pro/jeune)
   const compteSel = document.getElementById('recurrentCompteId');
-  const BANK_TYPES = ['Compte courant (CCP)','Compte joint','Compte pro','Compte jeune'];
+  const BANK_TYPES = ['Compte courant (CCP)','Compte individuel','Compte joint','Compte pro','Compte jeune'];
   const comptes = (typeof livLoad==='function' ? livLoad() : []).filter(c => BANK_TYPES.includes(c.type));
   compteSel.innerHTML = '<option value="">- Aucun -</option>' + comptes.map(c=>`<option value="${c.id}">${escapeHtml(c.banque)} (${escapeHtml(c.type)})</option>`).join('');
   const compteDrop = document.getElementById('recurrentCompteDrop');
@@ -47624,7 +47624,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.13.58\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.13.60\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -71171,7 +71171,7 @@ function kyfCashSubMarquee(){
 function kyfCashCcpDoublon(){
   try{
     if(!(getCashCcp() > 0)) return null;
-    const BANK = ['Compte courant (CCP)','Compte joint','Compte pro','Compte jeune'];
+    const BANK = ['Compte courant (CCP)','Compte individuel','Compte joint','Compte pro','Compte jeune'];
     const l = JSON.parse(localStorage.getItem('kyf-livrets')||'[]').filter(d => BANK.includes(d.type) && parseInt(d.liquide) === 1 && livMine(d) > 0);
     return l.length ? { ccp: getCashCcp(), comptes: l } : null;
   }catch(e){ return null; }
@@ -72894,6 +72894,10 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.60 · 28/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Livrets et comptes : nouveau type « Compte individuel » (à côté de Compte courant, joint, pro et jeune) ; la recherche de banque ignore les accents et les majuscules (« credit agricole » trouve Crédit Agricole). AV et PER : le cours affiché sous chaque ligne a deux décimales.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.59 · 28/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance vie et PER : chaque ligne de fonds ou d'ETF affiche son détail sous le nom (nombre de parts, cours utilisé, prix de revient) pour pouvoir vérifier le montant, comme dans le Portefeuille.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.58 · 28/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PEE : nouveau donut « Répartition PEE » à droite de la liste, comme sur Assurance vie et PER (une tranche par fonds, ou par plan quand aucun fonds n'est saisi).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.57 · 27/10/2026</div>
@@ -79543,6 +79547,7 @@ async function activateBeta(){
           <option>PEL</option>
           <option>CEL</option>
           <option>Compte courant (CCP)</option>
+          <option>Compte individuel</option>
           <option>Compte joint</option>
           <option>Compte pro</option>
           <option>Compte jeune</option>
@@ -79693,6 +79698,7 @@ const LIV_BANK_DOMAINS = {
   'bitpanda':'bitpanda.com','freedom24':'freedom24.com','vanguard':'vanguard.fr','banque palatine':'palatine.fr','crédit coopératif':'credit-cooperatif.coop','bunq':'bunq.com',
 };
 
+function kyfFold(t){ return String(t||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim(); }   // recherche sans accents ni majuscules (« credit agricole » trouve « Crédit Agricole »)
 const LIV_BANKS_ALL = [
   'Boursobank','BNP Paribas','SG','Crédit Agricole','La Banque Postale',
   'Crédit Mutuel','CIC','LCL','Caisse d\'Épargne','Banque Populaire',
@@ -79708,7 +79714,7 @@ let _livBanqueSelectedIdx = -1;
 function livBanqueFilter(q){
   const drop = document.getElementById('livBanqueDrop');
   if(!drop) return;
-  const list = q.trim()==='' ? LIV_BANKS_TOP5 : LIV_BANKS_ALL.filter(b=>b.toLowerCase().includes(q.toLowerCase()));
+  const list = q.trim()==='' ? LIV_BANKS_TOP5 : LIV_BANKS_ALL.filter(b=>kyfFold(b).includes(kyfFold(q)));
   _livBanqueList = list.slice(0,5);
   _livBanqueSelectedIdx = -1;
   if(!list.length){ drop.style.display='none'; return; }
@@ -79992,7 +79998,7 @@ function livSearchDateChangement(){
 
 function onLivretTypeChange(){
   const type = document.getElementById('livType').value;
-  const BANK_TYPES = ['Compte courant (CCP)','Compte joint','Compte pro','Compte jeune'];
+  const BANK_TYPES = ['Compte courant (CCP)','Compte individuel','Compte joint','Compte pro','Compte jeune'];
   if(BANK_TYPES.includes(type)){
     document.getElementById('livTaux').value = 0;
     document.getElementById('livPlafond').value = '';
@@ -80284,7 +80290,7 @@ function closeLivretJournal(){
 // Import déclenché depuis Calendrier financier - pas de contexte de compte
 // ici (contrairement à l'icône Journal sur une ligne de MES LIVRETS), donc
 // on demande d'abord dans quel compte importer, sauf s'il n'y en a qu'un.
-const BANK_TYPES_CAL = ['Compte courant (CCP)','Compte joint','Compte pro','Compte jeune'];
+const BANK_TYPES_CAL = ['Compte courant (CCP)','Compte individuel','Compte joint','Compte pro','Compte jeune'];
 function recCalOpenImport() {
   const comptes = (typeof livLoad === 'function' ? livLoad() : []).filter(c => BANK_TYPES_CAL.includes(c.type));
   if (!comptes.length) { alert('Aucun compte courant configuré : ajoutez-en un dans MES LIVRETS & COMPTES d\'abord.'); return; }
@@ -81203,7 +81209,7 @@ async function deleteLivret(id){
 const LIV_SETTINGS_KEY = 'kyf-livrets-settings';
 const LIV_CATEGORIES = {
   'Livret A':'reglemente','LDDS':'reglemente','LEP':'reglemente','PEL':'reglemente','CEL':'reglemente',
-  'Compte courant (CCP)':'bancaire','Compte joint':'bancaire','Compte pro':'bancaire','Compte jeune':'bancaire',
+  'Compte courant (CCP)':'bancaire','Compte individuel':'bancaire','Compte joint':'bancaire','Compte pro':'bancaire','Compte jeune':'bancaire',
   'Compte sur livret (CSL)':'epargne','Compte à terme (CAT)':'epargne','Fonds euros':'epargne',
   'Trade Republic':'epargne','Revolut':'epargne','Wise':'epargne'
 };
@@ -81277,7 +81283,7 @@ function kyfLivVerifBanner(data){
   try{
     const old = document.getElementById('livVerifBanner'); if(old) old.remove();
     if(!data.length || localStorage.getItem('kyf-liv-d17-ok') === '1') return;
-    const BANK = ['Compte courant (CCP)','Compte joint','Compte pro','Compte jeune'];
+    const BANK = ['Compte courant (CCP)','Compte individuel','Compte joint','Compte pro','Compte jeune'];
     const tbl = document.getElementById('livretsTbody'); const host = tbl && tbl.closest('table'); if(!host || !host.parentNode) return;
     const comptes = data.filter(d => !BANK.includes(d.type) && parseInt(d.liquide) === 1);
     const liste = comptes.slice(0, 8).map(d => '<button type="button" onclick="editLivret(\'' + escJsAttr(String(d.id)) + '\')" class="kyf-liv-verif-btn" style="background:none;border:1px solid rgba(240,180,41,0.45);color:var(--text);border-radius:6px;padding:2px 8px;margin:2px 4px 2px 0;font-size:10px;cursor:pointer;transition:background .15s,border-color .15s" onmouseover="this.style.background=\'rgba(240,180,41,0.18)\';this.style.borderColor=\'var(--accent)\'" onmouseout="this.style.background=\'none\';this.style.borderColor=\'rgba(240,180,41,0.45)\'">' + escapeHtml((d.banque || '') + ' · ' + (d.type || '') + ' · ' + fmt(parseFloat(d.solde)||0, 0) + ' €') + '</button>').join('');
@@ -81314,7 +81320,7 @@ function renderLivrets(){
   }
 
   // KPIs
-  const BANK_TYPES = ['Compte courant (CCP)','Compte joint','Compte pro','Compte jeune'];
+  const BANK_TYPES = ['Compte courant (CCP)','Compte individuel','Compte joint','Compte pro','Compte jeune'];
   // Nombres forcés : un solde ou un taux importé en texte ne doit ni concaténer ni casser l'affichage
   data.forEach(d => { d.solde = parseFloat(d.solde) || 0; d.taux = parseFloat(d.taux) || 0; d.plafond = parseFloat(d.plafond) || 0; });
   const total      = data.reduce((s,d)=>s+livMine(d),0);
@@ -81474,7 +81480,7 @@ function renderLivretsDonut(data){
   }
   if(charts.livretsDonut) charts.livretsDonut.destroy();
 
-  const BANK_TYPES = ['Compte courant (CCP)','Compte joint','Compte pro','Compte jeune'];
+  const BANK_TYPES = ['Compte courant (CCP)','Compte individuel','Compte joint','Compte pro','Compte jeune'];
   const REGL_TYPES = ['Livret A','LDDS','LEP','PEL','CEL'];
 
   function getCat(type){
@@ -87692,7 +87698,7 @@ let _creditBankSelectedIdx = -1;
 function creditBankFilter(q){
   const drop = document.getElementById('creditBankDrop');
   if(!drop) return;
-  const banks = q.trim()==='' ? LIV_BANKS_TOP5 : LIV_BANKS_ALL.filter(b=>b.toLowerCase().includes(q.toLowerCase()));
+  const banks = q.trim()==='' ? LIV_BANKS_TOP5 : LIV_BANKS_ALL.filter(b=>kyfFold(b).includes(kyfFold(q)));
   _creditBankList = banks.slice(0,8);
   _creditBankSelectedIdx = -1;
   if(!_creditBankList.length){ drop.style.display='none'; return; }
@@ -96045,7 +96051,14 @@ function renderAV(){
                         p.pru && p.qty ? `<span class="${(_val-(p.pru*p.qty))>=0?'up':'dn'}" style="font-weight:700">${((_val-(p.pru*p.qty))/(p.pru*p.qty)*100).toFixed(2).replace('.',',')} %</span>` : '-';
         const _valTitle = _d.live ? 'Au cours du jour' + ((parseFloat(p.valeur)||0) > 0 ? '. Valeur du relevé' + (d.releve && d.releve.date ? ' du ' + new Date(d.releve.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'}) : '') + ' : ' + fmt(parseFloat(p.valeur),0) + ' €' : '') + '. Cours de marché : la valeur affichée par votre assureur peut avoir un jour de retard.' : '';
         return `<div${isPER ? ` class="kyf-pos-row" draggable="true" data-kyf-pos="${escapeHtml(String(p.id))}" data-kyf-contrat="${escapeHtml(String(d.id))}" title="Glisser vers un autre compartiment pour déplacer cette ligne"` : ''} style="display:flex;align-items:center;gap:10px;padding:6px 12px 6px 32px;background:rgba(255,255,255,0.015)${isPER ? ';cursor:grab' : ''}">
-          <span style="flex:1;min-width:0;font-size:12px;color:var(--text2);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(p.nom||p.ticker||'-')}</span>
+          <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:var(--text2);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(p.nom||p.ticker||'-')}</span>${(() => {
+            // Détail de la ligne pour vérifier le chiffre : nombre de parts, cours utilisé (au cours du jour, ou valeur du relevé divisée par les parts) et prix de revient
+            const _q = parseFloat(p.qty) || 0; if(!(_q > 0) || !(_val > 0) || p.type === 'fe') return '';
+            const _nb = n => Number(n).toLocaleString('fr-FR', { maximumFractionDigits: 4 });
+            const _cours = _val / _q, _pru = parseFloat(p.pru) || 0, _nbC = n => Number(n).toLocaleString('fr-FR', { maximumFractionDigits: n >= 1 ? 2 : 4 });
+            const _src = _d.live ? 'cours du jour' : 'valeur du relevé' + (d.releve && d.releve.date ? ' du ' + new Date(d.releve.date + 'T12:00:00').toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' }) : '') + ' ÷ parts';
+            return '<span style="font-size:10px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="' + escapeHtml(_nb(_q) + ' parts, cours ' + _nbC(_cours) + ' € (' + _src + ')' + (_pru > 0 ? ', prix de revient ' + _nb(_pru) + ' €' : '')) + '">' + _nb(_q) + ' parts · cours ' + _nbC(_cours) + ' € (' + (_d.live ? 'du jour' : 'relevé') + ')' + (_pru > 0 ? ' · PRU ' + _nb(_pru) + ' €' : '') + '</span>';
+          })()}</span>
           <span style="font-size:10px;color:var(--text3);flex-shrink:0">${escapeHtml(p.ticker||'')}</span>
           <span style="font-size:15px;font-weight:700;flex-shrink:0;min-width:70px;text-align:right"${_valTitle ? ' title="' + escapeHtml(_valTitle) + '"' : ''}>${_val>0?fmt(_val,0)+' €':'-'}</span>
           <span style="font-size:13px;flex-shrink:0;min-width:50px;text-align:right">${rendStr}</span>
@@ -96343,7 +96356,7 @@ function livDCASourceFilter(q){
   const inp  = document.getElementById('livDCASourceInput');
   if(!drop || !inp) return;
   // position:absolute - pas besoin de coordonnées dynamiques
-  const list = q.trim()==='' ? LIV_BANKS_TOP5 : LIV_BANKS_ALL.filter(b=>b.toLowerCase().includes(q.toLowerCase()));
+  const list = q.trim()==='' ? LIV_BANKS_TOP5 : LIV_BANKS_ALL.filter(b=>kyfFold(b).includes(kyfFold(q)));
   _livDCASourceList = list;
   _livDCASourceSelectedIdx = -1;
   if(!list.length){ drop.style.display='none'; return; }
@@ -100724,6 +100737,7 @@ function orInlineEdit(id, td, currentVal){
           <div onmousedown="livTypeSelect('CEL')" class="gs-result" style="padding:8px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;color:var(--text)">CEL</div>
           <div style="font-family:'Inter',sans-serif;font-size:9px;color:var(--text3);padding:6px 12px 4px;letter-spacing:.5px;border-top:1px solid var(--border)">COMPTES BANCAIRES</div>
           <div onmousedown="livTypeSelect('Compte courant (CCP)')" class="gs-result" style="padding:8px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;color:var(--text)">Compte courant (CCP)</div>
+          <div onmousedown="livTypeSelect('Compte individuel')" class="gs-result" style="padding:8px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;color:var(--text)">Compte individuel</div>
           <div onmousedown="livTypeSelect('Compte joint')" class="gs-result" style="padding:8px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;color:var(--text)">Compte joint</div>
           <div onmousedown="livTypeSelect('Compte pro')" class="gs-result" style="padding:8px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;color:var(--text)">Compte pro</div>
           <div onmousedown="livTypeSelect('Compte jeune')" class="gs-result" style="padding:8px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;color:var(--text)">Compte jeune</div>
