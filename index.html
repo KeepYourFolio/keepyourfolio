@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_13_57.html
+  @file        : KYF_SHARE_beta_2_8_13_58.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.13.57
+  @version     : Beta 2.8.13.58
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7324,7 +7324,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.13.57</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.13.58</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -9227,7 +9227,18 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
         <div id="peePanelInfoNote" style="display:none;margin-top:8px;padding:10px 14px;border-radius:8px;background:rgba(77,159,255,0.07);border:1px solid rgba(77,159,255,0.2);width:fit-content;max-width:100%;box-sizing:border-box;font-family:'Inter',sans-serif;font-size:10px;color:var(--text2);line-height:1.6">Saisie manuelle : KYF ne calcule ni fiscalité ni règle de déblocage. Ces montants sont suivis à part et ne sont pas comptés dans les totaux de la page Assurance vie ni du tableau de bord.</div>
       </div>
       <div class="kpi-row" id="avPeeKpi" style="margin-bottom:26px"></div>
-      <div id="avPeeList" style="display:flex;flex-direction:column;gap:12px"></div>
+      <div id="avPeeRow" style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap">
+        <div id="avPeeMain" style="flex:2 1 360px;min-width:0"><div id="avPeeList" style="display:flex;flex-direction:column;gap:12px"></div></div>
+        <div id="avPeeSide" style="flex:1 1 200px;min-width:0;display:flex;flex-direction:column;gap:14px">
+          <div class="card" id="peeDonutCard" style="min-width:0;overflow:visible">
+            <div class="card-title">RÉPARTITION PEE</div>
+            <div style="display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap">
+              <div style="width:200px;height:200px;flex-shrink:0;overflow:visible"><canvas id="peeDonut"></canvas></div>
+              <div id="peeDonutLegend" style="min-width:140px;flex-shrink:0;font-family:'Inter',sans-serif"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Panneau PERECOL, affiché uniquement via le bouton PERECOL de la
@@ -47613,7 +47624,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.13.57\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.13.58\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -52561,7 +52572,7 @@ function kyfDonutCutout(){
 function setDonutBorderWidth(v){
   chartPrefs.donutBorderWidth = parseInt(v);
   applyChartPrefs();
-  ['donut','geoDonut','sectorDonut','statsD','allocDonut','livretsDonut','avDonut','perDonut','orDonut','cryptoDonut'].forEach(key=>{
+  ['donut','geoDonut','sectorDonut','statsD','allocDonut','livretsDonut','avDonut','perDonut','peeDonut','orDonut','cryptoDonut'].forEach(key=>{
     try{
       const c = charts[key]; if(!c||!c.canvas?.isConnected) return;
       c.data.datasets.forEach(ds=>{
@@ -52584,7 +52595,7 @@ function setDonutBorderWidth(v){
 
 function setDonutAnimation(v){
   chartPrefs.donutAnim = v;
-  ['donut','geoDonut','sectorDonut','statsD','allocDonut','livretsDonut','avDonut','perDonut','orDonut','cryptoDonut'].forEach(key=>{
+  ['donut','geoDonut','sectorDonut','statsD','allocDonut','livretsDonut','avDonut','perDonut','peeDonut','orDonut','cryptoDonut'].forEach(key=>{
     try{ const c=charts[key]; if(!c) return; c.options.animation=v?{duration:800}:false; c.update(); }catch(e){}
   });
   saveStyle(); syncActiveStates();
@@ -52656,7 +52667,7 @@ function applyChartPrefs(){ clearTimeout(applyChartPrefs._t); applyChartPrefs._t
     }
     c.update();
   }catch(e){} });
-  ['donut','geoDonut','sectorDonut','statsD','statsDonut','allocDonut','livretsDonut','avDonut','perDonut','orDonut','cryptoDonut'].forEach(key=>{ try{
+  ['donut','geoDonut','sectorDonut','statsD','statsDonut','allocDonut','livretsDonut','avDonut','perDonut','peeDonut','orDonut','cryptoDonut'].forEach(key=>{ try{
     const c=charts[key]; if(!c||!c.canvas?.isConnected) return;
     // Cutout
     if(chartPrefs.donutCutout!==undefined) c.options.cutout=kyfDonutCutout();
@@ -72883,6 +72894,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.58 · 28/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PEE : nouveau donut « Répartition PEE » à droite de la liste, comme sur Assurance vie et PER (une tranche par fonds, ou par plan quand aucun fonds n'est saisi).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.57 · 27/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Démo : le montant du patrimoine en haut de la courbe est recalculé une fois la page prête (il oubliait l'assurance vie et l'immobilier), il correspond maintenant à la courbe.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.56 · 27/10/2026</div>
@@ -93121,6 +93134,7 @@ function renderPee(){
   const list = document.getElementById('avPeeList'), kpi = document.getElementById('avPeeKpi');
   if(!list || !kpi) return;
   const d = peeLoad();
+  try{ renderPeeDonut(d); }catch(e){}
   const totVal = d.reduce((s, x) => s + (parseFloat(x.valeur) || 0), 0);
   const totVers = d.reduce((s, x) => s + (parseFloat(x.versements) || 0), 0);
   // plus-value : seulement sur les plans dont la valeur ET le total versé sont connus (sinon inconnue, jamais 0 ni valeur entière)
@@ -93185,6 +93199,48 @@ function renderPee(){
       '<span id="peeChevron-' + id + '" onclick="event.stopPropagation();peeToggleCard(\'' + id + '\')" style="display:flex;align-items:center;justify-content:center;box-sizing:border-box;width:34px;height:34px;border:1px solid var(--border2);border-radius:8px;color:var(--text3);transition:transform .25s ease,color .15s,background .15s;transform:rotate(' + (open ? '0' : '-90') + 'deg);flex-shrink:0" onmouseover="this.style.color=\'var(--accent)\';this.style.background=kyfChevronHoverBg()" onmouseout="this.style.color=\'var(--text3)\';this.style.background=\'transparent\'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></span></div></div>' +
       '<div id="peeCardBody-' + id + '" style="display:' + (open ? 'block' : 'none') + ';border-top:1px solid var(--border);padding-bottom:6px">' + body + '</div></div></div>';
   }).join('') : '<div style="text-align:center;padding:36px 20px;color:var(--text3);font-family:\'Inter\',sans-serif;font-size:11px">Aucun PEE - cliquez <strong style="color:var(--accent)">AJOUTER UN PEE</strong> pour commencer</div>';
+}
+
+function renderPeeDonut(plans){
+  const ctx = document.getElementById('peeDonut'), leg = document.getElementById('peeDonutLegend'), card = document.getElementById('peeDonutCard');
+  if(!ctx) return;
+  if(charts.peeDonut){ try{ charts.peeDonut.destroy(); }catch(e){} charts.peeDonut = null; }
+  // Une tranche par fonds (même nom : regroupés d'un plan à l'autre). Un plan sans fonds saisi compte pour une tranche à son nom, avec sa valeur.
+  const palette = ['#06b6d4','#f0b429','#9b6dff','#4d9fff','#a3e635','#ff4fa0','#ff7a1a','#94a3b8'];
+  const map = new Map();
+  (plans || []).forEach(pl => {
+    const fonds = peeFondsClean(pl).filter(f => f.parts != null && f.vl != null && f.parts * f.vl > 0);
+    if(fonds.length){
+      fonds.forEach(f => { const key = (f.isin || f.nom || '').toLowerCase(); const cur = map.get(key) || { label: f.nom || f.isin || 'Fonds', val: 0 }; cur.val += f.parts * f.vl; map.set(key, cur); });
+    } else if((parseFloat(pl.valeur) || 0) > 0){
+      const key = 'plan:' + pl.id; map.set(key, { label: pl.nom || 'Plan', val: parseFloat(pl.valeur) });
+    }
+  });
+  const items = [...map.values()].sort((a, b) => b.val - a.val).map((g, i) => ({ ...g, color: palette[i % palette.length] }));
+  const total = items.reduce((s, g) => s + g.val, 0);
+  if(!total){ if(leg) leg.innerHTML = '<div style="font-size:9px;color:var(--text3);text-align:center">Aucune valorisation</div>'; return; }
+  const d = chartDefaults(), cut = kyfDonutCutout(), bw = chartPrefs.donutBorderWidth !== undefined ? chartPrefs.donutBorderWidth : 2;
+  const colors = items.map(g => g.color), values = items.map(g => g.val), labels = items.map(g => g.label);
+  const grad = kyfDonutBuildGradients(ctx, colors, false), gradDim = kyfDonutBuildGradients(ctx, colors, true);
+  charts.peeDonut = new Chart(ctx.getContext('2d'), {
+    type: 'doughnut', plugins: [kyfMakeDonutCenterPlugin('TOTAL PEE')],
+    data: { labels: labels, datasets: [{ data: values, backgroundColor: grad, hoverBackgroundColor: grad, borderColor: kyfDonutBorderColor(),
+      borderWidth: kyfDonutBorderWidth(values, bw), borderRadius: 0, spacing: kyfDonutSpacing(values), hoverOffset: kyfDonutHoverOffsets(values) }] },
+    options: { ...d, layout: { padding: 10 }, cutout: cut, interaction: { mode: 'nearest', intersect: true },
+      scales: { x: { display: false }, y: { display: false } }, plugins: { ...d.plugins, legend: { display: false }, tooltip: { enabled: false } } }
+  });
+  charts.peeDonut._segGradients = grad; charts.peeDonut._segGradientsDim = gradDim; charts.peeDonut._segColors = colors;
+  if(leg) leg.innerHTML = items.map((g, i) => {
+    const pct = g.val / total * 100, tooSmall = pct < 2;
+    const hoverAttrs = tooSmall
+      ? 'title="Part trop faible pour être mise en évidence sur le graphique" style="cursor:not-allowed;'
+      : 'onmouseenter="kyfDonutLegendHover(\'peeDonut\',' + i + ');this.style.background=\'var(--hov-bg)\'" onmouseleave="kyfDonutLegendLeave(\'peeDonut\');this.style.background=\'none\'" style="cursor:pointer;';
+    return '<div ' + hoverAttrs + 'display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;padding:4px 6px;border-radius:6px;transition:background .15s">' +
+      '<div style="width:7px;height:7px;border-radius:50%;background:' + g.color + ';flex-shrink:0;margin-top:4px"></div>' +
+      '<div style="font-family:\'Inter\',sans-serif;flex:1"><div style="font-size:12px;font-weight:700;color:var(--text);overflow-wrap:anywhere">' + escapeHtml(g.label) + '</div>' +
+      '<div style="font-size:11px;font-weight:700;color:var(--accent);margin-top:2px">' + pct.toFixed(2) + '% du PEE</div>' +
+      '<div style="font-size:12px;margin-top:3px;color:var(--text2)">' + fmt(g.val, 0) + ' €</div></div></div>';
+  }).join('');
 }
 
 function openAddAV(){
