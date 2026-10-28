@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_9_0_33.html
+  @file        : KYF_SHARE_beta_2_9_0_40.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.9.0.33
+  @version     : Beta 2.9.0.40
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6432,18 +6432,20 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
     </div>
   </div>
 
-  <div id="livJPaneManuel" style="display:none">
-    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin-bottom:8px">
+  <div id="livJPaneManuel" style="display:none;padding-top:6px">
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin-bottom:12px">
       <input type="hidden" id="livJournalDate" value="">
-      <button type="button" id="livJournalDateBtn" class="kyf-csel-btn" data-kyf-date="livJournalDate" aria-haspopup="dialog" aria-expanded="false" style="font-size:10px;padding:8px 8px"><span id="livJournalDateBtnLabel">JJ/MM/AA</span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>
-      <input id="livJournalAmount" type="text" inputmode="decimal" autocomplete="off" placeholder="Montant ±€" oninput="this.value=this.value.replace(/[^0-9\-+,.\s\u00A0]/g,'')" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 8px;border-radius:6px;outline:none">
+      <button type="button" id="livJournalDateBtn" class="kyf-csel-btn" data-kyf-date="livJournalDate" aria-haspopup="dialog" aria-expanded="false" style="font-size:11px;padding:11px 10px"><span id="livJournalDateBtnLabel">JJ/MM/AA</span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>
+      <input id="livJournalAmount" type="text" inputmode="decimal" autocomplete="off" placeholder="Montant ±€" onfocus="kyfUnformatAmountInput(this)" onblur="kyfFormatAmountInput(this)" oninput="this.value=this.value.replace(/[^0-9\-+,.\s\u00A0]/g,'')" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:11px 10px;border-radius:6px;outline:none">
     </div>
-    <input id="livJournalLabel" type="text" placeholder="Libellé" style="width:100%;box-sizing:border-box;margin-bottom:8px;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 8px;border-radius:6px;outline:none">
-    <button type="button" onclick="addLivretTransaction()" class="kyf-primary-hover" style="width:100%;padding:9px;border-radius:7px;border:none;background:#f0b429;color:#000;cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span id="livJournalAddLbl">Ajouter le mouvement</span></button>
+    <input id="livJournalLabel" type="text" placeholder="Libellé" style="width:100%;box-sizing:border-box;margin-bottom:14px;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:11px 10px;border-radius:6px;outline:none">
+    <button type="button" onclick="addLivretTransaction()" class="kyf-primary-hover" style="width:100%;padding:11px;border-radius:7px;border:none;background:#f0b429;color:#000;cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span id="livJournalAddLbl">Ajouter le mouvement</span></button>
     <button type="button" id="livJournalEditCancel" onclick="livJournalEditCancel()" class="kyf-primary-hover" style="display:none;width:100%;margin-top:6px;padding:8px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;transition:background .15s,color .15s" onmouseover="this.style.background='var(--hov-bg)';this.style.color='var(--text)'" onmouseout="this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)'">Annuler la modification</button>
-    <div id="livJournalSoldeMsg" style="display:none;margin-top:8px;padding:7px 10px;border-radius:7px;background:rgba(240,180,41,0.10);border:1px solid rgba(240,180,41,0.35);font-size:10px;font-weight:600;color:var(--text)"></div>
-    <label style="display:flex;align-items:center;gap:7px;margin-top:10px;font-size:10px;color:var(--text2);cursor:pointer"><input type="checkbox" id="livJournalAdjSolde" checked style="cursor:pointer;accent-color:var(--accent)"> Mettre à jour le solde du compte</label>
-    <div style="font-size:9px;color:var(--text3);margin-top:6px;line-height:1.5">Montant positif = entrée, négatif = sortie (ex : -13,99 ou 1 000). Décochez la case si le solde du compte contient déjà ce mouvement (en modification, le solde suit la différence).</div>
+    <div id="livJournalSoldeMsg" style="display:none;margin-top:12px;padding:8px 10px;border-radius:7px;background:rgba(240,180,41,0.10);border:1px solid rgba(240,180,41,0.35);font-size:10px;font-weight:600;color:var(--text)"></div>
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border2);display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:7px"><label style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text2);cursor:pointer"><input type="checkbox" id="livJournalAdjSolde" checked style="cursor:pointer;accent-color:var(--accent)"> Mettre à jour le solde du compte</label><button type="button" class="kyf-cash-help" aria-label="Aide" title="Montant positif = entrée, négatif = sortie (ex : -13,99 ou 1 000). Décochez la case si le solde du compte contient déjà ce mouvement (en modification, le solde suit la différence)."><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></button></div>
+    <label id="livJournalFiscRow" style="display:none;align-items:center;gap:8px;font-size:11px;color:var(--text2);cursor:pointer" title="Le mouvement est ajouté à l'historique des versements (Analyses, Fiscalité). Décochez pour un intérêt, des frais ou un virement interne."><input type="checkbox" id="livJournalFisc" checked style="cursor:pointer;accent-color:var(--accent)"><span id="livJournalFiscTxt">Compter dans les versements et retraits (Fiscalité)</span></label>
+    </div>
   </div>
 
   <div id="livJournalSuggestions"></div>
@@ -7333,7 +7335,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.9.0.33</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.9.0.40</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -45764,6 +45766,7 @@ function kyfCorbeilleGetStore(storeKey){
       // Remet la ligne et rejoue son effet : espèces, et total versé du PEA s'il avait été ajusté
       const m = entry.item; if(!m || !m.id) return;
       const a = kyfCashMvts(); if(a.some(x => x.id === m.id)) return;
+      if(m.miroir){ a.splice(Math.min(entry.idx, a.length), 0, m); kyfCashMvtsSave(a); if(m.verseAjuste) kyfPeaTotalVerseSet(kyfPeaTotalVerse() + m.montant); try{ kyfCashMvtRefresh(); }catch(_){} return; }
       if(m.compteDebite){   // 2.8.9.27 : le compte débité est débité à nouveau ; compte disparu ou solde insuffisant : on ne restaure pas (sinon l'argent apparaîtrait sans source)
         const lvs = livLoad(), c = lvs.find(x => String(x.id) === String(m.compteDebite));
         if(!c || (parseFloat(c.solde) || 0) + 0.005 < m.montant){ try{ alert('Ce versement ne peut pas être restauré : ' + (c ? 'le solde de « ' + (c.banque || 'ce compte') + ' » ne couvre plus ' + fmt(m.montant,2) + ' €.' : 'son compte débité n\'existe plus.') + ' Il reste dans la corbeille.'); }catch(_){} return false; }
@@ -45771,8 +45774,15 @@ function kyfCorbeilleGetStore(storeKey){
         const tx = livTxLoad(); if(m.txId && !tx.some(t => t.id === m.txId)){ tx.push({ id: m.txId, compteId: c.id, date: m.date, label: 'Versement ' + m.env, amount: -m.montant, src: 'cash-mvt', ref: m.id }); livTxSave(tx); }
         try{ renderLivrets(); }catch(_){}
       }
+      if(m.livLie){   // 2.9.0.34 : on rejoue l'effet sur le livret lié ; livret disparu ou solde insuffisant pour un retrait : pas de restauration
+        const lvs = livLoad(), c = lvs.find(x => String(x.id) === String(m.livLie));
+        if(!c || (m.sens === 'out' && (parseFloat(c.solde) || 0) + 0.005 < m.montant)){ try{ alert('Ce mouvement ne peut pas être restauré : ' + (c ? 'le solde de « ' + (c.banque || 'ce livret') + ' » ne couvre plus ' + fmt(m.montant,2) + ' €.' : 'son livret n\'existe plus.')); }catch(_){} return false; }
+        c.solde = Math.round(((parseFloat(c.solde) || 0) + (m.sens === 'in' ? m.montant : -m.montant)) * 100) / 100; livSave(lvs);
+        const tx = livTxLoad(); if(m.txLie && !tx.some(t => t.id === m.txLie)){ tx.push({ id: m.txLie, compteId: c.id, date: m.date, label: (m.sens === 'in' ? 'Versement ' : 'Retrait ') + m.env, amount: m.sens === 'in' ? m.montant : -m.montant, src: 'cash-mvt', ref: m.id }); livTxSave(tx); }
+        try{ renderLivrets(); }catch(_){}
+      }
       a.splice(Math.min(entry.idx, a.length), 0, m); kyfCashMvtsSave(a);
-      adjustCashForEnveloppe(m.env, m.sens === 'in' ? m.montant : -m.montant, m.cptCto ? { compte: m.cptCto } : undefined);
+      if(!m.livLie) adjustCashForEnveloppe(m.env, m.sens === 'in' ? m.montant : -m.montant, m.cptCto ? { compte: m.cptCto } : undefined);
       if(m.verseAjuste) kyfPeaTotalVerseSet(kyfPeaTotalVerse() + m.montant);
       try{ renderCashKPI(); }catch(_){}
       try{ kyfCashMvtRefresh(); }catch(_){}
@@ -47997,7 +48007,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.9.0.33\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.9.0.40\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -70729,6 +70739,8 @@ const KYF_NOUVEAUTES = {
   badge: ['envvue', 'famille', 'avjrn', 'arb', 'immo', 'avref', 'avfrais', 'fraispg', 'avevo', 'avsuivi', 'dcaprix', 'ct', 'tend', 'tipstyle', 'ptf', 'pee', 'ctlg', 'vue'],   // clés des badges (une ou plusieurs ; tableau) ; clé du badge « Nouveau » (span .kyf-new-badge data-new="...") ; vide = aucun badge
   annonces: [
     { id: 'a-2026-10-28', date: '2026-10-28', items: [
+      { titre: 'Livrets liés : versements comptés dans Fiscalité', version: '2.9.0.38', texte: 'Dans le journal d’un livret lié à un PEA ou un CTO, une case « Compter dans les versements et retraits » ajoute le dépôt ou le retrait à l’historique de Analyses, Fiscalité. Cochée par défaut, décochée pour un intérêt ou des frais. Supprimer la ligne dans Fiscalité demande si l’opération du livret part aussi.' },
+      { titre: 'Cash : versements et retraits sur le livret lié', version: '2.9.0.34', important: true, texte: 'Dans la fenêtre Cash, un versement ou un retrait sur un PEA ou un CTO qui a un livret lié (ex. Trade Republic) passe maintenant par ce livret : son solde bouge et une ligne apparaît dans son journal, page Livrets. « Ne rien déduire » marche sans autre compte.' },
       { titre: 'Notifications : plus de temps pour lire', version: '2.9.0.32', texte: 'Une notification reste affichée plus longtemps quand son texte est long, et tant que la souris est dessus. Un clic la ferme.' },
       { titre: 'Contrats : un support ETF ajouté à la main apparaît dans le Portefeuille', version: '2.9.0.30', important: true, texte: 'Un ETF ou une action ajouté à la main dans un contrat AV ou PER (avec un ticker) suit maintenant le cours du jour et apparaît dans Portefeuille. Une ligne ajoutée avant : ouvrez-la et enregistrez-la.' },
       { titre: 'Portefeuille : vue Par enveloppe', version: '2.9.0.23', important: true, texte: 'Bouton PAR ENVELOPPE : tous vos comptes dans une seule liste, avec la valeur, la plus-value, la part du total et un anneau de répartition. Cliquez sur la flèche d’un contrat pour voir ses supports.' },
@@ -71663,7 +71675,15 @@ function renderCashKPI(){
   // TRA-012 : le sous-texte d'INVESTI NET (nombre de lignes suivies) est écrit par renderKPIs ; l'ancien « Total + cash » additionnait ETF, livrets, stables et cash déjà comptés ailleurs.
 }
 
+function kyfCashLivLnkSync(){   // le lien « Placer ces espèces dans un livret » n'apparaît que s'il y a des espèces à placer
+  ['Pea', 'Cto'].forEach(E => {
+    const i = document.getElementById('cashEdit' + E), b = document.getElementById('cash' + E + 'LivLnk'); if(!i || !b) return;
+    const v = parseNum(i.value) || 0; b.style.display = v > 0 ? 'inline-block' : 'none';
+    if(!(v > 0)){ const box = document.getElementById('cash' + E + 'LivBox'); if(box) box.style.display = 'none'; }
+  });
+}
 function kyfCashLinkedRender(){
+  try{ kyfCashLivLnkSync(); }catch(e){}
   [['PEA','Pea'],['CTO','Cto']].forEach(p => {
     const box = document.getElementById('cash' + p[1] + 'Linked'); if(!box) return;
     let l = []; try{ l = ctLivretsDe(p[0]); }catch(e){}
@@ -71672,10 +71692,10 @@ function kyfCashLinkedRender(){
     const libre = parseNum((document.getElementById('cashEdit' + p[1]) || {}).value) || 0;
     const tot = Math.round((libre + ctLivretsTotal(p[0])) * 100) / 100;
     box.innerHTML = '<div style="margin-top:8px;padding:8px 10px;border-radius:8px;border:1px solid var(--border2);background:var(--bg3);font-size:11px;line-height:1.7">'
-      + '<div style="font-size:9px;color:var(--text3);letter-spacing:.5px;margin-bottom:3px">LIVRETS LIÉS AU ' + p[0] + '</div>'
+      + '<div style="display:flex;align-items:center;gap:6px;font-size:9px;color:var(--text3);letter-spacing:.5px;margin-bottom:3px">LIVRETS LIÉS AU ' + p[0] + '<button type="button" class="kyf-cash-help" aria-label="Aide" title="Le solde des livrets se modifie dans la page Livrets : il est déjà compté dans le cash."><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></button></div>'
       + l.map(x => '<div style="display:flex;justify-content:space-between;gap:8px;color:var(--text2)"><span>' + lib(x) + '</span><span style="font-weight:700;color:var(--text)">' + fmt(parseFloat(x.solde) || 0, 2) + ' €</span></div>').join('')
       + '<div style="display:flex;justify-content:space-between;gap:8px;border-top:1px solid var(--border);margin-top:4px;padding-top:4px;color:var(--text2)"><span>Total espèces ' + p[0] + '</span><span style="font-weight:700;color:var(--text)">' + fmt(tot, 2) + ' €</span></div>'
-      + '<div style="font-size:10px;color:var(--text3);margin-top:3px">Le solde des livrets se modifie dans la page Livrets, il est déjà compté dans le cash.</div></div>';
+      + '</div>';
   });
 }
 function openCashEdit(){
@@ -71715,22 +71735,28 @@ function kyfPeaTotalVerseSet(v){
 }
 // Règles : un retrait ne dépasse jamais les espèces de l'enveloppe ; un retrait ne modifie pas le total versé (aucune règle fiscale inventée) ;
 // total versé inconnu : il n'est pas touché (pas de chiffre fabriqué), le message le dit.
-function kyfCashMvtAdd(env, sens, montant, dateIso, compteId, cptCto){
+// 2.9.0.34 : si l'enveloppe a un livret lié (ex. Trade Republic pour le CTO), le versement ou le retrait se passe sur ce livret : son solde bouge et le mouvement apparaît dans son journal (page Livrets).
+function kyfCashMvtLivs_(env){ try{ return ctLivretsDe(env === 'CTO' ? 'CTO' : 'PEA'); }catch(e){ return []; } }
+function kyfCashMvtAdd(env, sens, montant, dateIso, compteId, cptCto, livId){
   env = env === 'CTO' ? 'CTO' : 'PEA'; sens = sens === 'out' ? 'out' : 'in'; montant = Math.round((parseFloat(montant) || 0) * 100) / 100;
   if(!(montant > 0)) return { ok:false, msg:'Saisissez un montant supérieur à 0.' };
   if(env !== 'CTO' || kyfCtoComptes().length < 2) cptCto = undefined;   // un seul CTO : rien à préciser
   else if(!kyfCtoComptes().some(c => c.id === cptCto)) cptCto = 'c1';
-  const avant = env === 'CTO' ? (cptCto ? kyfCtoCashOf(cptCto) : getCashCto()) : getCashPea();
-  if(sens === 'out' && montant > avant + 0.005) return { ok:false, msg:'Ce retrait dépasse les espèces du ' + env + (cptCto ? ' « ' + kyfCtoNom(cptCto) + ' »' : '') + ' (' + fmt(avant,2) + ' €).' };
+  const _lies = kyfCashMvtLivs_(env), lie = _lies.length ? (_lies.find(x => String(x.id) === String(livId)) || _lies[0]) : null;
+  if(lie && sens === 'in' && compteId && String(compteId) === String(lie.id)) return { ok:false, msg:'Le compte débité ne peut pas être le livret qui reçoit le versement : choisissez « Ne rien déduire » ou un autre compte.' };
+  const avant = lie ? (parseFloat(lie.solde) || 0) : (env === 'CTO' ? (cptCto ? kyfCtoCashOf(cptCto) : getCashCto()) : getCashPea());
+  if(sens === 'out' && montant > avant + 0.005) return { ok:false, msg: lie ? 'Ce retrait dépasse le solde du livret « ' + (lie.banque || 'lié') + ' » (' + fmt(avant,2) + ' €).' : 'Ce retrait dépasse les espèces du ' + env + (cptCto ? ' « ' + kyfCtoNom(cptCto) + ' »' : '') + ' (' + fmt(avant,2) + ' €).' };
   // 2.8.9.27 : compte débité (facultatif, versement seulement) : le solde doit couvrir le montant, sinon rien n'est enregistré
-  let cpt = null, lvs = null;
+  let cpt = null, lvs = null, lieL = null;
+  if(lie){ lvs = livLoad(); lieL = lvs.find(x => String(x.id) === String(lie.id)); }
   if(sens === 'in' && compteId){
-    lvs = livLoad(); cpt = lvs.find(x => String(x.id) === String(compteId));
+    lvs = lvs || livLoad(); cpt = lvs.find(x => String(x.id) === String(compteId));
     if(!cpt) return { ok:false, msg:'Compte débité introuvable : rien n\'a été enregistré.' };
     const have = parseFloat(cpt.solde) || 0;
     if(montant > have + 0.005) return { ok:false, msg:'Le solde de « ' + (cpt.banque || 'ce compte') + ' » (' + fmt(have,2) + ' €) ne couvre pas ce versement de ' + fmt(montant,2) + ' € : rien n\'a été enregistré.' };
   }
-  adjustCashForEnveloppe(env, sens === 'in' ? montant : -montant, cptCto ? { compte: cptCto } : undefined);
+  if(lieL){ lieL.solde = Math.round(((parseFloat(lieL.solde) || 0) + (sens === 'in' ? montant : -montant)) * 100) / 100; }
+  else adjustCashForEnveloppe(env, sens === 'in' ? montant : -montant, cptCto ? { compte: cptCto } : undefined);
   let verseAjuste = false, note = '';
   if(env === 'PEA' && sens === 'in'){
     const tv = kyfPeaTotalVerse();
@@ -71740,6 +71766,12 @@ function kyfCashMvtAdd(env, sens, montant, dateIso, compteId, cptCto){
   const a = kyfCashMvts();
   const mv = { id:'m' + Date.now().toString(36) + Math.random().toString(36).slice(2,5), env, sens, montant, date: dateIso || new Date().toISOString().slice(0,10), verseAjuste };
   if(cptCto) mv.cptCto = cptCto;
+  if(lieL){
+    const tx = livTxLoad(); mv.livLie = String(lieL.id); mv.txLie = 'tx_cashlie_' + mv.id;
+    tx.push({ id: mv.txLie, compteId: lieL.id, date: mv.date, label: (sens === 'in' ? 'Versement ' : 'Retrait ') + env, amount: sens === 'in' ? montant : -montant, src: 'cash-mvt', ref: mv.id }); livTxSave(tx);
+    note += (sens === 'in' ? ' Crédité sur ' : ' Débité de ') + (lieL.banque || 'Livret') + ' · ' + (lieL.type || '') + ' (journal des livrets).';
+    if(!cpt){ livSave(lvs); try{ renderLivrets(); }catch(e){} }
+  }
   if(cpt){
     cpt.solde = Math.round(((parseFloat(cpt.solde) || 0) - montant) * 100) / 100; livSave(lvs);
     const tx = livTxLoad(); mv.compteDebite = String(cpt.id); mv.txId = 'tx_cashmvt_' + mv.id;
@@ -71753,7 +71785,16 @@ function kyfCashMvtAdd(env, sens, montant, dateIso, compteId, cptCto){
   return { ok:true, msg: (sens === 'in' ? 'Versement' : 'Retrait') + ' de ' + fmt(montant,2) + ' € enregistré sur le ' + env + '. ' + note };
 }
 function kyfCashMvtReverse_(m){
-  adjustCashForEnveloppe(m.env, m.sens === 'in' ? -m.montant : m.montant, m.cptCto ? { compte: m.cptCto } : undefined);
+  if(m.miroir){ if(m.verseAjuste) kyfPeaTotalVerseSet(kyfPeaTotalVerse() - m.montant); return; }   // mouvement miroir d'une opération de livret : il n'a touché ni le solde ni les espèces
+  if(!m.livLie) adjustCashForEnveloppe(m.env, m.sens === 'in' ? -m.montant : m.montant, m.cptCto ? { compte: m.cptCto } : undefined);
+  if(m.livLie){   // 2.9.0.34 : le livret lié est remis comme avant et le mouvement retiré de son journal
+    try{
+      const lvs = livLoad(), c = lvs.find(x => String(x.id) === String(m.livLie));
+      if(c){ c.solde = Math.max(0, Math.round(((parseFloat(c.solde) || 0) + (m.sens === 'in' ? -m.montant : m.montant)) * 100) / 100); livSave(lvs); }
+      if(m.txLie) livTxSave(livTxLoad().filter(t => t.id !== m.txLie));
+      try{ renderLivrets(); }catch(e){}
+    }catch(e){}
+  }
   if(m.verseAjuste) kyfPeaTotalVerseSet(kyfPeaTotalVerse() - m.montant);
   if(m.compteDebite){   // 2.8.9.27 : le compte débité est recrédité et le mouvement retiré de son journal
     try{
@@ -71765,7 +71806,25 @@ function kyfCashMvtReverse_(m){
   }
 }
 async function kyfCashMvtDelete(id){
-  if(!(await kyfAsk('Supprimer ce mouvement ? Les espèces (et le total versé s\'il avait été ajusté) seront remis comme avant.', { corbeille:true }))) return;
+  const m = kyfCashMvts().find(x => x.id === id); if(!m) return;
+  const c = m.livLie ? (livLoad().find(x => String(x.id) === String(m.livLie)) || null) : null, nom = c ? (c.banque || 'livret') : '';
+  const sens = m.sens === 'in' ? 'Versement' : 'Retrait';
+  if(m.miroir){
+    // 2.9.0.39 : mouvement venu du journal d'un livret : on supprime l'historique, et on demande si l'opération du livret part aussi
+    if(!(await kyfDialog({ kind:'danger', q:'Supprimer ce mouvement de l\'historique ?', d:'« ' + sens + ' ' + m.env + ' » de ' + fmt(m.montant, 2) + ' €.' + (m.verseAjuste ? '\nLe total versé du PEA sera corrigé.' : '') + (c ? '\nL\'opération du livret « ' + nom + ' » n\'est pas supprimée : la question vous est posée juste après.' : ''), ok:'Supprimer', cancel:'Annuler' }))) return;
+    const tx = livTxLoad().find(t => t.id === m.txLie);
+    if(c && tx){
+      const amt = parseFloat(tx.amount) || 0, avant = parseFloat(c.solde) || 0, rev = !tx.src && tx.soldeAdj !== false && !tx.importe && amt !== 0, apres = Math.round((avant - amt) * 100) / 100;
+      const aussi = await kyfDialog({ kind:'confirm', q:'Supprimer aussi l\'opération du livret « ' + nom + ' » ?', d:'« ' + (tx.label || '') + ' » (' + (amt >= 0 ? '+' : '') + fmt(amt, 2) + ' €).' + (rev ? '\nLe solde du livret sera corrigé : ' + fmt(avant, 2) + ' € → ' + fmt(apres, 2) + ' €.' : '\nSon solde ne bouge pas.') + '\nSi vous la gardez, elle reste dans le journal et le solde du livret ne change pas.', ok:'Oui, supprimer aussi', cancel:'Non, la garder' });
+      if(aussi){ await deleteLivretTransaction(tx.id, true); try{ kyfCashMvtRefresh(); }catch(e){} return; }
+    }
+    kyfCashMvtUndo(id);
+    return;
+  }
+  const liv = [];
+  if(m.livLie) liv.push('le livret « ' + nom + ' » sera remis comme avant (solde et journal)');
+  if(m.compteDebite){ const d = livLoad().find(x => String(x.id) === String(m.compteDebite)); liv.push('le compte débité « ' + (d ? (d.banque || 'compte') : 'compte') + ' » sera recrédité'); }
+  if(!(await kyfAsk('Supprimer ce mouvement ? Les espèces (et le total versé s\'il avait été ajusté) seront remis comme avant' + (liv.length ? ' : ' + liv.join(', ') : '') + '.', { corbeille:true }))) return;
   kyfCashMvtUndo(id);
 }
 function kyfCashMvtUndo(id){
@@ -71892,11 +71951,11 @@ function kyfCashHistOpen(){
   setTimeout(() => { const e = document.getElementById('cashHistCard'); if(e) e.scrollIntoView({ behavior:'smooth', block:'start' }); }, 350);
 }
 // Modification : le mouvement est remis comme avant (espèces, total versé), puis le nouveau est appliqué ; en cas de refus (retrait trop grand), tout est rétabli
-function kyfCashMvtApplyEdit(id, env, sens, montant, dateIso, compteId, cptCto){
+function kyfCashMvtApplyEdit(id, env, sens, montant, dateIso, compteId, cptCto, livId){
   const a = kyfCashMvts(), i = a.findIndex(m => m.id === id); if(i < 0) return { ok:false, msg:'Mouvement introuvable.' };
   const snap = { pea: localStorage.getItem('kyf-cash-pea'), cto: localStorage.getItem('kyf-cash-cto'), ctoSplit: localStorage.getItem('kyf-cto-cash'), tv: localStorage.getItem('kyf-pea-total-verse'), list: localStorage.getItem(KYF_CASH_MVTS_KEY), liv: localStorage.getItem('kyf-livrets'), livtx: localStorage.getItem(LIV_TX_KEY) };
   kyfCashMvtReverse_(a[i]); a.splice(i, 1); kyfCashMvtsSave(a);
-  const r = kyfCashMvtAdd(env, sens, montant, dateIso, compteId, cptCto);
+  const r = kyfCashMvtAdd(env, sens, montant, dateIso, compteId, cptCto, livId);
   if(!r.ok){
     if(snap.liv !== null) localStorage.setItem('kyf-livrets', snap.liv); if(snap.livtx !== null) localStorage.setItem(LIV_TX_KEY, snap.livtx);
     if(snap.pea !== null) localStorage.setItem('kyf-cash-pea', snap.pea); if(snap.cto !== null) localStorage.setItem('kyf-cash-cto', snap.cto);
@@ -71910,12 +71969,13 @@ function kyfCashMvtApplyEdit(id, env, sens, montant, dateIso, compteId, cptCto){
 }
 function kyfCashMvtEditStart(id){
   const m = kyfCashMvts().find(x => x.id === id); if(!m) return;
+  if(m.miroir){ try{ showToast('Ce mouvement vient du journal d\'un livret : modifiez-le dans Livrets, journal du compte.'); }catch(_){} return; }
   window._cashMvtEditKeep = true; openCashEdit(); window._cashMvtEditKeep = false;
   window._cashMvtEditId = id;
   const set = (el, v) => { const e = document.getElementById(el); if(e){ e.value = v; e.dispatchEvent(new Event('change')); } };
   set('cashMvtEnv', m.env); set('cashMvtSens', m.sens);
   try{ kyfCashMvtCptFill_(); set('cashMvtCpt', m.cptCto || 'c1'); kyfCashMvtCptSync(); }catch(e){}
-  try{ kyfCashMvtCompteFill_(); set('cashMvtCompte', m.compteDebite || ''); kyfCashMvtCompteSync(); }catch(e){}
+  try{ kyfCashMvtCompteFill_(); set('cashMvtCompte', m.compteDebite || ''); kyfCashMvtCompteSync(); kyfCashMvtLivFill_(); if(m.livLie) set('cashMvtLiv', m.livLie); }catch(e){}
   const mt = document.getElementById('cashMvtMontant'); if(mt){ mt.value = String(m.montant); try{ kyfFormatAmountInput(mt); }catch(e){} }
   try{ kyfDateSetValue('cashMvtDate', m.date); }catch(e){}
   kyfCashMvtEditUi_();
@@ -71944,7 +72004,7 @@ async function kyfCashMvtSubmit(){
   const eid = window._cashMvtEditId;
   const gd = await kyfCashMvtPeaGuard_(g('cashMvtEnv'), g('cashMvtSens'), g('cashMvtDate'));
   if(!gd.ok){ const mg = document.getElementById('cashMvtMsg'); if(mg){ mg.textContent = 'Retrait non enregistré.'; mg.style.color = 'var(--text3)'; } return; }
-  const r = eid ? kyfCashMvtApplyEdit(eid, g('cashMvtEnv'), g('cashMvtSens'), parseNum(g('cashMvtMontant')), g('cashMvtDate'), g('cashMvtCompte'), g('cashMvtCpt')) : kyfCashMvtAdd(g('cashMvtEnv'), g('cashMvtSens'), parseNum(g('cashMvtMontant')), g('cashMvtDate'), g('cashMvtCompte'), g('cashMvtCpt'));
+  const r = eid ? kyfCashMvtApplyEdit(eid, g('cashMvtEnv'), g('cashMvtSens'), parseNum(g('cashMvtMontant')), g('cashMvtDate'), g('cashMvtCompte'), g('cashMvtCpt'), g('cashMvtLiv')) : kyfCashMvtAdd(g('cashMvtEnv'), g('cashMvtSens'), parseNum(g('cashMvtMontant')), g('cashMvtDate'), g('cashMvtCompte'), g('cashMvtCpt'), g('cashMvtLiv'));
   if(r.ok && gd.note) r.msg += gd.note;
   const msg = document.getElementById('cashMvtMsg');
   if(msg){ msg.textContent = r.msg; msg.style.color = r.ok ? 'var(--green)' : 'var(--red)'; }
@@ -71955,6 +72015,8 @@ function kyfCashMvtCss_(){
   const st = document.createElement('style'); st.id = 'kyfCashMvtCss';
   st.textContent = '.kyf-cash-body{display:flex;align-items:stretch}.kyf-cash-left{width:370px;flex-shrink:0;box-sizing:border-box;padding:24px 26px;border-right:1px solid var(--border)}.kyf-cash-right{flex:1;min-width:0;padding:24px 26px}'
     + '.kyf-cash-chip{font-family:Inter,sans-serif;font-size:10px;font-weight:700;padding:5px 11px;border-radius:999px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;transition:background .15s,color .15s,border-color .15s}.kyf-cash-chip:hover{color:var(--text);border-color:var(--accent)}.kyf-cash-chip.on{background:rgba(240,180,41,0.18);border-color:#f0b429;color:var(--text)}'
+    + '.kyf-cash-seg{display:inline-flex;flex:0 0 auto;gap:2px;padding:2px;border:1px solid var(--border2);border-radius:8px;background:var(--btn-secondary-bg)}.kyf-cash-seg button{flex:0 0 auto;font:700 10px Inter,sans-serif;letter-spacing:.3px;padding:5px 14px;border:none;border-radius:6px;background:transparent;color:var(--text2);cursor:pointer;transition:background .15s,color .15s,filter .15s}.kyf-cash-seg button:hover{color:var(--text);background:var(--hov-bg-soft)}.kyf-cash-seg button.on,.kyf-cash-seg button.on:hover{background:#f0b429;color:#000}.kyf-cash-seg button.on:hover{filter:brightness(1.08)}'
+    + '.kyf-cash-help{display:inline-flex;align-items:center;justify-content:center;background:none;border:none;padding:0;color:var(--text3);cursor:help;transition:color .15s}.kyf-cash-help:hover{color:var(--accent)}'
     + '.kyf-cash-link{display:block;margin-top:10px;background:none;border:none;padding:0;font:600 11px Inter,sans-serif;color:var(--accent);cursor:pointer;transition:opacity .15s}.kyf-cash-link:hover{opacity:.75;text-decoration:underline}'
     + '.kyf-cash-row:hover{background:var(--hov-bg-soft)}@media (max-width:780px){.kyf-cash-body{flex-direction:column}.kyf-cash-left{width:auto;border-right:none;border-bottom:1px solid var(--border)}}';
   document.head.appendChild(st);
@@ -71963,9 +72025,26 @@ function kyfCashMvtCompteFill_(){   // 2.8.9.24+ : comptes de « Livrets d'épar
   const s = document.getElementById('cashMvtCompte'); if(!s) return;
   let l = []; try{ l = livLoad(); }catch(e){}
   const cur = s.value;
+  const _env = (document.getElementById('cashMvtEnv') || {}).value === 'CTO' ? 'CTO' : 'PEA';
+  l = l.filter(c => c.envCompte !== _env);   // 2.9.0.34 : un livret lié à cette enveloppe la reçoit, il ne peut pas aussi la financer
   s.innerHTML = '<option value="">Ne rien déduire</option>' + l.map(c => '<option value="' + escapeHtml(String(c.id)) + '">' + escapeHtml((c.banque || 'Compte') + ' · ' + (c.type || '')) + '</option>').join('');
   s.value = Array.from(s.options).some(o => o.value === cur) ? cur : '';
   try{ if(typeof kyfPgInit === 'function') kyfPgInit(s); }catch(e){}
+}
+function kyfCashMvtLivFill_(){   // 2.9.0.34 : livret lié qui reçoit (ou paie) le mouvement ; le choix n'apparaît que s'il y en a plusieurs
+  const s = document.getElementById('cashMvtLiv'), w = document.getElementById('cashMvtLivWrap'), info = document.getElementById('cashMvtLivInfo');
+  if(!s) return;
+  const env = (document.getElementById('cashMvtEnv') || {}).value === 'CTO' ? 'CTO' : 'PEA', sens = (document.getElementById('cashMvtSens') || {}).value;
+  const l = kyfCashMvtLivs_(env), cur = s.value;
+  s.innerHTML = l.map(c => '<option value="' + escapeHtml(String(c.id)) + '">' + escapeHtml((c.banque || 'Livret') + ' · ' + (c.type || '')) + '</option>').join('');
+  s.value = Array.from(s.options).some(o => o.value === cur) ? cur : (l[0] ? String(l[0].id) : '');
+  try{ if(typeof kyfPgInit === 'function') kyfPgInit(s); }catch(e){}
+  if(w) w.style.display = l.length > 1 ? 'block' : 'none';
+  if(info){
+    const _t = document.getElementById('cashMvtLivInfoTxt');
+    if(l.length && _t){ const n = l.length > 1 ? 'le livret choisi' : '« ' + (l[0].banque || 'Livret') + ' »'; _t.textContent = (sens === 'out' ? 'Pris sur ' : 'Ajouté à ') + n + ', avec une ligne dans son journal (page Livrets).'; info.style.display = 'flex'; }
+    else { if(_t) _t.textContent = ''; info.style.display = 'none'; }
+  }
 }
 function kyfCashMvtCptFill_(){   // plusieurs CTO : compte CTO concerné par le versement ou le retrait
   const s = document.getElementById('cashMvtCpt'); if(!s) return;
@@ -71973,6 +72052,17 @@ function kyfCashMvtCptFill_(){   // plusieurs CTO : compte CTO concerné par le 
   s.innerHTML = kyfCtoComptes().map(c => '<option value="' + c.id + '">' + escapeHtml(kyfCtoNom(c.id)) + '</option>').join('');
   s.value = Array.from(s.options).some(o => o.value === cur) ? cur : 'c1';
   try{ if(typeof kyfPgInit === 'function') kyfPgInit(s); }catch(e){}
+}
+// 2.9.0.35 : PEA / CTO et Versement / Retrait sont deux commutateurs ; les listes cachées restent la valeur de référence (modification d'un mouvement, tests)
+function kyfCashMvtSegSync(){
+  document.querySelectorAll('.kyf-cash-seg').forEach(g => {
+    const s = document.getElementById(g.dataset.for); if(!s) return;
+    g.querySelectorAll('button').forEach(b => { const on = b.dataset.v === s.value; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+  });
+}
+function kyfCashMvtSegSet(btn){
+  const g = btn.parentNode, s = document.getElementById(g.dataset.for); if(!s) return;
+  s.value = btn.dataset.v; s.dispatchEvent(new Event('change')); kyfCashMvtSegSync();
 }
 function kyfCashMvtCptSync(){
   const w = document.getElementById('cashMvtCptWrap'), env = (document.getElementById('cashMvtEnv') || {}).value;
@@ -71987,9 +72077,13 @@ function kyfCashMvtInit(){
   kyfCashMvtCss_();
   if(!window._cashMvtEditKeep){ window._cashMvtEditId = null; kyfCashMvtEditUi_(); }
   const d = document.getElementById('cashMvtDate'); if(d && !d.value && typeof kyfDateSetValue === 'function') kyfDateSetValue('cashMvtDate', '');
-  try{ kyfSelectify(document.getElementById('cashMvtEnv')); kyfSelectify(document.getElementById('cashMvtSens')); }catch(e){}
+  try{ ['cashMvtEnv', 'cashMvtSens'].forEach(id => { const e = document.getElementById(id); if(e && !e._kyfSeg){ e._kyfSeg = 1; e.addEventListener('change', kyfCashMvtSegSync); } }); kyfCashMvtSegSync(); }catch(e){}
   try{ kyfCashMvtCptFill_(); const ee = document.getElementById('cashMvtEnv'); if(ee && !ee._kyfCpt){ ee._kyfCpt = 1; ee.addEventListener('change', kyfCashMvtCptSync); } kyfCashMvtCptSync(); }catch(e){}
   try{ kyfCashMvtCompteFill_(); const se = document.getElementById('cashMvtSens'); if(se && !se._kyfCmp){ se._kyfCmp = 1; se.addEventListener('change', kyfCashMvtCompteSync); } kyfCashMvtCompteSync(); }catch(e){}
+  try{
+    kyfCashMvtLivFill_();
+    ['cashMvtEnv', 'cashMvtSens'].forEach(id => { const e = document.getElementById(id); if(e && !e._kyfLiv){ e._kyfLiv = 1; e.addEventListener('change', () => { try{ kyfCashMvtCompteFill_(); kyfCashMvtLivFill_(); }catch(_){} }); } });
+  }catch(e){}
   const msg = document.getElementById('cashMvtMsg'); if(msg){ msg.textContent = ''; }
   kyfCashMvtRefresh();
 }
@@ -72010,7 +72104,7 @@ function kyfSelectify(sel){
   sel.addEventListener('change',()=>kyfPgLabel(sel));
   kyfPgLabel(sel);
 }
-function kyfSelectifyAll(){ ['cashPeaLivBank','cashCtoLivBank','importEspLivBank','apiProvider','cashMvtEnv','cashMvtSens'].forEach(id=>kyfSelectify(document.getElementById(id))); }
+function kyfSelectifyAll(){ ['cashPeaLivBank','cashCtoLivBank','importEspLivBank','apiProvider'].forEach(id=>kyfSelectify(document.getElementById(id))); }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',kyfSelectifyAll); else kyfSelectifyAll();
 
 // --on-accent : couleur de texte lisible sur l'accent courant (recalculée quand le thème ou l'accent change)
@@ -73374,6 +73468,20 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.40 · 28/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Journal d'un livret : panneau de gauche plus aéré, montant avec espaces des milliers</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.39 · 28/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fiscalité : supprimer un mouvement venu d'un livret demande s'il faut aussi supprimer l'opération du livret ; message de suppression précise l'effet sur le livret</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.38 · 28/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Livrets liés PEA/CTO : case dans le journal pour compter un dépôt ou un retrait dans l'historique des versements (Fiscalité)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.37 · 28/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre Cash, colonne de gauche allégée : lien livret affiché seulement s'il y a des espèces, aides en infobulle, textes raccourcis</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.36 · 28/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre Cash : commutateurs PEA/CTO et Versement/Retrait plus compacts</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.35 · 28/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre Cash : versements et retraits plus simples (commutateurs PEA/CTO et Versement/Retrait, aide en infobulle, bandeau livret)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.34 · 28/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Cash : versements et retraits PEA/CTO enregistrés sur le livret lié (solde et journal), liste du compte débité sans les livrets liés</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.33 · 28/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Portefeuille, menu Vue : suppression du réglage Lignes AV et PER (affichage vide en vue Assurance vie)</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.32 · 28/10/2026</div>
@@ -80870,6 +80978,7 @@ function livTxLoad(){ try{ return JSON.parse(localStorage.getItem(LIV_TX_KEY)||'
 function livTxSave(list){ localStorage.setItem(LIV_TX_KEY, JSON.stringify(list)); }
 
 function openLivretJournal(compteId){
+  try{ if(typeof kyfCashMvtCss_==='function') kyfCashMvtCss_(); }catch(_){}
   const compte = livLoad().find(c=>c.id===compteId);
   document.getElementById('livJournalCompteId').value = compteId;
   document.getElementById('livJournalTitle').textContent = 'JOURNAL · ' + (compte?compte.banque:'Compte');
@@ -80879,6 +80988,7 @@ function openLivretJournal(compteId){
   document.getElementById('livJournalAmount').value = '';
   { const _a = document.getElementById('livJournalAdjSolde'); if(_a) _a.checked = true; }
   livJournalEditReset();
+  try{ kyfLivFiscRowSync(); }catch(e){}
   { const m = document.getElementById('livJournalSoldeMsg'); if(m) m.style.display = 'none'; }
   renderLivretJournalList(compteId);
   document.getElementById('livJournalModal').style.display = 'flex';
@@ -81606,6 +81716,31 @@ function livJournalCsvConfirm(){
 function kyfLivRefreshAfterSolde(){
   [() => renderLivrets(), () => renderETFTable(window._lp || {}), () => renderKPIs(window._lp || {}), () => renderCashKPI()].forEach(f => { try{ f(); }catch(e){ console.warn('[KYF] rafraîchissement après solde :', e); } });
 }
+// 2.9.0.38 : un livret lié à un PEA ou un CTO : le dépôt ou le retrait saisi dans son journal peut aussi apparaître dans Analyses, Fiscalité (historique des versements). Le mouvement « miroir » ne touche ni le solde du livret ni les espèces : il ne sert qu'à l'historique (et au total versé du PEA s'il est renseigné).
+function kyfLivFiscEnv_(compteId){ try{ const c = livLoad().find(x => x.id === compteId); return c && (c.envCompte === 'PEA' || c.envCompte === 'CTO') ? c.envCompte : ''; }catch(e){ return ''; } }
+function kyfLivFiscMirrorOf_(txId){ return kyfCashMvts().find(m => m.miroir && m.txLie === txId) || null; }
+function kyfLivFiscRowSync(forEditTxId){
+  const row = document.getElementById('livJournalFiscRow'), chk = document.getElementById('livJournalFisc'); if(!row || !chk) return;
+  const cid = (document.getElementById('livJournalCompteId') || {}).value, env = kyfLivFiscEnv_(cid);
+  row.style.display = env ? 'flex' : 'none';
+  const t = document.getElementById('livJournalFiscTxt'); if(t && env) t.textContent = 'Compter dans les versements et retraits du ' + env + ' (Fiscalité)';
+  chk.checked = forEditTxId ? !!kyfLivFiscMirrorOf_(forEditTxId) : true;
+  const lab = document.getElementById('livJournalLabel');
+  if(lab && !lab._kyfFisc){ lab._kyfFisc = 1; lab.addEventListener('input', () => { if(/int[eé]r[eê]t|frais|commission|dividende|agios|droits? de garde/i.test(lab.value)){ const c = document.getElementById('livJournalFisc'); if(c) c.checked = false; } }); }
+}
+function kyfLivFiscMirrorSet_(compteId, txId, date, amount, on){
+  const env = kyfLivFiscEnv_(compteId); if(!env) return;
+  const a = kyfCashMvts(), i = a.findIndex(m => m.miroir && m.txLie === txId);
+  if(i >= 0){ kyfCashMvtReverse_(a[i]); a.splice(i, 1); }
+  if(on && amount){
+    const montant = Math.round(Math.abs(amount) * 100) / 100, sens = amount > 0 ? 'in' : 'out';
+    const mv = { id: 'm' + Date.now().toString(36) + Math.random().toString(36).slice(2,5), env, sens, montant, date: date || new Date().toISOString().slice(0,10), verseAjuste: false, livLie: String(compteId), txLie: txId, miroir: true };
+    if(env === 'PEA' && sens === 'in'){ const tv = kyfPeaTotalVerse(); if(tv > 0){ kyfPeaTotalVerseSet(tv + montant); mv.verseAjuste = true; } }
+    a.unshift(mv);
+  }
+  kyfCashMvtsSave(a);
+  try{ kyfCashMvtRefresh(); }catch(e){}
+}
 function addLivretTransaction(){
   const compteId = document.getElementById('livJournalCompteId').value;
   const date  = document.getElementById('livJournalDate').value;
@@ -81622,6 +81757,7 @@ function addLivretTransaction(){
   if(_old){ _old.date = date; _old.label = label; _old.amount = amount; _old.soldeAdj = _wantAdj; }
   else list.push({ id:'tx_'+Date.now(), compteId, date, label, amount, soldeAdj: _wantAdj });   // soldeAdj : ce mouvement a modifié le solde, sa suppression le remet
   livTxSave(list);
+  try{ const _tx = _old || list[list.length - 1]; const _f = document.getElementById('livJournalFisc'); if(_tx && document.getElementById('livJournalFiscRow') && document.getElementById('livJournalFiscRow').style.display !== 'none') kyfLivFiscMirrorSet_(compteId, _tx.id, date, amount, !!(_f && _f.checked)); }catch(e){ console.warn('[KYF] miroir fiscalité :', e); }
   // Le solde du compte suit le mouvement (les espèces du portefeuille en dépendent), sauf si l'utilisateur décoche la case
   const _adj = document.getElementById('livJournalAdjSolde');
   let _soldeMsg = 'Solde du compte inchangé : ' + fmt((parseFloat((livLoad().find(x => x.id === compteId) || {}).solde) || 0), 2) + ' €';
@@ -81633,6 +81769,7 @@ function addLivretTransaction(){
   document.getElementById('livJournalLabel').value = '';
   document.getElementById('livJournalAmount').value = '';
   livJournalEditReset();
+  try{ kyfLivFiscRowSync(); }catch(e){}
   renderLivretJournalList(compteId);
   { const m = document.getElementById('livJournalSoldeMsg'); if(m){ m.textContent = _soldeMsg; m.style.display = 'block'; } }
 }
@@ -81645,7 +81782,9 @@ function livJournalEdit(id){
   kyfDateSetValue('livJournalDate', String(t.date || '').slice(0,10));
   document.getElementById('livJournalLabel').value = t.label || '';
   document.getElementById('livJournalAmount').value = String(t.amount).replace('.', ',');
+  try{ kyfFormatAmountInput(document.getElementById('livJournalAmount')); }catch(_){}
   const adj = document.getElementById('livJournalAdjSolde'); if(adj) adj.checked = true;
+  try{ kyfLivFiscRowSync(id); }catch(e){}
   const l = document.getElementById('livJournalAddLbl'); if(l) l.textContent = 'Enregistrer la modification';
   const c = document.getElementById('livJournalEditCancel'); if(c) c.style.display = 'block';
   const f = document.getElementById('livJournalLabel'); if(f){ try{ f.focus(); }catch(e){} }
@@ -81657,11 +81796,12 @@ function livJournalEditReset(){
 }
 function livJournalEditCancel(){
   livJournalEditReset();
+  try{ kyfLivFiscRowSync(); }catch(e){}
   document.getElementById('livJournalLabel').value = '';
   document.getElementById('livJournalAmount').value = '';
   kyfDateSetValue('livJournalDate', new Date().toISOString().slice(0,10));
 }
-async function deleteLivretTransaction(id){
+async function deleteLivretTransaction(id, silent){
   const list = livTxLoad(), t = list.find(x => x.id === id);
   const rerender = () => { const el = document.getElementById('livJournalCompteId'); if(el && el.value) renderLivretJournalList(el.value); };
   // Opération saisie dans KYF (ni automatique ni importée d'un relevé) : sa suppression remet le solde du compte comme avant
@@ -81670,13 +81810,14 @@ async function deleteLivretTransaction(id){
   const rev = !!(t && c && !t.src && t.soldeAdj !== false && !t.importe && amt !== 0);
   if(rev){
     const avant = parseFloat(c.solde) || 0, apres = Math.round((avant - amt) * 100) / 100;
-    const ok = await kyfDialog({ kind:'danger', q:'Supprimer cette opération ?', d:'« ' + (t.label || '') + ' » (' + (amt >= 0 ? '+' : '') + fmt(amt, 2) + ' €).\nLe solde du compte sera corrigé : ' + fmt(avant, 2) + ' € → ' + fmt(apres, 2) + ' €.', ok:'Supprimer', cancel:'Annuler' });
+    const ok = silent ? true : await kyfDialog({ kind:'danger', q:'Supprimer cette opération ?', d:'« ' + (t.label || '') + ' » (' + (amt >= 0 ? '+' : '') + fmt(amt, 2) + ' €).\nLe solde du compte sera corrigé : ' + fmt(avant, 2) + ' € → ' + fmt(apres, 2) + ' €.', ok:'Supprimer', cancel:'Annuler' });
     if(!ok) return;
     t._soldeRev = amt;   // mémorisé dans la corbeille : « Annuler » rétablit aussi le solde
     livTxSave(list);
     c.solde = apres; livSave(lv);
   }
   kyfDeleteWithUndo(livTxLoad, livTxSave, id, rerender, 'Transaction');
+  try{ if(t) kyfLivFiscMirrorSet_(t.compteId, id, null, 0, false); }catch(e){}
   if(rev) kyfLivRefreshAfterSolde();
 }
 // ── Apprentissage passif : si un libellé revient 3 fois ou plus dans le
@@ -102790,15 +102931,15 @@ function orInlineEdit(id, td, currentVal){
 
   <div class="kyf-cash-body">
   <div class="kyf-cash-left">
-  <div style="margin-bottom:20px">
+  <div style="margin-bottom:16px">
     <div style="font-size:9px;color:var(--text3);margin-bottom:6px;letter-spacing:.5px">CASH PEA (€)</div>
     <input id="cashEditPea" type="text" inputmode="decimal" placeholder="0"
       oninput="this.value=this.value.replace(/-/g,'');try{kyfCashLinkedRender()}catch(_){}" onfocus="kyfUnformatAmountInput(this)" onblur="kyfFormatAmountInput(this)"
       style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;border-radius:6px;outline:none">
     <div id="cashPeaLinked"></div>
-    <button type="button" onclick="cashEnvLivToggle('Pea')" style="margin-top:10px;background:none;border:none;color:var(--accent);font-family:'Inter',sans-serif;font-size:10px;font-weight:600;cursor:pointer;padding:0;text-align:left">Espèces rémunérées (Trade Republic, Revolut...) ? Enregistrer dans mes livrets</button>
+    <button type="button" id="cashPeaLivLnk" class="kyf-cash-link" onclick="cashEnvLivToggle('Pea')" title="Espèces rémunérées chez Trade Republic, Revolut… : le montant du cash PEA devient un livret liquide, toujours compté dans le Cash." style="display:none;margin-top:8px">Placer ces espèces dans un livret</button>
     <div id="cashPeaLivBox" style="display:none;margin-top:8px;padding:10px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--bg3)">
-      <div style="font-size:10px;color:var(--text2);line-height:1.6;margin-bottom:8px">Le montant du cash PEA ci-dessus devient un livret liquide (il reste compté dans le Cash) et le cash PEA repasse à 0.</div>
+      <div style="font-size:10px;color:var(--text2);line-height:1.6;margin-bottom:8px">Le cash PEA devient un livret liquide, toujours compté dans le Cash.</div>
       <div style="display:flex;gap:8px">
         <div style="flex:2"><div style="font-size:9px;color:var(--text3);margin-bottom:3px;letter-spacing:.5px">ÉTABLISSEMENT</div>
           <select id="cashPeaLivBank" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 9px;border-radius:6px;outline:none"><option>Trade Republic</option><option>Revolut</option><option>Scalable Capital</option><option>Interactive Brokers</option><option>Wise</option></select></div>
@@ -102816,9 +102957,9 @@ function orInlineEdit(id, td, currentVal){
       oninput="this.value=this.value.replace(/-/g,'');try{kyfCashLinkedRender()}catch(_){}" onfocus="kyfUnformatAmountInput(this)" onblur="kyfFormatAmountInput(this)"
       style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;border-radius:6px;outline:none">
     <div id="cashCtoLinked"></div>
-    <button type="button" onclick="cashEnvLivToggle('Cto')" style="margin-top:10px;background:none;border:none;color:var(--accent);font-family:'Inter',sans-serif;font-size:10px;font-weight:600;cursor:pointer;padding:0;text-align:left">Espèces rémunérées (Trade Republic, Revolut...) ? Enregistrer dans mes livrets</button>
+    <button type="button" id="cashCtoLivLnk" class="kyf-cash-link" onclick="cashEnvLivToggle('Cto')" title="Espèces rémunérées chez Trade Republic, Revolut… : le montant du cash CTO devient un livret liquide, toujours compté dans le Cash." style="display:none;margin-top:8px">Placer ces espèces dans un livret</button>
     <div id="cashCtoLivBox" style="display:none;margin-top:8px;padding:10px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--bg3)">
-      <div style="font-size:10px;color:var(--text2);line-height:1.6;margin-bottom:8px">Le montant du cash CTO ci-dessus devient un livret liquide (il reste compté dans le Cash) et le cash CTO repasse à 0.</div>
+      <div style="font-size:10px;color:var(--text2);line-height:1.6;margin-bottom:8px">Le cash CTO devient un livret liquide, toujours compté dans le Cash.</div>
       <div style="display:flex;gap:8px">
         <div style="flex:2"><div style="font-size:9px;color:var(--text3);margin-bottom:3px;letter-spacing:.5px">ÉTABLISSEMENT</div>
           <select id="cashCtoLivBank" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 9px;border-radius:6px;outline:none"><option>Trade Republic</option><option>Revolut</option><option>Scalable Capital</option><option>Interactive Brokers</option><option>Wise</option></select></div>
@@ -102830,18 +102971,17 @@ function orInlineEdit(id, td, currentVal){
     </div>
   </div>
   <div style="margin-bottom:20px">
-    <div style="font-size:9px;color:var(--text3);margin-bottom:6px;letter-spacing:.5px">CCP / COMPTE BANCAIRE (€)</div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:9px;color:var(--text3);margin-bottom:6px;letter-spacing:.5px">CCP / COMPTE BANCAIRE (€)<button type="button" class="kyf-cash-help" aria-label="Aide" title="Les livrets marqués « liquide » s'ajoutent automatiquement à ce total."><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></button></div>
     <input id="cashEditCcp" type="text" inputmode="decimal" placeholder="0"
       oninput="this.value=this.value.replace(/-/g,'')" onfocus="kyfUnformatAmountInput(this)" onblur="kyfFormatAmountInput(this)"
       style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;border-radius:6px;outline:none">
-    <div style="font-size:9px;color:var(--text3);margin-top:6px;opacity:.8">Les livrets marqués "liquide" s'ajoutent automatiquement à ce total.</div>
     <div id="cashEditCcpWarn" style="display:none;font-size:10px;color:var(--accent);margin-top:6px;line-height:1.5"></div>
   </div>
 
   <div style="margin-bottom:24px">
     <div style="font-size:9px;color:var(--text3);margin-bottom:6px;letter-spacing:.5px">STABLECOINS (€)</div>
     <div id="cashEditStableDisplay" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text2);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;border-radius:6px;opacity:.75">0 €</div>
-    <div style="font-size:9px;color:var(--text3);margin-top:6px;opacity:.8">Calculé automatiquement depuis vos positions dans <span onclick="closeCashEdit();showPage('crypto',null)" style="color:var(--accent);cursor:pointer;text-decoration:underline">Crypto &gt; Stablecoins</span>, non modifiable ici.</div>
+    <div style="font-size:9px;color:var(--text3);margin-top:6px;opacity:.8">Calculé depuis <span onclick="closeCashEdit();showPage('crypto',null)" style="color:var(--accent);cursor:pointer;text-decoration:underline">Crypto &gt; Stablecoins</span></div>
   </div>
 
   <div style="display:flex;gap:10px">
@@ -102858,9 +102998,11 @@ function orInlineEdit(id, td, currentVal){
   </div>
   <div class="kyf-cash-right">
     <div id="cashMvtTitle" style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text);margin-bottom:18px">VERSEMENTS ET RETRAITS</div>
-    <div style="display:flex;gap:10px;margin-bottom:12px">
-      <select id="cashMvtEnv" data-kyf-pg-look="field" style="flex:1;width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;border-radius:6px;outline:none"><option value="PEA">PEA</option><option value="CTO">CTO</option></select>
-      <select id="cashMvtSens" data-kyf-pg-look="field" style="flex:1;width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;border-radius:6px;outline:none"><option value="in">Versement</option><option value="out">Retrait</option></select>
+    <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+      <div class="kyf-cash-seg" data-for="cashMvtEnv" role="group" aria-label="Enveloppe"><button type="button" data-v="PEA" onclick="kyfCashMvtSegSet(this)">PEA</button><button type="button" data-v="CTO" onclick="kyfCashMvtSegSet(this)">CTO</button></div>
+      <div class="kyf-cash-seg" data-for="cashMvtSens" role="group" aria-label="Type de mouvement"><button type="button" data-v="in" onclick="kyfCashMvtSegSet(this)">Versement</button><button type="button" data-v="out" onclick="kyfCashMvtSegSet(this)">Retrait</button></div>
+      <select id="cashMvtEnv" style="display:none" aria-hidden="true" tabindex="-1"><option value="PEA">PEA</option><option value="CTO">CTO</option></select>
+      <select id="cashMvtSens" style="display:none" aria-hidden="true" tabindex="-1"><option value="in">Versement</option><option value="out">Retrait</option></select>
     </div>
     <div id="cashMvtCptWrap" style="display:none;margin-bottom:12px">
       <div style="font-size:9px;color:var(--text3);margin-bottom:6px;letter-spacing:.5px">COMPTE CTO</div>
@@ -102870,12 +103012,17 @@ function orInlineEdit(id, td, currentVal){
       <input id="cashMvtMontant" type="text" inputmode="decimal" placeholder="Montant (€)" onfocus="kyfUnformatAmountInput(this)" onblur="kyfFormatAmountInput(this)" oninput="this.value=this.value.replace(/-/g,'')" style="flex:1;width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;border-radius:6px;outline:none">
       <div style="flex:1;min-width:0"><input type="hidden" id="cashMvtDate" value=""><button type="button" id="cashMvtDateBtn" class="kyf-csel-btn" data-kyf-date="cashMvtDate" aria-haspopup="dialog" aria-expanded="false"><span id="cashMvtDateBtnLabel">JJ/MM/AAAA</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button></div>
     </div>
-    <div id="cashMvtCompteWrap" style="display:none;margin-bottom:12px">
-      <div style="font-size:9px;color:var(--text3);margin-bottom:6px;letter-spacing:.5px">COMPTE DÉBITÉ (FACULTATIF)</div>
+    <div id="cashMvtCompteWrap" style="display:none;margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:6px;font-size:9px;color:var(--text3);margin-bottom:6px;letter-spacing:.5px">D'OÙ VIENT L'ARGENT ? (FACULTATIF)
+        <button type="button" class="kyf-cash-help" aria-label="Aide" title="Ne rien déduire : l'argent vient de l'extérieur de KYF. Ou choisissez un compte de « Livrets d'épargne » : son solde baisse du montant versé et le mouvement apparaît dans son journal. Refusé si son solde ne couvre pas le versement."><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></button></div>
       <select id="cashMvtCompte" data-kyf-pg-look="field" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;border-radius:6px;outline:none"><option value="">Ne rien déduire</option></select>
-      <div style="font-size:9px;color:var(--text3);margin-top:4px;line-height:1.6">Un compte de « Livrets d'épargne » : son solde baisse du montant versé et le mouvement apparaît dans son journal. Refusé si son solde ne couvre pas le versement.</div>
     </div>
-    <button type="button" onclick="kyfCashMvtSubmit()" class="kyf-cash-mvt-btn" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:8px 16px;border-radius:8px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">AJOUTER</button> <button type="button" id="cashMvtCancelEdit" class="kyf-cash-link" onclick="kyfCashMvtCancelEdit()" style="display:none;margin:0 0 0 12px;vertical-align:middle">Annuler la modification</button>
+    <div id="cashMvtLivWrap" style="display:none;margin-bottom:14px">
+      <div style="font-size:9px;color:var(--text3);margin-bottom:6px;letter-spacing:.5px">LIVRET CONCERNÉ</div>
+      <select id="cashMvtLiv" data-kyf-pg-look="field" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;border-radius:8px;outline:none"></select>
+    </div>
+    <div id="cashMvtLivInfo" style="display:none;align-items:center;gap:8px;margin:0 0 14px;padding:9px 12px;border-radius:8px;background:rgba(77,159,255,0.10);border:1px solid rgba(77,159,255,0.35);font-size:11px;line-height:1.5;color:var(--text2)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4d9fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0"><polyline points="20 6 9 17 4 12"/></svg><span id="cashMvtLivInfoTxt"></span></div>
+    <button type="button" onclick="kyfCashMvtSubmit()" class="kyf-cash-mvt-btn" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:.5px;padding:10px 22px;border-radius:8px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">AJOUTER</button> <button type="button" id="cashMvtCancelEdit" class="kyf-cash-link" onclick="kyfCashMvtCancelEdit()" style="display:none;margin:0 0 0 12px;vertical-align:middle">Annuler la modification</button>
     <div id="cashMvtMsg" style="font-size:10px;line-height:1.5;margin-top:10px;min-height:14px;color:var(--text3)"></div>
     <div id="cashMvtList" style="margin-top:20px"></div>
   </div>
