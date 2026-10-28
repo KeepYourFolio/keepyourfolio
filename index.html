@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_9_0_40.html
+  @file        : KYF_SHARE_beta_2_9_0_41.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.9.0.40
+  @version     : Beta 2.9.0.41
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7335,7 +7335,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.9.0.40</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.9.0.41</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -48007,7 +48007,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.9.0.40\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.9.0.41\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -73468,6 +73468,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.41 · 28/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance vie / PER : un Fonds géré ou une Obligation avec un ticker de fonds (0P...) remonte dans le Portefeuille et suit le cours du jour, sans changer de type</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.40 · 28/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Journal d'un livret : panneau de gauche plus aéré, montant avec espaces des milliers</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.39 · 28/10/2026</div>
@@ -94547,7 +94549,7 @@ function avPosSave(contratId, positions){
 function kyfAvEtfResync(contratId){
   if(typeof ETF === 'undefined' || !contratId) return;
   const up = x => String(x||'').trim().toUpperCase();
-  const pos = avPosLoad(contratId).filter(p => (p.type === 'etf' || p.type === 'action') && p.ticker);
+  const pos = avPosLoad(contratId).filter(p => kyfAvPfLine(p));
   let changed = false;
   for(let i = ETF.length - 1; i >= 0; i--){
     const e = ETF[i];
@@ -94615,6 +94617,10 @@ function kyfAvSupportType(name, catTxt){
   if(/^\s*FONDS\b/.test(String(catTxt||'').toUpperCase())) return 'fonds';
   return 'etf';
 }
+// 2.9.0.41 : un support remonte dans le Portefeuille (et suit le cours du jour) s'il est ETF / Action avec un ticker, OU s'il est « Fonds géré » / « Obligations » avec un ticker Yahoo de fonds (0P…).
+// Le type du support ne change pas. Un fonds suivi par son ISIN (StatsAVie) n'est pas concerné : son « ticker » est l'ISIN.
+function kyfAvFundTk(tk){ return /^0P[A-Z0-9]{6,}(\.[A-Z]{1,3})?$/i.test(String(tk||'').trim()); }
+function kyfAvPfLine(p){ return !!(p && p.ticker && (p.type === 'etf' || p.type === 'action' || ((p.type === 'fonds' || p.type === 'obl') && kyfAvFundTk(p.ticker)))); }
 function kyfFondsLike(t){ return t === 'fonds' || t === 'pe' || t === 'dp' || t === 'obl'; }
 function kyfFondsTypeFromName(nom){
   const n = (typeof kyfSansAccent === 'function' ? kyfSansAccent(String(nom||'')) : String(nom||'').toLowerCase());
@@ -95546,7 +95552,7 @@ function avPosTypeChange(){
   document.getElementById('avPosRowTicker').style.display = (isCoté || isImmo || isFonds) ? '' : 'none';
   { const _ht = document.getElementById('avPosPfHintTxt');   // 2.9.0.29 : explique quand une ligne remonte dans le Portefeuille
     if(_ht) _ht.textContent = isCoté ? 'Avec un ticker, cette ligne remonte dans le Portefeuille (ETF et actions) et suit le cours du jour.'
-      : isFonds ? 'Un fonds géré reste dans ce contrat, à la valeur du relevé. S\'il a un ticker (ex. 0P…), choisissez ETF pour suivre son cours du jour dans le Portefeuille.'
+      : isFonds ? 'Avec un ticker de fonds (ex. 0P0000YGEN.F tapé dans la recherche), cette ligne remonte dans le Portefeuille et suit le cours du jour, sans changer de type. Sans ticker, elle garde la valeur du relevé.'
       : 'Ce type n\'a pas de cours coté : il reste dans ce contrat, à la valeur du relevé.'; }
   document.getElementById('avPosRowPRUQty').style.display = (isCoté || isImmo || isFonds) ? 'grid' : 'none';
   document.getElementById('avPosRowTaux').style.display   = (isFE || isImmo) ? '' : 'none';
@@ -95908,7 +95914,7 @@ function avReplaceSupportSave(o){
   positions.splice(idx, 1, np);
   avPosSave(cid, positions);
   const contrat = avLoad().find(d => d.id === cid);
-  if((np.type === 'etf' || np.type === 'action') && np.ticker){
+  if(kyfAvPfLine(np)){
     try{ kyfAvEtfSync(cid, kyfAvEnvOf(contrat), [String(np.ticker).toUpperCase()]); etfSave(); }catch(_){}
   }
   avArbSaveEntry({
@@ -95961,6 +95967,11 @@ function saveAVPos(){
     const _qT = ((document.getElementById('avPosSearchInput') || {}).value || '').trim();
     if(/^[A-Za-z0-9][A-Za-z0-9.\-^=]{1,19}$/.test(_qT) && _qT.toUpperCase() !== ticker) ticker = _qT.toUpperCase();
   }
+  // 2.9.0.41 : un ticker de fonds (0P…) tapé dans la recherche d'un Fonds géré / Obligations devient le ticker de la ligne (il remplace l'ISIN éventuel)
+  if(type === 'fonds' || type === 'obl'){
+    const _qF = ((document.getElementById('avPosSearchInput') || {}).value || '').trim();
+    if(kyfAvFundTk(_qF)) ticker = _qF.toUpperCase();
+  }
   // Ticker tapé à la main sans choisir de suggestion : le champ de recherche n'alimentait que la liste, le ticker était perdu
   // (« Saisissez un nom ou un ticker » alors qu'on en avait saisi un). Un texte qui ressemble à un ticker devient le ticker.
   if(!ticker && (type === 'etf' || type === 'action')){
@@ -96011,7 +96022,7 @@ function saveAVPos(){
   avPosSave(_avPosContratId, positions);
   // Support changé dans le contrat : la ligne de Portefeuille suit (l'ancienne est retirée par avPosSave, la nouvelle est créée ici)
   // 2.9.0.30 : un support ETF / Action ajouté ou enregistré à la main crée (ou met à jour) sa ligne du Portefeuille, comme à l'import : avant, seul un changement de ticker le faisait, et un support ajouté à la main restait sans cours du jour.
-  if((type === 'etf' || type === 'action') && pos.ticker){
+  if(kyfAvPfLine(pos)){
     try{ const _c = avLoad().find(x => x.id === _avPosContratId); kyfAvEtfSync(_avPosContratId, kyfAvEnvOf(_c), [String(pos.ticker).toUpperCase()]); etfSave(); try{ renderETFTable(window._lp || {}); renderDonut(); }catch(_){} }catch(_){}
   }
   window.__avPosTkChanged = false;
@@ -96070,7 +96081,7 @@ function kyfAvEtfUpsert(entry, contratId){
 // compartiments du contrat (le détail Déductible / Non déductible reste dans la fiche du contrat). Relancer un import ne double rien.
 function kyfAvEtfSync(contratId, enveloppe, tickers){
   const nm = x => String(x||'').trim().toUpperCase();
-  const pos = avPosLoad(contratId).filter(p => (p.type === 'etf' || p.type === 'action') && p.ticker && tickers.includes(String(p.ticker).toUpperCase()));
+  const pos = avPosLoad(contratId).filter(p => kyfAvPfLine(p) && tickers.includes(String(p.ticker).toUpperCase()));
   const groups = {};
   pos.forEach(p => { const k = String(p.ticker).toUpperCase() + '|' + nm(p.nom); (groups[k] = groups[k] || []).push(p); });
   Object.values(groups).forEach(g => {
