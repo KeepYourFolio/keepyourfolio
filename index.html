@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_8_13_65.html
+  @file        : KYF_SHARE_beta_2_8_13_71.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.8.13.65
+  @version     : Beta 2.8.13.71
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -6439,6 +6439,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
     <input id="livJournalLabel" type="text" placeholder="Libellé" style="width:100%;box-sizing:border-box;margin-bottom:8px;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 8px;border-radius:6px;outline:none">
     <button type="button" onclick="addLivretTransaction()" class="kyf-primary-hover" style="width:100%;padding:9px;border-radius:7px;border:none;background:#f0b429;color:#000;cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span id="livJournalAddLbl">Ajouter le mouvement</span></button>
     <button type="button" id="livJournalEditCancel" onclick="livJournalEditCancel()" class="kyf-primary-hover" style="display:none;width:100%;margin-top:6px;padding:8px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;transition:background .15s,color .15s" onmouseover="this.style.background='var(--hov-bg)';this.style.color='var(--text)'" onmouseout="this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)'">Annuler la modification</button>
+    <div id="livJournalSoldeMsg" style="display:none;margin-top:8px;padding:7px 10px;border-radius:7px;background:rgba(240,180,41,0.10);border:1px solid rgba(240,180,41,0.35);font-size:10px;font-weight:600;color:var(--text)"></div>
     <label style="display:flex;align-items:center;gap:7px;margin-top:10px;font-size:10px;color:var(--text2);cursor:pointer"><input type="checkbox" id="livJournalAdjSolde" checked style="cursor:pointer;accent-color:var(--accent)"> Mettre à jour le solde du compte</label>
     <div style="font-size:9px;color:var(--text3);margin-top:6px;line-height:1.5">Montant positif = entrée, négatif = sortie (ex : -13,99 ou 1 000). Décochez la case si le solde du compte contient déjà ce mouvement (en modification, le solde suit la différence).</div>
   </div>
@@ -7330,7 +7331,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.8.13.65</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.8.13.71</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -44307,6 +44308,7 @@ function clearSourceError(source){
 }
 
 function updateNotifBadge(){
+  try{ ['warnings','auto'].forEach(t => { const n0 = logs[t].length; logs[t] = logs[t].filter(e => !e.expiry || e.expiry > Date.now()); }); }catch(_){}   // un minuteur retardé (onglet en veille) ne laisse plus une pastille sur un message déjà expiré
   const ioInfos = logs.infos.filter(e => e.source === 'io').length;
   const anomalyCount = (typeof kyfDetectAnomalies === 'function') ? kyfDetectAnomalies().length : 0;
   const warnReal = logs.warnings.length;   // l'onglet AUTO ne déclenche pas la pastille
@@ -45300,7 +45302,14 @@ function kyfCorbeilleGetStore(storeKey){
         } else if(rev){ kyfSyncPositionFromTransaction(tx); kyfTradeCash(tx, +1); try{ renderETFTable(window._lp||{}); renderDonut(); renderKPIs(window._lp||{}); }catch(_){} }
         loadEtfTransactions(); renderTransactions();
       } },
-    livTxLoad:    { load: livTxLoad,    save: livTxSave,    render: function(){ const el = document.getElementById('livJournalCompteId'); if(el) renderLivretJournalList(el.value); }, label: 'Transaction livret' },
+    livTxLoad:    { load: livTxLoad,    save: livTxSave,    render: function(){ const el = document.getElementById('livJournalCompteId'); if(el) renderLivretJournalList(el.value); }, label: 'Transaction livret',
+      restore: function(entry){
+        const it = Object.assign({}, entry.item), rev = parseFloat(it._soldeRev); delete it._soldeRev;
+        const list = livTxLoad(); list.splice(Math.min(entry.idx, list.length), 0, it); livTxSave(list);
+        if(rev){ const lv = livLoad(), c = lv.find(x => x.id === it.compteId); if(c){ c.solde = Math.round(((parseFloat(c.solde) || 0) + rev) * 100) / 100; livSave(lv); } }
+        try{ const el = document.getElementById('livJournalCompteId'); if(el && el.value) renderLivretJournalList(el.value); }catch(_){}
+        if(rev) kyfLivRefreshAfterSolde();
+      } },
     livLoad:      { load: livLoad,      save: livSave,      render: renderLivrets,      label: 'Livret' },
     sciLoad:      { load: sciLoad,      save: sciSave,      render: renderSCI,          label: 'SCI' },
     scpiLoad:     { load: scpiLoad,     save: scpiSave,     render: renderSCPI,         label: 'SCPI' },
@@ -45600,6 +45609,7 @@ function kyfCorbeilleFormatDetail(item){
 function renderCorbeilleList(){
   const box = document.getElementById('corbeilleList');
   if(!box) return;
+  try{ kyfCorbeilleRefreshBtn(); }catch(_){}
   const list = kyfCorbeilleLoad().slice().sort((a,b) => b.deletedAt - a.deletedAt);
   const emptyMsg = document.getElementById('corbeilleEmpty');
   const clearBtn = document.getElementById('corbeilleClearBtn');
@@ -45676,6 +45686,17 @@ document.addEventListener('DOMContentLoaded', () => {
   if(list) list.addEventListener('scroll', kyfCorbeilleScrollTopToggle, { passive: true });
 });
 document.addEventListener('DOMContentLoaded', kyfCorbeilleRefreshBtn);
+// Les deux pastilles (corbeille, notifications) se recalculent quand on revient sur l'onglet, quand un autre onglet KYF modifie les données, et toutes les 30 s :
+// avant, elles ne bougeaient qu'au moment d'un ajout, et pouvaient rester sur un chiffre alors que la liste était vide.
+function kyfBadgesSync(){
+  try{ kyfCorbeilleRefreshBtn(); }catch(_){}
+  try{ updateNotifBadge(); }catch(_){}
+}
+window.addEventListener('focus', kyfBadgesSync);
+document.addEventListener('visibilitychange', () => { if(!document.hidden) kyfBadgesSync(); });
+window.addEventListener('storage', e => { if(!e.key || e.key === 'kyf-corbeille') kyfBadgesSync(); });
+setInterval(kyfBadgesSync, 30000);
+
 
 function toggleNotifPanel(){
   const panel   = document.getElementById('notifPanel');
@@ -47630,7 +47651,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.13.65\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.8.13.71\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -71206,6 +71227,21 @@ function renderCashKPI(){
   // TRA-012 : le sous-texte d'INVESTI NET (nombre de lignes suivies) est écrit par renderKPIs ; l'ancien « Total + cash » additionnait ETF, livrets, stables et cash déjà comptés ailleurs.
 }
 
+function kyfCashLinkedRender(){
+  [['PEA','Pea'],['CTO','Cto']].forEach(p => {
+    const box = document.getElementById('cash' + p[1] + 'Linked'); if(!box) return;
+    let l = []; try{ l = ctLivretsDe(p[0]); }catch(e){}
+    if(!l.length){ box.innerHTML = ''; return; }
+    const lib = x => escapeHtml(String(x.banque || 'Livret'));
+    const libre = parseNum((document.getElementById('cashEdit' + p[1]) || {}).value) || 0;
+    const tot = Math.round((libre + ctLivretsTotal(p[0])) * 100) / 100;
+    box.innerHTML = '<div style="margin-top:8px;padding:8px 10px;border-radius:8px;border:1px solid var(--border2);background:var(--bg3);font-size:11px;line-height:1.7">'
+      + '<div style="font-size:9px;color:var(--text3);letter-spacing:.5px;margin-bottom:3px">LIVRETS LIÉS AU ' + p[0] + '</div>'
+      + l.map(x => '<div style="display:flex;justify-content:space-between;gap:8px;color:var(--text2)"><span>' + lib(x) + '</span><span style="font-weight:700;color:var(--text)">' + fmt(parseFloat(x.solde) || 0, 2) + ' €</span></div>').join('')
+      + '<div style="display:flex;justify-content:space-between;gap:8px;border-top:1px solid var(--border);margin-top:4px;padding-top:4px;color:var(--text2)"><span>Total espèces ' + p[0] + '</span><span style="font-weight:700;color:var(--text)">' + fmt(tot, 2) + ' €</span></div>'
+      + '<div style="font-size:10px;color:var(--text3);margin-top:3px">Le solde des livrets se modifie dans la page Livrets, il est déjà compté dans le cash.</div></div>';
+  });
+}
 function openCashEdit(){
   try{ kyfCashHintSeen(); }catch(_){}
   const fPea = document.getElementById('cashEditPea');
@@ -71220,6 +71256,7 @@ function openCashEdit(){
   kyfFormatAmountInput(fPea);
   kyfFormatAmountInput(fCto);
   kyfFormatAmountInput(fCcp);
+  try{ kyfCashLinkedRender(); }catch(e){}
   { const w = document.getElementById('cashEditCcpWarn'), d = kyfCashCcpDoublon();
     if(w){ if(d){ w.textContent = 'Doublon possible : vous avez déjà ' + d.comptes.length + ' compte(s) courant(s) liquide(s) dans Livrets (' + d.comptes.map(x=>x.banque||'?').join(', ') + '). Ils sont déjà comptés dans le cash : mettez ce champ à 0 si ce compte est le même, sinon gardez-le.'; w.style.display = 'block'; } else { w.textContent = ''; w.style.display = 'none'; } } }
   const stableDisplay = document.getElementById('cashEditStableDisplay');
@@ -71321,7 +71358,7 @@ function kyfCashMvtRow_(m){
 function kyfCashMvtRefresh(){
   try{ kyfCashMvtCss_(); }catch(e){}
   const f = (id, v) => { const el = document.getElementById(id); if(el){ el.value = v || ''; try{ kyfFormatAmountInput(el); }catch(e){} } };
-  f('cashEditPea', getCashPea()); f('cashEditCto', getCashCto());   // les champs resteraient sur l'ancien solde et l'écraseraient à l'enregistrement
+  f('cashEditPea', getCashPea()); f('cashEditCto', getCashCto());  try{ kyfCashLinkedRender(); }catch(e){}   // les champs resteraient sur l'ancien solde et l'écraseraient à l'enregistrement
   const all = kyfCashMvts();
   // Fenêtre Cash : les 3 derniers mouvements et le lien vers l'historique complet
   const box = document.getElementById('cashMvtList');
@@ -71616,6 +71653,7 @@ async function cashEnvToLivret(env){
   try{ renderLivrets(); }catch(e){}
   renderCashKPI();
   try{ kyfDivVersLivretMig_(); }catch(e){}
+  try{ kyfCashLinkedRender(); }catch(e){}
   msg('Enregistré dans vos livrets (' + banque + ', ' + fmt(amt,2) + ' €).', false);
 }
 function saveCashEdit(){
@@ -72900,6 +72938,18 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.71 · 28/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PASTILLES : la pastille de la corbeille et celle des notifications se remettent à jour toutes les 30 secondes, au retour sur l'onglet et à l'ouverture de la corbeille. Fini le chiffre sans rien dedans.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.70 · 28/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">CASH DISPONIBLE : les livrets d'épargne liés au PEA ou au CTO (Trade Republic, Revolut...) s'affichent maintenant dans la fenêtre, avec le total des espèces. Fini le « 0 » dans le champ alors que l'en-tête indique 1 705,62 €.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.69 · 28/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Journal d'un compte : supprimer une opération remet aussi le solde du compte à jour (la fenêtre de confirmation indique l'effet exact, « Annuler » dans le message de suppression rétablit la ligne et le solde). Le tableau des livrets, le patrimoine total et les espèces se rafraîchissent après chaque ajout, modification ou suppression. Les lignes importées d'un relevé ne modifient pas le solde (il vient du relevé).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.68 · 28/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Journal d'un compte : après une saisie ou une modification, une ligne indique l'effet exact sur le solde (« Solde : 705,63 € → 1 605,63 € »), pour voir tout de suite ce qui a été pris en compte. En modification, la différence se calcule à partir du montant que vous aviez sous les yeux en cliquant sur Modifier.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.67 · 28/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Plan d'épargne entreprise : le cadre « Répartition PEE » n'apparaît plus tant qu'il n'y a aucune valorisation (il affichait un cadre vide), il revient dès qu'un plan a une valeur.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.66 · 28/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Journal d'un compte : après une saisie ou une modification, le patrimoine total du tableau de bord et les totaux se recalculent tout de suite (avant, ils attendaient le prochain rafraîchissement, donc le montant semblait ne pas changer).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.65 · 28/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Journal d'un compte : chaque ligne a un bouton ⋯ (Modifier l'opération, Créer un flux récurrent, Supprimer). Modifier reprend la date, le libellé et le montant dans la saisie manuelle ; le solde du compte suit la différence (case « Mettre à jour le solde du compte »). Les lignes automatiques (dividende, versement vers un compte titres, programmé) ne se modifient pas.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.8.13.64 · 28/10/2026</div>
@@ -80291,6 +80341,7 @@ function openLivretJournal(compteId){
   document.getElementById('livJournalAmount').value = '';
   { const _a = document.getElementById('livJournalAdjSolde'); if(_a) _a.checked = true; }
   livJournalEditReset();
+  { const m = document.getElementById('livJournalSoldeMsg'); if(m) m.style.display = 'none'; }
   renderLivretJournalList(compteId);
   document.getElementById('livJournalModal').style.display = 'flex';
   document.getElementById('livJournalOverlay').style.display = 'block';
@@ -81001,7 +81052,7 @@ function livJournalCsvConfirm(){
     if(!b.checked) return;
     const t = _livCsvPending[parseInt(b.dataset.idx,10)];
     if(!t) return;
-    list.push({ id: 'tx_' + Date.now() + '_' + added, compteId: _livCsvCompteId, date: t.date, label: t.label, amount: t.amount });
+    list.push({ id: 'tx_' + Date.now() + '_' + added, compteId: _livCsvCompteId, date: t.date, label: t.label, amount: t.amount, importe: true });
     added++;
   });
   livTxSave(list);
@@ -81013,6 +81064,10 @@ function livJournalCsvConfirm(){
   alert((created ? `Compte « ${created.banque} » créé (solde ${created.solde.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €). ` : '') + `${added} mouvement(s) importé(s).`);
 }
 
+// Après un changement de solde par le journal : tableau des livrets, espèces du Portefeuille, patrimoine total et espèces
+function kyfLivRefreshAfterSolde(){
+  [() => renderLivrets(), () => renderETFTable(window._lp || {}), () => renderKPIs(window._lp || {}), () => renderCashKPI()].forEach(f => { try{ f(); }catch(e){ console.warn('[KYF] rafraîchissement après solde :', e); } });
+}
 function addLivretTransaction(){
   const compteId = document.getElementById('livJournalCompteId').value;
   const date  = document.getElementById('livJournalDate').value;
@@ -81024,25 +81079,30 @@ function addLivretTransaction(){
   const list = livTxLoad();
   const _editId = window._livJEditId || '';
   const _old = _editId ? list.find(t => t.id === _editId && t.compteId === compteId) : null;
-  const _prev = _old ? (parseFloat(_old.amount) || 0) : 0;   // en modification, le solde suit seulement la différence
-  if(_old){ _old.date = date; _old.label = label; _old.amount = amount; }
-  else list.push({ id:'tx_'+Date.now(), compteId, date, label, amount });
+  const _prev = _old ? (window._livJEditPrev !== undefined && window._livJEditPrev !== null ? window._livJEditPrev : (parseFloat(_old.amount) || 0)) : 0;   // en modification, le solde suit la différence avec le montant vu en cliquant sur Modifier
+  const _wantAdj = (function(){ const a = document.getElementById('livJournalAdjSolde'); return !a || a.checked; })();
+  if(_old){ _old.date = date; _old.label = label; _old.amount = amount; _old.soldeAdj = _wantAdj; }
+  else list.push({ id:'tx_'+Date.now(), compteId, date, label, amount, soldeAdj: _wantAdj });   // soldeAdj : ce mouvement a modifié le solde, sa suppression le remet
   livTxSave(list);
   // Le solde du compte suit le mouvement (les espèces du portefeuille en dépendent), sauf si l'utilisateur décoche la case
   const _adj = document.getElementById('livJournalAdjSolde');
+  let _soldeMsg = 'Solde du compte inchangé : ' + fmt((parseFloat((livLoad().find(x => x.id === compteId) || {}).solde) || 0), 2) + ' €';
   if(!_adj || _adj.checked){
     const lv = livLoad(), c = lv.find(x => x.id === compteId);
-    if(c){ c.solde = Math.round(((parseFloat(c.solde) || 0) + amount - _prev) * 100) / 100; livSave(lv); try{ renderLivrets(); }catch(e){} try{ renderETFTable(window._lp || {}); }catch(e){} }
+    if(c){ const _av = parseFloat(c.solde) || 0; c.solde = Math.round((_av + amount - _prev) * 100) / 100; _soldeMsg = 'Solde du compte : ' + fmt(_av, 2) + ' € → ' + fmt(c.solde, 2) + ' €'; livSave(lv); }
+    kyfLivRefreshAfterSolde();
   }
   document.getElementById('livJournalLabel').value = '';
   document.getElementById('livJournalAmount').value = '';
   livJournalEditReset();
   renderLivretJournalList(compteId);
+  { const m = document.getElementById('livJournalSoldeMsg'); if(m){ m.textContent = _soldeMsg; m.style.display = 'block'; } }
 }
 // Modifier une opération du journal : on reprend ses valeurs dans la saisie manuelle
 function livJournalEdit(id){
   const t = livTxLoad().find(x => x.id === id); if(!t || t.src) return;
-  window._livJEditId = id;
+  window._livJEditId = id; window._livJEditPrev = parseFloat(t.amount) || 0;
+  { const m = document.getElementById('livJournalSoldeMsg'); if(m) m.style.display = 'none'; }
   livJournalTab('manuel');
   kyfDateSetValue('livJournalDate', String(t.date || '').slice(0,10));
   document.getElementById('livJournalLabel').value = t.label || '';
@@ -81053,7 +81113,7 @@ function livJournalEdit(id){
   const f = document.getElementById('livJournalLabel'); if(f){ try{ f.focus(); }catch(e){} }
 }
 function livJournalEditReset(){
-  window._livJEditId = '';
+  window._livJEditId = ''; window._livJEditPrev = null;
   const l = document.getElementById('livJournalAddLbl'); if(l) l.textContent = 'Ajouter le mouvement';
   const c = document.getElementById('livJournalEditCancel'); if(c) c.style.display = 'none';
 }
@@ -81063,8 +81123,23 @@ function livJournalEditCancel(){
   document.getElementById('livJournalAmount').value = '';
   kyfDateSetValue('livJournalDate', new Date().toISOString().slice(0,10));
 }
-function deleteLivretTransaction(id){
-  kyfDeleteWithUndo(livTxLoad, livTxSave, id, () => renderLivretJournalList(document.getElementById('livJournalCompteId').value), 'Transaction');
+async function deleteLivretTransaction(id){
+  const list = livTxLoad(), t = list.find(x => x.id === id);
+  const rerender = () => { const el = document.getElementById('livJournalCompteId'); if(el && el.value) renderLivretJournalList(el.value); };
+  // Opération saisie dans KYF (ni automatique ni importée d'un relevé) : sa suppression remet le solde du compte comme avant
+  const lv = livLoad(), c = t ? lv.find(x => x.id === t.compteId) : null;
+  const amt = t ? (parseFloat(t.amount) || 0) : 0;
+  const rev = !!(t && c && !t.src && t.soldeAdj !== false && !t.importe && amt !== 0);
+  if(rev){
+    const avant = parseFloat(c.solde) || 0, apres = Math.round((avant - amt) * 100) / 100;
+    const ok = await kyfDialog({ kind:'danger', q:'Supprimer cette opération ?', d:'« ' + (t.label || '') + ' » (' + (amt >= 0 ? '+' : '') + fmt(amt, 2) + ' €).\nLe solde du compte sera corrigé : ' + fmt(avant, 2) + ' € → ' + fmt(apres, 2) + ' €.', ok:'Supprimer', cancel:'Annuler' });
+    if(!ok) return;
+    t._soldeRev = amt;   // mémorisé dans la corbeille : « Annuler » rétablit aussi le solde
+    livTxSave(list);
+    c.solde = apres; livSave(lv);
+  }
+  kyfDeleteWithUndo(livTxLoad, livTxSave, id, rerender, 'Transaction');
+  if(rev) kyfLivRefreshAfterSolde();
 }
 // ── Apprentissage passif : si un libellé revient 3 fois ou plus dans le
 // journal manuel, on suggère de créer un flux récurrent - jamais automatique,
@@ -93285,6 +93360,8 @@ function renderPeeDonut(plans){
   });
   const items = [...map.values()].sort((a, b) => b.val - a.val).map((g, i) => ({ ...g, color: palette[i % palette.length] }));
   const total = items.reduce((s, g) => s + g.val, 0);
+  const _side = document.getElementById('avPeeSide');
+  if(_side) _side.style.display = total ? '' : 'none';   // 2.8.13.67 : aucun cadre vide quand rien n'est valorisé
   if(!total){ if(leg) leg.innerHTML = '<div style="font-size:9px;color:var(--text3);text-align:center">Aucune valorisation</div>'; return; }
   const d = chartDefaults(), cut = kyfDonutCutout(), bw = chartPrefs.donutBorderWidth !== undefined ? chartPrefs.donutBorderWidth : 2;
   const colors = items.map(g => g.color), values = items.map(g => g.val), labels = items.map(g => g.label);
@@ -101861,8 +101938,9 @@ function orInlineEdit(id, td, currentVal){
   <div style="margin-bottom:20px">
     <div style="font-size:9px;color:var(--text3);margin-bottom:6px;letter-spacing:.5px">CASH PEA (€)</div>
     <input id="cashEditPea" type="text" inputmode="decimal" placeholder="0"
-      oninput="this.value=this.value.replace(/-/g,'')" onfocus="kyfUnformatAmountInput(this)" onblur="kyfFormatAmountInput(this)"
+      oninput="this.value=this.value.replace(/-/g,'');try{kyfCashLinkedRender()}catch(_){}" onfocus="kyfUnformatAmountInput(this)" onblur="kyfFormatAmountInput(this)"
       style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;border-radius:6px;outline:none">
+    <div id="cashPeaLinked"></div>
     <button type="button" onclick="cashEnvLivToggle('Pea')" style="margin-top:10px;background:none;border:none;color:var(--accent);font-family:'Inter',sans-serif;font-size:10px;font-weight:600;cursor:pointer;padding:0;text-align:left">Espèces rémunérées (Trade Republic, Revolut...) ? Enregistrer dans mes livrets</button>
     <div id="cashPeaLivBox" style="display:none;margin-top:8px;padding:10px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--bg3)">
       <div style="font-size:10px;color:var(--text2);line-height:1.6;margin-bottom:8px">Le montant du cash PEA ci-dessus devient un livret liquide (il reste compté dans le Cash) et le cash PEA repasse à 0.</div>
@@ -101880,8 +101958,9 @@ function orInlineEdit(id, td, currentVal){
   <div style="margin-bottom:20px">
     <div style="font-size:9px;color:var(--text3);margin-bottom:6px;letter-spacing:.5px">CASH CTO (€)</div>
     <input id="cashEditCto" type="text" inputmode="decimal" placeholder="0"
-      oninput="this.value=this.value.replace(/-/g,'')" onfocus="kyfUnformatAmountInput(this)" onblur="kyfFormatAmountInput(this)"
+      oninput="this.value=this.value.replace(/-/g,'');try{kyfCashLinkedRender()}catch(_){}" onfocus="kyfUnformatAmountInput(this)" onblur="kyfFormatAmountInput(this)"
       style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;border-radius:6px;outline:none">
+    <div id="cashCtoLinked"></div>
     <button type="button" onclick="cashEnvLivToggle('Cto')" style="margin-top:10px;background:none;border:none;color:var(--accent);font-family:'Inter',sans-serif;font-size:10px;font-weight:600;cursor:pointer;padding:0;text-align:left">Espèces rémunérées (Trade Republic, Revolut...) ? Enregistrer dans mes livrets</button>
     <div id="cashCtoLivBox" style="display:none;margin-top:8px;padding:10px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--bg3)">
       <div style="font-size:10px;color:var(--text2);line-height:1.6;margin-bottom:8px">Le montant du cash CTO ci-dessus devient un livret liquide (il reste compté dans le Cash) et le cash CTO repasse à 0.</div>
