@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_10_0_20.html
+  @file        : KYF_SHARE_beta_2_10_0_21.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.10.0.20
+  @version     : Beta 2.10.0.21
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7346,7 +7346,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.10.0.20</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.10.0.21</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -22816,6 +22816,9 @@ function kyfAvLinesOf(d, claimed){
   });
   return out;
 }
+// Autres actifs : sa fonction est définie dans un script chargé plus bas ; au tout premier affichage elle n'existe pas encore (0), puis le total est recalculé à la fin du chargement
+function kyfAutresTotalSafe(){ try{ return typeof kyfAutresTotal === 'function' ? kyfAutresTotal() : 0; }catch(e){ return 0; } }
+window.addEventListener('load', () => { setTimeout(() => { try{ renderKPIs(window._lp || {}); }catch(e){} }, 300); });
 function renderKPIs(lp){
   // ATH indépendant des prix en direct : calculé uniquement à partir de
   // l'historique des snapshots, donc doit s'exécuter même quand lp est
@@ -22926,7 +22929,7 @@ function renderKPIs(lp){
   // fetchAllPrices()) une fois le fichier entièrement chargé.
   const avGlobal      = typeof getAVTotal   === 'function' ? getAVTotal()   : 0;
   const immoGlobal    = typeof getImmoTotal === 'function' ? getImmoTotal() : 0;
-  const totalGlobal   = total + cryptoTotal + avGlobal + immoGlobal + kyfCrowdfundingTotal() + kyfLivretsTotal() + kyfOrTotal() + kyfAutresTotal();
+  const totalGlobal   = total + cryptoTotal + avGlobal + immoGlobal + kyfCrowdfundingTotal() + kyfLivretsTotal() + kyfOrTotal() + kyfAutresTotalSafe();
   window._kyfTotalGlobal = totalGlobal;   // TRA-011 : patrimoine global unique, repris par la page Immobilier
   let investiGlobal = investi + cryptoInvesti;
   // Gain net des positions = ETF/Actions + Crypto + contrats AV/PER dont le total investi est connu.
@@ -22979,7 +22982,7 @@ function renderKPIs(lp){
   window._kLiveImmoDette = (typeof getImmoNetTotal === 'function') ? Math.max(0, immoGlobal - getImmoNetTotal()) : 0;   // crédits immobiliers en cours, déduits seulement si le réglage est actif
   window._kLiveParts = [
     { l:'ETF & actions', v:total }, { l:'Cryptos', v:cryptoTotal - cryptoStables }, { l:'Stablecoins', v:cryptoStables }, { l:'Assurance vie / PER', v:avGlobal },
-    { l:'Immobilier', v:immoGlobal }, { l:'Crowdfunding', v:kyfCrowdfundingTotal() }, { l:'Livrets', v:kyfLivretsTotal() }, { l:'Or & métaux', v:kyfOrTotal() }, { l:'Autres actifs', v:kyfAutresTotal() }
+    { l:'Immobilier', v:immoGlobal }, { l:'Crowdfunding', v:kyfCrowdfundingTotal() }, { l:'Livrets', v:kyfLivretsTotal() }, { l:'Or & métaux', v:kyfOrTotal() }, { l:'Autres actifs', v:kyfAutresTotalSafe() }
   ];
   kyfRenderKLive();
   animateKpi('kGain',    gainUnknown ? '-' : (gain>=0?'+':'')+fmt(gain,2)+' €');
@@ -43175,7 +43178,7 @@ function renderAllocDonut(lp){
     { name:"LIVRETS D'ÉPARGNE",   icon:KYF_ICONS.lock,     color:'#06b6d4', val: livretsTotal },
     { name:'OR & MÉTAUX',         icon:'<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="#F59E0B"/><path d="M12 2v15.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="#B45309" opacity="0.3"/></svg>', color:'#D4AF37', val: orTotal },
     { name:'IMMOBILIER',          icon:KYF_ICONS.home,     color:'#6D28D9', val: immoTotal },
-    { name:'AUTRES ACTIFS',       icon:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16V11l2-5h10l2 5v5"/><path d="M3 16h18v3H3z"/></svg>', color:'#e8590c', val: (typeof kyfAutresTotal === 'function' ? kyfAutresTotal() : 0) },
+    { name:'AUTRES ACTIFS',       icon:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16V11l2-5h10l2 5v5"/><path d="M3 16h18v3H3z"/></svg>', color:'#e8590c', val: (typeof kyfAutresTotal === 'function' ? kyfAutresTotalSafe() : 0) },
     { name:'ASSURANCE VIE / PER', icon:KYF_ICONS.shield,   color:'#B91C1C', val: avTotal },
   ];
 
@@ -48109,7 +48112,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.10.0.20\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.10.0.21\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -48305,7 +48308,7 @@ function kyfSnapExtras(etfInvesti, cryptoInvesti){
   try{
     const spot = window._orSpotPrices || {};
     JSON.parse(localStorage.getItem('kyf-or')||'[]').forEach(d => { if(d.poids > 0 && spot[d.metal] > 0) orCost += parseFloat(d.prixAchat)||0; });
-    autres = liv + kyfOrTotal() + cf + kyfAutresTotal();
+    autres = liv + kyfOrTotal() + cf + kyfAutresTotalSafe();
   }catch(e){}
   try{
     // TRA-004 : même règle que le tableau de bord (investi net = versements - rachats, moins le coût des lignes du contrat déjà comptées dans ETF & Actions).
@@ -73792,6 +73795,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.0.21 · 29/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Correction : un avertissement « kyfAutresTotal n'est pas défini » apparaissait au chargement (le total des Autres actifs est maintenant calculé sans erreur).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.0.20 · 29/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Zones géographiques : « Hong Kong » (et Macao, Taïwan) est reconnu quand on colle un relevé, quel que soit le navigateur.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.0.19 · 29/10/2026</div>
