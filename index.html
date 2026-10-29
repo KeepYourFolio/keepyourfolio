@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_9_0_42.html
+  @file        : KYF_SHARE_beta_2_9_0_45.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.9.0.42
+  @version     : Beta 2.9.0.45
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7335,7 +7335,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.9.0.42</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.9.0.45</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -9117,6 +9117,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
             </a>
           </span>
           <div style="display:flex;gap:8px;white-space:nowrap">
+          <button type="button" id="avToggleAllBtn" onclick="avToggleAll()" title="Déplier ou replier tous les contrats" style="display:flex;align-items:center;gap:6px;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:7px 14px;border-radius:8px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;letter-spacing:.5px;transition:background .15s,color .15s,box-shadow .15s" onmouseover="this.style.background='var(--hov-bg)';this.style.color='var(--text)';this.style.boxShadow='0 2px 6px rgba(0,0,0,.12)'" onmouseout="this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)';this.style.boxShadow='none'"><svg id="avToggleAllIco" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/></svg><span id="avToggleAllLbl">TOUT DÉPLIER</span></button>
           <button onclick="openAVDCA()" style="display:flex;align-items:center;gap:6px;
             font-family:'Inter',sans-serif;font-size:10px;font-weight:700;
             padding:7px 14px;border-radius:8px;border:1px solid rgba(77,159,255,0.3);
@@ -25375,7 +25376,7 @@ function kyfEnvDonutDraw(rows, tot){
     const pct = r.val / tot * 100, small = pct < 2;
     const hv = small ? 'title="Part trop faible pour être mise en évidence sur le graphique" style="cursor:not-allowed;' : 'onmouseenter="kyfDonutLegendHover(\'envDonut\',' + i + ');this.style.background=\'var(--hov-bg)\'" onmouseleave="kyfDonutLegendLeave(\'envDonut\');this.style.background=\'none\'" style="cursor:pointer;';
     return '<div ' + hv + 'display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:3px 6px;border-radius:6px;transition:background .15s"><div style="width:7px;height:7px;border-radius:50%;background:' + r.col + ';flex-shrink:0"></div>'
-      + '<div style="font-family:\'Inter\',sans-serif;flex:1;min-width:0"><div title="' + escapeHtml(r.nom) + '" style="font-size:11px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHtml(r.nom) + '</div><div style="font-size:10px;color:var(--accent);margin-top:1px">' + pct.toFixed(2) + '% du total</div></div></div>';
+      + '<div style="font-family:\'Inter\',sans-serif;flex:1;min-width:0"><div title="' + escapeHtml(r.nom) + '" style="font-size:11px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHtml(r.nom) + '</div><div style="font-size:10px;color:var(--accent);margin-top:1px">' + pct.toFixed(2) + '% du total · ' + fmt(r.val, 0) + ' €</div></div></div>';
   }).join('');
 }
 function kyfEnvUnifRender(){
@@ -42395,9 +42396,11 @@ function renderETFTable(lp){
           <button onclick="event.stopPropagation();avToggleActionsMenu('etf-${ETF.indexOf(e)}')" title="Actions" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 6px;display:inline-flex;align-items:center;font-size:16px;letter-spacing:1px">⋯</button>
           <div id="avActionsMenu-etf-${ETF.indexOf(e)}" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:130px">
             <div onclick="avCloseActionsMenu('etf-${ETF.indexOf(e)}');sellETFShortcut(${ETF.indexOf(e)})" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--red);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3.24H4a1 1 0 0 0-1 1v5.59a2 2 0 0 0 .59 1.41l9.58 9.59a2 2 0 0 0 2.83 0l4.59-4.59a2 2 0 0 0 0-2.83z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg> Vendre</div>
+            <div class="kyf-menu-sep" role="separator"></div>
             <div onclick="avCloseActionsMenu('etf-${ETF.indexOf(e)}');openEditETF(${ETF.indexOf(e)})" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.edit} Modifier</div>
             ${e.contratId ? `<div onclick="avCloseActionsMenu('etf-${ETF.indexOf(e)}');avReplaceFromETF(${ETF.indexOf(e)})" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3l4 4-4 4"/><path d="M3 7h18"/><path d="M7 21l-4-4 4-4"/><path d="M21 17H3"/></svg> Remplacer le support</div>` : ''}
-            <div onclick="avCloseActionsMenu('etf-${ETF.indexOf(e)}');deleteETF(${ETF.indexOf(e)})" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:#ff4560;cursor:pointer;display:flex;align-items:center;gap:6px;border-top:1px solid var(--border)" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg> Supprimer</div>
+            <div class="kyf-menu-sep" role="separator"></div>
+            <div onclick="avCloseActionsMenu('etf-${ETF.indexOf(e)}');deleteETF(${ETF.indexOf(e)})" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:#ff4560;cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg> Supprimer</div>
           </div>
         </span>
       </td>
@@ -43237,7 +43240,7 @@ function renderAllocDonut(lp){
   const bl = document.getElementById('allocBars'); if(!bl) return;
   bl.innerHTML = CLASSES.filter(c=>c.val>0).sort((a,b)=>(b.val||0)-(a.val||0)).map(c=>{   // 206 : plus de classe à 0 dans la légende // du plus important au moins important ; les classes sans valeur restent en bas
     const pct = patrimoine > 0 ? (c.val/patrimoine*100) : 0;
-    const pctStr = c.soon ? '-' : pct.toFixed(2)+'% du patrimoine';
+    const pctStr = c.soon ? '-' : pct.toFixed(2)+'% du patrimoine · '+fmt(c.val,0)+' €';
     const opacity = c.soon ? 'opacity:0.4;' : '';
     const idx = sortedActive.indexOf(c);
     const tooSmall = idx >= 0 && pct < 2;
@@ -48007,7 +48010,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.9.0.42\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.9.0.45\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -49866,11 +49869,13 @@ function renderDonut(){
   // Légende
   const lg = document.getElementById('donutLegend'); if(!lg) return;
   const _c = charts.donut; // data already sorted by _sd
+  const _dv = _c.data.datasets[0].data || [], _dt = _dv.reduce((a,b) => a + (parseFloat(b) || 0), 0);
   lg.innerHTML = _c.data.labels.map((lbl,i) => {
     const col = _c.data.datasets[0].backgroundColor[i];
+    const _v = parseFloat(_dv[i]) || 0, _sub = (_dt > 0 && _v > 0) ? '<div style="font-size:10px;color:var(--accent);margin-top:1px">' + (_v/_dt*100).toFixed(2) + '% · ' + fmt(_v,0) + ' €</div>' : '';
     return `<div onmouseenter="kyfDonutHoverSlice('donut',${i});this.style.background='var(--hov-bg)'" onmouseleave="kyfDonutLeaveSlice('donut');this.style.background='none'" style="cursor:pointer;display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:3px 6px;border-radius:6px;transition:background .15s">
       <div style="width:7px;height:7px;border-radius:50%;background:${col};flex-shrink:0"></div>
-      <div style="font-family:'Inter',sans-serif;font-size:10px;color:var(--text2)">${escapeHtml(lbl)}</div>
+      <div style="font-family:'Inter',sans-serif"><div style="font-size:10px;color:var(--text2)">${escapeHtml(lbl)}</div>${_sub}</div>
     </div>`;
   }).join('');
   if(typeof applyChartPrefs==="function") setTimeout(applyChartPrefs,50);
@@ -57436,7 +57441,8 @@ function renderCryptoTable(){
           <div id="avActionsMenu-cry-${ci}" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:130px">
             ${typeof kyfCryRowOpItems === 'function' ? kyfCryRowOpItems('cry-'+ci, 'pos', "'"+tkJs+"'") : ''}
             <div onclick="avCloseActionsMenu('cry-${ci}');openEditCrypto('${tkJs}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.edit} Modifier</div>
-            <div onclick="avCloseActionsMenu('cry-${ci}');deleteCryptoPosition('${tkJs}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:#ff4560;cursor:pointer;display:flex;align-items:center;gap:6px;border-top:1px solid var(--border)" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg> Supprimer</div>
+            <div class="kyf-menu-sep" role="separator"></div>
+            <div onclick="avCloseActionsMenu('cry-${ci}');deleteCryptoPosition('${tkJs}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:#ff4560;cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg> Supprimer</div>
           </div>
         </span>
       </td>
@@ -57483,7 +57489,8 @@ function renderCryptoStables(){
           <div id="avActionsMenu-stb-${idx}" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:130px">
             ${typeof kyfCryRowOpItems === 'function' ? kyfCryRowOpItems('stb-'+idx, 'stb', idx) : ''}
             <div onclick="avCloseActionsMenu('stb-${idx}');openEditStable(${idx})" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.edit} Modifier</div>
-            <div onclick="avCloseActionsMenu('stb-${idx}');deleteStable(${idx})" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:#ff4560;cursor:pointer;display:flex;align-items:center;gap:6px;border-top:1px solid var(--border)" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg> Supprimer</div>
+            <div class="kyf-menu-sep" role="separator"></div>
+            <div onclick="avCloseActionsMenu('stb-${idx}');deleteStable(${idx})" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:#ff4560;cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg> Supprimer</div>
           </div>
         </span>
       </td>
@@ -58991,7 +58998,8 @@ function renderCryptoOpsPage(){
           <button onclick="event.stopPropagation();avToggleActionsMenu('op-${escJsAttr(String(op.id))}')" class="kyf-op-dots" title="Actions">⋯</button>
           <div id="avActionsMenu-op-${escapeHtml(String(op.id))}" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:130px">
             <div onclick="avCloseActionsMenu('op-${escJsAttr(String(op.id))}');kyfOpEditOpen('${escJsAttr(String(op.id))}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.edit} Modifier</div>
-            <div onclick="avCloseActionsMenu('op-${escJsAttr(String(op.id))}');deleteOperation('${escJsAttr(String(op.id))}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:#ff4560;cursor:pointer;display:flex;align-items:center;gap:6px;border-top:1px solid var(--border)" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg> Supprimer</div>
+            <div class="kyf-menu-sep" role="separator"></div>
+            <div onclick="avCloseActionsMenu('op-${escJsAttr(String(op.id))}');deleteOperation('${escJsAttr(String(op.id))}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:#ff4560;cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg> Supprimer</div>
           </div>
         </span></td>
   </tr>`).join('');
@@ -59369,12 +59377,12 @@ function kyfCryptoRowOp(type, kind, key){
   if(top && top.scrollIntoView) top.scrollIntoView({ block:'center', behavior:'smooth' });
 }
 function kyfCryRowOpItems(menuId, kind, keyJs){
-  const it = (type, label, ico, last) => `<div onclick="avCloseActionsMenu('${menuId}');kyfCryptoRowOp('${type}','${kind}',${keyJs})" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px${last ? ';border-bottom:1px solid var(--border)' : ''}" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${ico} ${label}</div>`;
+  const it = (type, label, ico, last) => `<div onclick="avCloseActionsMenu('${menuId}');kyfCryptoRowOp('${type}','${kind}',${keyJs})" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px${last ? '' : ''}" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${ico} ${label}</div>`;
   const svg = p => `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
   return it('achat', 'Acheter', svg('<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>'))
        + it('vente', 'Vendre', svg('<circle cx="12" cy="12" r="9"/><path d="M8 12h8"/>'))
        + it('swap', 'Swap', svg('<path d="M17 3l4 4-4 4"/><path d="M3 7h18"/><path d="M7 21l-4-4 4-4"/><path d="M21 17H3"/>'))
-       + it('transfert', 'Transfert', svg('<path d="M5 12h14"/><path d="M13 6l6 6-6 6"/>'), true);
+       + it('transfert', 'Transfert', svg('<path d="M5 12h14"/><path d="M13 6l6 6-6 6"/>'), true) + '<div class="kyf-menu-sep" role="separator"></div>';
 }
 function switchCryptoTab(tab){
   kyfCryptoTabView(tab);
@@ -71935,7 +71943,7 @@ function kyfCashMvtTr_(m){
     + '<td style="text-align:right"><span style="position:relative;display:inline-block"><button type="button" onclick="event.stopPropagation();avToggleActionsMenu(\'cm-' + m.id + '\')" title="Actions" aria-label="Actions" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 6px;display:inline-flex;align-items:center;font-size:16px;letter-spacing:1px">\u22EF</button>'
     + '<div id="avActionsMenu-cm-' + m.id + '" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:130px">'
     + '<div onclick="avCloseActionsMenu(\'cm-' + m.id + '\');kyfCashMvtEditStart(\'' + m.id + '\')" style="padding:8px 12px;font-family:\'Inter\',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background=\'var(--hov-bg-soft)\'" onmouseout="this.style.background=\'\'">' + KYF_ICONS.edit + ' Modifier</div>'
-    + '<div onclick="avCloseActionsMenu(\'cm-' + m.id + '\');kyfCashMvtDelete(\'' + m.id + '\')" style="padding:8px 12px;font-family:\'Inter\',sans-serif;font-size:10px;color:#ff4560;cursor:pointer;display:flex;align-items:center;gap:6px;border-top:1px solid var(--border)" onmouseover="this.style.background=\'var(--hov-bg-soft)\'" onmouseout="this.style.background=\'\'">' + KYF_ICONS.trash + ' Supprimer</div>'
+    + '<div class="kyf-menu-sep" role="separator"></div><div onclick="avCloseActionsMenu(\'cm-' + m.id + '\');kyfCashMvtDelete(\'' + m.id + '\')" style="padding:8px 12px;font-family:\'Inter\',sans-serif;font-size:10px;color:#ff4560;cursor:pointer;display:flex;align-items:center;gap:6px;border-top:1px solid var(--border)" onmouseover="this.style.background=\'var(--hov-bg-soft)\'" onmouseout="this.style.background=\'\'">' + KYF_ICONS.trash + ' Supprimer</div>'
     + '</div></span></td></tr>';
 }
 function cashHistPrev(){ if((window._cashHistPage||0) > 0){ window._cashHistPage--; kyfCashMvtRefresh(); } }
@@ -73468,6 +73476,12 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.45 · 29/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Menus ⋯ : séparateurs et sections cohérents partout (le bouton Supprimer toujours isolé en bas)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.44 · 29/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Donuts : la légende donne le pourcentage ET le montant en euros partout (tableau de bord, assurance vie, PER, enveloppes, positions), idée de Nicolas</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.43 · 29/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Mes contrats : bouton Tout déplier / Tout replier (favoris et PEE compris), idée de Nicolas</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.42 · 29/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PEE : champ Ticker du cours (0P...) sur chaque fonds, utilisé quand l'ISIN est inconnu de StatsAVie</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.41 · 28/10/2026</div>
@@ -81965,7 +81979,8 @@ function renderLivretJournalList(compteId){
         <div id="avActionsMenu-livtx-${t.id}" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:200px">
           ${t.src ? '' : `<div onclick="avCloseActionsMenu('livtx-${t.id}');livJournalEdit('${t.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.edit} Modifier l'opération</div>`}
           <div onclick="avCloseActionsMenu('livtx-${t.id}');livCreateRecurringFromTx('${t.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.refresh} Créer un flux récurrent</div>
-          <div onclick="avCloseActionsMenu('livtx-${t.id}');deleteLivretTransaction('${t.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:#ff4560;cursor:pointer;display:flex;align-items:center;gap:6px;border-top:1px solid var(--border)" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.trash} Supprimer</div>
+          <div class="kyf-menu-sep" role="separator"></div>
+          <div onclick="avCloseActionsMenu('livtx-${t.id}');deleteLivretTransaction('${t.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:#ff4560;cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.trash} Supprimer</div>
         </div>
       </span>
     </div>`).join('') + '</div>';
@@ -83954,7 +83969,7 @@ function avPosRendLoyers(c, p){
 // Menu ⋯ d'une ligne : seuls le loyer et le retrait (rachat) se modifient ou se suppriment ici ; les autres opérations ont leur propre fenêtre
 function avJrnRowMenu(x){
   if(!x.rid || (x.k !== 'loy' && x.k !== 'ret')) return '<span style="width:28px;flex-shrink:0"></span>';
-  const key = 'jrn-' + x.k + '-' + x.rid, item = (fn, ic, t, red) => '<div onclick="avCloseActionsMenu(\'' + key + '\');' + fn + '" style="padding:8px 12px;font-family:Inter,sans-serif;font-size:10px;color:' + (red ? '#ff4560' : 'var(--text)') + ';cursor:pointer;display:flex;align-items:center;gap:6px' + (red ? ';border-top:1px solid var(--border)' : '') + '" onmouseover="this.style.background=\'var(--hov-bg-soft)\'" onmouseout="this.style.background=\'\'">' + ic + ' ' + t + '</div>';
+  const key = 'jrn-' + x.k + '-' + x.rid, item = (fn, ic, t, red) => (red ? '<div class="kyf-menu-sep" role="separator"></div>' : '') + '<div onclick="avCloseActionsMenu(\'' + key + '\');' + fn + '" style="padding:8px 12px;font-family:Inter,sans-serif;font-size:10px;color:' + (red ? '#ff4560' : 'var(--text)') + ';cursor:pointer;display:flex;align-items:center;gap:6px' + '' + '" onmouseover="this.style.background=\'var(--hov-bg-soft)\'" onmouseout="this.style.background=\'\'">' + ic + ' ' + t + '</div>';
   return '<span style="position:relative;display:inline-block;flex-shrink:0"><button type="button" onclick="event.stopPropagation();avJrnMenu(\'' + key + '\')" class="ljr-dots" title="Actions" aria-label="Actions sur cette opération">⋯</button>'
     + '<div id="avActionsMenu-' + key + '" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:200px">'
     + (x.k === 'loy' ? item('avLoyerOpen(\'' + _avJrnId + '\',\'' + x.rid + '\')', KYF_ICONS.edit, 'Modifier l\'opération') : '')
@@ -94252,11 +94267,11 @@ function peeFondsHtml(x){
 }
 window._peeOpen = window._peeOpen || {};
 function peeToggleCard(id){   // plier / déplier la carte d'un plan (état gardé en mémoire, comme l'ouverture d'une page)
-  try{ if(avGetFavoris().includes(id)) return; }catch(e){}   // un favori reste toujours ouvert
   const b = document.getElementById('peeCardBody-' + id), c = document.getElementById('peeChevron-' + id); if(!b) return;
   const willOpen = b.style.display === 'none'; b.style.display = willOpen ? 'block' : 'none';
   if(c) c.style.transform = willOpen ? 'rotate(0deg)' : 'rotate(-90deg)';
   window._peeOpen[id] = willOpen;
+  try{ avToggleAllSync(); }catch(e){}
 }
 function renderPee(){
   const list = document.getElementById('avPeeList'), kpi = document.getElementById('avPeeKpi');
@@ -94282,7 +94297,7 @@ function renderPee(){
     // Carte du plan : même design que les contrats Assurance vie et PER (bandeau coloré, logo, pastilles, valeur et performance, menu, flèche)
     const v = parseFloat(x.valeur) || 0, vs = parseFloat(x.versements) || 0, today = new Date().toISOString().slice(0, 10);
     const rt = peeRetTotal(x), aRep = !!x.retraitAReporter, pvOk = v > 0 && vs > 0 && !aRep, pvv = v + rt - vs, pvPct = pvOk ? pvv / vs * 100 : null;
-    const isFav = _favs.includes(x.id), open = isFav || !window._peeOpen || window._peeOpen[x.id] !== false;
+    const isFav = _favs.includes(x.id), open = !window._peeOpen || window._peeOpen[x.id] !== false;
     const id = escapeHtml(x.id), col = '#06b6d4';
     const chip = t => '<span class="kyf-hd-chip">' + t + '</span>';
     const chips = '<span class="kyf-hd-chip" style="color:' + col + ';background:color-mix(in srgb,' + col + ' 16%,transparent)">' + KYF_ICONS.briefcase + ' PEE</span>' +
@@ -94295,7 +94310,7 @@ function renderPee(){
     const perfCls = pvOk ? (pvv >= 0 ? 'up' : 'dn') : '';
     const perf = pvOk ? '<div class="kyf-hd-perf ' + perfCls + '" title="Performance depuis l\'origine (gain ou perte sur le total versé)">' + (pvPct >= 0 ? '+' : '') + pvPct.toFixed(1) + '% · ' + (pvv >= 0 ? '+' : '-') + fmt(Math.abs(pvv), 0) + ' €</div>'
       : (aRep ? '<div class="kyf-hd-perf" style="color:#d97706" title="Un retrait a été noté mais les parts des fonds ne sont pas mises à jour : la plus-value serait fausse">Plus-value : à vérifier</div>' : '<div class="kyf-hd-perf" title="Il faut la valeur et le total versé pour calculer la plus-value">Plus-value : Indisponible</div>');
-    const mi = (ic, lbl, fn, extra) => '<div onclick="avCloseActionsMenu(\'' + id + '\');' + fn + '" style="padding:8px 12px;font-family:\'Inter\',sans-serif;font-size:10px;color:' + (extra || 'var(--text)') + ';cursor:pointer;display:flex;align-items:center;gap:6px' + (extra ? ';border-top:1px solid var(--border)' : '') + '" onmouseover="this.style.background=\'var(--hov-bg-soft)\'" onmouseout="this.style.background=\'\'">' + ic + ' ' + lbl + '</div>';
+    const mi = (ic, lbl, fn, extra) => (extra ? '<div class="kyf-menu-sep" role="separator"></div>' : '') + '<div onclick="avCloseActionsMenu(\'' + id + '\');' + fn + '" style="padding:8px 12px;font-family:\'Inter\',sans-serif;font-size:10px;color:' + (extra || 'var(--text)') + ';cursor:pointer;display:flex;align-items:center;gap:6px' + '' + '" onmouseover="this.style.background=\'var(--hov-bg-soft)\'" onmouseout="this.style.background=\'\'">' + ic + ' ' + lbl + '</div>';
     const cell = (lbl, html) => '<div style="flex:1;min-width:130px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:rgba(255,255,255,0.03)"><div style="font-size:9px;color:var(--text3);letter-spacing:.4px;margin-bottom:3px">' + lbl + '</div>' + html + '</div>';
     const abo = (x.abondement != null && isFinite(parseFloat(x.abondement))) ? parseFloat(x.abondement) : null;
     const aboOk = abo != null && vs > 0 && abo <= vs, pvvVous = pvOk && aboOk ? v + rt - (vs - abo) : null;
@@ -94321,7 +94336,7 @@ function renderPee(){
       '<div id="avActionsMenu-' + id + '" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:190px">' +
       mi('<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><polyline points="7,10 12,15 17,10"/><path d="M5 21h14"/></svg>', 'Retrait exceptionnel', 'peeRetOpen(\'' + id + '\')') +
       (Array.isArray(x.fonds) && x.fonds.some(f => peeFundTrackable(f)) ? mi(KYF_ICONS.refresh, 'Actualiser les cours', 'peeRefreshVl(\'' + id + '\')') : '') +
-      mi(KYF_ICONS.edit, 'Modifier', 'openPeeModal(\'' + id + '\')') +
+      '<div class="kyf-menu-sep" role="separator"></div>' + mi(KYF_ICONS.edit, 'Modifier', 'openPeeModal(\'' + id + '\')') +
       mi(KYF_ICONS.trash, 'Supprimer', 'deletePee(\'' + id + '\')', '#ff4560') + '</div></div></div>' +
       '<button type="button" onclick="event.stopPropagation();avToggleFavori(\'' + id + '\',' + (peeLoad().length + avLoad().length) + ')" title="' + (isFav ? 'Retirer des favoris' : 'Marquer comme favori') + '" class="kyf-icon-btn kyf-favstar" style="background:none;border:1px solid var(--border2);cursor:pointer;padding:0;box-sizing:border-box;width:34px;height:34px;justify-content:center;border-radius:8px;color:' + (isFav ? 'var(--accent)' : 'var(--text3)') + ';display:flex;align-items:center;flex-shrink:0">' + (isFav ? KYF_ICONS.starFilled : KYF_ICONS.starOutline) + '</button>' +
       '<span id="peeChevron-' + id + '" onclick="event.stopPropagation();peeToggleCard(\'' + id + '\')" style="display:flex;align-items:center;justify-content:center;box-sizing:border-box;width:34px;height:34px;border:1px solid var(--border2);border-radius:8px;color:var(--text3);transition:transform .25s ease,color .15s,background .15s;transform:rotate(' + (open ? '0' : '-90') + 'deg);flex-shrink:0" onmouseover="this.style.color=\'var(--accent)\';this.style.background=kyfChevronHoverBg()" onmouseout="this.style.color=\'var(--text3)\';this.style.background=\'transparent\'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></span></div></div>' +
@@ -96834,9 +96849,32 @@ function avToggleFavori(id, totalContrats){
   try{ if(document.getElementById('avPeeList')) renderPee(); }catch(e){}
 }
 
+// 2.9.0.43 : un seul bouton déplie ou replie tous les contrats (AV, PER, PEE, favoris compris)
+function avToggleAllSync(){
+  const bodies = [...document.querySelectorAll('[id^="avCardBody-"],[id^="peeCardBody-"]')];
+  const lbl = document.getElementById('avToggleAllLbl'), ico = document.getElementById('avToggleAllIco'), btn = document.getElementById('avToggleAllBtn');
+  if(!lbl) return;
+  const anyClosed = bodies.some(b => b.style.display === 'none');
+  lbl.textContent = anyClosed || !bodies.length ? 'TOUT DÉPLIER' : 'TOUT REPLIER';
+  if(ico) ico.style.transform = anyClosed || !bodies.length ? '' : 'rotate(180deg)';
+  if(btn) btn.title = anyClosed || !bodies.length ? 'Déplier tous les contrats' : 'Replier tous les contrats';
+}
+function avToggleAll(){
+  const bodies = [...document.querySelectorAll('[id^="avCardBody-"],[id^="peeCardBody-"]')];
+  if(!bodies.length) return;
+  const open = bodies.some(b => b.style.display === 'none');
+  bodies.forEach(b => {
+    const isPee = b.id.indexOf('peeCardBody-') === 0, id = b.id.replace(/^(av|pee)CardBody-/, '');
+    b.style.display = open ? 'block' : 'none';
+    const c = document.getElementById((isPee ? 'peeChevron-' : 'avChevron-') + id); if(c) c.style.transform = open ? 'rotate(0deg)' : 'rotate(-90deg)';
+    if(isPee){ try{ window._peeOpen[id] = open; }catch(e){} } else { try{ localStorage.setItem('kyf-av-card-open-' + id, open ? '1' : '0'); }catch(e){} }
+  });
+  avToggleAllSync();
+}
+// le libellé du bouton suit l'état réel des cartes après chaque affichage de la liste
+['renderAV','renderPee'].forEach(n => { try{ const f = window[n]; if(typeof f === 'function'){ window[n] = function(){ const r = f.apply(this, arguments); try{ avToggleAllSync(); }catch(e){} return r; }; } }catch(e){} });
 function avToggleCard(id){
   const favoris = avGetFavoris();
-  if(favoris.includes(id)) return; // un favori reste toujours ouvert, pas de toggle possible
   const body = document.getElementById('avCardBody-'+id);
   const chevron = document.getElementById('avChevron-'+id);
   if(!body) return;
@@ -96844,6 +96882,7 @@ function avToggleCard(id){
   body.style.display = willOpen ? 'block' : 'none';
   if(chevron) chevron.style.transform = willOpen ? 'rotate(0deg)' : 'rotate(-90deg)';
   localStorage.setItem('kyf-av-card-open-'+id, willOpen ? '1' : '0');
+  try{ avToggleAllSync(); }catch(e){}
 }
 
 // Logos assureurs via Clearbit (gratuit, sans clé) - normalisation par mot-clé
@@ -96974,7 +97013,7 @@ function avCloseEvMenu(id){
 const KYF_TAG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3.24H4a1 1 0 0 0-1 1v5.59a2 2 0 0 0 .59 1.41l9.58 9.59a2 2 0 0 0 2.83 0l4.59-4.59a2 2 0 0 0 0-2.83z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>';
 function kyfActionsMenuHtml_(key, items){
   const k = String(key).replace(/[^A-Za-z0-9_-]/g, '_');
-  const rows = items.map((it, i) => '<div onclick="avCloseActionsMenu(\'' + k + '\');' + it.onclick + '" style="padding:8px 12px;font-family:\'Inter\',sans-serif;font-size:10px;color:' + (it.danger ? '#ff4560' : 'var(--text)') + ';cursor:pointer;display:flex;align-items:center;gap:6px' + (i > 0 ? ';border-top:1px solid var(--border)' : '') + '" onmouseover="this.style.background=\'var(--hov-bg-soft)\'" onmouseout="this.style.background=\'\'">' + (it.icon || (it.danger ? KYF_ICONS.trash : KYF_ICONS.edit)) + ' ' + it.label + '</div>').join('');
+  const rows = items.map((it, i) => ((it.sep || it.danger) && i > 0 ? '<div class="kyf-menu-sep" role="separator"></div>' : '') + '<div onclick="avCloseActionsMenu(\'' + k + '\');' + it.onclick + '" style="padding:8px 12px;font-family:\'Inter\',sans-serif;font-size:10px;color:' + (it.danger ? '#ff4560' : 'var(--text)') + ';cursor:pointer;display:flex;align-items:center;gap:6px' + '' + '" onmouseover="this.style.background=\'var(--hov-bg-soft)\'" onmouseout="this.style.background=\'\'">' + (it.icon || (it.danger ? KYF_ICONS.trash : KYF_ICONS.edit)) + ' ' + it.label + '</div>').join('');
   return '<span style="position:relative;display:inline-block;vertical-align:middle"><button onclick="event.stopPropagation();avToggleActionsMenu(\'' + k + '\')" class="kyf-op-dots" title="Actions">⋯</button>'
     + '<div id="avActionsMenu-' + k + '" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:130px">' + rows + '</div></span>';
 }
@@ -97284,11 +97323,13 @@ function renderAV(){
           ${kyfFondsLike(p.type) && p.ticker ? `<button id="avPosRefreshBtn-${p.id}" onclick="event.stopPropagation();avPosRefreshFondsPrice('${d.id}','${p.id}')" title="Actualiser le cours" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 4px;display:inline-flex;align-items:center;flex-shrink:0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button>` : ''}
           <span style="position:relative;flex-shrink:0">
             <button onclick="event.stopPropagation();avToggleActionsMenu('pos-${p.id}')" title="Actions" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 6px;display:inline-flex;align-items:center;font-size:16px;letter-spacing:1px">⋯</button>${(['etf','action','fonds','obl','pe','dp'].includes(p.type) && (()=>{ let vu = false; try{ vu = localStorage.getItem('kyf-nouveau-badge-avsuivi') === '1'; }catch(e){} return !vu && [].concat(KYF_NOUVEAUTES.badge || []).indexOf('avsuivi') >= 0 && (window._avDotN = (window._avDotN || 0) + 1) === 1; })()) ? '<span class="kyf-new-badge" data-new="avsuivi" title="Nouveau : suivi du rendement de ce fonds" style="display:inline-block;position:absolute;top:-2px;right:0;width:8px;height:8px;font-size:0;padding:0;border-radius:50%;background:#f0b429;pointer-events:none;box-shadow:0 0 0 2px var(--bg2)"></span>' : ''}
-            <div id="avActionsMenu-pos-${p.id}" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:130px">
+            <div id="avActionsMenu-pos-${p.id}" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:170px">
+              <div class="kyf-menu-h">POSITION</div>
               <div onclick="avCloseActionsMenu('pos-${p.id}');editAVPos('${d.id}','${p.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.edit} Modifier</div>
               ${['etf','action','fonds'].includes(p.type) ? `<div onclick="avCloseActionsMenu('pos-${p.id}');avReplaceSupport('${d.id}','${p.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3l4 4-4 4"/><path d="M3 7h18"/><path d="M7 21l-4-4 4-4"/><path d="M21 17H3"/></svg> Remplacer le support</div>` : ''}
-              ${['etf','action','fonds','obl','pe','dp'].includes(p.type) ? `<div onclick="avCloseActionsMenu('pos-${p.id}');avSuiviOpen('${d.id}','${p.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Suivi mensuel${(()=>{ let vu = false; try{ vu = localStorage.getItem('kyf-nouveau-badge-avsuivi') === '1'; }catch(e){} return (vu || [].concat(KYF_NOUVEAUTES.badge || []).indexOf('avsuivi') < 0) ? '' : '<span class="kyf-new-badge" data-new="avsuivi" style="display:inline-block;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;margin-left:auto;pointer-events:none">NOUVEAU</span>'; })()}</div>` : ''}
-              <div onclick="avCloseActionsMenu('pos-${p.id}');deleteAVPos('${d.id}','${p.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:#ff4560;cursor:pointer;display:flex;align-items:center;gap:6px;border-top:1px solid var(--border)" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg aria-hidden="true" style="vertical-align:-.18em;flex-shrink:0" width="1.1em" height="1.1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg> Supprimer</div>
+              ${['etf','action','fonds','obl','pe','dp'].includes(p.type) ? `<div class="kyf-menu-sep" role="separator"></div><div class="kyf-menu-h">SUIVI</div><div onclick="avCloseActionsMenu('pos-${p.id}');avSuiviOpen('${d.id}','${p.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Suivi mensuel${(()=>{ let vu = false; try{ vu = localStorage.getItem('kyf-nouveau-badge-avsuivi') === '1'; }catch(e){} return (vu || [].concat(KYF_NOUVEAUTES.badge || []).indexOf('avsuivi') < 0) ? '' : '<span class="kyf-new-badge" data-new="avsuivi" style="display:inline-block;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;margin-left:auto;pointer-events:none">NOUVEAU</span>'; })()}</div>` : ''}
+              <div class="kyf-menu-sep" role="separator"></div>
+              <div onclick="avCloseActionsMenu('pos-${p.id}');deleteAVPos('${d.id}','${p.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:#ff4560;cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg aria-hidden="true" style="vertical-align:-.18em;flex-shrink:0" width="1.1em" height="1.1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg> Supprimer</div>
             </div>
           </span>
         </div>`;
@@ -97327,7 +97368,7 @@ function renderAV(){
       });
     }
 
-    const isOpen = isFav || localStorage.getItem('kyf-av-card-open-'+d.id) !== '0'; // favori = toujours ouvert
+    const isOpen = localStorage.getItem('kyf-av-card-open-'+d.id) !== '0'; // 2.9.0.43 : un favori s'ouvre par défaut, mais peut être replié (bouton Tout replier)
     const accentGrad = TYPE_GRADIENTS[d.type] || TYPE_GRADIENTS.av;
     return `<div class="card" data-kyf-tint="${d.type}" style="padding:0;position:relative;border-radius:14px;background-image:linear-gradient(90deg,color-mix(in srgb,${accentCol} 26%,transparent) 0%,transparent 55%)">
       <div>
@@ -97364,7 +97405,8 @@ ${KYF_RETRAIT_CAS[d.type] ? `<div onclick="avCloseActionsMenu('${d.id}');avOpenR
               <div id="avSuiviMenu-${d.id}" onclick="avCloseActionsMenu('${d.id}');try{kyfNewBadgeSeen('avsuivi')}catch(e){};avSuiviOpenContrat('${d.id}')" title="Rendement de chaque support, mois par mois, avec graphiques" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Suivi mensuel${(()=>{ let vu = false; try{ vu = localStorage.getItem('kyf-nouveau-badge-avsuivi') === '1'; }catch(e){} return (vu || [].concat(KYF_NOUVEAUTES.badge || []).indexOf('avsuivi') < 0) ? '' : '<span class="kyf-new-badge" data-new="avsuivi" style="display:inline-block;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;margin-left:auto;pointer-events:none">NOUVEAU</span>'; })()}</div>
               <div class="kyf-menu-sep" role="separator"></div>
               <div onclick="avCloseActionsMenu('${d.id}');editAV('${d.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.edit} Modifier</div>
-              <div onclick="avCloseActionsMenu('${d.id}');deleteAV('${d.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:#ff4560;cursor:pointer;display:flex;align-items:center;gap:6px;border-top:1px solid var(--border)" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg aria-hidden="true" style="vertical-align:-.18em;flex-shrink:0" width="1.1em" height="1.1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg> Supprimer</div>
+              <div class="kyf-menu-sep" role="separator"></div>
+              <div onclick="avCloseActionsMenu('${d.id}');deleteAV('${d.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:#ff4560;cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg aria-hidden="true" style="vertical-align:-.18em;flex-shrink:0" width="1.1em" height="1.1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg> Supprimer</div>
             </div>
           </div>
         </div>
@@ -97458,7 +97500,7 @@ function renderAVDonut(data){
     <div style="width:7px;height:7px;border-radius:50%;background:${g.color};flex-shrink:0"></div>
     <div style="font-family:'Inter',sans-serif;flex:1">
       <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)">${g.label}</div>
-      <div style="font-size:10px;color:var(--accent);margin-top:1px">${pct.toFixed(2)}% du contrat</div>
+      <div style="font-size:10px;color:var(--accent);margin-top:1px">${pct.toFixed(2)}% du contrat · ${fmt(g.val,0)} €</div>
     </div>
   </div>`;
   }).join('');
@@ -97525,7 +97567,7 @@ function renderPERDonut(data){
     const ucVal   = g.val - feVal;
     const feStr   = feVal>0 ? `<span style="display:inline-flex;align-items:center;gap:3px;color:#06b6d4;font-weight:700">${KYF_ICONS.euro} ${fmt(feVal,0)} €</span>` : '';
     const ucStr   = ucVal>0 ? `<span class="kyf-gold-text" style="display:inline-flex;align-items:center;gap:3px;color:#f0b429;font-weight:700">${KYF_ICONS.chart} ${fmt(ucVal,0)} €</span>` : '';
-    const sub     = [feStr,ucStr].filter(Boolean).join(' · ');
+    const sub     = (feVal>0 && ucVal>0) ? [feStr,ucStr].filter(Boolean).join(' · ') : '';   // le total en € est déjà sur la ligne du dessus : le détail ne sert que s'il y a deux types
     const pct = (g.val/total*100);
     const tooSmall = pct < 2;
     const chartIdx = sortedMerged.indexOf(g);
@@ -97536,7 +97578,7 @@ function renderPERDonut(data){
       <div style="width:7px;height:7px;border-radius:50%;background:${g.color};flex-shrink:0;margin-top:4px"></div>
       <div style="font-family:'Inter',sans-serif;flex:1">
         <div style="display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--text)">${g.label}</div>
-        <div style="font-size:11px;font-weight:700;color:var(--accent);margin-top:2px">${pct.toFixed(2)}% du contrat</div>
+        <div style="font-size:11px;font-weight:700;color:var(--accent);margin-top:2px">${pct.toFixed(2)}% du contrat · ${fmt(g.val,0)} €</div>
         ${sub?`<div style="font-size:12px;margin-top:3px">${sub}</div>`:''}
       </div>
     </div>`;
