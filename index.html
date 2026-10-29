@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_9_0_47.html
+  @file        : KYF_SHARE_beta_2_10_0_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.9.0.47
+  @version     : Beta 2.10.0.03
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -149,6 +149,13 @@
       { id:'or_demo1', metal:'or', produit:'krugerrand', produitLbl:'Krugerrand 1oz (31.1g)', qty:2, poids:31.1035, prixAchat:5300, date:dIso(new Date(today0.getFullYear() - 2, today0.getMonth(), 12)), notes:'' },
       { id:'or_demo2', metal:'or', produit:'lingotin50g', produitLbl:'Lingotin 50g', qty:1, poids:50, prixAchat:4600, date:dIso(new Date(today0.getFullYear() - 1, today0.getMonth(), 3)), notes:'' },
       { id:'or_demo3', metal:'argent', produit:'piece1oz_ag', produitLbl:'Pièce 1oz (31.1g)', qty:10, poids:31.1035, prixAchat:360, date:dIso(new Date(today0.getFullYear() - 1, today0.getMonth(), 20)), notes:'' }
+    ]);
+    // Autres actifs fictifs (véhicule de collection, montre) : la page se lit tout de suite en démo.
+    data['kyf-autres'] = J([
+      { id:'aut_demo1', nom:'Voiture de collection (exemple)', type:'vehicule', valeur:42000, valeurDate:dIso(new Date(today0.getFullYear(), today0.getMonth() - 2, 5)), achat:30000, achatDate:dIso(new Date(today0.getFullYear() - 4, 3, 10)), notes:'Cote de collection', inclus:true,
+        histo:[{ d:dIso(new Date(today0.getFullYear() - 1, 5, 1)), v:37000 }, { d:dIso(new Date(today0.getFullYear(), today0.getMonth() - 2, 5)), v:42000 }] },
+      { id:'aut_demo2', nom:'Montre (exemple)', type:'montre', valeur:6500, valeurDate:dIso(new Date(today0.getFullYear(), today0.getMonth() - 1, 12)), achat:5200, achatDate:dIso(new Date(today0.getFullYear() - 2, 9, 1)), notes:'', inclus:true,
+        histo:[{ d:dIso(new Date(today0.getFullYear(), today0.getMonth() - 1, 12)), v:6500 }] }
     ]);
     // PEE fictif (2 fonds, valeur = parts x valeur liquidative) : la page PEE, l'onglet TOUS et le champ Gestionnaire ont de quoi s'afficher.
     data['kyf-pee'] = J([{ id:'pee_demo1', type:'pee', nom:'PEE (exemple)', gestionnaire:'Gestionnaire (exemple)', valeur:6400, versements:5200,
@@ -7258,6 +7265,10 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
       <span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="15" width="18" height="5" rx="1"/><rect x="5" y="10" width="14" height="5" rx="1"/><rect x="7" y="5" width="10" height="5" rx="1"/></svg></span><span class="sb-label">Or &amp; Métaux Précieux</span>
     </div>
 
+    <div class="sb-item" data-page="autres" data-label="Autres actifs" onclick="showPage('autres',null)" oncontextmenu="kyfSidebarHideViaRightClick(event,'autres')">
+      <span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16V11l2-5h10l2 5v5"/><path d="M3 16h18v3H3z"/><circle cx="7.5" cy="19" r="1.5"/><circle cx="16.5" cy="19" r="1.5"/></svg></span><span class="sb-label">Autres actifs</span>
+    </div>
+
     <!-- GROUPE ASSURANCE VIE & PER -->
     <div class="sb-group-block" data-page="sbg-av">
     <div class="sb-group-header" id="sbg-av" data-label="Ass. Vie / PER" onclick="toggleSidebarGroup('av', event)" oncontextmenu="kyfSidebarHideViaRightClick(event,'av')">
@@ -7335,7 +7346,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.9.0.47</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.10.0.03</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -8358,6 +8369,53 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
   </div>
 </div>
 
+<div class="page" id="page-autres">
+  <div style="padding:0 0 20px">
+    <div class="kpi-row" id="kpi-row-autres" data-kpi-row="autres" style="margin-top:10px;margin-bottom:28px">
+      <div class="kpi b" draggable="true" data-kpi-id="aut-total"><div class="kpi-lbl">VALEUR TOTALE</div><div class="kpi-val" id="autKpiTotal">0 €</div><div class="kpi-sub" id="autKpiTotalSub">Estimations actuelles</div></div>
+      <div class="kpi g" draggable="true" data-kpi-id="aut-pv"><div class="kpi-lbl">PLUS-VALUE</div><div class="kpi-val" id="autKpiPv">-</div><div class="kpi-sub" id="autKpiPvSub">/ prix d'achat</div></div>
+      <div class="kpi" draggable="true" data-kpi-id="aut-nb" style="--band:var(--text3)"><div class="kpi-lbl">BIENS</div><div class="kpi-val" id="autKpiNb">0</div><div class="kpi-sub">Lignes</div></div>
+      <div class="kpi" draggable="true" data-kpi-id="aut-top" style="--band:#e8590c"><div class="kpi-lbl">PLUS GROS BIEN</div><div class="kpi-val" id="autKpiTop" style="font-size:14px">-</div><div class="kpi-sub" id="autKpiTopSub"></div></div>
+    </div>
+    <div id="autOldNote"></div>
+    <div style="display:flex;gap:14px;align-items:flex-start;margin-bottom:14px;flex-wrap:wrap">
+      <div class="card" style="flex:2 1 420px;min-width:0">
+        <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--gap-lg);flex-wrap:wrap;gap:8px">
+          <span>MES AUTRES ACTIFS</span>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <button id="autInclBtn" onclick="kyfAutToggleIncl()" style="display:flex;align-items:center;gap:6px;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:7px 14px;border-radius:8px;cursor:pointer;letter-spacing:0.5px;transition:background .2s,box-shadow .2s,transform .2s;border:1px solid rgba(77,159,255,0.3);background:rgba(77,159,255,0.06);color:var(--text2)"
+              onmouseover="this.style.background='rgba(77,159,255,0.14)';this.style.boxShadow='0 2px 6px rgba(77,159,255,0.18)'"
+              onmouseout="this.style.background='rgba(77,159,255,0.06)';this.style.boxShadow='none'"><span id="autInclLbl">Compté dans le patrimoine</span></button>
+            <button onclick="kyfAutOpen()" style="display:flex;align-items:center;gap:6px;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:7px 14px;border-radius:8px;cursor:pointer;letter-spacing:0.5px;transition:background .2s,box-shadow .2s,transform .2s;border:1px solid var(--accent);background:var(--btn-secondary-bg);color:var(--accent)"
+              onmouseover="this.style.background='#f0b429';this.style.color='#000';this.style.boxShadow='0 2px 8px rgba(240,180,41,0.35)';this.style.transform='translateY(-1px)'"
+              onmouseout="this.style.background='var(--btn-secondary-bg)';this.style.color='var(--accent)';this.style.boxShadow='none';this.style.transform='translateY(0)'">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>AJOUTER</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="tbl" id="autTbl" style="width:100%">
+            <thead><tr><th>BIEN</th><th>TYPE</th><th>ACHAT</th><th>VALEUR ESTIMÉE</th><th>PV/MV</th><th>ESTIMATION</th><th></th></tr></thead>
+            <tbody id="autTbody"></tbody>
+          </table>
+        </div>
+        <div id="autNoData" style="text-align:center;padding:30px;color:var(--text3);font-family:'Inter',sans-serif;font-size:11px">
+          Aucun bien - cliquez <strong style="color:var(--accent)">+ AJOUTER</strong> pour un véhicule de collection, une montre, une oeuvre d'art, du vin...
+        </div>
+        <div style="font-family:'Inter',sans-serif;font-size:9px;color:var(--text3);padding:8px 0 2px;border-top:1px solid var(--border);margin-top:4px;line-height:1.8">
+          Ces biens n'ont pas de cours en direct : la valeur est celle que vous estimez (cote, expertise, vente récente). Mettez-la à jour avec le bouton d'actualisation de chaque ligne, KYF garde l'historique de vos estimations.
+        </div>
+      </div>
+      <div class="card" style="flex:1 1 240px;min-width:0;overflow:visible">
+        <div class="card-title">RÉPARTITION</div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap">
+          <div style="width:180px;height:180px;flex-shrink:0;overflow:visible"><canvas id="autDonut"></canvas></div>
+          <div id="autDonutLegend" style="min-width:120px;font-family:'Inter',sans-serif"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════ IMMOBILIER ══════════ -->
 <div class="page" id="page-immobilier">
   <div style="padding:0 0 20px">
@@ -9064,6 +9122,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
       <button id="av-btn-perecol" type="button" class="kyf-soon-btn" aria-disabled="true" tabindex="0" data-tip="En discussion avec l'AMF et les données GECO" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:5px 12px;border-radius:6px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text3);letter-spacing:.5px">PERECOL</button>
       <button id="av-btn-comprendre-per" type="button" onclick="showPage('per-comprendre',null)" title="Comprendre mon PER : fiscalité, déblocage, projection" style="margin-left:auto;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:5px 12px;border-radius:6px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text3);cursor:pointer;letter-spacing:.5px;display:inline-flex;align-items:center;gap:5px;transition:background .15s,color .15s" onmouseover="this.style.background='var(--hov-bg)';this.style.color='var(--text)'" onmouseout="this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text3)'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> Comprendre mon PER</button>
       <button onclick="openArbitrageHistoryModal()" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:5px 12px;border-radius:6px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text3);cursor:pointer;letter-spacing:.5px;display:inline-flex;align-items:center;gap:5px;transition:background .15s,color .15s" onmouseover="this.style.background='var(--hov-bg)';this.style.color='var(--text)'" onmouseout="this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text3)'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg> Historique arbitrages</button>
+      <button type="button" id="av-btn-tuiles" onclick="event.stopPropagation();kyfKpiPicker('av', this)" title="Choisir les KPI affichés en haut de la page" aria-haspopup="true" aria-expanded="false" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:5px 12px;border-radius:6px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text3);cursor:pointer;letter-spacing:.5px;display:inline-flex;align-items:center;gap:5px;transition:background .15s,color .15s" onmouseover="this.style.background='var(--hov-bg)';this.style.color='var(--text)'" onmouseout="this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text3)'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 17.5h7M17.5 14v7"/></svg> KPI</button>
       <button onclick="openGuide(28)" title="Comment ajouter un contrat, une position, un fonds géré..." class="kyf-fixed-accent" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:5px 12px;border-radius:6px;border:1px solid #4d9fff;background:rgba(77,159,255,0.16);cursor:pointer;letter-spacing:.5px;display:inline-flex;align-items:center;gap:5px;transition:background .15s" onmouseover="this.style.background='rgba(77,159,255,0.28)'" onmouseout="this.style.background='rgba(77,159,255,0.16)'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> AIDE</button>
     </div>
 
@@ -9082,6 +9141,9 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
       <div class="kpi" draggable="true" data-kpi-id="av-frais" onclick="showPage('frais',null)" title="Cliquez : page Frais (estimation, prélevés, cumul et tableau par année)" style="--band:#f43f5e;cursor:pointer"><div class="kpi-lbl">FRAIS / AN</div><div class="kpi-val" id="avKpiFrais">- €</div><div class="kpi-sub" id="avKpiFraisSub" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%">Tous contrats</div><div class="kpi-sub" id="avKpiFraisPaid" style="margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%"></div></div>
       <div class="kpi" draggable="true" data-kpi-id="av-age" style="--band:#06b6d4"><div class="kpi-lbl">ANCIENNETÉ MOY.</div><div class="kpi-val" id="avKpiAge" style="font-size:13px">-</div><div class="kpi-sub" id="avKpiAgeSub">Tous contrats datés</div></div>
       <div class="kpi" draggable="true" data-kpi-id="av-fiscal" style="--band:#f59e0b"><div class="kpi-lbl">AVANTAGE FISCAL AV</div><div class="kpi-val" id="avKpiFiscal" style="font-size:13px">-</div><div class="kpi-sub" id="avKpiFiscalSub">Abattement 8 ans</div></div>
+      <div class="kpi kyf-kpi-off" draggable="true" data-kpi-id="av-rjour" style="--band:#22d3ee" title="Variation du jour des ETF et actions suivis en direct dans vos contrats"><div class="kpi-lbl">REND. DU JOUR</div><div class="kpi-val" id="avKpiRJour" style="font-size:13px">-</div><div class="kpi-sub" id="avKpiRJourSub">ETF en direct</div></div>
+      <div class="kpi kyf-kpi-off" draggable="true" data-kpi-id="av-rmois" style="--band:#a78bfa" title="Gain net du mois (variation de la valeur moins les versements), depuis l'historique noté par KYF"><div class="kpi-lbl">REND. DU MOIS</div><div class="kpi-val" id="avKpiRMois" style="font-size:13px">-</div><div class="kpi-sub" id="avKpiRMoisSub">Depuis le 1er du mois</div></div>
+      <div class="kpi kyf-kpi-off" draggable="true" data-kpi-id="av-ran" style="--band:#34d399" title="Gain net de l'année en cours (variation de la valeur moins les versements), depuis l'historique noté par KYF"><div class="kpi-lbl">REND. DE L'ANNÉE</div><div class="kpi-val" id="avKpiRAn" style="font-size:13px">-</div><div class="kpi-sub" id="avKpiRAnSub">Depuis le 1er janvier</div></div>
     </div>
 
     <!-- Contrat de référence personnalisable -->
@@ -12123,7 +12185,11 @@ function ctRenderLignes(E){   // lignes du compte affiché : poids, nom, valeur,
   const h = document.createElement('div'); h.className = 'ct-lg-h';
   const t1 = document.createElement('span'); const b = document.createElement('b'); b.textContent = 'LIGNES DU COMPTE'; t1.appendChild(b); t1.appendChild(document.createTextNode(' · ' + L.length));
   const nb = document.createElement('span'); nb.className = 'kyf-new-badge'; nb.setAttribute('data-new', 'ctlg'); nb.textContent = 'NOUVEAU'; nb.style.cssText = 'display:none;font-size:7px;font-weight:800;letter-spacing:.4px;padding:1px 4px;border-radius:999px;background:#f0b429;color:#000;pointer-events:none;vertical-align:middle;margin-left:6px'; t1.appendChild(nb); try{ kyfNewBadgesRefresh(); }catch(e){}
-  h.appendChild(t1); h.appendChild(document.createTextNode('Triées par valeur')); box.appendChild(h);
+  h.appendChild(t1); h.appendChild(document.createTextNode('Triées par valeur'));
+  { const rb = document.createElement('button'); rb.type = 'button'; rb.className = 'ct-btn kyf-ct-rep'; rb.style.cssText = 'padding:5px 12px;font-size:9px;min-height:0;letter-spacing:.5px'; rb.title = 'Anneau de répartition de ce compte : par type, par ligne';
+    rb.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-1px;margin-right:5px"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>RÉPARTITION';
+    rb.onclick = () => { const e0 = ctTabGet(), c0 = ctCptSel(e0); avRepOpen('ct:' + e0 + (c0 ? ':' + c0 : '')); }; h.appendChild(rb); }
+  box.appendChild(h);
   (all ? L : L.slice(0, 5)).forEach(x => {
     const r = document.createElement('div'); r.className = 'ct-lg-r';
     r.appendChild(mk('p', x.p === null ? '-' : fmt(x.p, 0) + ' %'));
@@ -16428,13 +16494,13 @@ const SHEETS_SYNC_KEYS = [
   'pea-positions','pea-crypto-v1','pea-dca-v1',
   'kyf-dividendes','kyf-livrets','kyf-scpi',
   'kyf-immo','kyf-immo-credits','kyf-immo-revenus','kyf-sci',
-  'kyf-or','kyf-av','kyf-av-positions','kyf-pee','kyf-av-dca','kyf-av-dca-hist','kyf-av-frais-hist','kyf-av-suivi','kyf-frais-manuels','kyf-av-perf','kyf-frais-comp','kyf-av-arbitrages','kyf-cash-pea','kyf-cash-cto','kyf-cash-ccp','kyf-cash-mvts','kyf-flux-neutres','kyf-ct-info','kyf-ct-hidden','kyf-cto-comptes','kyf-famille','kyf-crypto-titu','kyf-cto-fav','kyf-cto-cash','kyf-pea-jeune','kyf-pea-jeune-fin',
+  'kyf-or','kyf-autres','kyf-autres-incl','kyf-fam-actif','kyf-av','kyf-av-positions','kyf-pee','kyf-av-dca','kyf-av-dca-hist','kyf-av-frais-hist','kyf-av-suivi','kyf-frais-manuels','kyf-av-perf','kyf-frais-comp','kyf-av-arbitrages','kyf-cash-pea','kyf-cash-cto','kyf-cash-ccp','kyf-cash-mvts','kyf-flux-neutres','kyf-ct-info','kyf-ct-hidden','kyf-cto-comptes','kyf-famille','kyf-crypto-titu','kyf-cto-fav','kyf-cto-cash','kyf-pea-jeune','kyf-pea-jeune-fin',
   'kyf-alerts-seuils','kyf-alerts-index',
   'kyf-etf-transactions','kyf-depense-mensuelle','kyf-per-tmi',
   'pea-etf-settings','pea-crypto-settings',
   'kyf-snapshots-index',
   'pea-style-v2','pea-accent-dark','pea-accent-light',
-  'kyf-sidebar-mini','kyf-sidebar-groups','kyf-avis-snooze','kyf-card-layout-v2','kyf-card-hidden-v1','kyf-shortcuts-v1','kyf-views-v1','kyf-rituals-v1','kyf-columns-v1','kyf-groups-v1','kyf-favs-v1','kyf-geo-v1','kyf-display-cur','kyf-widgets-v1',
+  'kyf-sidebar-mini','kyf-sidebar-groups','kyf-avis-snooze','kyf-card-layout-v2','kyf-card-hidden-v1','kyf-kpi-hidden-v1','kyf-shortcuts-v1','kyf-views-v1','kyf-rituals-v1','kyf-columns-v1','kyf-groups-v1','kyf-favs-v1','kyf-geo-v1','kyf-display-cur','kyf-widgets-v1',
   'kyf-idx-band-mode','kyf-pf-view','kyf-pf-range',
   'kyf-indices-sel',
   'kyf-objectif-liberte','kyf-horizon-retraite',
@@ -20662,6 +20728,7 @@ const KYF_SB_TIP_MENUS = {
   'livrets':    { label:"Livrets d'épargne",           empty: () => { try{ return !JSON.parse(localStorage.getItem('kyf-livrets')||'[]').length; }catch(e){ return true; } } },
   'tresorerie': { label:'Trésorerie', group:true,       empty: () => { try{ return !JSON.parse(localStorage.getItem('kyf-livrets')||'[]').length; }catch(e){ return true; } } },
   'immo':       { label:'Immobilier', group:true,       empty: () => { try{ return ['kyf-immo','kyf-scpi','kyf-crowdfunding'].every(k => !JSON.parse(localStorage.getItem(k)||'[]').length); }catch(e){ return true; } } },
+  'autres':     { label:'Autres actifs',               empty: () => { try{ return !JSON.parse(localStorage.getItem('kyf-autres')||'[]').length; }catch(e){ return true; } } },
   'or':         { label:'Or & Métaux Précieux',        empty: () => { try{ return !JSON.parse(localStorage.getItem('kyf-or')||'[]').length; }catch(e){ return true; } } },
   'av':         { label:'Assurance Vie / PER', group:true, empty: () => { try{ return !JSON.parse(localStorage.getItem('kyf-av')||'[]').length; }catch(e){ return true; } } }
 };
@@ -20963,7 +21030,7 @@ document.documentElement.classList.toggle('kyf-no-crumb', kyfCrumbHidden());
 function kyfCrumbFill(d,id){
   var alias=(id==='immo-scpi-liste')?'immo-scpi':id;
   var it=document.querySelector('.sb-item[data-page="'+alias+'"],.sb-child-item[data-page="'+alias+'"]'); if(!it) return false;
-  var sec=({portfolio:1,crypto:1,livrets:1,or:1,dividendes:1,historique:2,dca:2,transactions:2,bilan:2,frais:2,heatmap:3,geo:3,groupes:3,alertes:3,'fiscal-pea-cto':3,'comptes-titres':1,avis:0})[id];
+  var sec=({portfolio:1,crypto:1,livrets:1,or:1,autres:1,dividendes:1,historique:2,dca:2,transactions:2,bilan:2,frais:2,heatmap:3,geo:3,groupes:3,alertes:3,'fiscal-pea-cto':3,'comptes-titres':1,avis:0})[id];
   sec=sec===undefined?'':(['','Mes actifs','Mon historique','Analyses'][sec]||'');
   var gc=it.closest('.sb-group-children');
   if(gc){ var gh=document.getElementById('sbg-'+gc.id.replace('sbgc-','')); var gl=gh&&gh.querySelector('.sb-label'); if(gl) sec=gl.textContent.trim(); }
@@ -20978,7 +21045,7 @@ function kyfCrumbFill(d,id){
   if(ic) d.querySelector('.kc-ic').appendChild(ic.cloneNode(true));
   return true;
 }
-var KYF_CRUMB_NEW=['portfolio','comptes-titres','crypto','livrets','or','historique','dca','transactions','bilan','frais','heatmap','geo','groupes','alertes','avis'];
+var KYF_CRUMB_NEW=['portfolio','comptes-titres','crypto','livrets','or','autres','historique','dca','transactions','bilan','frais','heatmap','geo','groupes','alertes','avis'];
 var KYF_CRUMB_CONV=['dividendes','budget','livrets-recurrents','immobilier','immo-credits','immo-revenus','immo-scpi','immo-scpi-liste','immo-crowdfunding','assurance','av-comparateur','per-comprendre','av-fiscalite','fiscal-pea-cto'];
 function kyfCrumb(id){
   try{
@@ -21026,7 +21093,7 @@ function kyfScopeNote(id){
 // du vide : on le dit au lieu de laisser croire que les données ont disparu. Rien n'est modifié ni effacé.
 const KYF_BAD_PAGES = {
   'portfolio':['pea-positions','kyf-etf-transactions'], 'transactions':['kyf-etf-transactions'], 'dividendes':['kyf-dividendes'], 'crypto':['pea-crypto-v1'],
-  'livrets':['kyf-livrets','kyf-livrets-transactions'], 'livrets-recurrents':['kyf-recurrents'], 'or':['kyf-or'], 'immobilier':['kyf-immo','kyf-sci'],
+  'livrets':['kyf-livrets','kyf-livrets-transactions'], 'livrets-recurrents':['kyf-recurrents'], 'or':['kyf-or'], 'autres':['kyf-autres'], 'immobilier':['kyf-immo','kyf-sci'],
   'immo-credits':['kyf-immo-credits'], 'immo-revenus':['kyf-immo-revenus'], 'immo-scpi':['kyf-scpi'], 'immo-scpi-liste':['kyf-scpi'], 'immo-crowdfunding':['kyf-crowdfunding'],
   'assurance':['kyf-av','kyf-av-positions','kyf-pee','kyf-av-dca','kyf-av-dca-hist','kyf-av-frais-hist','kyf-av-suivi','kyf-frais-manuels','kyf-av-perf','kyf-frais-comp','kyf-av-arbitrages'], 'dca':['pea-dca-v1'], 'budget':['kyf-depense-mensuelle','kyf-cash-ccp'],
   'fiscal-pea-cto':['kyf-cash-pea','kyf-cash-cto','kyf-cash-mvts'], 'comptes-titres':['pea-positions','kyf-cash-pea','kyf-cash-cto','kyf-cto-comptes','kyf-cto-fav','kyf-cto-cash'], 'av-fiscalite':['kyf-per-tmi'], 'heatmap':['kyf-flux-neutres'],
@@ -21097,6 +21164,7 @@ function showPage(id,tab,fromPopstate){
   if(id === 'avis') try{ loadAvis(); }catch(e){}
   if(id === 'livrets') try{ renderLivrets(); }catch(e){}
   if(id === 'livrets-recurrents') try{ renderRecurrentsPage(); }catch(e){}
+  if(id === 'autres') try{ kyfAutRender(); }catch(e){}
   if(id === 'or') try{
     renderOr();
     fetchOrSpotPrices().then(()=>renderOr()).catch(()=>{});
@@ -22646,8 +22714,8 @@ function kyfAvLineRefValue(e){
 function kpiRowCheckOverflow(){
   document.querySelectorAll('.kpi-row').forEach(row => {
     if(!row.offsetParent) return; // rangée masquée (autre page) : rien à mesurer
-    const kpis = row.querySelectorAll('.kpi');
-    if(kpis.length < 2) return;
+    const kpis = [...row.querySelectorAll('.kpi')].filter(k => !k.classList.contains('kyf-kpi-off'));   // 2.9.0.52 : un KPI masqué (display:none) n'a pas de position : il faisait croire que la rangée débordait
+    if(kpis.length < 2){ row.classList.remove('kpi-row--fan'); row.scrollLeft = 0; return; }
     const wasFan = row.classList.contains('kpi-row--fan');
     // Mesure toujours en mode classique (grille) pour juger objectivement
     // si ça tiendrait sur une ligne sans l'éventail.
@@ -22655,6 +22723,7 @@ function kpiRowCheckOverflow(){
     const firstTop = kpis[0].offsetTop;
     const wraps = [...kpis].some(k => k.offsetTop !== firstTop);
     row.classList.toggle('kpi-row--fan', wraps);
+    if(!wraps) row.scrollLeft = 0;   // plus de défilement : la rangée reprend toute la largeur, centrée
   });
   if(typeof kyfCashSubMarquee === 'function') kyfCashSubMarquee(); // le défilement du KPI CASH suit l'éventail
 }
@@ -22681,7 +22750,7 @@ const KPI_CARD_MAX_W = 320;
 function kyfAdaptSmallKpiRows(){
   document.querySelectorAll('.kpi-row').forEach(row => {
     if(!row.offsetParent) return; // rangée masquée (autre page) : rien à mesurer
-    const kpis = row.querySelectorAll('.kpi');
+    const kpis = [...row.querySelectorAll('.kpi')].filter(k => !k.classList.contains('kyf-kpi-off'));
     if(!kpis.length || kpis.length > KPI_SMALL_ROW_MAX){
       row.classList.remove('kpi-row--adaptive');
       return;
@@ -22857,7 +22926,7 @@ function renderKPIs(lp){
   // fetchAllPrices()) une fois le fichier entièrement chargé.
   const avGlobal      = typeof getAVTotal   === 'function' ? getAVTotal()   : 0;
   const immoGlobal    = typeof getImmoTotal === 'function' ? getImmoTotal() : 0;
-  const totalGlobal   = total + cryptoTotal + avGlobal + immoGlobal + kyfCrowdfundingTotal() + kyfLivretsTotal() + kyfOrTotal();
+  const totalGlobal   = total + cryptoTotal + avGlobal + immoGlobal + kyfCrowdfundingTotal() + kyfLivretsTotal() + kyfOrTotal() + kyfAutresTotal();
   window._kyfTotalGlobal = totalGlobal;   // TRA-011 : patrimoine global unique, repris par la page Immobilier
   let investiGlobal = investi + cryptoInvesti;
   // Gain net des positions = ETF/Actions + Crypto + contrats AV/PER dont le total investi est connu.
@@ -22910,7 +22979,7 @@ function renderKPIs(lp){
   window._kLiveImmoDette = (typeof getImmoNetTotal === 'function') ? Math.max(0, immoGlobal - getImmoNetTotal()) : 0;   // crédits immobiliers en cours, déduits seulement si le réglage est actif
   window._kLiveParts = [
     { l:'ETF & actions', v:total }, { l:'Cryptos', v:cryptoTotal - cryptoStables }, { l:'Stablecoins', v:cryptoStables }, { l:'Assurance vie / PER', v:avGlobal },
-    { l:'Immobilier', v:immoGlobal }, { l:'Crowdfunding', v:kyfCrowdfundingTotal() }, { l:'Livrets', v:kyfLivretsTotal() }, { l:'Or & métaux', v:kyfOrTotal() }
+    { l:'Immobilier', v:immoGlobal }, { l:'Crowdfunding', v:kyfCrowdfundingTotal() }, { l:'Livrets', v:kyfLivretsTotal() }, { l:'Or & métaux', v:kyfOrTotal() }, { l:'Autres actifs', v:kyfAutresTotal() }
   ];
   kyfRenderKLive();
   animateKpi('kGain',    gainUnknown ? '-' : (gain>=0?'+':'')+fmt(gain,2)+' €');
@@ -27313,6 +27382,7 @@ function kyfHasAnyAsset(){
   try { if((JSON.parse(localStorage.getItem('pea-crypto-v1')||'{}').stables||[]).length) return true; } catch(e){} // CRY-006b : stablecoins seuls
   try { if(JSON.parse(localStorage.getItem('kyf-scpi')||'[]').length) return true; } catch(e){}
   try { if(JSON.parse(localStorage.getItem('kyf-or')||'[]').length) return true; } catch(e){}
+  try { if(JSON.parse(localStorage.getItem('kyf-autres')||'[]').length) return true; } catch(e){}
   try { if(JSON.parse(localStorage.getItem('kyf-immo')||'[]').length) return true; } catch(e){}
   try { if(JSON.parse(localStorage.getItem('kyf-av')||'[]').length) return true; } catch(e){}
   try { if(JSON.parse(localStorage.getItem('kyf-pee')||'[]').length) return true; } catch(e){}
@@ -30216,6 +30286,9 @@ const KYF_WATCHED_KEYS = new Set([
   'kyf-immo-revenus',     // Revenus locatifs
   'kyf-sci',              // SCI
   'kyf-or',               // Or & métaux
+  'kyf-autres',           // Autres actifs
+  'kyf-autres-incl',      // Autres actifs : interrupteur patrimoine
+  'kyf-fam-actif',        // MA FAMILLE : interrupteur
   'kyf-or-settings',      // Or & métaux paramètres
   'kyf-av',               // Assurance Vie contrats
   'kyf-av-positions',     // AV positions
@@ -30254,7 +30327,7 @@ const KYF_WATCHED_KEYS = new Set([
   'kyf-snapshots-index',  // Index des dates snapshot
   'kyf-last-snapshot',    // Dernier snapshot (accès rapide)
   'pea-style-v2','pea-accent-dark','pea-accent-light',
-  'kyf-sidebar-mini','kyf-sidebar-groups','kyf-avis-snooze','kyf-card-layout-v2','kyf-card-hidden-v1','kyf-shortcuts-v1','kyf-views-v1','kyf-rituals-v1','kyf-columns-v1','kyf-groups-v1','kyf-favs-v1','kyf-geo-v1','kyf-display-cur','kyf-widgets-v1',
+  'kyf-sidebar-mini','kyf-sidebar-groups','kyf-avis-snooze','kyf-card-layout-v2','kyf-card-hidden-v1','kyf-kpi-hidden-v1','kyf-shortcuts-v1','kyf-views-v1','kyf-rituals-v1','kyf-columns-v1','kyf-groups-v1','kyf-favs-v1','kyf-geo-v1','kyf-display-cur','kyf-widgets-v1',
   'kyf-idx-band-mode','kyf-pf-view','kyf-pf-range','kyf-pf-hidden','kyf-pf-bm','kyf-perf-asset-filter',
   'kyf-indices-sel',
   'kyf-objectif-liberte','kyf-horizon-retraite',
@@ -31090,13 +31163,13 @@ async function kyfInitialPush(){
     'pea-positions','pea-crypto-v1','pea-dca-v1',
     'kyf-dividendes','kyf-livrets','kyf-scpi',
     'kyf-immo','kyf-immo-credits','kyf-immo-revenus','kyf-sci',
-    'kyf-or','kyf-av','kyf-av-positions','kyf-pee','kyf-av-dca','kyf-av-dca-hist','kyf-av-frais-hist','kyf-av-suivi','kyf-frais-manuels','kyf-av-perf','kyf-frais-comp','kyf-av-arbitrages','kyf-cash-pea','kyf-cash-cto','kyf-cash-ccp','kyf-cash-mvts','kyf-flux-neutres','kyf-ct-info','kyf-ct-hidden','kyf-cto-comptes','kyf-famille','kyf-crypto-titu','kyf-cto-fav','kyf-cto-cash','kyf-pea-jeune','kyf-pea-jeune-fin',
+    'kyf-or','kyf-autres','kyf-autres-incl','kyf-fam-actif','kyf-av','kyf-av-positions','kyf-pee','kyf-av-dca','kyf-av-dca-hist','kyf-av-frais-hist','kyf-av-suivi','kyf-frais-manuels','kyf-av-perf','kyf-frais-comp','kyf-av-arbitrages','kyf-cash-pea','kyf-cash-cto','kyf-cash-ccp','kyf-cash-mvts','kyf-flux-neutres','kyf-ct-info','kyf-ct-hidden','kyf-cto-comptes','kyf-famille','kyf-crypto-titu','kyf-cto-fav','kyf-cto-cash','kyf-pea-jeune','kyf-pea-jeune-fin',
     'kyf-alerts-seuils','kyf-alerts-index',
     'kyf-etf-transactions','kyf-depense-mensuelle','kyf-per-tmi',
     'pea-etf-settings','pea-crypto-settings',
     'kyf-snapshots-index',
     'pea-style-v2','pea-accent-dark','pea-accent-light',
-    'kyf-sidebar-mini','kyf-sidebar-groups','kyf-avis-snooze','kyf-card-layout-v2','kyf-card-hidden-v1','kyf-shortcuts-v1','kyf-views-v1','kyf-rituals-v1','kyf-columns-v1','kyf-groups-v1','kyf-favs-v1','kyf-geo-v1','kyf-display-cur','kyf-widgets-v1',
+    'kyf-sidebar-mini','kyf-sidebar-groups','kyf-avis-snooze','kyf-card-layout-v2','kyf-card-hidden-v1','kyf-kpi-hidden-v1','kyf-shortcuts-v1','kyf-views-v1','kyf-rituals-v1','kyf-columns-v1','kyf-groups-v1','kyf-favs-v1','kyf-geo-v1','kyf-display-cur','kyf-widgets-v1',
     'kyf-idx-band-mode','kyf-pf-view','kyf-pf-range',
     'kyf-indices-sel',
     'kyf-objectif-liberte','kyf-horizon-retraite',
@@ -43102,6 +43175,7 @@ function renderAllocDonut(lp){
     { name:"LIVRETS D'ÉPARGNE",   icon:KYF_ICONS.lock,     color:'#06b6d4', val: livretsTotal },
     { name:'OR & MÉTAUX',         icon:'<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="#F59E0B"/><path d="M12 2v15.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="#B45309" opacity="0.3"/></svg>', color:'#D4AF37', val: orTotal },
     { name:'IMMOBILIER',          icon:KYF_ICONS.home,     color:'#6D28D9', val: immoTotal },
+    { name:'AUTRES ACTIFS',       icon:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16V11l2-5h10l2 5v5"/><path d="M3 16h18v3H3z"/></svg>', color:'#e8590c', val: (typeof kyfAutresTotal === 'function' ? kyfAutresTotal() : 0) },
     { name:'ASSURANCE VIE / PER', icon:KYF_ICONS.shield,   color:'#B91C1C', val: avTotal },
   ];
 
@@ -48035,7 +48109,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.9.0.47\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.10.0.03\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -48051,7 +48125,7 @@ document.addEventListener('DOMContentLoaded', function(){
     profilRenderAvatar(avatar, nom);
   }catch(e){}
 
-  const validPages = ['dashboard','profil','avis','portfolio','comptes-titres','fiscal-pea-cto','budget','dividendes','historique','heatmap','alertes','geo','groupes','transactions','investissement','bilan','frais','crypto','dca','livrets','livrets-recurrents','immobilier','immo-credits','immo-revenus','immo-scpi','immo-scpi-liste','immo-sci','immo-crowdfunding','guide-juridique','or','assurance','av-comparateur','av-fiscalite','per-comprendre'];
+  const validPages = ['dashboard','profil','avis','portfolio','comptes-titres','fiscal-pea-cto','budget','dividendes','historique','heatmap','alertes','geo','groupes','transactions','investissement','bilan','frais','crypto','dca','livrets','livrets-recurrents','immobilier','immo-credits','immo-revenus','immo-scpi','immo-scpi-liste','immo-sci','immo-crowdfunding','guide-juridique','or','autres','assurance','av-comparateur','av-fiscalite','per-comprendre'];
   const hash = window.location.hash.replace('#','').toLowerCase().trim();
   const lastPage = validPages.includes(hash) ? hash :
                    (localStorage.getItem('kyf-last-page') || 'dashboard');
@@ -48092,7 +48166,7 @@ document.addEventListener('DOMContentLoaded', function(){
     if(lastPage==='profil') try{ profilLoad(); }catch(e){}
     if(lastPage==='avis') try{ loadAvis(); }catch(e){}
 
-    const noPrice = ['transactions','historique','dca','bilan','frais','geo','groupes','livrets','livrets-recurrents','dividendes','immobilier','immo-credits','immo-revenus','immo-scpi','immo-scpi-liste','immo-sci','immo-crowdfunding','guide-juridique','or','assurance','av-comparateur','av-fiscalite','fiscal-pea-cto','budget','per-comprendre'];
+    const noPrice = ['transactions','historique','dca','bilan','frais','geo','groupes','livrets','livrets-recurrents','dividendes','immobilier','immo-credits','immo-revenus','immo-scpi','immo-scpi-liste','immo-sci','immo-crowdfunding','guide-juridique','or','autres','assurance','av-comparateur','av-fiscalite','fiscal-pea-cto','budget','per-comprendre'];
     if(noPrice.includes(lastPage)){
       renderedPages.add(lastPage);
       if(lastPage==='transactions') try{renderTransactions();}catch(e){}
@@ -48231,7 +48305,7 @@ function kyfSnapExtras(etfInvesti, cryptoInvesti){
   try{
     const spot = window._orSpotPrices || {};
     JSON.parse(localStorage.getItem('kyf-or')||'[]').forEach(d => { if(d.poids > 0 && spot[d.metal] > 0) orCost += parseFloat(d.prixAchat)||0; });
-    autres = liv + kyfOrTotal() + cf;
+    autres = liv + kyfOrTotal() + cf + kyfAutresTotal();
   }catch(e){}
   try{
     // TRA-004 : même règle que le tableau de bord (investi net = versements - rachats, moins le coût des lignes du contrat déjà comptées dans ETF & Actions).
@@ -51800,6 +51874,21 @@ body.kyf-reorg [data-kyf-key]:not(.kyf-card-chosen):not(.sortable-drag){animatio
 /* 2.9.0.47 : suivi par personne éteint (MA FAMILLE) : tous les champs « À qui » disparaissent */
 html.kyf-fam-off #etfTiWrap, html.kyf-fam-off #livTituWrap, html.kyf-fam-off #cryTituWrap,
 html.kyf-fam-off div:has(> #sciTitu), html.kyf-fam-off div:has(> #scpiTitu), html.kyf-fam-off div:has(> #immoTitu), html.kyf-fam-off div:has(> #orTitu), html.kyf-fam-off div:has(> #avTitulaire){ display:none !important; }
+.kyf-aut-f{display:flex;flex-direction:column;gap:4px}.kyf-aut-f>span{font-size:9px;color:var(--text3);letter-spacing:.5px}
+.kyf-aut-f input,.kyf-aut-f select{width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 10px;border-radius:6px;outline:none;transition:border-color .15s,box-shadow .15s}
+.kyf-aut-f input:hover,.kyf-aut-f select:hover{border-color:var(--accent)}.kyf-aut-f input:focus,.kyf-aut-f select:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(240,180,41,.25)}
+.kyf-aut-b{font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:.5px;padding:8px 16px;border-radius:8px;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--text2);transition:background .2s,box-shadow .2s,transform .2s,opacity .2s}
+.kyf-aut-b:hover{background:rgba(77,159,255,.14);box-shadow:0 2px 6px rgba(77,159,255,.18);transform:translateY(-1px)}
+.kyf-aut-bp{border-color:#f0b429;background:#f0b429;color:#000}.kyf-aut-bp:hover{background:#f0b429;color:#000;opacity:.88;box-shadow:0 2px 8px rgba(240,180,41,.35)}
+.kyf-aut-ib{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;transition:background .15s,color .15s,transform .15s}
+.kyf-aut-ib:hover{background:rgba(240,180,41,.18);color:var(--accent);transform:translateY(-1px)}.kyf-aut-ib.dng:hover{background:rgba(255,90,106,.16);color:#ff5a6a}
+.kyf-kpi-off{ display:none !important; }
+.kyf-kpi-mi{ display:flex; align-items:center; gap:10px; width:100%; box-sizing:border-box; padding:8px 10px; border:none; border-radius:8px; background:none; color:var(--text); font:600 11px Inter,sans-serif; cursor:pointer; text-align:left; transition:background .15s; }
+.kyf-kpi-mi:hover, .kyf-kpi-mi:focus-visible{ background:var(--hov-bg); outline:none; }
+.kyf-kpi-mi .bx{ width:16px; height:16px; border-radius:5px; border:1.5px solid var(--border2); display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; box-sizing:border-box; color:#000; }
+.kyf-kpi-mi.on .bx{ background:var(--accent); border-color:var(--accent); }
+.kyf-rep-val{ transition:color .15s; }
+.kyf-rep-val:hover{ color:var(--accent) !important; text-decoration:underline; text-underline-offset:4px; }
 .kyf-fam-row{ transition:border-color .15s,background .15s,transform .15s; }
 .kyf-fam-row:hover{ border-color:var(--border2) !important; }
 .kyf-fam-off-box{ display:flex; align-items:flex-start; gap:12px; padding:14px 16px; margin-top:12px; border:1px dashed var(--border2); border-radius:12px; background:var(--btn-secondary-bg); }
@@ -52991,7 +53080,7 @@ function kyfDonutCutout(){
 function setDonutBorderWidth(v){
   chartPrefs.donutBorderWidth = parseInt(v);
   applyChartPrefs();
-  ['donut','geoDonut','sectorDonut','statsD','allocDonut','livretsDonut','avDonut','envDonut','perDonut','peeDonut','orDonut','cryptoDonut'].forEach(key=>{
+  ['donut','geoDonut','sectorDonut','statsD','allocDonut','livretsDonut','avDonut','envDonut','perDonut','peeDonut','orDonut','autDonut','cryptoDonut'].forEach(key=>{
     try{
       const c = charts[key]; if(!c||!c.canvas?.isConnected) return;
       c.data.datasets.forEach(ds=>{
@@ -53014,7 +53103,7 @@ function setDonutBorderWidth(v){
 
 function setDonutAnimation(v){
   chartPrefs.donutAnim = v;
-  ['donut','geoDonut','sectorDonut','statsD','allocDonut','livretsDonut','avDonut','envDonut','perDonut','peeDonut','orDonut','cryptoDonut'].forEach(key=>{
+  ['donut','geoDonut','sectorDonut','statsD','allocDonut','livretsDonut','avDonut','envDonut','perDonut','peeDonut','orDonut','autDonut','cryptoDonut'].forEach(key=>{
     try{ const c=charts[key]; if(!c) return; c.options.animation=v?{duration:800}:false; c.update(); }catch(e){}
   });
   saveStyle(); syncActiveStates();
@@ -53086,7 +53175,7 @@ function applyChartPrefs(){ clearTimeout(applyChartPrefs._t); applyChartPrefs._t
     }
     c.update();
   }catch(e){} });
-  ['donut','geoDonut','sectorDonut','statsD','statsDonut','allocDonut','livretsDonut','avDonut','envDonut','perDonut','peeDonut','orDonut','cryptoDonut'].forEach(key=>{ try{
+  ['donut','geoDonut','sectorDonut','statsD','statsDonut','allocDonut','livretsDonut','avDonut','envDonut','perDonut','peeDonut','orDonut','autDonut','cryptoDonut'].forEach(key=>{ try{
     const c=charts[key]; if(!c||!c.canvas?.isConnected) return;
     // Cutout
     if(chartPrefs.donutCutout!==undefined) c.options.cutout=kyfDonutCutout();
@@ -53196,7 +53285,7 @@ function executeReset(){
   } else {
     if(_resetPending==='crypto') ['pea-crypto-v1','pea-crypto-intraday'].forEach(k=>localStorage.removeItem(k));
     else if(_resetPending==='pea') ['pea-positions','kyf-etf-transactions','pea-alertes','pea-hist','pea-bilan','pea-geo','pea-sectors','pea-nav-order','pea-kpi-order','pea-dca-v1','pea-etf-settings','kyf-cash','kyf-cash-ccp','kyf-cash-mvts','kyf-cash-cto','kyf-cash-pea','kyf-planned-payments','kyf-projections','kyf-dividendes'].forEach(k=>localStorage.removeItem(k));
-    else if(_resetPending==='prefs') ['pea-style','pea-theme','pea-font','pea-chart-prefs','pea-kpi-band','pea-nav-order','pea-intraday-prefs','kyf-card-layout-v2','kyf-card-hidden-v1','kyf-shortcuts-v1','kyf-views-v1','kyf-rituals-v1','kyf-columns-v1'].forEach(k=>localStorage.removeItem(k));
+    else if(_resetPending==='prefs') ['pea-style','pea-theme','pea-font','pea-chart-prefs','pea-kpi-band','pea-nav-order','pea-intraday-prefs','kyf-card-layout-v2','kyf-card-hidden-v1','kyf-kpi-hidden-v1','kyf-shortcuts-v1','kyf-views-v1','kyf-rituals-v1','kyf-columns-v1'].forEach(k=>localStorage.removeItem(k));
   }
   addLog('infos', _resetPending === 'all' ? 'Réinitialisation complète effectuée' : 'Réinitialisation partielle effectuée (' + ({crypto:'crypto',pea:'portefeuille ETF',prefs:'préférences'}[_resetPending] || _resetPending) + ')', 'io', 'ok');
   showToast('Données réinitialisées, rechargement...');
@@ -54357,7 +54446,7 @@ const KYF_STORAGE_KEYS = [
   'pea-nav-order',
   'pea-kpi-order',
   'kyf-card-layout-v2',
-  'kyf-card-hidden-v1','kyf-shortcuts-v1','kyf-views-v1','kyf-rituals-v1','kyf-columns-v1','kyf-groups-v1','kyf-favs-v1','kyf-geo-v1','kyf-geo-stale-v1','kyf-display-cur','kyf-widgets-v1',
+  'kyf-card-hidden-v1','kyf-kpi-hidden-v1','kyf-shortcuts-v1','kyf-views-v1','kyf-rituals-v1','kyf-columns-v1','kyf-groups-v1','kyf-favs-v1','kyf-geo-v1','kyf-geo-stale-v1','kyf-display-cur','kyf-widgets-v1',
   'pea-style-v2',
   'pea-accent-dark',
   'pea-accent-light',
@@ -54388,6 +54477,9 @@ const KYF_STORAGE_KEYS = [
   'kyf-sci',
   'kyf-scpi',
   'kyf-or',
+  'kyf-autres',
+  'kyf-autres-incl',
+  'kyf-fam-actif',
   'kyf-or-settings',
   'kyf-dividendes',
   'kyf-cash',
@@ -54481,7 +54573,7 @@ const KYF_RESTORE_KEEP_KEYS = ['pea-schedule', 'kyf-oauth-first-seen'];
 // forme était acceptée telle quelle, puis faisait planter la page en silence (page vide) ou devenait 0 / liste vide.
 const KYF_SHAPE_LISTE = { 'pea-positions':'ETF & Actions', 'kyf-etf-transactions':'Transactions', 'kyf-dividendes':'Dividendes', 'kyf-livrets':'Livrets',
   'kyf-livrets-transactions':'Mouvements des livrets', 'kyf-scpi':'SCPI', 'kyf-immo':'Immobilier', 'kyf-immo-credits':'Crédits immobiliers',
-  'kyf-immo-revenus':'Revenus locatifs', 'kyf-sci':'SCI', 'kyf-or':'Or et métaux', 'kyf-crowdfunding':'Crowdfunding', 'kyf-av':'Assurance vie / PER', 'kyf-pee':'PEE',
+  'kyf-immo-revenus':'Revenus locatifs', 'kyf-sci':'SCI', 'kyf-or':'Or et métaux', 'kyf-autres':'Autres actifs', 'kyf-crowdfunding':'Crowdfunding', 'kyf-av':'Assurance vie / PER', 'kyf-pee':'PEE',
   'kyf-cash-mvts':'Versements et retraits', 'kyf-flux-neutres':'Mouvements internes (arbitrages)', 'kyf-av-dca':'Versements programmés AV', 'kyf-av-arbitrages':'Arbitrages AV', 'kyf-recurrents':'Récurrents', 'kyf-frais-manuels':'Frais saisis à la main' };
 const KYF_SHAPE_OBJET = { 'pea-crypto-v1':'Crypto', 'kyf-av-dca-hist':'Historique des versements programmés AV', 'kyf-av-frais-hist':'Historique des frais AV/PER', 'kyf-av-suivi':'Suivi mensuel des supports AV/PER', 'kyf-av-perf':'Évolution des contrats AV/PER', 'kyf-frais-comp':'Comparateur de frais', 'pea-dca-v1':'Investissement programmé (DCA)', 'kyf-av-positions':'Positions des contrats AV/PER' };
 const KYF_SHAPE_NOMBRE = { 'kyf-cash-pea':'Espèces PEA', 'kyf-cash-cto':'Espèces CTO', 'kyf-cash-ccp':'Compte courant', 'kyf-depense-mensuelle':'Dépense mensuelle', 'kyf-per-tmi':'Tranche marginale (TMI)' };
@@ -62782,7 +62874,9 @@ const GUIDE_PAGES = [
           <div onclick="guideGoTo(51)" class="guide-sommaire-subitem"><span>TWR &amp; Fiscalité</span></div>
         </div>
         <div style="break-inside:avoid;margin-bottom:12px">
-          <div onclick="guideGoTo(15)" style="cursor:pointer;font-size:13px;font-weight:700;color:var(--text)"><span>4. Or &amp; Métaux Précieux</span></div>
+          <div onclick="guideGoTo(15)" style="cursor:pointer;font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px"><span>4. Or &amp; Métaux Précieux</span></div>
+          <div onclick="guideGoTo(15)" class="guide-sommaire-subitem"><span>Or &amp; Métaux</span></div>
+          <div onclick="guideGoTo(60)" class="guide-sommaire-subitem"><span>Autres actifs</span></div>
         </div>
         <div style="break-inside:avoid;margin-bottom:12px">
           <div onclick="guideGoTo(16)" style="cursor:pointer;font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px"><span>5. Livrets</span></div>
@@ -65344,12 +65438,39 @@ const GUIDE_PAGES = [
       </div>
     `
   }
+  ,{
+    chapter: 'Chapitre 4',
+    sub: 'Autres actifs',
+    title: 'Autres <span style="color:var(--accent)">actifs</span>',
+    icon: '',
+    body: `
+      <div style="background:rgba(232,89,12,0.06);border:1px solid rgba(232,89,12,0.25);border-radius:10px;padding:14px 16px;margin-bottom:14px">
+        <div style="font-size:13px;color:var(--text2);line-height:1.8">Page <strong style="color:var(--accent)">Autres actifs</strong>, juste sous Or &amp; Métaux Précieux dans le menu. Elle sert aux biens qui n'ont pas de cours en direct : véhicule de collection, montre, oeuvre d'art, vin, bijou... Leur valeur est celle que vous estimez.</div>
+      </div>
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Ajouter un bien</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Bouton <strong style="color:var(--text)">AJOUTER</strong> : donnez un nom, choisissez le type (véhicule, montre, art, vin, bijou, autre) et indiquez la valeur estimée avec la date de l'estimation. Le prix et la date d'achat sont facultatifs, mais ils permettent de calculer la plus-value. Le champ Notes sert à garder la source de l'estimation (cote, expertise, vente récente).</div>
+      </div>
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Mettre la valeur à jour</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Dans le menu <strong style="color:var(--text)">⋯</strong> de chaque ligne, <strong style="color:var(--text)">Actualiser la valeur</strong> ajoute une nouvelle estimation sans effacer les anciennes : KYF garde l'historique et affiche l'évolution depuis la précédente estimation. Passez la souris sur la valeur pour revoir toutes les estimations. Une estimation de plus d'un an est signalée « à actualiser ».</div>
+      </div>
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Compter ou non dans le patrimoine</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Par défaut, la valeur de vos biens s'ajoute à votre patrimoine total (Tableau de bord, répartition par classe, historique). Le bouton en haut du tableau coupe ou remet ce comptage pour tous les biens d'un coup. Pour un seul bien, utilisez « Ne plus compter dans le patrimoine » dans son menu ⋯.</div>
+      </div>
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Vos données</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Comme le reste de KYF, tout reste dans votre navigateur. Les biens sont inclus dans l'export de sauvegarde (IMPORT / EXPORT) et se remettent à zéro depuis la réinitialisation par module (« Autres actifs »). Le graphique RÉPARTITION montre le poids de chaque type de bien ; il reste grisé tant qu'aucun bien n'est saisi.</div>
+      </div>
+    `
+  }
 ];
 // ── Version du guide ──
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
-const KYF_GUIDE_VERSION = '1.17';
-const KYF_GUIDE_POUR = '2.8.13.52';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_VERSION = '1.18';
+const KYF_GUIDE_POUR = '2.10.0.03';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -70513,6 +70634,7 @@ const KYF_EMPTY_CHARTS = {
   cryptoDonut:         { kind: 'donut', legend: 'cryptoDonutLegend',  msg: "Aucune crypto pour l'instant" },
   cryptoIntradayChart: { kind: 'line',                                msg: "Pas encore de cours du jour" },
   livretsDonut:        { kind: 'donut', legend: 'livretsDonutLegend', msg: "Aucun livret pour l'instant" },
+  autDonut:            { kind: 'donut', legend: 'autDonutLegend',     msg: "Aucun bien pour l'instant" },
   avDonut:             { kind: 'donut', legend: 'avDonutLegend',      msg: "Aucun contrat pour l'instant" },
   mensuelChart:        { kind: 'bars',                                msg: "Pas encore de mois complet" },
   statsDonut:          { kind: 'donut', legend: 'statsBlock',         msg: "Aucune séance" },
@@ -72858,6 +72980,11 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
         Or & Métaux Précieux
       </label>
       <label style="display:flex;align-items:center;gap:9px;cursor:pointer;font-size:12px;color:var(--text2);padding:9px 11px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid var(--border)">
+        <input type="checkbox" checked style="accent-color:var(--accent);width:15px;height:15px;flex-shrink:0" onchange="kyfToggleSidebarItem('autres', this.checked)">
+        <span style="width:14px;height:14px;flex-shrink:0;color:var(--text3);display:inline-flex"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16V11l2-5h10l2 5v5"/><path d="M3 16h18v3H3z"/><circle cx="7.5" cy="19" r="1.5"/><circle cx="16.5" cy="19" r="1.5"/></svg></span>
+        Autres actifs
+      </label>
+      <label style="display:flex;align-items:center;gap:9px;cursor:pointer;font-size:12px;color:var(--text2);padding:9px 11px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid var(--border)">
         <input type="checkbox" checked style="accent-color:var(--accent);width:15px;height:15px;flex-shrink:0" onchange="kyfToggleSidebarItem('heatmap', this.checked)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:var(--text3)"><rect x="3" y="3" width="4" height="4" rx="0.5"/><rect x="10" y="3" width="4" height="4" rx="0.5"/><rect x="17" y="3" width="4" height="4" rx="0.5"/><rect x="3" y="10" width="4" height="4" rx="0.5"/><rect x="10" y="10" width="4" height="4" rx="0.5"/><rect x="17" y="10" width="4" height="4" rx="0.5"/><rect x="3" y="17" width="4" height="4" rx="0.5"/><rect x="10" y="17" width="4" height="4" rx="0.5"/><rect x="17" y="17" width="4" height="4" rx="0.5"/></svg>
         Heatmap
@@ -73505,6 +73632,24 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.0.03 · 29/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Autres actifs : aperçu grisé de RÉPARTITION quand la page est vide, nouvelle page dans le Guide et son PDF (Chapitre 4), réinitialisation par module, interrupteurs (Autres actifs, MA FAMILLE) inclus dans la sauvegarde</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.0.02 · 29/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Autres actifs : popup aux règles KYF (voile uniforme au-dessus de la barre et du menu, scroll de la page bloqué), liste TYPE et calendrier KYF, boutons Annuler / Enregistrer avec survol animé</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.0.01 · 29/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Autres actifs : toutes les actions de chaque ligne (actualiser, modifier, compter ou non dans le patrimoine, supprimer) sont regroupées dans le menu ⋯ avec des séparations</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.0.00 · 29/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">NOUVEAU : page « Autres actifs » (véhicule de collection, montre, art, vin, bijou) : valeur estimée à la main, historique des estimations, plus-value, répartition par type, comptée dans le patrimoine total avec un interrupteur</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.52 · 29/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">KPI au choix : la liste ne se ferme plus quand on décoche, la rangée se recentre quand il y a peu de KPI, libellés plus courts pour les écrans 15 pouces</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.51 · 29/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : bouton « Répartition » sur chaque compte (PEA, PEA-PME, CTO) : anneau par type (ETF, actions, espèces) ou par ligne, légende en % et en €</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.50 · 29/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Ass. Vie / PER : le bouton et la liste « Tuiles » deviennent « KPI », comme le tableau de bord</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.49 · 29/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Ass. Vie / PER : bouton « KPI » pour choisir les KPI affichés en haut de page, et 3 nouveaux KPI : rendement du jour, du mois et de l'année</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.48 · 29/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Ass. Vie / PER / PEE : fenêtre « Répartition » de chaque contrat (menu ⋯ ou clic sur la valeur) : anneau par type, par support ou par compartiment, légende en % et en €</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.47 · 29/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">MA FAMILLE : interrupteur « Suivi par personne » (éteint, tous les choix « À qui », filtres et pastilles disparaissent, rien n'est effacé) et cadre modernisé (cartes par membre avec initiale colorée, dégradé comme les contrats)</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.46 · 29/10/2026</div>
@@ -79708,6 +79853,16 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
         </label>
 
         <label class="kyf-reset-row" style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer">
+          <input type="checkbox" class="kyf-reset-check" data-module="autres"
+            data-keys="kyf-autres,kyf-autres-incl"
+            style="accent-color:var(--accent);flex-shrink:0">
+          <div>
+            <div style="font-size:12px;font-weight:700;color:var(--text2)">AUTRES ACTIFS</div>
+            <div style="font-size:11px;color:var(--text3)">Biens, estimations et historique</div>
+          </div>
+        </label>
+
+        <label class="kyf-reset-row" style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer">
           <input type="checkbox" class="kyf-reset-check" data-module="pea" data-dca-type="etf"
             data-keys="pea-positions,kyf-etf-transactions,kyf-alerts-,pea-bilan,pea-geo,pea-sectors,kyf-geo-v1,kyf-geo-stale-v1,kyf-favs-v1,kyf-groups-v1,pea-etf-settings,kyf-cash,kyf-cash-ccp,kyf-cash-mvts,kyf-cash-cto,kyf-cash-pea,kyf-cash-migrated-v2,kyf-dividendes,kyf-etf-collapsed-envs,kyf-perf-asset-filter,kyf-pf-view,kyf-pf-range,kyf-pf-bm,kyf-pf-hidden,kyf-isin-sans-yahoo,kyf-pea-date-ouverture,kyf-pea-plafond,kyf-pea-taux-ir,kyf-pea-taux-ps,kyf-pme-date-ouverture,kyf-pme-total-verse,kyf-pme-plafond,kyf-pea-total-verse,kyf-cto-taux-pfu"
             style="accent-color:var(--accent);flex-shrink:0">
@@ -83849,6 +84004,312 @@ function avEvoRelGo(kind, d){
 function avEvoClose(){
   try{ if(typeof _kyfPg !== 'undefined' && _kyfPg.open) kyfPgClose(false); }catch(e){}
   document.getElementById('avEvoModal')?.remove(); document.getElementById('avEvoOverlay')?.remove(); document.body.style.overflow = '';
+}
+
+// ── Fenêtre « Répartition » d'un contrat (AV, PER) ou d'un plan PEE (2.9.0.48) : anneau par type, par support, ou par compartiment (PER) ──
+let _avRepId = '', _avRepMode = 't';
+const KYF_REP_TYPES = [
+  { key:'fe', label:'Fonds euros', color:'#06b6d4' }, { key:'etf', label:'ETF & Actions', color:'#f0b429' }, { key:'immo', label:'Immobilier', color:'#4d9fff' },
+  { key:'fonds', label:'Fonds gérés', color:'#9b6dff' }, { key:'obl', label:'Obligations', color:'#a3e635' }, { key:'pe', label:'Private equity', color:'#ff4fa0' }, { key:'dp', label:'Dette privée', color:'#ff7a1a' }
+];
+const KYF_REP_CT = [ { key:'etf', label:'ETF', color:'#f0b429' }, { key:'action', label:'Actions', color:'#4d9fff' }, { key:'cash', label:'Espèces', color:'#06b6d4' } ];
+const KYF_REP_COMP = [
+  { key:'ev-ded', label:'EV Déductible', color:'#9b6dff' }, { key:'ev-non-ded', label:'EV Non Déductible', color:'#f0b429' }, { key:'obligatoire', label:'Obligatoire', color:'#4d9fff' },
+  { key:'collectif', label:'Collectif', color:'#06b6d4' }, { key:'', label:'Non classé', color:'#94a3b8' }
+];
+const KYF_REP_PAL = ['#f0b429','#9b6dff','#06b6d4','#ff4fa0','#4d9fff','#a3e635','#ff7a1a','#2fc27a','#ff4560','#94a3b8','#d97706','#7c3aed'];
+function kyfRepData(id){   // lignes { nom, type, val, comp } d'un contrat ou d'un plan PEE, valeur du jour comme dans la carte
+  let c = null; try{ c = avLoad().find(x => x.id === id); }catch(e){}
+  if(c){
+    const lp = window._lp || {}, linked = kyfAvLinkedTk(c), pos = avPosLoad(c.id), lines = [];
+    pos.forEach(p => { const v = kyfAvPosValue(p, linked, lp).val; if(v > 0) lines.push({ nom: p.nom || p.ticker || 'Support', type: p.type === 'action' ? 'etf' : p.type, val: v, comp: p.compartiment || '' }); });
+    const fe = parseFloat(c.fondsEuros) || 0;
+    if(!pos.some(p => p.type === 'fe') && fe > 0) lines.push({ nom: 'Fonds en euros', type: 'fe', val: fe, comp: '' });
+    if(!pos.length && (parseFloat(c.uc) || 0) > 0) lines.push({ nom: 'Unités de compte', type: 'etf', val: parseFloat(c.uc) || 0, comp: '' });
+    return { kind: 'av', per: ['per','per-col','per-ob'].includes(c.type), nom: c.contratNom || c.assureur || 'Contrat', lines };
+  }
+  if(typeof id === 'string' && id.indexOf('ct:') === 0){   // compte titres : 'ct:PEA', 'ct:PME', 'ct:CTO' ou 'ct:CTO:c2'
+    const pp = id.split(':'), env = pp[1], cpt = pp[2] || '';
+    if(!KYF_CT_META[env]) return null;
+    const E = ctEtatLigne(env, cpt || undefined), lines = [];
+    E.ok.forEach(e => { const v = getEval(e, E.lp[e.ticker]); if(v > 0) lines.push({ nom: e.name || e.ticker || 'Ligne', type: kyfGeoIsEtf(e) ? 'etf' : 'action', val: v, comp: '' }); });
+    let cash = 0; try{ cash = env === 'PEA' ? peaFiscSituation().cash : env === 'CTO' ? (cpt ? kyfCtoCashOf(cpt) : getCashCto()) : 0; }catch(e){}
+    if(cash > 0) lines.push({ nom: 'Espèces', type: 'cash', val: cash, comp: '' });
+    return { kind: 'ct', per: false, nom: KYF_CT_META[env].titre + (cpt ? ' · ' + kyfCtoNom(cpt) : ''), lines };
+  }
+  let x = null; try{ x = peeLoad().find(p => p.id === id); }catch(e){}
+  if(x){
+    const lines = peeFondsClean(x).filter(f => f.parts != null && f.vl != null && f.parts * f.vl > 0).map(f => ({ nom: f.nom || 'Fonds', type: 'fonds', val: f.parts * f.vl, comp: '' }));
+    return { kind: 'pee', per: false, nom: x.nom || 'Plan PEE', lines };
+  }
+  return null;
+}
+function avRepClose(){
+  try{ if(charts.avRepDonut){ charts.avRepDonut.destroy(); charts.avRepDonut = null; } }catch(e){}
+  document.getElementById('avRepModal')?.remove(); document.getElementById('avRepOverlay')?.remove(); document.body.style.overflow = '';
+  document.removeEventListener('keydown', avRepKey);
+}
+function avRepKey(e){ if(e.key === 'Escape'){ e.preventDefault(); avRepClose(); } }
+function avRepOpen(id){
+  const D = kyfRepData(id); if(!D) return;
+  avRepClose(); _avRepId = id; _avRepMode = 't';
+  const ov = document.createElement('div'); ov.id = 'avRepOverlay'; ov.onclick = avRepClose; ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10000011';
+  const m = document.createElement('div'); m.id = 'avRepModal'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-label', 'Répartition');
+  m.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(620px,96vw);max-height:92vh;overflow:auto;z-index:10000012;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;font-family:Inter,sans-serif;color:var(--text);box-shadow:0 20px 60px rgba(0,0,0,.5)';
+  m.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;padding:18px 26px;border-bottom:1px solid var(--border)"><span style="font-weight:700;font-size:13px;display:inline-flex;align-items:center;gap:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>RÉPARTITION <span id="avRepTitre" style="color:var(--text3);font-weight:600"></span></span>'
+    + '<button type="button" onclick="avRepClose()" class="kyf-modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'
+    + '<div style="padding:20px 26px 26px"><div id="avRepTabs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px"></div><div id="avRepBody"></div></div>';
+  document.body.appendChild(ov); document.body.appendChild(m); document.body.style.overflow = 'hidden';
+  m.querySelector('#avRepTitre').textContent = '· ' + D.nom;
+  document.addEventListener('keydown', avRepKey);
+  avRepRender();
+}
+function avRepMode(md){ _avRepMode = md; avRepRender(); }
+function avRepRender(){
+  const D = kyfRepData(_avRepId), body = document.getElementById('avRepBody'), tabs = document.getElementById('avRepTabs'); if(!D || !body || !tabs) return;
+  const modes = D.kind === 'pee' ? [['s', 'PAR FONDS']] : D.kind === 'ct' ? [['t', 'PAR TYPE'], ['s', 'PAR LIGNE']] : [['t', 'PAR TYPE'], ['s', 'PAR SUPPORT']].concat(D.per ? [['c', 'PAR COMPARTIMENT']] : []);
+  if(!modes.some(x => x[0] === _avRepMode)) _avRepMode = modes[0][0];
+  tabs.innerHTML = modes.length > 1 ? modes.map(x => '<button type="button" onclick="avRepMode(\'' + x[0] + '\')" aria-pressed="' + (_avRepMode === x[0]) + '" class="' + (_avRepMode === x[0] ? 'kyf-toggle-active' : '') + '" style="font-size:10px;font-weight:700;padding:6px 14px;border-radius:7px;border:1px solid ' + (_avRepMode === x[0] ? 'var(--accent)' : 'var(--border2)') + ';background:' + (_avRepMode === x[0] ? 'rgba(240,180,41,.14)' : 'transparent') + ';color:' + (_avRepMode === x[0] ? 'var(--accent)' : 'var(--text2)') + ';cursor:pointer" onmouseover="if(this.getAttribute(\'aria-pressed\')!==\'true\')this.style.background=\'var(--hov-bg)\'" onmouseout="if(this.getAttribute(\'aria-pressed\')!==\'true\')this.style.background=\'transparent\'">' + x[1] + '</button>').join('') : '';
+  let groups = [];
+  if(_avRepMode === 's'){
+    const by = {}; D.lines.forEach(l => { by[l.nom] = (by[l.nom] || 0) + l.val; });
+    groups = Object.keys(by).map(n => ({ label: n, val: by[n] })).sort((a, b) => b.val - a.val).map((g, i) => ({ label: g.label, val: g.val, color: KYF_REP_PAL[i % KYF_REP_PAL.length] }));
+  } else {
+    const ref = _avRepMode === 'c' ? KYF_REP_COMP : D.kind === 'ct' ? KYF_REP_CT : KYF_REP_TYPES, kf = _avRepMode === 'c' ? (l => l.comp || '') : (l => l.type);
+    groups = ref.map(g => ({ label: g.label, color: g.color, val: D.lines.filter(l => kf(l) === g.key).reduce((s, l) => s + l.val, 0) })).filter(g => g.val > 0).sort((a, b) => b.val - a.val);
+  }
+  const total = groups.reduce((s, g) => s + g.val, 0);
+  if(charts.avRepDonut){ try{ charts.avRepDonut.destroy(); }catch(e){} charts.avRepDonut = null; }
+  if(!(total > 0)){ body.innerHTML = '<div style="padding:30px 10px;text-align:center;font-size:11px;color:var(--text3);line-height:1.7">Aucune valorisation à répartir pour le moment. Ajoutez des valeurs pour voir l\'anneau.</div>'; return; }
+  body.innerHTML = '<div style="display:flex;align-items:center;gap:22px;flex-wrap:wrap;justify-content:center"><div style="width:210px;height:210px;flex-shrink:0;overflow:visible"><canvas id="avRepDonut"></canvas></div><div id="avRepLegend" style="min-width:200px;flex:1;max-width:300px;max-height:300px;overflow:auto"></div></div>'
+    + '<div style="margin-top:14px;font-size:9px;color:var(--text3);line-height:1.6;text-align:center">' + (D.kind === 'ct' ? 'Valeurs au cours du jour, espèces comprises quand elles sont renseignées.' : 'Valeurs du jour pour les supports suivis en direct, valeurs du relevé pour les autres.') + '</div>';
+  const ctx = document.getElementById('avRepDonut'), colors = groups.map(g => g.color), values = groups.map(g => g.val), d = chartDefaults();
+  const grad = kyfDonutBuildGradients(ctx, colors, false), gradDim = kyfDonutBuildGradients(ctx, colors, true), bw = chartPrefs.donutBorderWidth !== undefined ? chartPrefs.donutBorderWidth : 2;
+  charts.avRepDonut = new Chart(ctx.getContext('2d'), {
+    type:'doughnut', plugins:[kyfMakeDonutCenterPlugin(D.kind === 'pee' ? 'TOTAL PLAN' : D.kind === 'ct' ? 'TOTAL COMPTE' : 'TOTAL CONTRAT')],
+    data:{ labels: groups.map(g => g.label), datasets:[{ data:values, backgroundColor:grad, hoverBackgroundColor:grad, borderColor:kyfDonutBorderColor(), borderWidth:kyfDonutBorderWidth(values, bw), borderRadius:0, spacing:kyfDonutSpacing(values), hoverOffset:kyfDonutHoverOffsets(values) }] },
+    options:{ ...d, layout:{ padding:10 }, cutout:kyfDonutCutout(), interaction:{ mode:'nearest', intersect:true }, scales:{ x:{ display:false }, y:{ display:false } }, plugins:{ ...d.plugins, legend:{ display:false }, tooltip:{ enabled:false } } }
+  });
+  charts.avRepDonut._segGradients = grad; charts.avRepDonut._segGradientsDim = gradDim; charts.avRepDonut._segColors = colors;
+  document.getElementById('avRepLegend').innerHTML = groups.map((g, i) => {
+    const pct = g.val / total * 100, small = pct < 2;
+    const ha = small ? 'title="Part trop faible pour être mise en évidence sur le graphique" style="cursor:not-allowed;' : 'onmouseenter="kyfDonutLegendHover(\'avRepDonut\',' + i + ');this.style.background=\'var(--hov-bg)\'" onmouseleave="kyfDonutLegendLeave(\'avRepDonut\');this.style.background=\'none\'" style="cursor:pointer;';
+    return '<div ' + ha + 'display:flex;align-items:center;gap:8px;margin-bottom:6px;padding:3px 6px;border-radius:6px;transition:background .15s"><div style="width:7px;height:7px;border-radius:50%;background:' + g.color + ';flex-shrink:0"></div><div style="flex:1;min-width:0"><div style="font-size:11px;color:var(--text2);overflow-wrap:anywhere">' + escapeHtml(g.label) + '</div><div style="font-size:10px;color:var(--accent);margin-top:1px">' + pct.toFixed(2) + '% · ' + fmt(g.val, 0) + ' €</div></div></div>';
+  }).join('');
+}
+
+// ── KPI au choix (2.9.0.49) : liste cochée des KPI d'une rangée (data-kpi-row), mémorisée sur l'appareil. L'ordre glissé reste géré à part. ──
+const KYF_KPI_HIDE_KEY = 'kyf-kpi-hidden-v1', KYF_KPI_DEF_OFF = { av: ['av-rjour', 'av-rmois', 'av-ran'] };
+function kyfKpiHiddenGet(row){
+  let o = {}; try{ o = JSON.parse(localStorage.getItem(KYF_KPI_HIDE_KEY) || '{}'); if(!o || typeof o !== 'object' || Array.isArray(o)) o = {}; }catch(e){ o = {}; }
+  return new Set(Array.isArray(o[row]) ? o[row].map(String) : (KYF_KPI_DEF_OFF[row] || []));
+}
+function kyfKpiHiddenSet(row, set){
+  let o = {}; try{ o = JSON.parse(localStorage.getItem(KYF_KPI_HIDE_KEY) || '{}'); if(!o || typeof o !== 'object' || Array.isArray(o)) o = {}; }catch(e){ o = {}; }
+  o[row] = [...set]; try{ localStorage.setItem(KYF_KPI_HIDE_KEY, JSON.stringify(o)); }catch(e){}
+}
+function kyfKpiApply(){
+  document.querySelectorAll('.kpi-row[data-kpi-row]').forEach(r => {
+    const s = kyfKpiHiddenGet(r.dataset.kpiRow);
+    r.querySelectorAll('.kpi[data-kpi-id]').forEach(k => k.classList.toggle('kyf-kpi-off', s.has(k.dataset.kpiId)));
+  });
+  try{ requestAnimationFrame(kpiRowCheckOverflow); }catch(e){}
+}
+function kyfKpiPickerScroll(e){ const t = e && e.target; if(t && t.closest && t.closest('.kpi-row, #kyfKpiPicker')) return; kyfKpiPickerClose(); }   // seul le défilement de la page ferme la liste, pas celui de la rangée de KPI quand elle se réorganise
+function kyfKpiPickerClose(){
+  const m = document.getElementById('kyfKpiPicker'); if(m){ if(m._btn) m._btn.setAttribute('aria-expanded', 'false'); m.remove(); }
+  document.removeEventListener('mousedown', kyfKpiPickerOut, true); document.removeEventListener('keydown', kyfKpiPickerKey, true); window.removeEventListener('scroll', kyfKpiPickerScroll, true);
+}
+function kyfKpiPickerOut(e){ const m = document.getElementById('kyfKpiPicker'); if(m && !m.contains(e.target) && !(m._btn && m._btn.contains(e.target))) kyfKpiPickerClose(); }
+function kyfKpiPickerKey(e){ if(e.key === 'Escape'){ e.preventDefault(); const b = (document.getElementById('kyfKpiPicker') || {})._btn; kyfKpiPickerClose(); if(b) b.focus(); } }
+function kyfKpiPickerFill(m){
+  const row = m._row, rowEl = document.querySelector('.kpi-row[data-kpi-row="' + row + '"]'); if(!rowEl) return;
+  const hid = kyfKpiHiddenGet(row), CK = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>';
+  const tiles = [...rowEl.querySelectorAll('.kpi[data-kpi-id]')];
+  m.innerHTML = '<div style="font-size:8px;font-weight:800;letter-spacing:1.2px;color:var(--text3);padding:4px 10px 6px">KPI AFFICHÉS</div>'
+    + tiles.map(k => { const id = k.dataset.kpiId, on = !hid.has(id), lb = (k.querySelector('.kpi-lbl') || {}).textContent || id;
+      return '<button type="button" role="menuitemcheckbox" aria-checked="' + on + '" class="kyf-kpi-mi' + (on ? ' on' : '') + '" data-id="' + escapeHtml(id) + '"><span class="bx">' + (on ? CK : '') + '</span><span>' + escapeHtml(lb) + '</span></button>'; }).join('')
+    + '<div style="height:1px;background:var(--border2);margin:6px 2px"></div><button type="button" class="kyf-kpi-mi" data-all="1"><span class="bx" style="border-style:dashed"></span><span>Tout afficher</span></button>';
+  m.querySelectorAll('.kyf-kpi-mi').forEach(b => b.onclick = () => {
+    const s = kyfKpiHiddenGet(row);
+    if(b.dataset.all) s.clear(); else if(s.has(b.dataset.id)) s.delete(b.dataset.id); else s.add(b.dataset.id);
+    kyfKpiHiddenSet(row, s); kyfKpiApply(); kyfKpiPickerFill(m);
+    const nb = m.querySelector('[data-id="' + (b.dataset.id || '') + '"]') || m.querySelector('.kyf-kpi-mi'); if(nb) nb.focus();
+  });
+}
+function kyfKpiPicker(row, btn){
+  if(document.getElementById('kyfKpiPicker')){ kyfKpiPickerClose(); return; }
+  const m = document.createElement('div'); m.id = 'kyfKpiPicker'; m.setAttribute('role', 'menu'); m.setAttribute('aria-label', 'KPI affichés'); m._btn = btn; m._row = row;
+  m.style.cssText = 'position:fixed;z-index:9000;min-width:230px;box-sizing:border-box;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;box-shadow:0 10px 24px rgba(0,0,0,0.3);padding:6px;display:flex;flex-direction:column;gap:1px';
+  document.body.appendChild(m); kyfKpiPickerFill(m);
+  const r = btn.getBoundingClientRect(), w = m.offsetWidth, hh = m.offsetHeight;
+  m.style.left = Math.max(8, Math.min(window.innerWidth - w - 8, r.right - w)) + 'px';
+  m.style.top = ((r.bottom + 6 + hh > window.innerHeight - 8) ? Math.max(8, r.top - hh - 6) : r.bottom + 6) + 'px';
+  btn.setAttribute('aria-expanded', 'true');
+  document.addEventListener('mousedown', kyfKpiPickerOut, true); document.addEventListener('keydown', kyfKpiPickerKey, true); window.addEventListener('scroll', kyfKpiPickerScroll, true);
+  const f = m.querySelector('.kyf-kpi-mi'); if(f) f.focus();
+}
+// Rendements de l'ensemble des contrats affichés : jour (ETF et actions en direct), mois et année (historique noté par KYF : gain net / valeur de départ)
+function kyfAvRendements(data){
+  const out = { jour:null, mois:null, an:null }, lp = window._lp || {};
+  let dG = 0, dB = 0, dN = 0;
+  data.forEach(c => {
+    let linked; try{ linked = kyfAvLinkedTk(c); }catch(e){ return; }
+    avPosLoad(c.id).forEach(p => {
+      if(p.type !== 'etf' && p.type !== 'action') return;
+      const r = kyfAvPosValue(p, linked, lp); if(!r.live) return;
+      const q = lp[p.ticker]; if(!q || !Number.isFinite(q.price) || !Number.isFinite(q.prev) || !(q.prev > 0) || q._stale || q.source === 'cache' || q.source === 'google') return;
+      const qty = parseFloat(p.qty) || 0; if(!(qty > 0)) return;
+      const cur = q.currency || getTickerCurrency(p.ticker, q);
+      dG += toEUR((q.price - q.prev) * qty, cur); dB += toEUR(q.prev * qty, cur); dN++;
+    });
+  });
+  if(dN && dB > 0) out.jour = { pct: dG / dB * 100, eur: dG, n: dN };
+  const ds = (typeof kyfParisNow === 'function') ? kyfParisNow().date : new Date().toISOString().slice(0, 10), perf = avPerfLoad().items;
+  [['mois', ds.slice(0, 7)], ['an', ds.slice(0, 4)]].forEach(pp => {
+    let G = 0, B = 0, n = 0, partial = false, since = '';
+    data.forEach(c => {
+      const arr = perf[c.id] || []; if(arr.length < 2) return;
+      const L = arr[arr.length - 1], before = arr.filter(p => p.d < pp[1]), S = before.length ? before[before.length - 1] : arr.find(p => p.d.slice(0, pp[1].length) === pp[1]);
+      if(!S || S === L || S.vers === undefined || L.vers === undefined || !(S.val > 0)) return;
+      G += (L.val - S.val) - ((L.vers - (L.rach || 0)) - (S.vers - (S.rach || 0))); B += S.val; n++;
+      if(!before.length){ partial = true; if(!since || S.d > since) since = S.d; }
+    });
+    if(n && B > 0) out[pp[0]] = { pct: G / B * 100, eur: G, n, of: data.length, partial, since };
+  });
+  return out;
+}
+function kyfAvRendementsFill(data){
+  let R; try{ R = kyfAvRendements(data); }catch(e){ R = { jour:null, mois:null, an:null }; }
+  const sg = v => (v >= 0 ? '+' : '-') + fmt(Math.abs(v), 2).replace(/ /g, ' '), E = v => (v >= 0 ? '+' : '-') + fmt(Math.abs(v), 0) + ' €';
+  const set = (id, r, sub0, extra) => {
+    const e = document.getElementById(id), s = document.getElementById(id + 'Sub'); if(!e) return;
+    if(s) s.title = r && r.partial ? 'Historique disponible depuis le ' + avPerfFr(r.since) + ' : le rendement part de cette date' : '';
+    if(!r){ e.textContent = 'Indisponible'; e.style.color = 'var(--text3)'; if(s) s.textContent = sub0; return; }
+    e.textContent = sg(r.pct) + ' %'; e.style.color = r.pct >= 0 ? 'var(--green)' : 'var(--red)';
+    if(s) s.textContent = E(r.eur) + ' · ' + extra(r);
+  };
+  set('avKpiRJour', R.jour, 'Aucun ETF en direct', r => r.n + ' ligne' + (r.n > 1 ? 's' : ''));
+  set('avKpiRMois', R.mois, 'Historique à venir', r => r.n + '/' + r.of + ' contrats' + (r.partial ? ' · dep. ' + avPerfFr(r.since).slice(0, 5) : ''));
+  set('avKpiRAn', R.an, 'Historique à venir', r => r.n + '/' + r.of + ' contrats' + (r.partial ? ' · dep. ' + avPerfFr(r.since).slice(0, 5) : ''));
+}
+
+// ── 2.10.0.00 : AUTRES ACTIFS (véhicule de collection, montre, art, vin, bijou...) : valeur estimée à la main, historique des estimations ──
+const KYF_AUT_KEY = 'kyf-autres', KYF_AUT_INCL_KEY = 'kyf-autres-incl';
+const KYF_AUT_TYPES = {
+  vehicule:{ l:'Véhicule', c:'#e8590c' }, montre:{ l:'Montre', c:'#1c7ed6' }, art:{ l:'Art', c:'#9c36b5' },
+  vin:{ l:'Vin', c:'#c2255c' }, bijou:{ l:'Bijou', c:'#f08c00' }, autre:{ l:'Autre', c:'#2b8a3e' }
+};
+function kyfAutLoad(){ try{ const a = JSON.parse(localStorage.getItem(KYF_AUT_KEY) || '[]'); return Array.isArray(a) ? a : []; }catch(e){ return []; } }
+function kyfAutSave(a){ localStorage.setItem(KYF_AUT_KEY, JSON.stringify(a)); }
+function kyfAutInclOn(){ try{ return localStorage.getItem(KYF_AUT_INCL_KEY) !== '0'; }catch(e){ return true; } }
+function kyfAutNum(x){ const n = parseFloat(x); return isFinite(n) && n > 0 ? n : 0; }
+// Total compté dans le patrimoine : interrupteur général + case de chaque bien
+function kyfAutresTotal(){ if(!kyfAutInclOn()) return 0; return kyfAutLoad().reduce((s, d) => s + (d.inclus === false ? 0 : kyfAutNum(d.valeur)), 0); }
+function kyfAutToggleIncl(){ try{ localStorage.setItem(KYF_AUT_INCL_KEY, kyfAutInclOn() ? '0' : '1'); }catch(e){} kyfAutRender(); try{ if(typeof renderKPIs === 'function' && window._lp) renderKPIs(window._lp); }catch(e){} }
+function kyfAutFr(iso){ const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso || ''); return m ? m[3] + '/' + m[2] + '/' + m[1] : ''; }
+function kyfAutE(v){ return fmt(v, 0) + ' €'; }
+function kyfAutRender(){
+  const all = kyfAutLoad(), incl = kyfAutInclOn();
+  const tb = document.getElementById('autTbody'); if(!tb) return;
+  const nod = document.getElementById('autNoData'); if(nod) nod.style.display = all.length ? 'none' : 'block';
+  const lbl = document.getElementById('autInclLbl'); if(lbl) lbl.textContent = incl ? 'Compté dans le patrimoine' : 'Non compté dans le patrimoine';
+  const ib = document.getElementById('autInclBtn'); if(ib) ib.style.opacity = incl ? '1' : '.65';
+  const IC = {
+    maj:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.5 15a9 9 0 1 1-2.1-9.4L23 10"/></svg>',
+    ed:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
+    del:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>'
+  };
+  const now = Date.now(); let old = 0, tot = 0, cost = 0, costOk = 0, top = null;
+  tb.innerHTML = all.map(d => {
+    const t = KYF_AUT_TYPES[d.type] || KYF_AUT_TYPES.autre, v = kyfAutNum(d.valeur), a = kyfAutNum(d.achat);
+    const counted = incl && d.inclus !== false;
+    if(v) { tot += v; if(!top || v > top.v) top = { v, n: d.nom }; }
+    if(v && a){ cost += a; costOk += v; }
+    const pv = (v && a) ? v - a : null, pvp = (v && a) ? (v / a - 1) * 100 : null;
+    const h = Array.isArray(d.histo) ? d.histo : [];
+    const age = d.valeurDate ? Math.floor((now - new Date(d.valeurDate).getTime()) / 864e5) : null;
+    const ancien = age !== null && age > 365; if(ancien) old++;
+    let evo = '';
+    if(h.length > 1){ const p = kyfAutNum(h[h.length - 2].v); if(p && v){ const e = (v / p - 1) * 100; evo = ' <span style="color:' + (e >= 0 ? 'var(--green,#00d4aa)' : '#ff5a6a') + ';font-size:9px">' + (e >= 0 ? '+' : '') + fmt(e, 1) + ' %</span>'; } }
+    const histTxt = h.map(x => kyfAutFr(x.d) + ' : ' + kyfAutE(x.v)).join('\n');
+    return '<tr' + (counted ? '' : ' style="opacity:.6"') + '>'
+      + '<td><strong>' + escapeHtml(d.nom || '') + '</strong>' + (d.notes ? '<div style="font-size:9px;color:var(--text3)">' + escapeHtml(d.notes) + '</div>' : '') + (d.inclus === false ? '<div style="font-size:9px;color:var(--text3)">Hors patrimoine</div>' : '') + '</td>'
+      + '<td><span style="display:inline-flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:' + t.c + '"></span>' + t.l + '</span></td>'
+      + '<td>' + (a ? kyfAutE(a) : '-') + '</td>'
+      + '<td title="' + escapeHtml(histTxt) + '"><strong>' + (v ? kyfAutE(v) : '-') + '</strong>' + evo + '</td>'
+      + '<td style="color:' + (pv === null ? 'var(--text3)' : pv >= 0 ? 'var(--green,#00d4aa)' : '#ff5a6a') + '">' + (pv === null ? '-' : (pv >= 0 ? '+' : '') + kyfAutE(pv) + '<div style="font-size:9px">' + (pvp >= 0 ? '+' : '') + fmt(pvp, 1) + ' %</div>') + '</td>'
+      + '<td style="font-size:10px;color:' + (ancien ? '#f0b429' : 'var(--text3)') + '">' + (d.valeurDate ? kyfAutFr(d.valeurDate) : '-') + (ancien ? '<div style="font-size:9px">à actualiser</div>' : '') + '</td>'
+      + '<td style="text-align:right">' + kyfActionsMenuHtml_('aut-' + d.id, [
+          { label: 'Actualiser la valeur', onclick: "kyfAutOpen('" + d.id + "',true)" },
+          { label: 'Modifier', onclick: "kyfAutOpen('" + d.id + "')" },
+          { label: d.inclus === false ? 'Compter dans le patrimoine' : 'Ne plus compter dans le patrimoine', onclick: "kyfAutToggleItem('" + d.id + "')", sep: true },
+          { label: 'Supprimer', onclick: "kyfAutDel('" + d.id + "')", danger: true }
+        ]) + '</td></tr>';
+  }).join('');
+  const kv = (id, t) => { const e = document.getElementById(id); if(e) e.textContent = t; };
+  kv('autKpiTotal', kyfAutE(tot)); kv('autKpiTotalSub', incl ? 'Estimations actuelles' : 'Non compté dans le patrimoine');
+  const pvT = cost ? costOk - cost : null;
+  const pe = document.getElementById('autKpiPv'); if(pe){ pe.textContent = pvT === null ? '-' : (pvT >= 0 ? '+' : '') + kyfAutE(pvT); pe.style.color = pvT === null ? '' : pvT >= 0 ? 'var(--green,#00d4aa)' : '#ff5a6a'; }
+  kv('autKpiPvSub', cost ? (pvT >= 0 ? '+' : '') + fmt(pvT / cost * 100, 1) + ' % / prix d\'achat' : '/ prix d\'achat');
+  kv('autKpiNb', String(all.length)); kv('autKpiTop', top ? top.n : '-'); kv('autKpiTopSub', top ? kyfAutE(top.v) : '');
+  const on = document.getElementById('autOldNote');
+  if(on) on.innerHTML = old ? '<div style="margin:0 0 14px;padding:10px 14px;border-radius:10px;border:1px solid rgba(240,180,41,.5);background:rgba(240,180,41,.08);font-family:\'Inter\',sans-serif;font-size:11px;color:var(--text2)">' + old + ' estimation' + (old > 1 ? 's datent' : ' date') + ' de plus d\'un an : pensez à les actualiser pour garder un patrimoine juste.</div>' : '';
+  // Donut par type
+  const by = {}; all.forEach(d => { const v = kyfAutNum(d.valeur); if(v) by[d.type || 'autre'] = (by[d.type || 'autre'] || 0) + v; });
+  const keys = Object.keys(by).sort((a, b) => by[b] - by[a]);
+  const lg = document.getElementById('autDonutLegend');
+  if(lg) lg.innerHTML = keys.map(k => { const t = KYF_AUT_TYPES[k] || KYF_AUT_TYPES.autre; return '<div style="display:flex;align-items:center;gap:7px;font-size:11px;color:var(--text2);margin:4px 0"><span style="width:9px;height:9px;border-radius:50%;background:' + t.c + '"></span>' + t.l + '<span style="margin-left:auto;color:var(--text3)">' + fmt(by[k] / tot * 100, 0) + ' %</span></div>'; }).join('');
+  const cv = document.getElementById('autDonut');
+  try{
+    if(charts.autDonut){ charts.autDonut.destroy(); charts.autDonut = null; }
+    if(cv && !keys.length){ if(typeof kyfEmptyChart === 'function') setTimeout(() => { try{ kyfEmptyChart('autDonut'); }catch(e){} }, 0); }
+    if(cv && keys.length && typeof Chart !== 'undefined'){
+      charts.autDonut = new Chart(cv, { type:'doughnut', data:{ labels: keys.map(k => (KYF_AUT_TYPES[k] || KYF_AUT_TYPES.autre).l), datasets:[{ data: keys.map(k => by[k]), backgroundColor: keys.map(k => (KYF_AUT_TYPES[k] || KYF_AUT_TYPES.autre).c), borderWidth:2, borderColor:'transparent' }] },
+        options:{ cutout:'66%', maintainAspectRatio:false, animation:false, plugins:{ legend:{ display:false }, tooltip:{ callbacks:{ label: c => ' ' + c.label + ' : ' + kyfAutE(c.parsed) } } } } });
+    }
+  }catch(e){}
+}
+function kyfAutOpen(id, onlyVal){
+  const sel = document.getElementById('autType');
+  if(sel && !sel.options.length){ sel.innerHTML = Object.keys(KYF_AUT_TYPES).map(k => '<option value="' + k + '">' + KYF_AUT_TYPES[k].l + '</option>').join(''); kyfCSelBuildDrop('autType', Object.keys(KYF_AUT_TYPES).map(k => ({ value:k, label:KYF_AUT_TYPES[k].l }))); }
+  const d = id ? kyfAutLoad().find(x => String(x.id) === String(id)) : null;
+  const g = i => document.getElementById(i), today = new Date().toISOString().slice(0, 10);
+  g('autModalTitle').textContent = d ? (onlyVal ? 'ACTUALISER LA VALEUR' : 'MODIFIER LE BIEN') : 'AJOUTER UN BIEN';
+  g('autId').value = d ? d.id : ''; g('autNom').value = d ? d.nom || '' : ''; { const tk = d ? d.type || 'autre' : 'vehicule'; kyfCSelSetValue('autType', tk, (KYF_AUT_TYPES[tk] || KYF_AUT_TYPES.autre).l); }
+  g('autVal').value = d && d.valeur ? d.valeur : ''; kyfDateSetValue('autValDate', onlyVal || !d ? today : (d.valeurDate || today));
+  g('autAchat').value = d && d.achat ? d.achat : ''; kyfDateSetValue('autAchatDate', d ? d.achatDate || '' : '', 'JJ/MM/AAAA');
+  g('autNotes').value = d ? d.notes || '' : ''; g('autInclItem').checked = d ? d.inclus !== false : true; g('autErr').textContent = '';
+  g('autModal').style.display = 'block'; g('autModalOverlay').style.display = 'block';
+  kyfLockBodyScroll(g('autModal'));
+  setTimeout(() => { try{ g(onlyVal ? 'autVal' : 'autNom').focus(); }catch(e){} }, 30);
+}
+function kyfAutClose(){ ['autModal', 'autModalOverlay', 'autTypeDrop'].forEach(i => { const e = document.getElementById(i); if(e) e.style.display = 'none'; }); try{ kyfUnlockBodyScroll(); }catch(e){} }
+function kyfAutSaveForm(){
+  const g = i => document.getElementById(i), nom = g('autNom').value.trim(), val = kyfAutNum(g('autVal').value);
+  if(!nom){ g('autErr').textContent = 'Donnez un nom au bien.'; return; }
+  if(!val){ g('autErr').textContent = 'Indiquez une valeur estimée supérieure à 0.'; return; }
+  const list = kyfAutLoad(), id = g('autId').value, vd = g('autValDate').value || new Date().toISOString().slice(0, 10);
+  let d = id ? list.find(x => String(x.id) === id) : null;
+  if(!d){ d = { id:'aut_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), histo:[] }; list.push(d); }
+  const h = Array.isArray(d.histo) ? d.histo : []; d.histo = h;
+  const last = h[h.length - 1];
+  if(!last || last.v !== val || last.d !== vd){ const same = h.findIndex(x => x.d === vd); if(same >= 0) h[same].v = val; else h.push({ d:vd, v:val }); h.sort((a, b) => a.d < b.d ? -1 : 1); }
+  const lastH = h[h.length - 1];
+  Object.assign(d, { nom, type:g('autType').value, valeur:lastH.v, valeurDate:lastH.d, achat:kyfAutNum(g('autAchat').value) || '', achatDate:g('autAchatDate').value || '', notes:g('autNotes').value.trim(), inclus:g('autInclItem').checked });
+  kyfAutSave(list); kyfAutClose(); kyfAutRender();
+  try{ if(typeof renderKPIs === 'function' && window._lp) renderKPIs(window._lp); }catch(e){}
+}
+function kyfAutToggleItem(id){
+  const a = kyfAutLoad(), d = a.find(x => String(x.id) === String(id)); if(!d) return;
+  d.inclus = d.inclus === false; kyfAutSave(a); kyfAutRender();
+  try{ if(typeof renderKPIs === 'function' && window._lp) renderKPIs(window._lp); }catch(e){}
+}
+function kyfAutDel(id){
+  const d = kyfAutLoad().find(x => String(x.id) === String(id)); if(!d) return;
+  if(!confirm('Supprimer « ' + (d.nom || 'ce bien') + ' » ?')) return;
+  kyfAutSave(kyfAutLoad().filter(x => String(x.id) !== String(id))); kyfAutRender();
+  try{ if(typeof renderKPIs === 'function' && window._lp) renderKPIs(window._lp); }catch(e){}
 }
 function avEvoOpen(id){
   const c = avLoad().find(x => x.id === id); if(!c) return;
@@ -94363,10 +94824,11 @@ function renderPee(){
       '<div><div onclick="peeToggleCard(\'' + id + '\')" style="cursor:pointer;display:flex;align-items:center;gap:12px;padding:14px 14px 14px 13px;flex-wrap:wrap">' +
       '<div style="width:86px;height:70px;flex-shrink:0;box-sizing:border-box;border-radius:12px;border:1px solid var(--border2);background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;overflow:hidden">' + assureurLogoImg(x.gestionnaire || '', 60, true) + '</div>' +
       '<div style="flex:1;min-width:120px"><div style="font-weight:700;font-size:16px;overflow-wrap:anywhere">' + escapeHtml(x.nom) + '<span title="Montants saisis à la main" style="margin-left:8px;font-size:8px;font-weight:700;letter-spacing:.6px;padding:2px 6px;border-radius:4px;border:1px solid var(--border2);color:var(--text3);vertical-align:2px">MANUEL</span></div><div class="kyf-hd-chips">' + chips + '</div></div>' +
-      '<div style="text-align:right;min-width:110px"><div style="font-weight:700;color:var(--text);font-size:24px;line-height:1.1">' + (v > 0 ? fmt(v, 0) + ' €' : 'Indisponible') + '</div>' + perf + (rt > 0 ? '<div style="font-size:9px;color:var(--text3);margin-top:3px">Retiré : ' + fmt(rt, 0) + ' €</div>' : '') + '</div>' +
+      '<div style="text-align:right;min-width:110px"><div onclick="event.stopPropagation();avRepOpen(\'' + id + '\')" title="Cliquez : répartition de ce plan" class="kyf-rep-val" style="font-weight:700;color:var(--text);font-size:24px;line-height:1.1;cursor:pointer">' + (v > 0 ? fmt(v, 0) + ' €' : 'Indisponible') + '</div>' + perf + (rt > 0 ? '<div style="font-size:9px;color:var(--text3);margin-top:3px">Retiré : ' + fmt(rt, 0) + ' €</div>' : '') + '</div>' +
       '<div class="kyf-hd-actions"><div onclick="event.stopPropagation()" style="white-space:nowrap;position:relative;display:flex;align-items:center;gap:6px"><div style="position:relative">' +
       '<button type="button" onclick="avToggleActionsMenu(\'' + id + '\')" title="Plus d\'actions" aria-label="Plus d\'actions" class="kyf-icon-btn" style="background:none;border:1px solid var(--border2);box-sizing:border-box;border-radius:8px;width:34px;height:34px;justify-content:center;color:var(--text3);cursor:pointer;padding:0;display:inline-flex;align-items:center;font-size:16px;letter-spacing:1px">⋯</button>' +
       '<div id="avActionsMenu-' + id + '" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:190px">' +
+      mi('<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>', 'Répartition', 'avRepOpen(\'' + id + '\')') +
       mi('<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><polyline points="7,10 12,15 17,10"/><path d="M5 21h14"/></svg>', 'Retrait exceptionnel', 'peeRetOpen(\'' + id + '\')') +
       (Array.isArray(x.fonds) && x.fonds.some(f => peeFundTrackable(f)) ? mi(KYF_ICONS.refresh, 'Actualiser les cours', 'peeRefreshVl(\'' + id + '\')') : '') +
       '<div class="kyf-menu-sep" role="separator"></div>' + mi(KYF_ICONS.edit, 'Modifier', 'openPeeModal(\'' + id + '\')') +
@@ -97152,6 +97614,7 @@ function renderAV(){
   const el=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
   el('avKpiTotal',    totalVal>0 ? fmt(totalVal,0)+' €' : '- €');
   el('avKpiTotalSub', allData.length + ' contrat(s)');
+  try{ kyfAvRendementsFill(data); kyfKpiApply(); }catch(e){}
   // Nombre de contrats : à côté du titre MES CONTRATS (le KPI dédié a été retiré)
   { let nbPEE = 0; try{ if(_avFilter === 'all') nbPEE = peeLoad().length; }catch(e){}
     const tot = allData.length + nbPEE;
@@ -97415,7 +97878,7 @@ function renderAV(){
           <div class="kyf-hd-chips"><span class="kyf-hd-chip" data-kyf-chip="${d.type}" style="color:${d.type==='av'?'color-mix(in srgb,'+accentCol+' 40%,var(--text))':accentCol};background:color-mix(in srgb,${accentCol} ${d.type==='av'?30:16}%,transparent)">${TYPE_LBL[d.type]||escapeHtml(d.type)}</span><span class="kyf-hd-chip">${escapeHtml(d.assureur||'-')}${kyfPctTxt(d.fraisGestion)?' · FG '+kyfPctTxt(d.fraisGestion)+'%':''}</span>${d.modeGestion&&d.modeGestion!=='libre'?'<span class="kyf-hd-chip">'+(d.modeGestion==='mandat'?'Sous mandat':'Pilotée')+(kyfPctTxt(d.fraisPilotage)?' +'+kyfPctTxt(d.fraisPilotage)+'%':'')+'</span>':''}${d.versements>0?'<span class="kyf-hd-chip">Versé '+fmt(d.versements,0)+' €</span>':`<span class="kyf-hd-chip"><span onclick="editAV('${d.id}');setTimeout(()=>{const i=document.getElementById('avVersements');if(i){i.scrollIntoView({block:'center'});i.focus();}},350)" title="Sans le total investi, pas de plus-value. À retrouver dans l'espace client (Mes versements) ou le relevé annuel." style="color:#f59e0b;font-weight:700;cursor:pointer;text-decoration:underline;transition:color .15s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='#f59e0b'">Total investi à renseigner</span></span>`}${rach>0?'<span class="kyf-hd-chip">Racheté '+fmt(rach,0)+' €</span>':''}<span class="kyf-hd-chip" title="Rendement annuel moyen depuis l'origine">Rend./an : <span style="font-weight:800;color:${cagr===null?'var(--text3)':cagr>=0?'var(--green)':'var(--red)'}">${cagr!==null?(cagr>=0?'+':'')+cagr.toFixed(1)+'%':'-'}</span></span></div>
         </div>
         <div style="text-align:right;min-width:110px">
-          <div style="font-weight:700;color:var(--text);font-size:24px;line-height:1.1">${val>0?fmt(val,0)+' €':'-'}</div><div class="kyf-hd-perf ${pvPct===null&&pv===null?'':(pvPct!==null?pvPct>=0:pv>=0)?'up':'dn'}" title="Performance depuis l'origine (gain ou perte sur le total investi)">${pvPct!==null?(pvPct>=0?'+':'')+pvPct.toFixed(1)+'%':''}${pvPct!==null&&pv!==null?' · ':''}${pv!==null?(pv>=0?'+':'-')+fmt(Math.abs(pv),0)+' €':''}${pvPct===null&&pv===null?'-':''}</div>${kyfAvEcartAVerifier(d)?'<div style="font-size:9px;font-weight:700;color:#f0b429;margin-top:2px" title="La valeur actuelle saisie diffère de plus de 10 % de la somme fonds euros + unités de compte. KYF retient la valeur saisie. Pour corriger : ⋯ puis Modifier, corrigez la valeur actuelle ou videz-la (KYF utilisera fonds euros + unités de compte). Détail dans le Guide, Mes Contrats.">Écart à vérifier</div>':''}${kyfAvVersNA(d)>0?'<div style="font-size:9px;font-weight:700;color:var(--text3);margin-top:2px" title="Des versements programmés ne sont affectés à aucun support (règle « total investi seul »). Ils sont comptés dans la valeur du contrat au montant versé, sans gain ni perte, jusqu\'au prochain relevé importé ou à la ressaisie de la valeur.">dont '+fmt(kyfAvVersNA(d),0)+' € non affectés</div>':''}
+          <div onclick="event.stopPropagation();avRepOpen('${d.id}')" title="Cliquez : répartition de ce contrat" class="kyf-rep-val" style="font-weight:700;color:var(--text);font-size:24px;line-height:1.1;cursor:pointer">${val>0?fmt(val,0)+' €':'-'}</div><div class="kyf-hd-perf ${pvPct===null&&pv===null?'':(pvPct!==null?pvPct>=0:pv>=0)?'up':'dn'}" title="Performance depuis l'origine (gain ou perte sur le total investi)">${pvPct!==null?(pvPct>=0?'+':'')+pvPct.toFixed(1)+'%':''}${pvPct!==null&&pv!==null?' · ':''}${pv!==null?(pv>=0?'+':'-')+fmt(Math.abs(pv),0)+' €':''}${pvPct===null&&pv===null?'-':''}</div>${kyfAvEcartAVerifier(d)?'<div style="font-size:9px;font-weight:700;color:#f0b429;margin-top:2px" title="La valeur actuelle saisie diffère de plus de 10 % de la somme fonds euros + unités de compte. KYF retient la valeur saisie. Pour corriger : ⋯ puis Modifier, corrigez la valeur actuelle ou videz-la (KYF utilisera fonds euros + unités de compte). Détail dans le Guide, Mes Contrats.">Écart à vérifier</div>':''}${kyfAvVersNA(d)>0?'<div style="font-size:9px;font-weight:700;color:var(--text3);margin-top:2px" title="Des versements programmés ne sont affectés à aucun support (règle « total investi seul »). Ils sont comptés dans la valeur du contrat au montant versé, sans gain ni perte, jusqu\'au prochain relevé importé ou à la ressaisie de la valeur.">dont '+fmt(kyfAvVersNA(d),0)+' € non affectés</div>':''}
           ${(()=>{ const rv = d.releve; if(!rv || !(rv.total>0) || avContratMode(d)!=='import' || val<=0) return ''; const dl = val - rv.total; if(Math.abs(dl) < 1) return '';
             const dt = rv.date ? new Date(rv.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'}) : (d.lastImportAt ? new Date(d.lastImportAt).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'}) : '');
             return '<div title="Valeur du contrat au cours du relevé importé, comparée à la valeur actuelle (cours en direct)" style="font-size:9px;color:var(--text3);margin-top:3px;white-space:nowrap">Relevé' + (dt ? ' du ' + dt : '') + ' : ' + fmt(rv.total,2) + ' € · <span class="' + (dl>=0?'up':'dn') + '" style="font-weight:700">' + (dl>=0?'+':'-') + fmt(Math.abs(dl),0) + ' € en direct</span></div>'; })()}
@@ -97432,6 +97895,7 @@ ${KYF_RETRAIT_CAS[d.type] ? `<div onclick="avCloseActionsMenu('${d.id}');avOpenR
               <div onclick="avCloseActionsMenu('${d.id}');openArbitrageModal('${d.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">⇄ Arbitrer entre supports</div>
               <div class="kyf-menu-sep" role="separator"></div>
               <div class="kyf-menu-h">OUTILS</div>
+              <div id="avRepMenu-${d.id}" onclick="avCloseActionsMenu('${d.id}');avRepOpen('${d.id}')" title="Anneau de répartition de ce contrat : par type, par support" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg> Répartition</div>
               <div id="avJrnMenu-${d.id}" onclick="avCloseActionsMenu('${d.id}');try{kyfNewBadgeSeen('avjrn')}catch(e){};avJrnOpen('${d.id}')" title="Versements, arbitrages, frais et retraits du contrat, dans l'ordre des dates" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="14" y2="17"/></svg> Journal des opérations${(()=>{ let vu = false; try{ vu = localStorage.getItem('kyf-nouveau-badge-avjrn') === '1'; }catch(e){} return (vu || [].concat(KYF_NOUVEAUTES.badge || []).indexOf('avjrn') < 0) ? '' : '<span class="kyf-new-badge" data-new="avjrn" style="display:inline-block;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;margin-left:auto;pointer-events:none">NOUVEAU</span>'; })()}</div>
               <div id="avRefMenu-${d.id}" onclick="avCloseActionsMenu('${d.id}');try{kyfNewBadgeSeen('avref')}catch(e){};avRefreshContrat('${d.id}')" title="Remet à jour d'un coup les fonds du contrat qui ont un ISIN" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Actualiser les cours du contrat${(()=>{ let vu = false; try{ vu = localStorage.getItem('kyf-nouveau-badge-avref') === '1'; }catch(e){} return (vu || [].concat(KYF_NOUVEAUTES.badge || []).indexOf('avref') < 0) ? '' : '<span class="kyf-new-badge" data-new="avref" style="display:inline-block;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;margin-left:auto;pointer-events:none">NOUVEAU</span>'; })()}</div>
               <div id="avFraisMenu-${d.id}" onclick="avCloseActionsMenu('${d.id}');try{kyfNewBadgeSeen('avfrais')}catch(e){};avFraisOpen('${d.id}')" title="Calendrier et historique des frais prélevés par l'assureur" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg> Frais prélevés${(()=>{ let vu = false; try{ vu = localStorage.getItem('kyf-nouveau-badge-avfrais') === '1'; }catch(e){} return (vu || [].concat(KYF_NOUVEAUTES.badge || []).indexOf('avfrais') < 0) ? '' : '<span class="kyf-new-badge" data-new="avfrais" style="display:inline-block;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;margin-left:auto;pointer-events:none">NOUVEAU</span>'; })()}</div>
@@ -102134,6 +102598,35 @@ function orInlineEdit(id, td, currentVal){
           <div onmousedown="livLiquiditeSelect('1')" class="gs-result" style="padding:8px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;color:var(--text)">Disponible immédiatement</div>
           <div onmousedown="livLiquiditeSelect('0')" class="gs-result" style="padding:8px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;color:var(--text)">Bloqué / préavis</div>
         </div>
+<div id="autModalOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999999" onclick="kyfAutClose()"></div>
+<div id="autModal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(460px,94vw);max-height:92vh;overflow:auto;z-index:10000000;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;font-family:'Inter',sans-serif;box-shadow:0 12px 48px rgba(0,0,0,0.4)">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border)">
+    <span id="autModalTitle" style="font-weight:700;font-size:12px;letter-spacing:1px;color:var(--text)">AJOUTER UN BIEN</span>
+    <button type="button" onclick="kyfAutClose()" class="kyf-modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div style="padding:18px 20px;display:flex;flex-direction:column;gap:14px">
+    <input id="autId" type="hidden" value="">
+    <label class="kyf-aut-f"><span>NOM DU BIEN</span><input id="autNom" type="text" placeholder="Ex : Porsche 911 de 1985" maxlength="80"></label>
+    <div class="kyf-aut-f"><span>TYPE</span><div style="position:relative"><button type="button" id="autTypeBtn" class="kyf-csel-btn" onclick="kyfCSelToggle('autType')" onkeydown="kyfCSelKeydown(event,'autType')" onblur="setTimeout(()=>{const d=document.getElementById('autTypeDrop');if(d)d.style.display='none'},150)" style="width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 10px;border-radius:6px;outline:none;cursor:pointer;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:6px"><span id="autTypeBtnLabel">Véhicule</span><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polyline points="6 9 12 15 18 9"/></svg></button><select id="autType" style="display:none"></select></div></div>
+    <div style="display:flex;gap:12px">
+      <label class="kyf-aut-f" style="flex:1"><span>VALEUR ESTIMÉE (€)</span><input id="autVal" type="number" min="0" step="any" placeholder="0"></label>
+      <div class="kyf-aut-f" style="flex:1"><span>DATE DE L'ESTIMATION</span><input type="hidden" id="autValDate" value=""><button type="button" id="autValDateBtn" class="kyf-csel-btn" data-kyf-date="autValDate" aria-haspopup="dialog" aria-expanded="false" style="width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 10px;border-radius:6px;outline:none;cursor:pointer;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:6px"><span id="autValDateBtnLabel">JJ/MM/AAAA</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button></div>
+    </div>
+    <div style="display:flex;gap:12px">
+      <label class="kyf-aut-f" style="flex:1"><span>PRIX D'ACHAT (€)</span><input id="autAchat" type="number" min="0" step="any" placeholder="facultatif"></label>
+      <div class="kyf-aut-f" style="flex:1"><span>DATE D'ACHAT</span><input type="hidden" id="autAchatDate" value=""><button type="button" id="autAchatDateBtn" class="kyf-csel-btn" data-kyf-date="autAchatDate" aria-haspopup="dialog" aria-expanded="false" style="width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 10px;border-radius:6px;outline:none;cursor:pointer;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:6px"><span id="autAchatDateBtnLabel">JJ/MM/AAAA</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button></div>
+    </div>
+    <label class="kyf-aut-f"><span>NOTES</span><input id="autNotes" type="text" placeholder="Source de l'estimation, état, assurance..." maxlength="160"></label>
+    <label style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text2);cursor:pointer"><input id="autInclItem" type="checkbox" checked style="accent-color:var(--accent);width:14px;height:14px">Compter ce bien dans mon patrimoine total</label>
+    <div id="autErr" style="color:#ff5a6a;font-size:10px;min-height:12px"></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button type="button" onclick="kyfAutClose()" class="kyf-aut-b">ANNULER</button>
+      <button type="button" onclick="kyfAutSaveForm()" class="kyf-aut-b kyf-aut-bp">ENREGISTRER</button>
+    </div>
+  </div>
+</div>
+
+<div id="autTypeDrop" style="display:none;position:fixed;z-index:10000060;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,0.35);max-height:220px;overflow-y:auto"></div>
 <div id="orModalOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10000"></div>
 <div id="orModal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
   width:min(900px,96vw);height:min(560px,94vh);z-index:10001;background:var(--bg2);border:1px solid var(--border2);
