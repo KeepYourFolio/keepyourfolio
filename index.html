@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_9_0_45.html
+  @file        : KYF_SHARE_beta_2_9_0_47.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.9.0.45
+  @version     : Beta 2.9.0.47
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7335,7 +7335,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.9.0.45</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.9.0.47</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -7750,10 +7750,18 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
       </div>
     </div>
 
-    <!-- Ma famille (2.9.0.01) -->
-    <div class="card" style="margin-bottom:14px">
-      <div class="card-title">MA FAMILLE</div>
-      <div style="font-size:10px;color:var(--text3);line-height:1.7;margin:6px 0 4px">Les prénoms remplacent « Moi », « Conjoint(e) », « Enfant » dans le champ « À qui » de vos contrats et positions. La date de naissance servira à signaler ce que chaque enveloppe permet.</div>
+    <!-- Ma famille (2.9.0.01) ; interrupteur et cadre modernisé (2.9.0.47) -->
+    <div class="card" id="famCard" style="margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <div style="flex:1;min-width:220px">
+          <div class="card-title" style="margin:0">MA FAMILLE</div>
+          <div id="famSub" style="font-size:10px;color:var(--text3);line-height:1.7;margin-top:6px">Les prénoms remplacent « Moi », « Conjoint(e) », « Enfant » dans le champ « À qui » de vos contrats et positions. La date de naissance servira à signaler ce que chaque enveloppe permet.</div>
+        </div>
+        <label class="kyf-toggle" id="famToggle" title="Suivi par personne : à éteindre si vous gérez seul votre patrimoine (masque tous les choix « À qui »)" style="display:inline-flex;align-items:center;gap:9px;width:auto;height:auto;cursor:pointer">
+          <span style="font-size:9px;font-weight:700;letter-spacing:.8px;color:var(--text3)" id="famToggleLbl">SUIVI PAR PERSONNE</span>
+          <span style="position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0"><input type="checkbox" id="famOnChk" checked onchange="kyfFamToggle(this.checked)" aria-label="Suivi par personne" style="position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer"><span class="kyf-toggle-track"></span><span class="kyf-toggle-thumb"></span></span>
+        </label>
+      </div>
       <div id="profilFamille"></div>
     </div>
 
@@ -25223,8 +25231,18 @@ function kyfFamSave(l){
   kyfFamApply();
   try{ if(typeof kyfOnDataChanged === 'function') kyfOnDataChanged(); }catch(e){}
 }
+const KYF_FAM_ON_KEY = 'kyf-fam-actif';   // 2.9.0.47 : interrupteur « Suivi par personne » (actif par défaut ; '0' = éteint)
+function kyfFamOn(){ try{ return localStorage.getItem(KYF_FAM_ON_KEY) !== '0'; }catch(e){ return true; } }
+function kyfFamToggle(on){
+  try{ if(on) localStorage.removeItem(KYF_FAM_ON_KEY); else localStorage.setItem(KYF_FAM_ON_KEY, '0'); }catch(e){}
+  kyfFamApply(); kyfFamRender();
+  try{ kyfFamFiltrePick((function(){ try{ return localStorage.getItem(KYF_FAM_FILT_KEY) || ''; }catch(e){ return ''; } })()); }catch(e){}
+  try{ if(typeof kyfOnDataChanged === 'function') kyfOnDataChanged(); }catch(e){}
+  try{ showToast(on ? 'Suivi par personne activé' : 'Suivi par personne désactivé : les choix « À qui » sont masqués'); }catch(e){}
+}
 function kyfFamApply(){   // les libellés « À qui » prennent les prénoms
   Object.keys(KYF_TITU).forEach(k => delete KYF_TITU[k]);
+  document.documentElement.classList.toggle('kyf-fam-off', !kyfFamOn());   // éteint : les repères restent en mémoire (une modification ne perd jamais un « À qui » saisi), seuls leur affichage et leurs choix sont masqués
   kyfFamLoad().forEach(m => { KYF_TITU[m.id] = [m.prenom || m.lbl, m.col]; });
 }
 function kyfFamAge(iso){
@@ -25233,7 +25251,7 @@ function kyfFamAge(iso){
 }
 function kyfFamSet(id, champ, v){
   const l = kyfFamLoad(), m = l.find(x => x.id === id); if(!m) return;
-  if(champ === 'prenom') m.prenom = String(v || '').trim().slice(0, 30);
+  if(champ === 'prenom'){ m.prenom = String(v || '').trim().slice(0, 30); try{ const av = document.querySelector('.kyf-fam-row[data-fam="' + id + '"] .kyf-fam-av'); if(av) av.textContent = (m.prenom || m.lbl || '?').charAt(0).toUpperCase(); }catch(e){} }
   else if(champ === 'naissance') m.naissance = /^\d{4}-\d{2}-\d{2}$/.test(v || '') ? v : '';
   else if(champ === 'role' && !m.fixe && KYF_FAM_ROLES[v]) m.role = v;
   kyfFamSave(l); if(champ !== 'prenom') kyfFamRender();
@@ -25284,6 +25302,7 @@ const KYF_FAM_FILT_KEY = 'kyf-fam-filtre';
 function kyfFamTiOf(e){ if(e && e.contratId){ try{ const c = avLoad().find(x => x.id === e.contratId); if(c) return c.titulaire; }catch(_){} } return e ? e.titulaire : ''; }
 function kyfFamFiltreOpts(){
   const c = {}; let nNone = 0, nAtt = 0;
+  if(!kyfFamOn()) return { c:c, nNone:0, nAtt:0 };
   const cnt = t => { if(KYF_TITU[t]){ c[t] = (c[t] || 0) + 1; nAtt++; } else nNone++; };
   try{ (Array.isArray(ETF) ? ETF : []).filter(e => e && !e.contratId).forEach(e => cnt(e.titulaire)); }catch(_){}
   try{ avLoad().forEach(d => cnt(d.titulaire)); }catch(_){}
@@ -25387,7 +25406,7 @@ function kyfEnvUnifRender(){
   if(!on){ if(charts.envDonut){ try{ charts.envDonut.destroy(); }catch(_){} charts.envDonut = null; } return; }
   const rows = kyfEnvUnifData(), tot = rows.reduce((a, r) => a + r.val, 0), tT = rows.filter(r => r.kind === 'titres').reduce((a, r) => a + r.val, 0), tA = tot - tT;
   const dots = r => Object.keys(r.tis).filter(t => KYF_TITU[t]).map(t => '<span title="' + escapeHtml(KYF_TITU[t][0]) + '" style="display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;background:' + KYF_TITU[t][1] + '"></span>').join('') + Object.keys(r.tis).filter(t => KYF_TITU[t]).map(t => escapeHtml(KYF_TITU[t][0])).join(', ');
-  const fam = rows.some(r => Object.keys(r.tis).some(t => KYF_TITU[t]));
+  const fam = kyfFamOn() && rows.some(r => Object.keys(r.tis).some(t => KYF_TITU[t]));
   const cl = v => v > 0 ? 'var(--green)' : v < 0 ? 'var(--red)' : 'var(--text3)', only = kyfEnvEtfOnly(), hasC = rows.some(r => r.kind === 'assurance');
   card.innerHTML = '<div class="card-title" style="margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap"><span>TOUTES MES ENVELOPPES</span>'
     + (hasC ? '<label style="display:flex;align-items:center;gap:8px;font-size:11px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--text3);cursor:pointer" title="Dans le détail d\'un contrat, n\'afficher que les ETF et actions (les fonds gérés, obligations, SCPI et autres supports sont masqués).">Détail des contrats : ETF et actions seulement<span class="kyf-toggle"><input type="checkbox" id="envEtfOnlyChk"' + (only ? ' checked' : '') + ' onchange="kyfEnvEtfOnlySet(this.checked)"><span class="kyf-toggle-track"></span><span class="kyf-toggle-thumb"></span></span></label>' : '') + '</div>'
@@ -25437,7 +25456,7 @@ function kyfEnvOpen(kind){
   if(kind === 'assurance'){ try{ showPage('assurance', null); }catch(_){} return; }
   try{ localStorage.setItem(KYF_ENV_VUE_KEY, 'pos'); }catch(_){} kyfEnvUnifRender();
 }
-function kyfTiDot(t){ return KYF_TITU[t] ? '<span class="kyf-ti-dot" title="À qui : ' + escapeHtml(KYF_TITU[t][0]) + '" style="display:inline-block;width:8px;height:8px;border-radius:50%;margin-left:7px;flex-shrink:0;background:' + KYF_TITU[t][1] + '"></span>' : ''; }
+function kyfTiDot(t){ return (KYF_TITU[t] && kyfFamOn()) ? '<span class="kyf-ti-dot" title="À qui : ' + escapeHtml(KYF_TITU[t][0]) + '" style="display:inline-block;width:8px;height:8px;border-radius:50%;margin-left:7px;flex-shrink:0;background:' + KYF_TITU[t][1] + '"></span>' : ''; }
 function kyfPgField(sel){   // menu KYF (variante champ) pour un <select> : survol, clavier, clic droit ; à rappeler après chaque remplissage
   if(!sel || typeof kyfPgInit !== 'function') return;
   sel.dataset.kyfPgLook = 'field'; sel.dataset.kyfPgTi = '1';
@@ -25471,12 +25490,18 @@ function kyfFamSignaux(){   // repères d'âge : jamais de blocage, juste une in
 }
 function kyfFamRender(){
   const box = document.getElementById('profilFamille'); if(!box) return;
+  const _on = kyfFamOn(), _chk = document.getElementById('famOnChk'), _sub = document.getElementById('famSub');
+  if(_chk) _chk.checked = _on; if(_sub) _sub.style.display = _on ? '' : 'none';
+  if(!_on){
+    box.innerHTML = '<div class="kyf-fam-off-box" role="note"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:var(--text3);margin-top:1px" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><div style="font-size:11px;color:var(--text2);line-height:1.7"><b style="color:var(--text)">Suivi par personne désactivé.</b> Vous suivez seul votre patrimoine : les choix « À qui », les filtres par personne et les pastilles de couleur sont masqués. Ce qui était déjà saisi est conservé si vous réactivez l\'interrupteur.</div></div>';
+    return;
+  }
   try{ kyfNewBadgeSeen('famille'); }catch(_){}
   const l = kyfFamLoad(), pat = kyfFamPatrimoine(), fld = 'box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);border-radius:8px;padding:9px 11px;font-size:11px;font-family:Inter,sans-serif;outline:none';
   box.innerHTML = l.map(m => {
     const age = kyfFamAge(m.naissance);
-    return '<div class="kyf-fam-row" data-fam="' + m.id + '" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--border)">'
-      + '<span style="width:10px;height:10px;border-radius:50%;background:' + m.col + ';flex-shrink:0"></span>'
+    return '<div class="kyf-fam-row" data-fam="' + m.id + '" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 14px;margin-top:10px;border:1px solid var(--border);border-radius:12px;background-image:linear-gradient(90deg,color-mix(in srgb,' + m.col + ' 26%,transparent) 0%,transparent 55%)">'
+      + '<span class="kyf-fam-av" aria-hidden="true" style="width:34px;height:34px;border-radius:50%;background:color-mix(in srgb,' + m.col + ' 22%,transparent);border:2px solid ' + m.col + ';color:' + m.col + ';display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;box-sizing:border-box">' + escapeHtml((m.prenom || m.lbl).charAt(0).toUpperCase()) + '</span>'
       + '<input type="text" id="famP_' + m.id + '" value="' + escapeHtml(m.prenom) + '" maxlength="30" placeholder="' + escapeHtml(m.lbl) + '" aria-label="Prénom" onchange="kyfFamSet(\'' + m.id + '\',\'prenom\',this.value)" style="' + fld + ';width:150px">'
       + (m.fixe ? '<span style="font-size:10px;color:var(--text3);min-width:84px">' + (m.role === 'famille' ? 'Foyer entier' : escapeHtml(m.lbl)) + '</span>'
         : '<select id="famR_' + m.id + '" onchange="kyfFamSet(\'' + m.id + '\',\'role\',this.value)" style="' + fld + ';width:120px" data-kyf-pg-look="field">' + Object.keys(KYF_FAM_ROLES).map(k => '<option value="' + k + '"' + (k === m.role ? ' selected' : '') + '>' + KYF_FAM_ROLES[k] + '</option>').join('') + '</select>')
@@ -25485,7 +25510,7 @@ function kyfFamRender(){
       + '<b class="kyf-fam-val" title="Patrimoine rattaché à ' + escapeHtml(m.prenom || m.lbl) + ' (positions et contrats)" style="margin-left:auto;font-size:13px;white-space:nowrap;color:' + (pat[m.id] > 0 ? 'var(--text)' : 'var(--text3)') + '">' + (pat[m.id] > 0 ? fmt(pat[m.id], 0) + ' €' : '-') + '</b>'
       + (m.fixe ? '' : '<button type="button" class="kyf-icon-btn" onclick="kyfFamDel(\'' + m.id + '\')" title="Retirer ce membre" aria-label="Retirer ce membre" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:6px;border-radius:6px;display:inline-flex;align-items:center" onmouseover="this.style.color=\'var(--red)\'" onmouseout="this.style.color=\'var(--text3)\'">' + (typeof KYF_ICONS !== 'undefined' && KYF_ICONS.trash ? KYF_ICONS.trash : '×') + '</button>')
       + '</div>';
-  }).join('') + (pat[''] > 0 ? '<div class="kyf-fam-row" data-fam="none" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)"><span style="width:10px;height:10px;border-radius:50%;border:2px solid var(--border2);box-sizing:border-box;flex-shrink:0"></span><span style="font-size:11px;color:var(--text3)">Non attribué (sans « À qui »)</span><b style="margin-left:auto;font-size:13px;color:var(--text2)">' + fmt(pat[''], 0) + ' €</b></div>' : '') + (() => { const sg = kyfFamSignaux(); return sg.length ? '<div class="kyf-fam-signaux" role="note" style="margin-top:14px;padding:10px 12px;border:1px solid var(--border2);border-radius:10px;background:var(--btn-secondary-bg);display:flex;flex-direction:column;gap:6px">' + sg.map(t => '<div style="display:flex;gap:8px;align-items:flex-start;font-size:11px;color:var(--text2);line-height:1.6"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:3px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><span>' + escapeHtml(t) + '</span></div>').join('') + '</div>' : ''; })() + (l.length < KYF_FAM_MAX && l.some(x => x.fixe) && l.filter(x => !x.fixe).length < 4 ? '<div style="margin-top:14px"><button type="button" class="kyf-add-btn" onclick="kyfFamAdd()">AJOUTER UN MEMBRE</button></div>' : '');
+  }).join('') + (pat[''] > 0 ? '<div class="kyf-fam-row" data-fam="none" style="display:flex;align-items:center;gap:12px;padding:12px 14px;margin-top:10px;border:1px dashed var(--border2);border-radius:12px"><span style="width:10px;height:10px;border-radius:50%;border:2px solid var(--border2);box-sizing:border-box;flex-shrink:0"></span><span style="font-size:11px;color:var(--text3)">Non attribué (sans « À qui »)</span><b style="margin-left:auto;font-size:13px;color:var(--text2)">' + fmt(pat[''], 0) + ' €</b></div>' : '') + (() => { const sg = kyfFamSignaux(); return sg.length ? '<div class="kyf-fam-signaux" role="note" style="margin-top:14px;padding:10px 12px;border:1px solid var(--border2);border-radius:10px;background:var(--btn-secondary-bg);display:flex;flex-direction:column;gap:6px">' + sg.map(t => '<div style="display:flex;gap:8px;align-items:flex-start;font-size:11px;color:var(--text2);line-height:1.6"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:3px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><span>' + escapeHtml(t) + '</span></div>').join('') + '</div>' : ''; })() + (l.length < KYF_FAM_MAX && l.some(x => x.fixe) && l.filter(x => !x.fixe).length < 4 ? '<div style="margin-top:14px"><button type="button" class="kyf-add-btn" onclick="kyfFamAdd()">AJOUTER UN MEMBRE</button></div>' : '');
   l.forEach(m => { const rs = document.getElementById('famR_' + m.id); if(rs) kyfPgField(rs); });
   l.forEach(m => { if(m.id !== 'ambre') try{ kyfDateSetValue('famN_' + m.id, m.naissance, 'Naissance'); }catch(e){} });
 }
@@ -42292,7 +42317,7 @@ function renderETFTable(lp){
   const collapsedEnvs = etfCollapsedEnvsLoad();
 
   const _favSet = new Set(kyfFavLoad().etf);
-  const _multiTi = new Set(ETF.map(x => KYF_TITU[x.titulaire] ? x.titulaire : '')).size > 1;   // plusieurs titulaires : un repère de couleur sur chaque ligne
+  const _multiTi = kyfFamOn() && new Set(ETF.map(x => KYF_TITU[x.titulaire] ? x.titulaire : '')).size > 1;   // plusieurs titulaires : un repère de couleur sur chaque ligne
   const _multiCto = kyfCtoComptes().length > 1;   // plusieurs CTO : le compte est rappelé sur chaque ligne CTO
   let rows = '';
   let lastEnv = null;
@@ -48010,7 +48035,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.9.0.45\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.9.0.47\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -51772,6 +51797,12 @@ body.kyf-reorg [data-kyf-key]:not(.kyf-card-chosen):not(.sortable-drag){animatio
 .kyf-dc-chip{transition:border-color .15s,color .15s,background .15s}
 .kyf-dc-chip:hover{color:var(--accent) !important;border-color:var(--accent) !important}
 .kyf-env-chip{font-size:8px;font-weight:700;letter-spacing:.8px;color:var(--text3);border:1px solid var(--border2);border-radius:5px;padding:1px 5px;white-space:nowrap}
+/* 2.9.0.47 : suivi par personne éteint (MA FAMILLE) : tous les champs « À qui » disparaissent */
+html.kyf-fam-off #etfTiWrap, html.kyf-fam-off #livTituWrap, html.kyf-fam-off #cryTituWrap,
+html.kyf-fam-off div:has(> #sciTitu), html.kyf-fam-off div:has(> #scpiTitu), html.kyf-fam-off div:has(> #immoTitu), html.kyf-fam-off div:has(> #orTitu), html.kyf-fam-off div:has(> #avTitulaire){ display:none !important; }
+.kyf-fam-row{ transition:border-color .15s,background .15s,transform .15s; }
+.kyf-fam-row:hover{ border-color:var(--border2) !important; }
+.kyf-fam-off-box{ display:flex; align-items:flex-start; gap:12px; padding:14px 16px; margin-top:12px; border:1px dashed var(--border2); border-radius:12px; background:var(--btn-secondary-bg); }
 .kyf-toggle input:not(:checked):hover ~ .kyf-toggle-track { background:color-mix(in srgb,var(--text3) 40%,var(--border2)); }
 .kyf-toggle input:checked:hover ~ .kyf-toggle-track { filter:brightness(1.18); }
 .kyf-toggle input:hover ~ .kyf-toggle-thumb { box-shadow:0 0 0 3px rgba(255,255,255,0.14),0 1px 2px rgba(0,0,0,0.35); }
@@ -61507,14 +61538,14 @@ function kyfRptTiOf(it){
   return '';
 }
 function kyfRptTiName(t){ return (typeof KYF_TITU !== 'undefined' && KYF_TITU[t]) ? escapeHtml(KYF_TITU[t][0]) : '-'; }
-function kyfRptFamOn(items){ try{ return items.some(it => (typeof KYF_TITU !== 'undefined') && KYF_TITU[kyfRptTiOf(it)]); }catch(_){ return false; } }
+function kyfRptFamOn(items){ try{ if(!kyfFamOn()) return false; return items.some(it => (typeof KYF_TITU !== 'undefined') && KYF_TITU[kyfRptTiOf(it)]); }catch(_){ return false; } }
 function kyfRptJrn(){
   let h = kyfRptHead('Journal assurance vie et PER', 'Contrats, rendement annuel et dernières opérations');
   let cs = []; try{ cs = avLoad(); }catch(_){}
   if(!cs.length) return h + '<p class="mu">Aucun contrat d\'assurance vie ou de PER pour le moment.</p>';
   const fr = d => String(d).slice(8, 10) + '/' + String(d).slice(5, 7) + '/' + String(d).slice(0, 4), today = kyfParisNow().date;
   cs.forEach(c => {
-    const val = avContratValue(c) || 0, vers = parseFloat(c.versements) || 0, ti = (typeof KYF_TITU !== 'undefined' && KYF_TITU[c.titulaire]) ? KYF_TITU[c.titulaire][0] : '';
+    const val = avContratValue(c) || 0, vers = parseFloat(c.versements) || 0, ti = (typeof KYF_TITU !== 'undefined' && kyfFamOn() && KYF_TITU[c.titulaire]) ? KYF_TITU[c.titulaire][0] : '';
     let tri = null; try{ tri = avTri(c); }catch(_){}
     h += '<h2>' + escapeHtml(c.contratNom || c.assureur || 'Contrat') + ' <span>' + escapeHtml(String(c.type || '').toUpperCase()) + (ti ? ' · ' + escapeHtml(ti) : '') + '</span></h2>';
     h += '<div class="kp"><div><span>VALEUR</span><b>' + kyfRptE(val) + '</b></div><div><span>TOTAL VERSÉ</span><b>' + (vers > 0 ? kyfRptE(vers) : '-') + '</b></div><div><span>RENDEMENT ANNUEL</span><b>' + (tri && tri.ok ? kyfRptP(tri.pct) : '-') + '</b>' + (tri && tri.ok && tri.estime ? '<small>estimé</small>' : (tri && !tri.ok ? '<small>' + escapeHtml(tri.why || '') + '</small>' : '')) + '</div></div>';
@@ -61535,7 +61566,7 @@ function kyfRptSyn(){
   h += '<h2>Répartition par classe d\'actifs</h2><div class="row"><div>' + kyfRptDonut(parts) + '</div><div class="fx">'
     + kyfRptTable(['Classe', 'Valeur', 'Part'], parts.map(x => ['<i style="background:' + x.c + '"></i>' + escapeHtml(x.n), kyfRptE(x.v), fmt(x.v / total * 100, 1) + ' %']).concat([['<b>Total</b>', '<b>' + kyfRptE(total) + '</b>', '100 %']]), [1, 2]) + '</div></div>';
   try{
-    const fp = kyfFamPatrimoine(), mem = kyfFamLoad().filter(m => fp[m.id] > 0).map(m => ({ n:(KYF_TITU[m.id] ? KYF_TITU[m.id][0] : (m.prenom || m.lbl)), c:m.col, v:fp[m.id] }));
+    const fp = kyfFamPatrimoine(), mem = (!kyfFamOn() ? [] : kyfFamLoad()).filter(m => fp[m.id] > 0).map(m => ({ n:(KYF_TITU[m.id] ? KYF_TITU[m.id][0] : (m.prenom || m.lbl)), c:m.col, v:fp[m.id] }));
     if(mem.length){
       if(fp[''] > 0) mem.push({ n:'Non attribué', c:'#8891a0', v:fp[''] });
       const t2 = mem.reduce((a, x) => a + x.v, 0);
@@ -68490,15 +68521,13 @@ function kyfGeoMap(D){
           let nom = KYF_GEO_CM[code] ? KYF_GEO_CM[code].n : '';
           if(!nom){ try{ nom = new Intl.DisplayNames(['fr'], { type:'region' }).of(code) || ''; }catch(x){} }
           if(!nom){ try{ nom = tooltip && typeof tooltip.text === 'function' ? String(tooltip.text() || '') : ''; }catch(x){} }
-          const tete = '<div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:4px">' + escapeHtml(nom || code) + '</div>';
-          if(eur > 0){
-            tip.innerHTML = tete + '<div style="font-size:10px;color:#c8d8f0">' + kyfGeoPct(data[code], 1) + ' · ' + kyfGeoEur(eur) + '</div>';
-          } else if(code === 'FR'){
-            // petit clin d'œil : France sans aucune exposition
-            tip.innerHTML = tete + '<div style="display:flex;height:3px;border-radius:2px;overflow:hidden;margin:0 0 6px"><span style="flex:1;background:#2d5bff"></span><span style="flex:1;background:#f4f6fb"></span><span style="flex:1;background:#ff3b4a"></span></div><div style="font-size:10px;color:#c8d8f0">Keep Your Folio</div><div style="font-size:10px;color:#c8d8f0">Imaginé en France</div>';
-          } else {
-            tip.innerHTML = tete + '<div style="font-size:10px;color:#9fb3d1">Aucune donnée</div>';
-          }
+          // 2.9.0.46 : la bulle suit le style d'infobulle choisi dans Paramètres (Sobre, Navigateur, KYF, Aucun, forme, taille)
+          const nm = nom || code; let l2 = '', pv = '';
+          if(eur > 0){ pv = kyfGeoPct(data[code], 1) + ' \u00b7 ' + kyfGeoEur(eur); l2 = pv; }
+          else if(code === 'FR'){ pv = 'Keep Your Folio \u00b7 Imaginé en France'; l2 = pv; }
+          else { pv = 'Aucune donnée'; l2 = pv; }
+          kyfTipPreset(tip, (typeof kyfSparkStyle === 'function') ? kyfSparkStyle() : 'sobre', nm + '\n' + l2, { d: nm, v: pv, e: '' }, false);
+          tip.style.whiteSpace = 'pre'; tip.style.maxWidth = 'none'; tip.style.overflow = 'visible';
           tip.style.display = 'block';
         }
         e.preventDefault();
@@ -73476,6 +73505,10 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.47 · 29/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">MA FAMILLE : interrupteur « Suivi par personne » (éteint, tous les choix « À qui », filtres et pastilles disparaissent, rien n'est effacé) et cadre modernisé (cartes par membre avec initiale colorée, dégradé comme les contrats)</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.46 · 29/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Carte du monde (Géographique) : l'infobulle d'un pays suit maintenant le style d'infobulle choisi dans Paramètres</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.45 · 29/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Menus ⋯ : séparateurs et sections cohérents partout (le bouton Supprimer toujours isolé en bas)</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.44 · 29/10/2026</div>
@@ -82208,7 +82241,7 @@ function renderLivrets(){
         <div style="display:flex;align-items:center;gap:8px">
           ${getLivretLogo(d.banque)}
           <div>
-            <span>${escapeHtml(d.banque)}</span>${KYF_TITU[d.titulaire] ? `<span class="kyf-ti-dot" title="À qui : ${escapeHtml(KYF_TITU[d.titulaire][0])}" style="display:inline-block;width:8px;height:8px;border-radius:50%;margin-left:7px;background:${KYF_TITU[d.titulaire][1]}"></span>` : ''}
+            <span>${escapeHtml(d.banque)}</span>${(KYF_TITU[d.titulaire] && kyfFamOn()) ? `<span class="kyf-ti-dot" title="À qui : ${escapeHtml(KYF_TITU[d.titulaire][0])}" style="display:inline-block;width:8px;height:8px;border-radius:50%;margin-left:7px;background:${KYF_TITU[d.titulaire][1]}"></span>` : ''}
             ${recSub}${kyfLivNextDebitSub(d)}
             ${forecastSub}
           </div>
@@ -97023,6 +97056,7 @@ function kyfAvTiFill(){   // options du champ TITULAIRE = membres de MA FAMILLE
   sel.innerHTML = '<option value="">Aucun repère</option>' + Object.keys(KYF_TITU).map(k => '<option value="' + k + '">' + escapeHtml(KYF_TITU[k][0]) + '</option>').join(''); sel.value = KYF_TITU[cur] ? cur : ''; kyfPgField(sel);
 }
 function kyfAvTiMenu(id, el){   // menu des couleurs, aligné à gauche du cadre
+  if(!kyfFamOn()) return;
   avToggleActionsMenu('ti-' + id);
   const m = document.getElementById('avActionsMenu-ti-' + id);
   if(m && m.style.display === 'block' && el) m.style.left = Math.max(8, el.getBoundingClientRect().left) + 'px';
@@ -97373,7 +97407,7 @@ function renderAV(){
     return `<div class="card" data-kyf-tint="${d.type}" style="padding:0;position:relative;border-radius:14px;background-image:linear-gradient(90deg,color-mix(in srgb,${accentCol} 26%,transparent) 0%,transparent 55%)">
       <div>
       <div onclick="avToggleCard('${d.id}')" style="cursor:pointer;display:flex;align-items:center;gap:12px;padding:14px 14px 14px 13px;flex-wrap:wrap">
-        ${(() => { const _tc = KYF_TITU[d.titulaire] ? KYF_TITU[d.titulaire][1] : '';
+        ${(() => { const _tc = (KYF_TITU[d.titulaire] && kyfFamOn()) ? KYF_TITU[d.titulaire][1] : '';
           const _opt = (v, lbl, col) => `<div onclick="event.stopPropagation();avCloseActionsMenu('ti-${d.id}');kyfAvTitulaire('${d.id}','${v}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:8px;${(d.titulaire || '') === v ? 'font-weight:700;' : ''}" onmouseover="this.style.background='var(--hov-bg)'" onmouseout="this.style.background=''"><span style="width:12px;height:12px;border-radius:50%;box-sizing:border-box;border:2px solid ${col};${v ? 'background:' + col + ';' : ''}flex-shrink:0"></span>${lbl}${(d.titulaire || '') === v ? '<span style="margin-left:auto;color:var(--green)">✓</span>' : ''}</div>`;
           return `<div role="button" tabindex="0" onclick="event.stopPropagation();kyfAvTiMenu('${d.id}',this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();kyfAvTiMenu('${d.id}',this)}" title="Choisir à qui appartient ce contrat (couleur du cadre)" style="cursor:pointer;width:86px;height:70px;flex-shrink:0;box-sizing:border-box;border-radius:12px;border:${_tc ? '2px solid ' + _tc : '1px solid var(--border2)'};background:${_tc ? 'color-mix(in srgb,' + _tc + ' 14%,transparent)' : 'rgba(255,255,255,0.04)'};display:flex;align-items:center;justify-content:center;overflow:hidden">${assureurLogoImg(d.assureur, 60, true)}<div id="avActionsMenu-ti-${d.id}" style="display:none;position:absolute;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:150px;text-align:left">${_opt('', 'Aucun repère', 'var(--border2)')}${Object.keys(KYF_TITU).map(k => _opt(k, escapeHtml(KYF_TITU[k][0]), KYF_TITU[k][1])).join('')}</div></div>`; })()}
         <div style="flex:1;min-width:120px">
@@ -209758,6 +209792,7 @@ export { WorkerMessageHandler };
   }
   function fix(root){
     scale(root);
+    if(root.style.backgroundColor === 'transparent') return;   // style KYF / Saison : la pastille colorée porte son propre fond et ses couleurs, rien à corriger (2.9.0.46)
     const bg = tipBg(), neutral = (typeof getTipTextColor === 'function') ? getTipTextColor() : '#fff';
     const els = [root].concat([].slice.call(root.querySelectorAll('[style*="color"]')));
     els.forEach(el => {
