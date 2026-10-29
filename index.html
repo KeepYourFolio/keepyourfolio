@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_9_0_41.html
+  @file        : KYF_SHARE_beta_2_9_0_42.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.9.0.41
+  @version     : Beta 2.9.0.42
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7335,7 +7335,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.9.0.41</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.9.0.42</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -48007,7 +48007,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.9.0.41\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.9.0.42\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -73468,6 +73468,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.42 · 29/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PEE : champ Ticker du cours (0P...) sur chaque fonds, utilisé quand l'ISIN est inconnu de StatsAVie</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.41 · 28/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance vie / PER : un Fonds géré ou une Obligation avec un ticker de fonds (0P...) remonte dans le Portefeuille et suit le cours du jour, sans changer de type</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.9.0.40 · 28/10/2026</div>
@@ -93768,7 +93770,7 @@ function peeIsinOk(v){
 function peeNumOrNull(v){ const n = typeof v === 'number' ? v : parseFloat(String(v == null ? '' : v).replace(/\s/g, '').replace(',', '.')); return isFinite(n) && n > 0 ? n : null; }
 function peeFondsClean(it){
   const a = it && Array.isArray(it.fonds) ? it.fonds : [];
-  return a.filter(f => f && typeof f === 'object').map(f => ({ nom: String(f.nom || '').slice(0, 120), isin: String(f.isin || '').trim().toUpperCase().slice(0, 12), parts: peeNumOrNull(f.parts), vl: peeNumOrNull(f.vl), vlPrev: peeNumOrNull(f.vlPrev), vlPrevDate: /^\d{4}-\d{2}-\d{2}$/.test(String(f.vlPrevDate || '')) ? String(f.vlPrevDate) : '' }));
+  return a.filter(f => f && typeof f === 'object').map(f => ({ nom: String(f.nom || '').slice(0, 120), isin: String(f.isin || '').trim().toUpperCase().slice(0, 12), tk: String(f.tk || '').trim().toUpperCase().slice(0, 24), parts: peeNumOrNull(f.parts), vl: peeNumOrNull(f.vl), vlPrev: peeNumOrNull(f.vlPrev), vlPrevDate: /^\d{4}-\d{2}-\d{2}$/.test(String(f.vlPrevDate || '')) ? String(f.vlPrevDate) : '' }));
 }
 function peeFondsCalc(fonds){
   const n = fonds.length; let tot = 0, miss = 0;
@@ -93788,25 +93790,45 @@ async function kyfFondsVlEur(isin){
     return isFinite(v) && v > 0 ? Math.round(v * 10000) / 10000 : null;
   }catch(e){ return null; }
 }
+// 2.9.0.42 : cours du jour d'un fonds par son ticker (ex. 0P0000YGEN.F), repli quand l'ISIN est inconnu de StatsAVie
+async function kyfFondsVlTk(tk){
+  try{
+    const q = await fetchPrice(tk);
+    if(!q || !(q.price > 0)) return null;
+    const cur = q.currency || getTickerCurrency(tk, q) || 'EUR';
+    if(cur !== 'EUR'){ try{ await fetchFxRates([cur]); }catch(e){} }
+    const v = toEUR(parseFloat(q.price), cur);
+    return isFinite(v) && v > 0 ? Math.round(v * 10000) / 10000 : null;
+  }catch(e){ return null; }
+}
+function peeFundTrackable(f){ return !!(f && (peeIsinOk(f.isin) || kyfAvFundTk(f.tk) || /^[A-Z0-9][A-Z0-9.\-^=]{1,23}$/.test(String(f.tk || '').trim().toUpperCase()) && String(f.tk || '').trim() !== '')); }
 async function peeRefreshVl(planId, silent){
   if(window._peeVlBusy) return { ok: 0, ko: 0 };
   window._peeVlBusy = true;
-  let ok = 0, ko = 0;
+  let ok = 0, ko = 0; const manques = [];
   try{
     const today = new Date().toISOString().slice(0, 10);
-    const cibles = peeLoad().filter(p => (!planId || p.id === planId) && Array.isArray(p.fonds) && p.fonds.some(f => f && peeIsinOk(f.isin)));
-    if(!cibles.length){ if(!silent) showToast('Aucun fonds avec un ISIN dans ce PEE : ajoutez-le pour suivre sa valeur.'); return { ok, ko }; }
+    const cibles = peeLoad().filter(p => (!planId || p.id === planId) && Array.isArray(p.fonds) && p.fonds.some(f => peeFundTrackable(f)));
+    if(!cibles.length){ if(!silent) showToast('Aucun fonds avec un ISIN ou un ticker dans ce PEE : ajoutez-en un pour suivre sa valeur.'); return { ok, ko }; }
     if(!silent) showToast('Actualisation des fonds du PEE…');
     const prix = {};
-    for(const p of cibles) for(const f of p.fonds){ if(f && peeIsinOk(f.isin)){ const k = String(f.isin).trim().toUpperCase(); if(!(k in prix)) prix[k] = await kyfFondsVlEur(k); } }
+    const keyOf = f => (peeIsinOk(f.isin) ? String(f.isin).trim().toUpperCase() : '') + '|' + String(f.tk || '').trim().toUpperCase();
+    for(const p of cibles) for(const f of p.fonds){
+      if(!peeFundTrackable(f)) continue;
+      const k = keyOf(f); if(k in prix) continue;
+      let v = null;
+      if(peeIsinOk(f.isin)) v = await kyfFondsVlEur(String(f.isin).trim().toUpperCase());
+      if(v == null && String(f.tk || '').trim()) v = await kyfFondsVlTk(String(f.tk).trim().toUpperCase());
+      prix[k] = v;
+    }
     const fresh = peeLoad();
     cibles.forEach(c => {
       const p = fresh.find(x => x.id === c.id); if(!p || !Array.isArray(p.fonds)) return;
       let touche = false;
       p.fonds = p.fonds.map(f => {
-        if(!f || !peeIsinOk(f.isin)) return f;
-        const v = prix[String(f.isin).trim().toUpperCase()];
-        if(v == null){ ko++; return f; }
+        if(!peeFundTrackable(f)) return f;
+        const v = prix[keyOf(f)];
+        if(v == null){ ko++; if(f && f.nom) manques.push(f.nom); return f; }
         ok++; touche = true;
         const o = Object.assign({}, f), ancien = peeNumOrNull(f.vl);
         if(p.vlDate && p.vlDate < today && ancien != null && ancien !== v){ o.vlPrev = ancien; o.vlPrevDate = p.vlDate; }
@@ -93817,7 +93839,7 @@ async function peeRefreshVl(planId, silent){
     if(ok){ peeSave(fresh); try{ renderPee(); }catch(e){} try{ kyfPeeLateRefresh(); }catch(e){} }
     try{ localStorage.setItem('kyf-pee-vl-auto', today); }catch(e){}
   } finally { window._peeVlBusy = false; }
-  if(!silent) showToast(ok ? ok + ' fonds actualisé' + (ok > 1 ? 's' : '') + (ko ? ' · ' + ko + ' introuvable' + (ko > 1 ? 's' : '') + ' (valeur inchangée)' : '') : 'Aucun cours trouvé pour ces fonds (valeurs inchangées).');
+  if(!silent) showToast(ok ? ok + ' fonds actualisé' + (ok > 1 ? 's' : '') + (ko ? ' · ' + ko + ' introuvable' + (ko > 1 ? 's' : '') + ' (valeur inchangée)' : '') : 'Aucun cours trouvé (valeurs inchangées). Ajoutez le ticker du cours (0P…) du fonds' + (manques.length === 1 ? ' « ' + manques[0] + ' »' : '') + ' pour le suivre.');
   return { ok, ko };
 }
 // Une fois par jour, en silence, à l'ouverture
@@ -93825,7 +93847,7 @@ window.addEventListener('load', () => setTimeout(() => {
   try{
     const today = new Date().toISOString().slice(0, 10);
     if(localStorage.getItem('kyf-pee-vl-auto') === today) return;
-    if(peeLoad().some(p => Array.isArray(p.fonds) && p.fonds.some(f => f && peeIsinOk(f.isin)))) peeRefreshVl(null, true);
+    if(peeLoad().some(p => Array.isArray(p.fonds) && p.fonds.some(f => peeFundTrackable(f)))) peeRefreshVl(null, true);
   }catch(e){}
 }, 5000), { once: true });
 function peeFmtN(v, max){ return new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: max }).format(v).replace(/\u202F/g, '\u00A0'); }
@@ -93896,8 +93918,9 @@ function peeFundAdd(f){
   if(!document.getElementById('peeFundList')){ const dl = document.createElement('datalist'); dl.id = 'peeFundList'; document.body.appendChild(dl); }
   peeFundHintsFill(); nom.setAttribute('list', 'peeFundList'); nom.addEventListener('change', () => peeFundPick(nom));
   top.appendChild(nom); top.appendChild(del);
-  const g = document.createElement('div'); g.style.cssText = 'display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr);gap:6px';
+  const g = document.createElement('div'); g.style.cssText = 'display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px';
   g.appendChild(mk('pee-f-isin', 'ISIN (FR…)', f && f.isin, '', 12, 'ISIN'));
+  g.appendChild(mk('pee-f-tk', 'Ticker du cours (0P…)', f && f.tk, '', 24, 'Ticker du cours, facultatif, utilisé si l\'ISIN est inconnu'));
   g.appendChild(mk('pee-f-parts', 'Parts', f && f.parts != null ? String(f.parts).replace('.', ',') : '', 'decimal', 20, 'Nombre de parts'));
   g.appendChild(mk('pee-f-vl', 'Valeur liquidative €', f && f.vl != null ? String(f.vl).replace('.', ',') : '', 'decimal', 20, 'Valeur liquidative en euros'));
   row.appendChild(top); row.appendChild(g); box.appendChild(row);
@@ -93906,7 +93929,7 @@ function peeFundAdd(f){
 function peeFundsRead(){
   return [...document.querySelectorAll('#peeFonds .pee-fund')].map(r => {
     const q = c => (r.querySelector(c) || {}).value || '';
-    return { nom: q('.pee-f-nom').trim(), isin: q('.pee-f-isin').trim().toUpperCase(), parts: q('.pee-f-parts').trim(), vl: q('.pee-f-vl').trim() };
+    return { nom: q('.pee-f-nom').trim(), isin: q('.pee-f-isin').trim().toUpperCase(), tk: q('.pee-f-tk').trim().toUpperCase(), parts: q('.pee-f-parts').trim(), vl: q('.pee-f-vl').trim() };
   });
 }
 function peeFundsSync(){
@@ -94097,7 +94120,7 @@ function savePee(){
     if(!f.nom){ alert('Donnez un nom à chaque fonds.'); return; }
     if(f.isin && !peeIsinOk(f.isin)){ alert('ISIN invalide pour « ' + f.nom + ' » : 12 caractères (2 lettres, 9 lettres ou chiffres, 1 chiffre), ex. FR0000120271.'); return; }
     if((f.parts && peeNumOrNull(f.parts) == null) || (f.vl && peeNumOrNull(f.vl) == null)){ alert('Parts et valeur liquidative doivent être des nombres positifs (« ' + f.nom + ' »).'); return; }
-    fonds.push({ nom: f.nom, isin: f.isin, parts: peeNumOrNull(f.parts), vl: peeNumOrNull(f.vl) });
+    fonds.push({ nom: f.nom, isin: f.isin, tk: f.tk, parts: peeNumOrNull(f.parts), vl: peeNumOrNull(f.vl) });
   }
   if(fonds.length){ const c = peeFondsCalc(fonds); valeur = c.total != null ? c.total : 0; }
   const abo = peeOptNum(g('peeAbo')), taux = peeOptNum(g('peeTaux')), plafEnt = peeOptNum(g('peePlafEnt'));
@@ -94224,7 +94247,7 @@ function peeFondsHtml(x){
     const det = [f.isin ? escapeHtml(f.isin) : '', f.parts != null ? peeFmtN(f.parts, 4) + ' parts' : 'parts à renseigner', f.vl != null ? 'VL ' + peeFmtN(f.vl, 4) + ' €' : 'valeur liquidative à renseigner'].filter(Boolean).join(' · ');
     return '<div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start"><div style="min-width:0"><div style="font-size:11px;font-weight:600;color:var(--text);overflow-wrap:anywhere">' + escapeHtml(f.nom) + '</div><div style="font-size:10px;color:var(--text3);margin-top:2px;line-height:1.5">' + det + '</div></div><div style="font-size:11px;font-weight:700;color:' + (val === 'Indisponible' ? 'var(--text3)' : 'var(--text)') + ';white-space:nowrap">' + val + '</div></div>';
   }).join('');
-  const foot = (c.miss ? c.miss + ' fonds sur ' + c.n + ' sans parts ou valeur liquidative : valeur du plan indisponible. ' : '') + (x.vlDate ? 'Valeurs liquidatives au ' + peeDateFr(x.vlDate) + (x.vlAuto ? ', actualisées avec l\'ISIN des fonds (StatsAVie).' : ', saisies à la main.') : 'Valeurs liquidatives saisies à la main, date non renseignée.');
+  const foot = (c.miss ? c.miss + ' fonds sur ' + c.n + ' sans parts ou valeur liquidative : valeur du plan indisponible. ' : '') + (x.vlDate ? 'Valeurs liquidatives au ' + peeDateFr(x.vlDate) + (x.vlAuto ? ', actualisées avec l\'ISIN ou le ticker des fonds.' : ', saisies à la main.') : 'Valeurs liquidatives saisies à la main, date non renseignée.');
   return '<div style="padding:12px 14px 6px;display:flex;flex-direction:column;gap:8px">' + rows + '<div style="font-size:10px;color:' + (c.miss ? '#d97706' : 'var(--text3)') + '">' + escapeHtml(foot) + '</div></div>';
 }
 window._peeOpen = window._peeOpen || {};
@@ -94297,7 +94320,7 @@ function renderPee(){
       '<button type="button" onclick="avToggleActionsMenu(\'' + id + '\')" title="Plus d\'actions" aria-label="Plus d\'actions" class="kyf-icon-btn" style="background:none;border:1px solid var(--border2);box-sizing:border-box;border-radius:8px;width:34px;height:34px;justify-content:center;color:var(--text3);cursor:pointer;padding:0;display:inline-flex;align-items:center;font-size:16px;letter-spacing:1px">⋯</button>' +
       '<div id="avActionsMenu-' + id + '" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:190px">' +
       mi('<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><polyline points="7,10 12,15 17,10"/><path d="M5 21h14"/></svg>', 'Retrait exceptionnel', 'peeRetOpen(\'' + id + '\')') +
-      (Array.isArray(x.fonds) && x.fonds.some(f => f && peeIsinOk(f.isin)) ? mi(KYF_ICONS.refresh, 'Actualiser les cours', 'peeRefreshVl(\'' + id + '\')') : '') +
+      (Array.isArray(x.fonds) && x.fonds.some(f => peeFundTrackable(f)) ? mi(KYF_ICONS.refresh, 'Actualiser les cours', 'peeRefreshVl(\'' + id + '\')') : '') +
       mi(KYF_ICONS.edit, 'Modifier', 'openPeeModal(\'' + id + '\')') +
       mi(KYF_ICONS.trash, 'Supprimer', 'deletePee(\'' + id + '\')', '#ff4560') + '</div></div></div>' +
       '<button type="button" onclick="event.stopPropagation();avToggleFavori(\'' + id + '\',' + (peeLoad().length + avLoad().length) + ')" title="' + (isFav ? 'Retirer des favoris' : 'Marquer comme favori') + '" class="kyf-icon-btn kyf-favstar" style="background:none;border:1px solid var(--border2);cursor:pointer;padding:0;box-sizing:border-box;width:34px;height:34px;justify-content:center;border-radius:8px;color:' + (isFav ? 'var(--accent)' : 'var(--text3)') + ';display:flex;align-items:center;flex-shrink:0">' + (isFav ? KYF_ICONS.starFilled : KYF_ICONS.starOutline) + '</button>' +
