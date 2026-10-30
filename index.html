@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_11_2_02.html
+  @file        : KYF_SHARE_beta_2_11_3_01.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.11.2.02
+  @version     : Beta 2.11.3.01
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7346,7 +7346,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.11.2.02</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.11.3.01</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -25708,6 +25708,63 @@ function kyfThousandsLive(el){
   let n = 0, i = 0; while(i < out.length && n < keep){ if(/[\d,]/.test(out[i])) n++; i++; }
   try{ el.setSelectionRange(i, i); }catch(e){}
 }
+// ── 2.11.3.00 : espaces des milliers sur TOUS les champs numériques, d'un seul coup ───────────────────────────────
+// Tout <input type="text" inputmode="decimal|numeric"> (présent dès le départ ou créé plus tard) affiche ses milliers (1234567,5 → 1 234 567,5)
+// pendant la frappe, au collage ET quand le code lui donne une valeur (el.value = 45000 : avant, l'espace disparaissait). La valeur LUE (el.value)
+// reste « propre » (sans espace) : tout le code existant (parseFloat, parseNum, Number) lit le bon nombre sans rien changer.
+// Hors champ : data-no-thousands, data-thousands (déjà gérés par kyfThousandsLive), ids d'années, dates, jours, codes.
+(function(){
+  const D = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+  if(!D || !D.get || !D.set) return;
+  const SKIP = /year|naissance|birthday|annee|day|jour(?!nal)|ageretraite|isin|code|date|siren|phone|zip|pseudo|search|recherche/i;
+  const AMT = /montant|cours|abo|seuil|qte|qty|prix|valeur|capital|solde|versement/i;   // champs type=number portant un montant : passés en texte (une case number ne sait pas afficher d'espace), flèches ▲▼ conservées
+  const WS = /[\s  ]/g, NB = ' ';
+  function fmtStr(v){
+    const orig = String(v == null ? '' : v), t = orig.replace(WS, '');
+    const m = /^(-?)(\d*)([.,]?)(\d*)$/.exec(t);
+    if(!t || !m) return orig;   // vide ou pas un nombre : laissé tel quel
+    return m[1] + m[2].replace(/\B(?=(\d{3})+(?!\d))/g, NB) + m[3] + m[4];
+  }
+  function eligible(el){
+    if(el && el.tagName === 'INPUT' && !el.__kyfTh && el.type === 'number' && AMT.test(el.id || '') && !SKIP.test(el.id || '')){
+      try{ el.setAttribute('data-kyf-spin', '1'); el.type = 'text'; el.setAttribute('inputmode', 'decimal'); if(typeof kyfApplySpinButtons === 'function') setTimeout(kyfApplySpinButtons, 0); }catch(e){}
+    }
+    return !!el && el.tagName === 'INPUT' && !el.__kyfTh && el.type === 'text' && /^(decimal|numeric)$/.test(el.getAttribute('inputmode') || '')
+      && !el.hasAttribute('data-thousands') && !el.hasAttribute('data-no-thousands') && !SKIP.test(el.id || '') && !SKIP.test(el.name || '');
+  }
+  function enhance(el){
+    if(!eligible(el)) return;
+    el.__kyfTh = 1;
+    try{
+      Object.defineProperty(el, 'value', { configurable: true, enumerable: true,
+        get(){ return D.get.call(el).replace(WS, ''); },
+        set(v){ D.set.call(el, fmtStr(v)); } });
+      const cur = D.get.call(el); if(cur) D.set.call(el, fmtStr(cur));
+    }catch(e){ el.__kyfTh = 0; }
+  }
+  function scan(root){
+    try{ if(root.nodeType !== 1) return; if(root.tagName === 'INPUT') enhance(root); else root.querySelectorAll && root.querySelectorAll('input[inputmode],input[type=number]').forEach(enhance); }catch(e){}
+  }
+  document.addEventListener('input', e => {
+    const el = e.target; if(!el || el.tagName !== 'INPUT') return;
+    if(!el.__kyfTh) enhance(el);
+    if(!el.__kyfTh) return;
+    const raw = D.get.call(el), f = fmtStr(raw);
+    if(f === raw) return;
+    const pos = el.selectionStart == null ? raw.length : el.selectionStart, sig = /[\d,.\-]/;
+    const keep = Array.prototype.filter.call(raw.slice(0, pos), c => sig.test(c)).length;
+    D.set.call(el, f);
+    let n = 0, i = 0; while(i < f.length && n < keep){ if(sig.test(f[i])) n++; i++; }
+    try{ el.setSelectionRange(i, i); }catch(_){}
+  }, true);
+  document.addEventListener('focusin', e => { if(e.target && e.target.tagName === 'INPUT') enhance(e.target); }, true);
+  const start = () => {
+    scan(document.body);
+    try{ new MutationObserver(ms => { ms.forEach(m => m.addedNodes.forEach(scan)); }).observe(document.body, { childList: true, subtree: true }); }catch(e){}
+  };
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+  window.kyfThousandsFmt = fmtStr;
+})();
 // Seuls champs dont la flèche peut passer sous 0 : hypothèses du simulateur PER (rendement, inflation), une valeur négative a un sens.
 const KYF_SPIN_LIBRE = ['perRendement', 'perInflation'];
 function kyfSpinStart(inputId, dir, step, callback, min){
@@ -48380,7 +48437,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.11.2.02\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.11.3.01\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -49675,7 +49732,7 @@ function kyfSpinRound(val, step){
   return Math.round(val * factor) / factor;
 }
 function kyfApplySpinButtons(){
-  document.querySelectorAll('input[type=number]').forEach(inp => {
+  document.querySelectorAll('input[type=number],input[data-kyf-spin]').forEach(inp => {
     if(inp.closest('.kyf-spin-wrap')) return; // déjà wrappé
     const wrap = document.createElement('div');
     wrap.className = 'kyf-spin-wrap';
@@ -51936,7 +51993,7 @@ input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
 input[type=number] { -moz-appearance:textfield; }
 .kyf-spin-wrap { position:relative; display:block; width:100%; }
-.kyf-spin-wrap input[type=number] { padding-right:22px !important; width:100%; box-sizing:border-box; }
+.kyf-spin-wrap input[type=number], .kyf-spin-wrap input[data-kyf-spin] { padding-right:22px !important; width:100%; box-sizing:border-box; }
 .kyf-spin-btns {
   position:absolute; right:1px; top:1px; bottom:1px;
   display:flex; flex-direction:column;
@@ -51952,6 +52009,7 @@ input[type=number] { -moz-appearance:textfield; }
 .kyf-spin-btns button:hover { background:rgba(128,128,128,0.18); color:var(--text); }
 
 [data-theme="light"] input[type="number"],
+[data-theme="light"] input[data-kyf-spin],
 [data-theme="light"] input[type="date"] { background: #dde5f0 !important; color: #0d1a30 !important; border-color: #99aac4 !important; }
 [data-theme="light"] .ed-font-btn.active { background: rgba(0,0,0,0.08); border-color: #2a3e60; color: #0d1a30; }
 .ed-color-grid { display:flex;flex-direction:column;gap:10px;margin-bottom:4px; }
@@ -74226,6 +74284,10 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.3.01 · 30/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Milliers : les champs numériques qui portaient un montant (cours, seuils d'alerte, quantités, abondements) passent aussi en espaces, avec leurs flèches. Le champ Journal des versements n'est plus exclu à tort.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.3.00 · 30/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Espaces des milliers sur tous les champs numériques du site, d'un seul coup : pendant la frappe, au collage et quand le code remplit le champ (l'espace ne disparaît plus après saisie). La valeur lue reste propre pour tout le code existant. Y compris les champs créés plus tard (fenêtres, simulateurs).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.2.02 · 30/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fractionnement : un clic sur le fond ou un clic droit ne ferme plus la fenêtre par erreur (ANNULER, la croix ou Échap).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.2.01 · 30/10/2026</div>
