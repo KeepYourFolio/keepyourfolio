@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_11_2_01.html
+  @file        : KYF_SHARE_beta_2_11_2_02.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.11.2.01
+  @version     : Beta 2.11.2.02
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7346,7 +7346,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.11.2.01</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.11.2.02</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -27853,10 +27853,12 @@ function kyfSplitOpen(kind, a, b){
   if(!ov){
     ov = document.createElement('div'); ov.id = 'kyfSplitOverlay';
     ov.style.cssText = 'display:none;position:fixed;inset:0;z-index:9993;background:rgba(0,0,0,0.6)';
-    ov.onclick = kyfSplitClose;
+    ov.onclick = e => e.stopPropagation();   // clic sur le fond : la fenêtre reste ouverte (saisie protégée) ; ANNULER, la croix ou Échap ferment
+    ov.oncontextmenu = e => { e.preventDefault(); e.stopPropagation(); };
     document.body.appendChild(ov);
     md = document.createElement('div'); md.id = 'kyfSplitModal'; md.setAttribute('role', 'dialog'); md.setAttribute('aria-modal', 'true');
     md.style.cssText = "display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(520px,96vw);max-height:94vh;overflow:auto;z-index:9994;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;font-family:'Inter',sans-serif;box-shadow:0 12px 48px rgba(0,0,0,0.4)";
+    md.oncontextmenu = e => { if(e.target && e.target.closest && e.target.closest('input')) return; e.preventDefault(); e.stopPropagation(); };
     document.body.appendChild(md);
   }
   const lab = 'font-size:9px;color:var(--text3);letter-spacing:.5px;margin-bottom:6px';
@@ -48378,7 +48380,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.11.2.01\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.11.2.02\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -74224,6 +74226,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.2.02 · 30/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fractionnement : un clic sur le fond ou un clic droit ne ferme plus la fenêtre par erreur (ANNULER, la croix ou Échap).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.2.01 · 30/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fractionnement : Échap ferme la fenêtre, survol du bouton ENREGISTRER, cadre accent au focus des champs.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.2.00 · 30/10/2026</div>
