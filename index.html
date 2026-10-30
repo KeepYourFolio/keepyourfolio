@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_10_0_25.html
+  @file        : KYF_SHARE_beta_2_11_2_01.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.10.0.25
+  @version     : Beta 2.11.2.01
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -64,7 +64,7 @@
     // Jeu de données fictif (aucun chiffre réel)
     var J = JSON.stringify;
     data['kyf-welcome-seen'] = '1'; data['kyf-onboarding-choice-seen'] = '1';
-    data['kyf-nouveautes-vue'] = 'a-2026-10-29';   // = KYF_NOUVEAUTES.annonces[0].id (vérifié par le test val_DEMO-isolation)
+    data['kyf-nouveautes-vue'] = 'a-2026-10-30';   // = KYF_NOUVEAUTES.annonces[0].id (vérifié par le test val_DEMO-isolation)
     data['kyf-profil-nom'] = 'Démo';
     data['pea-positions'] = J([
       { name:'Amundi MSCI World', ticker:'CW8.PA', isin:'LU1681043599', pru:468.3, qty:42, montant:19668.6, enveloppe:'PEA', color:'#4d9fff' },
@@ -1475,7 +1475,7 @@ select:focus {
    prioritaire qu'une règle externe sans !important). */
 .kyf-hd-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
 .kyf-hd-chips{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:6px}
-.kyf-hd-chip{font-size:10px;font-weight:700;letter-spacing:.3px;padding:3px 8px;border-radius:6px;background:rgba(128,128,128,.14);color:var(--text2);white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
+.kyf-chip-rend{cursor:pointer;transition:background .15s,transform .15s}.kyf-chip-rend:hover{background:rgba(128,128,128,.28)}.kyf-hd-chip{font-size:10px;font-weight:700;letter-spacing:.3px;padding:3px 8px;border-radius:6px;background:rgba(128,128,128,.14);color:var(--text2);white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
 .kyf-hd-perf{display:inline-block;margin-top:6px;font-size:12px;font-weight:800;padding:3px 10px;border-radius:999px;white-space:nowrap;color:var(--text3);background:color-mix(in srgb,currentColor 14%,transparent)}
 .kyf-icon-btn, .immo-icon-btn{ border-radius:6px; transition:background-color .15s, box-shadow .15s; }
 .kyf-icon-btn:hover, .immo-icon-btn:hover{ background-color:var(--hov-bg) !important; box-shadow:0 0 0 1px rgba(255,255,255,0.1); }
@@ -7346,7 +7346,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.10.0.25</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.11.2.01</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -16499,7 +16499,7 @@ const SHEETS_SYNC_KEYS = [
   'pea-etf-settings','pea-crypto-settings',
   'kyf-snapshots-index',
   'pea-style-v2','pea-accent-dark','pea-accent-light',
-  'kyf-sidebar-mini','kyf-sidebar-groups','kyf-avis-snooze','kyf-card-layout-v2','kyf-card-hidden-v1','kyf-kpi-hidden-v1','kyf-shortcuts-v1','kyf-views-v1','kyf-rituals-v1','kyf-columns-v1','kyf-groups-v1','kyf-favs-v1','kyf-geo-v1','kyf-display-cur','kyf-widgets-v1',
+  'kyf-sidebar-mini','kyf-sidebar-groups','kyf-avis-snooze','kyf-card-layout-v2','kyf-card-hidden-v1','kyf-kpi-hidden-v1','kyf-shortcuts-v1','kyf-views-v1','kyf-rituals-v1','kyf-columns-v1','kyf-groups-v1','kyf-splits-v1','kyf-favs-v1','kyf-geo-v1','kyf-display-cur','kyf-widgets-v1',
   'kyf-idx-band-mode','kyf-pf-view','kyf-pf-range',
   'kyf-indices-sel',
   'kyf-objectif-liberte','kyf-horizon-retraite',
@@ -20798,8 +20798,9 @@ function kyfConfirmSidebarCtxHide(){
   if(_sbCtxPendingKey) kyfToggleSidebarItem(_sbCtxPendingKey, false);
   if(_sbCtxPendingKpi){
     const s = kyfKpiHiddenGet(_sbCtxPendingKpi.row); s.add(_sbCtxPendingKpi.id); kyfKpiHiddenSet(_sbCtxPendingKpi.row, s); kyfKpiApply();
-    try{ kyfKpiSetFill(); }catch(e){}
-    try{ showToast('KPI masqué. Pour le réafficher : Paramètres, Cartes KPI.'); }catch(e){}
+    try{ kyfKpiSetFill(); kyfKpiChipFill(); }catch(e){}
+    if(_sbCtxPendingKpi.row === 'avchips'){ try{ renderAV(); }catch(e){} }
+    try{ showToast((_sbCtxPendingKpi.row === 'avchips' ? 'Information masquée' : 'KPI masqué') + '. Pour la réafficher : Paramètres, Cartes KPI.'); }catch(e){}
   }
   kyfCloseSidebarCtxMenu();
 }
@@ -20808,32 +20809,53 @@ const KYF_KPI_PAGES = [['portfolio','Tableau de bord'],['portefeuille','Portefeu
 const KYF_KPI_ROWSEL = '.kpi-row[data-kpi-row] .kpi[data-kpi-id]';
 function kyfKpiLabel(k){ return ((k.querySelector('.kpi-lbl') || {}).textContent || k.dataset.kpiId || '').replace(/\s+/g, ' ').trim(); }
 function kyfKpiCtx(e){
-  const k = e.target.closest && e.target.closest(KYF_KPI_ROWSEL); if(!k) return;
-  const row = k.closest('.kpi-row').dataset.kpiRow;
+  const ch = e.target.closest && e.target.closest('.kyf-hd-chip[data-chip-id]');
+  const k = ch ? null : (e.target.closest && e.target.closest(KYF_KPI_ROWSEL)); if(!k && !ch) return;
+  const row = ch ? 'avchips' : k.closest('.kpi-row').dataset.kpiRow;
   e.preventDefault(); e.stopPropagation();
   const menu = document.getElementById('sbCtxMenu'); if(!menu) return;
-  _sbCtxPendingKey = null; _sbCtxPendingKpi = { row, id:k.dataset.kpiId };
-  document.getElementById('sbCtxMenuLabel').textContent = '« ' + kyfKpiLabel(k) + ' »';
-  const w = document.getElementById('sbCtxMenuWhere'); if(w) w.textContent = 'de cette page';
+  _sbCtxPendingKey = null; _sbCtxPendingKpi = { row, id: ch ? ch.dataset.chipId : k.dataset.kpiId };
+  document.getElementById('sbCtxMenuLabel').textContent = '« ' + (ch ? (ch.dataset.chipLbl || '') : kyfKpiLabel(k)) + ' »';
+  const w = document.getElementById('sbCtxMenuWhere'); if(w) w.textContent = ch ? 'de toutes les cartes de contrat' : 'de cette page';
   menu.style.display = 'block';
   menu.style.left = Math.min(e.clientX, window.innerWidth - 268) + 'px';
   menu.style.top = Math.min(e.clientY, window.innerHeight - 118) + 'px';
 }
 document.addEventListener('contextmenu', kyfKpiCtx);
-let _kpiSetOpen = new Set();
+const KYF_CHIPS = [['fg','Frais de gestion (FG)'],['mode','Mode de gestion'],['vers','Total versé'],['rach','Total racheté'],['cagr','Rendement annuel moyen depuis l\'origine'],['rend','Rendement (jour, mois ou année : un clic sur la pastille change la période)']];
+function kyfChipOn(id){ return !kyfKpiHiddenGet('avchips').has(id); }
+function kyfKpiChipFill(){
+  const box = document.getElementById('kpiChipList'); if(!box) return;
+  const hid = kyfKpiHiddenGet('avchips');
+  box.innerHTML = KYF_CHIPS.map(c => '<label class="kpiset-it"><input type="checkbox" ' + (hid.has(c[0]) ? '' : 'checked ') + 'onchange="kyfKpiChipTick(\'' + c[0] + '\',this.checked)"><span>' + escapeHtml(c[1]) + '</span></label>').join('');
+}
+function kyfKpiChipTick(id, on){ const s = kyfKpiHiddenGet('avchips'); if(on) s.delete(id); else s.add(id); kyfKpiHiddenSet('avchips', s); try{ kyfNewBadgeSeen('kpichips'); }catch(e){} try{ renderAV(); }catch(e){} try{ kyfKpiChipFill(); }catch(e){} }
+let _kpiSetSel = '';   // page affichée dans Paramètres > Cartes KPI (2.10.1.12 : une seule page à la fois, plus de longue liste à faire défiler)
 function kyfKpiSetFill(){
   const box = document.getElementById('kpiSetList'); if(!box) return;
-  const CH = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>';
-  box.innerHTML = KYF_KPI_PAGES.map(pg => {
-    const rowEl = document.querySelector('.kpi-row[data-kpi-row="' + pg[0] + '"]'); if(!rowEl) return '';
-    const tiles = [...rowEl.querySelectorAll('.kpi[data-kpi-id]')]; if(!tiles.length) return '';
-    const hid = kyfKpiHiddenGet(pg[0]), shown = tiles.filter(k => !hid.has(k.dataset.kpiId)).length, open = _kpiSetOpen.has(pg[0]);
-    return '<div class="kpiset-pg"><button type="button" class="kpiset-hd" aria-expanded="' + open + '" onclick="kyfKpiSetToggle(\'' + pg[0] + '\')"><span class="kpiset-ch' + (open ? ' open' : '') + '">' + CH + '</span><span class="kpiset-nm">' + escapeHtml(pg[1]) + '</span><span class="kpiset-ct">' + shown + '/' + tiles.length + '</span></button>'
-      + (open ? '<div class="kpiset-bd">' + tiles.map(k => '<label class="kpiset-it"><input type="checkbox" ' + (hid.has(k.dataset.kpiId) ? '' : 'checked ') + 'onchange="kyfKpiSetTick(\'' + pg[0] + '\',\'' + escapeHtml(k.dataset.kpiId) + '\',this.checked)"><span>' + escapeHtml(kyfKpiLabel(k)) + '</span></label>').join('')
-        + '<button type="button" class="kpiset-all" onclick="kyfKpiSetAll(\'' + pg[0] + '\')">Tout afficher</button></div>' : '') + '</div>';
-  }).join('');
+  const pages = KYF_KPI_PAGES.map(pg => {
+    const rowEl = document.querySelector('.kpi-row[data-kpi-row="' + pg[0] + '"]'); if(!rowEl) return null;
+    const tiles = [...rowEl.querySelectorAll('.kpi[data-kpi-id]')]; if(!tiles.length) return null;
+    const hid = kyfKpiHiddenGet(pg[0]);
+    return { id: pg[0], nom: pg[1], tiles, hid, shown: tiles.filter(k => !hid.has(k.dataset.kpiId)).length };
+  }).filter(Boolean);
+  if(!pages.length){ box.innerHTML = ''; return; }
+  if(!pages.some(p => p.id === _kpiSetSel)) _kpiSetSel = pages[0].id;
+  const ix = pages.findIndex(p => p.id === _kpiSetSel), cur = pages[ix];
+  const chev = d => '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="' + d + '"/></svg>';
+  box.innerHTML = '<div class="kpiset-nav"><button type="button" class="kpiset-nv" aria-label="Page précédente" title="Page précédente" onclick="kyfKpiSetStep(-1)">' + chev('15 18 9 12 15 6') + '</button>'
+    + '<select id="kpiSetSel" class="kpiset-sel" aria-label="Page" onchange="kyfKpiSetPick(this.value)">' + pages.map(p => '<option value="' + p.id + '"' + (p.id === cur.id ? ' selected' : '') + '>' + escapeHtml(p.nom) + ' (' + p.shown + '/' + p.tiles.length + ')</option>').join('') + '</select>'
+    + '<button type="button" class="kpiset-nv" aria-label="Page suivante" title="Page suivante" onclick="kyfKpiSetStep(1)">' + chev('9 18 15 12 9 6') + '</button></div>'
+    + '<div class="kpiset-grid">' + cur.tiles.map(k => '<label class="kpiset-it"><input type="checkbox" ' + (cur.hid.has(k.dataset.kpiId) ? '' : 'checked ') + 'onchange="kyfKpiSetTick(\'' + cur.id + '\',\'' + escapeHtml(k.dataset.kpiId) + '\',this.checked)"><span>' + escapeHtml(kyfKpiLabel(k)) + '</span></label>').join('') + '</div>'
+    + '<div class="kpiset-ft"><span class="kpiset-ct">' + cur.shown + ' affichés sur ' + cur.tiles.length + '</span><button type="button" class="kpiset-all" onclick="kyfKpiSetAll(\'' + cur.id + '\')">Tout afficher</button></div>';
+  try{ kyfPgField(box.querySelector('#kpiSetSel')); }catch(e){}
 }
-function kyfKpiSetToggle(row){ if(_kpiSetOpen.has(row)) _kpiSetOpen.delete(row); else _kpiSetOpen.add(row); kyfKpiSetFill(); }
+function kyfKpiSetPick(id){ _kpiSetSel = id; kyfKpiSetFill(); }
+function kyfKpiSetStep(d){
+  const ids = KYF_KPI_PAGES.map(p => p[0]).filter(id => { const r = document.querySelector('.kpi-row[data-kpi-row="' + id + '"]'); return r && r.querySelector('.kpi[data-kpi-id]'); });
+  if(!ids.length) return;
+  const i = ids.indexOf(_kpiSetSel); _kpiSetSel = ids[((i < 0 ? 0 : i) + d + ids.length) % ids.length]; kyfKpiSetFill();
+}
 function kyfKpiSetTick(row, id, on){ const s = kyfKpiHiddenGet(row); if(on) s.delete(id); else s.add(id); kyfKpiHiddenSet(row, s); kyfKpiApply(); kyfKpiSetFill(); }
 function kyfKpiSetAll(row){ kyfKpiHiddenSet(row, new Set()); kyfKpiApply(); kyfKpiSetFill(); }
 // Fermer le menu contextuel sidebar au clic ailleurs, à l'appui sur Échap,
@@ -20846,7 +20868,7 @@ document.addEventListener('click', (e)=>{
 });
 document.addEventListener('contextmenu', (e)=>{
   const menu = document.getElementById('sbCtxMenu');
-  if(menu && menu.style.display === 'block' && !e.target.closest('.sb-item, .sb-child-item, .sb-group-header, ' + KYF_KPI_ROWSEL)){
+  if(menu && menu.style.display === 'block' && !e.target.closest('.sb-item, .sb-child-item, .sb-group-header, .kyf-hd-chip[data-chip-id], ' + KYF_KPI_ROWSEL)){
     kyfCloseSidebarCtxMenu();
   }
 });
@@ -27753,6 +27775,20 @@ function openAddETF(){
 // Raccourci "Vendre" depuis une ligne POSITIONS ETF & ACTIONS : navigue vers
 // Transactions et ouvre directement le formulaire VENTE ETF/ACTION, ticker
 // pré-rempli (évite d'avoir à le retaper/rechercher).
+// 2.10.1.11 : « Acheter » dans le menu ⋯ de chaque ligne du Portefeuille (même chemin que Vendre : onglet Transactions, ticker déjà rempli)
+function buyETFShortcut(idx){
+  const pos = ETF[idx];
+  if(!pos) return;
+  showPage('transactions', null);
+  setTimeout(()=>{
+    openAddTransaction('achat');
+    const tickerInput = document.getElementById('transInputTicker');
+    if(tickerInput && pos.ticker){
+      tickerInput.value = pos.ticker;
+      if(typeof tickerInput.oninput === 'function') tickerInput.oninput();
+    }
+  }, 50);
+}
 function sellETFShortcut(idx){
   const pos = ETF[idx];
   if(!pos) return;
@@ -27765,6 +27801,155 @@ function sellETFShortcut(idx){
       if(typeof tickerInput.oninput === 'function') tickerInput.oninput();
     }
   }, 50);
+}
+
+
+// ── 2.11.2.00 : fractionnement / regroupement d'un titre ──────────────────────
+// Un ETF ou une action change de prix « nominal » (80 pour 1, ou regroupement) : le nombre de parts change, le montant investi non.
+// L'utilisateur saisit le nombre de parts APRÈS ; le PRU est recalculé (montant investi constant), la valeur de la ligne ne bouge pas.
+// Les événements sont gardés dans kyf-splits-v1 : l'historique (Yahoo est déjà ajusté des fractionnements) exprime les parts passées en parts actuelles.
+const KYF_SPLIT_KEY = 'kyf-splits-v1';
+let _ksRaw = null, _ksVal = [];
+function kyfSplitLoad(){
+  let raw = ''; try{ raw = localStorage.getItem(KYF_SPLIT_KEY) || ''; }catch(e){}
+  if(raw !== _ksRaw){ _ksRaw = raw; try{ const a = JSON.parse(raw || '[]'); _ksVal = Array.isArray(a) ? a : []; }catch(e){ _ksVal = []; } }
+  return _ksVal;
+}
+function kyfSplitStore(a){ try{ localStorage.setItem(KYF_SPLIT_KEY, JSON.stringify(a)); }catch(e){} }
+// Produit des rapports des fractionnements postérieurs à une opération (lignes du Portefeuille ; les lignes de contrat n'ont pas d'opérations)
+function kyfSplitFactor(ticker, env, dateISO){
+  const L = kyfSplitLoad(); if(!L.length) return 1;
+  const tk = String(ticker || '').trim().toUpperCase(); if(!tk) return 1;
+  let f = 1;
+  L.forEach(sp => {
+    if(!sp || sp.contratId || String(sp.ticker || '').trim().toUpperCase() !== tk) return;
+    if(sp.env && env && sp.env !== env) return;
+    if(!(sp.ratio > 0) || !/^\d{4}-\d{2}-\d{2}$/.test(sp.date || '') || !dateISO) return;
+    if(String(dateISO) < sp.date) f *= sp.ratio;
+  });
+  return f;
+}
+let _kySp = null;
+function kyfSplitNum_(v){ const n = parseFloat(String(v == null ? '' : v).replace(/\s/g, '').replace(',', '.')); return isFinite(n) ? n : NaN; }
+function kyfSplitFmt_(n, mn, mx){ return Number(n).toLocaleString('fr-FR', { minimumFractionDigits: mn || 0, maximumFractionDigits: mx == null ? 4 : mx }); }
+function kyfSplitOpen(kind, a, b){
+  let S = null;
+  if(kind === 'etf'){
+    const e = ETF[a]; if(!e) return;
+    const lk = (typeof kyfEtfLinkedLines === 'function') ? kyfEtfLinkedLines(e) : null;
+    if(e.contratId && lk && lk.lines.length){
+      const q = lk.lines.reduce((t, p) => t + (parseFloat(p.qty) || 0), 0), c = lk.lines.reduce((t, p) => t + (parseFloat(p.qty) || 0) * (parseFloat(p.pru) || 0), 0);
+      S = { kind: 'av', contratId: lk.contrat.id, posIds: lk.lines.map(p => p.id), name: e.name, ticker: e.ticker, isin: e.isin || '', qBefore: q, pru: q > 0 ? c / q : 0 };
+    } else {
+      S = { kind: 'etf', idx: a, name: e.name, ticker: e.ticker, isin: e.isin || '', env: e.enveloppe || '', qBefore: parseFloat(e.qty) || 0, pru: parseFloat(e.pru) || 0 };
+    }
+  } else {
+    const p = avPosLoad(a).find(x => x.id === b); if(!p) return;
+    S = { kind: 'av', contratId: a, posIds: [p.id], name: p.nom || p.ticker, ticker: p.ticker || '', isin: p.isin || '', qBefore: parseFloat(p.qty) || 0, pru: parseFloat(p.pru) || 0 };
+  }
+  if(!(S.qBefore > 0)){ showToast('Cette ligne n’a pas de nombre de parts : renseignez-le d’abord avec Modifier.'); return; }
+  _kySp = S;
+  let ov = document.getElementById('kyfSplitOverlay'), md = document.getElementById('kyfSplitModal');
+  if(!ov){
+    ov = document.createElement('div'); ov.id = 'kyfSplitOverlay';
+    ov.style.cssText = 'display:none;position:fixed;inset:0;z-index:9993;background:rgba(0,0,0,0.6)';
+    ov.onclick = kyfSplitClose;
+    document.body.appendChild(ov);
+    md = document.createElement('div'); md.id = 'kyfSplitModal'; md.setAttribute('role', 'dialog'); md.setAttribute('aria-modal', 'true');
+    md.style.cssText = "display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(520px,96vw);max-height:94vh;overflow:auto;z-index:9994;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;font-family:'Inter',sans-serif;box-shadow:0 12px 48px rgba(0,0,0,0.4)";
+    document.body.appendChild(md);
+  }
+  const lab = 'font-size:9px;color:var(--text3);letter-spacing:.5px;margin-bottom:6px';
+  const inp = "width:100%;box-sizing:border-box;padding:9px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:13px;outline:none";
+  md.innerHTML =
+    '<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border)">' +
+      '<div><span style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:12px;color:var(--text);letter-spacing:.5px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg> FRACTIONNEMENT OU REGROUPEMENT</span>' +
+      '<div style="font-size:9px;color:var(--text3);margin-top:3px">' + escapeHtml(S.name || '') + (S.ticker ? ' · ' + escapeHtml(S.ticker) : '') + '</div></div>' +
+      '<button type="button" onclick="kyfSplitClose()" class="kyf-modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>' +
+    '<div style="padding:18px 22px 6px">' +
+      '<div style="font-size:11px;color:var(--text2);line-height:1.6;margin-bottom:14px">Le titre a divisé (ou regroupé) son prix : vous avez plus (ou moins) de parts, à un prix plus petit (ou plus grand). Ce que vous avez investi ne change pas, KYF ajuste le PRU pour que votre performance reste juste.</div>' +
+      '<div style="padding:8px 12px;border-radius:8px;background:var(--hov-bg-soft);font-size:11px;color:var(--text2);margin-bottom:16px">Avant : <strong style="color:var(--text)">' + kyfSplitFmt_(S.qBefore) + ' parts</strong>' + (S.pru > 0 ? ' · PRU <strong style="color:var(--text)">' + kyfSplitFmt_(S.pru, 2, 4) + ' €</strong>' : '') + '</div>' +
+      '<div style="margin-bottom:14px"><div style="' + lab + '">NOMBRE DE PARTS APRÈS</div><input id="kyfSplitQty" type="text" inputmode="decimal" autocomplete="off" placeholder="ex : ' + kyfSplitFmt_(S.qBefore * 80) + '" oninput="kyfSplitInput(\'qty\')" style="' + inp + '"></div>' +
+      '<div style="margin-bottom:14px"><div style="' + lab + '">OU RAPPORT <span style="opacity:.7">(NOUVELLES PARTS POUR 1 ANCIENNE)</span></div><input id="kyfSplitRatio" type="text" inputmode="decimal" autocomplete="off" placeholder="ex : 80 (division), 0,1 (regroupement 10 pour 1)" oninput="kyfSplitInput(\'ratio\')" style="' + inp + '"></div>' +
+      '<div style="margin-bottom:14px"><div style="' + lab + '">DATE DE L’OPÉRATION</div><input type="hidden" id="kyfSplitDate" value="">' +
+        '<button type="button" id="kyfSplitDateBtn" class="kyf-csel-btn" data-kyf-date="kyfSplitDate" aria-haspopup="dialog" aria-expanded="false" style="padding:8px 12px"><span id="kyfSplitDateBtnLabel">Aujourd\'hui</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>' +
+        '<div style="font-size:9px;color:var(--text3);margin-top:5px;line-height:1.5">Les achats et ventes d’avant cette date sont ramenés en nouvelles parts dans l’historique. Aucune transaction ni impôt n’est créé.</div></div>' +
+      '<div id="kyfSplitPrev" style="display:none;margin-bottom:14px;padding:10px 12px;border-radius:8px;border:1px solid var(--border2);font-size:11px;line-height:1.7;color:var(--text2)"></div>' +
+    '</div>' +
+    '<div style="display:flex;justify-content:flex-end;gap:8px;padding:12px 22px 18px">' +
+      '<button type="button" onclick="kyfSplitClose()" style="font-family:\'Inter\',sans-serif;font-size:9px;padding:8px 18px;border-radius:7px;border:1px solid var(--border2);background:none;color:var(--text3);cursor:pointer" onmouseover="this.style.background=\'var(--hov-bg)\'" onmouseout="this.style.background=\'none\'">ANNULER</button>' +
+      '<button type="button" id="kyfSplitOk" onclick="kyfSplitConfirm()" disabled style="font-family:\'Inter\',sans-serif;font-size:9px;font-weight:700;padding:8px 18px;border-radius:7px;border:none;background:#f0b429;color:#000;cursor:pointer;opacity:.4;transition:opacity .15s" onmouseover="if(!this.disabled)this.style.opacity=\'.85\'" onmouseout="this.style.opacity=this.disabled?\'.4\':\'1\'">ENREGISTRER</button></div><style>#kyfSplitModal input[type=text]:focus{border-color:var(--accent)!important}#kyfSplitOk:disabled{cursor:not-allowed}</style>';
+  try{ kyfDateSetValue('kyfSplitDate', ''); }catch(_){}
+  ov.style.display = 'block'; md.style.display = 'block';
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => { const q = document.getElementById('kyfSplitQty'); if(q) q.focus(); }, 60);
+}
+function kyfSplitClose(){
+  const ov = document.getElementById('kyfSplitOverlay'), md = document.getElementById('kyfSplitModal');
+  if(ov) ov.style.display = 'none'; if(md) md.style.display = 'none';
+  document.body.style.overflow = ''; _kySp = null;
+}
+document.addEventListener('keydown', e => { if(e.key === 'Escape' && _kySp){ const dp = document.querySelector('.kyf-date-pop'); if(dp && getComputedStyle(dp).display !== 'none') return; kyfSplitClose(); } });
+// Lecture du formulaire : { ok, qAfter, ratio, pruAfter }
+function kyfSplitRead_(){
+  const S = _kySp; if(!S) return { ok: false };
+  const qa = kyfSplitNum_((document.getElementById('kyfSplitQty') || {}).value);
+  if(!(qa > 0)) return { ok: false };
+  const ratio = qa / S.qBefore;
+  return { ok: Math.abs(ratio - 1) > 1e-6, qAfter: qa, ratio, pruAfter: S.pru > 0 ? S.pru / ratio : 0, same: Math.abs(ratio - 1) <= 1e-6 };
+}
+function kyfSplitInput(src){
+  const S = _kySp; if(!S) return;
+  const qEl = document.getElementById('kyfSplitQty'), rEl = document.getElementById('kyfSplitRatio');
+  if(src === 'ratio'){
+    const r = kyfSplitNum_(rEl.value);
+    qEl.value = r > 0 ? String(Math.round(S.qBefore * r * 1e6) / 1e6).replace('.', ',') : '';
+  } else {
+    const q = kyfSplitNum_(qEl.value);
+    rEl.value = q > 0 ? String(Math.round(q / S.qBefore * 1e6) / 1e6).replace('.', ',') : '';
+  }
+  const R = kyfSplitRead_(), pv = document.getElementById('kyfSplitPrev'), ok = document.getElementById('kyfSplitOk');
+  if(!pv || !ok) return;
+  if(R.qAfter > 0 && R.same){ pv.style.display = 'block'; pv.innerHTML = 'Même nombre de parts qu’avant : rien à ajuster.'; }
+  else if(R.ok){
+    const r = R.ratio, lib = r > 1 ? '1 ancienne part = <strong style="color:var(--text)">' + kyfSplitFmt_(r, 0, 4) + ' nouvelles parts</strong>' : '<strong style="color:var(--text)">' + kyfSplitFmt_(1 / r, 0, 4) + ' anciennes parts</strong> = 1 nouvelle part';
+    const inv = S.qBefore * S.pru;
+    pv.style.display = 'block';
+    pv.innerHTML = '<div>' + (r > 1 ? 'Fractionnement' : 'Regroupement') + ' : ' + lib + '</div>' +
+      '<div style="margin-top:4px">' + kyfSplitFmt_(S.qBefore) + ' parts' + (S.pru > 0 ? ' à ' + kyfSplitFmt_(S.pru, 2, 4) + ' €' : '') + ' &rarr; <strong style="color:var(--text)">' + kyfSplitFmt_(R.qAfter) + ' parts' + (S.pru > 0 ? ' à ' + kyfSplitFmt_(R.pruAfter, 2, 4) + ' €' : '') + '</strong></div>' +
+      (inv > 0 ? '<div style="margin-top:4px;color:var(--green)">Montant investi inchangé : ' + kyfSplitFmt_(inv, 2, 2) + ' €</div>' : '');
+  } else { pv.style.display = 'none'; }
+  ok.disabled = !R.ok; ok.style.opacity = R.ok ? '1' : '.4';
+}
+function kyfSplitConfirm(){
+  const S = _kySp, R = kyfSplitRead_(); if(!S || !R.ok) return;
+  const date = (document.getElementById('kyfSplitDate') || {}).value || new Date().toISOString().slice(0, 10);
+  const r6 = x => Math.round(x * 1e6) / 1e6;
+  let undo = null;
+  if(S.kind === 'etf'){
+    const e = ETF[S.idx]; if(!e) return;
+    const oq = e.qty, op = e.pru;
+    e.qty = r6(R.qAfter); if(op > 0) e.pru = r6(op / R.ratio);
+    undo = () => { e.qty = oq; e.pru = op; etfSave(); };
+    etfSave();
+  } else {
+    const all = avPosLoad(S.contratId), snap = JSON.parse(JSON.stringify(all));
+    all.forEach(p => { if(S.posIds.indexOf(p.id) < 0) return; p.qty = r6((parseFloat(p.qty) || 0) * R.ratio); if(parseFloat(p.pru) > 0) p.pru = r6(parseFloat(p.pru) / R.ratio); });
+    undo = () => { avPosSave(S.contratId, snap); try{ etfSave(); renderAV(); }catch(_){} };
+    avPosSave(S.contratId, all);
+  }
+  const ev = { id: 'sp' + Date.now().toString(36), ticker: S.ticker, isin: S.isin, nom: S.name, date, ratio: R.ratio, qBefore: S.qBefore, qAfter: R.qAfter, pruBefore: S.pru, pruAfter: R.pruAfter, ts: Date.now() };
+  if(S.kind === 'etf') ev.env = S.env; else ev.contratId = S.contratId;
+  const L = kyfSplitLoad().slice(); L.push(ev); kyfSplitStore(L);
+  kyfSplitClose();
+  try{ renderETFTable(window._lp || {}); renderDonut(); renderKPIs(window._lp || {}); }catch(_){}
+  try{ if(typeof renderAV === 'function') renderAV(); }catch(_){}
+  kyfShowUndoToast((R.ratio > 1 ? 'Fractionnement' : 'Regroupement') + ' enregistré : ' + kyfSplitFmt_(R.qAfter) + ' parts', () => {
+    try{ undo(); }catch(_){}
+    kyfSplitStore(kyfSplitLoad().filter(x => x.id !== ev.id));
+    try{ renderETFTable(window._lp || {}); renderDonut(); renderKPIs(window._lp || {}); }catch(_){}
+    try{ if(typeof renderAV === 'function') renderAV(); }catch(_){}
+  });
 }
 
 // Ligne de Portefeuille rattachée à un contrat AV/PER : le détail du contrat fait foi. La modifier ici coupait le lien (le contrat gardait l'ancienne quantité).
@@ -30368,7 +30553,7 @@ const KYF_WATCHED_KEYS = new Set([
   'kyf-snapshots-index',  // Index des dates snapshot
   'kyf-last-snapshot',    // Dernier snapshot (accès rapide)
   'pea-style-v2','pea-accent-dark','pea-accent-light',
-  'kyf-sidebar-mini','kyf-sidebar-groups','kyf-avis-snooze','kyf-card-layout-v2','kyf-card-hidden-v1','kyf-kpi-hidden-v1','kyf-shortcuts-v1','kyf-views-v1','kyf-rituals-v1','kyf-columns-v1','kyf-groups-v1','kyf-favs-v1','kyf-geo-v1','kyf-display-cur','kyf-widgets-v1',
+  'kyf-sidebar-mini','kyf-sidebar-groups','kyf-avis-snooze','kyf-card-layout-v2','kyf-card-hidden-v1','kyf-kpi-hidden-v1','kyf-shortcuts-v1','kyf-views-v1','kyf-rituals-v1','kyf-columns-v1','kyf-groups-v1','kyf-splits-v1','kyf-favs-v1','kyf-geo-v1','kyf-display-cur','kyf-widgets-v1',
   'kyf-idx-band-mode','kyf-pf-view','kyf-pf-range','kyf-pf-hidden','kyf-pf-bm','kyf-perf-asset-filter',
   'kyf-indices-sel',
   'kyf-objectif-liberte','kyf-horizon-retraite',
@@ -31092,10 +31277,12 @@ async function kyfFlushGAS(queue){
         const el = document.getElementById(id); if(!el) return;
         watch(el);
         if(!on[id](el)) return;
-        const v = y + 'px';
+        let yy = y;   // 2.10.1.09 : une notification sous la souris ne descend pas quand celle du dessous disparaît (sinon elle fuirait sous le curseur et se rangerait) ; les autres s'empilent au-dessus d'elle
+        try{ if(window.kyfNotifHovered && window.kyfNotifHovered(el)){ const cur = parseFloat(el.style.getPropertyValue('bottom')); if(cur > yy) yy = cur; } }catch(e){}
+        const v = yy + 'px';
         if(el.style.getPropertyValue('bottom') !== v || el.style.getPropertyPriority('bottom') !== 'important') el.style.setProperty('bottom', v, 'important');
         if(el.style.getPropertyValue('--stack-offset') !== '0px') el.style.setProperty('--stack-offset', '0px');
-        y += el.offsetHeight + GAP;
+        y = yy + el.offsetHeight + GAP;
       });
     });
   }
@@ -31103,6 +31290,43 @@ async function kyfFlushGAS(queue){
   new MutationObserver(plan).observe(document.body, { childList:true });
   window.addEventListener('resize', plan);
   plan();
+})();
+
+// 2.10.1.09 : une notification du bas ne se range jamais tant que la souris est dessus (on peut la relire) ; 1,5 s après le départ de la souris, elle se range.
+// Une fermeture voulue (clic, touche) passe toujours. Chaque notification a son propre état : plusieurs à l'écran ne se gênent pas (l'empilement existant les décale).
+(function(){
+  const SEL = '#kyfUndoToast,#kyfPullBanner,#kyfSyncToast,#kyfRitToast,#_catchupBanner,#_scheduleToast,#kyfQuickToast,#kyfVerBar';
+  const VIS = el => el.id === 'kyfPullBanner' ? 'kpb-in' : 'kyf-toast-visible';
+  const held = new Map(), watched = new WeakSet(); let iv = 0, lastAct = 0;
+  const inside = new Set();   // notifications sous la souris : suivi à la main, car :hover s'éteint dès que la notification perd sa classe (pointer-events: none)
+  const hov = el => inside.has(el);
+  window.kyfNotifHovered = hov;
+  ['pointerdown', 'keydown'].forEach(ev => document.addEventListener(ev, () => { lastAct = Date.now(); }, true));
+  function tick(){
+    const now = Date.now();
+    held.forEach((since, el) => {
+      const cls = VIS(el);
+      if(!el.isConnected || !el.classList.contains(cls)){ held.delete(el); return; }
+      if(hov(el)){ held.set(el, now); return; }
+      if(now - since >= 1500){ held.delete(el); el.classList.remove(cls); }
+    });
+    if(!held.size){ clearInterval(iv); iv = 0; }
+  }
+  function watch(el){
+    if(watched.has(el)) return; watched.add(el);
+    const cls = VIS(el);
+    try{
+      new MutationObserver(() => {
+        if(el.classList.contains(cls) || !el.isConnected) return;
+        if(Date.now() - lastAct < 700) return;   // fermeture voulue
+        if(!hov(el)) return;
+        el.classList.add(cls);   // la souris est dessus : elle reste affichée
+        held.set(el, Date.now()); if(!iv) iv = setInterval(tick, 300);
+      }).observe(el, { attributes:true, attributeFilter:['class'] });
+    }catch(e){}
+  }
+  document.addEventListener('mouseover', e => { const el = e.target && e.target.closest ? e.target.closest(SEL) : null; if(el){ watch(el); inside.add(el); } }, true);
+  document.addEventListener('mouseout', e => { const el = e.target && e.target.closest ? e.target.closest(SEL) : null; if(el && !(e.relatedTarget && el.contains(e.relatedTarget))) inside.delete(el); }, true);
 })();
 
 // Indicateur visuel - point discret dans la topbar + toast uniquement sur erreur/avertissement
@@ -31210,7 +31434,7 @@ async function kyfInitialPush(){
     'pea-etf-settings','pea-crypto-settings',
     'kyf-snapshots-index',
     'pea-style-v2','pea-accent-dark','pea-accent-light',
-    'kyf-sidebar-mini','kyf-sidebar-groups','kyf-avis-snooze','kyf-card-layout-v2','kyf-card-hidden-v1','kyf-kpi-hidden-v1','kyf-shortcuts-v1','kyf-views-v1','kyf-rituals-v1','kyf-columns-v1','kyf-groups-v1','kyf-favs-v1','kyf-geo-v1','kyf-display-cur','kyf-widgets-v1',
+    'kyf-sidebar-mini','kyf-sidebar-groups','kyf-avis-snooze','kyf-card-layout-v2','kyf-card-hidden-v1','kyf-kpi-hidden-v1','kyf-shortcuts-v1','kyf-views-v1','kyf-rituals-v1','kyf-columns-v1','kyf-groups-v1','kyf-splits-v1','kyf-favs-v1','kyf-geo-v1','kyf-display-cur','kyf-widgets-v1',
     'kyf-idx-band-mode','kyf-pf-view','kyf-pf-range',
     'kyf-indices-sel',
     'kyf-objectif-liberte','kyf-horizon-retraite',
@@ -42534,9 +42758,13 @@ function renderETFTable(lp){
         <span style="position:relative;display:inline-block;vertical-align:middle">
           <button onclick="event.stopPropagation();avToggleActionsMenu('etf-${ETF.indexOf(e)}')" title="Actions" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 6px;display:inline-flex;align-items:center;font-size:16px;letter-spacing:1px">⋯</button>
           <div id="avActionsMenu-etf-${ETF.indexOf(e)}" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:130px">
+            <div class="kyf-menu-h">OPÉRATIONS</div>
+            ${e.contratId ? '' : `<div onclick="avCloseActionsMenu('etf-${ETF.indexOf(e)}');buyETFShortcut(${ETF.indexOf(e)})" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--green);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg> Acheter</div>`}
             <div onclick="avCloseActionsMenu('etf-${ETF.indexOf(e)}');sellETFShortcut(${ETF.indexOf(e)})" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--red);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3.24H4a1 1 0 0 0-1 1v5.59a2 2 0 0 0 .59 1.41l9.58 9.59a2 2 0 0 0 2.83 0l4.59-4.59a2 2 0 0 0 0-2.83z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg> Vendre</div>
             <div class="kyf-menu-sep" role="separator"></div>
+            <div class="kyf-menu-h">POSITION</div>
             <div onclick="avCloseActionsMenu('etf-${ETF.indexOf(e)}');openEditETF(${ETF.indexOf(e)})" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.edit} Modifier</div>
+            <div onclick="avCloseActionsMenu('etf-${ETF.indexOf(e)}');kyfSplitOpen('etf',${ETF.indexOf(e)})" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg> Fractionnement / regroupement</div>
             ${e.contratId ? `<div onclick="avCloseActionsMenu('etf-${ETF.indexOf(e)}');avReplaceFromETF(${ETF.indexOf(e)})" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3l4 4-4 4"/><path d="M3 7h18"/><path d="M7 21l-4-4 4-4"/><path d="M21 17H3"/></svg> Remplacer le support</div>` : ''}
             <div class="kyf-menu-sep" role="separator"></div>
             <div onclick="avCloseActionsMenu('etf-${ETF.indexOf(e)}');deleteETF(${ETF.indexOf(e)})" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:#ff4560;cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg> Supprimer</div>
@@ -48150,7 +48378,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.10.0.25\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.11.2.01\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -48914,7 +49142,7 @@ function kyfEtfQtyAt(e, date, trans){
     const _td = kyfCryptoOpDateISO(t.date);
     if(!/^\d{4}-\d{2}-\d{2}$/.test(_td) || _td <= date) return;
     if(t.enveloppe && e.enveloppe && t.enveloppe !== e.enveloppe) return;
-    const q = parseFloat(t.qty) || 0;
+    const q = (parseFloat(t.qty) || 0) * kyfSplitFactor(t.ticker, t.enveloppe || e.enveloppe, _td);   // 2.11.2.00 : opération d'avant un fractionnement ramenée en parts actuelles
     if(t.type === 'achat'){ after += q; n++; }
     else if(t.type === 'vente'){ after -= q; n++; }
   });
@@ -48932,7 +49160,7 @@ function kyfEtfReplay(trans, date){
   let qty = 0, cost = 0, ok = true;
   for(const x of L){
     if(x.d > date) break;
-    const q = parseFloat(x.t.qty) || 0;
+    const q = (parseFloat(x.t.qty) || 0) * kyfSplitFactor(x.t.ticker, x.t.enveloppe, x.d);   // 2.11.2.00 : parts actuelles
     if(x.t.type === 'achat'){ qty += q; cost += parseFloat(x.t.net) || 0; }
     else { if(q > qty + 1e-9) ok = false; cost = qty > q ? cost * (qty - q) / qty : 0; qty = Math.max(0, qty - q); }
   }
@@ -51941,7 +52169,13 @@ html.kyf-fam-off div:has(> #sciTitu), html.kyf-fam-off div:has(> #scpiTitu), htm
 .kpiset-hd:hover{background:var(--hov-bg);color:var(--text)}
 .kpiset-ch{display:inline-flex;transition:transform .2s}.kpiset-ch.open{transform:rotate(180deg)}
 .kpiset-nm{flex:1;min-width:0;font-weight:600}.kpiset-ct{font-size:10px;color:var(--text3)}
-.kpiset-bd{display:flex;flex-direction:column;gap:4px;margin:4px 0 6px 12px}
+.kpiset-nav{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.kpiset-sel{flex:1;min-width:0;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'Inter',sans-serif;font-size:12px;font-weight:600;padding:8px 10px}
+.kpiset-nv{width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--border2);background:none;border-radius:8px;cursor:pointer;color:var(--text3);padding:0;transition:background .15s,color .15s}
+.kpiset-nv:hover{background:var(--hov-bg);color:var(--text)}
+.kpiset-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.kpiset-grid .kpiset-it span{min-width:0;overflow-wrap:anywhere;line-height:1.35}
+.kpiset-ft{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
 .kpiset-it{display:flex;align-items:center;gap:9px;cursor:pointer;font-size:11px;color:var(--text2);padding:6px 10px;border-radius:7px;background:rgba(255,255,255,0.02);border:1px solid var(--border)}
 .kpiset-it input{accent-color:var(--accent);width:14px;height:14px;flex-shrink:0;cursor:pointer}
 .kpiset-all{align-self:flex-start;background:none;border:none;color:var(--text3);font-family:'Inter',sans-serif;font-size:10px;font-weight:600;cursor:pointer;padding:2px 4px;transition:color .15s}
@@ -52119,7 +52353,7 @@ function toggleEditor(){
 }
 
 function showEdTab(name,btn){
-  if(name === 'kpi'){ try{ kyfKpiSetFill(); kyfNewBadgeSeen('kpiset'); }catch(e){} }
+  if(name === 'kpi'){ try{ kyfKpiSetFill(); kyfKpiChipFill(); kyfNewBadgeSeen('kpiset'); }catch(e){} }
   if(name === 'affichage'){ try{ kyfAffichagePrep(); kyfRelaysSync(); }catch(e){ console.warn('[KYF] affichage', e); } }
   { const _ep = document.getElementById('edPanel'); if(_ep) _ep.classList.toggle('ed-api-wide', name === 'api' || name === 'affichage'); }   // onglet Google et avancé : pas d'aperçu en direct, la place sert aux modes avancés
   if(name==='donuts'){ window._edDnForce=true; setTimeout(function(){try{edPreviewDraw()}catch(e){}},60); }
@@ -54510,7 +54744,7 @@ const KYF_STORAGE_KEYS = [
   'pea-nav-order',
   'pea-kpi-order',
   'kyf-card-layout-v2',
-  'kyf-card-hidden-v1','kyf-kpi-hidden-v1','kyf-shortcuts-v1','kyf-views-v1','kyf-rituals-v1','kyf-columns-v1','kyf-groups-v1','kyf-favs-v1','kyf-geo-v1','kyf-geo-stale-v1','kyf-display-cur','kyf-widgets-v1',
+  'kyf-card-hidden-v1','kyf-kpi-hidden-v1','kyf-shortcuts-v1','kyf-views-v1','kyf-rituals-v1','kyf-columns-v1','kyf-groups-v1','kyf-splits-v1','kyf-favs-v1','kyf-geo-v1','kyf-geo-stale-v1','kyf-display-cur','kyf-widgets-v1',
   'pea-style-v2',
   'pea-accent-dark',
   'pea-accent-light',
@@ -59565,12 +59799,12 @@ function kyfCryptoRowOp(type, kind, key){
   if(top && top.scrollIntoView) top.scrollIntoView({ block:'center', behavior:'smooth' });
 }
 function kyfCryRowOpItems(menuId, kind, keyJs){
-  const it = (type, label, ico, last) => `<div onclick="avCloseActionsMenu('${menuId}');kyfCryptoRowOp('${type}','${kind}',${keyJs})" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px${last ? '' : ''}" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${ico} ${label}</div>`;
+  const it = (type, label, ico, col) => `<div onclick="avCloseActionsMenu('${menuId}');kyfCryptoRowOp('${type}','${kind}',${keyJs})" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:${col || 'var(--text)'};cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${ico} ${label}</div>`;
   const svg = p => `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
-  return it('achat', 'Acheter', svg('<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>'))
-       + it('vente', 'Vendre', svg('<circle cx="12" cy="12" r="9"/><path d="M8 12h8"/>'))
+  return '<div class="kyf-menu-h">OPÉRATIONS</div>' + it('achat', 'Acheter', svg('<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>'), 'var(--green)')
+       + it('vente', 'Vendre', svg('<path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3.24H4a1 1 0 0 0-1 1v5.59a2 2 0 0 0 .59 1.41l9.58 9.59a2 2 0 0 0 2.83 0l4.59-4.59a2 2 0 0 0 0-2.83z"/><circle cx="7.5" cy="7.5" r="1.5"/>'), 'var(--red)')
        + it('swap', 'Swap', svg('<path d="M17 3l4 4-4 4"/><path d="M3 7h18"/><path d="M7 21l-4-4 4-4"/><path d="M21 17H3"/>'))
-       + it('transfert', 'Transfert', svg('<path d="M5 12h14"/><path d="M13 6l6 6-6 6"/>'), true) + '<div class="kyf-menu-sep" role="separator"></div>';
+       + it('transfert', 'Transfert', svg('<path d="M5 12h14"/><path d="M13 6l6 6-6 6"/>')) + '<div class="kyf-menu-sep" role="separator"></div><div class="kyf-menu-h">POSITION</div>';
 }
 function switchCryptoTab(tab){
   kyfCryptoTabView(tab);
@@ -63927,6 +64161,10 @@ const GUIDE_PAGES = [
         <div style="font-size:13px;color:var(--text2);line-height:1.9">Le popup AJOUTER UNE SCPI reste ouvert après chaque ajout (enveloppe et contrat conservés) : la liste <strong style="color:var(--text)">Ajoutées cette session</strong> permet d'annuler un ajout avec la croix, et TERMINER ferme le popup. Une SCPI importée depuis Finary reçoit ses montants (valeur, investi, plus-value, revenu mensuel) calculés automatiquement, et un taux de distribution avec virgule (4,5) est accepté.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">SCPI en nue-propriété</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Dans le popup SCPI, cochez <strong style="color:var(--text)">Nue-propriété</strong> sur la ligne concernée, puis indiquez la <strong style="color:var(--text)">fin du démembrement</strong> et le <strong style="color:var(--text)">prix de la part en pleine propriété</strong>. Pendant le démembrement, aucun loyer n'est compté et la valeur monte en ligne droite, du prix payé (à la date d'achat) jusqu'au prix en pleine propriété. À la date de fin, la ligne passe en pleine propriété et les loyers reprennent. Renseignez la date d'achat, sinon la valeur reste au prix payé. Une SCPI rangée dans une assurance vie ou un PER n'a pas cette case.</div>
+      </div>
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Saisir une distribution SCPI</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9">Les distributions réellement reçues se saisissent dans la page <strong style="color:var(--text)">Dividendes</strong>, via <strong style="color:var(--text)">SAISIR UN DIVIDENDE</strong> avec l'enveloppe <strong style="color:var(--text)">SCPI</strong> : choisissez la SCPI parmi les noms proposés (ou tapez-le), la date et le montant <strong style="color:var(--text)">tel que reçu sur votre compte</strong>. KYF ne calcule aucune fiscalité. Ces versements apparaissent dans le calendrier, l'historique et le total encaissé. Le « Revenus / mois » de cette page reste une estimation : il n'est pas modifié par vos saisies, et vos revenus passifs ne les comptent pas deux fois.</div>
       </div>
@@ -64023,7 +64261,7 @@ const GUIDE_PAGES = [
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Loyer SCPI reçu dans un contrat</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9">Les loyers d'une SCPI détenue dans une assurance vie ou un PER arrivent dans le contrat (le plus souvent dans le fonds euros), pas sur votre compte. Saisissez la date, le montant et la SCPI : KYF ajoute le montant au <strong style="color:var(--text)">fonds euros</strong>, le rattache à la SCPI et ne change pas le total versé. La ligne de la SCPI affiche alors son rendement <strong style="color:var(--text)">loyers inclus</strong>. À ne pas saisir comme un versement : ce n'est pas de l'argent que vous avez mis.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Les loyers d'une SCPI détenue dans une assurance vie ou un PER arrivent dans le contrat (le plus souvent dans le fonds euros), pas sur votre compte. Saisissez la date, le montant et la SCPI : KYF ajoute le montant au <strong style="color:var(--text)">fonds euros</strong>, le rattache à la SCPI et ne change pas le total versé. La ligne de la SCPI affiche alors son rendement <strong style="color:var(--text)">loyers inclus</strong>. À ne pas saisir comme un versement : ce n'est pas de l'argent que vous avez mis. <strong style="color:var(--text)">Une seule saisie :</strong> si vous avez déjà mis à jour le fonds euros à la main avec ce loyer, ne le saisissez pas ici, il serait compté deux fois.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Rendement annuel du contrat (TRI)</div>
@@ -64159,7 +64397,7 @@ const GUIDE_PAGES = [
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px">
         <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 21l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg> Arbitrer entre supports</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9">Le bouton arbitrage déplace un montant (en euros ou en pourcentage) d'un support vers un autre, à l'intérieur d'un même contrat. Un second mode, <strong style="color:var(--text)">Frais / Prélèvement</strong>, gère les frais prélevés par désinvestissement (gestion pilotée notamment) en un seul mouvement, sans devoir inventer une fausse destination.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Le bouton arbitrage déplace un montant (en euros ou en pourcentage) d'un support vers un autre, à l'intérieur d'un même contrat. Un second mode, <strong style="color:var(--text)">Frais / Prélèvement</strong>, gère les frais prélevés par désinvestissement (gestion pilotée notamment) en un seul mouvement, sans devoir inventer une fausse destination. Un troisième onglet, <strong style="color:var(--text)">Plusieurs supports</strong>, sert quand votre avis d'arbitrage compte plusieurs fonds : à gauche les fonds qui sortent avec leur montant réel, à droite les fonds qui entrent (en euros ou en pourcentage), puis la date de l'avis et les frais. KYF refuse de valider tant qu'il reste une somme à répartir.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Suivi mensuel d'un support</div>
@@ -64374,7 +64612,7 @@ const GUIDE_PAGES = [
 
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg> Quoi de neuf</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9">Après une mise à jour, une fenêtre « Quoi de neuf » liste les nouveautés que vous n'avez pas encore vues : 5 annonces au plus, les plus récentes d'abord, sur 7 jours au plus (les nouveautés importantes restent plus longtemps). Un badge « Nouveau » peut aussi signaler le bouton concerné : il s'éteint dès que vous l'ouvrez, et au bout de 48 heures au plus après la sortie de la nouveauté. Vous pouvez désactiver cette fenêtre dans Paramètres, Affichage (case « Fenêtre « Quoi de neuf » après une mise à jour ») : KYF vous prévient alors que vous risquez de rater des nouveautés, qui restent à lire dans À propos, Historique des versions ; les badges « Nouveau » restent affichés.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Après une mise à jour, une notification « Quoi de neuf » apparaît en haut de l'écran : un clic sur LIRE déplie les nouveautés que vous n'avez pas encore vues (5 annonces au plus, les plus récentes d'abord, sur 7 jours au plus ; les nouveautés importantes restent plus longtemps), « Journal complet » ouvre l'historique des versions. Elle se range toute seule après 15 secondes, mais jamais tant que la souris est dessus ou que la liste est dépliée. La croix la range pour cette fois seulement (elle revient au prochain lancement) ; pour ne plus la recevoir, le lien « Ne plus afficher cette notification » de la liste ouvre Paramètres, Affichage. Un badge « Nouveau » peut aussi signaler le bouton concerné : il s'éteint dès que vous l'ouvrez, et au bout de 48 heures au plus après la sortie de la nouveauté. Vous pouvez désactiver cette notification dans Paramètres, Affichage (case « Notification « Quoi de neuf » après une mise à jour ») : KYF vous prévient alors que vous risquez de rater des nouveautés, qui restent à lire dans À propos, Historique des versions ; les badges « Nouveau » restent affichés.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Messages en bas de l'écran</div>
@@ -64661,7 +64899,7 @@ const GUIDE_PAGES = [
     icon: '',
     body: `
       <div style="background:rgba(77,159,255,0.05);border:1px solid rgba(77,159,255,0.2);border-radius:10px;padding:14px 16px;margin-bottom:14px">
-        <div style="font-size:13px;color:var(--text2);line-height:1.8">KYF s'adapte à votre façon de suivre votre patrimoine. Rendez-vous dans <strong style="color:var(--accent)">Paramètres</strong> (icône dans la topbar) pour tout configurer. Dans l'onglet <strong style="color:var(--text)">Cartes KPI</strong>, vous choisissez les KPI affichés sur chaque page (ou clic droit sur un KPI, puis Masquer).</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.8">KYF s'adapte à votre façon de suivre votre patrimoine. Rendez-vous dans <strong style="color:var(--accent)">Paramètres</strong> (icône dans la topbar) pour tout configurer. Dans l'onglet <strong style="color:var(--text)">Cartes KPI</strong>, vous choisissez les KPI affichés sur chaque page (ou clic droit sur un KPI, puis Masquer). Les petites pastilles des cartes de contrat (frais de gestion, total versé, rendement annuel...) se choisissent au même endroit.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">4 polices au choix</div>
@@ -65538,8 +65776,8 @@ const GUIDE_PAGES = [
 // ── Version du guide ──
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
-const KYF_GUIDE_VERSION = '1.19';
-const KYF_GUIDE_POUR = '2.10.0.19';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_VERSION = '1.24';
+const KYF_GUIDE_POUR = '2.11.2.00';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -68297,6 +68535,7 @@ const KYF_FLAGS = {
   ZW:'iVBORw0KGgoAAAANSUhEUgAAACgAAAAeCAMAAABpA6zvAAAAYFBMVEUDXQDTBgD70QDv7u4JCwIACgDhqQKkAwCioQAAWwAAVgBbDA3kXQAEUwRojgBaYhMAOwDiYV+loqjpnpgbgwFtbV6bZQEAOwAH4Qf0vMPuyahYVlaIhHuqqqreP0Xkm3uj3qGUAAAAIHRSTlP7/v/1/AP+/P0Sof//Zf/9Xv/4/v79/5IJ//9z/wP//8+6bn8AAAFQSURBVHjajZTZgoMgDEVBQoSyVZ2us/3/Xw4J2JFql/uABA8hQIL41lpbG3ZFIVhrdZW1NyPshD7nplXLkxca/QTxIbbFa9wsNT4mGymlDhCNMV2HuY1xc1Y0BKoxdY3u+EhOGFyRVZg19wqoVMLuqSo4ZbKXWd573JiCvmfwMuTGMVnEPM+gj88jBUSp7siVZnAYhuckgdMPopQ5TAUAzrl+zfcOhJqkxA5/eVMwi/kqxyO09JADVi24FoGTMcfLC654PJq+HhCt5NZUjoNAeVVX2vQi+AVfdsfgxPE5+ewY+/muVZLvgQe85Yv3K86jEQ23yC9febp2yukCfpnuRZaVNBuPOalZ+CAtMTEITX2kXEENjyYJPvDtqksxcrEltgg8vFGrdIUj1Mcha1nwDQZ7McIu/D83/ODswwnIR2UATvqsRai/lx/qabsvqvYf6OYTrN9HEQ4AAAAASUVORK5CYII='
 };
 function kyfFlagImg(c){
+  if(c === 'XE'){ let st = ''; for(let i = 0; i < 12; i++){ const a = i * Math.PI / 6; st += '<circle cx="' + (10 + 4.6 * Math.sin(a)).toFixed(2) + '" cy="' + (8 - 4.6 * Math.cos(a)).toFixed(2) + '" r="0.85" fill="#ffcc00"/>'; } return '<svg width="20" height="16" viewBox="0 0 20 16" style="flex-shrink:0;vertical-align:middle" aria-hidden="true"><rect x="0.5" y="0.5" width="19" height="15" rx="1.5" fill="#1a3fa0"/>' + st + '</svg>'; }
   if(c === 'XN') return '<svg width="20" height="16" viewBox="0 0 20 16" style="flex-shrink:0;vertical-align:middle" aria-hidden="true"><circle cx="10" cy="8" r="6.2" fill="none" stroke="#8a94a8" stroke-width="1.4"/><ellipse cx="10" cy="8" rx="2.6" ry="6.2" fill="none" stroke="#8a94a8" stroke-width="1.2"/><line x1="3.8" y1="8" x2="16.2" y2="8" stroke="#8a94a8" stroke-width="1.2"/></svg>';
   const b = KYF_FLAGS[c]; if(!b) return '';
   return '<img src="data:image/png;base64,' + b + '" alt="" width="20" height="16" draggable="false" style="width:20px;height:16px;object-fit:contain;flex-shrink:0;vertical-align:middle">';
@@ -68315,6 +68554,8 @@ const KYF_GEO_LIST = [];
   }));
 })();
 // « Neutre » : l'exposition qui n'est rattachée à aucun pays précis (« Autres pays » des fiches). Toujours en fin de liste.
+// 2.10.1.08 : « Europe » est une vraie ligne (fonds paneuropéens, projets sans pays précis), rattachée à la zone Europe, avec le drapeau européen
+KYF_GEO_LIST.push(['XE', 'Europe', 'EU', '']);
 KYF_GEO_LIST.push(['XN', 'Neutre', 'OT', '']);
 const KYF_GEO_SEC = [
   ['sante','Santé','#ff3a3a'],['tech','Technologie','#1a85ff'],['fin','Finance','#7c3aff'],['ind','Industrie','#e6a000'],
@@ -68545,6 +68786,7 @@ const KYF_GEO_FLAG = (() => {
     CL:[R,[B,W,R]], CO:[D,[Y,B,R]], PE:[R,[R,W,R]], UY:[B,[W,B,W]], PA:[B,[B,W,R]], BM:[R,[R,W]], KY:[B,[B,R,W]], ZA:[G,[G,Y,B,R]], NG:[G,[G,W,G]], KE:[R,[K,R,G]],
     EG:[R,[R,W,K]], MA:[R,[R,G]], TN:[R,[R,W]], GH:[G,[R,Y,G]], SA:[G,[G,W]], AE:[G,[G,W,R,K]], IL:[B,[B,W,B]], QA:[R,[R,W]], KW:[G,[G,W,R,K]], BH:[R,[R,W]],
     OM:[R,[R,W,G]], JO:[R,[K,W,G,R]], LB:[G,[R,W,G]], TR:[R,[R,W]], RU:[B,[W,B,R]] };
+  t.XE = [B,[B,Y]];   // Europe : bleu et jaune
   t.XN = ['#8a94a8'];   // Neutre : gris
   // Pays ajoutés (2.8.6.52) : couleurs relevées sur leur drapeau
   Object.assign(t, {AD:['#0c24b4',['#ffe200','#e4c923','#feda00']],AF:['#0c0c0c',['#ff2727','#ff3131','#fe3d3d']],AG:['#cc0c24',['#9c8411','#0171c5','#ffffff']],AI:['#0c2484',['#063288','#02247b','#001e71']],AL:['#e42424',['#e62628','#000000','#e2191a']],AM:['#0c3c9c',['#dc0018','#00329f','#f09d00']],AO:['#0c0c0c',['#d92324','#321b15','#191412']],AS:['#0c0c6c',['#01006f','#ffffff','#010059']],AW:['#3c84e4',['#4b91e0','#4088dd','#608ead']],AX:['#0c549c',['#226c95','#cf0734','#205885']],AZ:['#0cb4e4',['#00bee6','#ec2030','#36912d']],BA:['#0c249c',['#ffcf00','#203885','#001d8a']],BB:['#0c2484',['#ffcb2f','#281f05','#ffbf1f']],BF:['#fc3c3c',['#f13436','#ffd114','#00933f']],BI:['#24b43c',['#d21831','#fefefe','#c80e20']],BJ:['#0c8454',['#fdd51d','#eb2628','#e50e25']],BL:['#cccccc',['#baa425','#d74c53','#fdfeff']],BN:['#fce40c',['#f8e31e','#c45a65','#f7e012']],BO:['#fce40c',['#d83426','#f9e300','#006d2c']],BQ:['#0c2484',['#ffffff','#022886','#00237b']],BS:['#0c0c0c',['#008093','#ffc62a','#006b7f']],BT:['#fc3c0c',['#ffd828','#e8f2f7','#ff440e']],BW:['#84b4e4',['#7db0de','#030303','#689fd5']],BY:['#cc3c3c',['#cc3b48','#c7303d','#3f9b4c']],BZ:['#0c3c84',['#b8d2a6','#d3c881','#aec69e']],CC:['#0c840c',['#008800','#017f00','#007400']],CD:['#0c6cfc',['#0088ff','#ce0f20','#0072ff']],CF:['#fccc0c',['#d6153e','#d20f32','#cb0c2b']],CG:['#0c9c54',['#039e4d','#fbde49','#d71e19']],CI:['#fc840c',['#ffffff']],CK:['#0c2484',['#053289','#04257c','#001e71']],CM:['#fccc0c',['#d3172f','#ffdd14','#c80e20']],CR:['#cc0c24',['#1f4b94','#cd1024','#375290']],CU:['#0c2484',['#002d93','#022b8f','#00177d']],CV:['#0c3c9c',['#00429b','#dcd5aa','#012c8a']],CW:['#0c2484',['#003487','#002a7d','#012573']],CX:['#0c24b4',['#24924c','#0f8541','#001ba3']],DJ:['#0c9c24',['#73b8e9','#ffffff','#0ea324']],DM:['#0c6c3c',['#0f121b','#2a5c5e','#0e111a']],DO:['#cc0c24',['#fefcfd','#a07f99','#fcfcfd']],DZ:['#0c6c3c',['#ddebe5','#dcf1ea','#dce7e1']],EC:['#fce40c',['#ffe000','#599a4d','#ea171e']],EH:['#0c0c0c',['#000000','#bc0000','#006d33']],ER:['#e40c3c',['#18b334','#ea0236','#377dd7']],ET:['#fce40c',['#0a8a45','#003bbb','#aa1832']],FJ:['#6cb4e4',['#66b5dc','#67bde4','#5cb6e1']],FK:['#0c2484',['#053289','#02247b','#001e71']],FM:['#6cb4e4',['#bddaee','#73b1dd','#c3ddf0']],FO:['#cccccc',['#fcfdfe','#f32633','#fcfdfe']],GA:['#fccc0c',['#00a56a','#fdd115','#3168bb']],GD:['#fccc0c',['#ee9d21','#ffe014','#f2b015']],GE:['#fc0c0c',['#ff0303','#ff0000','#ff0303']],GF:['#fce40c',['#09913a','#dd1019','#fcd807']],GI:['#cc0c0c',['#bb0000','#000100','#be2b08']],GL:['#cc0c24',['#fffdfd','#f8e0e5','#c90a2c']],GM:['#cc0c24',['#d2172f','#0c1c8b','#316b21']],GN:['#0c8454',['#fdd51c','#fcd015','#fcca11']],GP:['#0c0c0c',['#b9af30','#fbdc08','#fed907']],GQ:['#3c9c0c',['#48a100','#e5d8d7','#df1b13']],GT:['#549ccc',['#ffffff','#e5d392','#ffffff']],GU:['#0c246c',['#013283','#9dabc4','#01226e']],GW:['#fccc0c',['#fdd51c','#20a340','#00933f']],GY:['#0c843c',['#00a553','#fbd015','#01933f']],HN:['#0c6ccc',['#007cd3','#61a7e1','#0066c8']],HT:['#0c249c',['#0028a5','#bd661d','#cb0d2c']],IM:['#cc0c24',['#d31a34','#d1cc9e','#a6514e']],IO:['#0c0c6c',['#7a94c0','#ffffff']],IQ:['#0c0c0c',['#d2172f','#79b697','#000000']],IR:['#cc0c0c',['#2ca64a','#ef9696','#d40000']],JM:['#0c0c0c',['#00a243','#fcd000','#008f31']],KG:['#e40c24',['#ea1736','#fcd804','#e50d25']],KI:['#cc0c24',['#f0ca16','#fbce10','#ebeff5']],KM:['#fccc24',['#ffca27','#d32c3e','#3268bb']],KN:['#0c0c0c',['#02a653','#000000','#c70e20']],KP:['#e42424',['#2276bc','#ed1b26','#397bbb']],LA:['#cc0c24',['#d2162f','#ffffff','#c70e20']],LC:['#6cccfc',['#cdeeff','#60500a','#faca13']],LI:['#cc0c24',['#003487','#b4132d','#c70d1f']],LR:['#b40c24',['#ffffff']],LS:['#0c249c',['#0028a5','#000000','#008939']],LY:['#0c0c0c',['#e90018','#030303','#1d923c']],MC:['#cc0c24',['#d2162f','#f4d9dc','#ffffff']],MD:['#0c54b4',['#fed501','#6a6839','#fecb00']],ME:['#cc0c0c',['#ca030b','#a58c45','#bb0003']],MF:['#0c249c',['#ffffff']],MG:['#fc3c3c',['#fd463b','#207337','#007231']],MH:['#0c3c9c',['#00429b','#ea7900','#002f87']],MK:['#cc0c0c',['#fff500','#ffe400','#ffeb00']],ML:['#cc0c24',['#fdd51d','#fcd015','#fcca11']],MM:['#fccc0c',['#ffcf00','#ffffff','#e72130']],MN:['#0c549c',['#015b9e','#005096','#00468b']],MP:['#0c6cb4',['#a2b3a2','#fbfcfd','#828081']],MQ:['#0c0c0c',['#009c49','#172a1e','#181816']],MR:['#0c6c3c',['#6b4e42','#006031','#4b432f']],MS:['#0c2484',['#063289','#02247b','#001e70']],MU:['#fccc0c',['#ec3143','#e2be0d','#019a46']],MV:['#0c843c',['#d6153e','#007934','#cb0d2c']],MW:['#0c0c0c',['#1e0206','#cd1024','#2b932c']],MZ:['#0c0c0c',['#007a71','#000000','#fcdc00']],NC:['#0c843c',['#003eb3','#d13a2d','#008939']],NE:['#e4540c',['#e35c08','#e05105','#0aa523']],NF:['#0c843c',['#89c2a3','#1f864a','#479767']],NI:['#0c6ccc',['#0070ca','#add64e','#005bbe']],NP:['#0c0c0c',['#00007f','#030000','#d71032']],NR:['#0c246c',['#003487','#ffcb19','#002473']],NU:['#fccc0c',['#e1c52c','#fbcf16','#fcca12']],PF:['#cc0c24',['#d2162f','#c6a3a4','#c80f20']],PG:['#0c0c0c',['#d3172f','#a60c1d','#000000']],PM:['#0c9ccc',['#647632','#347669','#007fbb']],PN:['#0c2484',['#053188','#02247b','#001e71']],PR:['#e40c0c',['#ef0000','#0054fb','#e90000']],PS:['#0c0c0c',['#000000','#ffffff','#006e34']],PW:['#3c9ccc',['#56b4d7','#ffde00','#42a3ce']],PY:['#0c249c',['#d83426','#e8e5b5','#002f9d']],RE:['#3c6cfc',['#e0e828','#b92c53','#ff0000']],RW:['#0c9ce4',['#00a8e1','#dbcb1b','#1b5534']],SB:['#245424',['#005bbf','#facf17','#1b502b']],SC:['#cc2424',['#fdd85f','#d62727','#288453']],SD:['#0c0c0c',['#d6153d','#ffffff','#000000']],SH:['#0c2484',['#043189','#02247b','#001e71']],SL:['#24b43c',['#26bb44','#ffffff','#0066be']],SM:['#54b4e4',['#f8f6f3','#8799a1','#52ace0']],SN:['#0c843c',['#fef14c','#01833e','#fded38']],SO:['#3c84e4',['#4a91e0','#fdfeff','#377dd8']],SR:['#b40c24',['#3a8242','#ebc41c','#236a2b']],SS:['#0c0c0c',['#000000','#da1119','#047d28']],ST:['#fccc0c',['#18b334','#000000','#0ea324']],SV:['#0c3c9c',['#1451b5','#bebe5d','#0b3da5']],SX:['#0c2484',['#df1e25','#1b2678','#00237b']],SY:['#0c0c0c',['#d2172f','#ffffff','#000000']],SZ:['#b40c0c',['#3c60cb','#000000','#2a4bb8']],TC:['#0c2484',['#053289','#02247b','#001e71']],TD:['#fccc0c',['#ffcf00','#feca00','#fec300']],TG:['#fccc0c',['#00705b','#02694c','#005848']],TJ:['#cc0c0c',['#d00000','#fdf4d1','#005900']],TK:['#0c2484',['#002d85','#fed000','#eec006']],TL:['#e42424',['#df2d28','#db231e','#d71e19']],TM:['#24b46c',['#65c693','#27ad64','#21a45a']],TO:['#b40c0c',['#c50000','#c00000','#b80000']],TT:['#e4243c',['#dd223f','#000000','#d5172e']],TV:['#549cb4',['#5b94b3','#5a95af','#4d8aa9']],TZ:['#0c0c0c',['#26bb44','#000000','#0098d8']],UG:['#0c0c0c',['#1e1a00','#474846','#dc2f01']],UZ:['#0c9cb4',['#00a0bb','#ffffff','#18ab31']],VA:['#fce40c',['#fffdf4','#fffdf3']],VC:['#fccc0c',['#fdd51d','#dcc91e','#73ad36']],VE:['#fccc0c',['#ffd000','#00237c','#c91024']],VG:['#0c2484',['#053289','#02247b','#001e70']],VI:['#cccccc',['#dcb339','#bb768a','#d4ba77']],VU:['#0c0c0c',['#d6153d','#d5af0f','#008939']],WF:['#e4243c',['#ef3242','#ed2837','#ea2230']],WS:['#cc0c24',['#b51a3a','#cb1025','#c70e20']],XK:['#243c9c',['#2a52ab','#d0a54f','#1a3e9c']],YE:['#0c0c0c',['#d2172f','#ffffff','#000000']],YT:['#cccccc',['#fefdfc','#360752','#939393']],ZM:['#24840c',['#209200','#188900','#147e00']],ZW:['#0c0c0c',['#b3b600','#000000','#9c9e00']]});
@@ -69187,7 +69429,7 @@ function kyfGeoDict(m){
   if(_geoDict[m]) return _geoDict[m];
   const d = Object.create(null); // sans prototype : « constructor », « __proto__ »... ne doivent rien retrouver
   if(m === 'c'){
-    KYF_GEO_LIST.forEach(x => { d[kyfGeoNorm(x[1])] = x[0]; if(x[3]) d[kyfGeoNorm(x[3])] = x[0]; });
+    KYF_GEO_LIST.forEach(x => { if(x[0] === 'XE') return; d[kyfGeoNorm(x[1])] = x[0]; if(x[3]) d[kyfGeoNorm(x[3])] = x[0]; });   // « Europe » : jamais cherché à l'intérieur d'un libellé (voir KYF_GEO_REGIONS)
     Object.keys(KYF_GEO_CALIAS).forEach(k => { d[k] = KYF_GEO_CALIAS[k]; });
   } else {
     KYF_GEO_SEC.forEach(x => { d[kyfGeoNorm(x[1])] = x[0]; });
@@ -69755,6 +69997,7 @@ function kyfGeoMultiApply(){
     } catch(err){ if(typeof showToast === 'function') showToast('Dépôt impossible, utilisez le bouton Parcourir.'); }
   });
 })();
+const KYF_GEO_REGIONS = ['europe', 'union europeenne', 'ue', 'zone euro', 'eurozone', 'pan europe', 'paneuropeen', 'pan europeen', 'projets paneuropeens', 'europe pan europeen', 'international'];
 function kyfGeoParse(text, m, opts){
   opts = opts || {};
   const dict = kyfGeoDict(m), re = kyfGeoRe(m), items = {}, ignored = [], dups = [];
@@ -69784,6 +70027,8 @@ function kyfGeoParse(text, m, opts){
       return set.size === 1 ? [...set][0] : null;
     }
     const n = kyfGeoNorm(lab); let ids = [], x; re.lastIndex = 0;
+    // 2.10.1.07 : un libellé de région entier (« Europe », « Zone euro »...) va dans la ligne Europe (reconnu seulement s'il est seul, « Europe de l'Est » reste ignoré)
+    if(m === 'c' && KYF_GEO_REGIONS.indexOf(n) >= 0) return 'XE';
     while((x = re.exec(n))) ids.push(dict[x[1]]);
     return ids.length === 1 ? ids[0] : null;
   };
@@ -71091,9 +71336,17 @@ document.addEventListener('DOMContentLoaded', function(){
 // Pour annoncer une nouveauté : AJOUTER EN TÊTE de KYF_NOUVEAUTES.annonces une annonce { id, date (AAAA-MM-JJ), items }. Pas d'annonce = rien d'affiché, quel que soit le nombre de pushes.
 // Chaque utilisateur voit une seule fois les annonces qu'il n'a pas encore vues (les plus récentes d'abord, 5 au plus, 7 jours au plus). Un nouvel utilisateur (écran de bienvenue pas encore vu) ne voit rien : tout est nouveau pour lui.
 const KYF_NOUVEAUTES = {
-  badge: ['kpiset', 'autres', 'envvue', 'famille', 'avjrn', 'arb', 'immo', 'avref', 'avfrais', 'fraispg', 'avevo', 'avsuivi', 'dcaprix', 'ct', 'tend', 'tipstyle', 'ptf', 'pee', 'ctlg', 'vue'],   // clés des badges (une ou plusieurs ; tableau) ; clé du badge « Nouveau » (span .kyf-new-badge data-new="...") ; vide = aucun badge
+  badge: ['arbmulti', 'nueprop', 'kpichips', 'kpiset', 'autres', 'envvue', 'famille', 'avjrn', 'arb', 'immo', 'avref', 'avfrais', 'fraispg', 'avevo', 'avsuivi', 'dcaprix', 'ct', 'tend', 'tipstyle', 'ptf', 'pee', 'ctlg', 'vue'],   // clés des badges (une ou plusieurs ; tableau) ; clé du badge « Nouveau » (span .kyf-new-badge data-new="...") ; vide = aucun badge
   annonces: [
+    { id: 'a-2026-10-30', date: '2026-10-30', items: [
+      { titre: 'Votre ETF a divisé son prix ?', version: '2.11.2.00', important: true, texte: 'Menu ⋯ de la ligne, Fractionnement / regroupement : saisissez le nombre de parts après, KYF recalcule le PRU, le montant investi et la performance ne bougent pas. Marche aussi pour les lignes d\u2019assurance vie et de PER.' },
+    ] },
     { id: 'a-2026-10-29', date: '2026-10-29', items: [
+      { titre: 'Les nouveautés arrivent en notification', version: '2.10.1.09', texte: 'Plus de fenêtre qui bloque l\u2019écran : une capsule apparaît en haut après une mise à jour. LIRE déplie les nouveautés, Journal complet ouvre l\u2019historique. Elle se range toute seule, sauf tant que la souris est dessus. Les notifications du bas aussi restent tant que la souris est dessus.' },
+      { titre: 'Arbitrage de plusieurs fonds à la fois', version: '2.10.1.06', important: true, texte: 'Menu ⋯ du contrat, Arbitrage, onglet Plusieurs supports : plusieurs fonds en sortie avec les montants de votre avis, plusieurs fonds en entrée en euros ou en pourcentage, date de l’avis et frais.' },
+      { titre: 'SCPI en nue-propriété', version: '2.10.1.00', important: true, texte: 'Cochez Nue-propriété sur une ligne SCPI : pas de loyers jusqu\u2019à la fin du démembrement, la valeur monte en ligne droite vers la pleine propriété, puis les loyers reprennent.' },
+      { titre: 'Rendement par contrat, en une pastille', version: '2.10.0.28', texte: 'Une pastille avec le pourcentage sur chaque carte de contrat (à activer dans Paramètres, Cartes KPI). Un clic change la période : jour, mois ou année.' },
+      { titre: 'Contrats : choisissez les pastilles de chaque carte', version: '2.10.0.26', texte: 'Frais de gestion, mode de gestion, total versé, racheté, rendement annuel : affichez seulement celles qui vous servent (clic droit sur une pastille, ou Paramètres, Cartes KPI).' },
       { titre: 'Pastilles NOUVEAU plus discrètes', version: '2.10.0.23', texte: 'Une pastille NOUVEAU ne reste plus que 48 heures après la sortie de la fonction (avant : 30 jours), pour ne pas voir du NOUVEAU partout.' },
       { titre: 'Choisissez les KPI de chaque page', version: '2.10.0.24', important: true, texte: 'Sur toutes les pages, clic droit sur un KPI puis Masquer, ou cases à cocher dans Paramètres, Cartes KPI. Le bouton KPI de Mes contrats disparaît : tout est au même endroit.' },
       { titre: 'Fonds : type par la communauté, produit structuré, pays et secteurs', version: '2.10.0.19', important: true, texte: 'Un fonds d’assurance vie peut être classé Private equity, Dette privée, Obligations ou Produit structuré. Quand 2 personnes donnent le même type pour un ISIN, vos lignes sont reclassées toutes seules (jamais celles que vous avez choisies). Vous pouvez aussi saisir le pays et le secteur d’un fonds avec ISIN : il compte dans Zones géographiques.' },
@@ -71344,7 +71597,7 @@ function kyfAvisPromoOn_(){
 // Une pastille NOUVEAU ne vit que 48 heures après la date de sortie de sa fonction (ou jusqu'à ce qu'on ouvre le bouton concerné).
 // Chaque clé de KYF_NOUVEAUTES.badge DOIT avoir sa date ici ; sans date, la pastille est éteinte (un utilisateur ne doit jamais voir un arc-en-ciel de NOUVEAU).
 const KYF_NEW_BADGE_HOURS = 48;
-const KYF_NEW_BADGE_DATES = { kpiset:'2026-10-29', autres:'2026-10-29', envvue:'2026-10-28', famille:'2026-10-28', avjrn:'2026-10-28' };
+const KYF_NEW_BADGE_DATES = { arbmulti:'2026-10-30', nueprop:'2026-10-30', kpichips:'2026-10-30', kpiset:'2026-10-29', autres:'2026-10-29', envvue:'2026-10-28', famille:'2026-10-28', avjrn:'2026-10-28' };
 function kyfNewBadgesExpire_(){
   try{
     const now = Date.now();
@@ -71410,6 +71663,7 @@ function kyfNewClose(){
 }
 // « Ne plus afficher cette fenêtre » : ferme sans marquer la nouveauté comme vue, ouvre Paramètres > Affichage sur la case (surlignée 3 s)
 function kyfNewOpenPref(){
+  try{ kyfNewCapClose('pref'); }catch(e){}   // la notification se range (sans être marquée comme vue)
   ['kyfNewModal', 'kyfNewOverlay'].forEach(id => { const e = document.getElementById(id); if(e) e.remove(); });
   document.body.style.overflow = '';
   document.removeEventListener('keydown', kyfNewKey_);
@@ -71428,15 +71682,16 @@ function kyfNewPopOff_(){ try{ return localStorage.getItem(KYF_NEW_OFF_KEY) === 
 function kyfNewPopSync(){
   const c = document.getElementById('sbpNewChk'), n = document.getElementById('sbpNewNote'), off = kyfNewPopOff_();
   if(c) c.checked = !off;
-  if(n) n.textContent = off ? 'Désactivée : vous ne voyez plus les nouvelles fonctions ni les corrections après une mise à jour, et vous pouvez passer à côté d’une nouveauté utile. Elles restent à lire dans À propos, Historique des versions. Les pastilles NOUVEAU restent affichées.' : 'Après une mise à jour, une fenêtre résume les nouveautés que vous n’avez pas encore vues.';
+  if(n) n.textContent = off ? 'Désactivée : vous ne voyez plus les nouvelles fonctions ni les corrections après une mise à jour, et vous pouvez passer à côté d’une nouveauté utile. Elles restent à lire dans À propos, Historique des versions. Les pastilles NOUVEAU restent affichées.' : 'Après une mise à jour, une notification en haut de l’écran résume les nouveautés que vous n’avez pas encore vues.';
 }
 async function kyfNewPopSet(el){
   if(!el) return;
   if(!el.checked){
     let ok = true;
-    try{ ok = await kyfAsk('Désactiver la fenêtre « Quoi de neuf » ?\nVous ne verrez plus les nouvelles fonctions ni les corrections après une mise à jour, et vous risquez de passer à côté d’une nouveauté utile. Vous pourrez toujours les lire dans À propos, Historique des versions. Les pastilles NOUVEAU restent affichées.', { ok:'Désactiver' }); }catch(e){ ok = true; }
+    try{ ok = await kyfAsk('Désactiver la notification « Quoi de neuf » ?\nVous ne verrez plus les nouvelles fonctions ni les corrections après une mise à jour, et vous risquez de passer à côté d’une nouveauté utile. Vous pourrez toujours les lire dans À propos, Historique des versions. Les pastilles NOUVEAU restent affichées.', { ok:'Désactiver' }); }catch(e){ ok = true; }
     if(!ok){ el.checked = true; kyfNewPopSync(); return; }
     try{ localStorage.setItem(KYF_NEW_OFF_KEY, '1'); }catch(e){}
+    try{ kyfNewCapClose('pref'); }catch(e){}   // désactivée alors qu'elle est affichée : elle se range tout de suite
   } else {
     try{ localStorage.removeItem(KYF_NEW_OFF_KEY); }catch(e){}
   }
@@ -71498,7 +71753,119 @@ function kyfNewShow(list){
   md.addEventListener('pointerup', e => { if(x0 !== null && Math.abs(e.clientX - x0) >= 50 && !e.target.closest('button')) kyfNewPage(e.clientX < x0 ? 1 : -1); x0 = null; });
   kyfNewRender_();
 }
-// Ouverture en décalé : la fenêtre attend un moment calme (aucune autre fenêtre, pas de saisie, pas de clic récent, synchro Google terminée) et réessaie toutes les 4 s pendant 10 min
+// ── 2.10.1.09 : « Quoi de neuf » en notification (capsule en haut de l'écran) au lieu d'une fenêtre qui bloque ──
+// LIRE déplie la liste dans la capsule ; « Journal complet » ouvre À propos, Historique des versions ; la croix la range vers la cloche.
+// Elle se range seule après 15 s, SAUF tant que la souris (ou le clavier) est dessus, que la liste est dépliée ou que l'onglet est caché.
+// Une seule capsule à la fois : si une nouvelle annonce arrive pendant qu'elle est là, la liste se met à jour (jamais deux capsules).
+let _kyfCap = null;
+function kyfNewCapCss_(){
+  if(document.getElementById('kyfNewCapCss')) return;
+  const st = document.createElement('style'); st.id = 'kyfNewCapCss';
+  st.textContent = '#kyfNewCap{position:fixed;top:54px;left:50%;z-index:10060;box-sizing:border-box;width:min(620px,calc(100vw - 24px));background:color-mix(in srgb,var(--bg2) 86%,transparent);backdrop-filter:blur(22px) saturate(170%);-webkit-backdrop-filter:blur(22px) saturate(170%);border:1px solid var(--border2);border-radius:26px;box-shadow:0 15px 35px rgba(0,0,0,.28),inset 0 .5px 0 rgba(255,255,255,.12);font-family:\'Inter\',sans-serif;color:var(--text);overflow:hidden;transform:translateX(-50%);animation:kyfNcIn .8s cubic-bezier(.2,1.2,.4,1) both}'
+    + '[data-theme="light"] #kyfNewCap{box-shadow:0 15px 35px rgba(0,0,0,.12),inset 0 .5px 0 rgba(255,255,255,.5)}'
+    + '#kyfNewCap.kn-open{border-radius:18px}#kyfNewCap.kn-out{animation:kyfNcOut .55s cubic-bezier(.6,0,.9,.4) both;pointer-events:none}'
+    + '#kyfNewCap .kn-row{display:flex;align-items:center;gap:8px;padding:5px 5px 5px 8px;min-height:36px;flex-wrap:wrap}'
+    + '#kyfNewCap .kn-dot{min-width:26px;height:26px;border-radius:13px;background:#f0b429;color:#11141c;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0;padding:0 4px;box-sizing:border-box;animation:kyfNcPulse 2.4s ease-in-out infinite}'
+    + '#kyfNewCap .kn-txt{flex:1 1 150px;min-width:0;font-size:12px;line-height:1.4}#kyfNewCap .kn-sub{color:var(--text3)}'
+    + '#kyfNewCap .kn-btn{background:#f0b429;color:#11141c;border:0;border-radius:6px;padding:0 13px;height:30px;font:700 10px \'Inter\',sans-serif;letter-spacing:.8px;cursor:pointer;flex-shrink:0}#kyfNewCap .kn-btn:hover{opacity:.85}'
+    + '#kyfNewCap .kn-link{background:none;border:0;color:var(--text3);font:500 11px \'Inter\',sans-serif;cursor:pointer;height:30px;padding:0 8px;flex-shrink:0}#kyfNewCap .kn-link:hover{color:var(--accent)}'
+    + '#kyfNewCap .kn-x{background:none;border:0;color:var(--text3);cursor:pointer;width:30px;height:30px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:8px}#kyfNewCap .kn-x:hover{color:var(--red);background:color-mix(in srgb,var(--red) 18%,transparent)}'
+    + '#kyfNewCap :focus-visible{outline:2px solid var(--accent);outline-offset:2px}'
+    + '#kyfNewCap .kn-list{max-height:min(50vh,380px);overflow-y:auto;padding:0 20px 12px;scrollbar-width:thin;animation:kyfNcList .3s ease-out both}'
+    + '#kyfNewCap .kn-it{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--border)}'
+    + '#kyfNewCap .kn-tag{font-size:9px;letter-spacing:1px;font-weight:700;border-radius:4px;padding:3px 6px;flex-shrink:0;margin-top:2px;background:var(--bg3);color:var(--text3)}#kyfNewCap .kn-tag.imp{background:rgba(240,180,41,.16);color:#f0b429}'
+    + '@keyframes kyfNcIn{0%{transform:translate(-50%,-40px) scale(.4);opacity:0}100%{transform:translateX(-50%);opacity:1}}'
+    + '@keyframes kyfNcOut{0%{transform:translateX(-50%);opacity:1}25%{transform:translate(-50%,6px) scale(1.02);opacity:1}100%{transform:translate(calc(-50% + var(--dx,400px)),var(--dy,-60px)) scale(.08);opacity:0}}'
+    + '@keyframes kyfNcList{0%{opacity:0;transform:translateY(-6px)}100%{opacity:1;transform:none}}'
+    + '@keyframes kyfNcPulse{0%,100%{box-shadow:0 0 0 0 rgba(240,180,41,.5)}60%{box-shadow:0 0 0 8px rgba(240,180,41,0)}}'
+    + '@media (prefers-reduced-motion:reduce){#kyfNewCap,#kyfNewCap.kn-out,#kyfNewCap .kn-dot,#kyfNewCap .kn-list{animation:none!important}}';
+  document.head.appendChild(st);
+}
+function kyfNewCapMarkSeen_(){ try{ if(KYF_NOUVEAUTES.annonces.length) localStorage.setItem(KYF_NEW_SEEN_KEY, KYF_NOUVEAUTES.annonces[0].id); }catch(e){} }
+function kyfNewCapHeld_(){ const c = _kyfCap; return !!c && (c.open || c.hover || c.focus || document.hidden); }
+// Met le minuteur en pause (ou le relance) quand un des « freins » change : souris, clavier, liste dépliée, onglet caché
+function kyfNewCapSync_(){
+  const c = _kyfCap; if(!c || c.leaving) return;
+  if(kyfNewCapHeld_()){
+    if(c.t){ clearTimeout(c.t); c.t = 0; c.left = Math.max(3000, c.left - (Date.now() - c.t0)); }
+  } else if(!c.t){
+    c.t0 = Date.now(); c.t = setTimeout(() => kyfNewCapClose('auto'), Math.max(3000, c.left));
+  }
+}
+function kyfNewCapArm_(ms){
+  const c = _kyfCap; if(!c || c.leaving) return;
+  clearTimeout(c.t); c.t = 0; c.left = ms; kyfNewCapSync_();
+}
+function kyfNewCapRender_(){
+  const c = _kyfCap; if(!c || !c.el) return;
+  const items = c.items, n = items.length, imp = items.filter(x => x.it.important).length;
+  const one = n === 1;
+  const txt = one ? '<strong>Nouveau :</strong> ' + escapeHtml(items[0].it.titre)
+    : '<strong>' + n + ' nouveautés</strong>' + (imp ? ' <span class="kn-sub">dont ' + imp + (imp > 1 ? ' importantes' : ' importante') + '</span>' : '');
+  let h = '<div class="kn-row"><div class="kn-dot" aria-hidden="true">' + n + '</div><div class="kn-txt" aria-live="polite">' + txt + '</div>'
+    + '<button type="button" class="kn-btn" onclick="kyfNewCapAct(\'read\')" aria-expanded="' + (c.open ? 'true' : 'false') + '">' + (c.open ? 'RÉDUIRE' : 'LIRE') + '</button>'
+    + '<button type="button" class="kn-link" onclick="kyfNewCapAct(\'journal\')">Journal complet</button>'
+    + '<button type="button" class="kn-x" onclick="kyfNewCapAct(\'close\')" aria-label="Fermer pour cette fois" title="Fermer pour cette fois (elle reviendra au prochain lancement)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>';
+  if(c.open){
+    h += '<div class="kn-list">' + items.map(x => '<div class="kn-it"><span class="kn-tag' + (x.it.important ? ' imp' : '') + '">' + (x.it.important ? 'IMPORTANT' : 'NOUVEAU') + '</span><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:700;color:var(--text)">' + escapeHtml(x.it.titre)
+      + (x.it.version ? ' <span style="display:inline-block;font-size:9px;font-weight:700;letter-spacing:.3px;padding:1px 6px;border-radius:6px;margin-left:4px;vertical-align:1px;background:rgba(240,180,41,0.14);color:var(--accent)">' + escapeHtml(x.it.version) + '</span>' : '')
+      + '</div><div style="font-size:11px;color:var(--text2);line-height:1.6;margin-top:3px;white-space:pre-line">' + escapeHtml(x.it.texte || '') + '</div></div></div>').join('')
+      + '</div><div style="text-align:center;padding:4px 0 10px;border-top:1px solid var(--border)"><button type="button" class="kyf-new-offlink" onclick="kyfNewCapAct(\'off\')" style="background:none;border:none;font-family:\'Inter\',sans-serif;font-size:10px;color:var(--text3);cursor:pointer;padding:4px 8px;border-radius:6px;transition:background .15s,color .15s">Ne plus afficher cette notification</button></div>';
+  }
+  c.el.classList.toggle('kn-open', !!c.open);
+  c.el.innerHTML = h;
+}
+function kyfNewCapShow(list){
+  list = list || kyfNewPending_(); if(!list.length) return;
+  const items = kyfNewItems_(list);
+  if(!items.length){ kyfNewCapMarkSeen_(); return; }
+  if(_kyfCap && _kyfCap.leaving) return;
+  if(_kyfCap && _kyfCap.el && _kyfCap.el.isConnected){ _kyfCap.items = items; kyfNewCapRender_(); return; }   // déjà là : on met la liste à jour, jamais deux capsules
+  kyfNewCapCss_();
+  const el = document.createElement('div'); el.id = 'kyfNewCap'; el.setAttribute('role', 'region'); el.setAttribute('aria-label', 'Quoi de neuf');
+  _kyfCap = { el, items, open:false, hover:false, focus:false, leaving:false, t:0, t0:0, left:0 };
+  el.addEventListener('pointerenter', e => { if(e.pointerType === 'mouse'){ _kyfCap.hover = true; kyfNewCapSync_(); } });
+  el.addEventListener('pointerleave', e => { if(e.pointerType === 'mouse'){ _kyfCap.hover = false; kyfNewCapSync_(); } });
+  el.addEventListener('focusin', () => { _kyfCap.focus = true; kyfNewCapSync_(); });
+  el.addEventListener('focusout', e => { _kyfCap.focus = !!(e.relatedTarget && el.contains(e.relatedTarget)); kyfNewCapSync_(); });
+  el.addEventListener('keydown', e => { if(e.key === 'Escape'){ e.stopPropagation(); kyfNewCapClose('esc'); } });
+  document.body.appendChild(el);
+  kyfNewCapRender_();
+  if(!window._kyfCapVis){ window._kyfCapVis = true; document.addEventListener('visibilitychange', kyfNewCapSync_); }
+  kyfNewCapArm_(Math.max(1000, +window.kyfNewCapMs || 15000));
+}
+function kyfNewCapClose(why){
+  const c = _kyfCap; if(!c || c.leaving) return;
+  c.leaving = true; clearTimeout(c.t); c.t = 0;
+  if(why !== 'x' && why !== 'esc' && why !== 'pref') kyfNewCapMarkSeen_();   // la croix, Échap et le lien des Paramètres rangent la notification pour cette fois seulement : elle revient au prochain lancement
+  const el = c.el;
+  const done = () => { try{ el.remove(); }catch(e){} if(_kyfCap === c) _kyfCap = null; };
+  let reduce = false; try{ reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
+  if(reduce){ done(); return; }
+  try{   // elle file vers la cloche : on calcule le trajet
+    const r = el.getBoundingClientRect(), b = document.getElementById('notifBtn'), br = b ? b.getBoundingClientRect() : null;
+    if(br && br.width){ el.style.setProperty('--dx', Math.round(br.left + br.width / 2 - (r.left + r.width / 2)) + 'px'); el.style.setProperty('--dy', Math.round(br.top + br.height / 2 - (r.top + r.height / 2)) + 'px'); }
+  }catch(e){}
+  el.classList.add('kn-out');
+  setTimeout(done, 600);
+}
+function kyfNewCapAct(a){
+  const c = _kyfCap; if(!c || c.leaving) return;
+  if(a === 'close') kyfNewCapClose('x');
+  else if(a === 'off') kyfNewOpenPref();
+  else if(a === 'read'){
+    c.open = !c.open; if(c.open) kyfNewCapMarkSeen_();
+    kyfNewCapRender_(); kyfNewCapSync_();
+    if(!c.open) kyfNewCapArm_(6000);
+  } else if(a === 'journal'){
+    kyfNewCapClose('journal');
+    try{
+      const p = document.getElementById('infoPanel'); if(p && p.style.display === 'none') toggleInfoPanel();
+      setTimeout(() => { const ch = document.getElementById('infoPanelChangelog'); if(!ch) return; if(ch.style.display === 'none' && ch.previousElementSibling) ch.previousElementSibling.click(); try{ ch.scrollIntoView({ block:'nearest' }); }catch(e){} }, 80);
+    }catch(e){}
+  }
+}
+// Ouverture en décalé : la notification attend un moment calme (aucune autre fenêtre, pas de saisie, pas de clic récent, synchro Google terminée) et réessaie toutes les 4 s pendant 10 min
 let _kyfNewAct = 0;
 ['pointerdown', 'keydown'].forEach(ev => document.addEventListener(ev, () => { _kyfNewAct = Date.now(); }, true));
 function kyfNewCalme_(){
@@ -71510,13 +71877,13 @@ function kyfNewCalme_(){
   if(document.hidden) return false;
   return true;
 }
-window.kyfNewBusy = function(){ return !!document.getElementById('kyfNewModal') || !!window._kyfNewWaiting; };   // l'invitation aux statistiques passe après
+window.kyfNewBusy = function(){ return !!document.getElementById('kyfNewModal') || !!document.getElementById('kyfNewCap') || !!window._kyfNewWaiting; };   // l'invitation aux statistiques passe après
 function kyfNewTry_(n){
   try{
     if(kyfNewPopOff_()){ window._kyfNewWaiting = false; return; }   // réglage Paramètres > Affichage : fenêtre désactivée
     const list = kyfNewPending_(); if(!list.length){ window._kyfNewWaiting = false; return; }
     window._kyfNewWaiting = true;
-    if(kyfNewCalme_()){ window._kyfNewWaiting = false; kyfNewShow(list); return; }
+    if(kyfNewCalme_()){ window._kyfNewWaiting = false; kyfNewCapShow(list); return; }
     if(n < 150) setTimeout(function(){ kyfNewTry_(n + 1); }, 4000); else window._kyfNewWaiting = false;   // abandon : l'annonce reste à voir au prochain lancement
   }catch(e){ window._kyfNewWaiting = false; }
 }
@@ -71682,6 +72049,10 @@ const FAQ_DATA = [
   {
     q: "Comment ranger mes lignes dans des projets ?",
     a: "Ouvrez <strong style='color:var(--faq-strong);font-weight:700'>Mes Projets</strong> (sidebar, section Analyses). Créez vos projets (jusqu'à 20) avec le champ sous la liste de gauche, puis cliquez un projet pour voir ses lignes à droite.<br><br>• Changez le projet d'une ligne avec le menu de sa ligne<br>• Ou cochez plusieurs lignes et utilisez <strong style='color:var(--faq-strong);font-weight:700'>Déplacer vers</strong><br>• Les lignes sans projet sont dans « Sans projet » : le total reste égal à votre patrimoine<br>• Seules les 10 premières lignes sont affichées, le chevron « Afficher les N autres lignes » déplie la suite<br><br>Au clavier : flèches haut et bas dans les menus, Entrée pour choisir, Échap pour fermer. Chaque projet peut avoir un <strong style='color:var(--faq-strong);font-weight:700'>objectif</strong> (montant visé, facultatif) : KYF montre le pourcentage atteint et le reste à réunir. Supprimer un projet renvoie ses lignes dans « Sans projet »."
+  },
+  {
+    q: "Mon ETF a divisé son prix, que faire ?",
+    a: "Cela arrive souvent : un ETF passe par exemple de 354 € à 4,43 € la part (division par 80) et vous avez 80 fois plus de parts. Votre argent n'a pas changé, mais il faut ajuster la ligne pour que le rendement reste juste.<br><br>• Ouvrez le menu <strong style='color:var(--faq-strong);font-weight:700'>⋯</strong> de la ligne (Positions ETF &amp; Actions, ou le détail de votre contrat d'assurance vie / PER), puis <strong style='color:var(--faq-strong);font-weight:700'>Fractionnement / regroupement</strong>.<br>• Saisissez le <strong style='color:var(--faq-strong);font-weight:700'>nombre de parts après</strong> (celui de votre relevé), ou le rapport.<br>• KYF recalcule le PRU : le montant investi reste le même. Aucune transaction ni impôt n'est créé.<br><br>Un regroupement (10 anciennes parts pour 1 nouvelle) se traite de la même façon. Un bouton Annuler reste disponible juste après.",
   },
   {
     q: "Mon tableau de positions est trop long, comment le rendre lisible ?",
@@ -73010,6 +73381,9 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       <div class="ed-section">KPI AFFICHÉS PAR PAGE</div>
       <p style="font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);margin:0 0 8px;line-height:1.7">Ouvrez une page et décochez les KPI que vous ne voulez pas voir. Raccourci : clic droit sur un KPI, puis Masquer.</p>
       <div id="kpiSetList" class="kpiset"></div>
+      <div class="ed-section" style="margin-top:18px">INFOS SUR LA CARTE D'UN CONTRAT<span class="kyf-new-badge" data-new="kpichips" style="display:none;margin-left:8px;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;pointer-events:none">NOUVEAU</span></div>
+      <p style="font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);margin:0 0 8px;line-height:1.7">Les petites pastilles sous le nom de chaque contrat (Assurance vie / PER). Raccourci : clic droit sur une pastille, puis Masquer.</p>
+      <div id="kpiChipList" class="kpiset"></div>
       <div class="ed-section" style="margin-top:18px">LABELS KPI - COULEUR</div>
       <div class="ed-swatches" style="flex-wrap:wrap;gap:6px;margin-bottom:10px">
         <div class="ed-seg">
@@ -73080,7 +73454,7 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       <label id="sbpNewRow" style="display:flex;align-items:center;gap:9px;cursor:pointer;font-size:12px;color:var(--text2);padding:9px 11px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid var(--border)">
         <input type="checkbox" id="sbpNewChk" checked style="accent-color:var(--accent);width:15px;height:15px;flex-shrink:0" onchange="kyfNewPopSet(this)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:var(--text3)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        Fenêtre « Quoi de neuf » après une mise à jour
+        Notification « Quoi de neuf » après une mise à jour
       </label>
       <div id="sbpNewNote" style="font-size:10px;color:var(--text3);line-height:1.6;margin:-2px 2px 2px 4px"></div>
       <label id="sidebarPrefIntradayRow" style="display:flex;align-items:center;gap:9px;cursor:pointer;font-size:12px;color:var(--text2);padding:9px 11px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid var(--border)">
@@ -73850,6 +74224,48 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.2.01 · 30/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fractionnement : Échap ferme la fenêtre, survol du bouton ENREGISTRER, cadre accent au focus des champs.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.2.00 · 30/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fractionnement / regroupement d'un titre : menu ⋯ d'une ligne du Portefeuille ou d'un contrat AV/PER, nombre de parts après (ou rapport), PRU recalculé à montant investi constant, historique ramené en parts actuelles, bouton Annuler. Nouvelle clé kyf-splits-v1 (sauvegarde et synchro). Guide v1.24 : question « Mon ETF a divisé son prix ». Quoi de neuf du 30/10.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.1.13 · 30/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Cryptomonnaies : le menu ⋯ des cryptos et des stablecoins reprend les couleurs du Portefeuille (Acheter en vert, Vendre en rouge avec la même icône, Modifier neutre, Supprimer en rouge).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.1.12 · 30/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Paramètres, Cartes KPI, « KPI affichés par page » : une seule page à la fois (menu de choix avec le nombre de KPI affichés, flèches pour passer à la page suivante ou précédente) et les KPI en deux colonnes, au lieu de 17 pages à déplier et à faire défiler.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.1.11 · 30/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Portefeuille : le menu ⋯ de chaque ligne propose Acheter (onglet Transactions, ticker déjà rempli, comme Vendre ; absent sur une ligne rattachée à un contrat AV/PER, qui se gère dans le contrat). Titres de séparation dans les menus ⋯ des lignes du Portefeuille, des cryptos et des stablecoins : OPÉRATIONS puis POSITION.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.1.10 · 30/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Notification Quoi de neuf : boutons et croix plus petits ; la croix (et Échap) range la notification pour cette fois seulement, elle revient au prochain lancement ; lien « Ne plus afficher cette notification » en bas de la liste dépliée, qui ouvre Paramètres, Affichage sur la case ; la case des Paramètres et son lien sont branchés sur la nouvelle notification (désactiver la range tout de suite).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.1.09 · 30/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Quoi de neuf en notification : une capsule en haut de l'écran (arrivée animée, départ vers la cloche) remplace la fenêtre bloquante ; LIRE déplie la liste, Journal complet ouvre l'historique des versions, elle se range seule après 15 s sauf tant que la souris est dessus, la liste dépliée ou l'onglet caché ; une seule capsule à la fois. Toutes les notifications du bas (Annuler, synchro, rattrapage, messages, nouvelle version) restent tant que la souris est dessus, 1,5 s après son départ elles se rangent ; plusieurs notifications à la fois restent empilées sans se recouvrir.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.1.08 · 30/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Répartition pays : nouvelle vraie ligne « Europe » avec le drapeau européen, rattachée à la zone Europe. Un libellé de région seul (« Europe », « Europe (projets paneuropéens) », « Zone euro », « Union européenne ») y est rangé au lieu d'être ignoré ; « Europe de l'Est » ou un groupe de pays restent ignorés.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.1.07 · 30/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Répartition pays : un libellé de région seul (« Europe », « Europe (projets paneuropéens) », « Zone euro », « Union européenne ») est maintenant reconnu et rangé dans Europe (exposition sans pays précis), au lieu d'être ignoré. « Europe de l'Est » ou un groupe de pays restent ignorés.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.1.06 · 30/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Arbitrage plusieurs supports : phrase ajoutée à la carte « Arbitrer entre supports » du Guide (v1.22), annonce dans Quoi de neuf et pastille NOUVEAU (48 h) sur l'onglet.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.1.05 · 30/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Arbitrage d'un contrat : nouvel onglet « Plusieurs supports » (grand popup en deux volets, un fonds par ligne). 1. Ce qui sort, 2. Ce qui entre (montants en € ou en %), date de l'avis, frais, parts et valeurs de part facultatives, reste à répartir en direct. Idée de Nicolas.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.1.04 · 30/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre Loyer SCPI reçu : icône neutre en haut à gauche, date au format KYF (icône calendrier), boutons ANNULER et ENREGISTRER en pied de fenêtre avec les mêmes couleurs et survols que la fenêtre SCPI.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.1.03 · 30/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Loyer SCPI reçu : avertissement contre le double comptage dans la fenêtre (une seule saisie : KYF ajoute déjà le loyer au fonds euros) et phrase ajoutée au Guide (v1.21).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.1.02 · 30/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Rechargement : la répartition du patrimoine du Tableau de bord (Immobilier, Autres actifs, Livrets manquants, pourcentages faux) et la page Alertes se redessinent une fois tout le code chargé.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.1.01 · 30/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">SCPI en nue-propriété : textes corrigés (« aucun montant récupérable avant la fin du démembrement », sous-titres des KPI Valeur actuelle et Récupérable) au lieu de « prix de retrait non renseigné ».</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.1.00 · 30/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">SCPI en nue-propriété : carte dans le Guide (v1.20), annonce dans Quoi de neuf et pastille NOUVEAU (48 h) sur la case du popup SCPI.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.0.30 · 30/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">SCPI en nue-propriété : le sous-titre de la tuile est raccourci (nue-prop. 2040) et la ligne n'est plus comptée dans « Récupérable » tant que le démembrement dure.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.0.29 · 30/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">SCPI en nue-propriété : une case par ligne dans le popup SCPI (fin du démembrement, prix de la part en pleine propriété). Aucun loyer pendant le démembrement, valeur estimée en ligne droite jusqu'à la pleine propriété, puis les loyers reprennent à la date de fin.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.0.28 · 30/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Contrats : le rendement devient une seule pastille avec le pourcentage seul. Un clic dessus change la période (jour, mois, année). Sans assez de données, un tiret et l'explication au survol.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.0.27 · 30/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Contrats : rendement du jour, du mois et de l'année de chaque contrat, en pastilles à afficher au choix (Paramètres, Cartes KPI). Si l'historique est trop court, la pastille le dit.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.0.26 · 30/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Contrats : on choisit les petites pastilles de chaque carte (frais de gestion, mode de gestion, total versé, racheté, rendement annuel) par clic droit ou dans Paramètres, Cartes KPI. Idée de Nicolas.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.0.25 · 29/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">KPI au choix : les pages Frais et PEE rejoignent la liste (Paramètres, Cartes KPI) et le clic droit Masquer.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.10.0.24 · 29/10/2026</div>
@@ -80126,7 +80542,7 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
 
         <label class="kyf-reset-row" style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer">
           <input type="checkbox" class="kyf-reset-check" data-module="pea" data-dca-type="etf"
-            data-keys="pea-positions,kyf-etf-transactions,kyf-alerts-,pea-bilan,pea-geo,pea-sectors,kyf-geo-v1,kyf-geo-stale-v1,kyf-favs-v1,kyf-groups-v1,pea-etf-settings,kyf-cash,kyf-cash-ccp,kyf-cash-mvts,kyf-cash-cto,kyf-cash-pea,kyf-cash-migrated-v2,kyf-dividendes,kyf-etf-collapsed-envs,kyf-perf-asset-filter,kyf-pf-view,kyf-pf-range,kyf-pf-bm,kyf-pf-hidden,kyf-isin-sans-yahoo,kyf-pea-date-ouverture,kyf-pea-plafond,kyf-pea-taux-ir,kyf-pea-taux-ps,kyf-pme-date-ouverture,kyf-pme-total-verse,kyf-pme-plafond,kyf-pea-total-verse,kyf-cto-taux-pfu"
+            data-keys="pea-positions,kyf-etf-transactions,kyf-alerts-,pea-bilan,pea-geo,pea-sectors,kyf-geo-v1,kyf-geo-stale-v1,kyf-favs-v1,kyf-groups-v1,kyf-splits-v1,pea-etf-settings,kyf-cash,kyf-cash-ccp,kyf-cash-mvts,kyf-cash-cto,kyf-cash-pea,kyf-cash-migrated-v2,kyf-dividendes,kyf-etf-collapsed-envs,kyf-perf-asset-filter,kyf-pf-view,kyf-pf-range,kyf-pf-bm,kyf-pf-hidden,kyf-isin-sans-yahoo,kyf-pea-date-ouverture,kyf-pea-plafond,kyf-pea-taux-ir,kyf-pea-taux-ps,kyf-pme-date-ouverture,kyf-pme-total-verse,kyf-pme-plafond,kyf-pea-total-verse,kyf-cto-taux-pfu"
             style="accent-color:var(--accent);flex-shrink:0">
           <div>
             <div style="font-size:12px;font-weight:700;color:var(--text2)">PORTEFEUILLE PEA</div>
@@ -84361,7 +84777,7 @@ function avRepRender(){
 }
 
 // ── KPI au choix (2.9.0.49) : liste cochée des KPI d'une rangée (data-kpi-row), mémorisée sur l'appareil. L'ordre glissé reste géré à part. ──
-const KYF_KPI_HIDE_KEY = 'kyf-kpi-hidden-v1', KYF_KPI_DEF_OFF = { av: ['av-rjour', 'av-rmois', 'av-ran'] };
+const KYF_KPI_HIDE_KEY = 'kyf-kpi-hidden-v1', KYF_KPI_DEF_OFF = { av: ['av-rjour', 'av-rmois', 'av-ran'], avchips: ['rend'] };
 function kyfKpiHiddenGet(row){
   let o = {}; try{ o = JSON.parse(localStorage.getItem(KYF_KPI_HIDE_KEY) || '{}'); if(!o || typeof o !== 'object' || Array.isArray(o)) o = {}; }catch(e){ o = {}; }
   return new Set(Array.isArray(o[row]) ? o[row].map(String) : (KYF_KPI_DEF_OFF[row] || []));
@@ -84441,6 +84857,25 @@ function kyfAvRendements(data){
     if(n && B > 0) out[pp[0]] = { pct: G / B * 100, eur: G, n, of: data.length, partial, since };
   });
   return out;
+}
+// Rendement jour / mois / année d'UN contrat, en pastilles (cachées par défaut). Si les données manquent, la pastille le dit en clair au lieu de rester vide.
+function kyfChipRendPer(){ try{ const v = localStorage.getItem('kyf-chip-rend-per'); return v === 'jour' || v === 'mois' ? v : 'an'; }catch(e){ return 'an'; } }
+function kyfChipRendCycle(ev){
+  if(ev){ ev.stopPropagation(); }
+  const n = { an:'jour', jour:'mois', mois:'an' }[kyfChipRendPer()];
+  try{ localStorage.setItem('kyf-chip-rend-per', n); }catch(e){}
+  try{ renderAV(); }catch(e){}
+}
+// Une seule pastille de rendement par contrat : un clic change la période (jour, mois, année). Juste le pourcentage ; si les données manquent, un tiret et l'explication au survol.
+function kyfAvChipRend(d){
+  if(!kyfChipOn('rend')) return '';
+  const per = kyfChipRendPer(), lab = { jour:'Jour', mois:'Mois', an:'Année' }[per];
+  let R; try{ R = kyfAvRendements([d]); }catch(e){ R = { jour:null, mois:null, an:null }; }
+  const r = R[per];
+  const why = per === 'jour' ? 'Pas de rendement du jour : aucun ETF ou action du contrat n\'a de cours en direct.' : 'Pas assez d\'historique : il faut au moins deux valeurs notées pour ce contrat (KYF les relève au fil des jours, ou saisissez-les dans Évolution).';
+  const body = r ? '<span style="font-weight:800;color:' + (r.pct >= 0 ? 'var(--green)' : 'var(--red)') + '">' + (r.pct >= 0 ? '+' : '') + r.pct.toFixed(per === 'jour' ? 2 : 1) + '%</span>' : '<span style="font-weight:700;color:var(--text3)">-</span>';
+  const tip = (r && r.partial ? 'Historique disponible depuis le ' + avPerfFr(r.since) + ' : le rendement part de cette date. ' : (r ? '' : why + ' ')) + 'Clic : changer la période.';
+  return '<span class="kyf-hd-chip kyf-chip-rend" data-chip-id="rend" data-chip-lbl="Rendement" title="' + escapeHtml(tip) + '" onclick="kyfChipRendCycle(event)">' + lab + ' ' + body + '</span>';
 }
 function kyfAvRendementsFill(data){
   let R; try{ R = kyfAvRendements(data); }catch(e){ R = { jour:null, mois:null, an:null }; }
@@ -84717,6 +85152,22 @@ async function kyfAutDel(id){
   window.addEventListener('load', () => { go(); setTimeout(go, 1500); });
   if(document.readyState === 'complete'){ go(); setTimeout(go, 1500); }
 })();
+// Même piège sur le Tableau de bord et sur Alertes (2.10.1.02) : au rechargement, le premier dessin a lieu avant que le code des livrets, de l'immobilier
+// et des autres actifs soit chargé. La répartition du patrimoine oubliait alors Immobilier, Autres actifs et Livrets (pourcentages faux) et la page Alertes restait
+// vide, jusqu'au prochain rafraîchissement. On redessine une fois tout le script chargé, puis une seconde fois pour les graphiques.
+(function(){
+  const go = () => { try{
+    const act = id => { const p = document.getElementById('page-' + id); return !!(p && p.classList.contains('active')); };
+    if(act('dashboard')){
+      try{ if(typeof renderKPIs === 'function') renderKPIs(window._lp || {}); }catch(e){}
+      try{ renderAllocDonut(window._lp || {}); }catch(e){}
+      try{ renderPfFullChart(); }catch(e){}
+    }
+    if(act('alertes')){ try{ renderAlertes(); }catch(e){} }
+  }catch(e){} };
+  window.addEventListener('load', () => { go(); setTimeout(go, 1500); });
+  if(document.readyState === 'complete'){ go(); setTimeout(go, 1500); }
+})();
 function avEvoOpen(id){
   const c = avLoad().find(x => x.id === id); if(!c) return;
   avEvoClose(); _avEvoId = id; _avEvoFOpen = false; _avEvoVOpen = false; _avEvoFPg = null; _avEvoRelPg = { c:0, f:0 };
@@ -84934,18 +85385,22 @@ function avLoyerOpen(id, rid){
   const ov = document.createElement('div'); ov.id = 'avLoyerOverlay'; ov.onclick = avLoyerClose; ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10000011';
   const m = document.createElement('div'); m.id = 'avLoyerModal'; m.dataset.cid = id; m.dataset.rid = edit ? String(edit.id) : '';
   m.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(520px,96vw);max-height:92vh;overflow:auto;z-index:10000012;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;font-family:Inter,sans-serif;box-shadow:0 12px 48px rgba(0,0,0,.4);color:var(--text);overscroll-behavior:contain';
-  m.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border)"><span style="font-weight:700;font-size:13px">' + (edit ? 'MODIFIER LE LOYER' : 'LOYER SCPI REÇU') + ' <span style="font-weight:600;color:var(--text3);font-size:11px;margin-left:6px">' + escapeHtml(c.contratNom || c.assureur || '') + '</span></span>'
+  m.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border)"><span style="font-weight:700;font-size:12px;letter-spacing:1px;color:var(--text);display:flex;align-items:center;gap:8px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 7a7 7 0 1 0 0 10"/><line x1="4" y1="10" x2="14" y2="10"/><line x1="4" y1="14" x2="13" y2="14"/></svg>' + (edit ? 'MODIFIER LE LOYER' : 'LOYER SCPI REÇU') + ' <span style="font-weight:600;color:var(--text3);font-size:11px;letter-spacing:0;margin-left:2px">' + escapeHtml(c.contratNom || c.assureur || '') + '</span></span>'
     + '<button type="button" onclick="avLoyerClose()" class="kyf-modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'
     + '<div style="padding:16px 18px">'
     + (scpi.length ? '<div style="font-size:10px;color:var(--text2);line-height:1.7;margin-bottom:14px">Les loyers d\'une SCPI détenue dans un contrat arrivent dans le contrat, pas sur votre compte. KYF ajoute le montant au <b>fonds euros</b> et le rattache à la SCPI pour calculer son vrai rendement. Le total versé ne change pas.</div>'
       + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">'
-      + '<div><div style="' + lbl + '">Date du crédit</div><input type="hidden" id="loyDate" value=""><button type="button" id="loyDateBtn" class="kyf-csel-btn" data-kyf-date="loyDate" aria-haspopup="dialog" aria-expanded="false"><span id="loyDateBtnLabel">JJ/MM/AAAA</span></button></div>'
+      + '<div><div style="' + lbl + '">Date du crédit</div><input type="hidden" id="loyDate" value=""><button type="button" id="loyDateBtn" class="kyf-csel-btn" data-kyf-date="loyDate" aria-haspopup="dialog" aria-expanded="false"><span id="loyDateBtnLabel">JJ/MM/AAAA</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button></div>'
       + '<div><div style="' + lbl + '">Montant reçu (€)</div><input id="loyMontant" type="text" inputmode="decimal" placeholder="0,00" style="' + fld + '"></div></div>'
       + '<div style="margin-bottom:14px"><div style="' + lbl + '">SCPI concernée</div><select id="loyPos" data-kyf-pg-look="field" onchange="try{kyfPgLabel(this)}catch(e){}" style="width:100%;font-size:11px">' + scpi.map(p => '<option value="' + escapeHtml(String(p.id)) + '">' + escapeHtml(p.nom || p.ticker || 'SCPI') + '</option>').join('') + '</select></div>'
       + (fes.length > 1 ? '<div style="margin-bottom:14px"><div style="' + lbl + '">Fonds en euros crédité</div><select id="loyFe" data-kyf-pg-look="field" onchange="try{kyfPgLabel(this)}catch(e){}" style="width:100%;font-size:11px">' + fes.map(p => '<option value="' + escapeHtml(String(p.id)) + '">' + escapeHtml(p.nom || 'Fonds en euros') + ' · ' + fmt(p.valeur || 0, 0) + ' €</option>').join('') + '</select></div>' : '')
+      + '<div id="loyWarn" style="display:flex;gap:8px;align-items:flex-start;font-size:10px;line-height:1.6;color:var(--text2);background:rgba(240,180,41,.08);border:1px solid rgba(240,180,41,.28);border-radius:8px;padding:9px 11px;margin-bottom:14px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>Saisissez ce loyer <b style="color:var(--text)">à un seul endroit</b>. KYF l\'ajoute lui-même au fonds euros : si vous avez déjà mis à jour la valeur du fonds euros avec ce loyer (ou si vous le ferez), il sera compté deux fois.</span></div>'
       + '<div id="loyMsg" style="font-size:10px;min-height:14px;color:var(--red);margin-bottom:10px"></div>'
-      + '<button type="button" class="kyf-add-btn" onclick="avLoyerSave()">' + (edit ? 'ENREGISTRER LES CHANGEMENTS' : 'ENREGISTRER') + '</button>'
       : '<div style="font-size:11px;color:var(--text2);line-height:1.7">Ce contrat ne contient pas de SCPI. Ajoutez d\'abord une SCPI au contrat (page SCPI, enveloppe Assurance vie).</div>')
+    + '</div>'
+    + '<div style="display:flex;gap:8px;justify-content:flex-end;align-items:center;padding:12px 18px;border-top:1px solid var(--border)">'
+    + '<button type="button" onclick="avLoyerClose()" style="font-family:\'Inter\',sans-serif;font-size:9px;padding:8px 16px;border-radius:7px;border:1px solid var(--border2);background:none;color:var(--text3);cursor:pointer;transition:background .15s" onmouseover="this.style.background=\'var(--hov-bg)\'" onmouseout="this.style.background=\'none\'">' + (scpi.length ? 'ANNULER' : 'FERMER') + '</button>'
+    + (scpi.length ? '<button type="button" onclick="avLoyerSave()" style="font-family:\'Inter\',sans-serif;font-size:9px;font-weight:700;padding:8px 16px;border-radius:7px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:opacity .15s" onmouseover="this.style.opacity=\'.85\'" onmouseout="this.style.opacity=\'1\'">ENREGISTRER</button>' : '')
     + '</div>';
   document.body.appendChild(ov); document.body.appendChild(m); document.body.style.overflow = 'hidden';
   try{ kyfDateSetValue('loyDate', edit ? edit.date : kyfParisNow().date); }catch(e){}
@@ -87316,8 +87771,26 @@ function kyfScpiDivEff_(db){
   const net = parseFloat(db.dividende_net_etranger)||0, brut = parseFloat(db.dividende_brut)||0;
   return (net > 0 && (!brut || net <= brut)) ? net : brut;
 }
+// Nue-propriété (2.10.0.29) : pendant le démembrement, aucun loyer. La valeur de la part monte en ligne droite du prix payé
+// (à la date d'achat) jusqu'au prix en pleine propriété (à la date de fin). Après la fin : pleine propriété, les loyers reprennent.
+function kyfScpiNue(s, todayIso){
+  if(!s || !s.nueProp) return null;
+  const pa = parseFloat(s.prixAchat)||0, pp = parseFloat(s.nuePrixPleine)||0, fin = String(s.nueFin||''), da = String(s.dateAchat||'');
+  const iso = /^\d{4}-\d{2}-\d{2}$/;
+  let t = todayIso; if(!t){ try{ t = kyfParisNow().date; }catch(e){ t = new Date().toISOString().slice(0,10); } }
+  if(!iso.test(fin)) return { actif:true, pc:pa, pct:0, fin:'', sansDate:true };
+  if(t >= fin) return { actif:false, fini:true, pc: pp > 0 ? pp : pa, pct:100, fin };
+  let ratio = 0, sansDate = true;
+  if(pp > pa && iso.test(da) && da < fin){
+    sansDate = false;
+    ratio = Math.min(1, Math.max(0, (Date.parse(t) - Date.parse(da)) / (Date.parse(fin) - Date.parse(da))));
+  }
+  return { actif:true, pc: pa + (pp > pa ? (pp - pa) * ratio : 0), pct: Math.round(ratio * 100), fin, sansDate: sansDate && pp > pa };
+}
+function kyfScpiDateFr_(iso){ const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso||'')); return m ? m[3] + '/' + m[2] + '/' + m[1] : ''; }
 function scpiNormalize(s){
-  const parts = parseFloat(s.parts)||0, pa = parseFloat(s.prixAchat)||0, pc = parseFloat(s.prixActuel)||pa;
+  const _nue = kyfScpiNue(s);
+  const parts = parseFloat(s.parts)||0, pa = parseFloat(s.prixAchat)||0, pc = _nue ? ((_nue.fini && parseFloat(s.prixActuel) > 0) ? parseFloat(s.prixActuel) : _nue.pc) : (parseFloat(s.prixActuel)||pa);
   const valAchat = Math.round(parts*pa), valActuel = Math.round(parts*pc);
   let div = parseFloat(s.dividendeBrut)||0; const td = parseFloat(s.td)||0;
   // SCPI enregistrée avec le dividende brut de la base : on passe au net d'impôt étranger dès que la base le connaît
@@ -87325,10 +87798,10 @@ function scpiNormalize(s){
     try{ const _db = kyfScpiDbFind(s.nom); if(_db && Math.abs((parseFloat(_db.dividende_brut)||0) - div) < 0.005) div = kyfScpiDivEff_(_db); }catch(_){}
   }
   const _ri = kyfScpiRevInfo(parts, div, s.frequence, td, pc, valActuel, { pj: s.partsJouissance, recu: s.divRecuMois });
-  const revMens = Math.round(_ri.rev);
+  const revMens = (_nue && _nue.actif) ? 0 : Math.round(_ri.rev);
   // IMM-013 (D16) : sans prix de retrait saisi, valeur = prix de souscription, étiquetée « retrait non renseigné » ; la plus-value est alors inconnue (pas 0)
-  const retraitNr = !(parseFloat(s.prixActuel) > 0);
-  return { ...s, valAchat, valActuel, pv: valActuel-valAchat, revMens, revTheo: Math.round(_ri.theo), retraitNr };
+  const retraitNr = _nue ? !(_nue.pc > 0) : !(parseFloat(s.prixActuel) > 0);
+  return { ...s, valAchat, valActuel, pv: valActuel-valAchat, revMens, revTheo: (_nue && _nue.actif) ? 0 : Math.round(_ri.theo), retraitNr, _nue };
 }
 function scpiLoad(){ return JSON.parse(localStorage.getItem(SCPI_KEY)||'[]').map(scpiNormalize); }
 function scpiSave(d){ localStorage.setItem(SCPI_KEY, JSON.stringify((d||[]).map(scpiNormalize))); }
@@ -87384,7 +87857,9 @@ function calcSCPIAuto(){
   const res        = document.getElementById('scpiCalcResult');
   if(!res||!parts){ if(res) res.style.display='none'; return; }
   const valAchat   = parts * prixAchat;
-  const valActuel  = parts * (prixActuel||prixAchat);
+  const _nueOn = !!(document.getElementById('scpiNue') || {}).checked && !['av','per'].includes((document.getElementById('scpiEnveloppe') || {}).value);
+  const _nue = _nueOn ? kyfScpiNue({ nueProp:true, prixAchat, prixActuel, nuePrixPleine: parseNum(document.getElementById('scpiNuePrix')?.value||'0'), nueFin: document.getElementById('scpiNueFin')?.value||'', dateAchat: document.getElementById('scpiDateAchat')?.value||'' }) : null;
+  const valActuel  = parts * (_nue ? _nue.pc : (prixActuel||prixAchat));
   const pv         = valActuel - valAchat;
   // Préfère le vrai dividende connu (portail-scpi.fr) à l'approximation par
   // TD% - plus précis, reflète le dernier montant réellement versé plutôt
@@ -87395,8 +87870,8 @@ function calcSCPIAuto(){
   const _pj   = parseNum(document.getElementById('scpiPartsJouis')?.value||'0');
   const _recu = parseNum(document.getElementById('scpiDivRecu')?.value||'0');
   const _ri = kyfScpiRevInfo(parts, dividendeBrut, frequence, td, prixActuel||prixAchat, valActuel, { pj: _pj, recu: _recu });
-  const revMens = _ri.rev;
-  const _ecart = Math.round(_ri.theo) !== Math.round(revMens);
+  const revMens = (_nue && _nue.actif) ? 0 : _ri.rev;
+  const _ecart = !(_nue && _nue.actif) && Math.round(_ri.theo) !== Math.round(revMens);
   const _perLbl = { 12:'par mois', 4:'par trimestre', 2:'par semestre', 1:'par an' }[_ri.n] || '';
   res.style.display = 'block';
   res.innerHTML = `
@@ -87405,7 +87880,10 @@ function calcSCPIAuto(){
       <div><div style="font-size:9px;color:var(--text3);margin-bottom:2px">REVENUS / MOIS</div><div style="font-size:13px;font-weight:700;color:#06b6d4">${fmt(Math.round(revMens),0)} €</div>${_ecart ? '<div style="font-size:9px;color:var(--text3);margin-top:2px">théorique : '+fmt(Math.round(_ri.theo),0)+' €</div>' : ''}</div>
       <div><div style="font-size:9px;color:var(--text3);margin-bottom:2px">PLUS-VALUE</div><div style="font-size:13px;font-weight:700;color:${pv>=0?'var(--green)':'var(--red)'}">${pv>=0?'+':''}${fmt(Math.round(pv),0)} €</div></div>
     </div>
-    <div style="text-align:center;font-size:9px;color:var(--text3);margin-top:6px">${_ri.src === 'saisi'
+    <div style="text-align:center;font-size:9px;color:var(--text3);margin-top:6px">${_nue && _nue.actif
+      ? (_nue.fin ? 'Nue-propriété : aucun loyer jusqu\'au ' + kyfScpiDateFr_(_nue.fin) + '. Valeur estimée en ligne droite' + (_nue.sansDate ? ' (renseignez la date d\'achat : sans elle, la valeur reste au prix payé)' : '') : 'Nue-propriété : indiquez la date de fin du démembrement')
+      : _nue && _nue.fini ? 'Démembrement terminé : pleine propriété, les loyers reprennent'
+      : _ri.src === 'saisi'
       ? 'Basé sur le dividende mensuel que vous avez saisi (théorique à pleine jouissance : '+fmt(Math.round(_ri.theo),0)+' €)'
       : _ri.pj
       ? 'Estimé sur '+_pj+' parts en jouissance sur '+parts+' (théorique à pleine jouissance : '+fmt(Math.round(_ri.theo),0)+' €)'
@@ -87677,6 +88155,7 @@ function scpiResetFields(keepEnv){
     const e=document.getElementById(id); if(e) e.value='';
   });
   kyfDateSetValue('scpiDateAchat', '', 'JJ/MM/AAAA');
+  { const c = document.getElementById('scpiNue'), p = document.getElementById('scpiNuePrix'); if(c) c.checked = false; if(p) p.value = ''; kyfDateSetValue('scpiNueFin', '', 'JJ/MM/AAAA'); const f = document.getElementById('scpiNueFields'); if(f) f.style.display = 'none'; const nr = document.getElementById('scpiNueRow'); if(nr) nr.style.display = ''; }
   document.getElementById('scpiSlug').value = '';
   document.getElementById('scpiPaysData').value = '';
   document.getElementById('scpiSecteursData').value = '';
@@ -87796,6 +88275,7 @@ function scpiEnveloppeChange(){
   const row = document.getElementById('scpiContratRow');
   const isAvPer = env === 'av' || env === 'per';
   row.style.display = isAvPer ? 'block' : 'none';
+  { const nr = document.getElementById('scpiNueRow'); if(nr) nr.style.display = isAvPer ? 'none' : ''; }   // nue-propriété : SCPI en direct ou SCI seulement
   if(!isAvPer) return;
 
   const contrats = avLoad().filter(c => c.type === env || (env==='av' && c.type==='av') || (env==='per' && c.type?.startsWith('per')));
@@ -87805,6 +88285,12 @@ function scpiEnveloppeChange(){
   scpiContratChange();
 }
 
+function scpiNueChange(){
+  try{ kyfNewBadgeSeen('nueprop'); }catch(e){}
+  const on = !!(document.getElementById('scpiNue') || {}).checked, f = document.getElementById('scpiNueFields');
+  if(f) f.style.display = on ? 'grid' : 'none';
+  calcSCPIAuto();
+}
 function scpiContratChange(){
   const val = document.getElementById('scpiContratSelect').value;
   document.getElementById('scpiNewContratFields').style.display = val === '__new__' ? 'grid' : 'none';
@@ -88027,6 +88513,13 @@ function saveSCPI(){
   const visual     = document.getElementById('scpiVisualData')?.value||'';
   const visualShape= document.getElementById('scpiVisualShapeData')?.value||'diamond';
   const visualBadge= document.getElementById('scpiVisualBadgeData')?.value!=='0';
+  const nueOn      = !!document.getElementById('scpiNue')?.checked && enveloppe !== 'av' && enveloppe !== 'per';
+  const nueFin     = document.getElementById('scpiNueFin')?.value||'';
+  const nuePrix    = parseNum(document.getElementById('scpiNuePrix')?.value||'0') || 0;
+  if(nueOn && (!nueFin || !(nuePrix > 0))){
+    if(err){ err.style.display='block'; err.innerHTML=kyfEmoHtml('⚠️ Nue-propriété : indiquez la date de fin du démembrement et le prix de la part en pleine propriété.'); }
+    return;
+  }
 
   // SCPI rangée dans un contrat AV/PER : on l'enregistre comme position du contrat,
   // pas comme SCPI "en direct" - pour qu'elle apparaisse bien dans MES CONTRATS.
@@ -88086,6 +88579,7 @@ function saveSCPI(){
     visual: visual || existing?.visual || '',
     visualShape: visualShape,
     visualBadge: visualBadge,
+    nueProp: nueOn || undefined, nueFin: nueOn ? nueFin : undefined, nuePrixPleine: nueOn ? nuePrix : undefined,
   };
   const data = scpiLoad();
   if(editId){ const i=data.findIndex(d=>d.id===editId); if(i>-1) data[i]=scpi; else data.push(scpi); }
@@ -88166,7 +88660,7 @@ function scpiFromAVContracts(){
 
 // IMM-014 (D16) : montant récupérable = valeur au prix de retrait saisi, SANS seconde décote (avant : -10 % direct, -3 % AV, 0 % PER inventés).
 // Prix de retrait non renseigné : montant indisponible (null), pas une valeur fabriquée.
-function kyfScpiRecup(s){ return s && s.retraitNr ? null : Math.round(s.valActuel||0); }
+function kyfScpiRecup(s){ return s && (s.retraitNr || (s._nue && s._nue.actif)) ? null : Math.round(s.valActuel||0); }   // nue-propriété en cours : rien à récupérer avant la fin du démembrement
 function kyfScpiRecupSomme(list){
   let somme = 0, nr = 0;
   list.forEach(x => { const r = kyfScpiRecup(x); if(r === null) nr++; else somme += r; });
@@ -88208,7 +88702,7 @@ function renderSCPI(){
   { const _rc = kyfScpiRecupSomme(data);
     elv('scpiKpiRecup', _rc.tous ? 'Indisponible' : fmt(_rc.somme,0)+' €');
     const _re = document.getElementById('scpiKpiRecup'), _rs = _re && _re.closest('.kpi') && _re.closest('.kpi').querySelector('.kpi-sub');
-    if(_rs) _rs.textContent = _rc.tous ? 'Prix de retrait non renseigné' : (_rc.nr ? 'Hors ' + _rc.nr + ' SCPI sans prix de retrait' : 'Au prix de retrait, sans décote ajoutée'); }
+    if(_rs) _rs.textContent = _rc.tous ? (data.every(x => x._nue && x._nue.actif) ? 'Nue-propriété en cours : rien avant la fin' : 'Prix de retrait non renseigné') : (_rc.nr ? 'Hors ' + _rc.nr + ' SCPI (retrait inconnu ou nue-propriété)' : 'Au prix de retrait, sans décote ajoutée'); }
   elv('scpiKpiRev',   fmt(totalRev,0)+' €');
   try{
     const _re = document.getElementById('scpiKpiRev'), _rs = _re && _re.closest('.kpi') && _re.closest('.kpi').querySelector('.kpi-sub');
@@ -88219,7 +88713,7 @@ function renderSCPI(){
   try{   // IMM-013 : libellés honnêtes quand le prix de retrait manque
     const _sub = (id) => document.querySelector('[data-kpi-id="'+id+'"] .kpi-sub');
     const _sv = _sub('scpi-val');
-    if(_sv) _sv.textContent = nbRetraitNr === 0 ? 'Au prix de retrait' : (nbRetraitNr === data.length ? 'Au prix de souscription · retrait non renseigné' : 'Dont ' + nbRetraitNr + ' au prix de souscription (retrait non renseigné)');
+    if(_sv) _sv.textContent = (nbRetraitNr === 0 && data.some(x => x._nue && x._nue.actif)) ? 'Dont ' + data.filter(x => x._nue && x._nue.actif).length + ' en nue-propriété (valeur estimée)' : nbRetraitNr === 0 ? 'Au prix de retrait' : (nbRetraitNr === data.length ? 'Au prix de souscription · retrait non renseigné' : 'Dont ' + nbRetraitNr + ' au prix de souscription (retrait non renseigné)');
     const _pe = document.getElementById('scpiKpiPV'), _sp = _pe && _pe.closest('.kpi') && _pe.closest('.kpi').querySelector('.kpi-sub');
     if(_sp){ if(_sp.dataset.orig === undefined) _sp.dataset.orig = _sp.textContent; _sp.textContent = nbRetraitNr === 0 ? _sp.dataset.orig : (nbRetraitNr === data.length ? 'Prix de retrait inconnu' : 'Hors ' + nbRetraitNr + ' SCPI sans prix de retrait'); }
   }catch(_){}
@@ -88339,13 +88833,17 @@ function renderSCPI(){
         ? `<strong style="color:var(--text)">${fmt(inv,0)} €</strong> investis · valeur stable`
         : `Investi <strong style="color:var(--text)">${fmt(inv,0)} €</strong> → vaut <strong style="color:var(--accent)">${fmt(val,0)} €</strong>`;
       // 2) Revente : seulement s'il y a des frais de retrait
-      const revente = k.valRecuperable === null ? line(svgBag, `Montant récupérable : <strong style="color:var(--text3)">indisponible</strong> (prix de retrait non renseigné)`) : '';
+      const revente = k.valRecuperable === null ? line(svgBag, (s._nue && s._nue.actif) ? `Montant récupérable : <strong style="color:var(--text3)">aucun</strong> avant la fin du démembrement` : `Montant récupérable : <strong style="color:var(--text3)">indisponible</strong> (prix de retrait non renseigné)`) : '';
       // 3) Frais de souscription : mini-barre
       const frais = k.pctFraisRecup===null ? `<div style="font-size:10px;color:var(--text3)">Frais de souscription inconnus : suivi d'amortissement indisponible</div>` : `<div>
         <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3)"><span>Frais de souscription amortis</span><span style="font-weight:700;color:${k.pctFraisRecup>=100?'var(--green)':'var(--accent)'}">${k.pctFraisRecup} %</span></div>
         <div style="height:3px;border-radius:2px;background:rgba(128,128,128,0.18);margin-top:3px;overflow:hidden"><div style="height:100%;width:${k.pctFraisRecup}%;background:linear-gradient(90deg,${hexToRgba(green,0.55)},${green});border-radius:2px"></div></div>
         ${k.pctFraisRecup<100 && k.moisAvantAmortissement ? `<div style="font-size:9px;color:var(--text3);margin-top:3px">complet dans ${(()=>{const a=Math.floor(k.moisAvantAmortissement/12),mo=k.moisAvantAmortissement%12;return [a?a+(a>1?' ans':' an'):'',mo?mo+' mois':''].filter(Boolean).join(' et ');})()}</div>` : ''}
       </div>`;
+      const svgCal = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
+      const nueLine = !s._nue ? '' : s._nue.fini
+        ? line(svgCal, `Démembrement terminé le <strong style="color:var(--text)">${kyfScpiDateFr_(s._nue.fin)}</strong> : pleine propriété, les loyers sont comptés`)
+        : line(svgCal, `Nue-propriété jusqu'au <strong style="color:var(--text)">${s._nue.fin ? kyfScpiDateFr_(s._nue.fin) : '(date à renseigner)'}</strong>, aucun loyer d'ici là. ${s._nue.sansDate ? 'Ajoutez la date d\'achat pour que la valeur monte en ligne droite.' : 'Valeur estimée en ligne droite : <strong style="color:var(--text)">' + s._nue.pct + ' %</strong> du chemin vers ' + fmt(parseFloat(s.nuePrixPleine)||0,0) + ' € la part.'}`);
       const tri = k.tri!==null ? line(svgTrend, `TRI réel <strong style="color:${parseFloat(k.tri)>=0?'var(--green)':'var(--red)'}">${String(k.tri).replace('.',',')} %/an</strong> depuis l'achat`) : (k.triTropRecent ? line(svgTrend, `TRI : disponible après 1 an de détention`) : '');
       const _dj = (()=>{ try{ const d = kyfScpiDbFind(s.nom); const n = d ? parseFloat(d.delai_jouissance_mois) : NaN; return n > 0 ? n : 0; }catch(_){ return 0; } })();
       const infos = [s.td ? 'TD ' + String(s.td).replace('.',',') + ' %' : '', _dj ? 'jouissance ' + _dj + ' mois' : '', s._avContratNom ? escapeHtml(s._avContratNom) : ''].filter(Boolean).join(' · ');
@@ -88356,6 +88854,7 @@ function renderSCPI(){
         ${line(svgEuro, resume)}
         ${revente}
         ${frais}
+        ${nueLine}
         ${tri}
         ${scpiChartHtml(s, k)}
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
@@ -88370,7 +88869,7 @@ function renderSCPI(){
         ${scpiVisualHTML(src, s.visualShape||'diamond', false, 36, k.pillColor, category)}
         <div style="flex:1;min-width:0">
           <div style="font-family:Inter,sans-serif;font-weight:700;font-size:12px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${escapeHtml(s.nom)}">${escapeHtml(s.nom)}${kyfTiDot(s.titulaire)}</div>
-          <div style="font-family:Inter,sans-serif;font-size:10px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${kyfPctTxt(s.parts)||'-'} parts · ${fmt(s.revMens||0,0)} €/mois${(s.revTheo && s.revTheo!==s.revMens) ? ' (théorique '+fmt(s.revTheo,0)+' €)' : ''}</div>
+          <div style="font-family:Inter,sans-serif;font-size:10px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${kyfPctTxt(s.parts)||'-'} parts · ${(s._nue && s._nue.actif) ? 'nue-prop.' + (s._nue.fin ? ' ' + s._nue.fin.slice(0,4) : '') : fmt(s.revMens||0,0)+' €/mois'+((s.revTheo && s.revTheo!==s.revMens) ? ' (théorique '+fmt(s.revTheo,0)+' €)' : '')}</div>
         </div>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:${sel?'var(--accent)':'var(--text3)'};transition:transform .2s;transform:rotate(${sel?'0':'-90'}deg)"><polyline points="6 9 12 15 18 9"/></svg>
       </div>
@@ -88576,6 +89075,8 @@ function editSCPI(id){
   { const a=document.getElementById('scpiPartsJouis'), b=document.getElementById('scpiDivRecu'); if(a) a.value = s.partsJouissance||''; if(b) b.value = s.divRecuMois||''; }
   kyfCSelSetValue('scpiEnveloppe', s.enveloppe||'direct', SCPI_ENVELOPPE_LABELS[s.enveloppe||'direct']||'En direct');
   kyfDateSetValue('scpiDateAchat', s.dateAchat||'', 'JJ/MM/AAAA');
+  { const c = document.getElementById('scpiNue'), p = document.getElementById('scpiNuePrix'), f = document.getElementById('scpiNueFields'), nr = document.getElementById('scpiNueRow');
+    if(c) c.checked = !!s.nueProp; if(p) p.value = s.nuePrixPleine || ''; kyfDateSetValue('scpiNueFin', s.nueFin || '', 'JJ/MM/AAAA'); if(f) f.style.display = s.nueProp ? 'grid' : 'none'; if(nr) nr.style.display = (s.enveloppe === 'av' || s.enveloppe === 'per') ? 'none' : ''; }
   document.getElementById('scpiVisualData').value  = s.visual||'';
   document.getElementById('scpiDividendeData').value = s.dividendeBrut!=null ? s.dividendeBrut : '';
   document.getElementById('scpiFrequenceData').value = s.frequence||'';
@@ -95905,6 +96406,216 @@ function validerArbitrage(){
   if(typeof kyfOnDataChanged==='function') kyfOnDataChanged();
 }
 
+// ── Arbitrage à plusieurs supports, saisi à la main (2.10.1.05) ──
+// Plusieurs lignes en sortie, plusieurs en entrée, montants réels corrigeables (ceux de l'avis), date d'effet et frais.
+// Mêmes règles que l'arbitrage simple pour les quantités et les prix de revient (kyfAvArbSortie / kyfAvArbEntree) ; historique « multi-supports » comme l'import d'avis.
+let _avMs = null;
+const AV_MS_TYPES = [['etf','ETF'],['action','Action'],['immo','SCPI / SCI / OPCI'],['fonds','Fonds géré'],['fe','Fonds euros']];
+function avMsPn(v){ const n = parseNum(String(v == null ? '' : v)); return isFinite(n) && n > 0 ? n : 0; }
+function avMsR2(v){ return Math.round(v * 100) / 100; }
+function avMsCalc(){
+  const st = _avMs, pos = avPosLoad(st.cid), out = { errs: [], warns: [], sorties: [], entrees: [], totS: 0, frais: 0, aRep: 0, totE: 0, reste: 0 };
+  const nm = p => p.nom || p.ticker || 'Sans nom', usedS = {}, usedE = {};
+  st.sorties.forEach(s => {
+    const p = pos.find(q => String(q.id) === String(s.pid)), m = avMsR2(avMsPn(s.montant));
+    if(!p) return;
+    if(usedS[p.id]) out.errs.push('La ligne « ' + nm(p) + ' » est choisie deux fois en sortie');
+    usedS[p.id] = 1;
+    if(!(m > 0)){ out.errs.push('Indiquez le montant sorti de « ' + nm(p) + ' »'); return; }
+    if(m > (p.valeur || 0) + 0.005) out.warns.push('« ' + nm(p) + ' » : ' + fmt(m, 2) + ' € sortis, KYF n\'en a que ' + fmt(p.valeur || 0, 2) + ' € (la ligne passera à 0)');
+    out.sorties.push({ p, m, qty: avMsPn(s.qty), vl: avMsPn(s.vl) });
+    out.totS += m;
+  });
+  out.totS = avMsR2(out.totS);
+  out.frais = avMsR2(avMsPn(st.frais));
+  out.aRep = avMsR2(out.totS - out.frais);
+  if(!out.sorties.length) out.errs.push('Choisissez au moins une ligne en sortie, avec son montant');
+  if(out.frais > out.totS) out.errs.push('Les frais dépassent le total sorti');
+  st.entrees.forEach(e => {
+    const empty = !e.pid && !String(e.nom || '').trim() && !avMsPn(e.montant);
+    if(empty) return;
+    let p = e.pid ? pos.find(q => String(q.id) === String(e.pid)) : null;
+    const nom = String(e.nom || '').trim();
+    if(!p && nom){ const k = nom.toLowerCase(), pk = e.pick; p = pos.find(q => (nm(q).toLowerCase() === k) || (pk && pk.ticker && String(q.ticker || '').toUpperCase() === pk.ticker)) || null; }
+    if(!p && !nom){ out.errs.push('Choisissez ou nommez la ligne de chaque entrée'); return; }
+    if(p && usedS[p.id]) out.errs.push('« ' + nm(p) + ' » est à la fois en sortie et en entrée');
+    if(p && usedE[p.id]) out.errs.push('« ' + nm(p) + ' » est choisie deux fois en entrée');
+    if(p) usedE[p.id] = 1;
+    const m = e.unit === 'pct' ? avMsR2(out.aRep * avMsPn(e.montant) / 100) : avMsR2(avMsPn(e.montant));
+    if(!(m > 0)){ out.errs.push('Indiquez le montant de « ' + (p ? nm(p) : nom) + ' »'); return; }
+    out.entrees.push({ p, nom: p ? nm(p) : nom, m, type: e.type, pick: e.pick, qty: avMsPn(e.qty), vl: avMsPn(e.vl) });
+    out.totE += m;
+  });
+  out.totE = avMsR2(out.totE);
+  if(!out.entrees.length) out.errs.push('Ajoutez au moins une ligne en entrée, avec son montant');
+  out.reste = avMsR2(out.aRep - out.totE);
+  if(out.sorties.length && out.entrees.length && Math.abs(out.reste) > 0.05) out.errs.push(out.reste > 0 ? 'Il reste ' + fmt(out.reste, 2) + ' € à répartir' : 'Les entrées dépassent de ' + fmt(-out.reste, 2) + ' €');
+  const d = (document.getElementById('msDate') || {}).value || '';
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(d)) out.errs.push('Indiquez la date d\'effet');
+  else if(d > kyfParisNow().date) out.errs.push('La date d\'effet ne peut pas être dans le futur');
+  out.date = d;
+  return out;
+}
+function avMsSum(){
+  const box = document.getElementById('msSum'); if(!box || !_avMs) return;
+  const c = avMsCalc(), ok = Math.abs(c.reste) <= 0.05 && c.totS > 0;
+  const it = (l, v, col) => '<span style="white-space:nowrap">' + l + ' <b style="color:' + (col || 'var(--text)') + '">' + v + '</b></span>';
+  box.innerHTML = '<div style="display:flex;flex-wrap:wrap;gap:4px 14px;font-size:10px;color:var(--text2)">' + it('Sorti', fmt(c.totS, 2) + ' €') + (c.frais > 0 ? it('Frais', '− ' + fmt(c.frais, 2) + ' €') : '') + it('À répartir', fmt(c.aRep, 2) + ' €') + it('Réparti', fmt(c.totE, 2) + ' €') + it('Reste', fmt(c.reste, 2) + ' €', ok ? 'var(--green)' : 'var(--accent)') + '</div>'
+    + (c.warns.length ? '<div style="margin-top:3px;font-size:9px;color:var(--accent);line-height:1.5">' + c.warns.map(escapeHtml).join(' · ') + '</div>' : '');
+}
+function avMsMsg(t){ const e = document.getElementById('msMsg'); if(e) e.textContent = t || ''; }
+const AV_MS_FLD = 'width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);border-radius:6px;font-family:\'Inter\',sans-serif;font-size:11px;padding:7px 10px;outline:none';
+const AV_MS_LBL = 'font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px';
+const AV_MS_X = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+function avMsBtnX(fn){ return '<button type="button" onclick="' + fn + '" class="kyf-modal-close" aria-label="Retirer" style="flex-shrink:0">' + AV_MS_X + '</button>'; }
+function avMsAddBtn(fn, label){ return '<button type="button" onclick="' + fn + '" style="font-family:\'Inter\',sans-serif;font-size:10px;font-weight:600;padding:7px 12px;border-radius:6px;border:1px dashed var(--border2);background:none;color:var(--text2);cursor:pointer;transition:background .15s" onmouseover="this.style.background=\'var(--hov-bg)\'" onmouseout="this.style.background=\'none\'">+ ' + label + '</button>'; }
+function avMsDetRow(kind, i, o){
+  if(!_avMs.det) return '';
+  return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px"><input type="text" inputmode="decimal" value="' + escapeHtml(o.qty || '') + '" placeholder="Nombre de parts" oninput="avMsInp(\'' + kind + '\',' + i + ',\'qty\',this.value)" style="' + AV_MS_FLD + '"><input type="text" inputmode="decimal" value="' + escapeHtml(o.vl || '') + '" placeholder="Valeur de part (€)" oninput="avMsInp(\'' + kind + '\',' + i + ',\'vl\',this.value)" style="' + AV_MS_FLD + '"></div>';
+}
+function avMsToggleDet(){ _avMs.det = !_avMs.det; const t = document.getElementById('msDetBtn'); if(t) t.textContent = _avMs.det ? 'Masquer les parts et valeurs de part' : 'Ajouter les parts et valeurs de part (facultatif)'; avMsRender(); }
+function avMsRender(){
+  const st = _avMs; if(!st) return;
+  const pos = avPosLoad(st.cid), chosen = new Set(st.sorties.map(s => String(s.pid)).filter(Boolean));
+  const sb = document.getElementById('msSortiesBox'), eb = document.getElementById('msEntreesBox');
+  if(sb) sb.innerHTML = st.sorties.map((s, i) => {
+    const opts = '<option value="">Choisir un fonds</option>' + pos.map(q => '<option value="' + escapeHtml(String(q.id)) + '"' + (String(q.id) === String(s.pid) ? ' selected' : '') + (chosen.has(String(q.id)) && String(q.id) !== String(s.pid) ? ' disabled' : '') + '>' + escapeHtml(q.nom || q.ticker || 'Sans nom') + ' (' + fmt(q.valeur || 0, 0) + ' €)</option>').join('');
+    return '<div style="margin-bottom:12px"><div style="display:grid;grid-template-columns:minmax(0,1fr) 104px 24px;gap:8px;align-items:center"><select onchange="avMsSrc(' + i + ',this.value)" style="' + AV_MS_FLD + ';background:var(--bg2)">' + opts + '</select>'
+      + '<input type="text" inputmode="decimal" id="msSM' + i + '" value="' + escapeHtml(s.montant || '') + '" placeholder="Montant €" oninput="avMsInp(\'s\',' + i + ',\'montant\',this.value)" style="' + AV_MS_FLD + ';text-align:right">'
+      + (st.sorties.length > 1 ? avMsBtnX('avMsDelS(' + i + ')') : '<span></span>') + '</div>' + avMsDetRow('s', i, s) + '</div>';
+  }).join('') + avMsAddBtn('avMsAddS()', 'Ajouter un fonds');
+  if(eb) eb.innerHTML = st.entrees.map((e, j) => {
+    const p = e.pid ? pos.find(q => String(q.id) === String(e.pid)) : null, nomOk = String(e.nom || '').trim();
+    const unitBtn = (u, l, first) => { const on = (e.unit || 'eur') === u; return '<button type="button" onclick="avMsEUnit(' + j + ',\'' + u + '\')" style="flex:1;font-family:\'Inter\',sans-serif;font-size:11px;font-weight:700;padding:7px 0;border:none;' + (first ? '' : 'border-left:1px solid var(--border2);') + 'background:' + (on ? '#f0b429' : 'var(--btn-secondary-bg)') + ';color:' + (on ? '#000' : 'var(--text3)') + ';cursor:pointer">' + l + '</button>'; };
+    const typeSel = (!p && nomOk && !e.pick) ? '<select onchange="avMsEType(' + j + ',this.value)" style="font-family:\'Inter\',sans-serif;font-size:10px;padding:3px 6px;border-radius:6px;border:1px solid var(--border2);background:var(--bg2);color:var(--text);outline:none">' + AV_MS_TYPES.map(t => '<option value="' + t[0] + '"' + (e.type === t[0] ? ' selected' : '') + '>' + t[1] + '</option>').join('') + '</select>' : '';
+    const tag = p ? 'Fonds du contrat' : (e.pick ? 'Nouveau fonds (' + (e.pick.isin || e.pick.ticker) + ')' : (nomOk ? 'Nouveau fonds, type :' : ''));
+    return '<div style="margin-bottom:12px"><div style="display:grid;grid-template-columns:minmax(0,1fr) 104px 62px 24px;gap:8px;align-items:center">'
+      + '<div style="position:relative;min-width:0"><input type="text" id="msEN' + j + '" value="' + escapeHtml(e.nom || '') + '" placeholder="Nom, ticker ou ISIN du fonds" autocomplete="off" oninput="avMsSearch(' + j + ',this.value)" onfocus="avMsSearch(' + j + ',this.value)" onblur="setTimeout(()=>{const d=document.getElementById(\'msED' + j + '\');if(d)d.style.display=\'none\'},180)" style="' + AV_MS_FLD + ';background:var(--bg2)"><div id="msED' + j + '" style="display:none;position:absolute;left:0;right:0;top:100%;margin-top:3px;z-index:5;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;max-height:190px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.35)"></div></div>'
+      + '<input type="text" inputmode="decimal" id="msEM' + j + '" value="' + escapeHtml(e.montant || '') + '" placeholder="' + ((e.unit || 'eur') === 'pct' ? 'Part en %' : 'Montant €') + '" oninput="avMsInp(\'e\',' + j + ',\'montant\',this.value)" style="' + AV_MS_FLD + ';text-align:right">'
+      + '<div style="display:flex;border:1px solid var(--border2);border-radius:6px;overflow:hidden">' + unitBtn('eur', '€', true) + unitBtn('pct', '%', false) + '</div>'
+      + (st.entrees.length > 1 ? avMsBtnX('avMsDelE(' + j + ')') : '<span></span>') + '</div>'
+      + '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:4px;min-height:16px"><span style="display:flex;align-items:center;gap:6px;font-size:9px;color:var(--text3)">' + tag + ' ' + typeSel + '</span><span id="msEH' + j + '" style="font-size:9px;color:var(--text3)"></span></div>'
+      + avMsDetRow('e', j, e) + '</div>';
+  }).join('') + avMsAddBtn('avMsAddE()', 'Ajouter un fonds');
+  st.entrees.forEach((e, j) => avMsHint(j));
+  avMsSum();
+}
+function avMsHint(j){
+  const st = _avMs, e = st && st.entrees[j], h = document.getElementById('msEH' + j); if(!e || !h) return;
+  if((e.unit || 'eur') !== 'pct'){ h.textContent = ''; return; }
+  const c = avMsCalc(); h.textContent = '= ' + fmt(avMsR2(c.aRep * avMsPn(e.montant) / 100), 2) + ' €';
+}
+function avMsInp(kind, i, f, v){ const st = _avMs; if(!st) return; (kind === 's' ? st.sorties : st.entrees)[i][f] = v; avMsMsg(''); avMsSum(); st.entrees.forEach((e, j) => avMsHint(j)); }
+function avMsFrais(v){ const st = _avMs; if(!st) return; st.frais = v; avMsMsg(''); avMsSum(); st.entrees.forEach((e, j) => avMsHint(j)); }
+function avMsSrc(i, pid){
+  const s = _avMs.sorties[i]; s.pid = pid;
+  const p = avPosLoad(_avMs.cid).find(q => String(q.id) === String(pid));
+  if(p && !String(s.montant || '').trim()) s.montant = String(avMsR2(p.valeur || 0)).replace('.', ',');
+  avMsRender();
+}
+function avMsAddS(){ _avMs.sorties.push({ pid: '', montant: '' }); avMsRender(); }
+function avMsDelS(i){ _avMs.sorties.splice(i, 1); avMsRender(); }
+function avMsAddE(){ _avMs.entrees.push({ pid: '', nom: '', pick: null, type: 'etf', montant: '', unit: 'eur' }); avMsRender(); }
+function avMsDelE(j){ _avMs.entrees.splice(j, 1); avMsRender(); }
+function avMsEType(j, t){ _avMs.entrees[j].type = t; avMsRender(); }
+function avMsEUnit(j, u){ _avMs.entrees[j].unit = u; avMsRender(); }
+function avMsSearch(j, q){
+  const st = _avMs, e = st && st.entrees[j]; if(!e) return;
+  if(q !== e.nom){ e.nom = q; e.pid = ''; e.pick = null; }
+  const d = document.getElementById('msED' + j); if(!d) return;
+  const qn = String(q || '').trim().toLowerCase();
+  if(!qn){ d.style.display = 'none'; return; }
+  const pos = avPosLoad(st.cid), usedS = new Set(st.sorties.map(s => String(s.pid)));
+  const ex = pos.filter(p => !usedS.has(String(p.id)) && ((p.nom || p.ticker || '').toLowerCase().includes(qn) || String(p.isin || '').toLowerCase().includes(qn) || String(p.ticker || '').toLowerCase().includes(qn))).slice(0, 6);
+  let cat = []; try{ cat = qn.length >= 2 ? avArbCatalogSearch(String(q).trim(), pos) : []; }catch(err){}
+  st.cat = st.cat || {}; st.cat[j] = cat;
+  const head = t => '<div style="padding:5px 12px;font-size:9px;letter-spacing:.5px;color:var(--text3);background:var(--btn-secondary-bg);border-bottom:1px solid var(--border)">' + t + '</div>';
+  const it = (fn, txt, sub) => '<div onmousedown="event.preventDefault();' + fn + '" style="padding:8px 12px;font-size:11px;color:var(--text);cursor:pointer;border-bottom:1px solid rgba(128,128,128,.12);transition:background .15s" onmouseover="this.style.background=\'var(--hov-bg)\'" onmouseout="this.style.background=\'transparent\'">' + txt + (sub ? ' <span style="font-size:9px;color:var(--text3)">' + sub + '</span>' : '') + '</div>';
+  d.innerHTML = (ex.length ? head('LIGNES DU CONTRAT') + ex.map(p => it('avMsPickPos(' + j + ',\'' + String(p.id).replace(/'/g, '') + '\')', (AV_ARB_TYPE_LBL[p.type] || '') + ' ' + escapeHtml(p.nom || p.ticker), fmt(p.valeur || 0, 0) + ' €')).join('') : '')
+    + (cat.length ? head('RÉFÉRENTIEL') + cat.map((c, k) => it('avMsPickCat(' + j + ',' + k + ')', escapeHtml(c.nom), escapeHtml(c.isin || c.ticker))).join('') : '');
+  d.style.display = (ex.length || cat.length) ? 'block' : 'none';
+}
+function avMsPickPos(j, pid){
+  const e = _avMs.entrees[j], p = avPosLoad(_avMs.cid).find(q => String(q.id) === String(pid)); if(!p) return;
+  e.pid = String(p.id); e.nom = p.nom || p.ticker || ''; e.pick = null; e.type = p.type; avMsRender();
+}
+function avMsPickCat(j, k){
+  const e = _avMs.entrees[j], c = ((_avMs.cat || {})[j] || [])[k]; if(!c) return;
+  e.pid = ''; e.nom = c.nom; e.pick = { type: c.type, nom: c.nom, ticker: c.ticker, isin: c.isin }; e.type = c.type === 'fonds' ? 'fonds' : 'etf'; avMsRender();
+}
+function avMsClose(){
+  ['avMsModal', 'avMsOverlay'].forEach(id => { const x = document.getElementById(id); if(x) x.remove(); });
+  try{ kyfUnlockBodyScroll(); }catch(e){ document.body.style.overflow = ''; }
+  _avMs = null;
+}
+function avMsOpen(cid){
+  try{ kyfNewBadgeSeen('arbmulti'); }catch(e){}
+  const c = avLoad().find(d => d.id === cid); if(!c) return;
+  if(!avPosLoad(cid).length){ alert('Ce contrat n\'a aucune position détaillée. Ajoutez au moins une position avant de pouvoir arbitrer.'); return; }
+  closeArbitrageModal();
+  avMsClose();
+  _avMs = { cid, det: false, frais: '', sorties: [{ pid: '', montant: '' }], entrees: [{ pid: '', nom: '', pick: null, type: 'etf', montant: '', unit: 'eur' }] };
+  const ov = document.createElement('div'); ov.id = 'avMsOverlay'; ov.onclick = avMsClose; ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10004';
+  const m = document.createElement('div'); m.id = 'avMsModal';
+  m.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(940px,96vw);height:min(620px,94vh);z-index:10005;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;overflow:hidden;font-family:Inter,sans-serif;box-shadow:0 12px 48px rgba(0,0,0,.4);color:var(--text);overscroll-behavior:contain';
+  m.innerHTML = '<div class="av-wrap">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);flex-shrink:0"><div><span style="font-weight:700;font-size:12px;letter-spacing:1px;display:flex;align-items:center;gap:8px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg> ARBITRAGE · PLUSIEURS SUPPORTS</span><div style="font-size:9px;color:#06b6d4;margin-top:3px;letter-spacing:.5px">' + escapeHtml(c.contratNom || c.assureur || '') + '</div></div>'
+    + '<button type="button" onclick="avMsClose()" class="kyf-modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'
+    + '<div class="av-body"><div class="av-side" style="width:min(410px,100%);padding:18px 18px 14px">'
+    + '<div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:2px">1. Ce qui sort</div><div style="font-size:10px;color:var(--text3);margin-bottom:12px;line-height:1.5">Les fonds désinvestis, avec les montants de votre avis.</div><div id="msSortiesBox"></div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px"><div><div style="' + AV_MS_LBL + '">DATE DE L\'AVIS</div><input type="hidden" id="msDate" value="" oninput="avMsSum()"><button type="button" id="msDateBtn" class="kyf-csel-btn" data-kyf-date="msDate" aria-haspopup="dialog" aria-expanded="false"><span id="msDateBtnLabel">JJ/MM/AAAA</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button></div>'
+    + '<div><div style="' + AV_MS_LBL + '">FRAIS (€)</div><input type="text" inputmode="decimal" id="msFrais" placeholder="0" oninput="avMsFrais(this.value)" style="' + AV_MS_FLD + '"></div></div></div>'
+    + '<div class="av-main" style="padding:18px 22px 14px"><div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:2px">2. Ce qui entre</div><div style="font-size:10px;color:var(--text3);margin-bottom:12px;line-height:1.5">Les fonds achetés, en € ou en % du total à répartir.</div><div id="msEntreesBox"></div><button type="button" id="msDetBtn" onclick="avMsToggleDet()" style="margin-top:14px;font-family:\'Inter\',sans-serif;font-size:9px;background:none;border:none;color:var(--text3);cursor:pointer;padding:0;text-decoration:underline;transition:color .15s" onmouseover="this.style.color=\'var(--text)\'" onmouseout="this.style.color=\'var(--text3)\'">Ajouter les parts et valeurs de part (facultatif)</button>'
+    + '</div></div>'
+    + '<div style="display:flex;gap:8px;justify-content:flex-end;align-items:center;padding:12px 18px;border-top:1px solid var(--border);flex-shrink:0"><div style="flex:1;min-width:0"><div id="msSum"></div><div id="msMsg" style="font-size:10px;min-height:12px;color:var(--red);margin-top:2px"></div></div>'
+    + '<button type="button" onclick="avMsClose()" style="font-family:\'Inter\',sans-serif;font-size:9px;padding:8px 16px;border-radius:7px;border:1px solid var(--border2);background:none;color:var(--text3);cursor:pointer;transition:background .15s" onmouseover="this.style.background=\'var(--hov-bg)\'" onmouseout="this.style.background=\'none\'">ANNULER</button>'
+    + '<button type="button" onclick="avMsSubmit()" style="font-family:\'Inter\',sans-serif;font-size:9px;font-weight:700;padding:8px 16px;border-radius:7px;border:none;background:#06b6d4;color:#000;cursor:pointer;transition:opacity .15s" onmouseover="this.style.opacity=\'.85\'" onmouseout="this.style.opacity=\'1\'">VALIDER L\'ARBITRAGE</button></div></div>';
+  document.body.appendChild(ov); document.body.appendChild(m);
+  try{ kyfLockBodyScroll(m); }catch(e){ document.body.style.overflow = 'hidden'; }
+  try{ kyfDateSetValue('msDate', kyfParisNow().date); }catch(e){}
+  avMsRender();
+}
+function avMsSubmit(){
+  const st = _avMs; if(!st) return;
+  const c = avMsCalc();
+  if(c.errs.length){ avMsMsg(c.errs[0]); return; }
+  const cid = st.cid, positions = avPosLoad(cid), r6 = v => Math.round(v * 1e6) / 1e6, r2 = avMsR2, hist = [];
+  c.sorties.forEach(s => {
+    const p = positions.find(q => String(q.id) === String(s.p.id)); if(!p) return;
+    const before = p.valeur || 0, q = parseFloat(p.qty) || 0;
+    if(s.qty > 0 && q > 0) kyfAvArbSortie(cid, p, q, Math.min(s.qty, q)); else kyfAvArbSortie(cid, p, before, Math.min(s.m, before));
+    p.valeur = Math.max(0, r2(before - s.m));
+    hist.push({ sens: 'Sortie', nom: p.nom || p.ticker, ligne: p.nom || p.ticker, montant: s.m, qty: s.qty || null, vl: s.vl || null });
+  });
+  c.entrees.forEach((e, k) => {
+    let p = e.p ? positions.find(q => String(q.id) === String(e.p.id)) : null;
+    if(p){
+      const before = p.valeur || 0, q = parseFloat(p.qty) || 0, pru = parseFloat(p.pru) || 0;
+      if(e.qty > 0){
+        if(q > 0 && pru > 0) p.pru = Math.round(((pru * q + e.m) / (q + e.qty)) * 1e4) / 1e4; else if(!(q > 0)) p.pru = e.vl > 0 ? e.vl : r6(e.m / e.qty);
+        p.qty = r6(q + e.qty);
+        kyfAvArbLinked(cid, p).forEach(l => { const eq = parseFloat(l.qty) || 0, ep = parseFloat(l.pru) || 0; if(ep > 0 && eq + e.qty > 0) l.pru = (ep * eq + e.m) / (eq + e.qty); l.qty = eq + e.qty; if(parseFloat(l.montant) > 0) l.montant = parseFloat(l.montant) + e.m; });
+      } else kyfAvArbEntree(cid, p, before, e.m);
+      p.valeur = r2(before + e.m);
+    } else {
+      p = { id: Date.now().toString() + '_ms' + k, type: e.type, nom: e.nom, valeur: e.m };
+      if(e.pick){ p.ticker = e.pick.ticker; if(e.pick.isin) p.isin = e.pick.isin; }
+      if(e.qty > 0){ p.qty = e.qty; p.pru = e.vl > 0 ? e.vl : r6(e.m / e.qty); }
+      positions.push(p);
+      if(e.pick && e.pick.type === 'fonds' && e.pick.isin){ try{ fetch(GAS_STATSAVIE_, { method: 'POST', body: new URLSearchParams({ action: 'marquer_detenu', isin: e.pick.isin }) }).catch(() => {}); }catch(err){} }
+    }
+    hist.push({ sens: 'Entrée', nom: e.nom, ligne: p.nom || p.ticker, montant: e.m, qty: e.qty || null, vl: e.vl || null });
+  });
+  avPosSave(cid, positions);
+  try{ etfSave(); }catch(e){}
+  const contrat = avLoad().find(d => d.id === cid);
+  avArbSaveEntry({ date: new Date(c.date + 'T12:00:00').toISOString(), dateSeule: true, isMulti: true, contratId: cid, contratNom: contrat ? (contrat.contratNom || contrat.assureur) : '-', montant: c.totS, frais: c.frais, lignes: hist });
+  avMsClose();
+  try{ renderAV(); }catch(e){}
+  if(typeof kyfOnDataChanged === 'function') kyfOnDataChanged();
+  showToast('Arbitrage enregistré : ' + c.sorties.length + ' sortie(s), ' + c.entrees.length + ' entrée(s)');
+}
+
 function openArbitrageHistoryModal(){
   renderArbitrageHistory();
   document.getElementById('avArbHistModal').style.display = 'flex';
@@ -95932,7 +96643,7 @@ function renderArbitrageHistory(){
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
         <span style="font-size:9px;color:var(--text3)">${dateStr} · ${escapeHtml(a.contratNom)} · arbitrage multi-supports</span>
         <span style="font-size:11px;font-weight:700;color:#06b6d4">${fmt(a.montant,2)} €</span>
-      </div>${a.lignes.map(fl).join('')}</div>`;
+      </div>${a.lignes.map(fl).join('')}${a.frais>0?'<div style="font-size:9px;color:var(--text3);margin-top:2px">Frais : '+fmt(a.frais,2)+' €</div>':''}</div>`;
     }
     return `<div style="padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.06)">
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
@@ -98246,6 +98957,7 @@ function renderAV(){
             <div id="avActionsMenu-pos-${p.id}" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:170px">
               <div class="kyf-menu-h">POSITION</div>
               <div onclick="avCloseActionsMenu('pos-${p.id}');editAVPos('${d.id}','${p.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''">${KYF_ICONS.edit} Modifier</div>
+              ${['etf','action','fonds'].includes(p.type) ? `<div onclick="avCloseActionsMenu('pos-${p.id}');kyfSplitOpen('av','${d.id}','${p.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg> Fractionnement / regroupement</div>` : ''}
               ${['etf','action','fonds'].includes(p.type) ? `<div onclick="avCloseActionsMenu('pos-${p.id}');avReplaceSupport('${d.id}','${p.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3l4 4-4 4"/><path d="M3 7h18"/><path d="M7 21l-4-4 4-4"/><path d="M21 17H3"/></svg> Remplacer le support</div>` : ''}
               ${['etf','action','fonds','obl','pe','dp','str'].includes(p.type) ? `<div class="kyf-menu-sep" role="separator"></div><div class="kyf-menu-h">SUIVI</div><div onclick="avCloseActionsMenu('pos-${p.id}');avSuiviOpen('${d.id}','${p.id}')" style="padding:8px 12px;font-family:'Inter',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='var(--hov-bg-soft)'" onmouseout="this.style.background=''"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Suivi mensuel${(()=>{ let vu = false; try{ vu = localStorage.getItem('kyf-nouveau-badge-avsuivi') === '1'; }catch(e){} return (vu || [].concat(KYF_NOUVEAUTES.badge || []).indexOf('avsuivi') < 0) ? '' : '<span class="kyf-new-badge" data-new="avsuivi" style="display:inline-block;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;margin-left:auto;pointer-events:none">NOUVEAU</span>'; })()}</div>` : ''}
               <div class="kyf-menu-sep" role="separator"></div>
@@ -98298,7 +99010,7 @@ function renderAV(){
           return `<div role="button" tabindex="0" onclick="event.stopPropagation();kyfAvTiMenu('${d.id}',this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();kyfAvTiMenu('${d.id}',this)}" title="Choisir à qui appartient ce contrat (couleur du cadre)" style="cursor:pointer;width:86px;height:70px;flex-shrink:0;box-sizing:border-box;border-radius:12px;border:${_tc ? '2px solid ' + _tc : '1px solid var(--border2)'};background:${_tc ? 'color-mix(in srgb,' + _tc + ' 14%,transparent)' : 'rgba(255,255,255,0.04)'};display:flex;align-items:center;justify-content:center;overflow:hidden">${assureurLogoImg(d.assureur, 60, true)}<div id="avActionsMenu-ti-${d.id}" style="display:none;position:absolute;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:150px;text-align:left">${_opt('', 'Aucun repère', 'var(--border2)')}${Object.keys(KYF_TITU).map(k => _opt(k, escapeHtml(KYF_TITU[k][0]), KYF_TITU[k][1])).join('')}</div></div>`; })()}
         <div style="flex:1;min-width:120px">
           <div style="font-weight:700;font-size:16px">${escapeHtml(d.contratNom||d.assureur||'-')}<button type="button" class="kyf-icon-btn" onclick="event.stopPropagation();kyfAvQuickRename('${d.id}')" title="Renommer le contrat" aria-label="Renommer le contrat" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 4px;margin-left:4px;vertical-align:middle;opacity:.65">${KYF_ICONS.edit}</button><span title="${avContratMode(d)==='import'?'Montants issus du relevé importé':'Montants saisis à la main'}" style="margin-left:8px;font-size:8px;font-weight:700;letter-spacing:.6px;padding:2px 6px;border-radius:4px;border:1px solid var(--border2);color:var(--text3);vertical-align:2px">${avContratMode(d)==='import'?'RELEVÉ':'MANUEL'}</span></div>
-          <div class="kyf-hd-chips"><span class="kyf-hd-chip" data-kyf-chip="${d.type}" style="color:${d.type==='av'?'color-mix(in srgb,'+accentCol+' 40%,var(--text))':accentCol};background:color-mix(in srgb,${accentCol} ${d.type==='av'?30:16}%,transparent)">${TYPE_LBL[d.type]||escapeHtml(d.type)}</span><span class="kyf-hd-chip">${escapeHtml(d.assureur||'-')}${kyfPctTxt(d.fraisGestion)?' · FG '+kyfPctTxt(d.fraisGestion)+'%':''}</span>${d.modeGestion&&d.modeGestion!=='libre'?'<span class="kyf-hd-chip">'+(d.modeGestion==='mandat'?'Sous mandat':'Pilotée')+(kyfPctTxt(d.fraisPilotage)?' +'+kyfPctTxt(d.fraisPilotage)+'%':'')+'</span>':''}${d.versements>0?'<span class="kyf-hd-chip">Versé '+fmt(d.versements,0)+' €</span>':`<span class="kyf-hd-chip"><span onclick="editAV('${d.id}');setTimeout(()=>{const i=document.getElementById('avVersements');if(i){i.scrollIntoView({block:'center'});i.focus();}},350)" title="Sans le total investi, pas de plus-value. À retrouver dans l'espace client (Mes versements) ou le relevé annuel." style="color:#f59e0b;font-weight:700;cursor:pointer;text-decoration:underline;transition:color .15s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='#f59e0b'">Total investi à renseigner</span></span>`}${rach>0?'<span class="kyf-hd-chip">Racheté '+fmt(rach,0)+' €</span>':''}<span class="kyf-hd-chip" title="Rendement annuel moyen depuis l'origine">Rend./an : <span style="font-weight:800;color:${cagr===null?'var(--text3)':cagr>=0?'var(--green)':'var(--red)'}">${cagr!==null?(cagr>=0?'+':'')+cagr.toFixed(1)+'%':'-'}</span></span></div>
+          <div class="kyf-hd-chips"><span class="kyf-hd-chip" data-kyf-chip="${d.type}" style="color:${d.type==='av'?'color-mix(in srgb,'+accentCol+' 40%,var(--text))':accentCol};background:color-mix(in srgb,${accentCol} ${d.type==='av'?30:16}%,transparent)">${TYPE_LBL[d.type]||escapeHtml(d.type)}</span><span class="kyf-hd-chip"${kyfChipOn('fg')&&kyfPctTxt(d.fraisGestion)?' data-chip-id="fg" data-chip-lbl="Frais de gestion"':''}>${escapeHtml(d.assureur||'-')}${kyfChipOn('fg')&&kyfPctTxt(d.fraisGestion)?' · FG '+kyfPctTxt(d.fraisGestion)+'%':''}</span>${d.modeGestion&&d.modeGestion!=='libre'&&kyfChipOn('mode')?'<span class="kyf-hd-chip" data-chip-id="mode" data-chip-lbl="Mode de gestion">'+(d.modeGestion==='mandat'?'Sous mandat':'Pilotée')+(kyfPctTxt(d.fraisPilotage)?' +'+kyfPctTxt(d.fraisPilotage)+'%':'')+'</span>':''}${d.versements>0?(kyfChipOn('vers')?'<span class="kyf-hd-chip" data-chip-id="vers" data-chip-lbl="Total versé">Versé '+fmt(d.versements,0)+' €</span>':''):`<span class="kyf-hd-chip"><span onclick="editAV('${d.id}');setTimeout(()=>{const i=document.getElementById('avVersements');if(i){i.scrollIntoView({block:'center'});i.focus();}},350)" title="Sans le total investi, pas de plus-value. À retrouver dans l'espace client (Mes versements) ou le relevé annuel." style="color:#f59e0b;font-weight:700;cursor:pointer;text-decoration:underline;transition:color .15s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='#f59e0b'">Total investi à renseigner</span></span>`}${rach>0&&kyfChipOn('rach')?'<span class="kyf-hd-chip" data-chip-id="rach" data-chip-lbl="Total racheté">Racheté '+fmt(rach,0)+' €</span>':''}${kyfChipOn('cagr')?`<span class="kyf-hd-chip" data-chip-id="cagr" data-chip-lbl="Rendement annuel moyen" title="Rendement annuel moyen depuis l'origine">Rend./an : <span style="font-weight:800;color:${cagr===null?'var(--text3)':cagr>=0?'var(--green)':'var(--red)'}">${cagr!==null?(cagr>=0?'+':'')+cagr.toFixed(1)+'%':'-'}</span></span>`:''}${kyfAvChipRend(d)}</div>
         </div>
         <div style="text-align:right;min-width:110px">
           <div onclick="event.stopPropagation();avRepOpen('${d.id}')" title="Cliquez : répartition de ce contrat" class="kyf-rep-val" style="font-weight:700;color:var(--text);font-size:24px;line-height:1.1;cursor:pointer">${val>0?fmt(val,0)+' €':'-'}</div><div class="kyf-hd-perf ${pvPct===null&&pv===null?'':(pvPct!==null?pvPct>=0:pv>=0)?'up':'dn'}" title="Performance depuis l'origine (gain ou perte sur le total investi)">${pvPct!==null?(pvPct>=0?'+':'')+pvPct.toFixed(1)+'%':''}${pvPct!==null&&pv!==null?' · ':''}${pv!==null?(pv>=0?'+':'-')+fmt(Math.abs(pv),0)+' €':''}${pvPct===null&&pv===null?'-':''}</div>${kyfAvEcartAVerifier(d)?'<div style="font-size:9px;font-weight:700;color:#f0b429;margin-top:2px" title="La valeur actuelle saisie diffère de plus de 10 % de la somme fonds euros + unités de compte. KYF retient la valeur saisie. Pour corriger : ⋯ puis Modifier, corrigez la valeur actuelle ou videz-la (KYF utilisera fonds euros + unités de compte). Détail dans le Guide, Mes Contrats.">Écart à vérifier</div>':''}${kyfAvVersNA(d)>0?'<div style="font-size:9px;font-weight:700;color:var(--text3);margin-top:2px" title="Des versements programmés ne sont affectés à aucun support (règle « total investi seul »). Ils sont comptés dans la valeur du contrat au montant versé, sans gain ni perte, jusqu\'au prochain relevé importé ou à la ressaisie de la valeur.">dont '+fmt(kyfAvVersNA(d),0)+' € non affectés</div>':''}
@@ -100112,6 +100824,7 @@ function orInlineEdit(id, td, currentVal){
   <div style="display:flex;gap:2px;border:1px solid var(--border2);border-radius:6px;overflow:hidden;margin-bottom:16px">
     <button type="button" id="avArbModeArb" onclick="avArbSetMode('arbitrage')" style="flex:1;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:7px;border:none;background:#06b6d4;color:#000;cursor:pointer">⇄ Arbitrage</button>
     <button type="button" id="avArbModeFrais" onclick="avArbSetMode('frais')" style="flex:1;display:flex;align-items:center;justify-content:center;gap:5px;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:7px;border:none;background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Frais / Prélèvement</button>
+    <button type="button" id="avArbModeMulti" onclick="avMsOpen(_avArbContratId)" style="flex:1;display:flex;align-items:center;justify-content:center;gap:5px;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:7px;border:none;background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> Plusieurs supports<span class="kyf-new-badge" data-new="arbmulti" style="display:none;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;pointer-events:none">NOUVEAU</span></button>
   </div>
 
   <div style="margin-bottom:12px">
@@ -100711,6 +101424,23 @@ function orInlineEdit(id, td, currentVal){
       <div id="scpiNewContratFields" style="display:none;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
         <input id="scpiNewContratNom" placeholder="Nom du contrat" style="box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none">
         <input id="scpiNewContratAssureur" placeholder="Assureur" style="box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none">
+      </div>
+    </div>
+    <div id="scpiNueRow" style="grid-column:span 2">
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+        <input type="checkbox" id="scpiNue" onchange="scpiNueChange()" style="accent-color:var(--accent);width:14px;height:14px;cursor:pointer">
+        <span style="font-size:10px;color:var(--text2)">Nue-propriété <span style="opacity:.5">pas de loyers jusqu'à la fin du démembrement</span></span><span class="kyf-new-badge" data-new="nueprop" style="display:none;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;pointer-events:none">NOUVEAU</span>
+      </label>
+      <div id="scpiNueFields" style="display:none;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px">
+        <div>
+          <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">FIN DU DÉMEMBREMENT</div>
+          <input type="hidden" id="scpiNueFin" value="" oninput="calcSCPIAuto()">
+          <button type="button" id="scpiNueFinBtn" class="kyf-csel-btn" data-kyf-date="scpiNueFin" aria-haspopup="dialog" aria-expanded="false"><span id="scpiNueFinBtnLabel">JJ/MM/AAAA</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>
+        </div>
+        <div>
+          <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px" title="Prix de la part une fois la pleine propriété retrouvée (valeur d'une part en pleine propriété aujourd'hui)">PRIX PART PLEINE PROPRIÉTÉ</div>
+          <input id="scpiNuePrix" type="text" inputmode="decimal" placeholder="ex. 250" oninput="calcSCPIAuto()" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;outline:none" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border2)'">
+        </div>
       </div>
     </div>
     </div>
