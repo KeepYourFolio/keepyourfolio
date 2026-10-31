@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_11_5_11.html
+  @file        : KYF_SHARE_beta_2_11_5_12.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.11.5.11
+  @version     : Beta 2.11.5.12
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7442,7 +7442,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.11.5.11</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.11.5.12</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -31708,7 +31708,19 @@ async function kyfPullOnStartup(){
           if(!queue[key]){ queue[key] = { data: localRaw, ts: Date.now() }; queueTouched = true; }
           return;
         }
-        { const _se = kyfShapeError(key, jsonData); if(_se){ console.warn('[KYF Sync] Ignoré : ' + _se + ' (copie de cet appareil gardée)'); return; } }
+        { const _se = kyfShapeError(key, jsonData); if(_se){
+          console.warn('[KYF Sync] Ignoré : ' + _se + ' (copie de cet appareil gardée)');
+          // Si la copie de cet appareil est saine, elle repart vers le Sheet et répare la sauvegarde abîmée
+          let _loc = ''; try{ _loc = localRaw ? kyfShapeError(key, localRaw) : 'absente'; }catch(e){ _loc = 'illisible'; }
+          if(localRaw && !_loc){ if(!queue[key]){ queue[key] = { data: localRaw, ts: Date.now() }; queueTouched = true; } }
+          else {
+            // un seul message visible par donnée et par séance, avec la ligne à corriger
+            window._kyfSyncMsgVu = window._kyfSyncMsgVu || {};
+            if(!window._kyfSyncMsgVu[key]){ window._kyfSyncMsgVu[key] = 1;
+              try{ showToast('Synchronisation : ' + _se + '. Corrige cette ligne pour que la sauvegarde reparte. Tes données de cet appareil sont gardées.'); }catch(e){}
+            }
+          }
+          return; } }
         // Séance plus pauvre que la copie de cet appareil (ex. crypto absente) : la copie locale est gardée et renvoyée
         if(localRaw && String(key).startsWith('kyf-snapshot-') && key !== 'kyf-snapshots-index' && kyfSnapPoorer(jsonData, localRaw)){
           console.warn('[KYF Sync] Séance plus pauvre ignorée pour', key, ': la copie de cet appareil est gardée et renvoyée');
@@ -48544,7 +48556,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.11.5.11\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.11.5.12\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -55130,7 +55142,10 @@ const KYF_FIELDS = {
 function kyfFieldError(key, list){
   const f = KYF_FIELDS[key]; if(!f) return '';
   for(let i = 0; i < list.length; i++){
-    const x = list[i], where = f.label + ', ligne ' + (i + 1) + ' : ';
+    const x = list[i];
+    // le nom de la ligne est ajouté pour la retrouver sans compter à la main
+    const _nm = ['nom','name','ticker','fonds','support','label','intitule'].map(k => typeof x[k] === 'string' ? x[k].trim() : '').find(Boolean);
+    const where = f.label + ', ligne ' + (i + 1) + (_nm ? ' (' + _nm.slice(0, 40) + ')' : '') + ' : ';
     if(f.ticker && !(typeof x.ticker === 'string' && x.ticker.trim())) return where + 'ticker manquant';
     const _dv = f.date ? x[f.date === true ? 'date' : f.date] : undefined;
     if(f.date && !(f.dateLoose ? (_dv === null || _dv === undefined || _dv === '' || /^\d{4}-\d{2}-\d{2}/.test(String(_dv)) || /^\d{2}\/\d{2}\/\d{4}/.test(String(_dv))) : kyfFieldDateOk(_dv))) return where + 'date illisible';
@@ -65944,7 +65959,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.26';
-const KYF_GUIDE_POUR = '2.11.5.11';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.11.5.12';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -75007,6 +75022,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.12 · 31/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Synchronisation : quand une ligne de la sauvegarde est abîmée, le message donne maintenant son nom (ex. « ligne 3 (AMUNDI...) »), s'affiche une fois à l'écran, et si la copie de cet appareil est saine elle repart vers le Sheet pour réparer la sauvegarde toute seule.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.11 · 31/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Relevé de situation Linxea Vie : KYF le lit maintenant comme celui de Bourso Vie (mêmes colonnes). Il prend le nombre de parts et le Prix d'Achat Moyen, au lieu de la valeur de part (retour d'un testeur).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.10 · 31/10/2026</div>
