@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_11_5_18.html
+  @file        : KYF_SHARE_beta_2_11_5_21.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.11.5.18
+  @version     : Beta 2.11.5.21
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7449,7 +7449,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.11.5.18</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.11.5.21</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -25458,16 +25458,16 @@ function setEnveloppe(val){
 }
 const KYF_TITU = { bleu:['Moi','#4da3ff'], rose:['Conjoint(e)','#ff7eb6'], vert:['Enfant','#2fc27a'], ambre:['Famille','#f5a524'] };   // palette fermée : 4 repères nommés, pas de couleur libre
 // ── Ma famille (2.9.0.01) : membres du foyer. Les 4 repères d'origine gardent leur identifiant (bleu, rose, vert, ambre) ; on peut les renommer et ajouter des membres (m1 à m4).
-const KYF_FAM_KEY = 'kyf-famille', KYF_FAM_MAX = 8;
+const KYF_FAM_KEY = 'kyf-famille', KYF_FAM_MAX = 12;   // 4 repères fixes + jusqu'à 8 autres membres
 const KYF_FAM_DEF = [ { id:'bleu', role:'moi', lbl:'Moi', col:'#4da3ff' }, { id:'rose', role:'conjoint', lbl:'Conjoint(e)', col:'#ff7eb6' }, { id:'vert', role:'enfant', lbl:'Enfant', col:'#2fc27a' }, { id:'ambre', role:'famille', lbl:'Famille', col:'#f5a524' } ];
-const KYF_FAM_COLS = ['#a78bfa', '#22d3ee', '#fb7185', '#f97316'];
-const KYF_FAM_ROLES = { enfant:'Enfant', parent:'Parent', conjoint:'Conjoint(e)', autre:'Autre' };
+const KYF_FAM_COLS = ['#a78bfa', '#22d3ee', '#fb7185', '#f97316', '#84cc16', '#e879f9', '#38bdf8', '#facc15'];
+const KYF_FAM_ROLES = { enfant:'Enfant', parent:'Parent', conjoint:'Conjoint(e)', grandparent:'Grand-parent', petitenfant:'Petit-enfant', frere:'Frère / sœur', demifrere:'Demi-frère / sœur', oncle:'Oncle / tante', ami:'Ami(e)', autre:'Autre' };
 function kyfFamLoad(){
   let st = []; try{ const j = JSON.parse(localStorage.getItem(KYF_FAM_KEY) || '[]'); if(Array.isArray(j)) st = j; }catch(e){}
   st = st.filter(x => x && typeof x === 'object' && typeof x.id === 'string');
   const nom = v => typeof v === 'string' ? v.replace(/[<>"'`&\\\u0000-\u001f]/g, '').trim().slice(0, 30) : '', dt = v => (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v)) ? v : '';
   const out = KYF_FAM_DEF.map(d => { const s = st.find(x => x.id === d.id) || {}; return { id:d.id, role:d.role, lbl:d.lbl, col:d.col, prenom:nom(s.prenom), naissance:d.id === 'ambre' ? '' : dt(s.naissance), fixe:true }; });
-  const vus = {}; st.filter(x => /^m[1-4]$/.test(x.id)).forEach(x => { if(vus[x.id] || out.length >= KYF_FAM_MAX) return; vus[x.id] = 1;
+  const vus = {}; st.filter(x => /^m[1-8]$/.test(x.id)).forEach(x => { if(vus[x.id] || out.length >= KYF_FAM_MAX) return; vus[x.id] = 1;
     out.push({ id:x.id, role:KYF_FAM_ROLES[x.role] ? x.role : 'autre', lbl:'Membre', col:KYF_FAM_COLS[+x.id.slice(1) - 1], prenom:nom(x.prenom), naissance:dt(x.naissance), fixe:false }); });
   return out;
 }
@@ -25503,7 +25503,7 @@ function kyfFamSet(id, champ, v){
 }
 function kyfFamAdd(){
   const l = kyfFamLoad(); if(l.length >= KYF_FAM_MAX) return;
-  const id = ['m1', 'm2', 'm3', 'm4'].find(k => !l.some(x => x.id === k)); if(!id) return;
+  const id = ['m1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7', 'm8'].find(k => !l.some(x => x.id === k)); if(!id) return;
   l.push({ id:id, role:'enfant', prenom:'', naissance:'', fixe:false }); kyfFamSave(l); kyfFamRender();
 }
 async function kyfFamDel(id){
@@ -25749,7 +25749,7 @@ function kyfFamRender(){
       + '<span class="kyf-fam-av" aria-hidden="true" style="width:34px;height:34px;border-radius:50%;background:color-mix(in srgb,' + m.col + ' 22%,transparent);border:2px solid ' + m.col + ';color:' + m.col + ';display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;box-sizing:border-box">' + escapeHtml((m.prenom || m.lbl).charAt(0).toUpperCase()) + '</span>'
       + '<input type="text" id="famP_' + m.id + '" value="' + escapeHtml(m.prenom) + '" maxlength="30" placeholder="' + escapeHtml(m.lbl) + '" aria-label="Prénom" onchange="kyfFamSet(\'' + m.id + '\',\'prenom\',this.value)" style="' + fld + ';width:150px">'
       + (m.fixe ? '<span style="font-size:10px;color:var(--text3);min-width:84px">' + (m.role === 'famille' ? 'Foyer entier' : escapeHtml(m.lbl)) + '</span>'
-        : '<select id="famR_' + m.id + '" onchange="kyfFamSet(\'' + m.id + '\',\'role\',this.value)" style="' + fld + ';width:120px" data-kyf-pg-look="field">' + Object.keys(KYF_FAM_ROLES).map(k => '<option value="' + k + '"' + (k === m.role ? ' selected' : '') + '>' + KYF_FAM_ROLES[k] + '</option>').join('') + '</select>')
+        : '<select id="famR_' + m.id + '" onchange="kyfFamSet(\'' + m.id + '\',\'role\',this.value)" style="' + fld + ';width:150px" data-kyf-pg-look="field">' + Object.keys(KYF_FAM_ROLES).map(k => '<option value="' + k + '"' + (k === m.role ? ' selected' : '') + '>' + KYF_FAM_ROLES[k] + '</option>').join('') + '</select>')
       + (m.id === 'ambre' ? '' : '<span style="display:inline-flex;align-items:center;gap:8px"><input type="hidden" id="famN_' + m.id + '" value="" onchange="kyfFamSet(\'' + m.id + '\',\'naissance\',this.value)"><button type="button" id="famN_' + m.id + 'Btn" class="kyf-csel-btn" data-kyf-date="famN_' + m.id + '" aria-haspopup="dialog" aria-expanded="false" title="Date de naissance"><span id="famN_' + m.id + 'BtnLabel">Naissance</span></button>'
         + (age !== null ? '<span style="font-size:10px;color:var(--text3);white-space:nowrap">' + age + ' an' + (age > 1 ? 's' : '') + '</span>' : '') + '</span>')
       + '<b class="kyf-fam-val" title="Patrimoine rattaché à ' + escapeHtml(m.prenom || m.lbl) + ' (positions et contrats)" style="margin-left:auto;font-size:13px;white-space:nowrap;color:' + (pat[m.id] > 0 ? 'var(--text)' : 'var(--text3)') + '">' + (pat[m.id] > 0 ? fmt(pat[m.id], 0) + ' €' : '-') + '</b>'
@@ -33862,7 +33862,9 @@ function fiParsePositionsCSV(text){
     const _feConvertisseur = !_codeBrut && !ticker && qty > 50 && Math.abs(pru - 1) < 1e-9;
     const typeHint = (/\bSCPI\b/.test(categorieTxt) || _scpiParCode) ? 'scpi'
                     : _feConvertisseur ? 'fondseuro'
-                    : (/FONDS\s+(EN\s+)?EUROS?\b/.test(categorieTxt) || /FONDS\s+EN\s+EUROS?\b/.test(nomTxt) || /^FONDS\s+EUROS?\b/.test(nomTxt.trim())) ? 'fondseuro'
+                    : (/FONDS\s+(EN\s+)?EUROS?\b/.test(categorieTxt) || /FONDS\s+EN\s+EUROS?\b/.test(nomTxt) || /^FONDS\s+EUROS?\b/.test(nomTxt.trim())
+                       // noms de fonds en euros connus (jamais un titre coté : pas de cours en direct à leur chercher)
+                       || /\b(EUROSSIMA|NETISSIMA|ACTIF\s+G[ÉE]N[ÉE]RAL|SUPPORT\s+(EN\s+)?EUROS?|SUR\s*AVENIR\s+OPPORTUNIT[ÉE]S|SURAVENIR\s+OPPORTUNIT[ÉE]S|FONDS\s+EURO\s+NOUVELLE\s+G[ÉE]N[ÉE]RATION)\b/.test(nomTxt)) ? 'fondseuro'
                     // Espèces/liquidités (Trade Republic notamment) : jamais
                     // un titre coté, ne doit jamais demander de ticker.
                     // Match sur le nom complet uniquement (pas une simple
@@ -48620,7 +48622,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.11.5.18\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.11.5.21\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -63576,7 +63578,7 @@ const GUIDE_PAGES = [
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Ma famille : prénoms, naissances et filtre par personne</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9">Dans <strong style="color:var(--text)">Mon compte</strong>, la carte <strong style="color:var(--text)">MA FAMILLE</strong> permet de donner un prénom à <strong style="color:#4da3ff">Moi</strong>, <strong style="color:#ff7eb6">Conjoint(e)</strong> et <strong style="color:#2fc27a">Enfant</strong>, d'indiquer une date de naissance (l'âge s'affiche à côté) et d'ajouter jusqu'à quatre autres membres (enfant, parent, conjoint(e) ou autre). Le bouton corbeille retire un membre ajouté ; ses positions et contrats restent dans KYF, sans repère. Chaque ligne montre le patrimoine rattaché au membre (positions du portefeuille et contrats AV/PER), et une ligne <strong style="color:var(--text)">Non attribué</strong> reprend le reste.
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Dans <strong style="color:var(--text)">Mon compte</strong>, la carte <strong style="color:var(--text)">MA FAMILLE</strong> permet de donner un prénom à <strong style="color:#4da3ff">Moi</strong>, <strong style="color:#ff7eb6">Conjoint(e)</strong> et <strong style="color:#2fc27a">Enfant</strong>, d'indiquer une date de naissance (l'âge s'affiche à côté) et d'ajouter jusqu'à huit autres membres (enfant, parent, conjoint(e), grand-parent, petit-enfant, frère ou sœur, demi-frère ou demi-sœur, oncle ou tante, ami(e) ou autre). Le bouton corbeille retire un membre ajouté ; ses positions et contrats restent dans KYF, sans repère. Chaque ligne montre le patrimoine rattaché au membre (positions du portefeuille et contrats AV/PER), et une ligne <strong style="color:var(--text)">Non attribué</strong> reprend le reste.
         </div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:8px">Les prénoms remplacent les libellés partout où apparaît « À qui », y compris sur les contrats AV/PER (menu du cadre du logo ou champ <strong style="color:var(--text)">Titulaire</strong> de la fenêtre Modifier). Dès que deux groupes existent (par exemple Moi et Non attribué), un sélecteur <strong style="color:var(--text)">TOUTE LA FAMILLE / prénom</strong> apparaît sur le Portefeuille et sur Ass. Vie / PER : lignes, cartes du haut et totaux ne portent plus que sur la personne choisie. La ligne ESPÈCES, qui n'a pas de titulaire, est masquée dans ce cas. Le même champ <strong style="color:var(--text)">À qui</strong> existe pour les <strong style="color:var(--text)">livrets et comptes</strong>, les <strong style="color:var(--text)">biens immobiliers</strong>, les <strong style="color:var(--text)">SCPI</strong>, les <strong style="color:var(--text)">SCI</strong> et chaque lot d'<strong style="color:var(--text)">or</strong>, avec le même sélecteur de personne sur leur page. Les SCPI logées dans un contrat suivent le titulaire du contrat. La <strong style="color:var(--text)">crypto</strong> n'a qu'un seul choix pour tout le module (en haut de la page Crypto, à côté de € EUR) et reste affichée en entier sur sa page, car ses positions se calculent depuis l'historique des opérations. Sur la page Immobilier, les indicateurs plus bas (part financée par les locataires, jours de liberté, TRI) restent calculés sur l'ensemble. Les dates de naissance servent à deux repères d'information, jamais à bloquer : un PEA rattaché à un membre de moins de 18 ans est signalé dans la carte, et la majorité à venir dans l'année aussi. Il n'y a pas de gestion de donation ni de démembrement : pour un bien donné ou démembré, choisissez la personne dont vous voulez voir la valeur. Ces informations sont sauvegardées avec le reste de vos données et ne quittent pas votre navigateur.</div>
       </div>
@@ -66036,8 +66038,8 @@ const GUIDE_PAGES = [
 // ── Version du guide ──
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
-const KYF_GUIDE_VERSION = '1.27';
-const KYF_GUIDE_POUR = '2.11.5.18';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_VERSION = '1.28';
+const KYF_GUIDE_POUR = '2.11.5.21';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -75109,6 +75111,12 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.21 · 31/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance vie : un fonds suivi par son ISIN dont la valeur a été actualisée par la source des cours affiche « actualisé JJ/MM » au lieu de « relevé », qui laissait croire que le fonds n'était pas suivi (retour d'un testeur). « relevé » reste pour une valeur saisie ou issue du relevé.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.20 · 31/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import : « Eurossima », « Netissima », « Actif général », « Suravenir Opportunités » et « Support en euros » sont reconnus comme fonds en euros (plus de cours de cotation inventé, qui faisait gonfler le total d'un contrat Linxea).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.19 · 31/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Ma famille : jusqu'à 8 autres membres (au lieu de 4) et de nouveaux rôles : grand-parent, petit-enfant, frère / sœur, demi-frère / sœur, oncle / tante, ami(e). Guide v1.28.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.18 · 31/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import « Utiliser mon IA » : bouton jaune plein lisible sur toute la largeur, croix de fermeture standard KYF (halo rouge), boutons au survol de la charte, défilement verrouillé. Guide v1.27 : nouveau bloc « Pas de fichier lisible : utiliser votre IA ».</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.17 · 31/10/2026</div>
@@ -98059,6 +98067,11 @@ function avPosSelectOpcvm(f){
 // mécanisme déjà utilisé pour les actions cotées en devise étrangère,
 // jamais de choix de devise à faire par l'utilisateur.
 // Valeur d'une ligne de fonds d'après son ISIN : { ok:true, valeur } ou { ok:false, msg } (msg = explication prête à afficher). Ne modifie rien.
+function kyfFondsStamp_(valeur){   // repère « valeur actualisée par la source des fonds » : la valeur et la date de l'actualisation
+  let d = ''; try{ d = kyfParisNow(new Date()).date; }catch(e){}
+  if(!d){ const n = new Date(); d = n.getFullYear() + '-' + String(n.getMonth() + 1).padStart(2, '0') + '-' + String(n.getDate()).padStart(2, '0'); }
+  return { majVal: valeur, majDate: d };
+}
 async function avPosFondsValeur(pos){
   if(!pos || !pos.ticker) return { ok:false, msg:'Aucun ISIN enregistré pour ce fonds.' };
   try {
@@ -98090,7 +98103,7 @@ async function avPosRefreshFondsPrice(contratId, posId){
   try {
     const r = await avPosFondsValeur(pos);
     if(!r.ok){ alert(r.msg); return; }
-    positions[idx] = Object.assign({}, pos, { valeur: r.valeur });
+    positions[idx] = Object.assign({}, pos, { valeur: r.valeur }, kyfFondsStamp_(r.valeur));
     avPosSave(contratId, positions);
     renderAV();
   } finally {
@@ -98117,9 +98130,10 @@ async function kyfAvFondsAutoRefresh(force){
       const r = await avPosFondsValeur(pos);
       if(!(r && r.ok && r.valeur > 0)) continue;
       ok++;
-      if(r.valeur === pos.valeur) continue;
+      const _st = kyfFondsStamp_(r.valeur);
+      if(r.valeur === pos.valeur && pos.majVal === r.valeur && pos.majDate === _st.majDate) continue;
       const L = avPosLoad(t.c), i = L.findIndex(x => x.id === t.p); if(i < 0) continue;
-      L[i] = Object.assign({}, L[i], { valeur:r.valeur }); avPosSave(t.c, L); majs++;
+      L[i] = Object.assign({}, L[i], { valeur:r.valeur }, _st); avPosSave(t.c, L); if(r.valeur !== pos.valeur) majs++;
     }
     if(ok){ try{ localStorage.setItem(K, String(Date.now())); }catch(e){} }
     if(majs){ try{ if(document.getElementById('page-assurance')?.classList.contains('active')) renderAV(); }catch(e){} }
@@ -98151,7 +98165,7 @@ async function avRefreshContrat(contratId){
       const r = await avPosFondsValeur(p); res[id] = r;
     }
     const fresh = avPosLoad(contratId); let ok = 0, ko = 0;
-    ids.forEach(id => { const r = res[id], i = fresh.findIndex(x => x.id === id); if(!r || i < 0) return; if(r.ok){ fresh[i] = Object.assign({}, fresh[i], { valeur:r.valeur }); ok++; } else ko++; });
+    ids.forEach(id => { const r = res[id], i = fresh.findIndex(x => x.id === id); if(!r || i < 0) return; if(r.ok){ fresh[i] = Object.assign({}, fresh[i], { valeur:r.valeur }, kyfFondsStamp_(r.valeur)); ok++; } else ko++; });
     if(ok){ avPosSave(contratId, fresh); renderAV(); }
     showToast((ok ? ok + ' ligne' + (ok > 1 ? 's' : '') + ' actualisée' + (ok > 1 ? 's' : '') : 'Aucune ligne actualisée') + (ko ? ' · ' + ko + ' indisponible' + (ko > 1 ? 's' : '') + ' (valeur inchangée)' : ''));
   } finally { window._avRefBusy = false; }
@@ -99906,8 +99920,9 @@ function renderAV(){
             const _q = parseFloat(p.qty) || 0; if(!(_q > 0) || !(_val > 0) || p.type === 'fe') return '';
             const _nb = n => Number(n).toLocaleString('fr-FR', { maximumFractionDigits: 4 });
             const _cours = _val / _q, _pru = parseFloat(p.pru) || 0, _nbC = n => Number(n).toLocaleString('fr-FR', { maximumFractionDigits: n >= 1 ? 2 : 4 });
-            const _src = _d.live ? 'cours du jour' : 'valeur du relevé' + (d.releve && d.releve.date ? ' du ' + new Date(d.releve.date + 'T12:00:00').toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' }) : '') + ' ÷ parts';
-            return '<span style="font-size:10px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="' + escapeHtml(_nb(_q) + ' parts, cours ' + _nbC(_cours) + ' € (' + _src + ')' + (_pru > 0 ? ', prix de revient ' + _nb(_pru) + ' €' : '')) + '">' + _nb(_q) + ' parts · cours ' + _nbC(_cours) + ' € (' + (_d.live ? 'du jour' : 'relevé') + ')' + (_pru > 0 ? ' · PRU ' + _nb(_pru) + ' €' : '') + '</span>';
+            const _maj = (!_d.live && p.majDate && Math.abs((parseFloat(p.valeur) || 0) - (parseFloat(p.majVal) || 0)) < 0.005) ? new Date(p.majDate + 'T12:00:00').toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' }) : '';   // valeur actualisée par la source des fonds (et non saisie ou relevée)
+            const _src = _d.live ? 'cours du jour' : _maj ? 'valeur du fonds actualisée le ' + _maj + ' par la source des cours' : 'valeur du relevé' + (d.releve && d.releve.date ? ' du ' + new Date(d.releve.date + 'T12:00:00').toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' }) : '') + ' ÷ parts';
+            return '<span style="font-size:10px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="' + escapeHtml(_nb(_q) + ' parts, cours ' + _nbC(_cours) + ' € (' + _src + ')' + (_pru > 0 ? ', prix de revient ' + _nb(_pru) + ' €' : '')) + '">' + _nb(_q) + ' parts · cours ' + _nbC(_cours) + ' € (' + (_d.live ? 'du jour' : _maj ? 'actualisé ' + _maj : 'relevé') + ')' + (_pru > 0 ? ' · PRU ' + _nb(_pru) + ' €' : '') + '</span>';
           })()}</span>
           <span style="font-size:10px;color:var(--text3);flex-shrink:0">${escapeHtml(p.ticker||'')}</span>
           <span style="font-size:15px;font-weight:700;flex-shrink:0;min-width:70px;text-align:right"${_valTitle ? ' title="' + escapeHtml(_valTitle) + '"' : ''}>${_val>0?fmt(_val,0)+' €':'-'}</span>
