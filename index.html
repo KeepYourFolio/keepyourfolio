@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_11_4_07.html
+  @file        : KYF_SHARE_beta_2_11_5_11.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.11.4.07
+  @version     : Beta 2.11.5.11
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -64,7 +64,7 @@
     // Jeu de données fictif (aucun chiffre réel)
     var J = JSON.stringify;
     data['kyf-welcome-seen'] = '1'; data['kyf-onboarding-choice-seen'] = '1';
-    data['kyf-nouveautes-vue'] = 'a-2026-10-30-2';   // = KYF_NOUVEAUTES.annonces[0].id (vérifié par le test val_DEMO-isolation)
+    data['kyf-nouveautes-vue'] = 'a-2026-10-31';   // = KYF_NOUVEAUTES.annonces[0].id (vérifié par le test val_DEMO-isolation)
     data['kyf-profil-nom'] = 'Démo';
     data['pea-positions'] = J([
       { name:'Amundi MSCI World', ticker:'CW8.PA', isin:'LU1681043599', pru:468.3, qty:42, montant:19668.6, enveloppe:'PEA', color:'#4d9fff' },
@@ -840,11 +840,28 @@ body.kyf-kpop-open .kpi{pointer-events:none}
 .kyf-geo-body{display:flex;flex:1;min-height:0}
 .kyf-geo-side{width:290px;flex-shrink:0;display:flex;flex-direction:column;border-right:1px solid var(--border);min-height:0}
 .kyf-geo-main{flex:1;min-width:0;overflow-y:auto;padding:16px 20px}
-.kyf-geo-cols{display:flex;gap:22px;margin-top:26px;align-items:flex-start}
+.kyf-geo-cols{display:flex;gap:16px;margin-top:18px;align-items:flex-start}
+.kyf-top-seg{display:flex;background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:3px;gap:2px}
+.kyf-top-opt{flex:1;border:0;background:none;color:var(--text3);height:30px;border-radius:6px;font:700 10px 'Inter',sans-serif;letter-spacing:.9px;cursor:pointer;transition:background .15s,color .15s}
+.kyf-top-opt:hover{background:var(--hov-bg);color:var(--text)}
+.kyf-top-opt.on{background:#f0b429;color:#000}
+.kyf-top-opt.on:hover{background:#f0b429;color:#000;opacity:.9}
+.kyf-top-subs{display:flex;gap:6px;margin-top:10px}
+.kyf-top-sub{border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);height:26px;padding:0 12px;border-radius:13px;font:700 9px 'Inter',sans-serif;letter-spacing:.7px;cursor:pointer;transition:background .15s,color .15s}
+.kyf-top-sub:hover{background:var(--hov-bg);color:var(--text)}
+.kyf-top-sub.on{background:#f0b429;border-color:#f0b429;color:#000}
 .kyf-geo-tab:hover{color:var(--text)!important;background:var(--hov-bg-soft)!important}
 .kyf-geo-tab:focus-visible{outline:none;color:var(--text)!important;background:var(--hov-bg-soft)!important}
 .kyf-geo-tab.on{color:var(--accent)!important;border-bottom-color:var(--accent)!important}
-.kyf-geo-panel{flex:1;min-width:0}
+.kyf-geo-panel{--geo-card:color-mix(in srgb,var(--text) 4%,var(--bg2));flex:1;min-width:0;padding:14px;border-radius:14px;background:var(--geo-card);border:1px solid var(--border)}
+.kyf-geo-ph{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.kyf-geo-ring{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:conic-gradient(var(--accent) 0%,var(--bg4) 0)}
+.kyf-geo-ring>span{width:30px;height:30px;border-radius:50%;background:var(--geo-card);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text)}
+.kyf-geo-ib{width:28px;height:28px;padding:0;border:0;border-radius:50%;background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.kyf-geo-row{display:flex;gap:8px;align-items:center;margin-bottom:6px;padding:4px 6px 4px 4px;border-radius:10px}
+.kyf-geo-row .kyf-csel-btn{background:transparent;border-color:transparent;font-size:12px;font-weight:600;padding:6px 8px}
+.kyf-geo-mod.kyf-geo-clr:hover{color:var(--red)!important}
+.kyf-geo-add{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;height:34px;margin-top:2px;border:1px dashed var(--border2);border-radius:10px;background:transparent;color:var(--text2);font:700 10px 'Inter',sans-serif;cursor:pointer}
 .kyf-geo-dot{display:inline-block;width:8px;height:8px;border-radius:50%;flex-shrink:0}
 @media (max-width:780px){.kyf-geo-body{flex-direction:column}.kyf-geo-side{width:auto;max-height:190px;border-right:none;border-bottom:1px solid var(--border)}.kyf-geo-cols{flex-direction:column;align-items:stretch}}
 .kyf-geo-li{transition:background .12s}
@@ -854,6 +871,8 @@ body.kyf-kpop-open .kpi{pointer-events:none}
 .kyf-case{margin-left:6px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--accent);opacity:.9}
 .kyf-geo-done-chev{transition:transform .18s ease;flex-shrink:0}
 :root{ --geo-base:#2a2f3a; --geo-lo:#5c4413; --geo-hi:#f0b429; --geo-hover:#8a6a1c; }
+#jsvmap path.jvm-region{transition:filter .12s}
+#jsvmap path.jvm-region:hover{filter:brightness(.8) saturate(1.6);stroke:var(--text) !important;stroke-width:1.4px !important}   /* survol : la couleur propre du pays est assombrie, pas remplacée */
 /* Bandeau d'annonce : sur ordinateur (hors mobile et tablette) le cadre s'élargit avec l'écran, pour que le texte tienne sur deux lignes */
 @media (min-width: 1025px){ :root { --kyf-annonce-max: clamp(760px, calc(100vw - 500px), 1100px); } }
 [data-theme="light"]{ --geo-base:#d9dde6; --geo-lo:#f3dcaa; --geo-hi:#b45309; --geo-hover:#e7c985; }
@@ -3395,15 +3414,61 @@ html.kyf-boot #sidebar, html.kyf-boot #mainContent, html.kyf-boot #mainContent .
 /* ── GRID ── */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
 /* Zones géographiques : la largeur de chaque cadre suit son nombre de tuiles (variable --w posée par kyfGeoTiles) */
-.geo-row{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start;margin-bottom:14px}
-.geo-row>.card{min-width:0;max-width:100%}
+.geo-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:stretch;grid-template-rows:minmax(268px,auto) minmax(372px,auto);margin-bottom:14px}
+.geo-row>.card{min-width:0;max-width:100%;overflow-y:auto}
+.geo-row>.geo-pays{overflow:visible} /* TOP PAYS : pas d'ascenseur, la ligne s'agrandit selon les tuiles */
+.geo-row>.geo-zone{align-self:start;height:268px} /* PAR ZONE reste indépendant : garde sa hauteur quand « Autres pays » déplie TOP PAYS */
+.geo-row>.geo-sect,.geo-row>.geo-ent{align-self:start;min-height:0} /* PAR SECTEUR et TOP ENTREPRISES indépendants : chacun s'allonge seul quand « Autres » se déplie */
+.geo-row>.geo-sect{max-height:none;min-height:0;overflow:visible} /* PAR SECTEUR : hauteur = contenu, pas de vide dessous */
+.geo-row>.geo-sect{max-height:372px} /* « Autres » défile dans PAR SECTEUR sans agrandir la ligne ; TOP ENTREPRISES s'adapte à son contenu (pas de scroll) */ /* grille fixe 2x2 : hauteur constante, « Autres » défile dans le cadre */
 .geo-zone #geoZones .prog-lbl{min-width:0 !important;flex:0 0 96px;width:96px}
 .geo-zone #geoZones .prog-val{min-width:38px}
 .geo-zone #geoZones .prog-bar{min-width:36px}
-.geo-zone{flex:0 1 38.5%;min-width:320px} /* ~15 % plus étroit qu'avant (il occupait environ 45 % de la ligne) */
-.geo-pays{flex:0 1 var(--w,300px)}
-.geo-sect{flex:1 1 var(--w,300px)}
-@media(max-width:900px){.geo-zone,.geo-pays,.geo-sect{flex:1 1 100%}}
+.kyf-hold-tog{display:flex;align-items:center;gap:7px;width:100%;margin:0;padding:2px 0;border:none;background:none;cursor:pointer;text-align:left;font-family:'Inter',sans-serif;font-size:10px;line-height:1.6;color:var(--text3);transition:color .15s}
+.kyf-hold-tog svg{flex-shrink:0;transition:transform .2s,stroke .15s}
+.kyf-hold-tog:hover{color:var(--text)}
+.kyf-hold-tog:hover svg{stroke:var(--accent)}
+.kyf-hold-tog[aria-expanded="true"] svg{transform:rotate(90deg);stroke:var(--accent)}
+.kyf-hold-chip{display:inline-flex;align-items:center;gap:6px;max-width:100%;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:.3px;padding:5px 11px 5px 9px;border-radius:999px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;transition:color .15s,border-color .15s,background .15s}
+.kyf-hold-chip svg{flex-shrink:0;stroke:var(--text3);transition:stroke .15s}
+.kyf-hold-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kyf-hold-chip:hover{border-color:var(--accent);color:var(--accent);background:var(--hov-bg)}
+.kyf-hold-chip:hover svg{stroke:var(--accent)}
+.kyf-gd-head{font-family:'Inter',sans-serif;font-size:10px;letter-spacing:1.2px;color:var(--text3);padding-top:10px;padding-bottom:10px;border-top:1px solid var(--border)}
+.kyf-gd-row{display:grid;grid-template-columns:minmax(0,2fr) 60px minmax(0,.9fr) minmax(0,2fr) minmax(0,2fr) 140px 36px;gap:16px;align-items:center;padding:14px 8px;font-family:'Inter',sans-serif}
+.kyf-gd-wrap{border-top:1px solid var(--border);transition:background .15s}
+.kyf-gd-wrap:hover,.kyf-gd-wrap.kyf-hv{background:var(--hov-bg-soft)}
+.kyf-gd-head+.kyf-gd-wrap{border-top:1px solid var(--border)}
+.kyf-gd-pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text3);height:32px;padding:0 14px;border-radius:16px;font:700 10px 'Inter',sans-serif;letter-spacing:.8px;cursor:pointer;transition:background .15s,border-color .15s,color .15s}
+.kyf-gd-pill span{font-size:10px;color:var(--text3)}
+.kyf-gd-pill:hover{background:var(--hov-bg);color:var(--text)}
+.kyf-gd-pill:hover span{color:var(--text)}
+.kyf-gd-pill.on,.kyf-gd-pill.on:hover{border-color:#f0b429;background:#f0b429;color:#000}
+.kyf-gd-pill.on span,.kyf-gd-pill.on:hover span{color:#000}
+.kyf-gd-badge{display:inline-flex;align-items:center;height:26px;padding:0 11px;border-radius:13px;font:700 10px 'Inter',sans-serif;letter-spacing:.5px;white-space:nowrap}
+.kyf-gd-b-ok{background:rgba(52,211,153,.12);color:var(--green);border:1px solid rgba(52,211,153,.4)}
+.kyf-gd-b-gap{background:rgba(240,180,41,.14);color:var(--text);border:1px solid rgba(240,180,41,.6)}
+.kyf-gd-b-new{background:rgba(77,159,255,.1);color:#4d9fff;border:1px solid rgba(77,159,255,.4)}
+.kyf-gd-b-none{background:none;color:var(--text3);border:1px dashed var(--border2)}
+.kyf-gd-chev{box-sizing:border-box;width:34px;height:34px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .25s ease,color .15s,background .15s;transform:rotate(-90deg)}
+.kyf-gd-chev[aria-expanded="true"]{transform:rotate(0deg)}
+.kyf-gd-chev:hover,.kyf-gd-chev.kyf-hv,.kyf-gd-chev:active{color:var(--accent);background:var(--kyf-chev-hover)}
+.kyf-gd-chev:focus{outline:none}
+.kyf-gd-chev:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.kyf-gd-chev{-webkit-tap-highlight-color:transparent}
+.kyf-gd-det{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:4px 8px 22px}
+.kyf-gd-panel{background:color-mix(in srgb,var(--bg) 55%,transparent);border:1px solid var(--border);border-radius:12px;padding:16px 18px;min-width:0}
+.kyf-gd-lab{font-family:'Inter',sans-serif;font-size:10px;letter-spacing:1.2px;color:var(--text3)}
+.kyf-gd-leg{display:inline-flex;align-items:center;gap:6px;font-family:'Inter',sans-serif;font-size:11px;color:var(--text);margin:0 12px 6px 0;white-space:nowrap}
+.kyf-gd-leg i{width:9px;height:9px;border-radius:3px;display:inline-block}
+.kyf-gd-mod{background:#f0b429;color:#11141c;border:0;border-radius:7px;height:32px;padding:0 16px;font:700 10px 'Inter',sans-serif;letter-spacing:.8px;cursor:pointer;transition:opacity .15s}
+.kyf-gd-mod:hover{opacity:.85}
+.kyf-gd-ghost{background:var(--btn-secondary-bg);color:var(--text2);border:1px solid var(--border2);border-radius:7px;height:32px;padding:0 14px;font:700 10px 'Inter',sans-serif;letter-spacing:.8px;cursor:pointer;transition:background .15s,border-color .15s,color .15s}
+.kyf-gd-ghost:hover{background:var(--hov-bg);color:var(--text)}
+.kyf-gd-ghost:active{background:#f0b429;border-color:#f0b429;color:#000}
+@media(max-width:1000px){.kyf-gd-row{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) 120px 36px}.kyf-gd-row>:nth-child(2),.kyf-gd-row>:nth-child(4),.kyf-gd-row>:nth-child(5){display:none}.kyf-gd-det{grid-template-columns:1fr}}
+.geo-com{flex:1 1 380px;min-width:320px}
+@media(max-width:900px){.geo-row{grid-template-columns:minmax(0,1fr);grid-template-rows:none}.geo-row>.card{max-height:420px}.geo-com{flex:1 1 100%}}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px}
 .g13{display:grid;grid-template-columns:1fr 3fr;gap:14px;margin-bottom:14px}
 @media(max-width:900px){.g2,.g3,.g13{grid-template-columns:1fr}#assetClassesRow{flex-wrap:wrap !important}}
@@ -5344,7 +5409,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
   <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);flex-shrink:0">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;margin-right:-4px"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
     <span style="flex:1;font-weight:700;font-size:13px;letter-spacing:1px;color:var(--text)">RÉPARTITION PAYS, SECTEURS ET ENTREPRISES</span>
-    <span id="kyfGeoCount" style="font-size:11px;color:var(--text3)"></span>
+    <span id="kyfGeoCount" style="display:inline-flex;align-items:center;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:700;color:var(--text3)"></span>
     <button type="button" onclick="kyfGeoClose()" class="kyf-modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
   <div class="kyf-geo-body">
@@ -5356,10 +5421,10 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
     <div class="kyf-geo-main">
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
         <span id="kyfGeoLogo" style="display:inline-flex"></span>
-        <div style="flex:1;min-width:160px"><div id="kyfGeoTitle" style="font-size:14px;font-weight:700;color:var(--text)"></div><div id="kyfGeoIds" style="font-size:10px;color:var(--text3);margin-top:2px"></div></div>
-        <button type="button" id="kyfGeoFileBtn" class="kyf-geo-mod" onclick="document.getElementById('kyfGeoFile').click()" title="Importer les actifs d'un fonds (.xlsx, .xls, .csv, .pdf) ou glisser les fichiers ici. ETF reconnu par ISIN ou nom. Lu dans votre navigateur uniquement." style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:8px 13px;border-radius:8px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>FICHIER XLS / CSV / PDF</button>
+        <div style="flex:1;min-width:160px"><div id="kyfGeoTitle" style="font-size:16px;font-weight:700;color:var(--text)"></div><div id="kyfGeoIds" style="font-size:10px;color:var(--text3);margin-top:6px"></div></div>
+        <button type="button" id="kyfGeoFileBtn" class="kyf-geo-mod" onclick="document.getElementById('kyfGeoFile').click()" title="Importer les actifs d'un fonds (.xlsx, .xls, .csv, .pdf) ou glisser les fichiers ici. ETF reconnu par ISIN ou nom. Lu dans votre navigateur uniquement." aria-label="Importer un fichier XLS, CSV ou PDF" style="font-family:'Inter',sans-serif;width:38px;height:38px;padding:0;border-radius:50%;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></button>
         <input type="file" id="kyfGeoFile" accept=".xlsx,.xls,.csv,.pdf" multiple style="display:none" onchange="kyfGeoFileImport(this)">
-        <button type="button" id="kyfGeoLinkJ" class="kyf-geo-mod" onclick="kyfGeoOpenRef('j')" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:8px 13px;border-radius:8px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap;color:var(--accent)">justETF ↗</button>
+        <button type="button" id="kyfGeoLinkJ" class="kyf-geo-mod" onclick="kyfGeoOpenRef('j')" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;height:38px;padding:0 14px;border-radius:99px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap;color:var(--accent)">justETF ↗</button>
         <button type="button" id="kyfGeoHelpBtn" onclick="kyfGeoToggleHelp()" aria-expanded="false" aria-controls="kyfGeoFileHelp" title="Quel fichier importer ?" style="display:none;align-items:center;justify-content:center;align-self:center;width:22px;height:22px;border-radius:50%;border:none;background:transparent;color:var(--text3);cursor:pointer;padding:0;transition:background .15s,color .15s" onmouseover="this.style.background=kyfChevronHoverBg();this.style.color='var(--accent)'" onmouseout="this.style.background='transparent';if(document.getElementById('kyfGeoFileHelp').style.display==='none')this.style.color='var(--text3)'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></button>
       </div>
       <div id="kyfGeoFileHelp" style="display:none;margin-top:10px;padding:14px 18px;border-radius:8px;background:rgba(77,159,255,0.07);border:1px solid rgba(77,159,255,0.2);max-width:100%;font-family:'Inter',sans-serif;font-size:10px;color:var(--text2);line-height:1.7">
@@ -5392,59 +5457,71 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
         </div>
         <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(77,159,255,0.2);color:var(--text3)">Fonds synthétique (swap) : le fichier des actifs montre le panier détenu, pas l'indice. KYF vous prévient quand le fichier le précise. Autres émetteurs : le fichier des positions avec pays et secteur.</div>
       </div>
-      <div id="kyfGeoCommBox" style="display:none;align-items:center;gap:10px;margin:14px 0 0;padding:10px 12px;border-radius:10px;border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);background:color-mix(in srgb,var(--accent) 10%,transparent);font-size:11px;color:var(--text2)">
-        <span id="kyfGeoNote" style="flex:1"></span>
-        <button type="button" id="kyfGeoAgreeBtn" class="kyf-geo-mod" onclick="kyfGeoAgree()" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:8px 13px;border-radius:8px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap;color:var(--green);border-color:var(--green)"><svg aria-hidden="true" style="vertical-align:-.18em;flex-shrink:0" width="1.1em" height="1.1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> C'EST CORRECT</button>
-      </div>
-      <div id="kyfGeoTabs" style="display:none;gap:4px;margin-top:22px;border-bottom:1px solid var(--border)">
+      <div id="kyfGeoTabs" style="display:none;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:28px;border-bottom:1px solid var(--border)">
+        <div id="kyfGeoTabBtns" style="display:flex;gap:4px">
         <button type="button" id="kyfGeoTabps" class="kyf-geo-tab" onclick="kyfGeoTab('ps')" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;padding:9px 16px;border:none;border-bottom:2px solid transparent;background:none;cursor:pointer;color:var(--text3);transition:color .15s,background .15s,border-color .15s">PAYS ET SECTEURS</button>
         <button type="button" id="kyfGeoTabh" class="kyf-geo-tab" onclick="kyfGeoTab('h')" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;padding:9px 16px;border:none;border-bottom:2px solid transparent;background:none;cursor:pointer;color:var(--text3);transition:color .15s,background .15s,border-color .15s">ENTREPRISES</button>
+        </div>
+        <div id="kyfGeoCommBox" style="display:none;align-items:center;gap:8px;margin-left:auto;padding-bottom:6px">
+          <span id="kyfGeoNote" style="display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border-radius:99px;font-size:11px;font-weight:600;color:var(--text);background:color-mix(in srgb,var(--accent) 16%,transparent);cursor:help"></span>
+          <button type="button" id="kyfGeoAgreeBtn" class="kyf-geo-mod" onclick="kyfGeoAgree()" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;height:28px;padding:0 12px;border-radius:99px;border:1px solid var(--green);background:var(--btn-secondary-bg);color:var(--green);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px"><svg aria-hidden="true" style="vertical-align:-.18em;flex-shrink:0" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> C'EST CORRECT</button>
+        </div>
       </div>
       <div class="kyf-geo-cols" id="kyfGeoCols">
       <div class="kyf-geo-panel">
-        <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text3);margin-bottom:8px">PAYS</div>
-        <div id="kyfGeoRowsc"></div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 18px">
-          <button type="button" class="kyf-geo-mod" onclick="kyfGeoAddRow('c')" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:5px 10px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap">+ PAYS</button>
-          <button type="button" id="kyfGeoGgc" class="kyf-geo-mod" onclick="kyfGeoOpenRef('gc')" title="Chercher sur Google" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:5px 10px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px"><svg width="11" height="11" viewBox="0 0 48 48" style="flex-shrink:0"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>GOOGLE</button>
-          <button type="button" id="kyfGeoIac" class="kyf-geo-mod" onclick="kyfGeoOpenRef('ic')" title="Poser la question au mode IA de Google" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:5px 10px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;color:var(--accent)"><path d="M12 2l1.9 6.1L20 10l-6.1 1.9L12 18l-1.9-6.1L4 10l6.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>IA</button>
-          <button type="button" class="kyf-geo-mod" onclick="kyfGeoTogglePaste('c')" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:5px 10px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap;border-style:dashed;background:transparent">COLLER</button>
+        <div class="kyf-geo-ph">
+          <div class="kyf-geo-ring" id="kyfGeoRingc"><span id="kyfGeoRingTc">0</span></div>
+          <div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--text)">PAYS</div><div id="kyfGeoTotc" style="font-size:10px;color:var(--text3);margin-top:2px"></div></div>
+          <button type="button" id="kyfGeoGgc" class="kyf-geo-mod kyf-geo-ib" onclick="kyfGeoOpenRef('gc')" title="Chercher sur Google" aria-label="Chercher sur Google"><svg width="13" height="13" viewBox="0 0 48 48" style="flex-shrink:0"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg></button>
+          <button type="button" id="kyfGeoIac" class="kyf-geo-mod kyf-geo-ib" onclick="kyfGeoOpenRef('ic')" title="Poser la question au mode IA de Google" aria-label="Poser la question au mode IA de Google"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;color:var(--accent)" aria-hidden="true"><path d="M12 2l1.9 6.1L20 10l-6.1 1.9L12 18l-1.9-6.1L4 10l6.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></button>
+          <button type="button" class="kyf-geo-mod kyf-geo-ib" onclick="kyfGeoTogglePaste('c')" title="Coller un tableau" aria-label="Coller un tableau"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg></button>
+
+          <button type="button" id="kyfGeoClrc" class="kyf-geo-mod kyf-geo-ib kyf-geo-clr" onclick="kyfGeoClearAll('c')" title="Retirer toutes les lignes pays d'un coup" aria-label="Tout vider"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
         </div>
         <div id="kyfGeoPasteBoxc" style="display:none;margin-bottom:10px">
           <textarea id="kyfGeoPastec" rows="4" placeholder="Copiez le tableau sur le site et collez-le ici. Exemple :&#10;Énergie 4,1 %" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px;border-radius:6px;outline:none;resize:vertical"></textarea>
           <button type="button" class="kyf-geo-mod" onclick="kyfGeoPasteApply('c')" style="margin-top:6px;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:7px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer">REMPLIR LA LISTE</button>
         </div>
-        <div style="height:5px;border-radius:3px;background:var(--bg4);overflow:hidden"><div id="kyfGeoBarc" style="height:100%;width:0;background:var(--accent);transition:width .25s"></div></div>
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px"><div id="kyfGeoTotc" style="font-size:10px;color:var(--text3)"></div><button type="button" id="kyfGeoClrc" class="kyf-geo-mod" onclick="kyfGeoClearAll('c')" title="Retirer toutes les lignes pays d'un coup" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:3px 8px;border-radius:7px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:5px;flex-shrink:0"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>TOUT VIDER</button></div>
+        <div id="kyfGeoRowsc"></div>
+        <button type="button" class="kyf-geo-mod kyf-geo-add" onclick="kyfGeoAddRow('c')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>PAYS</button>
       </div>
       <div class="kyf-geo-panel">
-        <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text3);margin-bottom:8px">SECTEURS</div>
-        <div id="kyfGeoRowss"></div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 18px">
-          <button type="button" class="kyf-geo-mod" onclick="kyfGeoAddRow('s')" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:5px 10px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap">+ SECTEUR</button>
-          <button type="button" id="kyfGeoGgs" class="kyf-geo-mod" onclick="kyfGeoOpenRef('gs')" title="Chercher sur Google" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:5px 10px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px"><svg width="11" height="11" viewBox="0 0 48 48" style="flex-shrink:0"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>GOOGLE</button>
-          <button type="button" id="kyfGeoIas" class="kyf-geo-mod" onclick="kyfGeoOpenRef('is')" title="Poser la question au mode IA de Google" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:5px 10px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;color:var(--accent)"><path d="M12 2l1.9 6.1L20 10l-6.1 1.9L12 18l-1.9-6.1L4 10l6.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>IA</button>
-          <button type="button" class="kyf-geo-mod" onclick="kyfGeoTogglePaste('s')" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:5px 10px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap;border-style:dashed;background:transparent">COLLER</button>
+        <div class="kyf-geo-ph">
+          <div class="kyf-geo-ring" id="kyfGeoRings"><span id="kyfGeoRingTs">0</span></div>
+          <div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--text)">SECTEURS</div><div id="kyfGeoTots" style="font-size:10px;color:var(--text3);margin-top:2px"></div></div>
+          <button type="button" id="kyfGeoGgs" class="kyf-geo-mod kyf-geo-ib" onclick="kyfGeoOpenRef('gs')" title="Chercher sur Google" aria-label="Chercher sur Google"><svg width="13" height="13" viewBox="0 0 48 48" style="flex-shrink:0"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg></button>
+          <button type="button" id="kyfGeoIas" class="kyf-geo-mod kyf-geo-ib" onclick="kyfGeoOpenRef('is')" title="Poser la question au mode IA de Google" aria-label="Poser la question au mode IA de Google"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;color:var(--accent)" aria-hidden="true"><path d="M12 2l1.9 6.1L20 10l-6.1 1.9L12 18l-1.9-6.1L4 10l6.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></button>
+          <button type="button" class="kyf-geo-mod kyf-geo-ib" onclick="kyfGeoTogglePaste('s')" title="Coller un tableau" aria-label="Coller un tableau"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg></button>
+
+          <button type="button" id="kyfGeoClrs" class="kyf-geo-mod kyf-geo-ib kyf-geo-clr" onclick="kyfGeoClearAll('s')" title="Retirer toutes les lignes secteurs d'un coup" aria-label="Tout vider"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
         </div>
         <div id="kyfGeoPasteBoxs" style="display:none;margin-bottom:10px">
           <textarea id="kyfGeoPastes" rows="4" placeholder="Copiez le tableau sur le site et collez-le ici. Exemple :&#10;Énergie 4,1 %" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px;border-radius:6px;outline:none;resize:vertical"></textarea>
           <button type="button" class="kyf-geo-mod" onclick="kyfGeoPasteApply('s')" style="margin-top:6px;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:7px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer">REMPLIR LA LISTE</button>
         </div>
-        <div style="height:5px;border-radius:3px;background:var(--bg4);overflow:hidden"><div id="kyfGeoBars" style="height:100%;width:0;background:var(--accent);transition:width .25s"></div></div>
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px"><div id="kyfGeoTots" style="font-size:10px;color:var(--text3)"></div><button type="button" id="kyfGeoClrs" class="kyf-geo-mod" onclick="kyfGeoClearAll('s')" title="Retirer toutes les lignes secteurs d'un coup" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:3px 8px;border-radius:7px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:5px;flex-shrink:0"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>TOUT VIDER</button></div>
+        <div id="kyfGeoRowss"></div>
+        <button type="button" class="kyf-geo-mod kyf-geo-add" onclick="kyfGeoAddRow('s')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>SECTEUR</button>
       </div>
       </div>
-      <div id="kyfGeoHoldPanel" style="display:none;margin-top:20px">
-        <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text3);margin-bottom:4px">ENTREPRISES</div>
-        <div style="font-size:10px;color:var(--text3);line-height:1.6;margin-bottom:10px">Les sociétés que contient cet ETF, pour votre Top 10 entreprises. Collez le tableau de la fiche de l'émetteur (nom et poids) ou chargez son fichier Excel / CSV.</div>
-        <textarea id="kyfGeoHoldTxt" rows="4" oninput="kyfHoldPasteChange()" placeholder="NVIDIA CORP&#9;4,8 %&#10;APPLE INC&#9;4,5 %&#10;MICROSOFT CORP&#9;4,2 %" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px;border-radius:6px;outline:none;resize:vertical"></textarea>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:8px">
-          <label class="kyf-geo-mod" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:5px 10px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center">FICHIER EXCEL / CSV<input type="file" accept=".xlsx,.xls,.csv" style="display:none" onchange="kyfHoldFile(this)"></label>
-          <button type="button" id="kyfGeoGgh" class="kyf-geo-mod" onclick="kyfGeoOpenRef('gh')" title="Chercher sur Google" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:5px 10px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px"><svg width="11" height="11" viewBox="0 0 48 48" style="flex-shrink:0"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>GOOGLE</button>
-          <button type="button" id="kyfGeoIah" class="kyf-geo-mod" onclick="kyfGeoOpenRef('ih')" title="Poser la question au mode IA de Google" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:5px 10px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;color:var(--accent)"><path d="M12 2l1.9 6.1L20 10l-6.1 1.9L12 18l-1.9-6.1L4 10l6.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>IA</button>
-          <button type="button" id="kyfGeoHoldClr" class="kyf-geo-mod" onclick="kyfHoldClear()" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:5px 10px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap;display:none;align-items:center">RETIRER LES ENTREPRISES</button>
+      <div id="kyfGeoHoldPanel" style="display:none;margin-top:26px">
+      <div class="kyf-geo-cols" style="margin-top:0"><div class="kyf-geo-panel">
+        <div class="kyf-geo-ph">
+          <div class="kyf-geo-ring" id="kyfGeoRingh"><span id="kyfGeoRingTh">0</span></div>
+          <div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--text)">ENTREPRISES</div><div id="kyfGeoHoldSum" style="font-size:10px;color:var(--text3);margin-top:2px"></div></div>
+          <button type="button" id="kyfGeoGgh" class="kyf-geo-mod kyf-geo-ib" onclick="kyfGeoOpenRef('gh')" title="Chercher sur Google" aria-label="Chercher sur Google"><svg width="13" height="13" viewBox="0 0 48 48" style="flex-shrink:0"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg></button>
+          <button type="button" id="kyfGeoIah" class="kyf-geo-mod kyf-geo-ib" onclick="kyfGeoOpenRef('ih')" title="Poser la question au mode IA de Google" aria-label="Poser la question au mode IA de Google"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;color:var(--accent)" aria-hidden="true"><path d="M12 2l1.9 6.1L20 10l-6.1 1.9L12 18l-1.9-6.1L4 10l6.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></button>
+          <button type="button" class="kyf-geo-mod kyf-geo-ib" onclick="kyfHoldTogglePaste()" title="Coller un tableau" aria-label="Coller un tableau"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg></button>
+          <label class="kyf-geo-mod kyf-geo-ib" title="Importer un fichier Excel ou CSV" aria-label="Importer un fichier Excel ou CSV"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><input type="file" accept=".xlsx,.xls,.csv" style="display:none" onchange="kyfHoldFile(this)"></label>
+          <button type="button" id="kyfGeoClrh" class="kyf-geo-mod kyf-geo-ib kyf-geo-clr" onclick="kyfHoldClear()" title="Retirer toutes les entreprises d'un coup" aria-label="Tout vider"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
         </div>
-        <div id="kyfGeoHoldSum" style="font-size:11px;line-height:1.7;color:var(--text2);margin-top:8px"></div>
+        <div id="kyfGeoPasteBoxh" style="display:none;margin-bottom:10px">
+          <textarea id="kyfGeoHoldTxt" rows="4" placeholder="Copiez le tableau de l'émetteur et collez-le ici. Exemple :&#10;NVIDIA CORP&#9;4,8 %" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px;border-radius:6px;outline:none;resize:vertical"></textarea>
+          <button type="button" class="kyf-geo-mod" onclick="kyfHoldPasteApply()" style="margin-top:6px;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:7px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer">REMPLIR LA LISTE</button>
+        </div>
+        <div id="kyfGeoRowsh"></div>
+        <button type="button" class="kyf-geo-mod kyf-geo-add" onclick="kyfHoldAddRow()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>ENTREPRISE</button>
+        <div id="kyfGeoHoldMsg" style="font-size:10px;color:var(--text3);line-height:1.6;margin-top:6px"></div>
+      </div></div>
       </div>
       <div id="kyfGeoMsg" style="font-size:10px;color:var(--red);min-height:14px;margin-top:8px"></div>
       <div id="kyfGeoSendBox" style="display:none;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px;padding:10px 12px;border-radius:10px;border:1px solid rgba(240,180,41,0.45);background:rgba(240,180,41,0.07)">
@@ -7365,7 +7442,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.11.4.07</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.11.5.11</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -13786,21 +13863,24 @@ document.addEventListener('keydown', (e)=>{
       <div class="card-title">PAR SECTEUR</div>
       <div id="sectorBars"></div>
     </div>
-  </div>
-  <div class="card" id="geoTopCard">
-    <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
-      <span>TOP 10 ENTREPRISES</span>
+    <div class="card geo-ent" id="geoTopCard">
+      <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+        <span>TOP ENTREPRISES</span>
       <button type="button" class="kyf-geo-mod" onclick="kyfHoldOpen()" style="display:inline-flex;align-items:center;gap:5px;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:6px 12px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);letter-spacing:.5px;cursor:pointer">RENSEIGNER LES ENTREPRISES</button>
+      </div>
+      <div id="geoTopBody"></div>
     </div>
-    <div id="geoTopBody"></div>
   </div>
   <div class="card">
-    <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
-      <span>DÉTAIL PAR POSITION</span>
-      <span style="display:inline-flex;gap:8px;flex-wrap:wrap"><a href="https://docs.google.com/spreadsheets/d/1ujkiS_PhrJShCL9gwRyr7qnIWRgKuHXczR0YxOtnw18/edit?usp=sharing" target="_blank" rel="noopener noreferrer" class="kyf-geo-mod" title="Ouvrir la base communautaire (Google Sheets)" style="display:inline-flex;align-items:center;gap:5px;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:6px 12px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);text-decoration:none;letter-spacing:.5px">BASE COMMUNAUTAIRE <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><button type="button" onclick="kyfGeoOpen()" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:6px 12px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;transition:background .2s,box-shadow .2s,transform .2s;letter-spacing:.5px" onmouseover="this.style.background='#f0b429';this.style.color='#000';this.style.boxShadow='0 2px 8px rgba(240,180,41,0.35)';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)';this.style.boxShadow='none';this.style.transform='translateY(0)'">REMPLIR LES ETF</button></span>
+    <div class="card-title" id="geoDetHead" role="button" tabindex="0" aria-expanded="true" aria-controls="geoDetBody" onclick="kyfGeoDetToggle()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();kyfGeoDetToggle()}" style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;cursor:pointer;user-select:none;outline:none">
+      <span style="display:inline-flex;align-items:center;gap:6px">DÉTAIL PAR POSITION ET COMMUNAUTÉ<button type="button" class="ct-ibtn" id="geoNewBtn" onclick="event.stopPropagation();kyfGeoNewToggle()" onkeydown="event.stopPropagation()" aria-expanded="false" aria-controls="geoNewNote" title="Derniers secteurs et pays ajoutés" aria-label="Derniers secteurs et pays ajoutés"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></button></span>
+      <span style="display:inline-flex;gap:8px;flex-wrap:wrap;align-items:center"><a onclick="event.stopPropagation()" href="https://docs.google.com/spreadsheets/d/1ujkiS_PhrJShCL9gwRyr7qnIWRgKuHXczR0YxOtnw18/edit?usp=sharing" target="_blank" rel="noopener noreferrer" class="kyf-geo-mod" title="Ouvrir la base communautaire (Google Sheets)" style="display:inline-flex;align-items:center;gap:5px;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:6px 12px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);text-decoration:none;letter-spacing:.5px">BASE COMMUNAUTAIRE <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><button type="button" onclick="event.stopPropagation();kyfGeoOpen()" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:6px 12px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;transition:background .2s,box-shadow .2s,transform .2s;letter-spacing:.5px" onmouseover="this.style.background='#f0b429';this.style.color='#000';this.style.boxShadow='0 2px 8px rgba(240,180,41,0.35)';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)';this.style.boxShadow='none';this.style.transform='translateY(0)'">REMPLIR LES ETF</button><span id="geoDetChev" style="display:flex;align-items:center;justify-content:center;box-sizing:border-box;width:34px;height:34px;border:1px solid var(--border2);border-radius:8px;color:var(--text3);transition:transform .25s ease,color .15s,background .15s;transform:rotate(0deg);flex-shrink:0" onmouseover="this.style.color='var(--accent)';this.style.background=kyfChevronHoverBg()" onmouseout="this.style.color='var(--text3)';this.style.background='transparent'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></span>
     </div>
-    <div style="font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);line-height:1.7;margin-bottom:10px">Les ETF n'ont ni pays ni secteurs connus : saisissez leur répartition avec MODIFIER (fiche de l'émetteur). Une action prend par défaut le pays de son ISIN, modifiable aussi.</div>
+    <div id="geoDetBody">
+    <div id="geoNewNote" style="display:none;margin:10px 0 0;padding:10px 14px;border-radius:8px;background:rgba(77,159,255,0.07);border:1px solid rgba(77,159,255,0.2);width:fit-content;max-width:100%;box-sizing:border-box;font-family:'Inter',sans-serif;font-size:10px;font-weight:400;letter-spacing:0;color:var(--text2);line-height:1.7"></div>
+    <div style="font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);line-height:1.7;margin-bottom:10px;margin-top:10px">Les ETF n'ont ni pays ni secteurs connus : saisissez leur répartition avec MODIFIER (fiche de l'émetteur). Une action prend par défaut le pays de son ISIN, modifiable aussi.</div>
     <div id="geoTable" style="overflow-x:auto"></div>
+    </div>
   </div>
 </div>
 
@@ -33827,7 +33907,8 @@ function fiDetectTradeRepublicTXT(text){
 // Contrairement à Trade Republic/Bitpanda, le PAM (prix d'achat moyen)
 // EST fourni par ce relevé - donc _needsPru: false ici.
 function fiDetectBoursoVieTXT(text){
-  return /Nom du produit\s*:\s*Bourso Vie/i.test(text) || (/Bourso Vie/i.test(text) && /Fonds UC/i.test(text));
+  // Même mise en page de relevé de situation chez Bourso Vie et Linxea (Vie, Avenir, Spirit...) : mêmes colonnes, PAM fourni
+  return /Nom du produit\s*:\s*(?:Bourso Vie|Linxea)/i.test(text) || (/(?:Bourso Vie|Linxea)/i.test(text) && /Fonds UC/i.test(text));
 }
 function fiParseBoursoVieTXT(text){
   const lines = text.split(/\r\n|\n/).map(l=>l.trim());
@@ -35014,7 +35095,7 @@ function importGoToStep2(type){
 }
 // Totaux du contrat choisi : préremplis avec ce qui est déjà enregistré, pour ne jamais effacer une valeur sans le vouloir
 // Courtier du compte : demandé à chaque import de positions vers un PEA, un PEA-PME ou un CTO, enregistré dans la fiche Comptes titres (clé kyf-ct-info).
-const KYF_IMPORT_BROKERS = ['Trade Republic','Boursorama','Fortuneo','Bourse Direct','Degiro','Interactive Brokers','Scalable Capital','Saxo Banque','EasyBourse','eToro','XTB','Revolut','Freedom24','Lynx','Swissquote','Bitpanda','Vanguard','Crédit Agricole','BNP Paribas','Société Générale','Crédit Mutuel','CIC','LCL','Caisse d\'Épargne','Banque Populaire','La Banque Postale','HSBC','ING','Boursobank','Crédit du Nord','Banque Palatine','Crédit Coopératif','Hello bank!','Bforbank','Monabanq'];
+const KYF_IMPORT_BROKERS = ['Trade Republic','Boursorama','Fortuneo','Bourse Direct','Degiro','Interactive Brokers','Scalable Capital','Saxo Banque','EasyBourse','eToro','XTB','Revolut','Freedom24','Lynx','Swissquote','Bitpanda','Vanguard','Crédit Agricole','BNP Paribas','Société Générale','Crédit Mutuel','CIC','LCL','Caisse d\'Épargne','Banque Populaire','La Banque Postale','HSBC','ING','Boursobank','Crédit du Nord','Banque Palatine','Crédit Coopératif','Hello bank!','Bforbank','Monabanq','CCF'];
 function kyfImportEnvKey(dest){ return dest === 'PEA-PME' ? 'PME' : (dest === 'CTO' ? 'CTO' : 'PEA'); }
 function kyfImportBrokerShow(on){
   const w = document.getElementById('importBrokerWrap'); if(!w) return;
@@ -48463,7 +48544,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.11.4.07\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.11.5.11\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -65862,8 +65943,8 @@ const GUIDE_PAGES = [
 // ── Version du guide ──
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
-const KYF_GUIDE_VERSION = '1.25';
-const KYF_GUIDE_POUR = '2.11.4.07';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_VERSION = '1.26';
+const KYF_GUIDE_POUR = '2.11.5.11';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -68622,6 +68703,7 @@ const KYF_FLAGS = {
 };
 function kyfFlagImg(c){
   if(c === 'XE'){ let st = ''; for(let i = 0; i < 12; i++){ const a = i * Math.PI / 6; st += '<circle cx="' + (10 + 4.6 * Math.sin(a)).toFixed(2) + '" cy="' + (8 - 4.6 * Math.cos(a)).toFixed(2) + '" r="0.85" fill="#ffcc00"/>'; } return '<svg width="20" height="16" viewBox="0 0 20 16" style="flex-shrink:0;vertical-align:middle" aria-hidden="true"><rect x="0.5" y="0.5" width="19" height="15" rx="1.5" fill="#1a3fa0"/>' + st + '</svg>'; }
+  if(c === 'XA') return '<svg width="20" height="16" viewBox="0 0 20 16" style="flex-shrink:0;vertical-align:middle" aria-hidden="true"><circle cx="10" cy="8" r="6.2" fill="none" stroke="#2a9fd6" stroke-width="1.4"/><ellipse cx="10" cy="8" rx="2.6" ry="6.2" fill="none" stroke="#2a9fd6" stroke-width="1.2"/><line x1="3.8" y1="8" x2="16.2" y2="8" stroke="#2a9fd6" stroke-width="1.2"/></svg>';
   if(c === 'XN') return '<svg width="20" height="16" viewBox="0 0 20 16" style="flex-shrink:0;vertical-align:middle" aria-hidden="true"><circle cx="10" cy="8" r="6.2" fill="none" stroke="#8a94a8" stroke-width="1.4"/><ellipse cx="10" cy="8" rx="2.6" ry="6.2" fill="none" stroke="#8a94a8" stroke-width="1.2"/><line x1="3.8" y1="8" x2="16.2" y2="8" stroke="#8a94a8" stroke-width="1.2"/></svg>';
   const b = KYF_FLAGS[c]; if(!b) return '';
   return '<img src="data:image/png;base64,' + b + '" alt="" width="20" height="16" draggable="false" style="width:20px;height:16px;object-fit:contain;flex-shrink:0;vertical-align:middle">';
@@ -68642,6 +68724,8 @@ const KYF_GEO_LIST = [];
 // « Neutre » : l'exposition qui n'est rattachée à aucun pays précis (« Autres pays » des fiches). Toujours en fin de liste.
 // 2.10.1.08 : « Europe » est une vraie ligne (fonds paneuropéens, projets sans pays précis), rattachée à la zone Europe, avec le drapeau européen
 KYF_GEO_LIST.push(['XE', 'Europe', 'EU', '']);
+// 2.11.5.08 : « Asie émergente » (fonds thématiques, relevé Luxembourg Selection Fund) est une vraie ligne, rattachée à la zone Asie-Pacifique, avec un globe bleu
+KYF_GEO_LIST.push(['XA', 'Asie émergente', 'AP', '']);
 KYF_GEO_LIST.push(['XN', 'Neutre', 'OT', '']);
 const KYF_GEO_SEC = [
   ['sante','Santé','#ff3a3a'],['tech','Technologie','#1a85ff'],['fin','Finance','#7c3aff'],['ind','Industrie','#e6a000'],
@@ -68875,6 +68959,7 @@ const KYF_GEO_FLAG = (() => {
     OM:[R,[R,W,G]], JO:[R,[K,W,G,R]], LB:[G,[R,W,G]], TR:[R,[R,W]], RU:[B,[W,B,R]] };
   t.XE = [B,[B,Y]];   // Europe : bleu et jaune
   t.XN = ['#8a94a8'];   // Neutre : gris
+  t.XA = [L];           // Asie émergente : bleu clair
   // Pays ajoutés (2.8.6.52) : couleurs relevées sur leur drapeau
   Object.assign(t, {AD:['#0c24b4',['#ffe200','#e4c923','#feda00']],AF:['#0c0c0c',['#ff2727','#ff3131','#fe3d3d']],AG:['#cc0c24',['#9c8411','#0171c5','#ffffff']],AI:['#0c2484',['#063288','#02247b','#001e71']],AL:['#e42424',['#e62628','#000000','#e2191a']],AM:['#0c3c9c',['#dc0018','#00329f','#f09d00']],AO:['#0c0c0c',['#d92324','#321b15','#191412']],AS:['#0c0c6c',['#01006f','#ffffff','#010059']],AW:['#3c84e4',['#4b91e0','#4088dd','#608ead']],AX:['#0c549c',['#226c95','#cf0734','#205885']],AZ:['#0cb4e4',['#00bee6','#ec2030','#36912d']],BA:['#0c249c',['#ffcf00','#203885','#001d8a']],BB:['#0c2484',['#ffcb2f','#281f05','#ffbf1f']],BF:['#fc3c3c',['#f13436','#ffd114','#00933f']],BI:['#24b43c',['#d21831','#fefefe','#c80e20']],BJ:['#0c8454',['#fdd51d','#eb2628','#e50e25']],BL:['#cccccc',['#baa425','#d74c53','#fdfeff']],BN:['#fce40c',['#f8e31e','#c45a65','#f7e012']],BO:['#fce40c',['#d83426','#f9e300','#006d2c']],BQ:['#0c2484',['#ffffff','#022886','#00237b']],BS:['#0c0c0c',['#008093','#ffc62a','#006b7f']],BT:['#fc3c0c',['#ffd828','#e8f2f7','#ff440e']],BW:['#84b4e4',['#7db0de','#030303','#689fd5']],BY:['#cc3c3c',['#cc3b48','#c7303d','#3f9b4c']],BZ:['#0c3c84',['#b8d2a6','#d3c881','#aec69e']],CC:['#0c840c',['#008800','#017f00','#007400']],CD:['#0c6cfc',['#0088ff','#ce0f20','#0072ff']],CF:['#fccc0c',['#d6153e','#d20f32','#cb0c2b']],CG:['#0c9c54',['#039e4d','#fbde49','#d71e19']],CI:['#fc840c',['#ffffff']],CK:['#0c2484',['#053289','#04257c','#001e71']],CM:['#fccc0c',['#d3172f','#ffdd14','#c80e20']],CR:['#cc0c24',['#1f4b94','#cd1024','#375290']],CU:['#0c2484',['#002d93','#022b8f','#00177d']],CV:['#0c3c9c',['#00429b','#dcd5aa','#012c8a']],CW:['#0c2484',['#003487','#002a7d','#012573']],CX:['#0c24b4',['#24924c','#0f8541','#001ba3']],DJ:['#0c9c24',['#73b8e9','#ffffff','#0ea324']],DM:['#0c6c3c',['#0f121b','#2a5c5e','#0e111a']],DO:['#cc0c24',['#fefcfd','#a07f99','#fcfcfd']],DZ:['#0c6c3c',['#ddebe5','#dcf1ea','#dce7e1']],EC:['#fce40c',['#ffe000','#599a4d','#ea171e']],EH:['#0c0c0c',['#000000','#bc0000','#006d33']],ER:['#e40c3c',['#18b334','#ea0236','#377dd7']],ET:['#fce40c',['#0a8a45','#003bbb','#aa1832']],FJ:['#6cb4e4',['#66b5dc','#67bde4','#5cb6e1']],FK:['#0c2484',['#053289','#02247b','#001e71']],FM:['#6cb4e4',['#bddaee','#73b1dd','#c3ddf0']],FO:['#cccccc',['#fcfdfe','#f32633','#fcfdfe']],GA:['#fccc0c',['#00a56a','#fdd115','#3168bb']],GD:['#fccc0c',['#ee9d21','#ffe014','#f2b015']],GE:['#fc0c0c',['#ff0303','#ff0000','#ff0303']],GF:['#fce40c',['#09913a','#dd1019','#fcd807']],GI:['#cc0c0c',['#bb0000','#000100','#be2b08']],GL:['#cc0c24',['#fffdfd','#f8e0e5','#c90a2c']],GM:['#cc0c24',['#d2172f','#0c1c8b','#316b21']],GN:['#0c8454',['#fdd51c','#fcd015','#fcca11']],GP:['#0c0c0c',['#b9af30','#fbdc08','#fed907']],GQ:['#3c9c0c',['#48a100','#e5d8d7','#df1b13']],GT:['#549ccc',['#ffffff','#e5d392','#ffffff']],GU:['#0c246c',['#013283','#9dabc4','#01226e']],GW:['#fccc0c',['#fdd51c','#20a340','#00933f']],GY:['#0c843c',['#00a553','#fbd015','#01933f']],HN:['#0c6ccc',['#007cd3','#61a7e1','#0066c8']],HT:['#0c249c',['#0028a5','#bd661d','#cb0d2c']],IM:['#cc0c24',['#d31a34','#d1cc9e','#a6514e']],IO:['#0c0c6c',['#7a94c0','#ffffff']],IQ:['#0c0c0c',['#d2172f','#79b697','#000000']],IR:['#cc0c0c',['#2ca64a','#ef9696','#d40000']],JM:['#0c0c0c',['#00a243','#fcd000','#008f31']],KG:['#e40c24',['#ea1736','#fcd804','#e50d25']],KI:['#cc0c24',['#f0ca16','#fbce10','#ebeff5']],KM:['#fccc24',['#ffca27','#d32c3e','#3268bb']],KN:['#0c0c0c',['#02a653','#000000','#c70e20']],KP:['#e42424',['#2276bc','#ed1b26','#397bbb']],LA:['#cc0c24',['#d2162f','#ffffff','#c70e20']],LC:['#6cccfc',['#cdeeff','#60500a','#faca13']],LI:['#cc0c24',['#003487','#b4132d','#c70d1f']],LR:['#b40c24',['#ffffff']],LS:['#0c249c',['#0028a5','#000000','#008939']],LY:['#0c0c0c',['#e90018','#030303','#1d923c']],MC:['#cc0c24',['#d2162f','#f4d9dc','#ffffff']],MD:['#0c54b4',['#fed501','#6a6839','#fecb00']],ME:['#cc0c0c',['#ca030b','#a58c45','#bb0003']],MF:['#0c249c',['#ffffff']],MG:['#fc3c3c',['#fd463b','#207337','#007231']],MH:['#0c3c9c',['#00429b','#ea7900','#002f87']],MK:['#cc0c0c',['#fff500','#ffe400','#ffeb00']],ML:['#cc0c24',['#fdd51d','#fcd015','#fcca11']],MM:['#fccc0c',['#ffcf00','#ffffff','#e72130']],MN:['#0c549c',['#015b9e','#005096','#00468b']],MP:['#0c6cb4',['#a2b3a2','#fbfcfd','#828081']],MQ:['#0c0c0c',['#009c49','#172a1e','#181816']],MR:['#0c6c3c',['#6b4e42','#006031','#4b432f']],MS:['#0c2484',['#063289','#02247b','#001e70']],MU:['#fccc0c',['#ec3143','#e2be0d','#019a46']],MV:['#0c843c',['#d6153e','#007934','#cb0d2c']],MW:['#0c0c0c',['#1e0206','#cd1024','#2b932c']],MZ:['#0c0c0c',['#007a71','#000000','#fcdc00']],NC:['#0c843c',['#003eb3','#d13a2d','#008939']],NE:['#e4540c',['#e35c08','#e05105','#0aa523']],NF:['#0c843c',['#89c2a3','#1f864a','#479767']],NI:['#0c6ccc',['#0070ca','#add64e','#005bbe']],NP:['#0c0c0c',['#00007f','#030000','#d71032']],NR:['#0c246c',['#003487','#ffcb19','#002473']],NU:['#fccc0c',['#e1c52c','#fbcf16','#fcca12']],PF:['#cc0c24',['#d2162f','#c6a3a4','#c80f20']],PG:['#0c0c0c',['#d3172f','#a60c1d','#000000']],PM:['#0c9ccc',['#647632','#347669','#007fbb']],PN:['#0c2484',['#053188','#02247b','#001e71']],PR:['#e40c0c',['#ef0000','#0054fb','#e90000']],PS:['#0c0c0c',['#000000','#ffffff','#006e34']],PW:['#3c9ccc',['#56b4d7','#ffde00','#42a3ce']],PY:['#0c249c',['#d83426','#e8e5b5','#002f9d']],RE:['#3c6cfc',['#e0e828','#b92c53','#ff0000']],RW:['#0c9ce4',['#00a8e1','#dbcb1b','#1b5534']],SB:['#245424',['#005bbf','#facf17','#1b502b']],SC:['#cc2424',['#fdd85f','#d62727','#288453']],SD:['#0c0c0c',['#d6153d','#ffffff','#000000']],SH:['#0c2484',['#043189','#02247b','#001e71']],SL:['#24b43c',['#26bb44','#ffffff','#0066be']],SM:['#54b4e4',['#f8f6f3','#8799a1','#52ace0']],SN:['#0c843c',['#fef14c','#01833e','#fded38']],SO:['#3c84e4',['#4a91e0','#fdfeff','#377dd8']],SR:['#b40c24',['#3a8242','#ebc41c','#236a2b']],SS:['#0c0c0c',['#000000','#da1119','#047d28']],ST:['#fccc0c',['#18b334','#000000','#0ea324']],SV:['#0c3c9c',['#1451b5','#bebe5d','#0b3da5']],SX:['#0c2484',['#df1e25','#1b2678','#00237b']],SY:['#0c0c0c',['#d2172f','#ffffff','#000000']],SZ:['#b40c0c',['#3c60cb','#000000','#2a4bb8']],TC:['#0c2484',['#053289','#02247b','#001e71']],TD:['#fccc0c',['#ffcf00','#feca00','#fec300']],TG:['#fccc0c',['#00705b','#02694c','#005848']],TJ:['#cc0c0c',['#d00000','#fdf4d1','#005900']],TK:['#0c2484',['#002d85','#fed000','#eec006']],TL:['#e42424',['#df2d28','#db231e','#d71e19']],TM:['#24b46c',['#65c693','#27ad64','#21a45a']],TO:['#b40c0c',['#c50000','#c00000','#b80000']],TT:['#e4243c',['#dd223f','#000000','#d5172e']],TV:['#549cb4',['#5b94b3','#5a95af','#4d8aa9']],TZ:['#0c0c0c',['#26bb44','#000000','#0098d8']],UG:['#0c0c0c',['#1e1a00','#474846','#dc2f01']],UZ:['#0c9cb4',['#00a0bb','#ffffff','#18ab31']],VA:['#fce40c',['#fffdf4','#fffdf3']],VC:['#fccc0c',['#fdd51d','#dcc91e','#73ad36']],VE:['#fccc0c',['#ffd000','#00237c','#c91024']],VG:['#0c2484',['#053289','#02247b','#001e70']],VI:['#cccccc',['#dcb339','#bb768a','#d4ba77']],VU:['#0c0c0c',['#d6153d','#d5af0f','#008939']],WF:['#e4243c',['#ef3242','#ed2837','#ea2230']],WS:['#cc0c24',['#b51a3a','#cb1025','#c70e20']],XK:['#243c9c',['#2a52ab','#d0a54f','#1a3e9c']],YE:['#0c0c0c',['#d2172f','#ffffff','#000000']],YT:['#cccccc',['#fefdfc','#360752','#939393']],ZM:['#24840c',['#209200','#188900','#147e00']],ZW:['#0c0c0c',['#b3b600','#000000','#9c9e00']]});
   return t;
@@ -68883,7 +68968,7 @@ let _geoOpen = {}, _geoRowsOpen = false;
 function kyfGeoTiles(id, items, tot, emptyMsg, nd, opt){
   const box = document.getElementById(id); if(!box) return;
   if(!items.length){ box.innerHTML = '<div style="font-family:\'Inter\',sans-serif;font-size:10px;color:var(--text3)">' + emptyMsg + '</div>'; return; }
-  const CIRC = 226.08, all = !!(opt && opt.all), lim = opt && opt.max ? opt.max : 0;
+  const CIRC = 226.08, all = !!(opt && opt.all), lim = opt && opt.max ? opt.max : 0, rev = !!(opt && opt.rev);   // rev : dégradé de l'anneau du plus foncé au plus clair (PAR SECTEUR)
   const topN = lim ? lim - 1 - (nd && nd.eur > 0.5 ? 1 : 0) : 5;   // avec « max » : tuiles principales + « Autres » + éventuellement « Non renseigné » = max
   let top = all ? items : items.slice(0, topN), rest = all ? [] : items.slice(topN);
   if(lim && rest.length === 1){ top = items; rest = []; }          // une seule tuile restante : on l'affiche directement plutôt que « Autres (1) »
@@ -68892,24 +68977,25 @@ function kyfGeoTiles(id, items, tot, emptyMsg, nd, opt){
   const tile = (it, k, extra) => {
     const c = it.c, pct = pctOf(it.eur), off = Math.round((1 - Math.min(pct, 100) / 100) * CIRC * 100) / 100, gid = 'gt-' + id + '-' + k;
     const inner = it.ico ? '<g fill="none" stroke="' + c + '" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + it.ico + '</g>'
-      : '<text x="42" y="48" text-anchor="middle" font-family="Inter,sans-serif" font-size="' + (it.txt.length > 2 ? 15 : 19) + '" font-weight="700" fill="' + c + '">' + escapeHtml(it.txt) + '</text>';
+      : '<text x="42" y="48" text-anchor="middle" font-family="Inter,sans-serif" font-size="' + (it.txt.length > 2 ? 15 : 19) + '" font-weight="700" fill="' + c + '">' + escapeHtml(it.txt) + '</text>'
+        + (it.img ? '<g><circle cx="42" cy="42" r="19" fill="#fff"/><image href="' + escapeHtml(kyfSafeImgSrc(it.img)) + '" x="29" y="29" width="26" height="26" onerror="this.parentNode.remove()"/></g>' : '');
     return '<div ' + (extra || '') + ' title="' + escapeHtml(it.n) + ' : ' + kyfGeoPct(pct, 1) + ' · ' + kyfGeoEur(it.eur) + '" style="background:' + c + '12;border:1px solid ' + c + '44;border-radius:12px;padding:9px 6px;text-align:center;min-width:0' + (extra ? ';cursor:pointer' : '') + '">'
-      + '<svg width="56" height="56" viewBox="0 0 84 84"><defs><linearGradient id="' + gid + '" x1="0%" y1="0%" x2="100%" y2="100%">' + (it.stops && it.stops.length > 1 ? it.stops.map((x, q) => '<stop offset="' + Math.round(q / (it.stops.length - 1) * 100) + '%" stop-color="' + x + '"/>').join('') : '<stop offset="0%" stop-color="' + c + '99"/><stop offset="100%" stop-color="' + c + '"/>') + '</linearGradient></defs>'
+      + '<svg width="56" height="56" viewBox="0 0 84 84"><defs><linearGradient id="' + gid + '" x1="0%" y1="0%" x2="100%" y2="100%">' + (it.stops && it.stops.length > 1 ? it.stops.map((x, q) => '<stop offset="' + Math.round(q / (it.stops.length - 1) * 100) + '%" stop-color="' + x + '"/>').join('') : (rev ? '<stop offset="0%" stop-color="' + c + '"/><stop offset="100%" stop-color="' + c + '99"/>' : '<stop offset="0%" stop-color="' + c + '99"/><stop offset="100%" stop-color="' + c + '"/>')) + '</linearGradient></defs>'
       + '<circle cx="42" cy="42" r="36" fill="none" stroke="rgba(128,128,128,0.18)" stroke-width="8"/>'
       + '<circle cx="42" cy="42" r="36" fill="none" stroke="url(#' + gid + ')" stroke-width="8" stroke-dasharray="' + CIRC + '" stroke-dashoffset="' + off + '" stroke-linecap="round" transform="rotate(-90 42 42)"/>' + inner + '</svg>'
       + '<div style="font-size:14px;font-weight:700;color:' + c + ';margin-top:4px">' + kyfGeoPct(pct) + '</div>'
       + '<div style="font-size:9px;color:var(--text3);letter-spacing:.3px;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHtml(it.n.toUpperCase()) + '</div></div>';
   };
-  let h = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(' + (all ? 'max(92px,calc((100% - 50px)/6))' : '92px') + ',1fr));gap:10px">' + top.map((it, k) => tile(it, k)).join('');
+  let h = '<div style="display:grid;grid-template-columns:' + (all ? 'repeat(auto-fill,minmax(max(92px,calc((100% - 50px)/6)),1fr))' : 'repeat(4,minmax(0,1fr))') + ';gap:10px">' + top.map((it, k) => tile(it, k)).join('');
   if(rest.length) h += tile({ n:'Autres (' + rest.length + ')', c:'#8ab0d0', eur:restEur, txt:'+' + rest.length }, 'o', 'onclick="_geoOpen[\'' + id + '\']=!_geoOpen[\'' + id + '\'];kyfGeoRender()"');
   if(nd && nd.eur > 0.5) h += tile({ n:'Non renseigné', c:'#7a869c', eur:nd.eur, txt:'?' }, 'n');
   h += '</div>';
   if(rest.length && _geoOpen[id]){
     // Liste dépliée : les lignes à 1 % ou plus une par une ; tout ce qui est sous 1 % est regroupé en une seule ligne (sinon la liste s'étire à l'infini)
     const minPct = opt && opt.minPct ? opt.minPct : 0, big = minPct ? rest.filter(it => pctOf(it.eur) >= minPct) : rest, small = minPct ? rest.filter(it => pctOf(it.eur) < minPct) : [];
-    const rowH = (c, n, p) => '<div class="prog-row"><div class="prog-dot" style="background:' + c + '"></div><div class="prog-lbl" style="min-width:110px">' + escapeHtml(n) + '</div><div class="prog-bar"><div class="prog-fill" style="width:' + Math.min(100, p).toFixed(1) + '%;background:' + c + '"></div></div><div class="prog-val">' + kyfGeoPct(p) + '</div></div>';
-    h += '<div style="margin-top:12px">' + big.map(it => rowH(it.c, it.n, pctOf(it.eur))).join('')
-      + (small.length ? '<div title="' + escapeHtml(small.map(it => it.n).join(', ')) + '">' + rowH('#8a94a8', (opt && opt.smallLabel ? opt.smallLabel : 'Autres') + ' (' + small.length + ') · moins de ' + minPct + ' % chacun', pctOf(small.reduce((a, it) => a + it.eur, 0))) + '</div>' : '') + '</div>';
+    const rowH = (c, n, p, it) => '<div class="prog-row">' + (it && it.img ? '<img src="' + escapeHtml(kyfSafeImgSrc(it.img)) + '" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=&quot;prog-dot&quot; style=&quot;background:' + c + '&quot;></div>\'" style="width:18px;height:18px;border-radius:5px;object-fit:contain;background:#fff;padding:1px;box-sizing:border-box;flex-shrink:0">' : '<div class="prog-dot" style="background:' + c + '"></div>') + '<div class="prog-lbl" style="min-width:110px">' + escapeHtml(n) + '</div><div class="prog-bar"><div class="prog-fill" style="width:' + Math.min(100, p).toFixed(1) + '%;background:' + c + '"></div></div><div class="prog-val">' + kyfGeoPct(p) + '</div></div>';
+    h += '<div style="margin-top:12px">' + big.map(it => rowH(it.c, it.n, pctOf(it.eur), it)).join('')
+      + (small.length ? '<div title="' + escapeHtml(small.map(it => it.n).join(', ')) + '">' + rowH('#8a94a8', (opt && opt.smallLabel ? opt.smallLabel : 'Autres') + ' (' + small.length + ') · moins de ' + String(minPct).replace('.', ',') + ' % chacun', pctOf(small.reduce((a, it) => a + it.eur, 0))) + '</div>' : '') + '</div>';
   }
   box.innerHTML = h;
   // largeur du cadre selon le nombre de tuiles (4 colonnes au plus pour les pays, 6 pour les secteurs)
@@ -68926,7 +69012,7 @@ function kyfGeoTipShow(el){
   let tip = document.getElementById('kyfGeoTip');
   if(!tip){
     tip = document.createElement('div'); tip.id = 'kyfGeoTip';
-    tip.style.cssText = "position:fixed;display:none;z-index:99999;background:rgba(8,12,20,0.94);border:1px solid var(--accent);padding:9px 12px;font-family:'Inter',sans-serif;color:#c8d8f0;border-radius:12px;pointer-events:none;box-shadow:0 8px 32px rgba(0,0,0,0.5);white-space:nowrap;max-height:60vh;overflow:hidden";
+    tip.style.cssText = "position:fixed;display:none;z-index:99999;background:var(--bg2);border:1px solid var(--accent);padding:9px 12px;font-family:'Inter',sans-serif;color:var(--text);border-radius:12px;pointer-events:none;box-shadow:0 8px 32px rgba(0,0,0,0.35);white-space:nowrap;max-height:60vh;overflow:hidden";
     document.body.appendChild(tip);
   }
   tip.innerHTML = el.dataset.tip || '';
@@ -68987,7 +69073,7 @@ function kyfGeoStaleRender(){
 // Les composants d'un ETF sont le 3e volet de sa fiche pays / secteurs (kyf-geo-v1) : e.h = { clé d'entreprise: poids % }, avec sa date (dh) et son origine (oh).
 // Le poids d'une entreprise dans votre portefeuille = somme, sur vos ETF, de (valeur de la ligne × poids de l'entreprise dans l'ETF) + vos actions en direct.
 const KYF_HOLD_STOP = new Set(['corp','corporation','inc','incorporated','plc','sa','se','ag','nv','ltd','limited','co','company','holdings','holding','group','class','cl','ordinary','shares','share','adr','reg','registered','the','spa','ab','asa','oyj','sponsored','common','stock','new','lp','a','b','c','n','nom','act','ac']);
-const KYF_HOLD_ALIAS = { 'facebook':'meta platforms', 'taiwan semiconductor manufacturing':'tsmc', 'taiwan semiconductor':'tsmc', 'lvmh moet hennessy louis vuitton':'lvmh', 'lvmh moet hennessy':'lvmh', 'oreal':'l oreal' };
+const KYF_HOLD_ALIAS = { 'facebook':'meta platforms', 'taiwan semiconductor manufacturing':'tsmc', 'taiwan semiconductor':'tsmc', 'lvmh moet hennessy louis vuitton':'lvmh', 'lvmh moet hennessy':'lvmh', 'oreal':'l oreal', 'amazon com':'amazon', 'mcdonalds':'mcdonald s', 'mercedes benz group':'mercedes benz', 'toyota motor':'toyota motor' };
 const KYF_HOLD_NOM = { 'tsmc':'TSMC', 'lvmh':'LVMH', 'meta platforms':'Meta Platforms', 'nvidia':'Nvidia', 'asml':'ASML', 'sap':'SAP', 'amd':'AMD', 'l oreal':'L’Oréal', 'hermes international':'Hermès', 'jpmorgan chase':'JPMorgan Chase', 'unitedhealth':'UnitedHealth', 'totalenergies':'TotalEnergies', 'schneider electric':'Schneider Electric', 'societe generale':'Société Générale', 'bnp paribas':'BNP Paribas' };
 // Clé commune à toutes les écritures d'une même entreprise : sans accents ni forme juridique (NVIDIA CORP = Nvidia Corporation = NVIDIA)
 function kyfHoldKey(name){
@@ -69068,7 +69154,7 @@ function kyfHoldToMap(list){
 // Poids des entreprises dans le portefeuille : { items:[{key,name,eur,pct,src:{libellé:eur}}], nEtf, nKnown, etfTotal, etfKnown, missing:[{k,name,val}] }
 function kyfHoldCompute(D){
   const gl = kyfGeoLoad(), map = {};
-  const out = { items: [], nEtf: 0, nKnown: 0, etfTotal: 0, etfKnown: 0, missing: [], tot: D.tot || 0 };
+  const out = { items: [], nEtf: 0, nKnown: 0, nComm: 0, etfTotal: 0, etfKnown: 0, missing: [], tot: D.tot || 0 };
   const short = r => String(r.ticker || r.name || '').replace(/\.[A-Za-z]{1,3}$/, '');
   const add = (nm, eur, src, own) => {
     const key = kyfHoldKey(nm); if(!key) return;
@@ -69080,9 +69166,12 @@ function kyfHoldCompute(D){
     const val = r.val || 0; if(!(val > 0)) return;
     if(r.isEtf || r.fund){
       out.nEtf++; out.etfTotal += val;
-      const H = (gl[r.k] || {}).h;
+      let H = (gl[r.k] || {}).h, viaC = false;
+      if(!H){   // pas renseigné chez vous : composition validée par la communauté (au moins 2 personnes d'accord), si le script la fournit
+        try{ const cm = (typeof _geoComm !== 'undefined' && _geoComm) ? _geoComm[String(r.isin || '').toUpperCase()] : null; if(cm && cm.h && Object.keys(cm.h).length){ H = cm.h; viaC = true; } }catch(e){}
+      }
       if(!H){ out.missing.push({ k: r.k, name: r.name, val }); return; }
-      out.nKnown++; out.etfKnown += val;
+      out.nKnown++; out.etfKnown += val; if(viaC) out.nComm++;
       Object.keys(H).forEach(k => add(k, val * H[k] / 100, short(r)));
     } else add(r.name || r.ticker, val, 'direct', true);
   });
@@ -69092,7 +69181,11 @@ function kyfHoldCompute(D){
 }
 const KYF_HOLD_COL = ['#4d9fff', '#f0b429', '#34d399', '#c084fc', '#fb7185', '#38bdf8', '#fb923c', '#a3e635'];
 function kyfHoldRender(D){
+  _kyfHoldD = D;
   const el = document.getElementById('geoTopBody'); if(!el) return;
+  kyfHoldRenderMoi(D, el);
+}
+function kyfHoldRenderMoi(D, el){
   const R = kyfHoldCompute(D), top = R.items.slice(0, 10);
   const pct = v => kyfGeoPct(v);
   const mut = 'font-family:\'Inter\',sans-serif;font-size:10px;color:var(--text3);line-height:1.7';
@@ -69100,26 +69193,156 @@ function kyfHoldRender(D){
     el.innerHTML = '<div style="' + mut + '">Renseignez les entreprises de vos ETF (bouton MODIFIER d’un ETF, onglet ENTREPRISES : collage du tableau de l’émetteur ou fichier Excel/CSV) pour les voir en transparence. Vos actions en direct comptent déjà.</div>' + kyfHoldMissing(R);
     return;
   }
-  const maxP = top[0].pct || 1;
-  let h = '<div style="' + mut + ';margin-bottom:8px">Les entreprises les plus présentes dans votre portefeuille, en additionnant leur poids dans chacun de vos ETF et vos actions en direct.</div>';
-  h += top.map((e, i) => {
-    const srcs = Object.keys(e.src).sort((a, b) => e.src[b] - e.src[a]);
-    const chips = srcs.slice(0, 4).map(s => '<span title="' + escapeHtml(s + ' : ' + fmt(e.src[s], 0) + ' €') + '" style="display:inline-flex;align-items:center;height:18px;padding:0 7px;border-radius:9px;background:var(--hov-bg-soft);border:1px solid var(--border);font-size:9px;font-weight:700;color:var(--text2)">' + escapeHtml(s) + '</span>').join('') + (srcs.length > 4 ? '<span style="font-size:9px;color:var(--text3)">+ ' + (srcs.length - 4) + '</span>' : '');
-    const col = KYF_HOLD_COL[i % KYF_HOLD_COL.length];
-    return '<div style="display:grid;grid-template-columns:22px 32px minmax(0,1.5fr) minmax(0,2fr) minmax(0,1.3fr);gap:12px;align-items:center;padding:9px 2px;border-top:1px solid var(--border)">' +
-      '<div style="font-size:12px;font-weight:700;color:' + (i < 3 ? 'var(--accent)' : 'var(--text3)') + '">' + (i + 1) + '</div>' +
-      '<div style="width:30px;height:30px;border-radius:8px;background:' + col + ';color:#0d111a;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center">' + escapeHtml(e.name.charAt(0).toUpperCase()) + '</div>' +
-      '<div style="min-width:0"><div style="font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(e.name) + '</div><div style="font-size:9px;color:var(--text3);margin-top:2px">' + srcs.length + ' ligne' + (srcs.length > 1 ? 's' : '') + '</div></div>' +
-      '<div style="display:flex;align-items:center;gap:10px"><div style="flex:1;height:7px;border-radius:4px;background:var(--border);overflow:hidden"><div style="height:100%;width:' + Math.max(2, e.pct / maxP * 100).toFixed(1) + '%;background:' + col + ';border-radius:4px"></div></div><div style="min-width:86px;text-align:right;font-size:11px;font-weight:700;color:var(--text)">' + pct(e.pct) + ' <span style="font-weight:400;color:var(--text3)">· ' + fmt(e.eur, 0) + ' €</span></div></div>' +
-      '<div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center">' + chips + '</div></div>';
+  const tiles = R.items.slice(0, 100).map((e, i) => {
+    const w = e.name.replace(/[^A-Za-z0-9\u00C0-\u017F ]/g, '').trim().split(/\s+/).filter(Boolean), ini = (w.length > 1 ? w[0].charAt(0) + w[1].charAt(0) : (w[0] || '?').slice(0, 2)).toUpperCase();
+    const d = KYF_HOLD_DOM[e.key];
+    return { n:e.name, c:KYF_HOLD_COL[i % KYF_HOLD_COL.length], eur:e.eur, txt:ini, img: d ? 'https://www.google.com/s2/favicons?domain=' + d + '&sz=64' : '' };
+  });
+  kyfGeoTiles('geoTopBody', tiles, R.tot, '', null, { max:8, minPct:0.3, smallLabel:'Autres entreprises' });
+  let h = '';
+  const chev = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg>';
+  const sum = R.nEtf ? 'Entreprises connues pour ' + R.nKnown + ' ETF sur ' + R.nEtf + ' (' + pct(R.etfTotal > 0 ? R.etfKnown / R.etfTotal * 100 : 0) + ' de leur valeur)' : 'Précision des entreprises';
+  h += '<div style="margin-top:10px;border-top:1px solid var(--border);padding-top:8px"><button type="button" class="kyf-hold-tog" aria-expanded="' + (_kyfHoldFoot ? 'true' : 'false') + '" onclick="kyfHoldFootToggle()">' + chev + '<span>' + sum + '</span></button>'
+    + (_kyfHoldFoot ? '<div style="' + mut + ';margin:6px 0 0 18px">' + (R.nComm ? 'Dont ' + R.nComm + ' d\u2019après la communauté. ' : '') + 'Chaque fiche d’ETF ne donne souvent que ses plus grosses lignes : les poids affichés sont des minimums.' + kyfHoldMissing(R) + '</div>' : '') + '</div>';
+  el.insertAdjacentHTML('beforeend', h);
+}
+// ── 2.11.5.00 : TOP COMMUNAUTÉ (Moi / Communauté / Comparer) ──────────────────────────────────────────────────────────
+// Partage facultatif (désactivé par défaut) : la liste des lignes détenues avec leur poids en % du portefeuille, jamais de montant. Lecture : ?action=top du script communautaire.
+let _kyfTopMode = 'com', _kyfTopSub = 'h', _kyfTopComm = null, _kyfTopCommAt = 0, _kyfTopCommP = null, _kyfTopCommFail = 0, _kyfHoldD = null;
+function kyfPfOn(){ try{ return localStorage.getItem('kyf-pf-share') === '1'; }catch(e){ return false; } }
+function kyfPfSet(v){
+  try{ if(v) localStorage.setItem('kyf-pf-share', '1'); else localStorage.removeItem('kyf-pf-share'); localStorage.removeItem('kyf-pf-sent'); }catch(e){}
+  if(v && _kyfHoldD) kyfPfShare(_kyfHoldD, true);
+  if(_kyfHoldD) kyfHoldRender(_kyfHoldD);
+}
+// Lignes partagées : ISIN, poids %, type (e = ETF ou fonds, a = action), nom, clé d'entreprise (actions)
+function kyfPfLines(D){
+  const tot = D.tot || 0; if(!(tot > 0)) return [];
+  const out = [];
+  D.rows.forEach(r => {
+    const isin = String(r.isin || '').toUpperCase().trim(), val = r.val || 0;
+    if(!kyfGeoIsinOk(isin) || !(val > 0)) return;
+    const w = Math.round(val / tot * 1000) / 10; if(!(w > 0)) return;
+    const etf = !!(r.isEtf || r.fund), nm = String(r.name || r.ticker || '').replace(/[\u0000-\u001f<>"\\]/g, '').replace(/^[=+\-@\s]+/, '').trim().slice(0, 40);
+    out.push(etf ? [isin, w, 'e', nm] : [isin, w, 'a', nm, kyfHoldKey(r.name || r.ticker)]);
+  });
+  return out.sort((a, b) => b[1] - a[1]).slice(0, 80);
+}
+function kyfPfShare(D, force){
+  if(!kyfGeoCommOn() || !kyfPfOn()) return;
+  const uid = kyfGeoUid(); if(!uid) return;
+  const l = kyfPfLines(D); if(!l.length) return;
+  const sig = JSON.stringify(l.map(x => [x[0], Math.round(x[1])]));   // renvoi seulement si la composition a vraiment changé (à 1 % près) ou après 7 jours
+  let st = {}; try{ st = JSON.parse(localStorage.getItem('kyf-pf-sent') || '{}') || {}; }catch(e){}
+  if(!force && st.s === sig && Date.now() - (st.t || 0) < 7 * 86400000) return;
+  if(!force && Date.now() - (st.t || 0) < 600000) return;
+  try{ localStorage.setItem('kyf-pf-sent', JSON.stringify({ s: sig, t: Date.now() })); }catch(e){}
+  try{ fetch(KYF_GEO_URL, { method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body: JSON.stringify({ secret:KYF_GEO_SECRET, kind:'pf', uid, l }), signal: AbortSignal.timeout(15000) }).catch(() => {}); }catch(e){}
+}
+function kyfTopCommClean(d){
+  if(!d || typeof d !== 'object') return null;
+  const n = v => (typeof v === 'number' && isFinite(v) && v >= 0) ? v : 0, str = (v, m) => String(v == null ? '' : v).replace(/[\u0000-\u001f<>]/g, '').slice(0, m);
+  const line = x => (x && typeof x === 'object' && kyfGeoIsinOk(x.i)) ? { i: x.i, tk: /^[A-Z0-9][A-Z0-9.^=\-]{0,19}$/.test(String(x.tk || '')) ? x.tk : '', nm: str(x.nm, 40), n: Math.min(999999, Math.floor(n(x.n))), w: Math.min(100, n(x.w)), t: x.t === 'a' ? 'a' : 'e' } : null;
+  const arr = (a, f) => (Array.isArray(a) ? a : []).slice(0, 30).map(f).filter(Boolean);
+  return {
+    n: Math.min(999999, Math.floor(n(d.n))), cov: Math.min(100, n(d.cov)),
+    etf: arr(d.etf, line), act: arr(d.act, line),
+    h: arr(d.h, x => (x && /^[a-z0-9][a-z0-9 ]{1,39}$/.test(String(x.k || ''))) ? { k: x.k, n: Math.min(999999, Math.floor(n(x.n))), w: Math.min(100, n(x.w)) } : null)
+  };
+}
+function kyfTopCommLoad(){
+  if(!kyfGeoCommOn()) return Promise.resolve(null);
+  if(_kyfTopComm && Date.now() - _kyfTopCommAt < 6 * 3600000) return Promise.resolve(_kyfTopComm);
+  if(Date.now() - _kyfTopCommFail < 60000) return Promise.resolve(_kyfTopComm);
+  if(!_kyfTopCommP){
+    _kyfTopCommP = fetch(KYF_GEO_URL + '?action=top', { signal: AbortSignal.timeout(12000) })
+      .then(r => r.json())
+      .then(j => { const c = (j && j.ok) ? kyfTopCommClean(j.data) : null; if(c){ _kyfTopComm = c; _kyfTopCommAt = Date.now(); } else _kyfTopCommFail = Date.now(); return _kyfTopComm; })
+      .catch(() => { _kyfTopCommFail = Date.now(); return _kyfTopComm; })
+      .finally(() => { _kyfTopCommP = null; });
+  }
+  return _kyfTopCommP;
+}
+function kyfTopSet(mode, sub){
+  if(mode) _kyfTopMode = mode === 'cmp' ? 'cmp' : 'com';
+  if(sub) _kyfTopSub = sub;
+  if(_kyfTopMode === 'cmp') _kyfTopSub = 'h';
+  if(_kyfHoldD) kyfHoldRender(_kyfHoldD);
+}
+function kyfTopSeg(){
+  const seg = document.getElementById('geoTopSeg'); if(!seg) return;
+  if(!kyfGeoCommOn()){ seg.innerHTML = ''; seg.style.display = 'none'; _kyfTopMode = 'com'; return; }
+  seg.style.display = 'block';
+  const opt = (id, lab) => '<button type="button" class="kyf-top-opt' + (_kyfTopMode === id ? ' on' : '') + '" onclick="kyfTopSet(\'' + id + '\')">' + lab + '</button>';
+  const sub = (id, lab) => '<button type="button" class="kyf-top-sub' + (_kyfTopSub === id ? ' on' : '') + '" onclick="kyfTopSet(null,\'' + id + '\')">' + lab + '</button>';
+  seg.innerHTML = '<div class="kyf-top-seg">' + opt('com', 'TOP COMMUNAUTÉ') + opt('cmp', 'COMPARER') + '</div>'
+    + '';
+}
+function kyfTopPartBox(note){
+  const on = kyfPfOn();
+  return '<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-family:\'Inter\',sans-serif;font-size:10px;line-height:1.6;color:var(--text3)"><span style="flex:1;min-width:200px">' + (note || '') + '</span>'
+    + '<label title="Partager, de façon anonyme, la liste de mes lignes et leur poids en % de mon portefeuille. Jamais de montant, de quantité ni d\u2019identité." style="display:inline-flex;align-items:center;gap:8px;color:var(--text);font-weight:600;cursor:pointer;white-space:nowrap"><input type="checkbox" ' + (on ? 'checked ' : '') + 'onchange="kyfPfSet(this.checked)" style="accent-color:var(--accent);width:15px;height:15px;cursor:pointer">Participer</label></div>';
+}
+function kyfHoldRenderCom(D, el, C){
+  const mut = 'font-family:\'Inter\',sans-serif;font-size:10px;color:var(--text3);line-height:1.7';
+  if(!C){ el.innerHTML = '<div style="' + mut + '">Le Top communauté n\u2019est pas joignable pour le moment.</div>' + kyfTopPartBox(''); return; }
+  const cmp = _kyfTopMode === 'cmp', sub = 'h';
+  const pct = v => kyfGeoPct(v);
+  if(C.n < 3){
+    el.innerHTML = '<div style="' + mut + '">Le Top communauté apparaît quand au moins 3 membres participent. ' + (C.n ? 'Pour l\u2019instant : ' + C.n + '.' : '') + '</div>' + kyfTopPartBox(''); return;
+  }
+  let rows = [], head = '', foot = '';
+  if(sub === 'h' && !cmp){
+    const top = C.h.slice(0, 5), mx = top.length ? top[0].w || 1 : 1;
+    head = '';
+    rows = top.map((e, i) => ({ rank: i + 1, key: e.k, name: kyfHoldTitle(e.k), sub: 'chez ' + e.n + ' membres', bar: e.w / mx * 100, val: pct(e.w), col: KYF_HOLD_COL[i % KYF_HOLD_COL.length], ini: kyfHoldTitle(e.k).charAt(0) }));
+    foot = 'Calculé sur ' + C.n + ' membres qui partagent leurs lignes, sans montant ni identité. Composition connue pour ' + pct(C.cov) + ' de leurs portefeuilles : les poids sont des minimums.';
+  } else if(cmp){
+    const R = kyfHoldCompute(D), mine = {};
+    R.items.forEach(e => { mine[e.key] = e.pct; });
+    const com = {}; C.h.forEach(e => { com[e.k] = e.w; });
+    const keys = Array.from(new Set(Object.keys(mine).slice(0, 40).concat(Object.keys(com)))).sort((a, b) => Math.max(mine[b] || 0, com[b] || 0) - Math.max(mine[a] || 0, com[a] || 0)).slice(0, 5);
+    const mx = keys.length ? Math.max(mine[keys[0]] || 0, com[keys[0]] || 0) || 1 : 1;
+    head = '';
+    rows = keys.map((k, i) => ({ rank: i + 1, key: k, name: kyfHoldTitle(k), cmp: true, me: mine[k] || 0, co: com[k] || 0, mx, col: KYF_HOLD_COL[i % KYF_HOLD_COL.length], ini: kyfHoldTitle(k).charAt(0) }));
+    foot = 'Votre poids face à la moyenne des membres, calculée sur ' + C.n + ' membres sans montant ni identité. « 0 % » côté membres : moins de 3 membres concernés.';
+  } else {
+    const list = (sub === 'etf' ? C.etf : C.act).slice(0, 10);
+    head = sub === 'etf' ? 'Les ETF et fonds les plus détenus par les membres.' : 'Les actions les plus détenues par les membres.';
+    rows = list.map((e, i) => ({ rank: i + 1, name: e.nm || e.tk || e.i, sub: (e.tk ? e.tk + ' · ' : '') + e.n + ' membres sur ' + C.n, bar: Math.min(100, e.n / C.n * 100), val: Math.round(e.n / C.n * 100) + ' %', val2: 'poids moyen ' + pct(e.w), tk: e.tk, logo: true, col: KYF_HOLD_COL[i % KYF_HOLD_COL.length] }));
+    foot = 'Part des ' + C.n + ' membres participants qui détiennent la ligne, et leur poids moyen chez ceux qui la détiennent.';
+  }
+  if(!rows.length){ el.innerHTML = '<div style="' + mut + '">Pas encore assez de membres sur ces lignes (au moins 3 pour chacune).</div>' + kyfTopPartBox(''); return; }
+  const bubble = r => r.logo && typeof renderAssetLogo === 'function' ? renderAssetLogo(r.tk, r.name, 30) : r.key ? kyfHoldLogo(r.key, r.name, r.col) : '<div style="width:30px;height:30px;border-radius:8px;background:' + r.col + ';color:#0d111a;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center">' + escapeHtml(String(r.ini || r.name || '?').charAt(0).toUpperCase()) + '</div>';
+  let h = head ? '<div style="' + mut + ';margin-bottom:8px">' + head + '</div>' : '';
+  if(cmp) h += '<div style="display:flex;gap:18px;font-family:\'Inter\',sans-serif;font-size:9px;letter-spacing:1px;color:var(--text3);margin:4px 0 6px"><span style="display:inline-flex;align-items:center;gap:6px"><i style="width:10px;height:10px;border-radius:3px;background:#f0b429"></i>MOI</span><span style="display:inline-flex;align-items:center;gap:6px"><i style="width:10px;height:10px;border-radius:3px;background:#4d9fff"></i>COMMUNAUTÉ</span></div>';
+  h += rows.map(r => {
+    const left = '<div style="font-size:12px;font-weight:700;color:' + (r.rank <= 3 ? 'var(--accent)' : 'var(--text3)') + '">' + r.rank + '</div>' + bubble(r) + '<div style="min-width:0"><div style="font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(r.name) + '</div>' + (r.sub ? '<div style="font-size:9px;color:var(--text3);margin-top:2px">' + escapeHtml(r.sub) + '</div>' : '') + '</div>';
+    if(r.cmp){
+      const d = r.me - r.co, dc = Math.abs(d) < 0.05 ? 'var(--text3)' : 'var(--text)';
+      const bar = (v, c) => '<div style="height:7px;border-radius:4px;background:var(--border);overflow:hidden;margin:3px 0"><div style="height:100%;width:' + Math.max(v > 0 ? 2 : 0, v / r.mx * 100).toFixed(1) + '%;background:' + c + ';border-radius:4px"></div></div>';
+      return '<div style="display:grid;grid-template-columns:22px 32px minmax(0,1.3fr) minmax(0,2fr) minmax(0,1fr);gap:12px;align-items:center;padding:9px 2px;border-top:1px solid var(--border)">' + left + '<div>' + bar(r.me, '#f0b429') + bar(r.co, '#4d9fff') + '</div><div style="text-align:right;font-size:11px;font-weight:700"><span style="color:#f0b429">' + pct(r.me) + '</span> <span style="color:#4d9fff">' + pct(r.co) + '</span><div style="font-size:10px;color:' + dc + '">' + (Math.abs(d) < 0.05 ? '=' : (d > 0 ? '+' : '') + (Math.round(d * 10) / 10).toLocaleString('fr-FR') + ' pt') + '</div></div></div>';
+    }
+    return '<div style="display:grid;grid-template-columns:22px 32px minmax(0,1.5fr) minmax(0,2fr) minmax(0,1.3fr);gap:12px;align-items:center;padding:9px 2px;border-top:1px solid var(--border)">' + left + '<div style="display:flex;align-items:center;gap:10px"><div style="flex:1;height:7px;border-radius:4px;background:var(--border);overflow:hidden"><div style="height:100%;width:' + Math.max(2, r.bar).toFixed(1) + '%;background:#4d9fff;border-radius:4px"></div></div><div style="min-width:70px;text-align:right;font-size:11px;font-weight:700;color:var(--text)">' + r.val + '</div></div><div style="font-size:9px;color:var(--text3)">' + (r.val2 ? escapeHtml(r.val2) : '') + '</div></div>';
   }).join('');
-  h += '<div style="' + mut + ';margin-top:10px;border-top:1px solid var(--border);padding-top:10px">' + (R.nEtf ? 'Entreprises connues pour ' + R.nKnown + ' ETF sur ' + R.nEtf + ' (' + pct(R.etfTotal > 0 ? R.etfKnown / R.etfTotal * 100 : 0) + ' de leur valeur). ' : '') + 'Chaque fiche d’ETF ne donne souvent que ses plus grosses lignes : les poids affichés sont des minimums.</div>' + kyfHoldMissing(R);
+  h += kyfTopPartBox(foot);
   el.innerHTML = h;
+}
+const KYF_HOLD_DOM = {"nvidia": "nvidia.com", "apple": "apple.com", "microsoft": "microsoft.com", "amazon": "amazon.com", "meta platforms": "meta.com", "alphabet": "google.com", "tesla": "tesla.com", "broadcom": "broadcom.com", "berkshire hathaway": "berkshirehathaway.com", "eli lilly": "lilly.com", "jpmorgan chase": "jpmorganchase.com", "visa": "visa.com", "mastercard": "mastercard.com", "exxon mobil": "exxonmobil.com", "unitedhealth": "unitedhealthgroup.com", "johnson johnson": "jnj.com", "procter gamble": "pg.com", "walmart": "walmart.com", "costco wholesale": "costco.com", "home depot": "homedepot.com", "netflix": "netflix.com", "oracle": "oracle.com", "salesforce": "salesforce.com", "adobe": "adobe.com", "advanced micro devices": "amd.com", "amd": "amd.com", "intel": "intel.com", "cisco systems": "cisco.com", "qualcomm": "qualcomm.com", "texas instruments": "ti.com", "abbvie": "abbvie.com", "merck": "merck.com", "pepsico": "pepsico.com", "coca cola": "coca-cola.com", "mcdonald s": "mcdonalds.com", "bank of america": "bankofamerica.com", "wells fargo": "wellsfargo.com", "chevron": "chevron.com", "novo nordisk": "novonordisk.com", "asml": "asml.com", "sap": "sap.com", "nestle": "nestle.com", "roche": "roche.com", "novartis": "novartis.com", "astrazeneca": "astrazeneca.com", "shell": "shell.com", "totalenergies": "totalenergies.com", "lvmh": "lvmh.com", "hermes international": "hermes.com", "l oreal": "loreal.com", "sanofi": "sanofi.com", "airbus": "airbus.com", "schneider electric": "se.com", "air liquide": "airliquide.com", "safran": "safran-group.com", "bnp paribas": "bnpparibas.com", "axa": "axa.com", "societe generale": "societegenerale.com", "siemens": "siemens.com", "allianz": "allianz.com", "deutsche telekom": "telekom.com", "tsmc": "tsmc.com", "samsung electronics": "samsung.com", "tencent": "tencent.com", "alibaba": "alibabagroup.com", "toyota motor": "toyota.com", "sony": "sony.com", "hsbc": "hsbc.com", "unilever": "unilever.com", "rio tinto": "riotinto.com", "bhp": "bhp.com", "linde": "linde.com", "thermo fisher scientific": "thermofisher.com", "abbott laboratories": "abbott.com", "accenture": "accenture.com", "intuit": "intuit.com", "servicenow": "servicenow.com", "booking": "booking.com", "uber technologies": "uber.com", "vinci": "vinci.com", "danone": "danone.com", "kering": "kering.com", "capgemini": "capgemini.com", "stellantis": "stellantis.com", "volkswagen": "volkswagen.com", "bmw": "bmw.com", "mercedes benz": "mercedes-benz.com"};
+// Logo d'une entreprise : favicon de son site quand on le connaît, sinon son initiale (repli aussi si l'image ne charge pas)
+function kyfHoldLogo(key, name, col){
+  const ini = '<div style="width:30px;height:30px;border-radius:8px;background:' + col + ';color:#0d111a;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">' + escapeHtml(String(name || key || '?').charAt(0).toUpperCase()) + '</div>';
+  const d = KYF_HOLD_DOM[key];
+  if(!d) return ini;
+  return '<img src="' + escapeHtml(kyfSafeImgSrc('https://www.google.com/s2/favicons?domain=' + d + '&sz=64')) + '" alt="" loading="lazy" data-fb="' + escapeHtml(ini) + '" onerror="this.outerHTML=this.getAttribute(\'data-fb\')" style="width:30px;height:30px;border-radius:8px;object-fit:contain;background:#fff;padding:3px;box-sizing:border-box;flex-shrink:0;display:block">';
 }
 function kyfHoldMissing(R){
   if(!R.missing.length) return '';
-  return '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:8px"><span style="font-family:\'Inter\',sans-serif;font-size:10px;color:var(--text3)">À renseigner :</span>' + R.missing.slice(0, 8).map(m => '<button type="button" onclick="kyfHoldOpen(' + kyfJsAttr(m.k) + ')" class="kyf-geo-mod" style="font-family:\'Inter\',sans-serif;font-size:9px;font-weight:700;padding:4px 10px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;letter-spacing:.3px">' + escapeHtml(String(m.name).slice(0, 28)) + '</button>').join('') + (R.missing.length > 8 ? '<span style="font-size:10px;color:var(--text3)">+ ' + (R.missing.length - 8) + '</span>' : '') + '</div>';
+  const plus = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+  return '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:10px"><span style="font-family:\'Inter\',sans-serif;font-size:10px;color:var(--text3)">À renseigner :</span>' + R.missing.slice(0, 8).map(m => '<button type="button" onclick="kyfHoldOpen(' + kyfJsAttr(m.k) + ')" class="kyf-hold-chip" title="' + escapeHtml(String(m.name)) + '">' + plus + '<span>' + escapeHtml(String(m.name).slice(0, 28)) + '</span></button>').join('') + (R.missing.length > 8 ? '<span style="font-size:10px;color:var(--text3)">+ ' + (R.missing.length - 8) + '</span>' : '') + '</div>';
 }
+let _kyfHoldFoot = false;
+function kyfHoldFootToggle(){ _kyfHoldFoot = !_kyfHoldFoot; if(_kyfHoldD) kyfHoldRender(_kyfHoldD); }
 // Ouvre la fenêtre MODIFIER sur un ETF (celui demandé, sinon le premier sans entreprises) : la section ENTREPRISES s'y trouve
 function kyfHoldOpen(k){
   const D = kyfGeoCompute(), lines = D.rows.filter(r => r.isEtf || r.fund);
@@ -69130,26 +69353,81 @@ function kyfHoldOpen(k){
   kyfGeoTab('h');
 }
 // Section ENTREPRISES de la fenêtre MODIFIER
+function kyfHoldNum(v){ const n = parseFloat(String(v).replace(',', '.')); return isFinite(n) ? n : 0; }
+// Lignes de saisie : reconstruites depuis la liste enregistrée seulement quand celle-ci a changé ailleurs (collage, fichier, communauté)
+function kyfHoldRowsSync(){
+  if(!_geoEd) return [];
+  const h = _geoEd.r.h, map = h && h.map ? h.map : {}, sig = kyfGeoSig(map);
+  if(!_geoEd.hRows || _geoEd.hSig !== sig){
+    _geoEd.hRows = Object.keys(map).sort((a, b) => map[b] - map[a]).map(k => ({ n: kyfHoldTitle(k), p: String(map[k]).replace('.', ',') }));
+    if(!_geoEd.hRows.length) _geoEd.hRows.push({ n:'', p:'' });
+    _geoEd.hSig = sig;
+  }
+  return _geoEd.hRows;
+}
+// Une ligne modifiée à la main : on recalcule la liste enregistrée à partir des lignes
+function kyfHoldFromRowsEd(){
+  if(!_geoEd) return;
+  const list = (_geoEd.hRows || []).map(r => [r.n, Math.max(0, kyfHoldNum(r.p))]).filter(x => x[0].trim() && x[1] > 0);
+  const m = kyfHoldToMap(list), prev = _geoEd.r.h;
+  _geoEd.r.h = m.n ? { map: m.map, o: 'm', d: kyfGeoToday() } : null;
+  _geoEd.hSig = kyfGeoSig(m.n ? m.map : {});
+  if(prev && prev.sug && !m.n) _geoEd.r.h = null;
+  kyfGeoTouch();
+}
+function kyfHoldSetN(i, v){ if(_geoEd && _geoEd.hRows && _geoEd.hRows[i]){ _geoEd.hRows[i].n = v; kyfHoldFromRowsEd(); kyfHoldTotal(); } }
+function kyfHoldSetP(i, v){ if(_geoEd && _geoEd.hRows && _geoEd.hRows[i]){ _geoEd.hRows[i].p = v; kyfHoldFromRowsEd(); kyfHoldTotal(); } }
+function kyfHoldAddRow(){
+  if(!_geoEd) return;
+  const rows = kyfHoldRowsSync();
+  if(rows.length >= 100){ kyfGeoErr('Maximum 100 lignes.'); return; }
+  const e = rows.findIndex(r => !r.n.trim());
+  if(e < 0){ rows.push({ n:'', p:'' }); kyfHoldPanel(); }
+  const f = document.getElementById('kyfGeoHN' + (e < 0 ? rows.length - 1 : e)); if(f) f.focus();
+}
+function kyfHoldDelRow(i){
+  if(!_geoEd || !_geoEd.hRows) return;
+  _geoEd.hRows.splice(i, 1); if(!_geoEd.hRows.length) _geoEd.hRows.push({ n:'', p:'' });
+  kyfHoldFromRowsEd(); kyfHoldPanel();
+}
+function kyfHoldTogglePaste(){ const b = document.getElementById('kyfGeoPasteBoxh'); if(!b) return; b.style.display = b.style.display === 'none' ? 'block' : 'none'; if(b.style.display === 'block'){ const t = document.getElementById('kyfGeoHoldTxt'); if(t) t.focus(); } }
+function kyfHoldPasteApply(){
+  if(!_geoEd) return;
+  const t = (document.getElementById('kyfGeoHoldTxt') || {}).value || '';
+  if(!t.trim()) return;
+  kyfHoldApply(kyfHoldFromText(t), 'm');
+  if(!_geoEd.holdMsg){ const x = document.getElementById('kyfGeoHoldTxt'); if(x) x.value = ''; const b = document.getElementById('kyfGeoPasteBoxh'); if(b) b.style.display = 'none'; }
+}
+function kyfHoldTotal(){
+  if(!_geoEd) return;
+  const rows = _geoEd.hRows || [], tot = rows.reduce((s, r) => s + Math.max(0, kyfHoldNum(r.p)), 0), el = document.getElementById('kyfGeoHoldSum'); if(!el) return;
+  el.style.color = tot > 100.05 ? 'var(--red)' : 'var(--text3)';
+  kyfGeoRing('h', tot, tot > 100.05);
+  const n = rows.filter(r => r.n.trim() && kyfHoldNum(r.p) > 0).length;
+  el.textContent = n + ' entreprise' + (n > 1 ? 's' : '') + ' · total ' + kyfGeoPct(tot) + (tot <= 100.05 ? ' de l’ETF' : ' : dépasse 100 %');
+  const cb = document.getElementById('kyfGeoClrh'); if(cb){ const any = rows.some(r => r.n.trim() || String(r.p || '').trim()); cb.style.opacity = any ? '1' : '.4'; cb.style.pointerEvents = any ? 'auto' : 'none'; }
+}
 function kyfHoldPanel(){
   const pn = document.getElementById('kyfGeoHoldPanel'); if(!pn) return;
   const on = !!(_geoEd && (_geoEd.isEtf || _geoEd.fund)), tab = on && _geoEd.tab === 'h' ? 'h' : 'ps';
   pn.style.display = tab === 'h' ? 'block' : 'none';
   const cols = document.getElementById('kyfGeoCols'), tabs = document.getElementById('kyfGeoTabs');
   if(cols) cols.style.display = tab === 'h' ? 'none' : '';
-  if(tabs) tabs.style.display = on ? 'flex' : 'none';
+  kyfGeoTabsShow();
   ['ps', 'h'].forEach(t => { const b = document.getElementById('kyfGeoTab' + t); if(b){ b.classList.toggle('on', t === tab); b.setAttribute('aria-selected', t === tab ? 'true' : 'false'); } });
   const hb = document.getElementById('kyfGeoTabh');
   if(hb) hb.innerHTML = 'ENTREPRISES' + (_geoEd && _geoEd.r.h && _geoEd.r.h.map && Object.keys(_geoEd.r.h.map).length ? ' <i class="kyf-geo-dot" style="display:inline-block;vertical-align:middle;margin-left:4px;background:var(--green)"></i>' : '');
   if(!on || tab !== 'h') return;
-  const h = _geoEd.r.h, sm = document.getElementById('kyfGeoHoldSum'), clr = document.getElementById('kyfGeoHoldClr');
-  const has = !!(h && h.map && Object.keys(h.map).length);
-  if(clr) clr.style.display = has ? 'inline-flex' : 'none';
-  if(!sm) return;
-  if(!has){ sm.innerHTML = _geoEd.holdMsg ? escapeHtml(_geoEd.holdMsg) : 'Aucune entreprise renseignée pour cette ligne.'; return; }
-  const ks = Object.keys(h.map).sort((a, b) => h.map[b] - h.map[a]), sum = ks.reduce((t, k) => t + h.map[k], 0);
-  const a = h.d ? kyfGeoAge(h.d, h.o) : null;
-  sm.innerHTML = '<strong style="color:var(--text)">' + ks.length + ' entreprise' + (ks.length > 1 ? 's' : '') + '</strong> pour <strong style="color:var(--text)">' + kyfGeoPct(sum) + '</strong> de l’ETF' + (a ? ' · ' + escapeHtml(a.txt) : '') + (h.sug ? ' · proposé par la communauté' : '') +
-    '<div style="color:var(--text3);margin-top:2px">' + ks.slice(0, 5).map(k => escapeHtml(kyfHoldTitle(k)) + ' ' + kyfGeoPct(h.map[k])).join(' · ') + (ks.length > 5 ? ' …' : '') + '</div>';
+  const rows = kyfHoldRowsSync(), box = document.getElementById('kyfGeoRowsh');
+  const inp = 'box-sizing:border-box;height:30px;background:var(--bg2);border:1px solid var(--border2);color:var(--text);font-family:\'Inter\',sans-serif;font-size:12px;padding:0 8px;border-radius:8px;outline:none';
+  if(box) box.innerHTML = rows.map((r, i) => '<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">'
+    + '<input type="text" id="kyfGeoHN' + i + '" value="' + escapeHtml(r.n) + '" maxlength="60" oninput="kyfHoldSetN(' + i + ',this.value)" placeholder="Nom de l’entreprise" aria-label="Nom de l’entreprise" style="' + inp + ';flex:1;min-width:0">'
+    + '<input type="text" inputmode="decimal" id="kyfGeoHP' + i + '" value="' + escapeHtml(r.p) + '" oninput="kyfHoldSetP(' + i + ',this.value)" placeholder="0" style="' + inp + ';width:60px;text-align:right">'
+    + '<span style="font-size:11px;color:var(--text3)">%</span>'
+    + '<button type="button" class="kyf-modal-close" onclick="kyfHoldDelRow(' + i + ')" title="Retirer cette ligne" aria-label="Retirer cette ligne"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>').join('');
+  kyfHoldTotal();
+  const h = _geoEd.r.h, a = h && h.d ? kyfGeoAge(h.d, h.o) : null, mg = document.getElementById('kyfGeoHoldMsg');
+  if(mg){ mg.style.color = _geoEd.holdMsg ? 'var(--red)' : 'var(--text3)'; mg.textContent = _geoEd.holdMsg ? _geoEd.holdMsg : (h && h.map ? [a ? a.txt : '', h.sug ? 'proposé par la communauté' : ''].filter(Boolean).join(' · ') : 'Les sociétés que contient cet ETF, pour votre Top 10 entreprises : saisie, collage du tableau de l’émetteur ou fichier Excel / CSV.'); }
 }
 function kyfGeoTab(t){ if(!_geoEd) return; _geoEd.tab = t === 'h' ? 'h' : 'ps'; kyfHoldPanel(); if(t === 'h'){ const x = document.getElementById('kyfGeoHoldTxt'); if(x) x.focus(); } }
 function kyfHoldApply(list, origin, fileName){
@@ -69182,9 +69460,162 @@ async function kyfHoldFile(inp){
 }
 function kyfHoldClear(){
   if(!_geoEd) return;
-  _geoEd.r.h = null; _geoEd.holdMsg = '';
+  _geoEd.r.h = null; _geoEd.holdMsg = ''; _geoEd.hRows = null;
   const t = document.getElementById('kyfGeoHoldTxt'); if(t) t.value = '';
   kyfGeoTouch(); kyfHoldPanel();
+}
+// ── DÉTAIL PAR POSITION (maquette Claude Design) : filtres, jauges, deux barres par ligne, badge communauté, détail dépliable ──
+let _geoFilter = 'all', _geoOpenPos = '', _geoLastD = null;
+const KYF_GD_PAL = ['#f0b429', '#4d9fff', '#34d399', '#c084fc', '#fb7185'];
+function kyfGeoComInfo(r){
+  const cm = (typeof _geoComm !== 'undefined' && _geoComm) ? _geoComm[String(r.isin || '').toUpperCase()] : null;
+  const srt = o => Object.keys(o || {}).map(i => [i, o[i]]).sort((a, b) => b[1] - a[1]);
+  const cc = srt(cm && cm.c), cs = srt(cm && cm.s), ch = srt(cm && cm.h);
+  const has = !!(cm && (cc.length || cs.length));
+  const n = has ? Math.max(cm.nc || 0, cm.ns || 0, cm.nh || 0) : 0;
+  const top3 = a => a.slice(0, 3).map(p => p[0]).sort().join(',');
+  const near = (a, b) => a.length && b.length && top3(a) === top3(b) && Math.abs(a[0][1] - b[0][1]) <= 2;
+  let st = 'none';
+  if(has) st = (!r.parts.length && !r.sect.length) ? 'new' : ((!cc.length || near(cc, r.parts)) && (!cs.length || near(cs, r.sect))) ? 'ok' : 'gap';
+  return { st, n, cc, cs, ch, has };
+}
+// Cadre DÉTAIL PAR POSITION ET COMMUNAUTÉ repliable (même chevron carré et même animation que Mes contrats ; ouvert par défaut, état mémorisé)
+function kyfGeoDetApply(){
+  let open = true; try{ open = localStorage.getItem('kyf-geo-detail-open') !== '0'; }catch(e){}
+  const b = document.getElementById('geoDetBody'), c = document.getElementById('geoDetChev'), h = document.getElementById('geoDetHead');
+  if(b) b.style.display = open ? 'block' : 'none';
+  if(c) c.style.transform = open ? 'rotate(0deg)' : 'rotate(-90deg)';
+  if(h){ h.setAttribute('aria-expanded', open ? 'true' : 'false'); h.style.marginBottom = open ? '' : '0'; }   // replié : plus de marge de 14 px sous le titre, il est centré dans le cadre
+}
+function kyfGeoDetToggle(){
+  let open = true; try{ open = localStorage.getItem('kyf-geo-detail-open') !== '0'; }catch(e){}
+  try{ localStorage.setItem('kyf-geo-detail-open', open ? '0' : '1'); }catch(e){}
+  kyfGeoDetApply();
+}
+try{ kyfGeoDetApply(); }catch(e){}
+// Point info « derniers ajouts » : les 5 derniers secteurs et les 5 derniers pays reconnus par KYF, avec la date d'ajout (AAAA-MM-JJ). À compléter en tête de liste à chaque nouvel ajout.
+const KYF_GEO_NOUV = {
+  s: [
+    ['Industries et services divers', '2026-10-31'], ['Secteur financier', '2026-10-31'], ['Autres secteurs / Liquidités', '2026-10-31'],
+    ['Pétrole & Gaz', '2026-10-30'], ['Souverain', '2026-10-30']
+  ],
+  c: [
+    ['Asie émergente', '2026-10-31'], ['Europe', '2026-10-30'], ['Hong Kong', '2026-10-29'], ['Macao', '2026-10-29'], ['Taïwan', '2026-10-29']
+  ]
+};
+function kyfGeoNewToggle(){
+  const n = document.getElementById('geoNewNote'), b = document.getElementById('geoNewBtn'); if(!n || !b) return;
+  const wasClosed = n.style.display === 'none' || !n.style.display;
+  let detOpen = true; try{ detOpen = localStorage.getItem('kyf-geo-detail-open') !== '0'; }catch(e){}
+  if(!detOpen){ try{ localStorage.setItem('kyf-geo-detail-open', '1'); }catch(e){} kyfGeoDetApply(); }   // carte repliée : on la rouvre pour que le cadre soit visible
+  const open = detOpen ? wasClosed : true;
+  if(open){
+    const esc = s => String(s).replace(/[&<>"']/g, ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch]));
+    const fmt = d => { const p = String(d).split('-'); return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : esc(d); };
+    const col = (t, l) => '<div style="min-width:0"><div style="font-weight:700;color:var(--text);letter-spacing:.5px;margin-bottom:2px">' + t + '</div>' + l.map(x => '<div>' + esc(x[0]) + ' <span style="color:var(--text3)">· ' + fmt(x[1]) + '</span></div>').join('') + '</div>';
+    n.innerHTML = '<div style="display:flex;gap:28px;flex-wrap:wrap">' + col('DERNIERS SECTEURS AJOUTÉS', KYF_GEO_NOUV.s) + col('DERNIERS PAYS AJOUTÉS', KYF_GEO_NOUV.c) + '</div>';
+  }
+  n.style.display = open ? 'block' : 'none';
+  b.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+function kyfGeoSetFilter(f){ _geoFilter = f; kyfGeoDetail(); }
+function kyfGeoTogglePos(k){
+  const prev = _geoOpenPos;
+  let hovKey = null, hovChev = false;
+  try{
+    const w = document.querySelector('#geoTable .kyf-gd-wrap:hover .kyf-gd-chev');
+    if(w){ hovKey = w.getAttribute('data-pos'); hovChev = w.matches(':hover'); }
+  }catch(e){}
+  _geoOpenPos = prev === k ? '' : k;
+  kyfGeoDetail();
+  // le survol est gardé pendant le redessin du tableau : la ligne entière et le carré restent gris sans clignoter,
+  // jusqu'au prochain mouvement de souris (le vrai survol reprend alors la main)
+  try{
+    if(hovKey !== null){
+      const keep = [];
+      document.querySelectorAll('#geoTable .kyf-gd-chev').forEach(b => {
+        if(b.getAttribute('data-pos') !== hovKey) return;
+        const wrap = b.closest('.kyf-gd-wrap');
+        if(wrap){ wrap.classList.add('kyf-hv'); keep.push(wrap); }
+        if(hovChev){ b.classList.add('kyf-hv'); keep.push(b); }
+      });
+      document.addEventListener('mousemove', () => requestAnimationFrame(() => keep.forEach(el => el.classList.remove('kyf-hv'))), { once:true });
+    }
+  }catch(e){}
+  // le tableau est redessiné : on remet les carrés-chevrons dans leur état d'avant puis on les bascule, pour que le carré entier tourne (comme dans Mes contrats)
+  try{
+    const flip = [];
+    document.querySelectorAll('#geoTable .kyf-gd-chev').forEach(b => {
+      const key = b.getAttribute('data-pos'), was = key === prev, now = key === _geoOpenPos;
+      if(was !== now){ b.setAttribute('aria-expanded', was ? 'true' : 'false'); flip.push([b, now]); }
+    });
+    if(flip.length){ void document.getElementById('geoTable').offsetWidth; flip.forEach(f => f[0].setAttribute('aria-expanded', f[1] ? 'true' : 'false')); }
+  }catch(e){}
+}
+function kyfGeoDetail(){
+  const D = _geoLastD, tel = document.getElementById('geoTable'); if(!D || !tel) return;
+  const none = t => '<div style="font-family:\'Inter\',sans-serif;font-size:10px;color:var(--text3)">' + t + '</div>';
+  if(!D.rows.length){ tel.innerHTML = none('Ajoutez des ETF ou des actions dans Portefeuille pour voir leur exposition.'); return; }
+  const cN = i => (KYF_GEO_CM[i] || { n:i }).n, sN = i => (KYF_GEO_SM[i] || { n:i }).n;
+  const info = new Map(); D.rows.forEach(r => info.set(r.k, kyfGeoComInfo(r)));
+  const incomplete = r => !r.parts.length || !r.sect.length;
+  const FL = [
+    ['all', 'TOUS', () => true], ['etf', 'ETF', r => r.isEtf && !r.fund], ['act', 'ACTIONS', r => !r.isEtf && !r.fund],
+    ['fund', 'FONDS', r => r.fund], ['todo', 'À COMPLÉTER', incomplete], ['gap', 'ÉCART COMMUNAUTÉ', r => info.get(r.k).st === 'gap']
+  ].filter(f => f[0] === 'all' || D.rows.some(f[2]));
+  if(!FL.some(f => f[0] === _geoFilter)) _geoFilter = 'all';
+  const cur = FL.find(f => f[0] === _geoFilter)[2], list = D.rows.filter(cur), shown = _geoRowsOpen ? list : list.slice(0, 5);
+  // Colonnes TOP 3 PAYS / TOP 3 SECTEURS : 3 lignes (drapeau ou pastille, nom, %), la liste complète dans l'info-bulle au survol
+  const top3 = (arr, nameOf, kind) => {
+    if(!arr.length) return '<span style="font-size:12px;color:var(--accent)">Non renseigné</span>';
+    const ico = i => kind === 'c' ? kyfFlagImg(i) : '<i style="width:10px;height:10px;border-radius:3px;flex-shrink:0;background:' + ((KYF_GEO_SM[i] || {}).c || '#5b6580') + '"></i>';
+    const rest = Math.max(0, 100 - arr.reduce((t, p) => t + p[1], 0));
+    const line = (p, fs, pad) => '<div style="display:flex;align-items:center;gap:8px;min-width:0;font-size:' + fs + 'px;line-height:1.3;padding:' + pad + 'px 0">' + ico(p[0]) + '<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHtml(nameOf(p[0])) + '</span><b style="margin-left:12px">' + kyfGeoPct(p[1]) + '</b></div>';
+    const cols = Math.min(3, Math.ceil((arr.length + (rest > 0.05 ? 1 : 0)) / 12));
+    const tip = '<div style="font-size:9px;letter-spacing:1px;color:var(--text3);margin-bottom:6px">' + (kind === 'c' ? 'TOUS LES PAYS' : 'TOUS LES SECTEURS') + ' (' + arr.length + ')</div>'
+      + '<div style="column-count:' + cols + ';column-gap:26px">' + arr.map(p => '<div style="break-inside:avoid">' + line(p, 11, 2) + '</div>').join('')
+      + (rest > 0.05 ? '<div style="break-inside:avoid;font-size:11px;padding:2px 0;color:var(--text3)">Non renseigné <b style="margin-left:12px">' + kyfGeoPct(rest) + '</b></div>' : '') + '</div>';
+    const more = arr.length > 3 ? '<div style="font-size:10px;font-weight:700;color:var(--text3);padding-top:2px">+' + (arr.length - 3) + ' autre' + (arr.length > 4 ? 's' : '') + (rest > 0.05 ? ' · non renseigné ' + kyfGeoPct(rest) : '') + '</div>' : (rest > 0.05 ? '<div style="font-size:10px;color:var(--text3);padding-top:2px">non renseigné ' + kyfGeoPct(rest) + '</div>' : '');
+    return '<div data-tip="' + escapeHtml(tip) + '" onmouseenter="kyfGeoTipShow(this)" onmouseleave="kyfGeoTipHide()" tabindex="0" onfocus="kyfGeoTipShow(this)" onblur="kyfGeoTipHide()" style="cursor:help;color:var(--text);min-width:0;max-width:230px">' + arr.slice(0, 3).map(p => line(p, 12, 2)).join('') + more + '</div>';
+  };
+  const leg = (arr, nameOf) => arr.length ? arr.slice(0, 4).map((p, i) => '<span class="kyf-gd-leg"><i style="background:' + KYF_GD_PAL[i] + '"></i>' + escapeHtml(nameOf(p[0])) + ' ' + kyfGeoPct(p[1]) + '</span>').join('') + (arr.length > 4 ? '<span class="kyf-gd-leg"><i style="background:#5b6580"></i>Autres ' + kyfGeoPct(Math.max(0, 100 - arr.slice(0, 4).reduce((t, p) => t + p[1], 0))) + '</span>' : '') : '<span class="kyf-gd-leg" style="color:var(--text3)"><i style="background:#5b6580"></i>Non renseigné</span>';
+  const gauge = (lab, v) => '<div style="width:200px"><div style="display:flex;justify-content:space-between;font-size:10px;letter-spacing:1.2px;color:var(--text3)"><span>' + lab + '</span><span style="color:var(--text);font-weight:700">' + kyfGeoPct(v) + '</span></div><div style="height:6px;border-radius:3px;background:var(--border);overflow:hidden;margin-top:6px"><div style="height:100%;width:' + Math.min(100, Math.max(0, v)).toFixed(1) + '%;background:linear-gradient(90deg,#f0b429,rgba(240,180,41,.5));border-radius:3px"></div></div></div>';
+  const pP = D.tot > 0 ? (D.tot - D.nd) / D.tot * 100 : 0, pS = D.tot > 0 ? (D.tot - D.ndS) / D.tot * 100 : 0;
+  const BT = { ok:['kyf-gd-b-ok', 'Concordant'], gap:['kyf-gd-b-gap', 'Écart à voir'], new:['kyf-gd-b-new', ''], none:['kyf-gd-b-none', 'Pas de données'] };
+  const chev = () => '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>';
+  const saved = kyfGeoLoad();
+  const panel = (title, right, body) => '<div class="kyf-gd-panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px"><span class="kyf-gd-lab">' + title + '</span>' + right + '</div>' + body + '</div>';
+  const sect = (lab, html) => '<div class="kyf-gd-lab" style="font-size:9px;margin:8px 0 6px">' + lab + '</div><div style="display:flex;flex-wrap:wrap">' + html + '</div>';
+  const entLeg = a => a.length ? a.slice(0, 3).map((p, i) => '<span class="kyf-gd-leg"><i style="background:' + KYF_GD_PAL[i] + '"></i>' + escapeHtml(kyfHoldTitle(p[0])) + ' ' + kyfGeoPct(p[1]) + '</span>').join('') : '';
+  const rowsH = shown.map(r => {
+    const ci = info.get(r.k), open = _geoOpenPos === r.k, type = r.fund ? 'FONDS' : r.isEtf ? 'ETF' : 'ACTION';
+    const bt = BT[ci.st], btxt = ci.st === 'new' ? ci.n + ' membre' + (ci.n > 1 ? 's' : '') : bt[1];
+    const k = kyfJsAttr(r.k), pw = D.tot > 0 ? r.val / D.tot * 100 : 0;
+    let det = '';
+    if(open){
+      const hs = saved[r.k] && saved[r.k].h ? Object.keys(saved[r.k].h).map(i => [i, saved[r.k].h[i]]).sort((a, b) => b[1] - a[1]) : [];
+      const mine = panel('MA RÉPARTITION', '<button type="button" class="kyf-gd-mod" onclick="kyfGeoEdit(' + k + ')">MODIFIER</button>',
+        sect('PAYS', leg(r.parts, cN)) + sect('SECTEURS', leg(r.sect, sN)) + ((r.isEtf || r.fund) ? sect('ENTREPRISES', hs.length ? entLeg(hs) : '<span class="kyf-gd-leg" style="color:var(--text3)"><i style="background:#5b6580"></i>Non renseigné</span>') : ''));
+      const note = ci.st === 'ok' ? 'Vos données concordent avec ' + ci.n + ' membre' + (ci.n > 1 ? 's' : '') + '.' : ci.st === 'gap' ? 'Écart : vos valeurs principales diffèrent de celles de la communauté (' + ci.n + ' membre' + (ci.n > 1 ? 's' : '') + ').' : ci.st === 'new' ? ci.n + ' membre' + (ci.n > 1 ? 's ont' : ' a') + ' renseigné cette position : utilisez leurs données en un clic.' : 'Aucune donnée de la communauté pour cette position.';
+      const com = panel('COMMUNAUTÉ' + (ci.has ? ' · ' + ci.n + ' membre' + (ci.n > 1 ? 's' : '') : ''), ci.has ? '<button type="button" class="kyf-gd-ghost" onclick="kyfGeoEdit(' + k + ');kyfGeoAgree()">UTILISER CES DONNÉES</button>' : '',
+        (ci.has ? sect('PAYS', leg(ci.cc, cN)) + sect('SECTEURS', leg(ci.cs, sN)) + (ci.ch.length ? sect('ENTREPRISES', entLeg(ci.ch)) : '') : '') + '<div style="margin-top:12px;font-size:11px;line-height:1.6;color:var(--text3)">' + note + '</div>');
+      det = '<div class="kyf-gd-det">' + mine + com + '</div>';
+    }
+    return '<div class="kyf-gd-wrap"><div class="kyf-gd-row">'
+      + '<div style="display:flex;align-items:center;gap:12px;min-width:0">' + (typeof renderAssetLogo === 'function' ? renderAssetLogo(r.ticker, r.name, 34) : '') + '<div style="min-width:0"><div style="font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="' + escapeHtml(r.name) + '">' + escapeHtml(r.name) + '</div><div style="font-size:10px;color:var(--text3);margin-top:2px">' + escapeHtml(String(r.ticker || '')) + (r.isin ? ' · ' + escapeHtml(r.isin) : '') + '</div></div></div>'
+      + '<div style="font-size:10px;font-weight:700;letter-spacing:.8px;color:var(--text3)">' + type + '</div>'
+      + '<div><div style="font-size:13px;font-weight:700;color:var(--text)">' + (r.val > 0 ? kyfGeoEur(r.val) : '-') + '</div><div style="font-size:10px;color:var(--text3);margin-top:2px">' + kyfGeoPct(pw) + ' du portefeuille</div></div>'
+      + '<div>' + top3(r.parts, cN, 'c') + '</div>'
+      + '<div>' + top3(r.sect, sN, 's') + '</div>'
+      + '<div><span class="kyf-gd-badge ' + bt[0] + '">' + btxt + '</span></div>'
+      + '<div style="text-align:right"><button type="button" class="kyf-gd-chev" data-pos="' + escapeHtml(String(r.k)) + '" aria-label="Voir le détail" aria-expanded="' + open + '" onclick="kyfGeoTogglePos(' + k + ')">' + chev() + '</button></div></div>' + det + '</div>';
+  }).join('');
+  tel.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;margin:4px 0 16px"><div style="display:flex;gap:8px;flex-wrap:wrap">'
+    + FL.map(f => '<button type="button" class="kyf-gd-pill' + (f[0] === _geoFilter ? ' on' : '') + '" onclick="kyfGeoSetFilter(\'' + f[0] + '\')">' + f[1] + ' <span>' + D.rows.filter(f[2]).length + '</span></button>').join('')
+    + '</div><div style="display:flex;gap:22px;flex-wrap:wrap">' + gauge('PAYS', pP) + gauge('SECTEURS', pS) + '</div></div>'
+    + '<div class="kyf-gd-row kyf-gd-head"><div>POSITION</div><div>TYPE</div><div>VALEUR</div><div>TOP 3 PAYS</div><div>TOP 3 SECTEURS</div><div>COMMUNAUTÉ</div><div></div></div>'
+    + (shown.length ? rowsH : '<div style="padding:18px 4px;font-family:\'Inter\',sans-serif;font-size:11px;color:var(--text3)">Aucune position dans ce filtre.</div>')
+    + (list.length > 5 ? '<div onclick="_geoRowsOpen=!_geoRowsOpen;kyfGeoDetail()" style="display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;margin-top:10px;font-size:11px;color:var(--text3)" onmouseover="this.style.color=\'var(--accent)\'" onmouseout="this.style.color=\'var(--text3)\'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" style="transition:transform .25s ease;transform:rotate(' + (_geoRowsOpen ? 180 : 0) + 'deg)"><polyline points="6 9 12 15 18 9"/></svg>' + (_geoRowsOpen ? 'Réduire' : 'Afficher les ' + (list.length - 5) + ' autres positions') + '</div>' : '');
 }
 function kyfGeoRender(){
   const D = kyfGeoCompute();
@@ -69203,7 +69634,7 @@ function kyfGeoRender(){
   kyfGeoDonut('geoDonut', zl, D.tot);
   // secteurs (tuiles)
   const sl = Object.keys(D.byS).map(i => ({ n:KYF_GEO_SM[i].n, c:KYF_GEO_SM[i].c, eur:D.byS[i], ico:KYF_GEO_ICO[i] || KYF_GEO_ICO.aut })).sort((a, b) => b.eur - a.eur);
-  kyfGeoTiles('sectorBars', sl, D.tot, 'Renseignez les secteurs de vos ETF et actions avec MODIFIER (onglet SECTEURS)', sl.length ? { eur:D.ndS } : null, { max:8 });   // 8 tuiles au plus : les principaux secteurs + « Autres (n) » qui déplie le reste
+  kyfGeoTiles('sectorBars', sl, D.tot, 'Renseignez les secteurs de vos ETF et actions avec MODIFIER (onglet SECTEURS)', sl.length ? { eur:D.ndS } : null, { max:8, rev:true });   // 8 tuiles au plus : les principaux secteurs + « Autres (n) » qui déplie le reste
   // top pays (tuiles)
   const cl = Object.keys(D.byC).map(i => ({ n:KYF_GEO_CM[i].n, c:(KYF_GEO_FLAG[i] || ['#f0b429'])[0], stops:(KYF_GEO_FLAG[i] || [])[1], eur:D.byC[i], txt:i })).sort((a, b) => b.eur - a.eur);
   kyfGeoTiles('geoPays', cl, D.tot, 'Renseignez la répartition de vos ETF pour voir les pays', cl.length ? { eur:D.nd } : null, { minPct:1, smallLabel:'Autres pays' });   // liste dépliée : pays sous 1 % regroupés
@@ -69226,10 +69657,7 @@ function kyfGeoRender(){
       if(isin) h += '<span style="color:var(--text3)">(ISIN)</span>';
       return h + '</div>' + (age || '');
     };
-    const rowsShown = _geoRowsOpen ? D.rows : D.rows.slice(0, 10);
-    tel.innerHTML = D.rows.length ? '<table style="width:100%;border-collapse:collapse;font-family:\'Inter\',sans-serif"><thead><tr><th style="' + th + '">POSITION</th><th style="' + th + '">TYPE</th><th style="' + th + ';text-align:right">VALEUR</th><th style="' + th + '">PAYS</th><th style="' + th + '">SECTEURS</th><th style="' + th + '"></th></tr></thead><tbody>' + rowsShown.map(r =>
-      '<tr><td style="' + td + ';color:var(--text);font-weight:600"><div style="display:flex;align-items:center;gap:9px">' + (typeof renderAssetLogo === 'function' ? renderAssetLogo(r.ticker, r.name, 24) : '') + '<span>' + escapeHtml(r.name) + '</span></div></td><td style="' + td + '">' + (r.fund ? 'Fonds' : r.isEtf ? 'ETF' : 'Action') + '</td><td style="' + td + ';text-align:right;white-space:nowrap">' + (r.val > 0 ? kyfGeoEur(r.val) : '-') + '</td><td style="' + td + '">' + sumC(r.parts, r.ndPct, r.src === 'isin', kyfGeoHint(r.isin, 'c'), r.src === 'manual' ? kyfGeoAgeHtml(r.dc, r.oc) : '') + '</td><td style="' + td + '">' + sum(r.sect, i => KYF_GEO_SM[i].n, r.ndSPct, false, kyfGeoHint(r.isin, 's'), kyfGeoAgeHtml(r.ds, r.os)) + '</td><td style="' + td + ';text-align:right"><button type="button" class="kyf-geo-mod" onclick="kyfGeoEdit(' + kyfJsAttr(r.k) + ')" style="font-family:\'Inter\',sans-serif;font-size:10px;font-weight:700;padding:5px 10px;border-radius:6px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;white-space:nowrap">MODIFIER</button></td></tr>'
-    ).join('') + '</tbody></table>' + (D.rows.length > 10 ? '<div onclick="_geoRowsOpen=!_geoRowsOpen;kyfGeoRender()" style="display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;margin-top:10px;font-size:11px;color:var(--text3)" onmouseover="this.style.color=\'var(--accent)\'" onmouseout="this.style.color=\'var(--text3)\'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" style="transition:transform .25s ease;transform:rotate(' + (_geoRowsOpen ? 180 : 0) + 'deg)"><polyline points="6 9 12 15 18 9"/></svg>' + (_geoRowsOpen ? 'Réduire' : 'Afficher les ' + (D.rows.length - 10) + ' autres positions') + '</div>' : '') : none('Ajoutez des ETF ou des actions dans Portefeuille pour voir leur exposition.');
+    _geoLastD = D; kyfGeoDetail();
   }
   kyfGeoMap(D);
   try{ kyfHoldRender(D); }catch(e){}
@@ -69283,7 +69711,7 @@ function kyfGeoMap(D){
     box.innerHTML = '<div id="jsvmap" style="height:300px"></div>';
     const opts = {
       selector:'#jsvmap', map:'world', backgroundColor:'transparent',
-      regionStyle:{ initial:{ fill:geoCol('--geo-base'), stroke:geoCol('--bg2'), strokeWidth:0.4 }, hover:{ fill:geoCol('--geo-hover'), cursor:'pointer' } },
+      regionStyle:{ initial:{ fill:geoCol('--geo-base'), stroke:geoCol('--bg2'), strokeWidth:0.4 }, hover:{ cursor:'pointer' } },   // survol : voir la règle CSS #jsvmap path.jvm-region:hover (teinte du pays assombrie + contour)
       onRegionTooltipShow(e, tooltip, code){
         const tip = document.getElementById('mapTooltip'), eur = D.byC[code];
         if(tip){
@@ -69524,7 +69952,8 @@ function kyfGeoFooter(){
   b.style.opacity = n ? '1' : '.4'; b.style.pointerEvents = n ? 'auto' : 'none';
   const st = kyfGeoLoad(), rows = kyfGeoCompute().rows;
   const done = rows.filter(r => st[r.k] && !kyfGeoPartial(st[r.k])).length, part = rows.filter(r => kyfGeoPartial(st[r.k])).length;
-  const c = document.getElementById('kyfGeoCount'); if(c) c.textContent = done + ' sur ' + rows.length + ' renseignés' + (part ? ' · ' + part + ' partiel' + (part > 1 ? 's' : '') : '');
+  const c = document.getElementById('kyfGeoCount');
+  if(c){ const all = rows.length > 0 && done === rows.length; c.textContent = done + ' / ' + rows.length + (part ? ' · ' + part + ' partiel' + (part > 1 ? 's' : '') : ''); c.title = done + ' position' + (done > 1 ? 's' : '') + ' sur ' + rows.length + ' renseignée' + (done > 1 ? 's' : ''); c.style.color = all ? 'var(--green)' : 'var(--accent)'; c.style.background = 'color-mix(in srgb,' + (all ? 'var(--green)' : 'var(--accent)') + ' 16%,transparent)'; }
 }
 // Liste de toutes les positions : état de chacune, clic pour changer sans fermer
 let _geoDoneOpen = null;   // null = automatique (ouvert si recherche ou position affichée dedans), sinon choix de l'utilisateur
@@ -69542,7 +69971,7 @@ function kyfGeoListRender(){
   const rows = kyfGeoCompute().rows.filter(r => !q || kyfGeoNorm(r.name + ' ' + r.ticker).includes(q));
   const row = r => {
     const cur = r.k === _geoEd.k, col = _geoEd.drafts[r.k] ? 'var(--accent)' : kyfGeoPartial(st[r.k]) ? '#4d9fff' : st[r.k] ? 'var(--green)' : '#6b7590';
-    return '<div class="kyf-geo-li" data-k="' + escapeHtml(r.k) + '" onclick="kyfGeoSwitch(' + kyfJsAttr(r.k) + ')" style="display:flex;align-items:center;gap:10px;padding:8px 14px;cursor:pointer' + (cur ? ';background:rgba(240,180,41,0.14);box-shadow:inset 3px 0 0 var(--accent)' : '') + '">'
+    return '<div class="kyf-geo-li" data-k="' + escapeHtml(r.k) + '" onclick="kyfGeoSwitch(' + kyfJsAttr(r.k) + ')" style="display:flex;align-items:center;gap:10px;margin:0 8px 2px;padding:7px 8px;border-radius:10px;cursor:pointer' + (cur ? ';background:color-mix(in srgb,var(--accent) 16%,transparent)' : '') + '"' + (cur ? ' data-cur="1"' : '') + '>'
       + (typeof renderAssetLogo === 'function' ? renderAssetLogo(r.ticker, r.name, 24) : '')
       + '<span style="flex:1;min-width:0;font-size:12px;color:' + (cur ? 'var(--text)' : 'var(--text2)') + ';font-weight:' + (cur ? 700 : 500) + ';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(r.name) + '</span>'
       + '<i class="kyf-geo-dot" style="background:' + col + '"></i></div>';
@@ -69559,25 +69988,28 @@ function kyfGeoListRender(){
       + '<div id="kyfGeoDoneWrap" style="display:' + (open ? 'block' : 'none') + '">' + done.map(row).join('') + '</div>';
   }
   box.innerHTML = html || '<div style="padding:14px;font-size:11px;color:var(--text3)">Aucune position trouvée.</div>';
-  const cur = box.querySelector('.kyf-geo-li[style*="inset"]'); if(cur && cur.scrollIntoView && cur.offsetParent) cur.scrollIntoView({ block:'nearest' });
+  const cur = box.querySelector('.kyf-geo-li[data-cur="1"]'); if(cur && cur.scrollIntoView && cur.offsetParent) cur.scrollIntoView({ block:'nearest' });
 }
 // Bandeau communauté : validation en un clic
 function kyfGeoCommRender(){
   const bx = document.getElementById('kyfGeoCommBox'); if(!bx || !_geoEd) return;
   const cm = _geoEd.cm;
   const has = cm && (Object.keys(cm.c).length || Object.keys(cm.s).length || Object.keys(cm.h || {}).length);
-  if(!has){ bx.style.display = 'none'; return; }
+  if(!has){ bx.style.display = 'none'; kyfGeoTabsShow(); return; }
   const parts = [];
   const fd = d => { const a = d ? kyfGeoAge(d, 'k') : null; return a ? ' (' + a.txt.replace('communauté du ', 'mis à jour le ') + ')' : ''; };
   if(Object.keys(cm.c).length) parts.push('pays ' + kyfGeoVoteTxt(cm.nc) + fd(cm.tc));
   if(Object.keys(cm.s).length) parts.push('secteurs ' + kyfGeoVoteTxt(cm.ns) + fd(cm.ts));
   if(Object.keys(cm.h || {}).length) parts.push('entreprises ' + kyfGeoVoteTxt(cm.nh) + fd(cm.th));
   const same = kyfGeoIsVote();
-  bx.style.display = 'flex';
-  document.getElementById('kyfGeoNote').innerHTML = 'Communauté : <b style="color:var(--text)">' + parts.join(' · ') + '</b>' + (same ? '' : '. Vérifiez sur le site, puis validez ou corrigez.');
+  bx.style.display = 'flex'; kyfGeoTabsShow();
+  const dts = [cm.tc, cm.ts, cm.th].filter(Boolean).sort(), last = dts.length ? dts[dts.length - 1] : '', nv = Math.max(cm.nc || 0, cm.ns || 0, cm.nh || 0);
+  const nt = document.getElementById('kyfGeoNote'), full = 'Communauté : ' + parts.join(' · ') + (same ? '' : '. Vérifiez sur le site, puis validez ou corrigez.');
+  nt.title = full; nt.setAttribute('aria-label', full);
+  nt.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>' + (nv || '?') + (last ? ' · ' + last.slice(8, 10) + '/' + last.slice(5, 7) : '');
   const ab = document.getElementById('kyfGeoAgreeBtn');
   if(ab){ ab.style.display = same && _geoEd.drafts[_geoEd.k] ? 'none' : ''; }
-  if(same && _geoEd.drafts[_geoEd.k]) document.getElementById('kyfGeoNote').innerHTML += ' · <span style="color:var(--green)"><svg aria-hidden="true" style="vertical-align:-.18em;flex-shrink:0" width="1.1em" height="1.1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> validé, à enregistrer</span>';
+  if(same && _geoEd.drafts[_geoEd.k]){ nt.innerHTML += ' <span style="color:var(--green);display:inline-flex"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>'; nt.title = full + ' · validé, à enregistrer'; }
 }
 function kyfGeoAgree(){
   if(!_geoEd || !_geoEd.cm) return;
@@ -69605,7 +70037,7 @@ function kyfGeoLoadPos(k){
   }
   if(!rc.length) rc = [{ c:'', p:'' }];
   if(!rs.length) rs = [{ c:'', p:'' }];
-  _geoEd.r = { c:rc, s:rs, h:rh }; _geoEd.holdMsg = '';
+  _geoEd.r = { c:rc, s:rs, h:rh }; _geoEd.holdMsg = ''; _geoEd.hRows = null;
   _geoEd.fs = (dr && dr.fs) || {};
   const ti = document.getElementById('kyfGeoTitle'); if(ti) ti.textContent = _geoEd.name;
   const ids = document.getElementById('kyfGeoIds');
@@ -69613,12 +70045,12 @@ function kyfGeoLoadPos(k){
   (function(){
     const box = document.getElementById('kyfGeoIds'); if(!box) return;
     let ag = document.getElementById('kyfGeoAgeLine');
-    if(!ag){ ag = document.createElement('div'); ag.id = 'kyfGeoAgeLine'; ag.style.cssText = 'font-size:10px;color:var(--text3);margin-top:2px'; box.parentNode.appendChild(ag); }
+    if(!ag){ ag = document.createElement('div'); ag.id = 'kyfGeoAgeLine'; ag.style.cssText = 'font-size:10px;color:var(--text3);margin-top:6px'; box.parentNode.appendChild(ag); }
     const ac = kyfGeoAge(en.dc, en.oc), as = kyfGeoAge(en.ds, en.os), parts = [];
     if(!dr){ if(ac) parts.push('pays : ' + ac.txt + (ac.old ? ' (ancien)' : '')); if(as) parts.push('secteurs : ' + as.txt + (as.old ? ' (ancien)' : '')); }
     ag.textContent = parts.join(' · ');
   })();
-  const lg = document.getElementById('kyfGeoLogo'); if(lg) lg.innerHTML = typeof renderAssetLogo === 'function' ? renderAssetLogo(e.ticker, _geoEd.name, 36) : '';
+  const lg = document.getElementById('kyfGeoLogo'); if(lg) lg.innerHTML = typeof renderAssetLogo === 'function' ? renderAssetLogo(e.ticker, _geoEd.name, 48) : '';
   const lj = document.getElementById('kyfGeoLinkJ');
   if(lj) lj.style.display = _geoEd.isEtf ? '' : 'none';
   const fh = document.getElementById('kyfGeoFileHelp'); if(fh && !_geoEd.isEtf) fh.style.display = 'none';
@@ -69659,12 +70091,12 @@ async function kyfGeoClose(){
 function kyfGeoRows(){
   if(!_geoEd) return;
   const chev = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polyline points="6 9 12 15 18 9"/></svg>';
-  const inp = 'width:60px;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:\'Inter\',sans-serif;font-size:12px;padding:8px;border-radius:6px;outline:none;text-align:right';
+  const inp = 'width:56px;height:28px;box-sizing:border-box;background:var(--bg2);border:1px solid var(--border2);color:var(--text);font-family:\'Inter\',sans-serif;font-size:12px;font-weight:700;padding:0 8px;border-radius:8px;outline:none;text-align:right';
   ['c', 's'].forEach(m => {
     const rows = _geoEd.r[m];
     document.getElementById('kyfGeoRows' + m).innerHTML = rows.map((r, i) => {
       const id = 'kyfGeoC' + m + i;
-      return '<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">'
+      return '<div id="kyfGeoRow' + m + i + '" class="kyf-geo-row" style="' + kyfGeoRowStyle(m, r.c, r.p) + '">'
         + '<div style="flex:1;min-width:0"><button type="button" id="' + id + 'Btn" class="kyf-csel-btn" data-kyf-csel="' + id + '"><span id="' + id + 'BtnLabel">-</span>' + chev + '</button><input type="hidden" id="' + id + '" onchange="kyfGeoSetC(\'' + m + '\',' + i + ',this.value)"></div>'
         + '<input type="text" inputmode="decimal" id="kyfGeoP' + m + i + '" value="' + escapeHtml(r.p) + '" oninput="kyfGeoSetP(\'' + m + '\',' + i + ',this.value)" placeholder="0" style="' + inp + '">'
         + '<span style="font-size:11px;color:var(--text3)">%</span>'
@@ -69703,14 +70135,14 @@ function kyfGeoNorm(s){ return String(s || '').toLowerCase().normalize('NFD').re
 const KYF_GEO_CALIAS = { 'neutre':'XN', 'autres pays':'XN', 'autre pays':'XN', 'other countries':'XN', 'usa':'US', 'etats unis d amerique':'US', 'grande bretagne':'GB', 'royaume uni':'GB', 'uk':'GB', 'coree':'KR', 'coree du sud':'KR', 'republique de coree':'KR', 'republique tcheque':'CZ', 'tchequie':'CZ', 'emirats arabes unis':'AE', 'korea south':'KR', 'korea republic of':'KR', 'hong kong sar china':'HK', 'russie':'RU', 'hongkong':'HK', 'hong kong':'HK', 'hong kong chine':'HK', 'ras de hong kong':'HK', 'r a s chinoise de hong kong':'HK', 'macao':'MO', 'macau':'MO', 'taiwan':'TW', 'taiwan province de chine':'TW', 'pays bas':'NL', 'hollande':'NL' };
 const KYF_GEO_SALIAS = {
   sante:['soins de sante', 'health care', 'healthcare', 'sante', 'sante pharmacie', 'sante et pharmacie', 'pharmacie'],
-  tech:['tmt', 'technologie media telecom', 'technologies media telecoms', 'materiel informatique', 'logiciels', 'logiciel', 'semi conducteurs', 'semiconducteurs', 'hardware', 'software', 'technologie', 'technologies', 'technologie de l information', 'technologies de l information', 'information technology', 'technology', 'technologie logiciels', 'technologie et logiciels', 'technologies et logiciels'],
-  fin:['banques', 'assurance', 'assurances', 'finance', 'finances', 'financials', 'financial services', 'services financiers', 'financieres', 'services financiers banques', 'services financiers et banques', 'banques assurances', 'banques et assurances'],
-  ind:['industrie generale', 'industrie', 'industries', 'industrials', 'industriels', 'industrial', 'industrie biens d equipement', 'industrie et biens d equipement', 'biens d equipement', 'infrastructure', 'infrastructures'],
+  tech:['haute technologie', 'hautes technologies', 'tmt', 'technologie media telecom', 'technologies media telecoms', 'materiel informatique', 'logiciels', 'logiciel', 'semi conducteurs', 'semiconducteurs', 'hardware', 'software', 'technologie', 'technologies', 'technologie de l information', 'technologies de l information', 'information technology', 'technology', 'technologie logiciels', 'technologie et logiciels', 'technologies et logiciels'],
+  fin:['secteur financier', 'secteur finance', 'banques', 'assurance', 'assurances', 'finance', 'finances', 'financials', 'financial services', 'services financiers', 'financieres', 'services financiers banques', 'services financiers et banques', 'banques assurances', 'banques et assurances'],
+  ind:['industries et services divers', 'industrie generale', 'industrie', 'industries', 'industrials', 'industriels', 'industrial', 'industrie biens d equipement', 'industrie et biens d equipement', 'biens d equipement', 'infrastructure', 'infrastructures'],
   cd:['ventes au detail', 'produits de consommation non courante', 'consommation non courante', 'consommation discretionnaire', 'conso cyclique', 'conso discretionnaire', 'consumer discretionary', 'consumer cyclical', 'biens de consommation cycliques', 'biens de consommation cyclique', 'consommation cyclique'],
   com:['communication', 'services de communication', 'communication services', 'telecommunications', 'telecommunication', 'services de telecommunication', 'telecom'],
   ene:['energie', 'energy', 'petrole', 'petrole gaz', 'petrole et gaz', 'gaz et petrole', 'oil gas', 'oil and gas', 'oil & gas'],
   cb:['biens de consommation non durables', 'conso non cyclique', 'conso non cycliques', 'conso de base', 'consommation courante', 'consommation non cyclique', 'consommation de base', 'biens de consommation de base', 'consumer staples', 'consumer defensive', 'biens de consommation non cycliques', 'consommation defensive', 'consommation', 'consommation generale', 'biens de consommation', 'consumer'],
-  mat:['materiaux', 'materials', 'basic materials', 'matieres premieres', 'materiaux et autres', 'metaux minieres', 'metaux et minieres', 'metaux et mines', 'mines et metaux', 'mines', 'mining', 'metals mining', 'metals and mining', 'metaux'],
+  mat:['materiaux', 'materials', 'basic materials', 'matieres premieres', 'matieres non energetiques', 'materiaux et autres', 'metaux minieres', 'metaux et minieres', 'metaux et mines', 'mines et metaux', 'mines', 'mining', 'metals mining', 'metals and mining', 'metaux'],
   imm:['immobilier', 'real estate'],
   ut:['services publics', 'services aux collectivites', 'utilities'],
   def:['defense', 'aerospatial', 'aerospatiale', 'aerospatiale et defense', 'defense et aerospatiale', 'defense et aerospatial', 'aerospace defense', 'aerospace and defense', 'aerospace & defense', 'defence', 'defense aerospatiale'],
@@ -69719,7 +70151,7 @@ const KYF_GEO_SALIAS = {
   dist:['distribution', 'e commerce', 'commerce de detail', 'retail', 'distribution et e commerce'],
   trans:['transport', 'transports', 'transport et logistique', 'logistique', 'transportation'],
   bio:['biotechnologie', 'biotechnologies', 'biotech', 'biotechnology'],
-  aut:['autre', 'autres', 'other', 'others', 'souverain', 'souverains', 'sovereign', 'etat', 'etats', 'emprunts d etat', 'obligations d etat']
+  aut:['autres secteurs liquidites', 'autres secteurs', 'autre secteur', 'liquidites', 'autres liquidites', 'autre', 'autres', 'other', 'others', 'souverain', 'souverains', 'sovereign', 'etat', 'etats', 'emprunts d etat', 'obligations d etat']
 };
 let _geoDict = null;
 function kyfGeoDict(m){
@@ -70100,6 +70532,7 @@ async function kyfGeoFileRead(file){
     ['c', 's'].forEach(m => { if(!Object.keys(r[m]).length && Object.keys(x[m]).length){ r[m] = x[m]; r.ign[m] = x.ign[m]; } });
     r.n += x.n; r.info.isin = r.info.isin || x.info.isin; r.info.synth = r.info.synth || x.info.synth;
   });
+  if(!srcRows.pdf){ try{ let best = []; srcRows.forEach(rw => { const p = kyfHoldFromRows(rw || []); if(p.length > best.length) best = p; }); r.hl = best; }catch(e){} }
   if(!srcRows.pdf){ const mt = kyfGeoFileMeta(srcRows); r.info.isin = r.info.isin || mt.isin; r.info.synth = r.info.synth || mt.synth; }
   if(!r.info.isin){ const f = String(file.name).toUpperCase().match(/(?:^|[^A-Z0-9])([A-Z]{2}[A-Z0-9]{9}\d)(?![A-Z0-9])/); if(f) r.info.isin = f[1]; }
   if(!Object.keys(r.c).length && !Object.keys(r.s).length) return { err:'Rien de reconnu dans ce fichier (pays et secteurs introuvables).' };
@@ -70144,12 +70577,15 @@ async function kyfGeoFileImport(inp){
     if(r.info.synth && !(await kyfAsk('Ce fonds utilise une réplication synthétique : le fichier montre le panier de titres détenu par le fonds, pas l\'exposition réelle de son indice. Importer quand même ?'))) return;
     if(hc) _geoEd.r.c = _geoRowsOf(r.c);
     if(hs) _geoEd.r.s = _geoRowsOf(r.s);
+    let hn = 0;
+    if(r.hl && r.hl.length && (_geoEd.isEtf || _geoEd.fund)){ const hm = kyfHoldToMap(r.hl); if(hm.n && hm.sum <= 100.05){ _geoEd.r.h = { map:hm.map, o:'f', d:kyfGeoToday() }; hn = hm.n; } }
     const ig = ['c', 's'].map(m => Object.keys(r.ign[m]).sort((a, b) => r.ign[m][b] - r.ign[m][a]).slice(0, 3).filter(l => r.ign[m][l] >= 0.05));
     const msg = document.getElementById('kyfGeoMsg');
     msg.style.color = 'var(--text3)';
     const tc = _geoPct(r, 'c'), ts = _geoPct(r, 's');
     msg.textContent = (r.generic ? 'Lecture générique du PDF : ' : r.n + ' lignes lues : ') + hc + ' pays' + (hc ? ' (' + kyfGeoPct(tc) + ')' : '') + ', ' + hs + ' secteurs' + (hs ? ' (' + kyfGeoPct(ts) + ')' : '') + '.' + (hc && tc < 60 || hs && ts < 60 ? ' Attention : moins de 60 % du fichier est reconnu.' : '') + (r.info.isin ? '' : ' Aucun ISIN dans ce fichier : impossible de vérifier qu\'il correspond à cette position.') + (r.deduced && r.deduced.length ? ' Libellé coupé déduit : ' + r.deduced.join(', ') + '.' : '') + (ig[0].length || ig[1].length ? ' Non reconnu : ' + ig[0].concat(ig[1]).join(', ') + '.' : '') + ' Vérifiez avant d\'enregistrer.';
-    _geoEd.fs = {}; { const bb = kyfGeoBuild(_geoEd.r); if(!bb.err){ if(hc) _geoEd.fs.c = kyfGeoSig(bb.c); if(hs) _geoEd.fs.s = kyfGeoSig(bb.s); } }
+    if(hn) msg.textContent += ' ' + hn + ' entreprises lues (onglet ENTREPRISES).';
+    _geoEd.fs = {}; { const bb = kyfGeoBuild(_geoEd.r); if(!bb.err){ if(hc) _geoEd.fs.c = kyfGeoSig(bb.c); if(hs) _geoEd.fs.s = kyfGeoSig(bb.s); if(hn) _geoEd.fs.h = kyfGeoSig(bb.h); } }
     kyfGeoRows(); kyfGeoTouch();
   }catch(e){ kyfGeoErr(e && e.message ? e.message : 'Lecture du fichier impossible.'); kyfGeoOfferFile(file, e && e.message ? e.message : 'Lecture du fichier impossible.', ''); }
 }
@@ -70213,15 +70649,16 @@ function kyfGeoMultiApply(){
   let done = 0, last = null;
   Object.keys(by).forEach(k => {
     const e = ETF.find(z => 'etf:' + z.ticker === k); if(!e) return;
-    const c = {}, s = {};
-    by[k].forEach(x => { if(Object.keys(x.r.c).length && !Object.keys(c).length) Object.assign(c, x.r.c); if(Object.keys(x.r.s).length && !Object.keys(s).length) Object.assign(s, x.r.s); });
+    const c = {}, s = {}; let hm = null;
+    by[k].forEach(x => { if(Object.keys(x.r.c).length && !Object.keys(c).length) Object.assign(c, x.r.c); if(Object.keys(x.r.s).length && !Object.keys(s).length) Object.assign(s, x.r.s); if(!hm && x.r.hl && x.r.hl.length){ const t = kyfHoldToMap(x.r.hl); if(t.n && t.sum <= 100.05) hm = t; } });
     const old = _geoEd.drafts[k], en = kyfGeoLoad()[k] || {};
     const rc = Object.keys(c).length ? _geoRowsOf(c) : (old ? old.r.c : (kyfGeoRowsOf(en.c).length ? kyfGeoRowsOf(en.c) : [{ c:'', p:'' }]));
     const rs = Object.keys(s).length ? _geoRowsOf(s) : (old ? old.r.s : (kyfGeoRowsOf(en.s).length ? kyfGeoRowsOf(en.s) : [{ c:'', p:'' }]));
     const fs = Object.assign({}, old && old.fs || {});
-    const bb = kyfGeoBuild({ c:rc, s:rs });
-    if(!bb.err){ if(Object.keys(c).length) fs.c = kyfGeoSig(bb.c); if(Object.keys(s).length) fs.s = kyfGeoSig(bb.s); }
-    _geoEd.drafts[k] = { r:{ c:rc, s:rs }, cm:old ? old.cm : null, name:String(e.name || e.ticker || ''), isin:String(e.isin || '').toUpperCase().trim(), ticker:String(e.ticker || ''), fs };
+    const rh = hm ? { map:hm.map, o:'f', d:kyfGeoToday() } : (old ? (old.r.h || null) : (en.h ? { map:en.h, o:en.oh || 'm', d:en.dh || '' } : null));
+    const bb = kyfGeoBuild({ c:rc, s:rs, h:rh });
+    if(!bb.err){ if(Object.keys(c).length) fs.c = kyfGeoSig(bb.c); if(Object.keys(s).length) fs.s = kyfGeoSig(bb.s); if(hm) fs.h = kyfGeoSig(bb.h); }
+    _geoEd.drafts[k] = { r:{ c:rc, s:rs, h:rh }, cm:old ? old.cm : null, name:String(e.name || e.ticker || ''), isin:String(e.isin || '').toUpperCase().trim(), ticker:String(e.ticker || ''), fs };
     done++; last = k;
   });
   _geoMulti = null; kyfGeoMultiRender();
@@ -70452,15 +70889,45 @@ function kyfGeoPasteApply(m){
     + (r.multi ? 'Plusieurs colonnes de pourcentages détectées : la première est utilisée.' : '');
   kyfGeoRows(); kyfGeoTouch();
 }
-function kyfGeoSetC(m, i, v){ if(_geoEd && _geoEd.r[m][i] && kyfGeoRef(m)[v]){ _geoEd.r[m][i].c = v; kyfGeoTouch(); } }
-function kyfGeoSetP(m, i, v){ if(_geoEd && _geoEd.r[m][i]){ _geoEd.r[m][i].p = v; kyfGeoTotal(m); kyfGeoTouch(); } }
+// Anneau de total (carte PAYS / SECTEURS / ENTREPRISES) : vert à 100 %, doré en dessous, rouge au-dessus
+function kyfGeoRing(m, tot, over){
+  const r = document.getElementById('kyfGeoRing' + m), t = document.getElementById('kyfGeoRingT' + m); if(!r) return;
+  const full = tot >= 99.95, col = over ? 'var(--red)' : full ? 'var(--green)' : 'var(--accent)';
+  r.style.background = 'conic-gradient(' + col + ' ' + Math.min(100, Math.max(0, tot)).toFixed(1) + '%,var(--bg4) 0)';
+  if(t){ t.textContent = String(Math.round(tot * 10) / 10).replace('.', ','); t.style.color = over ? 'var(--red)' : full ? 'var(--green)' : 'var(--text)'; }
+}
+// Dégradé d'une ligne : même principe que les cartes ASSURANCE VIE (teinte de la couleur à 26 % qui s'efface vers la droite), longueur selon le poids
+function kyfGeoRowCol(m, c){
+  if(m === 's') return (KYF_GEO_SM[c] && KYF_GEO_SM[c].c) || '';
+  const cm = KYF_GEO_CM[c]; if(!cm) return '';
+  const z = KYF_GEO_ZONES.find(x => x.k === cm.z); return z ? z.c : '';
+}
+function kyfGeoRowBg(m, c, p){
+  const col = kyfGeoRowCol(m, c); if(!col) return '';
+  const w = Math.max(0, Math.min(100, kyfGeoNumEd(p))), end = (18 + w * 0.82).toFixed(1);
+  return 'linear-gradient(90deg,color-mix(in srgb,' + col + ' 26%,transparent) 0%,transparent ' + end + '%)';
+}
+function kyfGeoRowStyle(m, c, p){ const g = kyfGeoRowBg(m, c, p); return g ? 'background-image:' + g : ''; }
+function kyfGeoRowTint(m, i){
+  const row = document.getElementById('kyfGeoRow' + m + i); if(!row || !_geoEd || !_geoEd.r[m][i]) return;
+  const r = _geoEd.r[m][i]; row.style.backgroundImage = kyfGeoRowBg(m, r.c, r.p) || 'none';
+}
+// Ligne des onglets : visible pour un ETF ou un fonds (onglets) et/ou quand la communauté a une répartition (pastille)
+function kyfGeoTabsShow(){
+  const tabs = document.getElementById('kyfGeoTabs'); if(!tabs) return;
+  const on = !!(_geoEd && (_geoEd.isEtf || _geoEd.fund)), bx = document.getElementById('kyfGeoCommBox'), has = !!bx && bx.style.display !== 'none';
+  const tb = document.getElementById('kyfGeoTabBtns'); if(tb) tb.style.display = on ? 'flex' : 'none';
+  tabs.style.display = (on || has) ? 'flex' : 'none';
+}
+function kyfGeoSetC(m, i, v){ if(_geoEd && _geoEd.r[m][i] && kyfGeoRef(m)[v]){ _geoEd.r[m][i].c = v; kyfGeoRowTint(m, i); kyfGeoTouch(); } }
+function kyfGeoSetP(m, i, v){ if(_geoEd && _geoEd.r[m][i]){ _geoEd.r[m][i].p = v; kyfGeoRowTint(m, i); kyfGeoTotal(m); kyfGeoTouch(); } }
 function kyfGeoNumEd(v){ const n = parseFloat(String(v).replace(',', '.')); return isFinite(n) ? n : 0; }   // éditeur : illisible = 0 (l'import utilise kyfGeoNum, strict)
 function kyfGeoTotal(m){
   if(!_geoEd) return;
   const tot = _geoEd.r[m].reduce((s, r) => s + Math.max(0, kyfGeoNumEd(r.p)), 0);
   const el = document.getElementById('kyfGeoTot' + m); if(!el) return;
   el.style.color = tot > 100.01 ? 'var(--red)' : 'var(--text3)';
-  const bar = document.getElementById('kyfGeoBar' + m); if(bar){ bar.style.width = Math.min(100, tot) + '%'; bar.style.background = tot > 100.01 ? 'var(--red)' : 'var(--accent)'; }
+  kyfGeoRing(m, tot, tot > 100.01);
   el.textContent = 'Total ' + kyfGeoPct(tot) + (tot <= 100.01 ? ' · non renseigné ' + kyfGeoPct(Math.max(0, 100 - tot)) : ' : dépasse 100 %');
   const cb = document.getElementById('kyfGeoClr' + m);   // « TOUT VIDER » : grisé quand il n'y a rien à retirer
   if(cb){ const any = _geoEd.r[m].some(r => r.c || String(r.p || '').trim()); cb.style.opacity = any ? '1' : '.4'; cb.style.pointerEvents = any ? 'auto' : 'none'; }
@@ -70506,6 +70973,7 @@ function kyfGeoBuild(src){
     res[m] = c;
   }
   res.h = (r.h && r.h.map) ? r.h.map : {};
+  if(Object.keys(res.h).reduce((t, k) => t + res.h[k], 0) > 100.05) return { err:'Le total dépasse 100 % (entreprises).', m:'h' };
   return res;
 }
 // Les données affichées sont exactement celles de la communauté : c'est un vote de validation
@@ -71639,6 +72107,9 @@ document.addEventListener('DOMContentLoaded', function(){
 const KYF_NOUVEAUTES = {
   badge: ['arbmulti', 'nueprop', 'kpichips', 'kpiset', 'autres', 'envvue', 'famille', 'avjrn', 'arb', 'immo', 'avref', 'avfrais', 'fraispg', 'avevo', 'avsuivi', 'dcaprix', 'ct', 'tend', 'tipstyle', 'ptf', 'pee', 'ctlg', 'vue'],   // clés des badges (une ou plusieurs ; tableau) ; clé du badge « Nouveau » (span .kyf-new-badge data-new="...") ; vide = aucun badge
   annonces: [
+    { id: 'a-2026-10-31', date: '2026-10-31', items: [
+      { titre: 'Top communauté', version: '2.11.5.00', important: true, texte: 'Zones géographiques : le Top 10 entreprises a trois vues, Moi, Communauté et Comparer, avec les ETF et actions les plus détenus par les membres. La participation est facultative et désactivée par défaut : vous partagez anonymement la liste de vos lignes et leur poids en %, jamais de montants. Une ligne n\u2019apparaît que si au moins 3 membres la détiennent.' },
+    ] },
     { id: 'a-2026-10-30-2', date: '2026-10-30', items: [
       { titre: 'Top 10 entreprises de votre portefeuille', version: '2.11.4.05', important: true, texte: 'Zones géographiques : vos entreprises en transparence (Nvidia, Apple...), en additionnant leur poids dans chacun de vos ETF et vos actions en direct. Renseignez les entreprises d\u2019un ETF dans MODIFIER (onglet ENTREPRISES, à côté de pays et secteurs) en collant le tableau de la fiche de l\u2019émetteur, ou avec son fichier Excel / CSV. Elles se partagent comme les pays et secteurs.' },
     ] },
@@ -72356,7 +72827,11 @@ const FAQ_DATA = [
   },
   {
     q: "Comment voir mes plus grosses entreprises, ETF compris ?",
-    a: "Dans <strong style='color:var(--faq-strong);font-weight:700'>Zones géographiques</strong>, la carte <strong style='color:var(--faq-strong);font-weight:700'>TOP 10 ENTREPRISES</strong> additionne, pour chaque entreprise, son poids dans chacun de vos ETF et vos actions en direct (Nvidia dans 3 ETF + Nvidia en direct = une seule ligne).<br><br>• Cliquez <strong style='color:var(--faq-strong);font-weight:700'>RENSEIGNER LES ENTREPRISES</strong> (ou MODIFIER sur un ETF) : l'onglet ENTREPRISES est à côté de PAYS ET SECTEURS. Collez le tableau de la fiche de l'émetteur (nom et poids), ou chargez son fichier Excel / CSV.<br>• Un ETF sans entreprises est signalé sous la carte : cliquez son nom pour le renseigner.<br>• Les fiches ne donnent souvent que les plus grosses lignes : les poids affichés sont des minimums.<br><br>Comme les pays et secteurs, elles sont partagées de façon anonyme si la case est cochée (jamais vos montants).",
+    a: "Dans <strong style='color:var(--faq-strong);font-weight:700'>Zones géographiques</strong>, la carte <strong style='color:var(--faq-strong);font-weight:700'>TOP 10 ENTREPRISES</strong> additionne, pour chaque entreprise, son poids dans chacun de vos ETF et vos actions en direct (Nvidia dans 3 ETF + Nvidia en direct = une seule ligne).<br><br>• Cliquez <strong style='color:var(--faq-strong);font-weight:700'>RENSEIGNER LES ENTREPRISES</strong> (ou MODIFIER sur un ETF) : l'onglet ENTREPRISES est à côté de PAYS ET SECTEURS. Collez le tableau de la fiche de l'émetteur (nom et poids), ou chargez son fichier Excel / CSV.<br>• Le fichier Excel de l'émetteur, importé avec FICHIER XLS / CSV / PDF, remplit les entreprises en même temps que les pays et secteurs.<br>• Pour un ETF que vous n'avez pas renseigné, KYF utilise la composition validée par la communauté (au moins 2 personnes d'accord).<br>• Un ETF sans entreprises est signalé sous la carte : cliquez son nom pour le renseigner.<br>• Les fiches ne donnent souvent que les plus grosses lignes : les poids affichés sont des minimums.<br><br>Comme les pays et secteurs, elles sont partagées de façon anonyme si la case est cochée (jamais vos montants).",
+  },
+  {
+    q: "Comment fonctionne le Top communauté ?",
+    a: "Sur la carte <strong style='color:var(--faq-strong);font-weight:700'>TOP 10 ENTREPRISES</strong>, le sélecteur <strong style='color:var(--faq-strong);font-weight:700'>MOI / COMMUNAUTÉ / COMPARER</strong> apparaît quand la base communautaire est active.<br><br>• <strong style='color:var(--faq-strong);font-weight:700'>Communauté</strong> : les entreprises, ETF et actions les plus présents chez les membres qui participent.<br>• <strong style='color:var(--faq-strong);font-weight:700'>Comparer</strong> : votre poids par entreprise face à la moyenne des membres.<br>• La participation est <strong style='color:var(--faq-strong);font-weight:700'>facultative et désactivée par défaut</strong> : en cochant « Participer au Top communauté », KYF envoie la liste de vos lignes (ISIN) et leur poids en % de votre portefeuille. Jamais de montant, de quantité ni d'identité.<br>• Une ligne n'apparaît que si au moins <strong style='color:var(--faq-strong);font-weight:700'>3 membres</strong> la détiennent, et un nouveau membre compte après 2 jours.<br>• Décochez à tout moment : plus rien n'est envoyé.",
   },
   {
     q: "Mon ETF a divisé son prix, que faire ?",
@@ -74532,6 +75007,30 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.11 · 31/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Relevé de situation Linxea Vie : KYF le lit maintenant comme celui de Bourso Vie (mêmes colonnes). Il prend le nombre de parts et le Prix d'Achat Moyen, au lieu de la valeur de part (retour d'un testeur).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.10 · 31/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Ta mise à jour de l'onglet Analyses · Zones géographiques (nouveau design, secteurs) est conservée. Ajout de CCF dans la liste des banques (avec son logo), demandé par un testeur.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.08 · 31/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Zones géographiques : cadre Communauté supprimé ; le détail s'appelle « Détail par position et communauté », boutons jaunes, chevrons carrés comme l'assurance vie, barres en dégradé.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.07 · 31/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Zones géographiques : page refaite d'après la maquette Claude Design (cadre Top communauté à côté de Top entreprises, Détail par position avec filtres, jauges, badge communauté et détail dépliable Ma répartition / Communauté).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.06 · 31/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Détail par position : cartes exactement comme la maquette Claude Design (deux barres pays et secteurs, pastille communauté, carte retournable) ; le cadre Communauté passe à côté de Top entreprises.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.05 · 31/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Détail par position en cartes sobres : ma répartition (pays et secteurs) et un clic pour retourner la carte vers la communauté ; MODIFIER inchangé.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.04 · 31/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Top entreprises : la note « Entreprises connues pour… » devient un chevron repliable (survol orange-jaune) et les ETF « À renseigner » passent en pastilles avec icône plus et survol.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.03 · 31/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Top entreprises présenté comme Top pays et Par secteur : 8 tuiles avec le logo de l'entreprise (même taille de cadre que Top pays), « Autres » déplie le reste avec les logos ; la partie Communauté / Comparer devient un cadre à part avant DÉTAIL PAR POSITION.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.02 · 31/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre MODIFIER, onglet ENTREPRISES : même présentation que PAYS et SECTEURS (une ligne par entreprise avec son pourcentage et une croix, boutons + ENTREPRISE, GOOGLE, IA, COLLER, barre de total et TOUT VIDER).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.01 · 31/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Top 10 entreprises : logo de chaque entreprise (favicon de son site, initiale si l'image ne charge pas) dans les vues Moi, Communauté et Comparer.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.00 · 31/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Top communauté : la carte Top 10 entreprises a trois vues (Moi, Communauté, Comparer) et les ETF et actions les plus détenus par les membres. Participation facultative, désactivée par défaut (liste des lignes et poids en %, jamais de montants, au moins 3 membres par ligne). Nécessite le script KYF_GEO_v3_top.gs. Guide v1.26.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.4.08 · 31/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Top 10 entreprises : le fichier Excel/CSV de l'émetteur (bouton FICHIER XLS / CSV / PDF) remplit aussi les entreprises, et un ETF non renseigné utilise la composition validée par la communauté.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.4.07 · 31/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Arbitrage : nom du contrat et montants de l'historique en couleur d'accent KYF, lisibles en thème clair comme sombre.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.4.06 · 31/10/2026</div>
@@ -81612,7 +82111,7 @@ const LIV_BANK_DOMAINS = {
   'shine':'shine.fr',
   'nickel':'nickel.eu',
   'cash ly':'cashly.fr',
-  'bourse direct':'boursedirect.fr','degiro':'degiro.fr','interactive brokers':'interactivebrokers.com',
+  'bourse direct':'boursedirect.fr','ccf':'ccf.fr','degiro':'degiro.fr','interactive brokers':'interactivebrokers.com',
   'scalable capital':'scalable.capital','saxo':'home.saxo','binck':'binck.fr','crédit du nord':'credit-du-nord.fr',
   'saxo banque':'saxobanque.fr','easybourse':'easybourse.com','easy bourse':'easybourse.com','etoro':'etoro.com','xtb':'xtb.com','lynx':'lynxbroker.fr','swissquote':'swissquote.com',
   'bitpanda':'bitpanda.com','freedom24':'freedom24.com','vanguard':'vanguard.fr','banque palatine':'palatine.fr','crédit coopératif':'credit-cooperatif.coop','bunq':'bunq.com',
