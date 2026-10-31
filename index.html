@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_11_5_16.html
+  @file        : KYF_SHARE_beta_2_11_5_18.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.11.5.16
+  @version     : Beta 2.11.5.18
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -607,6 +607,13 @@ body.kyf-kpop-open .kpi{pointer-events:none}
    et Indice (benchmark) : surlignage doré au survol de chaque ligne,
    même code couleur que les boutons d'import ci-dessus, visible sur
    les thèmes clair et sombre. ── */
+.kyf-ia-link{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;box-sizing:border-box;margin:-4px 0 14px;padding:9px 12px;border-radius:8px;border:1px solid #f0b429;background:#f0b429;color:#000;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:opacity .15s}
+.kyf-ia-link:hover{opacity:.85}
+.kyf-ia-pri,.kyf-ia-sec{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:.5px;padding:8px 16px;border-radius:8px;cursor:pointer}
+.kyf-ia-pri{background:#f0b429;color:#000;border:1px solid #f0b429;transition:opacity .15s}
+.kyf-ia-pri:hover{opacity:.85}
+.kyf-ia-sec{background:none;color:var(--text3);border:1px solid var(--border2);transition:background .15s}
+.kyf-ia-sec:hover{background:var(--hov-bg)}
 .pfr-btn{transition:background .15s ease, color .15s ease}
 .pfr-btn:hover{background:rgba(240,180,41,0.14) !important;color:#f0b429 !important}
 /* Quoi de neuf : nouveauté importante en jaune/orange (sombre : jaune KYF, clair : ambre foncé lisible) */
@@ -7442,7 +7449,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.11.5.16</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.11.5.18</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -34643,6 +34650,63 @@ const IMPORT_TYPE_CONFIG = {
   per:    { hint:"Export CSV ou Excel (.xls/.xlsx) de vos positions (ISIN ou Ticker, quantité, PRU si dispo) - compatible avec la plupart des courtiers, dont Fortuneo et Boursorama (export des positions du PER). PRU complété automatiquement si le relevé le fournit.", fileLabel:"Cliquez pour choisir votre fichier .csv, .xls, .xlsx ou .txt", accept:".csv,.txt,.xls,.xlsx", needsDest:true },
 };
 
+
+// ── Modèle de consigne pour une IA (Claude, Gemini, Mistral, ChatGPT...) : met un tableau au format CSV que KYF lit ──
+const KYF_IA_PROMPT = [
+  "Tu mets en forme un tableau de placements pour l'application KYF. Je vais te coller mon tableau à la fin de ce message (copié depuis mon espace client ou mon relevé).",
+  "",
+  "Rends-moi un seul bloc de code CSV, puis, après le bloc, la liste des cases que tu as laissées vides par doute.",
+  "",
+  "FORMAT EXACT",
+  "- Séparateur : point-virgule (;)",
+  "- Décimales : virgule (exemple 12,50), sans espace dans les nombres",
+  "- Première ligne, à recopier telle quelle : ISIN;Nom;Quantite;PRU;Montant;Categorie",
+  "- Une ligne par support (fonds, ETF, action), aucune ligne de total",
+  "",
+  "COLONNES",
+  "- ISIN : le code de 12 caractères. S'il n'est pas écrit dans mon tableau et que tu n'en es pas absolument certain, laisse la case VIDE. N'invente jamais un ISIN.",
+  "- Nom : le nom du support, tel qu'écrit dans mon tableau.",
+  "- Quantite : le nombre de parts ou de titres.",
+  "- PRU : le prix de revient unitaire (prix d'achat moyen d'une part). S'il n'est pas dans mon tableau, laisse vide. Ne le calcule pas.",
+  "- Montant : la valeur actuelle totale de la ligne en euros, si elle est dans mon tableau, sinon vide.",
+  "- Categorie : écris fonds euro pour un fonds en euros (sans parts), SCPI pour une SCPI, sinon laisse vide.",
+  "",
+  "RÈGLES",
+  "- N'invente aucun chiffre et ne corrige rien.",
+  "- Si une valeur est illisible ou ambiguë, laisse la case vide.",
+  "",
+  "Voici mon tableau :",
+  ""
+].join('\n');
+function kyfIaOpen(){
+  if(document.getElementById('kyfIaModal')) return;
+  const ov = document.createElement('div'); ov.id = 'kyfIaOverlay';
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10000003';
+  ['click','contextmenu','wheel','touchmove'].forEach(ev => ov.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); }, { passive:false }));   // un clic à côté ne ferme pas la fenêtre
+  const m = document.createElement('div'); m.id = 'kyfIaModal'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-label', 'Utiliser mon IA');
+  m.style.cssText = "position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(620px,95vw);max-height:88vh;z-index:10000004;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;font-family:'Inter',sans-serif;display:flex;flex-direction:column;overflow:hidden";
+  m.addEventListener('contextmenu', e => { if(!(e.target && e.target.closest && e.target.closest('#kyfIaTxt'))) e.preventDefault(); });
+  m.innerHTML =
+    '<div style="padding:22px 24px;overflow-y:auto;flex:1;min-height:0;overscroll-behavior:contain">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><span style="font-size:14px;font-weight:700;color:var(--text)">Mettre mon tableau au bon format avec une IA</span>'
+    + '<button type="button" class="kyf-modal-close" onclick="kyfIaClose()" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'
+    + '<ol style="margin:0 0 14px;padding-left:18px;font-size:12px;color:var(--text2);line-height:1.8"><li>Masquez votre nom et votre numéro de contrat dans votre tableau.</li><li>Copiez la consigne ci-dessous et collez-la dans votre IA (Claude, Gemini, Mistral, ChatGPT...).</li><li>Collez ensuite votre tableau à la suite, puis enregistrez le CSV obtenu dans un fichier .csv.</li><li>Importez ce fichier dans KYF et vérifiez chaque ligne dans l’aperçu.</li></ol>'
+    + '<textarea id="kyfIaTxt" readonly spellcheck="false" style="width:100%;box-sizing:border-box;height:210px;resize:vertical;background:var(--btn-secondary-bg);border:1px solid var(--border2);border-radius:8px;color:var(--text2);font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;line-height:1.5;padding:10px 12px;outline:none"></textarea>'
+    + '<div style="display:flex;align-items:flex-start;gap:8px;margin:12px 0;padding:9px 11px;border-radius:8px;background:rgba(240,180,41,0.1);border:1px solid rgba(240,180,41,0.35);font-size:11px;line-height:1.55;color:var(--text2)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg><span><strong style="color:var(--text)">Une IA peut se tromper</strong>, surtout sur les codes ISIN et les chiffres. Vérifiez chaque ligne dans l’aperçu avant d’importer. KYF n’est pas responsable du contenu produit par une IA.</span></div>'
+    + '<div style="display:flex;gap:8px;justify-content:flex-end"><button type="button" class="kyf-ia-sec" onclick="kyfIaClose()">FERMER</button><button type="button" class="kyf-ia-pri" id="kyfIaCopy" onclick="kyfIaCopy()">COPIER LA CONSIGNE</button></div></div>';
+  document.body.appendChild(ov); document.body.appendChild(m);
+  window._kyfIaOv = document.body.style.overflow; document.body.style.overflow = 'hidden';
+  document.getElementById('kyfIaTxt').value = KYF_IA_PROMPT;
+  m.addEventListener('keydown', e => { if(e.key === 'Escape'){ e.stopPropagation(); kyfIaClose(); } });
+  try{ document.getElementById('kyfIaCopy').focus(); }catch(e){}
+}
+function kyfIaClose(){ ['kyfIaModal', 'kyfIaOverlay'].forEach(id => { const e = document.getElementById(id); if(e) e.remove(); }); document.body.style.overflow = window._kyfIaOv === undefined ? '' : window._kyfIaOv; }
+async function kyfIaCopy(){
+  const ok = await kyfCopyText(KYF_IA_PROMPT);
+  const b = document.getElementById('kyfIaCopy'); if(!b) return;
+  b.textContent = ok ? 'COPIÉ' : 'COPIE IMPOSSIBLE : SÉLECTIONNEZ LE TEXTE';
+  setTimeout(() => { const x = document.getElementById('kyfIaCopy'); if(x) x.textContent = 'COPIER LA CONSIGNE'; }, 2500);
+}
 async function openImportRelevé(origin){
   window._importCpt = '';
   window._ctImportEnv = null;   // posé ensuite par la page Comptes titres quand l'import vient d'elle
@@ -48556,7 +48620,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.11.5.16\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.11.5.18\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -63603,6 +63667,15 @@ const GUIDE_PAGES = [
         <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> En cas d'erreur dans le tableau</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9">Si un actif n'a pas été reconnu ou identifié par erreur, cliquez sur son ticker ou son ISIN dans le tableau pour rouvrir une recherche (par nom ou par ISIN, via OpenFIGI) et corriger la ligne sans tout ressaisir.</div>
       </div>
+      <div id="guide-ia" style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Pas de fichier lisible : utiliser votre IA</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Si vous n'avez qu'un tableau à l'écran ou un relevé que KYF ne sait pas lire, le bouton <strong style="color:var(--text)">Pas de fichier lisible ? Utiliser mon IA</strong> (à l'étape où l'on choisit le fichier) ouvre une fenêtre avec une consigne à copier.<br><br>
+        <strong style="color:var(--text)">1.</strong> Masquez votre nom et votre numéro de contrat dans votre tableau.<br>
+        <strong style="color:var(--text)">2.</strong> Copiez la consigne et collez-la dans l'IA de votre choix (Claude, Gemini, Mistral, ChatGPT...), puis collez votre tableau à la suite.<br>
+        <strong style="color:var(--text)">3.</strong> Enregistrez le CSV obtenu dans un fichier .csv et importez-le dans KYF.<br><br>
+        La consigne demande les colonnes <strong style="color:var(--text)">ISIN ; Nom ; Quantite ; PRU ; Montant ; Categorie</strong>, séparées par des points-virgules, avec la virgule pour les décimales. Pour un fonds en euros, la colonne Categorie porte « fonds euro », pour une SCPI « SCPI ».<br><br>
+        <strong style="color:var(--text)">Une IA peut se tromper</strong>, surtout sur les codes ISIN et les chiffres : vérifiez chaque ligne dans l'aperçu avant d'importer. KYF n'est pas responsable du contenu produit par une IA.</div>
+      </div>
       <div id="guide-ticker" style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Le ticker : c'est quoi, à quoi ça sert, où le trouver</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9"><strong style="color:var(--text)">C'est quoi ?</strong> Le code court d'un titre en bourse, par exemple CW8.PA pour un ETF MSCI World coté à Paris. Le suffixe indique la place de cotation : .PA Paris, .DE Xetra, .L Londres, .MI Milan, .AS Amsterdam.<br><br><strong style="color:var(--text)">À quoi ça sert ?</strong> Avec le ticker, KYF suit le prix en direct de la ligne (Yahoo Finance) et calcule le gain et la variation du jour. Sans ticker, la ligne garde la valeur de votre relevé, sans prix en direct. Rien n'est inventé.<br><br><strong style="color:var(--text)">Comment KYF le trouve</strong> pendant un import : il reprend d'abord le ticker déjà connu pour ce fonds dans votre contrat, puis le cherche à partir de l'ISIN ou du nom du relevé (via OpenFIGI). Pendant cette recherche, un encadré « C'est quoi un ticker ? » s'affiche à droite du message d'avancement et disparaît dès qu'elle est terminée ; son lien « Retrouver ce texte dans le guide » mène ici.<br><br><strong style="color:var(--text)">S'il en manque</strong> : les lignes concernées apparaissent à l'étape suivante sous « À compléter ». Collez l'ISIN et KYF cherche le ticker tout seul. Sinon, ouvrez la page de l'actif sur Yahoo Finance : le symbole s'affiche à côté du nom. Les loupes à côté des champs lancent la recherche pour vous, et le lien « Ticker introuvable ? » mène à la base communautaire.</div>
@@ -65963,8 +66036,8 @@ const GUIDE_PAGES = [
 // ── Version du guide ──
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
-const KYF_GUIDE_VERSION = '1.26';
-const KYF_GUIDE_POUR = '2.11.5.16';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_VERSION = '1.27';
+const KYF_GUIDE_POUR = '2.11.5.18';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -75036,6 +75109,10 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.18 · 31/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import « Utiliser mon IA » : bouton jaune plein lisible sur toute la largeur, croix de fermeture standard KYF (halo rouge), boutons au survol de la charte, défilement verrouillé. Guide v1.27 : nouveau bloc « Pas de fichier lisible : utiliser votre IA ».</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.17 · 31/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import : bouton « Pas de fichier lisible ? Utiliser mon IA » (étape 2). Il ouvre une fenêtre avec une consigne à copier chez Claude, Gemini, Mistral ou ChatGPT pour mettre un tableau au format CSV lu par KYF, avec l'avertissement « une IA peut se tromper ».</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.16 · 31/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Un PRU négatif sur une ligne d'assurance vie / PER ne bloque plus la page (message « Données illisibles » en trop) : un nombre lisible suffit. Le message nomme le contrat par son nom et son assureur (retour d'un testeur).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.15 · 31/10/2026</div>
@@ -105828,6 +105905,7 @@ function orInlineEdit(id, td, currentVal){
     </button>
 
     <div id="importStep2Hint" style="font-size:11px;color:var(--text3);margin-bottom:16px;line-height:1.5"></div>
+    <button type="button" class="kyf-ia-link" onclick="kyfIaOpen()" title="Un modèle de consigne à copier chez Claude, Gemini, Mistral ou ChatGPT pour mettre votre tableau au bon format"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg><span>Pas de fichier lisible ? Utiliser mon IA</span></button>
 
     <label style="display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;padding:8px 10px;border-radius:8px;background:rgba(240,180,41,0.1);border:1px solid rgba(240,180,41,0.3);cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;color:var(--text2);line-height:1.4">
       <span class="kyf-toggle" style="flex-shrink:0;margin-top:1px"><input type="checkbox" id="importCertifyOwn3"><span class="kyf-toggle-track"></span><span class="kyf-toggle-thumb"></span></span>
