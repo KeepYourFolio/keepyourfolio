@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_11_5_15.html
+  @file        : KYF_SHARE_beta_2_11_5_16.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.11.5.15
+  @version     : Beta 2.11.5.16
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7442,7 +7442,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.11.5.15</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.11.5.16</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -48556,7 +48556,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.11.5.15\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.11.5.16\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -55088,7 +55088,7 @@ function kyfShapeError(key, v){
   if(key === 'kyf-av-positions'){
     if(Object.keys(o).some(c => !Array.isArray(o[c]) || o[c].some(x => !isObj(x)))) return KYF_SHAPE_OBJET[key] + ' : format illisible';
     for(const c of Object.keys(o)){
-      let _cn = ''; try{ const _ct = JSON.parse(localStorage.getItem('kyf-av') || '[]').find(a => String(a.id) === String(c)); if(_ct) _cn = String(_ct.nom || _ct.name || _ct.label || _ct.contrat || '').trim(); }catch(e){}
+      let _cn = ''; try{ const _ct = JSON.parse(localStorage.getItem('kyf-av') || '[]').find(a => String(a.id) === String(c)); if(_ct) _cn = [_ct.contratNom || _ct.nom || _ct.name || _ct.label || '', _ct.assureur || ''].map(x => String(x).trim()).filter(Boolean).join(' · '); }catch(e){}
       const fe = kyfFieldError(key, o[c], 'contrat « ' + (_cn || c).slice(0, 40) + ' »'); if(fe) return fe;
     }   // R04 étape 2 : champs des positions de chaque contrat
   }
@@ -55119,7 +55119,8 @@ const KYF_FIELDS = {
   'kyf-av': { label: 'Assurance vie / PER', date: 'dateOuv', pos: [['versements','versements'], ['valeur','valeur'], ['fondsEuros','fonds euros'], ['uc','unités de compte'], ['rachats','rachats'],
     ['fraisGestion','frais de gestion'], ['fraisEntree','frais d\'entrée'], ['fraisPilotage','frais de pilotage'], ['versNonAffectes','versements non affectés']] },
   'kyf-pee': { label: 'PEE', date: 'dateOuv', pos: [['versements','versements'], ['valeur','valeur']] },
-  'kyf-av-positions': { label: 'Positions AV/PER', pos: [['qty','quantité'], ['pru','PRU'], ['valeur','valeur']], num: [['tauxRendement','rendement']] },
+  // PRU : un nombre lisible suffit (un PRU négatif peut sortir d'un arbitrage ou d'un import : inhabituel mais pas un fichier abîmé, il ne doit pas bloquer la page)
+  'kyf-av-positions': { label: 'Positions AV/PER', pos: [['qty','quantité'], ['valeur','valeur']], num: [['pru','PRU'], ['tauxRendement','rendement']] },
   'kyf-scpi': { label: 'SCPI', date: 'dateAchat', pos: [['parts','parts'], ['prixAchat','prix d\'achat'], ['prixActuel','prix actuel'], ['td','taux de distribution'], ['valAchat','valeur d\'achat'],
     ['valActuel','valeur actuelle'], ['revMens','revenu mensuel'], ['revTheo','revenu théorique'], ['dividendeBrut','dividende'], ['partsJouissance','parts en jouissance'], ['divRecuMois','dividende reçu']], num: [['pv','plus-value']] },
   // Crypto (objet pea-crypto-v1) : dates d'import de plateforme souvent suivies de l'heure (dateLoose)
@@ -65963,7 +65964,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.26';
-const KYF_GUIDE_POUR = '2.11.5.15';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.11.5.16';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -75035,6 +75036,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.16 · 31/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Un PRU négatif sur une ligne d'assurance vie / PER ne bloque plus la page (message « Données illisibles » en trop) : un nombre lisible suffit. Le message nomme le contrat par son nom et son assureur (retour d'un testeur).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.15 · 31/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Synchronisation : une ligne sans ticker mais avec un ISIN est acceptée (CCA, parts sociales, titres sans ticker). Le message nomme le contrat concerné et la valeur illisible, car « ligne 3 » se comptait dans le contrat et non dans la liste des contrats (retour d'un testeur).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.14 · 31/10/2026</div>
