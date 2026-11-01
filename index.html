@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_11_5_25.html
+  @file        : KYF_SHARE_beta_2_11_5_26.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.11.5.25
+  @version     : Beta 2.11.5.26
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7449,7 +7449,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.11.5.25</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.11.5.26</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -48626,7 +48626,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.11.5.25\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.11.5.26\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66043,7 +66043,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.28';
-const KYF_GUIDE_POUR = '2.11.5.25';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.11.5.26';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -75115,6 +75115,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.26 · 31/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Logos des banques (Livrets) : si la première icône est absente ou n'est que le petit globe par défaut (cas de Caisse d'Épargne), KYF essaie d'autres sources avant d'afficher l'initiale. Reconnaissance du nom plus souple (apostrophe typographique, accents).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.25 · 31/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Champ banque (Livrets et Crédits) : le texte « ex: Boursobank » est remplacé par « Continuez d'écrire pour trouver votre banque », rappelé aussi en tête de la liste des banques populaires.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.24 · 31/10/2026</div>
@@ -82343,14 +82345,18 @@ function getLivretLogo(banque, size){
   // Certains appelants (ex. crédit démo "Crédit Agricole (DÉMO)") ajoutent un
   // suffixe entre parenthèses en plus du nom de banque réel : on l'ignore pour
   // le matching contre LIV_BANK_DOMAINS, sans jamais toucher au texte affiché.
-  const key = banque.replace(/\s*\([^)]*\)\s*$/,'').toLowerCase().trim();
-  const domain = LIV_BANK_DOMAINS[key] || null;
+  const key = banque.replace(/\s*\([^)]*\)\s*$/,'').toLowerCase().replace(/[\u2019\u2018`]/g,"'").trim();
+  const domain = LIV_BANK_DOMAINS[key] || LIV_BANK_DOMAINS[key.normalize('NFD').replace(/[\u0300-\u036f]/g,'')] || null;
   if(!domain) return `<div style="width:${size}px;height:${size}px;border-radius:6px;background:rgba(77,159,255,0.15);display:flex;align-items:center;justify-content:center;font-size:${Math.max(9,Math.round(size*0.46))}px;font-weight:700;color:var(--blue);flex-shrink:0">${escapeHtml(banque.charAt(0).toUpperCase())}</div>`;
   // Clearbit est mort depuis décembre 2025 : Google d'abord, puis DuckDuckGo, puis l'initiale de la banque
   const ini = String(banque || '?').trim().charAt(0).toUpperCase().replace(/[<>&"']/g, '?');
   const fin = `var d=document.createElement('div');d.style.cssText='width:${size}px;height:${size}px;border-radius:6px;background:rgba(77,159,255,0.15);display:flex;align-items:center;justify-content:center;font-size:${Math.max(9,Math.round(size*0.46))}px;font-weight:700;color:var(--blue);flex-shrink:0';d.textContent='${ini}';this.replaceWith(d);`;
-  return `<img src="https://www.google.com/s2/favicons?domain=${domain}&sz=64" width="${size}" height="${size}" style="border-radius:4px;flex-shrink:0;object-fit:contain"
-    onerror="this.onerror=function(){${fin}};this.src='https://icons.duckduckgo.com/ip3/${domain}.ico'">`;
+  // Chaîne de sources : Google, DuckDuckGo, puis variantes du domaine (www, espace particuliers) ; une icône trop petite (globe par défaut) est écartée
+  const alt = domain === 'caisse-epargne.fr' ? ['particuliers.caisse-epargne.fr'] : [];
+  const srcs = ['https://www.google.com/s2/favicons?domain=' + domain + '&sz=64', 'https://icons.duckduckgo.com/ip3/' + domain + '.ico', 'https://www.google.com/s2/favicons?domain=www.' + domain + '&sz=64'].concat(alt.map(a => 'https://www.google.com/s2/favicons?domain=' + a + '&sz=64'));
+  const nx = `var i=(+this.dataset.i||0)+1,L=${JSON.stringify(srcs).replace(/"/g, '&quot;')};if(i<L.length){this.dataset.i=i;this.src=L[i];}else{${fin}}`;
+  return `<img src="${srcs[0]}" width="${size}" height="${size}" style="border-radius:4px;flex-shrink:0;object-fit:contain"
+    onerror="${nx}" onload="if(this.naturalWidth<20){${nx}}">`;
 }
 const LIV_TAUX_DEFAUT = {
   'Livret A':1.75,'LDDS':1.75,'LEP':3.50,'PEL':1.75,'CEL':0.50,
