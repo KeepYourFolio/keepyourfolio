@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_11_5_21.html
+  @file        : KYF_SHARE_beta_2_11_5_23.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.11.5.21
+  @version     : Beta 2.11.5.23
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -2059,7 +2059,7 @@ tr.kyf-row-sel td{background:rgba(240,180,41,0.08);background:color-mix(in srgb,
 .ct-lg-r .p{width:40px;text-align:right;font-size:11px;color:var(--text3);flex-shrink:0}
 .ct-lg-r .n{flex:1;min-width:0;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ct-lg-r .v{min-width:84px;text-align:right;font-weight:600;flex-shrink:0}
-.ct-lg-r .g{width:62px;text-align:right;font-size:12px;font-weight:700;flex-shrink:0}
+.ct-lg-r .g{width:80px;text-align:right;font-size:12px;font-weight:700;flex-shrink:0}
 .ct-acts .ct-btn{font-size:10px;padding:7px 14px;min-height:0;border-radius:8px;letter-spacing:.5px}
 .ct-lg-f .ct-btn{font-size:10px;padding:4px 8px;min-height:0;border-radius:6px}
 .ct-lg-f{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0 6px;border-top:1px solid var(--border2);font-size:12px;color:var(--text3)}
@@ -7449,7 +7449,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.11.5.21</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.11.5.23</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -12281,7 +12281,7 @@ function ctRenderLignes(E){   // lignes du compte affiché : poids, nom, valeur,
   const lp = E.lp, all = !!window._ctLgAll;
   const L = E.lignes.map(e => {
     const ok = !kyfEtfNoPrice(e, lp), v = ok ? getEval(e, lp[e.ticker]) : null, c = etfInvestOf(e);
-    return { nom: e.name || e.ticker || '-', v: v, c: c, p: ok && E.val > 0 ? v / E.val * 100 : null, g: ok && c > 0 ? (v - c) / c * 100 : null };
+    return { nom: e.name || e.ticker || '-', v: v, c: c, p: ok && E.val > 0 ? v / E.val * 100 : null, g: ok && c > 0 ? (v - c) / c * 100 : null, gp: ok && c > 0 ? v - c : null };
   }).sort((a, b) => (b.v === null ? -1 : b.v) - (a.v === null ? -1 : a.v));
   const mk = (cls, t, col) => { const d = document.createElement('span'); d.className = cls; d.textContent = t; if(col) d.style.color = col; return d; };
   const h = document.createElement('div'); h.className = 'ct-lg-h';
@@ -12297,7 +12297,11 @@ function ctRenderLignes(E){   // lignes du compte affiché : poids, nom, valeur,
     r.appendChild(mk('p', x.p === null ? '-' : fmt(x.p, 0) + ' %'));
     r.appendChild(mk('n', x.nom)); r.querySelector('.n').title = x.nom;
     r.appendChild(mk('v', x.v === null ? '-' : fmt(x.v, 0) + ' €'));
-    r.appendChild(mk('g', x.g === null ? '-' : (x.g >= 0 ? '+' : '') + fmt(x.g, 1) + ' %', x.g === null ? '' : (x.g >= 0 ? 'var(--green)' : 'var(--red)')));
+    { const gEl = mk('g', x.g === null ? '-' : (x.g >= 0 ? '+' : '') + fmt(x.g, 1) + ' %', x.g === null ? '' : (x.g >= 0 ? 'var(--green)' : 'var(--red)'));
+      if(x.gp !== null){   // le montant du gain ou de la perte sous le pourcentage : un -3 % peut cacher une grosse somme
+        const sub = document.createElement('span'); sub.style.cssText = 'display:block;font-size:10px;font-weight:600;margin-top:1px'; sub.textContent = (x.gp >= 0 ? '+' : '\u2212') + fmt(Math.abs(x.gp), 0) + ' €';
+        sub.title = 'Gain ou perte latente de cette ligne : valeur actuelle moins prix de revient'; gEl.appendChild(sub); }
+      r.appendChild(gEl); }
     box.appendChild(r);
   });
   if(L.length > 5){
@@ -48622,7 +48626,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.11.5.21\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.11.5.23\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66039,7 +66043,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.28';
-const KYF_GUIDE_POUR = '2.11.5.21';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.11.5.23';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -75111,6 +75115,10 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.23 · 31/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : chaque ligne du compte affiche maintenant, sous son pourcentage de gain ou de perte, le montant en euros (idée d'un testeur).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.22 · 31/10/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance vie / PER : chaque ligne de support affiche maintenant, sous son pourcentage de gain ou de perte, le montant en euros (idée d'un testeur : un -2,89 % qui cachait une grosse perte).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.21 · 31/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance vie : un fonds suivi par son ISIN dont la valeur a été actualisée par la source des cours affiche « actualisé JJ/MM » au lieu de « relevé », qui laissait croire que le fonds n'était pas suivi (retour d'un testeur). « relevé » reste pour une valeur saisie ou issue du relevé.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.20 · 31/10/2026</div>
@@ -99912,7 +99920,7 @@ function renderAV(){
         const _d = _pv(p), _val = _d.val;
         const rendStr = p.type==='fe' && p.tauxRendement ? `<span style="color:var(--green);font-weight:700">${p.tauxRendement}%/an</span>` :
                         (p.type==='immo' && p.pru && p.qty && avLoyersOf(d, p.id) > 0) ? (() => { const _l = avLoyersOf(d, p.id), _t = (_val + _l - p.pru*p.qty)/(p.pru*p.qty)*100; return `<span class="${_t>=0?'up':'dn'}" style="font-weight:700;cursor:help" title="${escapeHtml('Prix des parts ' + ((_val-(p.pru*p.qty))/(p.pru*p.qty)*100).toFixed(2).replace('.',',') + ' % + loyers reçus ' + fmt(_l,2) + ' € (rattachés à cette SCPI dans le journal)')}">${_t.toFixed(2).replace('.',',')} %</span><span style="display:block;font-size:9px;font-weight:500;color:var(--text3)">loyers inclus</span>`; })() :
-                        p.pru && p.qty ? `<span class="${(_val-(p.pru*p.qty))>=0?'up':'dn'}" style="font-weight:700">${((_val-(p.pru*p.qty))/(p.pru*p.qty)*100).toFixed(2).replace('.',',')} %</span>` : '-';
+                        p.pru && p.qty ? (() => { const _gp = _val - (p.pru*p.qty), _c = _gp >= 0 ? 'up' : 'dn'; return `<span class="${_c}" style="font-weight:700">${((_gp)/(p.pru*p.qty)*100).toFixed(2).replace('.',',')} %</span>` + (_val > 0 ? `<span class="${_c}" style="display:block;font-size:10px;font-weight:600;margin-top:1px" title="${escapeHtml('Gain ou perte latente de cette ligne : valeur actuelle moins prix de revient')}">${_gp >= 0 ? '+' : '\u2212'}${fmt(Math.abs(_gp),0)} €</span>` : ''); })() : '-';
         const _valTitle = _d.live ? 'Au cours du jour' + ((parseFloat(p.valeur)||0) > 0 ? '. Valeur du relevé' + (d.releve && d.releve.date ? ' du ' + new Date(d.releve.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'}) : '') + ' : ' + fmt(parseFloat(p.valeur),0) + ' €' : '') + '. Cours de marché : la valeur affichée par votre assureur peut avoir un jour de retard.' : '';
         return `<div${isPER ? ` class="kyf-pos-row" draggable="true" data-kyf-pos="${escapeHtml(String(p.id))}" data-kyf-contrat="${escapeHtml(String(d.id))}" title="Glisser vers un autre compartiment pour déplacer cette ligne"` : ''} style="display:flex;align-items:center;gap:10px;padding:6px 12px 6px 32px;background:rgba(255,255,255,0.015)${isPER ? ';cursor:grab' : ''}">
           <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:var(--text2);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(p.nom||p.ticker||'-')}</span>${(() => {
@@ -99926,7 +99934,7 @@ function renderAV(){
           })()}</span>
           <span style="font-size:10px;color:var(--text3);flex-shrink:0">${escapeHtml(p.ticker||'')}</span>
           <span style="font-size:15px;font-weight:700;flex-shrink:0;min-width:70px;text-align:right"${_valTitle ? ' title="' + escapeHtml(_valTitle) + '"' : ''}>${_val>0?fmt(_val,0)+' €':'-'}</span>
-          <span style="font-size:13px;flex-shrink:0;min-width:50px;text-align:right">${rendStr}</span>
+          <span style="font-size:13px;flex-shrink:0;min-width:74px;text-align:right">${rendStr}</span>
           ${kyfFondsLike(p.type) && p.ticker ? `<button id="avPosRefreshBtn-${p.id}" onclick="event.stopPropagation();avPosRefreshFondsPrice('${d.id}','${p.id}')" title="Actualiser le cours" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 4px;display:inline-flex;align-items:center;flex-shrink:0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button>` : ''}
           <span style="position:relative;flex-shrink:0">
             <button onclick="event.stopPropagation();avToggleActionsMenu('pos-${p.id}')" title="Actions" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 6px;display:inline-flex;align-items:center;font-size:16px;letter-spacing:1px">⋯</button>${(['etf','action','fonds','obl','pe','dp'].includes(p.type) && (()=>{ let vu = false; try{ vu = localStorage.getItem('kyf-nouveau-badge-avsuivi') === '1'; }catch(e){} return !vu && [].concat(KYF_NOUVEAUTES.badge || []).indexOf('avsuivi') >= 0 && (window._avDotN = (window._avDotN || 0) + 1) === 1; })()) ? '<span class="kyf-new-badge" data-new="avsuivi" title="Nouveau : suivi du rendement de ce fonds" style="display:inline-block;position:absolute;top:-2px;right:0;width:8px;height:8px;font-size:0;padding:0;border-radius:50%;background:#f0b429;pointer-events:none;box-shadow:0 0 0 2px var(--bg2)"></span>' : ''}
