@@ -432,7 +432,7 @@ html,body{overflow-x:clip;max-width:100%}main{overflow-x:clip;min-width:0;paddin
 <script src="avf.js"></script><script src="qr.js"></script>
 <script>
 "use strict";
-var VER="3.12", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="3.12.1", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["actif_valeur","Valeur d’un actif"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -592,7 +592,7 @@ function pcPos(D,C){
   var out=[],ok={};C.forEach(function(c){if(c&&typeof c.id==="string")ok[c.id]=c.type});
   function add(cid,x,fix){if(!ok[cid]||out.length>=800)return;var q=pcNum(x.qty,1e9),p=pcNum(x.pru,1e9);if(!(q>0))return;
     var tk=fix?"":String(x.ticker||"").toUpperCase().replace(/[^A-Z0-9.=^-]/g,"").slice(0,20),is=String(x.isin||"").toUpperCase();if(!/^[A-Z]{2}[A-Z0-9]{9}[0-9]$/.test(is))is="";
-    var nom=pcClean(x.nom,80);if(!nom)return;var vl=fix?pcNum(x.val,1e10):0;out.push({cid:cid,env:ok[cid],nom:nom,ticker:tk,isin:is,qty:q,pru:p,fix:fix?1:0,val:vl})}
+    var nom=pcClean(x.nom,80);if(!nom)return;var vl=fix?pcNum(x.val,1e10):0,o={cid:cid,env:ok[cid],nom:nom,ticker:tk,isin:is,qty:q,pru:p,fix:fix?1:0,val:vl};if(fix&&x.lq>0&&x.lt){o.lq=pcNum(x.lq,1e9);o.lt=String(x.lt).toUpperCase().replace(/[^A-Z0-9.=^-]/g,"").slice(0,20)}out.push(o)}
   A("pea-positions").forEach(function(x){if(!x||typeof x!=="object"||x.contratId)return;var e=String(x.enveloppe||"");if(e==="PME")e="PEA-PME";
     var cid=e==="PEA"?"pea":e==="PEA-PME"?"peapme":e==="CTO"?String(x.compte||"c1"):"";if(!cid)return;
     if(pcNum(x.qty)>0)add(cid,{nom:x.name||x.nom,ticker:x.ticker,isin:x.isin,qty:x.qty,pru:x.pru});else if(pcNum(x.evalBase)>0)add(cid,{nom:x.name||x.nom,qty:1,pru:x.evalBase},1)});
@@ -600,9 +600,14 @@ function pcPos(D,C){
   (function(){var P=D["kyf-av-positions"];
     function avL(cid){var L=[];if(Array.isArray(P))L=P.filter(function(l){return l&&(l.contratId===cid||l.contractId===cid||l.avId===cid||l.cid===cid||l.contrat===cid)});else if(P&&typeof P==="object"){var v=P[cid];if(Array.isArray(v))L=v;else if(v&&Array.isArray(v.positions))L=v.positions}
       return L.filter(function(l){return l&&typeof l==="object"&&pcNum(l.valeur)>0&&pcClean(l.nom||l.name||l.libelle,80)})}
-    A("kyf-av").forEach(function(x){if(!x||typeof x!=="object")return;var cid=String(x.id||""),tot=pcNum(x.valeur),L=avL(cid),sm=0;
-      if(L.length){L.forEach(function(l){var v=pcNum(l.valeur),qq=pcNum(l.qty),pr=pcNum(l.pru),co=qq>0&&pr>0?Math.round(qq*pr*100)/100:v;sm+=v;add(cid,{nom:l.nom||l.name||l.libelle,qty:1,pru:co,val:v},1)});if(tot-sm>1)add(cid,{nom:"Autres supports",qty:1,pru:Math.round((tot-sm)*100)/100,val:Math.round((tot-sm)*100)/100},1)}
-      else if(tot>0)add(cid,{nom:x.contratNom||x.assureur||"Contrat",qty:1,pru:tot},1)})})();
+    var AVC=[];A("kyf-av").forEach(function(x){if(!x||typeof x!=="object")return;var cid=String(x.id||""),tot=pcNum(x.valeur),L=avL(cid),hasFe=false;
+      var vs=pcNum(x.versements),rc=pcNum(x.rachats);if(vs>0)AVC.push({cid:cid,c:Math.round((vs-rc)*100)/100});
+      if(L.length){L.forEach(function(l){var v=pcNum(l.valeur),qq=pcNum(l.qty),pr=pcNum(l.pru),co=qq>0&&pr>0?Math.round(qq*pr*100)/100:v,ty=String(l.type||"");if(ty==="fe")hasFe=true;
+          add(cid,{nom:l.nom||l.name||l.libelle,qty:1,pru:co,val:v,lq:ty!=="fe"&&ty!=="immo"&&qq>0?qq:0,lt:l.ticker},1)});
+        /* Même règle que KYF PC : valeur = somme des lignes (+ fonds en euros s'il n'y est pas + versements non affectés), jamais la valeur saisie du contrat */
+        var fe=pcNum(x.fondsEuros);if(!hasFe&&fe>1)add(cid,{nom:"Fonds en euros",qty:1,pru:fe,val:fe},1);
+        var vn=pcNum(x.versNonAffectes);if(vn>1)add(cid,{nom:"Versements non affectés",qty:1,pru:vn,val:vn},1)}
+      else if(tot>0)add(cid,{nom:x.contratNom||x.assureur||"Contrat",qty:1,pru:tot},1)});out.avc=AVC})();
   (function(){function cv(k){var n=parseFloat(String(D[k]==null?"":D[k]).replace(",","."));return isFinite(n)&&n>0&&n<1e10?Math.round(n*100)/100:0}
     var pe=cv("kyf-cash-pea");if(pe&&ok.pea)add("pea",{nom:"Espèces",qty:1,pru:pe},1);
     var tot=cv("kyf-cash-cto"),m=D["kyf-cto-cash"],ot=0;if(!m||typeof m!=="object"||Array.isArray(m))m={};
@@ -636,7 +641,8 @@ async function patriImport(text){
 function pcApply(a){var nm={};comptes().forEach(function(c){if(c.kyf)nm[c.kyf]=c.nom});
   var P=(Array.isArray(a.pos)?a.pos:[]).filter(function(p){return nm[p.cid]}),K2={};P.forEach(function(p){K2[nm[p.cid]+"|"+(p.ticker||p.isin||p.nom)]=1});
   var keep=ld("pos",[]).filter(function(p){return p.src!=="pc"&&!K2[p.compte+"|"+(p.ticker||p.isin||p.nom)]}),t=today();
-  P.forEach(function(p,i){keep.push({id:"PC-"+i+"-"+rnd(4),src:"pc",fix:p.fix,env:p.env,compte:nm[p.cid],cid:p.cid,nom:p.nom,ticker:p.ticker,isin:p.isin,qty:p.qty,pru:p.pru,val:p.val||0,asof:t})});
+  P.forEach(function(p,i){keep.push({id:"PC-"+i+"-"+rnd(4),src:"pc",fix:p.fix,env:p.env,compte:nm[p.cid],cid:p.cid,nom:p.nom,ticker:p.ticker,isin:p.isin,qty:p.qty,pru:p.pru,val:p.val||0,lq:p.lq||0,lt:p.lt||"",asof:t})});
+  var AC={};((a.pos&&a.pos.avc)||[]).forEach(function(z){if(nm[z.cid])AC[nm[z.cid]]=z.c});sv("avc",AC);
   sv("pos",keep);if(Array.isArray(a.hist)&&a.hist.length)sv("hist",a.hist);sv("pcsync",Date.now());return P.length}
 async function pcAuto(){if(!gLie()||gBusy||S._pcauto)return;S._pcauto=1;var t=ld("pcsync",0);if(Date.now()-t<15*6e4)return;
   try{if(!(GTOK&&Date.now()<GEXP-60000)&&!(await gRenouv()))return;var o=await gLire();gBusy=false;pcApply(o);if(S.v==="pat"||S.v==="cpt"||S.v==="cptd")render()}catch(e){klog("pcAuto "+String(e&&e.message||e).slice(0,80))}}
@@ -1547,7 +1553,7 @@ function tabsDef(){return patOn()?[["pat","Patrimoine",I.chart],["cpt","Comptes"
 function nf(x){var n=parseFloat(String(x==null?"":x).replace(",","."));return isFinite(n)?n:0}
 function patKey(o){return(o.compte||o.enveloppe||"")+"|"+(o.ticker||o.isin||o.nom)}
 function patLedger(){var M={},B=ld("pos",[]);if(!Array.isArray(B))B=[];
-  B.forEach(function(p){var q=nf(p.qty);if(!(q>0))return;var k0=patKey({compte:p.compte,enveloppe:p.env,ticker:String(p.ticker||"").toUpperCase(),isin:p.isin,nom:p.nom});if(M[k0]){M[k0].qty+=q;M[k0].cost+=q*nf(p.pru);return}M[k0]={env:p.env||"",compte:p.compte||p.env||"",ticker:String(p.ticker||"").toUpperCase(),isin:p.isin||"",nom:p.nom||p.ticker||p.isin||"",qty:q,cost:q*nf(p.pru),asof:p.asof||"",fix:p.fix?1:0,val:p.fix?nf(p.val):0}});
+  B.forEach(function(p){var q=nf(p.qty);if(!(q>0))return;var k0=patKey({compte:p.compte,enveloppe:p.env,ticker:String(p.ticker||"").toUpperCase(),isin:p.isin,nom:p.nom});if(M[k0]){M[k0].qty+=q;M[k0].cost+=q*nf(p.pru);if(p.fix){M[k0].val+=nf(p.val);M[k0].lq+=nf(p.lq)}return}M[k0]={env:p.env||"",compte:p.compte||p.env||"",ticker:String(p.ticker||"").toUpperCase(),isin:p.isin||"",nom:p.nom||p.ticker||p.isin||"",qty:q,cost:q*nf(p.pru),asof:p.asof||"",fix:p.fix?1:0,val:p.fix?nf(p.val):0,lq:p.fix?nf(p.lq):0,lt:p.fix&&p.lt?String(p.lt).toUpperCase():""}});
   var O=ld(K.ops,[]).filter(function(o){return o&&(o.type==="achat"||o.type==="vente")}).slice().sort(function(a,b){return a.date>b.date?1:a.date<b.date?-1:0});
   O.forEach(function(o){var q=nf(o.qty),p=nf(o.prix);if(!(q>0))return;var k=patKey({compte:o.compte,enveloppe:o.enveloppe,ticker:String(o.ticker||"").toUpperCase(),isin:o.isin,nom:o.nom}),m=M[k];if(m&&m.asof&&(o.date<m.asof||o.st==="valide"))return;
     if(!m)m=M[k]={env:o.enveloppe||"",compte:o.compte||o.enveloppe||"",ticker:String(o.ticker||"").toUpperCase(),isin:o.isin||"",nom:o.nom||o.ticker||o.isin||"",qty:0,cost:0,asof:""};
@@ -1558,8 +1564,8 @@ var QT=null,QBUSY=0;
 function qtLoad(){if(QT)return QT;try{QT=JSON.parse(localStorage.getItem("kyfm-qt")||"null")}catch(e){}if(!QT||typeof QT!=="object"||!QT.q)QT={at:0,fail:0,q:{}};return QT}
 function qtSave(){try{localStorage.setItem("kyfm-qt",JSON.stringify(QT))}catch(e){}}
 function qtFx(c){if(!c||c==="EUR")return null;if(c==="GBp"||c==="GBX")c="GBP";return"EUR"+c+"=X"}
-function qtNeed(P){var q=qtLoad().q,s={},m=[];P.forEach(function(p){if(p.ticker)s[p.ticker]=1});Object.keys(s).forEach(function(t){if(!q[t])m.push(t);var f=q[t]&&qtFx(q[t].c);if(f&&!q[f])m.push(f)});return m}
-async function qtRefresh(force){if(QBUSY)return;var P=patLedger(),c=qtLoad();if(!P.length)return;var all=[];P.forEach(function(p){if(p.ticker&&all.indexOf(p.ticker)<0)all.push(p.ticker)});if(!all.length)return;
+function qtNeed(P){var q=qtLoad().q,s={},m=[];P.forEach(function(p){var t=p.ticker||p.lt;if(t)s[t]=1});Object.keys(s).forEach(function(t){if(!q[t])m.push(t);var f=q[t]&&qtFx(q[t].c);if(f&&!q[f])m.push(f)});return m}
+async function qtRefresh(force){if(QBUSY)return;var P=patLedger(),c=qtLoad();if(!P.length)return;var all=[];P.forEach(function(p){var t=p.ticker||p.lt;if(t&&all.indexOf(t)<0)all.push(t)});if(!all.length)return;
   var miss=qtNeed(P),stale=Date.now()-c.at>=600000;if(!force&&!stale&&!miss.length)return;if(!force&&Date.now()-(c.fail||0)<60000)return;
   QBUSY=1;try{var r=await idxGet("action=quotes&t="+encodeURIComponent(all.join(",")),20000);if(!r||!r.q)throw new Error("réponse vide");Object.keys(r.q).forEach(function(k){c.q[k]=r.q[k]});
     var fx=qtNeed(P).filter(function(t){return/=X$/.test(t)});if(fx.length){var r2=await idxGet("action=quotes&t="+encodeURIComponent(fx.join(",")),20000);if(r2&&r2.q)Object.keys(r2.q).forEach(function(k){c.q[k]=r2.q[k]})}
@@ -1571,17 +1577,18 @@ async function qtMid(c){var D=qtDay();if(!c.mid||c.mid.d!==D.d)c.mid={d:D.d,p:{}
   for(var i=0;i<T.length;i++){var t=T[i];if(c.mid.p[t]>0)continue;try{var r=await fetch("https://api.binance.com/api/v3/klines?symbol="+t.replace("-EUR","EUR")+"&interval=1h&startTime="+D.t+"&limit=1",{signal:AbortSignal.timeout(8000)});if(!r.ok)continue;var k=await r.json(),o=k&&k[0]&&+k[0][1];if(o>0&&Math.abs(k[0][0]-D.t)<3600000)c.mid.p[t]=o}catch(e){}}
   T.forEach(function(t){if(c.mid.p[t]>0&&c.q[t]){c.q[t].v=c.mid.p[t];c.q[t].c="EUR"}})}
 function qtEur(x,c,q){if(!(x>=0))return null;if(!c||c==="EUR")return x;var k=1;if(c==="GBp"||c==="GBX"){k=.01;c="GBP"}var f=q["EUR"+c+"=X"];return f&&f.p>0?x*k/f.p:null}
-function patCalc(P){var q=qtLoad().q;return P.map(function(m){var r=q[m.ticker],pe=r?qtEur(r.p,r.c,q):null,pv=r?qtEur(r.v,r.c,q):null,ok=pe!=null&&pv!=null;
+function patCalc(P){var q=qtLoad().q;return P.map(function(m){if(m.fix&&m.lq>0&&m.lt&&q[m.lt]){var r2=q[m.lt],e2=qtEur(r2.p,r2.c,q),v2=qtEur(r2.v,r2.c,q);if(e2!=null&&v2!=null){var lv=m.lq*e2;if(!(m.val>0&&(lv>m.val*20||lv<m.val/20)))return{m:m,ok:true,val:lv,prev:m.lq*v2,cost:m.cost}}}var r=q[m.ticker],pe=r?qtEur(r.p,r.c,q):null,pv=r?qtEur(r.v,r.c,q):null,ok=pe!=null&&pv!=null;
   var fv=m.fix&&m.val>0?m.val:m.cost;return{m:m,ok:ok,val:ok?m.qty*pe:fv,prev:ok?m.qty*pv:fv,cost:m.cost}})}
 function sgnE(x){return(x>=0?"+":"−")+eur(Math.round(Math.abs(x)*100))}
 function sgnP(x){return(x>=0?"+":"−")+Math.abs(x*100).toFixed(2).replace(".",",")+" %"}
 var PCOL=["#ff9a1f","#4f8cff","#2fbf8f","#c070ff","#ff6b81","#e8b017","#3cc7d9","#8a9bb8"];
+function avcAdj(LS){var AC=ld("avc",{}),by={},d={};if(!AC||typeof AC!=="object"||Array.isArray(AC))return d;LS.forEach(function(x){by[x.m.compte]=(by[x.m.compte]||0)+x.cost});Object.keys(by).forEach(function(k){if(AC[k]>0)d[k]=AC[k]-by[k]});return d}
 function patSel(forced){var LD=patCalc(patLedger()),names={};LD.forEach(function(x){names[x.m.compte]=1});var sel=forced||S.pa;if(sel!=="Tout"&&!names[sel])sel="Tout";
   var LS=LD.filter(function(x){return sel==="Tout"||x.m.compte===sel}),tV=0,tP=0,tC=0,G={};
-  LS.forEach(function(x){tV+=x.val;tP+=x.prev;tC+=x.cost;var k=sel==="Tout"?x.m.compte:x.m.nom;G[k]=(G[k]||0)+x.val});
+  LS.forEach(function(x){tV+=x.val;tP+=x.prev;tC+=x.cost;var k=sel==="Tout"?x.m.compte:x.m.nom;G[k]=(G[k]||0)+x.val});var AD=avcAdj(LS);Object.keys(AD).forEach(function(k){tC+=AD[k]});
   var GI=Object.keys(G).map(function(k){return{k:k,v:G[k]}}).sort(function(a,b){return b.v-a.v});
   return{sel:sel,all:LD,allV:LD.reduce(function(a,x){return a+x.val},0),LS:LS,tV:tV,tP:tP,tC:tC,GI:GI,GT:GI.reduce(function(a,x){return a+x.v},0)}}
-function patAcc(LD){var M={},O=[];LD.forEach(function(x){var k=x.m.compte,a=M[k];if(!a){a=M[k]={k:k,env:x.m.env||"",v:0,n:0,pv:0,okv:0,ok:false};O.push(a)}a.v+=x.val;a.c=(a.c||0)+x.cost;if(x.m.fix&&x.m.val>0&&x.cost>0&&Math.abs(x.val-x.cost)>=.5)a.hg=1;a.n++;if(x.ok){a.ok=true;a.pv+=x.prev;a.okv+=x.val}});
+function patAcc(LD){var M={},O=[];LD.forEach(function(x){var k=x.m.compte,a=M[k];if(!a){a=M[k]={k:k,env:x.m.env||"",v:0,n:0,pv:0,okv:0,ok:false};O.push(a)}a.v+=x.val;a.c=(a.c||0)+x.cost;if(x.m.fix&&x.m.val>0&&x.cost>0&&Math.abs(x.val-x.cost)>=.5)a.hg=1;a.n++;if(x.ok){a.ok=true;a.pv+=x.prev;a.okv+=x.val}});var AD=avcAdj(LD);O.forEach(function(a){if(AD[a.k])a.c+=AD[a.k]});
   O.forEach(function(a){if(a.ok){a.pv=a.pv}});return O.sort(function(a,b){return b.v-a.v})}
 function histClean(H){var out=[];for(var i=0;i<H.length;i++){var nb=[];for(var k=Math.max(0,i-2);k<=Math.min(H.length-1,i+2);k++)if(k!==i)nb.push(H[k][1]);nb.sort(function(a,b){return a-b});var m=nb.length?nb[Math.floor(nb.length/2)]:H[i][1];if(m>0&&(H[i][1]<m*0.75||H[i][1]>m*1.35))continue;out.push(H[i])}return out}
 var CV=null,CVK="";
