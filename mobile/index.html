@@ -356,7 +356,7 @@ html[data-rch] .fh2 .tt small{font-size:.95rem;margin-top:4px;opacity:calc(1 - v
 <main id="app"></main>
 <script>
 "use strict";
-var VER="1.19.1", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="1.19.2", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["actif_valeur","Valeur d’un actif"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -481,6 +481,24 @@ async function gRenouv(){var r=ld("grefresh",null);if(!r)return false;
 async function gToken(){if(GTOK&&Date.now()<GEXP-60000)return GTOK;if(await gRenouv())return GTOK;await gConnect();return GTOK}
 async function gGet(url,retry){var t=await gToken(),r=await fetch(url,{headers:{Authorization:"Bearer "+t},signal:AbortSignal.timeout(25000)});
   if(r.status===401&&!retry){GTOK=null;GEXP=0;return gGet(url,true)}if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}
+var G_TAB="KYF_Mobile_Paquets";
+async function gSend(method,url,body,retry){var t=await gToken(),r=await fetch(url,{method:method,headers:{Authorization:"Bearer "+t,"Content-Type":"application/json"},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(30000)});
+  if(r.status===401&&!retry){GTOK=null;GEXP=0;return gSend(method,url,body,true)}if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}
+async function gEnvoiPaquet(txt,m){
+  var f=await gGet("https://www.googleapis.com/drive/v3/files?q="+encodeURIComponent("name='"+G_SHEET+"' and mimeType='application/vnd.google-apps.spreadsheet' and trashed=false")+"&fields=files(id)&spaces=drive"),
+    id=f.files&&f.files[0]&&f.files[0].id;if(!id||!/^[A-Za-z0-9_-]{20,100}$/.test(id))throw new Error("g:nosheet");
+  var base="https://sheets.googleapis.com/v4/spreadsheets/"+id,
+    meta=await gGet(base+"?fields=sheets.properties.title"),ok=(meta.sheets||[]).some(function(x){return x.properties&&x.properties.title===G_TAB});
+  if(!ok){await gSend("POST",base+":batchUpdate",{requests:[{addSheet:{properties:{title:G_TAB}}}]});
+    await gSend("PUT",base+"/values/"+G_TAB+"!A1:G1?valueInputOption=RAW",{values:[["paquet_id","index","total","cree","n","morceau","statut"]]})}
+  var N=40000,ch=[];for(var i=0;i<txt.length;i+=N)ch.push(txt.slice(i,i+N));
+  var rows=ch.map(function(c,k){return[m.paquet,k+1,ch.length,m.date,m.n,c,""]});
+  await gSend("POST",base+"/values/"+G_TAB+"!A:G:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS",{values:rows});
+  return ch.length}
+async function gEnvoi(){
+  if(!S.fileTxt||!S.fileMeta)return;var m=S.fileMeta;msg="Envoi vers le classeur Google…";msgOk=true;render();
+  try{var n=await gEnvoiPaquet(S.fileTxt,m);marquerEnvoi();msg="Paquet envoyé au classeur Google ("+m.n+" opération"+(m.n>1?"s":"")+"). Ouvrez KYF PC pour l’importer.";msgOk=true;render()}
+  catch(e){var t=String(e&&e.message||"");msg=/HTTP 403/.test(t)?"Google refuse l’écriture dans le classeur. Dans Réglages > Liaison avec KYF PC, déconnectez puis reconnectez Google, ou utilisez le fichier / les QR codes.":gErr(e);msgOk=false;render()}}
 async function gLire(){
   var f=await gGet("https://www.googleapis.com/drive/v3/files?q="+encodeURIComponent("name='"+G_SHEET+"' and mimeType='application/vnd.google-apps.spreadsheet' and trashed=false")+"&fields=files(id)&spaces=drive");
   var id=f.files&&f.files[0]&&f.files[0].id;if(!id||!/^[A-Za-z0-9_-]{20,100}$/.test(id))throw new Error("g:nosheet");
@@ -1508,7 +1526,7 @@ function render(){
       if(open)h+="</div>";
       if(!L.length)h+='<p class="hint">Aucune opération ne correspond à ce filtre.</p>';
       if(rest>0)h+=`<button id="more">Afficher ${Math.min(20,rest)} de plus · ${rest} restante${rest>1?"s":""}</button>`;
-      if(tab==="todo")h+=`<div class="cta">${S.file?`<small class="hint">Fichier prêt : ${esc(S.file.name)}</small><button class="p" id="shr">Partager le fichier</button><button id="dl">Télécharger le fichier</button><button id="qrs">Envoyer par QR codes</button><button id="qrcp">Copier le texte</button>`:`<button class="p" id="env">Préparer le fichier chiffré (${Math.min(cT,200)}${cT>200?" sur "+cT:""})</button>`}</div>`;
+      if(tab==="todo")h+=`<div class="cta">${S.file?`<small class="hint">Fichier prêt : ${esc(S.file.name)}</small><button class="p" id="shr">Partager le fichier</button><button id="dl">Télécharger le fichier</button><button id="gsh">Envoyer au classeur Google</button><button id="qrs">Envoyer par QR codes</button><button id="qrcp">Copier le texte</button>`:`<button class="p" id="env">Préparer le fichier chiffré (${Math.min(cT,200)}${cT>200?" sur "+cT:""})</button>`}</div>`;
       else if(tab==="sent")h+='<p class="hint">KYF affiche les opérations à valider une par une. Une fois validées, chargez le reçu pour les voir passer en « Enregistrées ».</p>'}
   }else if(v==="contact"){
     var CTG=[["bug","Bug / problème","Quelque chose ne marche pas","--rd",SV('<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h.01"/>')],["suggestion","Suggestion","Améliorer l’existant","--acc",SV('<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/>')],["fonctionnalite","Nouvelle fonctionnalité","Une idée à ajouter","--gn",SV('<path d="M12 5v14M5 12h14"/>')],["question","Question","Besoin d’aide","--bl",SV('<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17h.01"/>')],["autre","Autre","Tout le reste","--pu",SV('<circle cx="6" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="18" cy="12" r="1.2"/>')]],d=S.d,cc=d.cc||"question";
@@ -2337,6 +2355,7 @@ function lier(o){pkBind(app);
   if($("env"))$("env").onclick=envoyer;
   if($("shr"))$("shr").onclick=partager;
   if($("qrr1"))$("qrr1").onclick=function(){S.qrFrom="paquet";go("qr_scan",{})};if($("qrr2"))$("qrr2").onclick=function(){S.qrFrom="reg_ges";go("qr_scan",{})};
+  if($("gsh"))$("gsh").onclick=gEnvoi;
   if($("qrs"))$("qrs").onclick=function(){qrOpen(S.fileTxt,S.fileMeta?S.fileMeta.paquet:"Paquet","paquet","paq")};
   if($("qrcp"))$("qrcp").onclick=function(){copier(S.fileTxt,function(){marquerEnvoi()})};
   if($("dl"))$("dl").onclick=function(){telecharger(S.file);marquerEnvoi()};
