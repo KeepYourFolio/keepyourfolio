@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_12_1_23.html
+  @file        : KYF_SHARE_beta_2_12_1_24.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.1.23
+  @version     : Beta 2.12.1.24
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7477,7 +7477,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.1.23</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.1.24</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -16424,6 +16424,64 @@ function kyfSheetSameVal_(a, b){
   if(a === b) return true;
   try{ return JSON.stringify(JSON.parse(a)) === JSON.stringify(JSON.parse(b)); }catch(e){ return false; }
 }
+// ── Garde-fou « données très différentes » ───────────────────────────────────────────────────────────────────────────
+// Avant de remplacer les données de cet appareil par celles de Google (ou l'inverse), on compare leur contenu : nombre de lignes et
+// montants. Un écart important (ex. 3 cryptos en moins, un bien de 250 000 € en plus) est annoncé clairement par un ATTENTION.
+const KYF_SYNC_LABELS = {
+  'pea-crypto-v1':'Crypto', 'pea-positions':'Positions ETF & Actions', 'kyf-etf-transactions':'Transactions ETF & Actions',
+  'kyf-immo':'Biens immobiliers', 'kyf-livrets':'Livrets', 'kyf-av':'Assurance vie / PER', 'kyf-av-positions':'Lignes des contrats AV / PER',
+  'kyf-scpi':'SCPI', 'kyf-crowdfunding':'Crowdfunding', 'kyf-autres':'Autres actifs', 'kyf-pee':'Épargne salariale',
+  'kyf-dividendes':'Dividendes', 'pea-dca-v1':'Plans DCA', 'kyf-or':'Or et métaux'
+};
+function kyfSyncSummary(key, raw){
+  let v; try{ v = JSON.parse(raw); }catch(e){ return null; }
+  const num = x => { const n = parseFloat(String(x == null ? '' : x).replace(',', '.')); return isFinite(n) ? n : 0; };
+  const pick = (o, fs) => { for(const f of fs){ const n = num(o && o[f]); if(n > 0) return n; } return 0; };
+  const sumList = (a, fs) => (Array.isArray(a) ? a : []).reduce((s, o) => s + (o && typeof o === 'object' ? pick(o, fs) : 0), 0);
+  if(key === 'pea-crypto-v1'){
+    const o = (v && typeof v === 'object') ? v : {}, P = Array.isArray(o.positions) ? o.positions : [], S = Array.isArray(o.stables) ? o.stables : [];
+    return { n:P.length + S.length, val:P.reduce((s, p) => s + num(p && p.qte) * num(p && p.pru), 0) + sumList(S, ['valeur']), unit:'ligne', euro:false };
+  }
+  if(key === 'pea-positions'){
+    const A = Array.isArray(v) ? v : [];
+    return { n:A.length, val:A.reduce((s, p) => s + (p && typeof p === 'object' ? (num(p.qty) * num(p.pru) || num(p.evalBase)) : 0), 0), unit:'ligne', euro:true };
+  }
+  if(key === 'kyf-av-positions'){
+    let n = 0, val = 0;
+    if(v && typeof v === 'object'){ Object.keys(v).forEach(c => { const L = Array.isArray(v[c]) ? v[c] : []; n += L.length; val += sumList(L, ['valeur']); }); }
+    return { n, val, unit:'ligne', euro:true };
+  }
+  if(key === 'pea-dca-v1'){ const o = (v && typeof v === 'object') ? v : {}; return { n:(Array.isArray(o.plans) ? o.plans.length : 0), val:0, unit:'plan', euro:false }; }
+  if(Array.isArray(v)){
+    const unit = key === 'kyf-immo' ? 'bien' : key === 'kyf-etf-transactions' || key === 'kyf-dividendes' ? 'ligne' : 'élément';
+    return { n:v.length, val:sumList(v, ['valeur', 'solde', 'valeurActuelle', 'montant', 'investi']), unit, euro:true };
+  }
+  return null;
+}
+function kyfSyncBigDiff(key, localRaw, remoteRaw){
+  if(!KYF_SYNC_LABELS[key] || localRaw == null || remoteRaw == null) return null;
+  const a = kyfSyncSummary(key, localRaw), b = kyfSyncSummary(key, remoteRaw);
+  if(!a || !b || !(a.n > 0 || a.val > 0)) return null;   // rien de local qui risque d'être perdu
+  const dn = b.n - a.n, dv = b.val - a.val, mx = Math.max(a.n, b.n), mv = Math.max(a.val, b.val);
+  if(!(Math.abs(dn) >= Math.max(2, Math.ceil(mx * 0.2)) || Math.abs(dv) >= Math.max(1000, mv * 0.1))) return null;
+  return { key, label:KYF_SYNC_LABELS[key], a, b, dn, dv };
+}
+function kyfSyncDiffHtml(diffs, here, there){
+  const e = n => Math.round(n).toLocaleString('fr-FR') + ' €';
+  const d = (x) => x.n + ' ' + x.unit + (x.n > 1 ? 's' : '') + (x.euro && x.val > 0 ? ' (' + e(x.val) + ')' : '');
+  return '<ul style="margin:8px 0 8px 18px;padding:0;line-height:1.7">' + diffs.map(x =>
+    '<li><b>' + escapeHtml(x.label) + '</b> : ' + here + ' ' + d(x.a) + ' &rarr; ' + there + ' ' + d(x.b) + '</li>').join('') + '</ul>';
+}
+function kyfSyncWarnModal(diffs, opts){
+  const html = '<p style="color:var(--red);font-weight:700;margin:0 0 6px">ATTENTION : ces données sont très différentes.</p>'
+    + '<p style="margin:0">' + opts.intro + '</p>' + kyfSyncDiffHtml(diffs, opts.here, opts.there)
+    + '<p style="margin:0;color:var(--text2);font-size:12px">' + opts.outro + '</p>';
+  if(typeof kyfShModal !== 'function'){ kyfAsk('ATTENTION : ces données sont très différentes.\n\n' + diffs.map(x => x.label).join(', ') + '\n\n' + opts.outro.replace(/<[^>]+>/g, ''), { kind:'danger', ok:opts.okLabel, cancel:'Annuler' }).then(ok => { if(ok) opts.onOk(); }); return; }
+  kyfShModal({
+    title:'Attention avant de continuer', html,
+    buttons:[ { label:'Annuler', cls:'ksh-go', onClick:()=>kyfShClose() }, { label:opts.okLabel, cls:'ksh-danger', onClick:()=>{ kyfShClose(); opts.onOk(); } } ]
+  });
+}
 function kyfSheetConflicts_(values){
   const tsLoc = (typeof kyfTsLoad === 'function') ? kyfTsLoad() : {};
   const out = []; let remoteMax = 0;
@@ -16434,7 +16492,7 @@ function kyfSheetConflicts_(values){
     if(rMs > remoteMax) remoteMax = rMs;
     const loc = localStorage.getItem(key);
     if(loc === null || !kyfSyncKeyOk(key)) return;
-    if(rMs > Math.max(tsLoc[key] || 0, _ls) && !kyfSheetSameVal_(loc, kyfLZUnpack(r[1]))) out.push({ key, remoteMs: rMs });
+    if(rMs > Math.max(tsLoc[key] || 0, _ls) && !kyfSheetSameVal_(loc, kyfLZUnpack(r[1]))) out.push({ key, remoteMs: rMs, remoteVal: kyfLZUnpack(r[1]) });
   });
   return { list: out, remoteMax };
 }
@@ -16450,7 +16508,10 @@ function kyfSheetConflictAsk_(c){
   }
   kyfShModal({
     title: 'Le Sheet est plus récent',
-    html: '<p>' + msg + '</p><p style="color:var(--text2);font-size:12px">Données concernées : ' + keys + '</p>',
+    html: '<p>' + msg + '</p><p style="color:var(--text2);font-size:12px">Données concernées : ' + keys + '</p>' + (function(){
+      const df = c.list.map(x => kyfSyncBigDiff(x.key, localStorage.getItem(x.key), x.remoteVal)).filter(Boolean);
+      return df.length ? '<p style="color:var(--red);font-weight:700;margin:8px 0 0">ATTENTION : écart important entre les deux versions.</p>' + kyfSyncDiffHtml(df, 'cet appareil', 'Google') : '';
+    })(),
     buttons: [
       { label:'Garder le Sheet', cls:'ksh-go', onClick:()=>{ kyfShClose(); sheetsSyncPullOAuth({ noConfirm:true }); } },
       { label:'Garder cet appareil', cls:'ksh-danger', onClick:()=>{ kyfShClose(); sheetsSyncPushOAuth({ force:true }); } },
@@ -30623,6 +30684,20 @@ function kyfPullBannerShow(){
   if(sub) sub.textContent = n + ' donnée' + (n > 1 ? 's' : '') + ' modifiée' + (n > 1 ? 's' : '') + ' depuis un autre appareil. Rien n\'a été écrasé.';
 }
 function kyfPullApplyDeferred(){
+  const dd = window._kyfPullDeferred || {};
+  const df = Object.keys(dd).map(k => kyfSyncBigDiff(k, dd[k].local, dd[k].val)).filter(Boolean);
+  if(df.length){
+    kyfSyncWarnModal(df, {
+      intro:'Actualiser va <b>remplacer les données de cet appareil</b> par celles de Google :',
+      here:'cet appareil', there:'Google',
+      outro:'Si Google contient une ancienne copie ou les données d\'un autre appareil, tu perdrais ce qui est affiché ici. En cas de doute, annule et vérifie d\'abord.',
+      okLabel:'Actualiser quand même', onOk:kyfPullApplyDeferredDo
+    });
+    return;
+  }
+  kyfPullApplyDeferredDo();
+}
+function kyfPullApplyDeferredDo(){
   const d = window._kyfPullDeferred || {}, ts = kyfTsLoad(), keys = [];
   Object.keys(d).forEach(k => {
     // Modifiée ici depuis : la version de cet appareil est plus récente, on n'y touche pas (le contrôle d'envoi demandera)
@@ -31248,9 +31323,10 @@ async function kyfFlushQueue(){
       // pull "le plus récent gagne" la croit à tort déjà synchronisée).
       const ts = kyfTsLoad();
       const currentQueue = kyfQueueLoad();
+      const _baseSk = window._kyfFlushSkippedBase || [];
       Object.keys(queue).forEach(k=>{
         if(currentQueue[k] && currentQueue[k].ts === queue[k].ts){
-          ts[k] = queue[k].ts;
+          if(_baseSk.indexOf(k) < 0) ts[k] = queue[k].ts;   // donnée non envoyée (Sheet plus récent que ce que cet appareil connaît) : l'horodatage local ne bouge pas
           delete currentQueue[k];
         }
       });
@@ -31364,9 +31440,20 @@ async function kyfFlushOAuth(sheetId, queue){
     // R07 : une modification plus ancienne que la version du Sheet ne l'écrase pas (« le plus récent gagne », comme au démarrage)
     const skipped = [];
 
+    // Garde-fou « version connue » : une modification n'écrase jamais une donnée du Sheet qui a changé depuis la dernière fois que
+    // CET appareil l'a lue ou écrite (autre PC, ancienne version, nouvel appareil), même si sa propre modification est plus récente
+    // (ex. une ancienne copie réécrite à l'ouverture). Un appareil qui n'a jamais lu cette donnée ne l'écrase pas non plus.
+    const _known = kyfTsLoad(), skippedBase = [];
     Object.entries(queue).forEach(([key, entry])=>{
       const _ri = existingKeys.indexOf(key);
       if(_ri >= 0 && kyfSheetMs_((existing.values||[])[_ri+1] && (existing.values||[])[_ri+1][2]) > entry.ts){ skipped.push(key); return; }
+      if(_ri >= 0){
+        const _row = (existing.values||[])[_ri+1] || [], _rMs = kyfSheetMs_(_row[2]);
+        if(_rMs > (_known[key] || 0) + 1000){
+          let _same = false; try{ _same = kyfSheetSameVal_(entry.data, kyfLZUnpack(_row[1])); }catch(e){}
+          if(!_same){ skipped.push(key); skippedBase.push(key); return; }
+        }
+      }
       const row = [key, kyfLZPack(entry.data), new Date(entry.ts).toISOString(), device];
       const idx  = existingKeys.indexOf(key);
       if(idx>=0) updates.push({ range:`KYF_Data!A${idx+2}:D${idx+2}`, values:[row] });
@@ -31378,7 +31465,7 @@ async function kyfFlushOAuth(sheetId, queue){
       const nextRow = (existing.values||[]).length + 1;
       batchData.push({ range:`KYF_Data!A${nextRow}:D${nextRow+inserts.length-1}`, values:inserts });
     }
-    window._kyfFlushSkipped = skipped;
+    window._kyfFlushSkipped = skipped; window._kyfFlushSkippedBase = skippedBase;
     if(skipped.length){
       console.warn('[KYF Sync] Non écrasé, plus récent dans le Sheet :', skipped.join(', '));
       try{ addLog('warnings', 'Synchro : ' + skipped.length + ' donnée(s) plus récente(s) dans le Sheet, non écrasée(s) : ' + skipped.slice(0,5).join(', '), 'io', 'warn'); }catch(e){}
@@ -31832,6 +31919,13 @@ async function kyfPullOnStartup(){
         // sauvegarde) et on propose d'actualiser. L'horodatage local reste ancien : si l'utilisateur sauvegarde d'abord, le contrôle
         // d'envoi (« Le Sheet est plus récent ») prend le relais.
         if(_defer && !_passive(key) && (changedAtStart.has(key) || localRaw !== null)){
+          window._kyfPullDeferred[key] = { val:_newVal, ts:sheetsTs, local:localRaw };
+          _deferredAny = true;
+          if(changedAtStart.has(key) && queue[key]){ delete queue[key]; queueTouched = true; }
+          return;
+        }
+        // Écart important avec les données de cet appareil : rien n'est remplacé sans ton accord (bandeau, puis ATTENTION détaillé)
+        if(localRaw !== null && !_passive(key) && kyfSyncBigDiff(key, localRaw, _newVal)){
           window._kyfPullDeferred[key] = { val:_newVal, ts:sheetsTs, local:localRaw };
           _deferredAny = true;
           if(changedAtStart.has(key) && queue[key]){ delete queue[key]; queueTouched = true; }
@@ -48699,7 +48793,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.1.23\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.1.24\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -75212,6 +75306,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.24 · 02/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Google Sheets : une donnée du Sheet modifiée depuis la dernière lecture de cet appareil (autre PC, ancienne version, nouvel appareil) n'est plus jamais écrasée par une sauvegarde automatique, même si la copie de cet appareil est plus récente. L'envoi est suspendu et l'avertissement « Sheet plus récent » s'affiche.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.23 · 02/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Zones géographiques : un fonds de contrat AV / PER importé comme ETF puis reclassé en « Fonds gérés » (par exemple Allianz Actions Émergents C) peut maintenant recevoir ses lignes principales, comme les autres fonds. Retour utilisateur.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.21 · 02/11/2026</div>
