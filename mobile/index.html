@@ -443,6 +443,13 @@ html,body{overflow-x:clip;max-width:100%}main{overflow-x:clip;min-width:0;paddin
 .pdn2 .pr2l{margin-top:12px;min-width:0}
 .pdn2 .pr2i{padding:5px 0;border-top:0;gap:8px;font-size:.84rem}
 .pdn2 .pr2i b{display:none}.pdn2 .pr2i em{width:auto}
+/* 3.15 : barre du haut « Discrète » : salutation + cœur doux sans clignotement */
+.gr{display:flex;flex-direction:column;gap:1px;padding-right:150px;min-height:44px;justify-content:center}
+.gr .gs{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:600;color:var(--mut)}
+.gr b{color:var(--ink);font-size:1.5rem;font-weight:800;letter-spacing:-.03em;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:11ch}
+@media (min-width:600px){.gr b{max-width:none}}
+.th.dn,.th.dn.bt{background:color-mix(in srgb,var(--acc) 14%,transparent)!important;color:var(--acc)!important;box-shadow:none!important;animation:none!important;width:40px;height:40px;min-height:40px;top:-2px}
+.th.dn svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round}
 </style>
 </head>
 <body>
@@ -450,7 +457,7 @@ html,body{overflow-x:clip;max-width:100%}main{overflow-x:clip;min-width:0;paddin
 <script src="avf.js"></script><script src="qr.js"></script>
 <script>
 "use strict";
-var VER="3.14.2", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="3.15", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["actif_valeur","Valeur d’un actif"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -873,9 +880,19 @@ async function chiffrer(obj,phrase){
   return{v:1,format:"kyfops-chiffre",kdf:"PBKDF2-SHA256",iter:iter,sel:b64(sel),iv:b64(iv),donnees:b64(ct)};
 }
 function msgHtml(){return msg?`<p class="msg ${msgOk?"ok":"err"}" role="alert">${esc(msg)}${/chargés depuis KYF/.test(msg)?` <button class="l" data-det="1" style="display:inline;min-height:0;padding:0 0 0 6px;text-decoration:underline">Voir le détail</button>`:""}</p>`:""}
-var DONT=0;function donBtn(){if(!DONT)DONT=Date.now();return `<button class="th dn${Date.now()-DONT<10000?" bt":""}" id="dnb" style="right:96px" aria-label="Soutenir KYF (dons)">${ICO_HEART2}</button>`}
+var DONT=0;function donBtn(){if(!DONT)DONT=Date.now();return `<button class="th dn" id="dnb" style="right:96px" aria-label="Soutenir KYF (dons)">${ICO_HEART2}</button>`}
 var ICO_HEART2='<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 21s-7.5-4.8-9.6-9.6C.9 8.2 2.800 4.500 6.500 4.500c2.100 0 3.700 1.100 5.500 3.300 1.800-2.200 3.400-3.300 5.500-3.300 3.700 0 5.600 3.700 4.100 6.900C19.500 16.200 12 21 12 21z"/></svg>';
-function logoBar(v){var nl=true;return `<div class="top logo${nl?" nologo":""}" role="banner" aria-label="Keep Your Folio Mobile">${nl?"":`<div class="l1"><span class="kk">Keep</span><span class="kd"></span><span class="ky">Your</span><span class="kd"></span><span class="kf">Folio</span><span class="km">Mobile</span></div><div class="kb"><i style="background:#0015FF"></i><i style="background:#fff;border:1px solid rgba(128,128,128,.25);box-sizing:border-box"></i><i style="background:#FF0000"></i></div>`}${STATE?`<button class="th" id="lk" style="right:48px" aria-label="Verrouiller l’appli">${LOCK}</button>`:""}${STATE&&v==="pat"?donBtn():""}<button class="th" id="th" aria-label="Thème ${NOMT[themeMode()]}. Changer de thème">${ICO[themeMode()]}</button></div>`}
+/* 3.15 : salutation selon l'heure et la date, petit pictogramme qui varie */
+function saluer(){var d=new Date(),h=d.getHours(),m=d.getMonth()+1,j=d.getDate(),
+ sv_=function(x){return '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+x+'</svg>'};
+ if(m===1&&j<=15)return{t:"Bonne année",i:sv_('<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 3v4M17 5h4M5 17v4M3 19h4"/>')};
+ if(m===12&&(j===24||j===25))return{t:"Joyeux Noël",i:sv_('<path d="M12 3l5 7h-3l4 6H6l4-6H7z"/><path d="M12 16v5"/>')};
+ if(h>=5&&h<12)return{t:"Bonjour",i:sv_('<path d="M3 18h18M6 18a6 6 0 0 1 12 0M12 5v3M4.600 10.600l2 2M19.400 10.600l-2 2"/>')};
+ if(h>=12&&h<18)return{t:"Bonjour",i:sv_('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.900 4.900l1.400 1.400M17.700 17.700l1.400 1.400M2 12h2M20 12h2M4.900 19.100l1.400-1.400M17.700 6.300l1.400-1.400"/>')};
+ if(h>=18&&h<22)return{t:"Bonne soirée",i:sv_('<path d="M3 18h18M6 18a6 6 0 0 1 12 0M12 8V5M12 5l-2 2M12 5l2 2"/>')};
+ return{t:"Bonne nuit",i:sv_('<path d="M20 14.500A8 8 0 0 1 9.500 4 8 8 0 1 0 20 14.500z"/>')}}
+function greetHtml(){var g=saluer(),n=ld("prof",{}).nom||"";return `<div class="gr"><span class="gs">${g.i}${esc(g.t)}${n?",":""}</span>${n?`<b>${esc(n)}</b>`:""}</div>`}
+function logoBar(v){var nl=true;return `<div class="top logo${nl?" nologo":""}" role="banner" aria-label="Keep Your Folio Mobile">${STATE&&v==="pat"?greetHtml():""}${nl?"":`<div class="l1"><span class="kk">Keep</span><span class="kd"></span><span class="ky">Your</span><span class="kd"></span><span class="kf">Folio</span><span class="km">Mobile</span></div><div class="kb"><i style="background:#0015FF"></i><i style="background:#fff;border:1px solid rgba(128,128,128,.25);box-sizing:border-box"></i><i style="background:#FF0000"></i></div>`}${STATE?`<button class="th" id="lk" style="right:48px" aria-label="Verrouiller l’appli">${LOCK}</button>`:""}${STATE&&v==="pat"?donBtn():""}<button class="th" id="th" aria-label="Thème ${NOMT[themeMode()]}. Changer de thème">${ICO[themeMode()]}</button></div>`}
 function pwField(id,lab){return `<label>${lab}<div class="pw"><input id="${id}" type="password" autocomplete="off"><button type="button" class="eye" data-eye="${id}" aria-label="Afficher la phrase" aria-pressed="false">${OEIL}</button></div></label>`}
 function fk(d){return d.cpt?d.cpt.id:d.env}
 function comptes(){var c=ld(K.cpt,[]);return Array.isArray(c)?c:[]}
