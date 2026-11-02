@@ -420,7 +420,7 @@ html,body{overflow-x:clip;max-width:100%}main{overflow-x:clip;min-width:0;paddin
 <script src="avf.js"></script><script src="qr.js"></script>
 <script>
 "use strict";
-var VER="3.6.0.01", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="3.6.1", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["actif_valeur","Valeur d’un actif"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -1790,7 +1790,7 @@ function render(){autoPlan();if(S.v==="pos_e"&&$("pn"))lirePe();
       if(tc>8)h+=`<label class="srch"><span class="si">${I.search}</span><input id="pq" value="${esc(S.pqq||"")}" placeholder="Filtrer : titre, compte, type, date" autocomplete="off" aria-label="Filtrer les opérations"></label>`;
       var cur=null,open=false;
       shown.forEach(function(r){var x=r.x;if(x.date!==cur){if(open)h+="</div>";cur=x.date;open=true;h+=`<p class="gl">${esc(fmtJour(x.date))} · ${cnt[x.date]}</p><div class="list">`}
-        h+=`<div class="opc" style="--k:var(${TI[x.type][1]})"><span class="ic${isScpi(x.type)&&x.nom||AVEC_TITRE.indexOf(x.type)>-1&&(x.ticker||x.nom)?" lgw":""}">${isScpi(x.type)&&x.nom?lg("",x.nom,"scpi"):AVEC_TITRE.indexOf(x.type)>-1&&(x.ticker||x.nom)?lg(x.ticker||x.isin,x.nom,/^crypto/.test(x.type)?"crypto":"titre"):TI[x.type][0]}</span><div class="mid"><b>${libType(x.type)} · ${esc(x.compte||x.enveloppe)}</b><small>${esc(sousTitre(x))}${x.titulaire?" · "+esc(nomFam(x.titulaire)):""}${x.st&&STL[x.st]?" · "+(x.st==="envoye"&&sentAt(x)?"envoyée "+sentAt(x):STL[x.st]):""}</small></div><span class="amtv">${amtOp(x)}</span>${x.st?"":`<button class="x" data-del="${r.i}" aria-label="Supprimer">${I.trash}</button>`}</div>`});
+        h+=`<div class="opc" style="--k:var(${TI[x.type][1]})"><span class="ic${isScpi(x.type)&&x.nom||AVEC_TITRE.indexOf(x.type)>-1&&(x.ticker||x.nom)?" lgw":""}">${isScpi(x.type)&&x.nom?lg("",x.nom,"scpi"):AVEC_TITRE.indexOf(x.type)>-1&&(x.ticker||x.nom)?lg(x.ticker||x.isin,x.nom,/^crypto/.test(x.type)?"crypto":"titre"):TI[x.type][0]}</span><div class="mid"><b>${libType(x.type)} · ${esc(x.compte||x.enveloppe)}</b><small>${esc(sousTitre(x))}${x.titulaire?" · "+esc(nomFam(x.titulaire)):""}${x.st&&STL[x.st]?" · "+(x.st==="envoye"&&sentAt(x)?"envoyée "+sentAt(x):STL[x.st]):""}</small></div><span class="amtv">${amtOp(x)}</span>${!x.st||x.st==="envoye"?`<button class="x" data-opm="${r.i}" aria-label="Modifier">${SV('<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>')}</button>`:""}${x.st?"":`<button class="x" data-del="${r.i}" aria-label="Supprimer">${I.trash}</button>`}</div>`});
       if(open)h+="</div>";
       if(!L.length)h+='<p class="hint">Aucune opération ne correspond à ce filtre.</p>';
       if(rest>0)h+=`<button id="more">Afficher ${Math.min(20,rest)} de plus · ${rest} restante${rest>1?"s":""}</button>`;
@@ -2090,7 +2090,7 @@ function dcaPlansRows(cr){var P=dcaPlansKyf(cr);if(!P.length)return"";return '<p
 function dcaAchat(i){var p=ld("kyfm-dcap",[])[i];if(!p)return;dcaAchatP(p)}
 function dcaAchatP(p){
   var x=sources().filter(function(y){return p.ticker&&String(y.ticker).toUpperCase()===String(p.ticker).toUpperCase()})[0];
-  var E=["PEA","PEA-PME","CTO"],env=[p.type,p.env,p.dca_env,ld(K.last,"")].map(function(v){return String(v||"").toUpperCase()}).filter(function(v){return E.indexOf(v)>-1})[0]||"",C=env?comptes().filter(function(c){return c.type===env}):[],lc=ld(K.lastc,""),cpt=C.length===1?C[0]:(C.filter(function(c){return c.id===lc})[0]||null);
+  var E=["PEA","PEA-PME","CTO"],env=[p.type,p.env,p.dca_env].map(function(v){return String(v||"").toUpperCase()}).filter(function(v){return E.indexOf(v)>-1})[0]||"",C=env?comptes().filter(function(c){return c.type===env}):[],lc=ld(K.lastc,""),cpt=C.length===1?C[0]:null;
   S.d={type:"achat",ticker:p.ticker||"",isin:x&&x.isin||p.isin||"",nom:x&&x.nom||p.nom||"",inconnu:!x&&!p.isin,q:p.ticker||p.nom||"",dcaMt:p.montant||"",dcaPlan:true,date:today()};
   if(env&&(cpt||!C.length)){S.d.env=env;S.d.cpt=cpt;S.d.pre=true;msg=(p.montant?"Plan de "+p.montant+" € · ":"")+(cpt?cpt.nom:env)+" : indiquez les parts, le prix et les frais.";msgOk=true;return go("montant")}
   msg=(p.montant?"Plan de "+p.montant+" € : ":"")+"choisissez le compte, puis les parts et le prix.";msgOk=true;go("compte")}
@@ -2687,6 +2687,7 @@ function lier(o){pkBind(app);
   if($("lt"))$("lt").onchange=function(){var f=this.files[0];if(f)f.text().then(chargerListe)};
   if($("cpb"))$("cpb").onclick=function(){chargerListe($("cp").value)};
   if($("maj"))$("maj").onclick=majBase;if($("goo"))$("goo").onclick=gGo;if($("goff"))$("goff").onclick=gOff;if($("ghok"))$("ghok").onclick=function(){pcSave("gh")};if($("wdok"))$("wdok").onclick=function(){pcSave("wd")};if($("ghgo"))$("ghgo").onclick=function(){pcGo("gh")};if($("wdgo"))$("wdgo").onclick=function(){pcGo("wd")};if($("ghoff"))$("ghoff").onclick=function(){pcOff("gh")};if($("wdoff"))$("wdoff").onclick=function(){pcOff("wd")};
+  Array.prototype.forEach.call(app.querySelectorAll("[data-opm]"),function(b){b.onclick=function(){opEdit(+b.getAttribute("data-opm"))}});
   if($("env"))$("env").onclick=envoyer;
   if($("autt"))$("autt").onclick=function(){sv("kyfm-aut",autoOn()?"0":"1");AEF=0;S.aut=null;render()};
   if($("shr"))$("shr").onclick=partager;
@@ -2727,6 +2728,32 @@ async function autoEnvoi(){
     S.aut="Envoyé automatiquement au classeur Google ("+o.length+" opération"+(o.length>1?"s":"")+"). KYF PC les intègre à son prochain lancement.";AEF=0;
   }catch(e){AEF=Date.now();S.aut="Envoi automatique impossible pour l’instant ("+(String(e&&e.message||"").slice(0,60)||"erreur")+"). Nouvel essai dans une minute, ou utilisez les boutons ci-dessous."}
   AEB=false;if(S.v==="paquet")render();else if(ld(K.ops,[]).some(function(x){return!x.st}))autoPlan()}
+/* Modifier une opération (3.6.1) : à envoyer ou envoyée. Une opération déjà envoyée repart avec un nouvel identifiant et la mention « remplace ». */
+function opEdit(i){var l=ld(K.ops,[]),x=l[i];if(!x||(x.st&&x.st!=="envoye"))return;
+  var tit=x.type==="achat"||x.type==="vente"||x.type==="dividende",cps=comptes().filter(function(c){return c.type===x.enveloppe}),simple=!tit&&typeof x.montant_c==="number"&&x.unite!=="pct"&&x.type!=="scpi_maj"&&x.type!=="av_valeur"&&!/^crypto_(swap|transfert)$/.test(x.type);
+  var o=document.createElement("div");o.className="kq";o.setAttribute("role","dialog");o.setAttribute("aria-modal","true");
+  var b=document.createElement("div");
+  function fld(l,id,v,t){return '<label style="display:flex;flex-direction:column;gap:4px;font-size:.82rem;color:var(--mut)">'+l+'<input id="'+id+'" type="'+(t||"text")+'" '+(t==="text"?'inputmode="decimal" ':"")+'value="'+esc(String(v==null?"":v))+'" style="min-height:44px;font-size:1rem"></label>'}
+  var fe=(x.frais_c||0)/100;
+  b.innerHTML='<h3>Modifier l’opération</h3><p style="max-height:none">'+esc(libType(x.type)+" · "+(x.nom||x.ticker||x.enveloppe))+'</p>'+
+    fld("Date","oe-d",x.date,"date")+
+    (cps.length?'<label style="display:flex;flex-direction:column;gap:4px;font-size:.82rem;color:var(--mut)">Compte<select id="oe-c" style="min-height:44px;font-size:1rem">'+cps.map(function(c,k){return '<option value="'+k+'"'+((c.kyf&&c.kyf===x.compte_id)||c.nom===x.compte?" selected":"")+'>'+esc(c.nom)+'</option>'}).join("")+'</select></label>':"")+
+    (tit?fld("Quantité","oe-q",x.qty,"text")+fld("Prix unitaire","oe-p",x.prix,"text")+fld("Frais (€)","oe-f",fe?String(fe).replace(".",","):"","text"):"")+
+    (simple?fld("Montant (€)","oe-m",String(x.montant_c/100).replace(".",","),"text"):"")+
+    '<p id="oe-e" style="color:var(--err);min-height:0"></p>'+(x.st==="envoye"?'<p style="font-size:.82rem">Déjà envoyée : elle repartira dans « À envoyer » et remplacera l’envoi précédent.</p>':"");
+  var ok=document.createElement("button");ok.type="button";ok.className="kb";ok.textContent="Enregistrer";
+  var no=document.createElement("button");no.type="button";no.textContent="Annuler";
+  function fin(){if(o.parentNode)o.parentNode.removeChild(o)}no.onclick=fin;
+  ok.onclick=function(){var e=$("oe-e"),d=$("oe-d").value;if(!/^\d{4}-\d{2}-\d{2}$/.test(d)){e.textContent="Date invalide.";return}
+    var n=Object.assign({},x);n.date=d;
+    if(cps.length&&$("oe-c")){var c=cps[+$("oe-c").value];if(c){n.compte=c.nom;n.compte_id=c.kyf||""}}
+    if(tit){var q=dec($("oe-q").value),p=dec($("oe-p").value),f=String($("oe-f").value||"").trim()?dec($("oe-f").value):"0";if(q===null||p===null||f===null||+q<=0){e.textContent="Quantité, prix ou frais invalides.";return}
+      n.qty=q;n.prix=p;n.frais_c=toC(f);n.montant_c=mulC(q,p);if(!isFinite(n.montant_c)||n.montant_c>1e12){e.textContent="Montant trop grand.";return}}
+    else if(simple){var m=dec($("oe-m").value);if(m===null||+m<=0){e.textContent="Montant invalide.";return}n.montant_c=toC(m)}
+    cleanOp(n);
+    if(x.st==="envoye"){n.remplace=x.remplace||x.id;n.id="O-"+stamp()+"-"+hms()+"-"+rnd(8);delete n.st;delete n.sent;S.pqt="todo"}
+    l[i]=n;sv(K.ops,l);fin();AEF=0;S.aut=null;msg=x.st==="envoye"?"Opération modifiée : elle repart dans « À envoyer ».":"Opération modifiée.";msgOk=true;render()};
+  b.appendChild(ok);b.appendChild(no);o.appendChild(b);document.body.appendChild(o);o.addEventListener("click",function(ev){if(ev.target===o)fin()})}
 function partager(){
   var f=S.file;if(!f)return;
   if(navigator.share&&navigator.canShare&&navigator.canShare({files:[f]})){
