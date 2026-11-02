@@ -386,6 +386,18 @@ html[data-rch] .fh2 .tt small{font-size:.95rem;margin-top:4px;opacity:calc(1 - v
 .cpl{display:flex;flex-direction:column;gap:8px}.cpr{display:flex;align-items:center;gap:12px;width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:18px;background:var(--card);color:var(--ink);text-align:left}
 .cpd{width:10px;height:10px;border-radius:5px;flex:none}.cpw{flex:1;min-width:0;display:flex;flex-direction:column}.cpw b{font-size:.95rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cpw small{color:var(--mut);font-size:.78rem}
 .cpv{text-align:right;display:flex;flex-direction:column;flex:none}.cpv b{font-variant-numeric:tabular-nums}.cpv small{font-size:.78rem;font-weight:700;color:var(--mut)}
+/* 3.0.1 : corrections d'affichage téléphone (débordements, menu, sélecteur) */
+html,body{overflow-x:clip;max-width:100%}main{overflow-x:clip;min-width:0;padding-bottom:calc(128px + env(safe-area-inset-bottom,0px))}
+.p3,.p3>*,.pdn,.cpr,.shi{max-width:100%;box-sizing:border-box}
+.p3s{max-width:100%;min-width:0}.p3s span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.p3s svg{flex:none}
+.p3n{font-size:clamp(2rem,11.5vw,2.7rem);max-width:100%;white-space:nowrap}.p3n small{font-size:.55em}
+.p3d{flex-wrap:wrap;justify-content:center;max-width:100%;text-align:center}
+.pcv{border:0;border-radius:0;background:none;padding:0;margin:14px -16px 0;height:150px}.pcv svg{height:100%}
+.rgs{width:100%;box-sizing:border-box}
+.pdn{text-align:left;box-sizing:border-box;padding:16px;margin-top:14px}.pdn svg{width:100%;height:auto}.pdz{width:104px;flex:none}.pdt{text-align:left}.pdt b{display:block}.pdl{margin:0;color:var(--ink)}.pdl span{text-align:left}
+.t5 .tb{padding-left:10px;padding-right:10px}.t5 .tbi{max-width:100%;padding:4px}.t5 .tbi button{min-width:0;padding:0 1px;font-size:.62rem;letter-spacing:-.01em;white-space:nowrap}.t5 .tbi button span:last-child{max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.shs{max-height:calc(100vh - 90px);max-height:calc(100dvh - 90px);box-sizing:border-box;overscroll-behavior:contain}.shi{min-width:0}.shv{flex:none;white-space:nowrap}
+.cpv b,.cph b{white-space:nowrap}
 </style>
 </head>
 <body>
@@ -393,7 +405,7 @@ html[data-rch] .fh2 .tt small{font-size:.95rem;margin-top:4px;opacity:calc(1 - v
 <script src="avf.js"></script><script src="qr.js"></script>
 <script>
 "use strict";
-var VER="3.0", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="3.0.1", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["actif_valeur","Valeur d’un actif"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
