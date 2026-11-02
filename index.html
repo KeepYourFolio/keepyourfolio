@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_12_1_22.html
+  @file        : KYF_SHARE_beta_2_12_1_23.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.1.22
+  @version     : Beta 2.12.1.23
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7477,7 +7477,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.1.22</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.1.23</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -48699,7 +48699,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.1.21\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.1.23\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66128,7 +66128,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.1.21';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.1.23';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -68984,6 +68984,15 @@ function kyfGeoIsEtf(e){
   if(/^(IE|LU)/.test(isin)) return true;
   return /etf|ucits|msci|s&p|ishares|amundi|lyxor|xtrackers|vanguard|spdr|ftse|stoxx|nasdaq|tracker|index|indice|invesco|wisdomtree|vaneck/i.test(e.name || '');
 }
+// 2.12.1.23 : fonds de contrat resté en ligne ETF & Actions (importé comme ETF, puis reclassé « Fonds gérés » dans le contrat) : il est traité comme un fonds,
+// donc l'onglet ENTREPRISES (lignes principales) s'ouvre, comme pour les autres fonds de contrat.
+function kyfGeoContractFund(e){
+  try{
+    if(!e || (e.enveloppe !== 'AV' && e.enveloppe !== 'PER') || kyfGeoIsEtf(e)) return false;
+    const up = x => String(x || '').trim().toUpperCase(), tk = up(e.ticker), isin = up(e.isin);
+    return avLoad().some(d => avPosLoad(d.id).some(p => p && kyfFondsLike(p.type) && ((tk && up(p.ticker) === tk) || (isin && up(p.isin) === isin))));
+  }catch(x){ return false; }
+}
 // 2.10.0.06 : lignes de fonds (SICAV / FCP / PE / obligations / structurés) des contrats AV / PER, regroupées par ISIN
 function kyfGeoFundLines(){
   const out = { lines:[], noIsin:{ n:0, val:0 } }, byIsin = {};
@@ -69042,7 +69051,7 @@ function kyfGeoCompute(){
     parts.forEach(p => { res.byC[p[0]] = (res.byC[p[0]] || 0) + val * p[1] / 100; });
     sect.forEach(p => { res.byS[p[0]] = (res.byS[p[0]] || 0) + val * p[1] / 100; });
     res.nd += val * ndPct / 100; res.ndS += val * ndSPct / 100; res.tot += val;
-    res.rows.push({ k, name: e.name || e.ticker, ticker: e.ticker, isin: e.isin || '', isEtf, val, parts, ndPct, src, sect, ndSPct, dc: en.dc || '', oc: en.oc || '', ds: en.ds || '', os: en.os || '' });
+    res.rows.push({ k, name: e.name || e.ticker, ticker: e.ticker, isin: e.isin || '', isEtf, fund: kyfGeoContractFund(e), val, parts, ndPct, src, sect, ndSPct, dc: en.dc || '', oc: en.oc || '', ds: en.ds || '', os: en.os || '' });
   });
   const FL = kyfGeoFundLines(); res.noIsin = FL.noIsin;
   FL.lines.forEach(L => {
@@ -70207,7 +70216,7 @@ function kyfGeoAgree(){
 function kyfGeoLoadPos(k){
   const e = kyfGeoFind(k); if(!e || !_geoEd) return;
   const isin = String(e.isin || '').toUpperCase().trim();
-  Object.assign(_geoEd, { k, isin, ticker:String(e.ticker || ''), name:String(e.name || e.ticker || ''), cm:null, isEtf:!e.fund && !!kyfGeoIsEtf(e), fund:!!e.fund });
+  Object.assign(_geoEd, { k, isin, ticker:String(e.ticker || ''), name:String(e.name || e.ticker || ''), cm:null, isEtf:!e.fund && !!kyfGeoIsEtf(e), fund:!!e.fund || kyfGeoContractFund(e) });
   const dr = _geoEd.drafts[k], en = kyfGeoLoad()[k] || {};
   let rc, rs, rh = null;
   if(dr){ rc = dr.r.c; rs = dr.r.s; rh = dr.r.h || null; _geoEd.cm = dr.cm || null; }
@@ -75203,6 +75212,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.23 · 02/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Zones géographiques : un fonds de contrat AV / PER importé comme ETF puis reclassé en « Fonds gérés » (par exemple Allianz Actions Émergents C) peut maintenant recevoir ses lignes principales, comme les autres fonds. Retour utilisateur.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.21 · 02/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Positions ETF &amp; Actions : le repère de la personne (Moi, Conjoint(e)…) s'affiche maintenant aussi sur les lignes d'assurance vie / PER, selon le titulaire du contrat. Avant, seules les lignes saisies directement avaient leur pastille, et en vue « Conjoint(e) » aucune ne s'affichait (retour d'un testeur).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.20 · 02/11/2026</div>
