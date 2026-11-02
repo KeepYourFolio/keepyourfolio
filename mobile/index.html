@@ -315,10 +315,10 @@ main{padding-bottom:calc(var(--tbh,86px) + 14px + env(safe-area-inset-bottom,0px
 @media (max-height:720px){.gt{padding:8px;gap:2px}.gt .gi{transform:scale(.9);transform-origin:left top}.vtag{display:none}.gg{gap:6px}}
 @media (min-height:900px){.gt{min-height:clamp(84px,10.4dvh,110px)}}
 /* Grands écrans : zone vide en haut des onglets (le contenu descend à portée de pouce) ; elle défile avec la page */
-.rch{height:0;overflow:hidden;display:flex;align-items:flex-end;justify-content:center}.rch span{display:none;font-size:2.1rem;font-weight:600;letter-spacing:-.01em;color:var(--ink);padding-bottom:20px}
+.rch{height:0;overflow:hidden;display:flex;align-items:flex-end;justify-content:center}.rch span{display:block;font-size:2.1rem;font-weight:600;letter-spacing:-.01em;color:var(--ink);padding-bottom:20px}
 .rch{height:var(--rh,0px)}
 html[data-rch] .rch span{display:block}html[data-rch] .h1t{display:none}
-.rch{container-type:size}@container (min-height:64px){.rch span{display:block}}
+
 .ctt{position:fixed;left:0;right:0;top:0;z-index:5;height:calc(env(safe-area-inset-top,0px) + 58px);padding-top:calc(env(safe-area-inset-top,0px) + 14px);text-align:center;font-weight:700;font-size:1.05rem;color:var(--ink);background:linear-gradient(var(--bg,#c6d4ec) 62%,transparent);opacity:var(--p,0);pointer-events:none;box-sizing:border-box}
 .top.nologo{min-height:44px}.vtb{text-align:center;margin:18px 0 0}
 /* En-tête des sous-menus : titre grand dans la zone vide (grands écrans), il se range en haut au défilement */
@@ -335,14 +335,14 @@ html[data-rch] .fh2 .tt{left:56px;right:56px;text-align:center;transform-origin:
 html[data-rch] .fh2 .tt h2{font-size:2.3rem;font-weight:600;letter-spacing:-.02em;line-height:1.1}
 html[data-rch] .fh2 .tt small{font-size:.95rem;margin-top:4px;opacity:calc(1 - var(--p,0)*2.2)}
 @media (prefers-reduced-motion:reduce){.fh2 .tt{animation:none}}
-:root{--rh:clamp(0px,calc((100dvh - 700px)*.8),200px)}
+:root{--rh:clamp(0px,calc((100dvh - 780px)*100),calc(100px + (100dvh - 780px)*.8))}
 </style>
 </head>
 <body>
 <main id="app"></main>
 <script>
 "use strict";
-var VER="1.18.1.01", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="1.18.5", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["actif_valeur","Valeur d’un actif"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -2365,6 +2365,11 @@ document.addEventListener("visibilitychange",function(){if(!document.hidden&&y0=
 document.addEventListener("touchend",end,{passive:true});document.addEventListener("touchcancel",function(){if(!busy)fin()},{passive:true});
 })();
 try{if("serviceWorker" in navigator&&location.protocol==="https:"||location.hostname==="localhost")navigator.serviceWorker.register("sw.js")}catch(e){}
+/* Mise à jour sûre : si le fichier sw.js en ligne annonce une autre version que celle qui tourne, on vide le cache de l'appli et on recharge une fois. Le coffre (stockage local) n'est pas touché. */
+setTimeout(function(){try{if(!/^https:$|^http:$/.test(location.protocol)||sessionStorage.getItem("kyfm-maj"))return;
+  fetch("sw.js?v="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){var m=/CACHE="kyfm-([^"]+)"/.exec(t||"");if(!m||m[1]===VER)return;try{sessionStorage.setItem("kyfm-maj","1")}catch(e){}
+    var fin=function(){location.reload()};
+    Promise.all([navigator.serviceWorker?navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister()}))}):0,window.caches?caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k)}))}):0]).then(fin,fin)}).catch(function(){})}catch(e){}},2500);
 sessRestore().then(function(){navRestore();recevoirPartage();render()});
 </script>
 </body>

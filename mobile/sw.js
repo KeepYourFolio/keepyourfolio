@@ -1,7 +1,7 @@
-/* Keep Your Folio Mobile 1.18.3.01 : fonctionnement hors ligne.
+/* Keep Your Folio Mobile 1.18.5 : fonctionnement hors ligne.
    Ne met en cache que les fichiers de cette appli (même adresse). Les téléchargements vers
    d’autres sites (base publique) et tout le reste ne passent jamais par ce cache. */
-var CACHE="kyfm-1.18.3.01";
+var CACHE="kyfm-1.18.5";
 var FICHIERS=["./","index.html","manifest.webmanifest","icon-192.png","icon-512.png","icon-512-maskable.png","apple-touch-icon.png","icon-dark-192.png","icon-mono-512.png","jsqr.js"];
 self.addEventListener("install",function(e){e.waitUntil(caches.open(CACHE).then(function(c){return c.addAll(FICHIERS)}).then(function(){return self.skipWaiting()}))});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(ks){return Promise.all(ks.filter(function(k){return k!==CACHE}).map(function(k){return caches.delete(k)}))}).then(function(){return self.clients.claim()}))});
@@ -25,7 +25,7 @@ self.addEventListener("fetch",function(e){
     return}
   if(r.method!=="GET"||u.origin!==self.location.origin)return;
   if(u.search.indexOf("partage=")>-1){e.respondWith(fetch(r).catch(function(){return caches.match("index.html")}));return}
-  e.respondWith(fetch(r).then(function(rep){
+  e.respondWith(fetch(r,(r.mode==="navigate"||/\/(index\.html|sw\.js)?$/.test(u.pathname))?{cache:"no-store"}:undefined).then(function(rep){
     if(rep&&rep.ok){var copie=rep.clone();caches.open(CACHE).then(function(c){c.put(r,copie)})}
     return rep
   }).catch(function(){return caches.match(r).then(function(m){return m||caches.match("index.html")})}));
