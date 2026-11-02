@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_11_5_26.html
+  @file        : KYF_SHARE_beta_2_12_1_15.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.11.5.26
+  @version     : Beta 2.12.1.15
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -614,6 +614,7 @@ body.kyf-kpop-open .kpi{pointer-events:none}
 .kyf-ia-pri:hover{opacity:.85}
 .kyf-ia-sec{background:none;color:var(--text3);border:1px solid var(--border2);transition:background .15s}
 .kyf-ia-sec:hover{background:var(--hov-bg)}
+.kyf-ia-pri.kyf-mob-s,.kyf-ia-sec.kyf-mob-s{font-size:10px;padding:5px 11px;border-radius:7px;letter-spacing:.4px}
 .pfr-btn{transition:background .15s ease, color .15s ease}
 .pfr-btn:hover{background:rgba(240,180,41,0.14) !important;color:#f0b429 !important}
 /* Quoi de neuf : nouveauté importante en jaune/orange (sombre : jaune KYF, clair : ambre foncé lisible) */
@@ -1902,6 +1903,8 @@ div[onclick*="profilEditNom("]:hover,div[onclick*="openCashEdit("]:hover{backgro
 }
 .icon-btn:hover { background:#f0b429; color:#000 !important; border-color:#f0b429; }
 .icon-btn.loading { opacity:.4; pointer-events:none; }
+.icon-btn.kyf-dev, .icon-btn.kyf-dev:hover { opacity:.4; cursor:not-allowed; background:var(--btn-secondary-bg); color:var(--text2) !important; border-color:var(--border2); }
+.icon-btn.kyf-dev:hover svg { transform:none; }
 .icon-btn svg { transition:transform .4s; }
 .icon-btn:hover svg { transform:rotate(180deg); }
 /* Vert « connecté » unique (anneau du bouton Sheets, pastille du panneau de connexion) */
@@ -5706,7 +5709,8 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
         <button type="button" id="dcaPlanFreqBtn" class="kyf-csel-btn" data-kyf-csel="dcaPlanFreq"><span id="dcaPlanFreqBtnLabel">Mensuel</span><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polyline points="6 9 12 15 18 9"/></svg></button>
         <select id="dcaPlanFreq" style="display:none"><option value="weekly">Hebdomadaire</option>
         <option value="monthly" selected>Mensuel</option>
-        <option value="bimonthly">Bi-mensuel</option>
+        <option value="semimonthly">2 fois par mois</option>
+        <option value="bimonthly">Tous les 2 mois</option>
         <option value="quarterly">Trimestriel</option></select>
       </div>
     </div>
@@ -5736,6 +5740,19 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
         <input type="hidden" id="dcaPlanHeure" value="09:30">
       </div>
     </div>
+  </div>
+
+  <!-- 2e jour du mois (fréquence « 2 fois par mois » seulement) -->
+  <div id="dcaJour2Wrap" style="display:none;margin-bottom:26px">
+    <div style="font-size:9px;color:var(--text3);letter-spacing:.5px;margin-bottom:6px">2E JOUR DU MOIS</div>
+    <div style="display:flex;align-items:stretch;border-radius:6px;border:1px solid var(--border2);overflow:hidden;background:var(--btn-secondary-bg);transition:border-color .15s;max-width:140px" id="dcaJour2Box">
+      <input id="dcaPlanJour2" type="text" inputmode="numeric" maxlength="2" placeholder="15"
+        style="flex:1;min-width:0;background:transparent;border:none;color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;outline:none"
+        oninput="this.value=this.value.replace(/\D/g,'').slice(0,2)"
+        onfocus="document.getElementById('dcaJour2Box').style.borderColor='var(--accent)'"
+        onblur="document.getElementById('dcaJour2Box').style.borderColor='var(--border2)'">
+    </div>
+    <div style="font-size:9px;color:var(--text3);margin-top:5px;line-height:1.5">Le premier jour est celui de la première date ci-dessus. Le montant saisi est celui de chaque versement.</div>
   </div>
 
   <!-- Mode ETF uniquement -->
@@ -7188,6 +7205,10 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
     </button>
     <input type="file" id="quickRestoreFile" accept=".json,.cgx" style="display:none" onchange="importConfig(this)">
+    <button class="icon-btn kyf-dev" id="mobileBtn" onclick="KYFMobile.open()" title="Mobile : en cours de développement" aria-label="Mobile : en cours de développement (indisponible pour le moment)" aria-disabled="true" style="position:relative">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+      <span id="kyfMobBadge" style="display:none;position:absolute;top:-5px;right:-5px;background:#f0b429;color:#000;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;min-width:14px;height:14px;border-radius:7px;line-height:14px;text-align:center;padding:0 3px;border:1.5px solid var(--topbar-bg);box-shadow:0 1px 4px rgba(0,0,0,0.4)"></span>
+    </button>
     <button class="icon-btn" id="notifBtn" onclick="toggleNotifPanel()" title="Journal des logs : Erreurs, Warnings, Infos" style="position:relative">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
       <span id="notifBadge" style="display:none;position:absolute;top:-5px;right:-5px;background:var(--red);color:#fff;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;min-width:14px;height:14px;border-radius:7px;line-height:14px;text-align:center;padding:0 3px;border:1.5px solid var(--topbar-bg);box-shadow:0 1px 4px rgba(0,0,0,0.4)">0</span>
@@ -7449,7 +7470,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.11.5.26</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.1.15</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -13347,6 +13368,7 @@ function renderBudgetEmpruntEstime(){
 function budgetDcaFreqMultiplier(freq){
   // Ramène chaque fréquence à un équivalent mensuel.
   if(freq === 'weekly') return 52/12;      // ≈4.33 versements/mois
+  if(freq === 'semimonthly') return 2;      // 2 versements par mois
   if(freq === 'bimonthly') return 0.5;     // 1 versement tous les 2 mois
   if(freq === 'quarterly') return 1/3;     // 1 versement tous les 3 mois
   return 1;                                 // monthly
@@ -16487,7 +16509,7 @@ async function sheetsSyncPushOAuth(opts){
     localStorage.setItem('kyf-sheets-last-sync', ts);
     const el = document.getElementById('sheetsLastSync');
     if(el) el.textContent='Dernière sync : '+new Date(ts).toLocaleString('fr-FR');
-    sheetsSyncSetStatus(kyfStatusIcon('ok')+`${rows.length} clés sauvegardées`,'var(--green)');
+    sheetsSyncSetStatus(kyfStatusIcon('ok')+`${rows.length} clés sauvegardées`,'var(--green)'); try{ if(window.KYFMobile) KYFMobile.sheetCheck(); }catch(_){}   // paquets Mobile déposés dans le classeur ?
   } catch(e){ sheetsSyncSetStatus(kyfStatusIcon('err')+'Erreur : '+escapeHtml(e.message),'#ff4560'); }
 }
 
@@ -17374,7 +17396,8 @@ function kyfDcaScriptEcheances_(now){
     } else ticker = String(p.ticker || '');
     if(!ticker || !/^[A-Za-z0-9._-]{1,60}$/.test(String(p.id))) return;
     const dates = [dcaPlanDueDate(p, now)];
-    if(p.freq !== 'weekly') dates.push(dcaPlanDueDate(p, new Date(now.getFullYear(), now.getMonth() + 1, 1)));
+    if(p.freq === 'semimonthly'){ const nx = new Date(now.getFullYear(), now.getMonth() + 1, 1); dcaPlanMonthDates(p, now.getFullYear(), now.getMonth()).concat(dcaPlanMonthDates(p, nx.getFullYear(), nx.getMonth())).forEach(d => dates.push(d)); }
+    else if(p.freq !== 'weekly') dates.push(dcaPlanDueDate(p, new Date(now.getFullYear(), now.getMonth() + 1, 1)));
     dates.forEach(d => out.push({ id: String(p.id), ticker, type: p.type === 'crypto' ? 'crypto' : 'etf', date: d, heure: kyfDcaPlanHeure_(p), cgid }));
   });
   const vus = {};
@@ -22748,17 +22771,19 @@ function initRendered(){ updateCardTitleColor(); initSidebar(); setSidebarActive
 function etfInvestOf(e){ const m = e && e.montant; return (m !== undefined && m !== null && isFinite(Number(m))) ? Number(m) : (parseFloat(e.pru)||0) * (parseFloat(e.qty)||0); }
 // Ligne SANS COURS : ni cours live (ni dernier cours connu) ni valeur de base saisie. Sa valeur est inconnue :
 // elle n'entre pas dans le gain (avant, elle comptait comme si elle valait 0 € → perte fictive de tout l'investi).
-function kyfEtfNoPrice(e, lp){ return (parseFloat(e && e.qty) || 0) > 0 && !(lp && lp[e.ticker]) && !(e && e.evalBase) || kyfEtfFxMissing(e, lp); }
+// 2.12.1.14 : valeur de base d'une ligne = valeur saisie, sinon (ligne d'un contrat AV/PER sans cours coté) valeur du relevé du contrat
+function kyfEtfBase(e){ if(!e) return 0; if(e.evalBase) return e.evalBase; try{ return (e.contratId && typeof kyfAvLineRefValue === 'function') ? kyfAvLineRefValue(e) : 0; }catch(_){ return 0; } }
+function kyfEtfNoPrice(e, lp){ return (parseFloat(e && e.qty) || 0) > 0 && !(lp && lp[e.ticker]) && !kyfEtfBase(e) || kyfEtfFxMissing(e, lp); }
 // R17 : ligne cotée dont aucun taux de change n'est connu (ni du jour ni dernier connu), sans valeur saisie : valeur en euros inconnue
 function kyfEtfFxMissing(e, lp){
   const q = lp && e && lp[e.ticker];
-  if(!q || !((parseFloat(e.qty) || 0) > 0) || e.evalBase) return false;
+  if(!q || !((parseFloat(e.qty) || 0) > 0) || kyfEtfBase(e)) return false;
   try{ return kyfFxState(q.currency || getTickerCurrency(e.ticker, q)) === 'none'; }catch(err){ return false; }
 }
 // Devises des lignes cotées dont AUCUN taux de change n'est connu (ni du jour ni dernier connu) : leur montant serait compté comme des euros
 function kyfFxMissingCcy(lp){
   const m = new Set();
-  try{ (ETF||[]).forEach(e => { const q = lp && lp[e.ticker]; if(!q || !((parseFloat(e.qty)||0) > 0) || e.evalBase) return;
+  try{ (ETF||[]).forEach(e => { const q = lp && lp[e.ticker]; if(!q || !((parseFloat(e.qty)||0) > 0) || kyfEtfBase(e)) return;
     const cur = q.currency || getTickerCurrency(e.ticker, q); if(kyfFxState(cur) === 'none'){ const mi = kyfMinorCcy(kyfNormCcy(cur)); m.add(mi ? mi[0] : kyfNormCcy(cur)); } }); }catch(err){}
   return [...m];
 }
@@ -22856,11 +22881,11 @@ function kyfStaleTitle(p){
 }
 const KYF_STALE_ICO = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>';
 function getEval(e, lp){ 
-  if (!lp) return e.evalBase || 0;
+  if (!lp) return kyfEtfBase(e);
   const cur = lp.currency || getTickerCurrency(e.ticker, lp);
   const v = toEUR(lp.price * e.qty, cur);
   // Cours ou quantité absents : un NaN contaminerait toutes les sommes (valorisation, gain, donut). On retombe sur la valeur saisie, ou 0.
-  if(!Number.isFinite(v)) return e.evalBase || 0;
+  if(!Number.isFinite(v)) return kyfEtfBase(e);
   // Ligne rattachée à un contrat AV/PER : même garde-fou que l'onglet AV (avContratFullValue). Un cours 20 fois plus haut ou plus bas que la
   // valeur du relevé signale un mauvais rattachement (fonds en euros relié à un titre coté : 3 794 parts × 8 667 € = 32 millions) : on garde le relevé.
   if(e.contratId){
@@ -24128,9 +24153,41 @@ function dcaPlanStarted(p){ return !p || !p.debut || new Date(p.debut+'T00:00:00
 // Un plan est « à saisir » selon SA fréquence (avant : toujours mensuel, donc un plan trimestriel ou bimestriel
 // était signalé chaque mois, un hebdomadaire une seule fois par mois) et le jour 29-31 est ramené au dernier jour
 // des mois plus courts (avant : jamais atteint en février, un plan du 31 n'était jamais « à saisir » les mois de 30 jours).
+// « 2 fois par mois » : deux jours fixes (jour et jour2). Jours des mois courts ramenés au dernier jour ; jours avant la première date ignorés.
+function dcaPlanMonthDates(p, y, m){
+  const pad = n => String(n).padStart(2,'0'), dim = new Date(y, m + 1, 0).getDate();
+  const js = p.freq === 'semimonthly' ? [parseInt(p.jour) || 1, parseInt(p.jour2) || 15] : [parseInt(p.jour) || 1];
+  const ds = Array.from(new Set(js.map(j => Math.min(j, dim)))).sort((a, b) => a - b).map(d => y + '-' + pad(m + 1) + '-' + pad(d));
+  const kept = ds.filter(d => !p.debut || d >= p.debut);
+  return kept.length ? kept : ds;
+}
+function dcaPlanMonthCount(p, y, m){
+  const pre = y + '-' + String(m + 1).padStart(2,'0');
+  return _dcaHistory.filter(h => h.planId === p.id && String(h.date).slice(0,7) === pre).length;
+}
+function dcaPlanJoursTxt(p){ return p.freq === 'semimonthly' ? 'le ' + p.jour + ' et le ' + (p.jour2 || 15) : 'le ' + p.jour; }
+function dcaFreqSync(){
+  const f = document.getElementById('dcaPlanFreq'), w = document.getElementById('dcaJour2Wrap'); if(!f || !w) return;
+  const on = f.value === 'semimonthly'; w.style.display = on ? '' : 'none';
+  const i = document.getElementById('dcaPlanJour2');
+  if(on && i && !i.value){ const j = parseInt(document.getElementById('dcaPlanJour').value) || 1; i.value = String(j < 15 ? 15 : 1); }
+}
+document.addEventListener('change', e => { if(e.target && e.target.id === 'dcaPlanFreq') dcaFreqSync(); }, true);
+function dcaReadJour2(freq, jour){
+  if(freq !== 'semimonthly') return { v:null };
+  const j2 = parseInt(document.getElementById('dcaPlanJour2').value);
+  if(!j2 || j2 < 1 || j2 > 31) return { err:'Second jour invalide (1–31).' };
+  if(j2 === jour) return { err:'Les deux jours doivent être différents.' };
+  return { v:j2 };
+}
 function dcaPlanIsDue(p, today){
   if(!p || !p.actif || !dcaPlanStarted(p)) return false;
   today = today || new Date();
+  if(p.freq === 'semimonthly'){
+    const y = today.getFullYear(), m = today.getMonth(), dn = today.getDate();
+    const passed = dcaPlanMonthDates(p, y, m).filter(d => parseInt(d.slice(8,10)) <= dn).length;
+    return passed > dcaPlanMonthCount(p, y, m);
+  }
   const last = _dcaHistory.find(h => h.planId === p.id);
   if(p.freq === 'weekly'){
     if(!last) return true;
@@ -24177,6 +24234,7 @@ function dcaAddFill(keepType){
   { const _ar = document.getElementById('dcaPlanAutoRec'); if(_ar) _ar.checked = false; }
   kyfDateSetValue('dcaPlanDebut', new Date().toISOString().slice(0,10));
   document.getElementById('dcaPlanJour').value = String(new Date().getDate());
+  { const _j2 = document.getElementById('dcaPlanJour2'); if(_j2) _j2.value = ''; } try{ dcaFreqSync(); }catch(_){}
   kyfTimeSetValue('dcaPlanHeure','09:30');
   document.getElementById('dcaAddError').style.display='none';
   // ACTIF crypto : menu de tes cryptos (ou recherche directe si le portefeuille crypto est vide)
@@ -24261,11 +24319,11 @@ function dcaAddRenderList(highlightId){
   const wrap = document.getElementById('dcaAddListWrap'), el = document.getElementById('dcaAddList'); if(!el || !wrap) return;
   const plans = dcaAddPlansOfType();
   wrap.style.display = plans.length ? 'block' : 'none';
-  const fl = {weekly:'/sem.', monthly:'/mois', bimonthly:'/2 mois', quarterly:'/trim.'};
+  const fl = {weekly:'/sem.', monthly:'/mois', semimonthly:'× 2/mois', bimonthly:'/2 mois', quarterly:'/trim.'};
   el.innerHTML = plans.map(p => `<div data-pid="${p.id}" style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border);margin-bottom:6px;transition:background .4s,border-color .4s">
     <div style="flex:1;min-width:0">
       <div style="font-size:10px;font-weight:700;color:${p.actif?'var(--text)':'var(--text3)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(p.name)}</div>
-      <div style="font-size:9px;color:var(--text3);margin-top:2px">${fmt(p.montant,0)} € ${fl[p.freq]||''} · le ${escapeHtml(p.jour)}${p.livretId?(()=>{ const c = livLoad().find(x => String(x.id) === String(p.livretId)); return c ? ' · prélevé sur ' + escapeHtml(c.banque || c.type || 'livret') : ''; })():''}</div>
+      <div style="font-size:9px;color:var(--text3);margin-top:2px">${fmt(p.montant,0)} € ${fl[p.freq]||''} · ${escapeHtml(dcaPlanJoursTxt(p))}${p.livretId?(()=>{ const c = livLoad().find(x => String(x.id) === String(p.livretId)); return c ? ' · prélevé sur ' + escapeHtml(c.banque || c.type || 'livret') : ''; })():''}</div>
     </div>
     <button type="button" onclick="openEditDCAPlan(${kyfJsNum(p.id)})" class="kyf-icon-btn" style="background:none;border:none;color:var(--text3);cursor:pointer;display:inline-flex;transition:color .15s" title="Modifier" aria-label="Modifier" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text3)'">${KYF_ICONS.edit}</button>
     <button type="button" onclick="dcaAddDelete(${kyfJsNum(p.id)})" class="kyf-icon-btn" style="background:none;border:none;color:var(--text3);cursor:pointer;display:inline-flex;transition:color .15s" title="Supprimer" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text3)'">${KYF_ICONS.trash}</button>
@@ -24499,6 +24557,7 @@ function openEditDCAPlan(id){
   if(!deb){ const n = new Date(), dim = new Date(n.getFullYear(), n.getMonth() + 1, 0).getDate(); deb = n.getFullYear() + '-' + String(n.getMonth() + 1).padStart(2,'0') + '-' + String(Math.min(parseInt(p.jour) || 1, dim)).padStart(2,'0'); }
   kyfDateSetValue('dcaPlanDebut', deb);
   document.getElementById('dcaPlanJour').value = String(p.jour);
+  { const _j2 = document.getElementById('dcaPlanJour2'); if(_j2) _j2.value = p.jour2 ? String(p.jour2) : ''; } try{ dcaFreqSync(); }catch(_){}
   kyfTimeSetValue('dcaPlanHeure', p.heure || '09:30');
   if(!isCry) document.querySelectorAll('input[name="dcaMode"]').forEach(r => { r.checked = (r.value === p.mode); });
   dcaSetSource(p.livretId ? String(p.livretId) : '');
@@ -24526,7 +24585,9 @@ function dcaEditSave(){
   }
   if(!montant || montant <= 0){ err.textContent = 'Montant invalide.'; err.style.display = 'block'; return; }
   if(!jour || jour < 1 || jour > 31){ err.textContent = 'Jour invalide (1–31).'; err.style.display = 'block'; return; }
+  const j2 = dcaReadJour2(freq, jour); if(j2.err){ err.textContent = j2.err; err.style.display = 'block'; return; }
   p.montant = montant; p.freq = freq; p.jour = jour; p.debut = debut; p.heure = heure; p.mode = mode;
+  if(j2.v) p.jour2 = j2.v; else delete p.jour2;
   if(document.getElementById('dcaSourceWrap')?.style.display === 'block'){   // bloc visible : on suit le choix ; sinon on garde la source existante
     const src = document.getElementById('dcaPlanSource')?.value || '';
     if(src) p.livretId = src; else delete p.livretId;
@@ -24572,10 +24633,11 @@ function confirmAddDCAPlan(){
   if(!ticker){ err.textContent='Sélectionnez un actif.'; err.style.display='block'; return; }
   if(!montant||montant<=0){ err.textContent='Montant invalide.'; err.style.display='block'; return; }
   if(!jour||jour<1||jour>31){ err.textContent='Jour invalide (1–31).'; err.style.display='block'; return; }
+  const j2 = dcaReadJour2(freq, jour); if(j2.err){ err.textContent = j2.err; err.style.display = 'block'; return; }
 
   const newId = Date.now();
   _dcaPlans.push({
-    id:newId, type:_dcaType, ticker, name, montant, freq, jour, debut, heure, mode, actif:true,
+    id:newId, type:_dcaType, ticker, name, montant, freq, jour, ...(j2.v ? { jour2:j2.v } : {}), debut, heure, mode, actif:true,
     created:new Date().toISOString()
   });
   { const _src = document.getElementById('dcaPlanSource')?.value || ''; if(_src) _dcaPlans[_dcaPlans.length - 1].livretId = _src; }
@@ -24835,6 +24897,10 @@ function dcaPlanDueDate(p, today){
     if(last){ const d = new Date(last.date + 'T12:00:00'); d.setDate(d.getDate() + 7); return ymd(d); }
     return p.debut || ymd(today);
   }
+  if(p.freq === 'semimonthly'){
+    const y = today.getFullYear(), m = today.getMonth(), ds = dcaPlanMonthDates(p, y, m);
+    return ds[Math.min(dcaPlanMonthCount(p, y, m), ds.length - 1)];
+  }
   const dim = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
   return today.getFullYear() + '-' + pad(today.getMonth() + 1) + '-' + pad(Math.min(parseInt(p.jour) || 1, dim));
 }
@@ -25052,7 +25118,7 @@ function kyfDcaCreatedFr(o){
 }
 function renderDCA(){
   try{ setTimeout(dcaAvBannerRender, 0); }catch(e){}
-  const freqLabel={weekly:'Hebdo',monthly:'Mensuel',bimonthly:'Bi-mensuel',quarterly:'Trimestriel'};
+  const freqLabel={weekly:'Hebdo',monthly:'Mensuel',bimonthly:'Tous les 2 mois',quarterly:'Trimestriel'};
   const modeLabel={auto:'AUTO',manual:'MANUEL',crypto:'CRYPTO AUTO',api:'API'};
   // Déclaré ici (et plus dans les cartes) : le tableau Historique DCA en a aussi besoin pour la colonne MODE
   const modeColor={auto:'#3b9eff',manual:'#2ecc71',crypto:'#ffb300',api:'#b44dff'};
@@ -25087,7 +25153,7 @@ function renderDCA(){
               '<div style="font-family:Inter,sans-serif;font-size:13px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;white-space:nowrap">'+fmt(p.montant,0)+' €</div>'+
             '</div>'+
             '<div style="display:flex;align-items:center;gap:6px;margin-top:2px;min-height:18px">'+
-              '<div style="flex:1;min-width:0;font-family:Inter,sans-serif;font-size:9px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">le '+escapeHtml(p.jour)+' · '+
+              '<div style="flex:1;min-width:0;font-family:Inter,sans-serif;font-size:9px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escapeHtml(dcaPlanJoursTxt(p))+' · '+
                 (pending?'<span style="color:#e07b00;font-weight:700">À saisir</span>':escapeHtml(modeTxt[p.mode]||p.mode))+(p.autoRec?' · enreg. auto':'')+'</div>'+
               '<div class="kyf-pl-acts" style="display:flex;gap:1px;flex-shrink:0">'+
                 '<button onclick="openDCACours('+kyfJsNum(p.id)+')" class="kyf-icon-btn'+(pending?' kyf-pl-keep':'')+'" title="Enregistrer le cours" style="'+ib+';color:'+(pending?'#e07b00':'var(--text3)')+'" onmouseover="this.style.color=\'var(--accent)\'" onmouseout="this.style.color=\''+(pending?'#e07b00':'var(--text3)')+'\'">'+KYF_ICONS.check+'</button>'+
@@ -42846,7 +42912,7 @@ function renderETFTable(lp){
     const _inv = e => e.montant !== undefined ? e.montant : e.pru * e.qty;
     const _fin = v => Number.isFinite(v) ? v : null;
     const _key = e => {
-      const p = lp[e.ticker], noV = (!p && !e.evalBase) || kyfEtfFxMissing(e, lp), stale = !!(p && p._stale);
+      const p = lp[e.ticker], noV = (!p && !kyfEtfBase(e)) || kyfEtfFxMissing(e, lp), stale = !!(p && p._stale);
       switch(_cs.k){
         case 'name': return String(e.name || '').toLowerCase() || null;
         case 'investi': return _fin(_inv(e));
@@ -42968,7 +43034,7 @@ function renderETFTable(lp){
     const boughtToday = (parseFloat(e.qty)||0) - heldQ;
     const varJPct = p && p.pct    !== undefined ? p.pct : null;
     const fxMiss  = kyfEtfFxMissing(e, lp); // R17 : cours connu mais aucun taux de change : valeur en euros inconnue
-    const noVal   = (!p && !e.evalBase) || fxMiss; // aucun cours ni valeur de base : gain inconnu (pas -100 %)
+    const noVal   = (!p && !kyfEtfBase(e)) || fxMiss; // aucun cours ni valeur de base : gain inconnu (pas -100 %)
     const stale   = !!(p && p._stale); // dernier cours connu, pas de cours frais : variation du jour inconnue
     const hasLive = p && p.price !== undefined;
     // Répartition calculée dynamiquement
@@ -48626,7 +48692,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.11.5.26\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.1.15\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -49198,7 +49264,7 @@ function tryDailySnapshot(){
     if(!frozenEtf){
       try{
         const _q = ETF.filter(e => e.ticker && e.qty > 0);
-        if(_q.length && !_q.some(e => { const x = lp[e.ticker]; return (x && x.price > 0) || e.evalBase > 0; })){
+        if(_q.length && !_q.some(e => { const x = lp[e.ticker]; return (x && x.price > 0) || kyfEtfBase(e) > 0; })){
           const _jx = JSON.parse(localStorage.getItem('kyf-snapshots-index') || '[]').filter(d => d < today).sort();
           const _pj = _jx.length ? kyfSnapStored(_jx[_jx.length - 1]) : null;
           if(_pj && (_pj.valorisation || 0) > 0) return;
@@ -49611,7 +49677,7 @@ function kyfCatchupBuildSnap(date, c){
     if (!price && _qAt.get(e) > 0) (c.fallback = c.fallback || []).push(e.ticker);   // cours de repli utilisé : la séance sera marquée incomplète
     // Fallback final : evalBase
     const _realPx = !!price;
-    if (!price) price = e.evalBase ? e.evalBase / (e.qty || 1) : e.pru;
+    if (!price) price = kyfEtfBase(e) ? kyfEtfBase(e) / (e.qty || 1) : e.pru;
     if (price && _realPx) etfLastKnown[e.ticker] = price; // mémoriser pour le prochain jour (jamais un cours de repli : sinon le jour suivant le prendrait pour un vrai cours)
     etfTotal += (price || 0) * _qAt.get(e);
   });
@@ -50471,7 +50537,7 @@ function renderDonut(){
   const ctx=document.getElementById('donutChart'); if(!ctx) return;
   if(charts.donut) charts.donut.destroy();
   const _lp = window._lp || {};
-  const _sd = [...ETF].map(e=>({...e,val:getEval(e,_lp[e.ticker])||e.evalBase||0})).sort((a,b)=>b.val-a.val);
+  const _sd = [...ETF].map(e=>({...e,val:getEval(e,_lp[e.ticker])||kyfEtfBase(e)||0})).sort((a,b)=>b.val-a.val);
   const ETF_NAMES = _sd.map(e=>e.name);
   const ETF_EVALS = _sd.map(e=>e.val);
   const colors    = _sd.map(e=>e.color);
@@ -63682,6 +63748,18 @@ const GUIDE_PAGES = [
         La consigne demande les colonnes <strong style="color:var(--text)">ISIN ; Nom ; Quantite ; PRU ; Montant ; Categorie</strong>, séparées par des points-virgules, avec la virgule pour les décimales. Pour un fonds en euros, la colonne Categorie porte « fonds euro », pour une SCPI « SCPI ».<br><br>
         <strong style="color:var(--text)">Une IA peut se tromper</strong>, surtout sur les codes ISIN et les chiffres : vérifiez chaque ligne dans l'aperçu avant d'importer. KYF n'est pas responsable du contenu produit par une IA.</div>
       </div>
+      <div id="guide-mobile" style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Saisir depuis le téléphone : l'appli Mobile</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9"><strong style="color:var(--accent)">En cours de développement : le bouton Mobile de KYF est grisé et cette fonction n'est pas encore disponible.</strong> Keep Your Folio Mobile est une petite appli de saisie rapide : vous y notez vos opérations (achats, ventes, dividendes, versements...) depuis votre téléphone, puis vous les envoyez à KYF. <strong style="color:var(--text)">Le mobile n'écrit jamais dans vos données</strong> : c'est vous qui validez chaque opération dans KYF.<br><br>
+        <strong style="color:var(--text)">Installer l'appli.</strong> Elle s'installe depuis le navigateur, sans boutique d'applications. Dans KYF, cliquez sur l'icône <strong style="color:var(--text)">téléphone</strong> en haut à droite, puis le bloc « Installer l'appli mobile » : choisissez <strong style="color:var(--text)">iPhone / iPad</strong> ou <strong style="color:var(--text)">Android</strong> pour voir le tutoriel pas à pas (Safari sur iPhone, Chrome sur Android) et copier le lien keepyourfolio.fr/mobile.<br><br>
+        <strong style="color:var(--text)">Recevoir des opérations.</strong><br>
+        <strong style="color:var(--text)">1.</strong> Sur le mobile, envoyez le paquet : un fichier .kyfops chiffré, son texte à copier, ou un envoi direct dans votre classeur Google (bouton « Envoyer au classeur Google »).<br>
+        <strong style="color:var(--text)">2.</strong> Dans KYF, fenêtre <strong style="color:var(--text)">Mobile</strong> : déposez le fichier (ou collez le texte), saisissez la phrase secrète du mobile, puis « Lire le paquet ». La phrase n'est jamais enregistrée. L'œil à droite du champ, maintenu appuyé, laisse la voir le temps de la saisie.<br>
+        <strong style="color:var(--text)">3.</strong> Les opérations arrivent « en attente », classées par date. Pour chacune, <strong style="color:var(--text)">Valider</strong> ouvre le formulaire habituel de KYF, déjà rempli : vous vérifiez, vous enregistrez. <strong style="color:var(--text)">Ignorer</strong> la met de côté. Fermer le formulaire sans enregistrer la laisse en attente.<br>
+        <strong style="color:var(--text)">4.</strong> Quand tout est traité, « Générer le reçu » produit un fichier (ou un texte) chiffré à charger dans le mobile, onglet « Envoyés » : le mobile sait alors ce qui a été enregistré. S'il reste des opérations non traitées, KYF vous prévient : elles seront signalées comme ignorées dans le reçu. Le reçu peut aussi s'afficher en <strong style="color:var(--text)">QR codes</strong> : sur le téléphone, onglet « Envoyés », puis « Scanner le reçu en QR codes ». Quand tous les QR codes ont défilé, un message vert le confirme dans KYF ; vérifiez alors sur le téléphone que le reçu est bien chargé (KYF ne reçoit aucun retour du téléphone).<br><br><strong style="color:var(--text)">Paquet reçu par le classeur Google.</strong> Si votre compte Google est relié à KYF, un paquet envoyé depuis le mobile arrive dans l'onglet « KYF_Mobile_Paquets » de votre classeur. KYF l'indique par un bandeau et une pastille « N paquets Mobile à importer » (vérifiés après chaque synchronisation). Saisissez la phrase secrète du mobile pour l'importer : KYF n'écrit que le statut (« importé » ou la cause de l'erreur) dans le classeur, jamais la phrase.<br><br><strong style="color:var(--text)">Espèces insuffisantes.</strong> Pour un achat PEA ou CTO, KYF vous prévient quand les espèces ne couvrent pas l'achat. Les espèces comptées incluent celles placées sur le livret lié du compte (par exemple Trade Republic), comme dans la fenêtre Cash. Avec plusieurs comptes CTO, le message nomme le compte concerné et indique si le reste des espèces est rangé sur un autre compte.<br><br>
+        Pour l'instant, <strong style="color:var(--text)">achat, vente et dividende</strong> se valident directement. Les autres types d'opérations sont bien lus, mais à saisir à la main dans KYF, puis à ignorer dans la liste. Les opérations en attente restent sur votre appareil : elles ne sont ni sauvegardées ni synchronisées.<br><br>
+        <strong style="color:var(--text)">Sécurité.</strong> Le fichier est chiffré avec votre phrase secrète (AES-256) : sans elle, il est illisible. KYF vérifie tout le paquet avant de l'accepter et refuse un fichier modifié ou mal formé. Un paquet déjà reçu n'est pas enregistré deux fois.</div>
+      </div>
       <div id="guide-ticker" style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-top:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Le ticker : c'est quoi, à quoi ça sert, où le trouver</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9"><strong style="color:var(--text)">C'est quoi ?</strong> Le code court d'un titre en bourse, par exemple CW8.PA pour un ETF MSCI World coté à Paris. Le suffixe indique la place de cotation : .PA Paris, .DE Xetra, .L Londres, .MI Milan, .AS Amsterdam.<br><br><strong style="color:var(--text)">À quoi ça sert ?</strong> Avec le ticker, KYF suit le prix en direct de la ligne (Yahoo Finance) et calcule le gain et la variation du jour. Sans ticker, la ligne garde la valeur de votre relevé, sans prix en direct. Rien n'est inventé.<br><br><strong style="color:var(--text)">Comment KYF le trouve</strong> pendant un import : il reprend d'abord le ticker déjà connu pour ce fonds dans votre contrat, puis le cherche à partir de l'ISIN ou du nom du relevé (via OpenFIGI). Pendant cette recherche, un encadré « C'est quoi un ticker ? » s'affiche à droite du message d'avancement et disparaît dès qu'elle est terminée ; son lien « Retrouver ce texte dans le guide » mène ici.<br><br><strong style="color:var(--text)">S'il en manque</strong> : les lignes concernées apparaissent à l'étape suivante sous « À compléter ». Collez l'ISIN et KYF cherche le ticker tout seul. Sinon, ouvrez la page de l'actif sur Yahoo Finance : le symbole s'affiche à côté du nom. Les loupes à côté des champs lancent la recherche pour vous, et le lien « Ticker introuvable ? » mène à la base communautaire.</div>
@@ -65955,7 +66033,7 @@ const GUIDE_PAGES = [
         </div>
         <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px">
           <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,17 8,11 13,14 21,5"/><polyline points="17,5 21,5 21,9"/></svg> La carte principale</div>
-          <div style="font-size:13px;color:var(--text2);line-height:1.9"><strong style="color:var(--text)">Courtier</strong> : son nom et son logo s'affichent en grand. KYF le déduit de vos livrets d'épargne ou de votre cash quand il le peut, sinon il vous le demande à l'import d'un relevé, ou vous le saisissez dans le Détail du contrat.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Valeur totale</strong> : titres au cours en direct plus espèces du compte quand elles sont suivies : les deux sont toujours affichés. Le PEA-PME ne suit pas les espèces : sa valeur est celle des titres seulement.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Gain sur les titres</strong> : valeur des titres moins leur prix d'achat. C'est le même chiffre dans le bandeau du haut (« tous comptes confondus ») et dans la carte, calculé sur les mêmes lignes. Le gain « depuis vos versements » reste disponible dans Fiscalité et retrait. La variation du jour porte sur les titres seuls.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Variation du jour</strong> : flèche verte ou rouge avec le montant et le pourcentage. Si un cours manque ou n'est pas en direct, KYF affiche « indisponible » plutôt qu'un chiffre inventé.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Date d'ouverture</strong> en haut à droite : elle passe au vert avec une coche quand les 5 ans sont révolus (PEA et PEA-PME).</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.9"><strong style="color:var(--text)">Courtier</strong> : son nom et son logo s'affichent en grand. KYF le déduit de vos livrets d'épargne ou de votre cash quand il le peut, sinon il vous le demande à l'import d'un relevé, ou vous le saisissez dans le Détail du contrat.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Valeur totale</strong> : titres au cours en direct plus espèces du compte quand elles sont suivies : les deux sont toujours affichés. Le PEA-PME ne suit pas les espèces : sa valeur est celle des titres seulement.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Gain sur les titres</strong> : valeur des titres moins leur prix d'achat. C'est le même chiffre dans le bandeau du haut (« tous comptes confondus ») et dans la carte, calculé sur les mêmes lignes. Le gain « depuis vos versements » reste disponible dans Fiscalité et retrait. La variation du jour porte sur les titres seuls.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Variation du jour</strong> : flèche verte ou rouge avec le montant et le pourcentage. Si un cours manque ou n'est pas en direct, KYF affiche « indisponible » plutôt qu'un chiffre inventé. Exception : une ligne d'Assurance Vie ou de PER sans cours coté (ISIN seul, sans ticker) est valorisée avec la valeur du relevé du contrat, comme dans la fiche du contrat.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Date d'ouverture</strong> en haut à droite : elle passe au vert avec une coche quand les 5 ans sont révolus (PEA et PEA-PME).</div>
         </div>
         <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px">
           <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7m0-4V3m8 18v-9m0-4V3m8 18v-5m0-4V3"/><circle cx="4" cy="14" r="2"/><circle cx="12" cy="8" r="2"/><circle cx="20" cy="12" r="2"/></svg> Détail du contrat</div>
@@ -66042,8 +66120,8 @@ const GUIDE_PAGES = [
 // ── Version du guide ──
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
-const KYF_GUIDE_VERSION = '1.28';
-const KYF_GUIDE_POUR = '2.11.5.26';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_VERSION = '1.29';
+const KYF_GUIDE_POUR = '2.12.1.15';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -75115,6 +75193,54 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.15 · 02/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Mobile : le bouton est grisé avec l'info « en cours de développement » ; la fenêtre, le badge et le bandeau sont désactivés pour l'instant.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.14 · 02/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance Vie : les lignes sans cours coté (ISIN seul) ne sont plus « indisponibles » dans Positions ETF &amp; Actions : KYF utilise la valeur du relevé du contrat, comme la fiche du contrat.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.13 · 02/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Guide : le chapitre Mobile décrit maintenant le classeur Google, les QR codes du reçu, l’œil sur la phrase et l’alerte « Espèces insuffisantes » avec livret lié.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.12 · 02/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre Mobile : quand tous les QR codes du reçu ont été affichés, un message de validation apparaît dans la fenêtre des QR codes et dans le bloc « Reçu prêt ».</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.11 · 02/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre Mobile : l’alerte « Espèces insuffisantes » compte maintenant les espèces placées sur le livret lié du PEA ou du CTO (par exemple Trade Republic).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.10 · 02/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre Mobile : l’alerte « Espèces insuffisantes » indique le compte CTO concerné et les espèces rangées sur les autres comptes.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.09 · 02/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre Mobile : les trois champs de phrase secrète ont maintenant l’œil « Maintenir pour voir ».</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.08 · 02/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre Mobile : le reçu est mieux expliqué (à quoi il sert, quoi faire avant de le générer, et où le charger dans le téléphone).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.07 · 01/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Mobile : 3e canal par le classeur Google. KYF lit l'onglet KYF_Mobile_Paquets (une ligne par morceau de paquet chiffré), propose « N paquets Mobile à importer » après la synchronisation, les importe avec la phrase secrète (jamais écrite dans le classeur) puis note « importé » dans la colonne G. Plans DCA « 2 fois par mois » (jour2) acceptés. Flux fichier et QR inchangé.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.06 · 01/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">DCA : nouvelle fréquence « 2 fois par mois » (par exemple le 1 et le 15). Un second champ « 2e jour du mois » apparaît dans le pop-up. Chaque versement garde le montant saisi, le plan repasse « À saisir » à chaque échéance, l'enregistrement automatique et le Budget (×2 par mois) la gèrent.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.05 · 01/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">DCA : le plan « Bi-mensuel » devient « Tous les 2 mois » (plus clair). Les versements programmés des contrats AV/PER proposent aussi « Tous les 2 mois ».</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.04 · 01/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Mobile : texte de la zone Recevoir précisé (fichier de paquets) et boutons de la fenêtre plus petits, comme ailleurs dans KYF (les boutons d'installation iPhone / Android gardent leur taille).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.03 · 01/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Mobile : l'accès passe en haut à droite (icône téléphone avec pastille des opérations en attente) et un bandeau apparaît sur le dashboard quand des opérations du téléphone attendent. L'entrée du bas de la barre latérale est retirée. GUIDE mis à jour.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.02 · 01/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Mobile : les versements et retraits PEA / CTO se valident (formulaire d'espèces pré-rempli, jamais sous zéro) ; un achat PEA / CTO au-delà des espèces disponibles affiche un avertissement avec le montant manquant, sans bloquer.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.01 · 01/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Mobile, corrections suite à l'audit : opération déjà dans la file = doublon, devise étrangère jamais pré-remplie en euros, PEA-PME sans enveloppe imposée, avertissements de date et de compte introuvable, reçu confirmé s'il reste des opérations et total sans écart d'arrondi, messages de refus précis.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.00 · 01/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Mobile : le reçu peut s'afficher en QR codes (défilement automatique, choix de la taille, nombre de QR indiqué) pour que le téléphone le scanne, sans fichier à transférer.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.0.07 · 01/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Guide v1.29 : nouvelle section « Saisir depuis le téléphone : l'appli Mobile » (installation sur iPhone et Android, réception des opérations, validation une par une, reçu, sécurité).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.0.06 · 01/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre « Opérations du téléphone » : les boutons iPhone / iPad et Android affichent le logo de la marque, chargé depuis le site (comme les logos des entreprises dans KYF), avec une icône neutre de secours hors ligne.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.0.05 · 01/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre « Opérations du téléphone » et tutoriels d'installation : tous les textes passent au vouvoiement.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.0.04 · 01/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre « Opérations du téléphone » : nouvelle zone « Installer l'appli mobile » avec deux boutons (iPhone / iPad et Android, icônes neutres) qui ouvrent un tutoriel d'installation pas à pas, avec le lien keepyourfolio.fr/mobile à copier.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.0.03 · 01/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre « Opérations du téléphone » : titre et icône au même style que les autres fenêtres de KYF (petite icône en ligne, titre en majuscules), défilement de la page bloqué aussi au retour d'un formulaire.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.0.02 · 01/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre « Opérations du téléphone » : bouton « Choisir un fichier » en français au style KYF (à la place du bouton du navigateur), icône du titre en gris neutre.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.0.01 · 01/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre « Opérations du téléphone » : nouveau visuel (icône de téléphone à côté du titre, volets avec icônes, état vide soigné, étiquettes d'état en pastilles).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.0.00 · 01/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Liaison avec Keep Your Folio Mobile : nouvelle entrée « Mobile » dans la barre latérale. KYF lit le fichier chiffré envoyé par le téléphone (phrase secrète jamais enregistrée), vérifie tout le paquet, met les opérations en attente et tu les valides une par une (achat, vente et dividende dans cette version). Reçu chiffré à renvoyer au mobile.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.26 · 31/10/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Logos des banques (Livrets) : si la première icône est absente ou n'est que le petit globe par défaut (cas de Caisse d'Épargne), KYF essaie d'autres sources avant d'afficher l'initiale. Reconnaissance du nom plus souple (apostrophe typographique, accents).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.11.5.25 · 31/10/2026</div>
@@ -84370,7 +84496,7 @@ function avContratValue0(d){
       // Ligne sans cours Yahoo (et sans valeur saisie) côté ETF & Actions : elle y vaut 0, donc on ne peut pas la considérer « déjà comptée ».
       // On reprend alors sa valeur du relevé ; sans ça elle disparaissait du dashboard (valorisation live et allocation sans l'AV).
       const _lpx = window._lp || {};
-      const _cnt = e => !!_lpx[e.ticker] || (parseFloat(e.evalBase)||0) > 0;
+      const _cnt = e => !!_lpx[e.ticker] || (parseFloat(kyfEtfBase(e))||0) > 0;
       const _same = e => p.ticker && String(e.ticker||'').toUpperCase() === String(p.ticker).toUpperCase() && (!e.contratId || String(e.contratId) === String(d.id));
       const _noPriceLine = ETF.some(e => _same(e) && !_cnt(e)) && !ETF.some(e => _same(e) && _cnt(e));
       if(listed && !_noPriceLine) anyListed = true; else v += parseFloat(p.valeur) || 0;
@@ -84427,7 +84553,7 @@ function getImmoNetTotal(){
 const AV_DCA_KEY = 'kyf-av-dca';
 function avDCALoad(){ try{ return JSON.parse(localStorage.getItem(AV_DCA_KEY)||'[]'); }catch(e){ return []; } }
 function avDCASave(d){ localStorage.setItem(AV_DCA_KEY, JSON.stringify(d)); }
-const AV_DCA_FREQ = { monthly:{label:'Mensuel', n:12, step:1, short:'/mois'}, quarterly:{label:'Trimestriel', n:4, step:3, short:'/trimestre'}, yearly:{label:'Annuel', n:1, step:12, short:'/an'}, once:{label:'Exceptionnel', n:0, step:0, short:'une fois', once:true} };
+const AV_DCA_FREQ = { monthly:{label:'Mensuel', n:12, step:1, short:'/mois'}, bimonthly:{label:'Tous les 2 mois', n:6, step:2, short:'/2 mois'}, quarterly:{label:'Trimestriel', n:4, step:3, short:'/trimestre'}, yearly:{label:'Annuel', n:1, step:12, short:'/an'}, once:{label:'Exceptionnel', n:0, step:0, short:'une fois', once:true} };
 function avDcaFreq(r){ return AV_DCA_FREQ[r && r.freq] || AV_DCA_FREQ.monthly; }
 function avDcaAnnual(r){ return (r && r.actif ? (parseFloat(r.montant)||0) : 0) * avDcaFreq(r).n; }
 // Versements par an d'un contrat : somme des règles actives ; sans règle, ancienne saisie manuelle (conservée en secours)
@@ -101642,7 +101768,7 @@ function orInlineEdit(id, td, currentVal){
       </div>
       <div>
         <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">FRÉQUENCE</div>
-        <select id="avDCAFreq" data-kyf-pg-look="field" onchange="avDcaFreqChange()" style="width:100%;font-size:11px"><option value="monthly">Mensuel</option><option value="quarterly">Trimestriel</option><option value="yearly">Annuel</option><option value="once">Exceptionnel (une seule fois)</option></select>
+        <select id="avDCAFreq" data-kyf-pg-look="field" onchange="avDcaFreqChange()" style="width:100%;font-size:11px"><option value="monthly">Mensuel</option><option value="bimonthly">Tous les 2 mois</option><option value="quarterly">Trimestriel</option><option value="yearly">Annuel</option><option value="once">Exceptionnel (une seule fois)</option></select>
       </div>
       <div>
         <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px" id="avDCADateLbl">PREMIÈRE DATE</div>
@@ -213000,6 +213126,799 @@ input.kyf-secret-on:hover{border-color:var(--accent)!important;background:var(--
   function start(){ countOpen(); setTimeout(show, 12000); }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();
+</script>
+<script>
+/* KYF-MOBILE début */
+(function(){
+'use strict';
+var QK = 'kyf-mobile-attente', IK = 'kyf-mobile-ids';
+var MAX_FIC = 512 * 1024, MAX_OPS = 200, MAX_IDS = 5000;
+var TYPES = ['achat','vente','dividende','versement','retrait','crypto_achat','crypto_vente','crypto_swap','crypto_transfert','crypto_frais',
+  'livret_depot','livret_retrait','livret_interets','livret_dca','arbitrage','frais_av','av_versement','av_programme','av_rachat','av_valeur',
+  'av_ligne_valeur','av_ligne_nouvelle','actif_nouveau','actif_valeur','immo_valeur','immo_loyer','or_achat','or_vente','crowd_projet','crowd_maj',
+  'scpi_achat','scpi_vente','scpi_dividende','scpi_maj','flux_recurrent','pee_versement','pee_retrait','dca_plan','cash_maj'];
+var ENVS = ['PEA','PEA-PME','CTO','AV','PER','Livret','Crypto','Or','Immobilier','Crowdfunding','SCPI','Autres actifs','Budget','PEE','DCA','Liquidités'];
+var LIB = { achat:'Achat', vente:'Vente', dividende:'Dividende', versement:'Versement', retrait:'Retrait', crypto_achat:'Achat crypto', crypto_vente:'Vente crypto',
+  crypto_swap:'Échange crypto', crypto_transfert:'Transfert crypto', crypto_frais:'Frais crypto', livret_depot:'Dépôt livret', livret_retrait:'Retrait livret',
+  livret_interets:'Intérêts livret', livret_dca:'Versement programmé livret', arbitrage:'Arbitrage', frais_av:'Frais AV', av_versement:'Versement AV', av_programme:'Versement programmé AV',
+  av_rachat:'Rachat AV', av_valeur:'Valeur du contrat', av_ligne_valeur:'Valeur d’une ligne', av_ligne_nouvelle:'Nouvelle ligne AV', actif_nouveau:'Nouvel actif',
+  actif_valeur:'Valeur d’un actif', immo_valeur:'Valeur d’un bien', immo_loyer:'Loyer', or_achat:'Achat or', or_vente:'Vente or', crowd_projet:'Projet crowdfunding',
+  crowd_maj:'Suivi crowdfunding', scpi_achat:'Achat SCPI', scpi_vente:'Vente SCPI', scpi_dividende:'Dividende SCPI', scpi_maj:'Mise à jour SCPI', flux_recurrent:'Flux récurrent',
+  pee_versement:'Versement PEE', pee_retrait:'Retrait PEE', dca_plan:'Plan DCA', cash_maj:'Solde de liquidités' };
+// Types que le bouton Valider sait ouvrir dans cette version (les autres restent à saisir à la main, puis Ignorer)
+var BRANCHES = { achat:1, vente:1, dividende:1, versement:1, retrait:1 };
+// Versements et retraits : seuls PEA et CTO ont des espèces suivies par KYF (le PEA-PME n'en a pas)
+function peutValider(o){ if(!BRANCHES[o.type]) return false; if(o.type === 'versement' || o.type === 'retrait') return o.enveloppe === 'PEA' || o.enveloppe === 'CTO'; return true; }
+var SVG = function(p, w){ return '<svg viewBox="0 0 24 24" width="' + (w || 16) + '" height="' + (w || 16) + '" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>'; };
+var IC_PHONE = '<rect x="7" y="2" width="10" height="20" rx="2.5"/><line x1="11" y1="18.5" x2="13" y2="18.5"/>';
+var IC_IN = '<path d="M12 3v11"/><polyline points="8 10 12 14 16 10"/><path d="M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/>';
+var IC_LIST = '<line x1="8" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="8" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>';
+var IC_LOCK = '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>';
+var APP_URL = 'https://keepyourfolio.fr/mobile/';
+var IC_IOS = '<rect x="7" y="2" width="10" height="20" rx="3"/><path d="M10.5 5h3"/><line x1="10" y1="19" x2="14" y2="19"/>';
+var IC_AND = '<rect x="7" y="2" width="10" height="20" rx="1.5"/><line x1="7" y1="5.5" x2="17" y2="5.5"/><circle cx="12" cy="19" r="1"/>';
+var IC_SHARE = '<path d="M12 15V3"/><polyline points="8 7 12 3 16 7"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/>';
+var TUTOS = {
+  ios: { titre:'INSTALLER SUR IPHONE OU IPAD', ic:IC_IOS, note:'Utilisez Safari : c\u2019est le seul navigateur qui peut installer l\u2019appli sur iPhone et iPad.', etapes:[
+    'Ouvrez Safari et allez sur keepyourfolio.fr/mobile.',
+    'Touchez le bouton Partager, le carré avec une flèche vers le haut, en bas de l\u2019écran.',
+    'Faites défiler le menu et touchez « Sur l\u2019écran d\u2019accueil ».',
+    'Touchez « Ajouter » en haut à droite.',
+    'L\u2019icône Keep Your Folio apparaît sur votre écran d\u2019accueil : ouvrez-la comme une appli.'] },
+  and: { titre:'INSTALLER SUR ANDROID', ic:IC_AND, note:'Utilisez Chrome (ou le navigateur de votre téléphone) : le menu peut varier un peu selon la marque.', etapes:[
+    'Ouvrez Chrome et allez sur keepyourfolio.fr/mobile.',
+    'Touchez les trois points en haut à droite.',
+    'Touchez « Installer l\u2019application » (ou « Ajouter à l\u2019écran d\u2019accueil »).',
+    'Confirme avec « Installer » puis « Ajouter ».',
+    'L\u2019icône Keep Your Folio apparaît sur votre écran d\u2019accueil : ouvrez-la comme une appli.'] }
+};
+var _phrase = '';   // jamais stockée : écrasée dès que l'opération est finie
+
+function b64(u){ var s = ''; for(var i = 0; i < u.length; i++) s += String.fromCharCode(u[i]); return btoa(s); }
+function unb64(s){ var r = atob(s), u = new Uint8Array(r.length); for(var i = 0; i < r.length; i++) u[i] = r.charCodeAt(i); return u; }
+function okB64(s, min, max){ return typeof s === 'string' && s.length >= min && s.length <= max && /^[A-Za-z0-9+\/]+={0,2}$/.test(s) && s.length % 4 === 0; }
+async function deriveKey(ph, sel, iter){
+  var base = await crypto.subtle.importKey('raw', new TextEncoder().encode(ph), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({ name:'PBKDF2', salt:sel, iterations:iter, hash:'SHA-256' }, base, { name:'AES-GCM', length:256 }, false, ['encrypt','decrypt']);
+}
+async function chiffrer(obj, ph, format){
+  var sel = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12)), iter = 600000;
+  var key = await deriveKey(ph, sel, iter);
+  var ct = new Uint8Array(await crypto.subtle.encrypt({ name:'AES-GCM', iv:iv }, key, new TextEncoder().encode(JSON.stringify(obj))));
+  return { v:1, format:format, kdf:'PBKDF2-SHA256', iter:iter, sel:b64(sel), iv:b64(iv), donnees:b64(ct) };
+}
+function enveloppeOk(c, format){
+  return c && typeof c === 'object' && c.v === 1 && c.format === format && c.kdf === 'PBKDF2-SHA256' && Number.isInteger(c.iter) && c.iter >= 100000 && c.iter <= 2000000
+    && okB64(c.sel, 20, 24) && okB64(c.iv, 16, 16) && okB64(c.donnees, 24, 700000);
+}
+async function dechiffrer(c, ph){
+  var key = await deriveKey(ph, unb64(c.sel), c.iter);
+  var pt = await crypto.subtle.decrypt({ name:'AES-GCM', iv:unb64(c.iv) }, key, unb64(c.donnees));
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+
+// ---------- validation stricte ----------
+function dateOk(s){ if(typeof s !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return false; var d = new Date(s + 'T00:00:00Z'); return !isNaN(d) && d.toISOString().slice(0, 10) === s; }
+function pourquoi(v, max, strict){
+  if(typeof v !== 'string') return 'doit être du texte';
+  if(v.length > max) return 'dépasse ' + max + ' caractères (' + v.length + ')';
+  if(/[<>]/.test(v)) return 'contient « < » ou « > »';
+  if(v.indexOf('"') >= 0) return 'contient un guillemet droit';
+  if(v.indexOf('`') >= 0) return 'contient un accent grave';
+  if(strict && v.indexOf('&') >= 0) return 'contient « & »';
+  return '';
+}
+function txt(v, max, strict){ return !pourquoi(v, max, strict); }
+function dec(v){ return v === '' || (typeof v === 'string' && /^\d{1,12}(\.\d{1,10})?$/.test(v)); }
+function cents(v){ return Number.isSafeInteger(v) && v >= 0; }
+function genericOk(v, depth){
+  if(v === null || typeof v === 'boolean') return true;
+  if(typeof v === 'number') return isFinite(v);
+  if(typeof v === 'string') return v.length <= 200 && !/[<>`"]/.test(v);
+  if(depth > 2) return false;
+  if(Array.isArray(v)) return v.length <= 50 && v.every(function(x){ return genericOk(x, depth + 1); });
+  if(typeof v === 'object'){ return Object.keys(v).length <= 30 && Object.keys(v).every(function(k){ return k !== '__proto__' && k.length <= 40 && genericOk(v[k], depth + 1); }); }
+  return false;
+}
+function checkOp(o, i){
+  var p = 'Opération ' + (i + 1) + ' : ';
+  if(!o || typeof o !== 'object' || Array.isArray(o)) return p + 'forme invalide';
+  if(Object.keys(o).some(function(k){ return k === '__proto__'; })) return p + 'forme invalide';
+  if(typeof o.id !== 'string' || !/^O-[A-Za-z0-9-]{1,40}$/.test(o.id)) return p + 'le champ id est invalide (attendu : O- suivi de lettres, chiffres, tirets).';
+  if(TYPES.indexOf(o.type) < 0) return 'TYPE';
+  if(!dateOk(o.date)) return p + 'le champ date n\u2019est pas une date valide (format AAAA-MM-JJ).';
+  if(ENVS.indexOf(o.enveloppe) < 0) return p + 'le champ enveloppe a une valeur inconnue de KYF.';
+  var w; if(w = pourquoi(o.compte == null ? '' : o.compte, 60, true)) return p + 'le champ compte ' + w + '.';
+  if(w = pourquoi(o.compte_id == null ? '' : o.compte_id, 60, true)) return p + 'le champ compte_id ' + w + '.';
+  if(!(o.ticker == null || o.ticker === '' || (typeof o.ticker === 'string' && /^[A-Za-z0-9.\-]{1,20}$/.test(o.ticker)))) return p + 'le champ ticker doit faire 1 à 20 caractères (lettres, chiffres, point, tiret).';
+  if(!(o.isin == null || o.isin === '' || (typeof o.isin === 'string' && /^[A-Z0-9]{12}$/.test(o.isin)))) return p + 'le champ isin doit faire exactement 12 caractères (majuscules et chiffres).';
+  if(w = pourquoi(o.nom == null ? '' : o.nom, 100, false)) return p + 'le champ nom ' + w + '.';
+  if(!dec(o.qty == null ? '' : o.qty) || !dec(o.prix == null ? '' : o.prix)) return p + 'le champ quantité ou prix n\u2019est pas un nombre décimal valide (chiffres et point).';
+  if(!cents(o.frais_c == null ? 0 : o.frais_c) || !cents(o.montant_c)) return p + 'le champ montant_c ou frais_c n\u2019est pas un entier de centimes positif.';
+  if(typeof o.ticker_inconnu !== 'boolean') return p + 'le champ ticker_inconnu doit être vrai ou faux.';
+  if(!(o.titulaire == null || o.titulaire === '' || (typeof o.titulaire === 'string' && /^[A-Za-z0-9_\-]{1,40}$/.test(o.titulaire)))) return p + 'le champ titulaire doit faire 1 à 40 caractères (lettres, chiffres, tiret, souligné, sans espace).';
+  if(w = pourquoi(o.note == null ? '' : o.note, 200, false)) return p + 'le champ note ' + w + '.';
+  if(o.devise != null && o.devise !== '' && !(typeof o.devise === 'string' && /^[A-Z]{3}$/.test(o.devise))) return p + 'le champ devise doit être un code de 3 lettres majuscules.';
+  if(o.heure != null && o.heure !== '' && !(typeof o.heure === 'string' && /^\d{2}:\d{2}(:\d{2})?$/.test(o.heure))) return p + 'le champ heure doit être au format HH:MM.';
+  if(o.reinvesti != null && typeof o.reinvesti !== 'boolean') return p + 'le champ reinvesti doit être vrai ou faux.';
+  if(o.type === 'dca_plan'){
+    var DJ = function(x){ return typeof x === 'number' && Number.isInteger(x) && x >= 1 && x <= 31; };
+    if(o.freq != null && ['monthly','quarterly','yearly','semimonthly'].indexOf(o.freq) < 0) return p + 'le champ freq du plan DCA est inconnu de KYF.';
+    if(o.jour != null && !DJ(o.jour)) return p + 'le champ jour du plan DCA doit être un entier de 1 à 31.';
+    if(o.freq === 'semimonthly' && (!DJ(o.jour) || !DJ(o.jour2) || o.jour2 === o.jour)) return p + 'un plan « 2 fois par mois » demande deux jours différents (jour et jour2, de 1 à 31).';
+    if(o.dca_env != null && o.dca_env !== '' && ENVS.indexOf(o.dca_env) < 0) return p + 'le champ dca_env a une valeur inconnue de KYF.';
+  }
+  var ks = Object.keys(o);
+  for(var k = 0; k < ks.length; k++){ if(!genericOk(o[ks[k]], 0)){ var nk = ks[k].slice(0, 30).replace(/[<>"`&]/g, ''), vv = o[ks[k]]; return p + 'le champ ' + nk + ' ' + (typeof vv === 'string' ? (pourquoi(vv, 200, false) || 'est invalide') : 'a une forme non acceptée') + '.'; } }
+  return '';
+}
+// Contrôle du paquet entier : retourne { err } ou { paq, avert }
+function checkPaquet(p){
+  if(!p || typeof p !== 'object' || p.v !== 1 || p.format !== 'kyfops') return { err:'Ce fichier n’est pas un paquet d’opérations du mobile.' };
+  if(typeof p.paquet !== 'string' || !/^P-[0-9]{8}-[0-9]{4}-[A-Za-z0-9]{4}$/.test(p.paquet)) return { err:'Numéro de paquet invalide.' };
+  if(typeof p.cree !== 'string' || isNaN(new Date(p.cree).getTime())) return { err:'Date de création du paquet invalide.' };
+  if(typeof p.appli !== 'string' || p.appli.length > 40 || /[<>"`]/.test(p.appli)) return { err:'Paquet invalide (nom de l’appli).' };
+  if(!Array.isArray(p.ops) || p.ops.length < 1) return { err:'Le paquet ne contient aucune opération.' };
+  if(p.ops.length > MAX_OPS) return { err:'Paquet trop gros : ' + MAX_OPS + ' opérations au maximum.' };
+  if(p.n !== p.ops.length) return { err:'Paquet incohérent : le nombre d’opérations annoncé ne correspond pas.' };
+  var somme = 0, avert = [], seen = {}, alertes = {}, tc = new Date(p.cree).getTime();
+  for(var i = 0; i < p.ops.length; i++){
+    var e = checkOp(p.ops[i], i);
+    if(e === 'TYPE') return { err:'Ce paquet contient un type d’opération que cette version de KYF ne connaît pas.' };
+    if(e) return { err:e };
+    if(seen[p.ops[i].id]) return { err:'Opération ' + (i + 1) + ' : identifiant en double dans le paquet.' };
+    seen[p.ops[i].id] = 1;
+    somme += p.ops[i].montant_c;
+    var o = p.ops[i], dt = new Date(o.date + 'T00:00:00Z').getTime();
+    if(dt > tc + 7 * 86400000) (alertes[o.id] = alertes[o.id] || []).push('Date dans le futur (' + o.date + ') : vérifiez-la.');
+    if(dt < tc - 3653 * 86400000) (alertes[o.id] = alertes[o.id] || []).push('Date très ancienne (' + o.date + ') : vérifiez-la.');
+    if(['achat','vente','crypto_achat','crypto_vente'].indexOf(o.type) >= 0 && o.qty !== '' && o.prix !== '' && o.qty != null && o.prix != null){
+      var att = Math.round(Number(o.qty) * Number(o.prix) * 100);
+      if(Math.abs(att - o.montant_c) > 1) avert.push(o.id);
+    }
+  }
+  if(!Number.isSafeInteger(p.total_c) || p.total_c !== somme) return { err:'Paquet incohérent : le total annoncé ne correspond pas à la somme des opérations.' };
+  return { paq:p, avert:avert, alertes:alertes };
+}
+
+// ---------- stockage (clés hors liste de synchronisation de KYF : seules les clés de KYF_STORAGE_KEYS partent dans les sauvegardes) ----------
+function ld(k, def){ try{ var v = JSON.parse(localStorage.getItem(k)); return v == null ? def : v; }catch(e){ return def; } }
+function sv(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ return false; } }
+function queue(){ var q = ld(QK, null); if(!q || !Array.isArray(q.paquets)) q = { v:1, paquets:[] }; return q; }
+function ids(){ var a = ld(IK, []); return Array.isArray(a) ? a : []; }
+function addId(id){ var a = ids(); if(a.indexOf(id) < 0) a.push(id); if(a.length > MAX_IDS) a = a.slice(a.length - MAX_IDS); sv(IK, a); }
+function nbAttente(){ var n = 0; queue().paquets.forEach(function(p){ p.ops.forEach(function(x){ if(x.etat === 'attente') n++; }); }); return n; }
+
+function importer(paq, avert, alertes){
+  var q = queue();
+  if(q.paquets.some(function(p){ return p.paquet === paq.paquet; })) return { err:'Ce paquet est déjà chargé dans KYF.' };
+  var vus = ids(), nbDoublon = 0, enFile = {};
+  // Choix : une opération déjà dans la file, quel que soit son état SAUF « ignorée », est un doublon (une opération ignorée a pu l'être par erreur : si le mobile la renvoie, elle revient)
+  q.paquets.forEach(function(pq){ pq.ops.forEach(function(x){ if(x.etat !== 'ignoree') enFile[x.op.id] = 1; }); });
+  var ops = paq.ops.slice().sort(function(a, b){ return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; }).map(function(o){
+    var dbl = vus.indexOf(o.id) >= 0 || enFile[o.id] === 1; if(dbl) nbDoublon++;
+    return { op:o, etat: dbl ? 'doublon' : 'attente', dbl: dbl ? (vus.indexOf(o.id) >= 0 ? 'vu' : 'file') : '', ecart: avert.indexOf(o.id) >= 0, alertes: (alertes && alertes[o.id]) || [] };
+  });
+  q.paquets.push({ paquet:paq.paquet, cree:paq.cree, appli:paq.appli, recu:new Date().toISOString(), ops:ops });
+  if(!sv(QK, q)) return { err:'Enregistrement impossible (stockage plein).' };
+  return { ok:true, n:paq.ops.length, doublons:nbDoublon };
+}
+
+// ---------- reçu ----------
+function recuClair(pq){
+  var nv = 0, tot = 0;
+  var ops = pq.ops.map(function(x){
+    var e = x.etat === 'attente' ? 'ignoree' : x.etat;
+    if(e === 'validee'){ nv++; tot += x.op.montant_c; }   // validée sans changement : le montant du paquet (évite 1 centime d'écart d'arrondi avec le mobile)
+    else if(e === 'modifiee'){ nv++; tot += (x.montant_c_reel != null ? x.montant_c_reel : x.op.montant_c); }
+    return { id:x.op.id, etat:e };
+  });
+  return { v:1, format:'kyfrecu', paquet:pq.paquet, date:new Date().toISOString(), n_valides:nv, total_c:tot, ops:ops };
+}
+
+// ---------- validation d'une opération via les formulaires de KYF ----------
+function sNum(v){ return String(v == null ? '' : v).replace('.', ','); }
+function eur(c){ return (typeof fmt === 'function' ? fmt(c / 100, 2) : (c / 100).toFixed(2)) + ' €'; }
+function hors(o){ return !!(o.devise && o.devise !== 'EUR'); }
+function montantTxt(o){ return hors(o) ? (o.montant_c / 100).toFixed(2).replace('.', ',') + ' ' + o.devise : eur(o.montant_c); }
+// Le compte cité par l'opération existe-t-il encore dans KYF ? (vérifiable pour les comptes titres et les contrats AV / PER)
+function compteManquant(o){
+  if(!o.compte_id) return false;
+  try{
+    if(o.enveloppe === 'CTO') return !kyfCtoComptes().some(function(c){ return String(c.id) === String(o.compte_id); });
+    if(o.enveloppe === 'AV' || o.enveloppe === 'PER') return !avLoad().some(function(c){ return String(c.id) === String(o.compte_id); });
+  }catch(e){}
+  return false;
+}
+function diag(o){
+  var m = [];
+  if(hors(o)) m.push('Opération en ' + o.devise + ' : KYF compte en euros. Convertissez le montant, puis saisissez-la à la main, ou ignorez-la.');
+  if((o.type === 'versement' || o.type === 'retrait') && o.enveloppe === 'PEA-PME') m.push('PEA-PME : KYF ne suit pas les espèces de cette enveloppe, il n\u2019y a rien à enregistrer. Vous pouvez ignorer cette opération.');
+  else if(o.enveloppe === 'PEA-PME') m.push('Enveloppe PEA-PME : choisissez-la vous-même.');
+  if(o.type === 'retrait' && (o.enveloppe === 'PEA' || o.enveloppe === 'CTO') && !hors(o)){
+    try{
+      if(!kyfCashMvtLivs_(o.enveloppe).length){
+        var dsp = o.enveloppe === 'CTO' ? kyfCtoCashOf(kyfCtoCompteOf({ compte: o.compte_id || '' })) : getCashPea();
+        if(o.montant_c / 100 > dsp + 0.005) m.push('Retrait supérieur aux espèces disponibles (' + fmt(dsp, 2) + ' €) : KYF le refusera. Enregistrez d\u2019abord les versements ou mettez les espèces à jour.');
+      }
+    }catch(e){}
+  }
+  if(compteManquant(o)) m.push('Compte introuvable dans KYF : choisissez-le avant de valider.');
+  return m;
+}
+// Garde : tant que l'utilisateur n'a pas choisi lui-même l'enveloppe, le bouton d'enregistrement du formulaire de KYF est bloqué
+function garde(modalId, choisi, texte){
+  var m = document.getElementById(modalId); if(!m) return function(){};
+  var b = document.createElement('div'); b.id = 'kyfMobAlerte'; b.style.cssText = 'margin:0 0 12px;padding:9px 11px;border-radius:8px;background:rgba(240,180,41,0.12);border:1px solid rgba(240,180,41,0.45);font-size:11px;line-height:1.5;color:var(--text)'; b.textContent = texte;
+  m.insertBefore(b, m.firstChild);
+  var fn = function(e){
+    var bt = e.target && e.target.closest && e.target.closest('#transConfirmBtn,button[onclick*="saveDividende"]');
+    if(bt && !choisi()){ e.preventDefault(); e.stopPropagation(); b.style.outline = '2px solid #f0b429'; setTimeout(function(){ b.style.outline = ''; }, 900); }
+  };
+  m.addEventListener('click', fn, true);
+  return function(){ m.removeEventListener('click', fn, true); if(b.parentNode) b.parentNode.removeChild(b); };
+}
+var _watch = null;
+function surveiller(modalId, test, fin){
+  if(_watch) clearInterval(_watch);
+  var t0 = Date.now(), vu = false;
+  _watch = setInterval(function(){
+    var m = document.getElementById(modalId);
+    var ouvert = !!(m && m.style.display !== 'none' && m.offsetParent !== null || m && getComputedStyle(m).display !== 'none');
+    if(ouvert){ vu = true; return; }
+    if(vu || Date.now() - t0 > 2500){ clearInterval(_watch); _watch = null; fin(test()); }
+  }, 450);
+}
+function fermerPanneau(){ var o = document.getElementById('kyfMobOverlay'); if(o) o.style.display = 'none'; var m = document.getElementById('kyfMobModal'); if(m) m.style.display = 'none'; }
+function rouvrirPanneau(){ document.body.style.overflow = 'hidden'; var o = document.getElementById('kyfMobOverlay'); if(o) o.style.display = 'block'; var m = document.getElementById('kyfMobModal'); if(m) m.style.display = 'flex'; rendu(); }
+
+async function valider(pi, oi, opt){
+  var q = queue(), pq = q.paquets[pi], x = pq && pq.ops[oi]; if(!x || x.etat !== 'attente') return;
+  var o = x.op;
+  if(!peutValider(o)) return;
+  var vide = !!(opt && opt.vide);
+  if(hors(o) && !vide) return;   // jamais de pré-remplissage d'un montant en devise étrangère
+  var pre = !vide, pme = o.enveloppe === 'PEA-PME', cptKo = compteManquant(o), nettoie = function(){};
+  var q0 = Number(o.qty) || 0, p0 = Number(o.prix) || 0, cible = o.enveloppe;
+  // Achat PEA / CTO : avertir (sans bloquer) si les espèces ne couvrent pas l'achat ; KYF ne débite jamais sous zéro
+  if(o.type === 'achat' && pre && !hors(o) && (o.enveloppe === 'PEA' || o.enveloppe === 'CTO')){
+    var net = (o.montant_c + (o.frais_c || 0)) / 100, dispo = 0;
+    try{ dispo = kyfCashCur(o.enveloppe, { compte: cptKo ? '' : (o.compte_id || '') }); }catch(e){}
+    var livLie = 0;   // espèces placées sur le livret lié du PEA / CTO (ex. Trade Republic) : elles comptent comme espèces, comme dans la fenêtre Cash
+    try{ if(o.enveloppe === 'PEA' || kyfCtoComptes().length === 1 || kyfCtoCompteOf({ compte: cptKo ? '' : (o.compte_id || '') }) === 'c1') livLie = ctLivretsTotal(o.enveloppe); }catch(e){}
+    dispo = Math.round((dispo + livLie) * 100) / 100;
+    if(dispo + 0.005 < net){
+      var cid = cptKo ? '' : (o.compte_id || ''), nomC = '', totC = 0;
+      if(o.enveloppe === 'CTO'){ try{ nomC = kyfCtoNom(kyfCtoCompteOf({ compte: cid })); totC = getCashCto(); }catch(e){} }
+      var go = await kyfAsk('Espèces insuffisantes sur le ' + o.enveloppe + (nomC ? ' (' + nomC + ')' : '') + '.\nIl y a ' + fmt(dispo, 2) + ' € d\u2019espèces' + (nomC ? ' sur le compte « ' + nomC + ' »' : '') + (livLie > 0.005 ? ' (livret lié compris)' : '') + (nomC && totC > dispo + 0.005 ? ' (' + fmt(totC, 2) + ' € au total sur vos comptes CTO : le reste est rangé sur un autre compte)' : '') + ' pour un achat de ' + fmt(net, 2) + ' € (frais compris) : il manque ' + fmt(net - dispo, 2) + ' €. KYF ne débitera que les espèces disponibles, jamais sous zéro, et le reste ne sera pas signalé. Si cet achat est payé par un livret, choisissez-le dans le formulaire. Continuer ?', { ok:'Continuer' });
+      if(!go) return;
+    }
+  }
+  fermerPanneau();
+  if(o.type === 'versement' || o.type === 'retrait'){
+    var avantM = {}; kyfCashMvts().forEach(function(m){ avantM[m.id] = 1; });
+    var sensM = o.type === 'versement' ? 'in' : 'out';
+    openCashEdit();
+    if(pre){
+      var sM = function(id, fn){ var e = document.getElementById(id); if(e) fn(e); };
+      sM('cashMvtEnv', function(e){ e.value = o.enveloppe; e.dispatchEvent(new Event('change')); });
+      sM('cashMvtSens', function(e){ e.value = sensM; e.dispatchEvent(new Event('change')); });
+      try{ kyfCashMvtSegSync(); }catch(e){}
+      if(o.enveloppe === 'CTO' && o.compte_id && !cptKo) sM('cashMvtCpt', function(e){ if(Array.prototype.some.call(e.options, function(op){ return op.value === o.compte_id; })){ e.value = o.compte_id; try{ kyfPgLabel(e); }catch(er){} } });
+      sM('cashMvtMontant', function(e){ e.value = (o.montant_c / 100).toFixed(2).replace('.', ','); try{ kyfFormatAmountInput(e); }catch(er){} });
+      try{ kyfDateSetValue('cashMvtDate', o.date); }catch(e){}
+      if(sensM === 'in' && o.livret_id) sM('cashMvtCompte', function(e){ if(Array.prototype.some.call(e.options, function(op){ return op.value === String(o.livret_id); })){ e.value = String(o.livret_id); try{ kyfPgLabel(e); }catch(er){} } });
+    }
+    surveiller('cashEditModal', function(){
+      var nv = kyfCashMvts().filter(function(m){ return !avantM[m.id] && !m.miroir && m.env === o.enveloppe && m.sens === sensM; });
+      return nv.length ? nv[0] : null;   // la liste est triée du plus récent au plus ancien
+    }, function(m){
+      if(m){
+        var reelM = Math.round((Number(m.montant) || 0) * 100);
+        var egalM = pre && !cptKo && reelM === o.montant_c && m.date === o.date;
+        finOp(pi, oi, egalM ? 'validee' : 'modifiee', reelM);
+      } else rouvrirPanneau();
+    });
+  } else if(o.type === 'achat' || o.type === 'vente'){
+    var avant = {}; etfTransLoad().forEach(function(t){ avant[t.id] = 1; });
+    openAddTransaction(o.type);
+    var set = function(id, v){ var e = document.getElementById(id); if(e) e.value = v; };
+    if(pre){
+      if(o.ticker && !o.ticker_inconnu) set('transInputTicker', o.ticker.toUpperCase());
+      set('transInputNom', o.nom || ''); set('transInputQty', sNum(o.qty)); set('transInputPrix', sNum(o.prix)); set('transInputFrais', sNum(((o.frais_c || 0) / 100).toFixed(2)));
+      try{ kyfDateSetValue('transInputDate', o.date); }catch(e){}
+      if(pme){
+        var he = document.getElementById('transInputEnv'); if(he) he.value = '';
+        document.querySelectorAll('#transEnvPills .trans-env-pill').forEach(function(b){ b.classList.remove('on'); });
+        nettoie = garde('modalAddTransaction', function(){ var h = document.getElementById('transInputEnv'); return !!(h && h.value); }, 'Enveloppe PEA-PME : choisissez-la vous-même (PEA, CTO, AV ou PER) avant d\u2019enregistrer.');
+      } else if(['PEA','CTO','AV','PER'].indexOf(cible) >= 0){ try{ transSetEnv(cible); }catch(e){} }
+    }
+    if(cptKo){ var avc = nettoie; var gc = garde('modalAddTransaction', function(){ return true; }, 'Compte introuvable dans KYF : choisissez-le avant de valider.'); nettoie = function(){ avc(); gc(); }; }
+    if(pre && cible === 'CTO' && o.compte_id && !cptKo){ try{ if(kyfCtoComptes().some(function(c){ return String(c.id) === String(o.compte_id); })){ window._transCpt = o.compte_id; kyfTransCptRender(); } }catch(e){} }
+    surveiller('modalAddTransaction', function(){
+      var nv = etfTransLoad().filter(function(t){ return !avant[t.id] && t.type === o.type; });
+      return nv.length ? nv[nv.length - 1] : null;
+    }, function(t){
+      nettoie();
+      if(t){
+        var egal = pre && !pme && !cptKo && Math.abs((Number(t.qty) || 0) - q0) < 1e-9 && Math.abs((Number(t.prix) || 0) - p0) < 1e-6 && t.date === o.date && (!o.ticker || o.ticker_inconnu || String(t.ticker).toUpperCase() === o.ticker.toUpperCase());
+        finOp(pi, oi, egal ? 'validee' : 'modifiee', Math.round((Number(t.brut) || (Number(t.qty) * Number(t.prix))) * 100));
+      } else rouvrirPanneau();
+    });
+  } else if(o.type === 'dividende'){
+    var avantD = {}; divLoad().forEach(function(d){ avantD[d.id] = 1; });
+    openAddDividende();
+    var setD = function(id, v){ var e = document.getElementById(id); if(e) e.value = v; };
+    var se = document.getElementById('divEnveloppe'), nettD = function(){};
+    if(pre){
+      setD('divTicker', (o.ticker && !o.ticker_inconnu ? o.ticker.toUpperCase() : (o.nom || '')));
+      setD('divMontant', sNum((o.montant_c / 100).toFixed(2))); if(o.qty) setD('divQty', sNum(o.qty)); setD('divNote', o.note || '');
+      try{ kyfDateSetValue('divDate', o.date); }catch(e){}
+      var envD = { PEA:'pea', CTO:'cto', AV:'av', PER:'per', SCPI:'scpi' }[o.enveloppe];
+      if(pme && se){
+        var vo = document.createElement('option'); vo.value = ''; vo.id = 'kyfMobOptVide'; vo.textContent = '— Choisissez l\u2019enveloppe —'; se.insertBefore(vo, se.firstChild); se.value = '';
+        try{ if(typeof kyfPgLabel === 'function') kyfPgLabel(se); }catch(e){}
+        var gD = garde('divModal', function(){ return !!se.value; }, 'Enveloppe PEA-PME : choisissez-la vous-même (PEA ou CTO) avant d\u2019enregistrer.');
+        nettD = function(){ gD(); var v = document.getElementById('kyfMobOptVide'); if(v){ if(se.value === '') se.value = 'cto'; v.remove(); try{ if(typeof kyfPgLabel === 'function') kyfPgLabel(se); }catch(e){} } };
+      } else if(envD && se && Array.prototype.some.call(se.options, function(op){ return op.value === envD; })){ se.value = envD; try{ se.dispatchEvent(new Event('change')); }catch(e){} }
+    }
+    if(cptKo){ var gD2 = garde('divModal', function(){ return true; }, 'Compte introuvable dans KYF : choisissez-le avant de valider.'); var n0 = nettD; nettD = function(){ n0(); gD2(); }; }
+    surveiller('divModal', function(){
+      var nv = divLoad().filter(function(d){ return !avantD[d.id]; });
+      return nv.length ? nv[nv.length - 1] : null;
+    }, function(d){
+      nettD();
+      if(d){
+        var egal = pre && !pme && !cptKo && Math.abs(Math.round((Number(d.montant) || 0) * 100) - o.montant_c) <= 1 && d.date === o.date;
+        finOp(pi, oi, egal ? 'validee' : 'modifiee', Math.round((Number(d.montant) || 0) * 100));
+      } else rouvrirPanneau();
+    });
+  }
+}
+function finOp(pi, oi, etat, reel){
+  var q = queue(), x = q.paquets[pi] && q.paquets[pi].ops[oi]; if(!x) return rouvrirPanneau();
+  x.etat = etat; x.montant_c_reel = reel; sv(QK, q); addId(x.op.id);
+  rouvrirPanneau();
+}
+function ignorer(pi, oi){
+  var q = queue(), x = q.paquets[pi] && q.paquets[pi].ops[oi]; if(!x || x.etat !== 'attente') return;
+  x.etat = 'ignoree'; sv(QK, q); rendu();
+}
+function retirer(pi){ var q = queue(); q.paquets.splice(pi, 1); sv(QK, q); rendu(); maj(); }
+
+// ---------- interface ----------
+var _sh = { n:0, paquets:[], absent:false, err:'', busy:false, msg:'', ok:true };
+var _msg = '', _msgOk = true, _copie = '', _askRecu = -1;
+function el(tag, css, text){ var e = document.createElement(tag); if(css) e.style.cssText = css; if(text != null) e.textContent = text; return e; }
+function btn(label, cls, fn){ var b = el('button', '', label); b.type = 'button'; b.className = cls + ' kyf-mob-s'; b.onclick = fn; return b; }
+function maj(){
+  if(KYF_MOB_DEV){ var b0 = document.getElementById('kyfMobBadge'); if(b0) b0.style.display = 'none'; var ba0 = document.getElementById('kyfMobBandeau'); if(ba0) ba0.remove(); return; }
+  var n = nbAttente(), ns = _sh.n || 0, nt = n + ns, b = document.getElementById('kyfMobBadge');
+  if(b){ b.textContent = nt ? String(nt) : ''; b.style.display = nt ? 'inline-block' : 'none'; }
+  var pd = document.getElementById('page-dashboard'), ba = document.getElementById('kyfMobBandeau');
+  if(!nt){ if(ba) ba.remove(); return; }
+  if(!pd) return;
+  if(!ba){
+    ba = el('div', 'display:flex;align-items:center;gap:10px;margin:10px 0 0;padding:9px 14px;border:1px solid #f0b429;border-radius:10px;background:var(--btn-secondary-bg);font-size:12px;color:var(--text)'); ba.id = 'kyfMobBandeau';
+    var ic = el('span', 'display:inline-flex;color:#f0b429;flex-shrink:0'); ic.innerHTML = SVG(IC_PHONE, 15); ba.appendChild(ic);
+    var tx = el('span', 'flex:1;min-width:0'); tx.id = 'kyfMobBandeauTxt'; ba.appendChild(tx);
+    ba.appendChild(btn('VOIR', 'kyf-ia-pri', function(){ ouvrir(); }));
+    pd.insertBefore(ba, pd.firstChild);
+  }
+  var t2 = document.getElementById('kyfMobBandeauTxt');
+  if(t2){
+    var parts = [];
+    if(n) parts.push(n === 1 ? '1 opération du téléphone vous attend' : n + ' opérations du téléphone vous attendent');
+    if(ns) parts.push(ns === 1 ? '1 paquet Mobile à importer depuis le classeur Google' : ns + ' paquets Mobile à importer depuis le classeur Google');
+    t2.textContent = parts.join(' · ') + '.';
+  }
+}
+function oeilPhrase(inp, wrapStyle){
+  var w = el('div', wrapStyle || ''); w.className = 'pwd-wrap'; w.appendChild(inp);
+  var b = el('button'); b.type = 'button'; b.className = 'pwd-eye'; b.title = 'Maintenir pour voir'; b.setAttribute('aria-label', 'Maintenir pour voir la phrase');
+  [['onmousedown', 'true'], ['onmouseup', 'false'], ['onmouseleave', 'false'], ['ontouchstart', 'true'], ['ontouchend', 'false']].forEach(function(p){ b.setAttribute(p[0], "revealPwd('" + inp.id + "'," + p[1] + ")"); });
+  b.innerHTML = SVG('<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>', 15);
+  w.appendChild(b); return w;
+}
+var KYF_MOB_DEV = true;   // 2.12.1.15 : fonction Mobile en cours de développement : bouton grisé, fenêtre et bandeau désactivés (passer à false pour la rouvrir)
+function ouvrir(){
+  if(KYF_MOB_DEV) return;
+  if(document.getElementById('kyfMobModal')) { rouvrirPanneau(); return; }
+  var ov = el('div', 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10000003'); ov.id = 'kyfMobOverlay';
+  ['click','contextmenu','wheel','touchmove'].forEach(function(ev){ ov.addEventListener(ev, function(e){ e.preventDefault(); e.stopPropagation(); }, { passive:false }); });
+  var m = el('div', "position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(980px,96vw);max-height:90vh;z-index:10000004;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;font-family:'Inter',sans-serif;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.5)");
+  m.id = 'kyfMobModal'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-label', 'Opérations du téléphone');
+  m.addEventListener('contextmenu', function(e){ if(!(e.target && e.target.closest && e.target.closest('textarea,input'))) e.preventDefault(); });
+  m.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ e.stopPropagation(); fermer(); } });
+  var head = el('div', 'display:flex;align-items:center;justify-content:space-between;padding:22px 24px 14px;flex-shrink:0');
+  var tt = el('span', 'display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--text)'); tt.id = 'kyfMobTitle';
+  var ib = el('span', 'display:inline-flex'); ib.innerHTML = SVG(IC_PHONE, 13); tt.appendChild(ib); tt.appendChild(document.createTextNode(' OPÉRATIONS DU TÉLÉPHONE')); head.appendChild(tt);
+  var x = document.createElement('button'); x.type = 'button'; x.className = 'kyf-modal-close'; x.setAttribute('aria-label', 'Fermer'); x.onclick = fermer;
+  x.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+  head.appendChild(x); m.appendChild(head);
+  var corps = el('div', 'display:flex;flex-wrap:wrap;gap:20px;padding:18px 24px 22px;overflow-y:auto;overscroll-behavior:contain;min-height:0'); corps.id = 'kyfMobCorps';
+  m.appendChild(corps);
+  document.body.appendChild(ov); document.body.appendChild(m);
+  window._kyfMobOv = document.body.style.overflow; document.body.style.overflow = 'hidden';
+  rendu();
+}
+function fermer(){
+  fermerTuto(); qrFermer(); _phrase = ''; _msg = ''; _copie = ''; _askRecu = -1;
+  ['kyfMobModal','kyfMobOverlay'].forEach(function(id){ var e = document.getElementById(id); if(e) e.remove(); });
+  document.body.style.overflow = window._kyfMobOv === undefined ? '' : window._kyfMobOv; maj();
+}
+function rendu(){
+  var c = document.getElementById('kyfMobCorps'); if(!c) return; c.textContent = '';
+  var G = 'flex:1 1 280px;min-width:260px';
+  var L = el('div', G + ';max-width:340px;align-self:flex-start;background:var(--btn-secondary-bg);border:1px solid var(--border);border-radius:12px;padding:16px'), R = el('div', G + ';flex-basis:520px');
+  // volet gauche : recevoir
+  L.appendChild(sect(IC_IN, 'RECEVOIR DU TÉLÉPHONE'));
+  L.appendChild(el('div', 'font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px', 'Déposez le fichier de paquets (.kyfops) envoyé par Keep Your Folio Mobile, ou collez le texte du paquet. Rien n’est enregistré dans KYF tant que vous ne validez pas chaque opération du paquet.'));
+  var f = document.createElement('input'); f.type = 'file'; f.accept = '.kyfops,application/json,text/plain'; f.id = 'kyfMobFile'; f.style.display = 'none';
+  var fl = el('span', 'font-size:11px;color:var(--text3);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap', 'Aucun fichier choisi');
+  f.onchange = function(){ fl.textContent = f.files && f.files[0] ? f.files[0].name : 'Aucun fichier choisi'; };
+  var fb = btn('CHOISIR UN FICHIER', 'kyf-ia-sec', function(){ f.click(); });
+  var fr = el('div', 'display:flex;align-items:center;gap:10px;margin-bottom:8px'); fr.appendChild(fb); fr.appendChild(fl); fr.appendChild(f); L.appendChild(fr);
+  var t = el('textarea'); t.id = 'kyfMobTxt'; t.spellcheck = false; t.placeholder = 'Ou collez ici le texte du paquet'; t.style.cssText = "width:100%;box-sizing:border-box;height:70px;resize:vertical;background:var(--btn-secondary-bg);border:1px solid var(--border2);border-radius:8px;color:var(--text2);font-family:ui-monospace,monospace;font-size:10px;padding:8px;outline:none";
+  L.appendChild(t);
+  var ph = el('input'); ph.type = 'password'; ph.id = 'kyfMobPh'; ph.autocomplete = 'off'; ph.placeholder = 'Phrase secrète du mobile'; ph.style.cssText = "width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;outline:none";
+  L.appendChild(oeilPhrase(ph, 'margin-top:8px'));
+  var nl = el('div', 'display:flex;gap:6px;align-items:flex-start;font-size:10px;color:var(--text3);margin-top:7px;line-height:1.5'); var li = el('span', 'display:inline-flex;margin-top:1px;flex-shrink:0'); li.innerHTML = SVG(IC_LOCK, 12); nl.appendChild(li); nl.appendChild(el('span', '', 'La phrase n\u2019est jamais enregistrée : elle sert une seule fois, puis elle est effacée.')); L.appendChild(nl);
+  var go = btn('LIRE LE PAQUET', 'kyf-ia-pri', lire); go.id = 'kyfMobGo'; go.style.marginTop = '10px'; L.appendChild(go);
+  if(_msg){ var mm = el('div', 'margin-top:10px;font-size:11px;line-height:1.5;color:' + (_msgOk ? 'var(--green)' : 'var(--red)'), _msg); mm.id = 'kyfMobMsg'; L.appendChild(mm); }
+  shBloc(L);
+  // volet droit : file d'attente
+  R.appendChild(sect(IC_LIST, 'EN ATTENTE'));
+  var q = queue();
+  if(!q.paquets.length){
+    var vide = el('div', 'display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:34px 16px;border:1px dashed var(--border2);border-radius:12px;color:var(--text3);font-size:12px;line-height:1.6');
+    var vi = el('span', 'display:inline-flex;color:var(--text3);opacity:.8'); vi.innerHTML = SVG(IC_PHONE, 34); vide.appendChild(vi);
+    vide.appendChild(el('div', '', 'Aucune opération du téléphone pour le moment.')); vide.appendChild(el('div', 'font-size:11px', 'Envoyez un paquet depuis Keep Your Folio Mobile, puis déposez-le ici.'));
+    R.appendChild(vide);
+  }
+  q.paquets.forEach(function(pq, pi){
+    var box = el('div', 'border:1px solid var(--border);border-radius:10px;margin-bottom:12px;overflow:hidden');
+    var restant = pq.ops.filter(function(x){ return x.etat === 'attente'; }).length;
+    var hd = el('div', 'display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;background:var(--btn-secondary-bg);font-size:11px;color:var(--text2)');
+    hd.appendChild(el('span', '', 'Paquet ' + pq.paquet + ' · ' + pq.ops.length + ' opération' + (pq.ops.length > 1 ? 's' : '') + ' · ' + restant + ' à traiter'));
+    box.appendChild(hd);
+    pq.ops.forEach(function(x, oi){
+      var o = x.op, row = el('div', 'display:flex;align-items:center;gap:10px;padding:9px 12px;border-top:1px solid var(--border);font-size:11px;color:var(--text)');
+      var info = el('div', 'flex:1;min-width:0');
+      var l1 = (LIB[o.type] || o.type) + (o.nom ? ' · ' + o.nom : '') + (o.ticker ? ' (' + o.ticker + ')' : '');
+      info.appendChild(el('div', 'font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap', l1));
+      info.appendChild(el('div', 'color:var(--text3);font-size:10px;margin-top:2px', o.date + ' · ' + o.enveloppe + (o.compte ? ' · ' + o.compte : '') + (o.titulaire ? ' · ' + o.titulaire : '') + (x.ecart ? ' · montant à vérifier' : '')));
+      var al = (x.alertes || []).concat(x.etat === 'attente' ? diag(o) : []);
+      al.forEach(function(t){ info.appendChild(el('div', 'font-size:10px;color:#f0b429;margin-top:3px;line-height:1.4', t)); });
+      row.appendChild(info);
+      row.appendChild(el('div', 'font-weight:700;white-space:nowrap', montantTxt(o)));
+      var act = el('div', 'display:flex;gap:6px;flex-shrink:0;align-items:center');
+      if(x.etat === 'attente'){
+        if(peutValider(o) && hors(o)) act.appendChild(btn('OUVRIR LE FORMULAIRE VIDE', 'kyf-ia-sec', function(){ valider(pi, oi, { vide:true }); }));
+        else if(peutValider(o)) act.appendChild(btn('VALIDER', 'kyf-ia-pri', function(){ valider(pi, oi); }));
+        else act.appendChild(el('span', 'font-size:10px;color:var(--text3);max-width:130px;line-height:1.3', ((o.type === 'versement' || o.type === 'retrait') && o.enveloppe === 'PEA-PME' ? 'Aucune espèce suivie : rien à enregistrer' : (o.type === 'versement' || o.type === 'retrait') ? 'Enveloppe sans espèces suivies : à saisir à la main' : 'À saisir à la main dans KYF (pas encore branché)')));
+        act.appendChild(btn('IGNORER', 'kyf-ia-sec', function(){ ignorer(pi, oi); }));
+      } else {
+        var lab = { validee:'Validée', modifiee:'Validée (modifiée)', ignoree:'Ignorée', doublon:(x.dbl === 'file' ? 'Déjà dans la file' : 'Déjà reçue'), refusee:'Refusée' }[x.etat] || x.etat;
+        var okE = x.etat === 'validee' || x.etat === 'modifiee';
+        act.appendChild(el('span', 'font-size:10px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap;' + (okE ? 'color:var(--green);background:rgba(0,200,120,0.12);border:1px solid rgba(0,200,120,0.35)' : 'color:var(--text3);background:var(--btn-secondary-bg);border:1px solid var(--border2)'), lab));
+      }
+      row.appendChild(act); box.appendChild(row);
+    });
+    box.appendChild(el('div', 'padding:8px 12px;border-top:1px solid var(--border);font-size:10px;color:var(--text3);line-height:1.5', restant > 0 ? 'Traitez chaque opération (Valider ou Ignorer). Ensuite, « Générer le reçu » : c\u2019est lui qui dit au téléphone ce qui a été enregistré.' : 'Tout est traité. Cliquez sur « Générer le reçu », puis chargez-le dans le téléphone pour terminer.'));
+    var pied = el('div', 'display:flex;gap:8px;justify-content:flex-end;padding:9px 12px;border-top:1px solid var(--border)');
+    if(pq.ops.length) pied.appendChild(btn('GÉNÉRER LE REÇU', 'kyf-ia-pri', function(){ _askRecu = pi; _copie = ''; rendu(); }));
+    pied.appendChild(btn('RETIRER CE PAQUET', 'kyf-ia-sec', async function(){ if(restant > 0 && !(await kyfAsk('Il reste ' + restant + ' opération(s) non traitée(s). Retirer quand même ce paquet ?'))) return; retirer(pi); }));
+    box.appendChild(pied);
+    if(_askRecu === pi){
+      var qz = el('div', 'display:flex;gap:8px;align-items:center;padding:9px 12px;border-top:1px solid var(--border)');
+      var pr = el('input'); pr.type = 'password'; pr.id = 'kyfMobPhRecu'; pr.autocomplete = 'off'; pr.placeholder = 'Phrase secrète du mobile'; pr.style.cssText = "flex:1;min-width:0;background:var(--btn-secondary-bg);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:7px 10px;outline:none";
+      qz.appendChild(oeilPhrase(pr, 'flex:1;min-width:0')); qz.appendChild(btn('CHIFFRER LE REÇU', 'kyf-ia-pri', function(){ recu(pi); })); box.appendChild(qz);
+    }
+    R.appendChild(box);
+  });
+  if(_copie){
+    var rb = el('div', 'border:1px solid var(--border2);border-radius:10px;padding:10px 12px;font-size:11px;color:var(--text2)');
+    rb.appendChild(el('div', 'font-weight:700;color:var(--text);margin-bottom:6px', 'Reçu prêt pour le mobile'));
+    rb.appendChild(el('div', 'line-height:1.5;margin-bottom:8px', 'Dernière étape, sur le téléphone : onglet « Envoyés », puis « Charger le reçu de KYF ». Tant que le reçu n\u2019est pas chargé, le téléphone garde ces opérations en attente.'));
+    var bar = el('div', 'display:flex;gap:8px');
+    bar.appendChild(btn('TÉLÉCHARGER LE FICHIER', 'kyf-ia-pri', function(){
+      var d = new Date(), s = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+      var a = document.createElement('a'), u = URL.createObjectURL(new Blob([_copie], { type:'application/json' }));
+      a.href = u; a.download = 'KYF_recu_' + s + '.kyfrecu'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(u); }, 2000);
+    }));
+    bar.appendChild(btn('AFFICHER EN QR CODES', 'kyf-ia-sec', function(){ qrOuvrir(_copie, 'REÇU EN QR CODES'); }));
+    bar.appendChild(btn('COPIER LE TEXTE', 'kyf-ia-sec', async function(e){
+      var b = e.currentTarget, ok = false; try{ ok = await kyfCopyText(_copie); }catch(er){}
+      b.textContent = ok ? 'COPIÉ' : 'COPIE IMPOSSIBLE'; setTimeout(function(){ b.textContent = 'COPIER LE TEXTE'; }, 2200);
+    }));
+    rb.appendChild(bar);
+    if(_qrFait && _qrFait.texte === _copie){
+      var qv = el('div', 'display:flex;gap:8px;align-items:flex-start;margin-top:8px;padding:8px 10px;border-radius:8px;border:1px solid rgba(0,200,120,0.35);background:rgba(0,200,120,0.10);font-size:11px;line-height:1.5;color:var(--text)');
+      var qi = el('span', 'display:inline-flex;color:var(--green);flex-shrink:0;margin-top:1px'); qi.innerHTML = SVG('<polyline points="20 6 9 17 4 12"/>', 14); qv.appendChild(qi); qv.appendChild(el('span', '', qrOkTexte(_qrFait.n))); rb.appendChild(qv);
+    }
+    R.appendChild(rb);
+  }
+  var inst = el('div', 'margin-top:14px;padding:14px 16px;border:1px solid var(--border);border-radius:12px');
+  inst.appendChild(sect(IC_PHONE, 'INSTALLER L\u2019APPLI MOBILE'));
+  inst.appendChild(el('div', 'font-size:11px;color:var(--text2);line-height:1.6;margin-bottom:10px', 'Pas besoin de boutique d\u2019applications : l\u2019appli s\u2019installe depuis le navigateur. Choisissez votre téléphone pour voir comment faire.'));
+  var ir = el('div', 'display:flex;gap:8px');
+  [['ios', IC_IOS, 'IPHONE / IPAD', 'apple.com'], ['and', IC_AND, 'ANDROID', 'android.com']].forEach(function(d){
+    var b = el('button', 'flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px'); b.type = 'button'; b.className = 'kyf-ia-sec';
+    var si = el('span', 'display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;flex-shrink:0');
+    var lg = document.createElement('img'); lg.alt = ''; lg.width = 18; lg.height = 18; lg.style.cssText = 'display:block;object-fit:contain;border-radius:3px';
+    var srcs = ['https://www.google.com/s2/favicons?domain=' + d[3] + '&sz=64', 'https://icons.duckduckgo.com/ip3/' + d[3] + '.ico'], k = 0;
+    var secours = function(){ si.textContent = ''; si.innerHTML = SVG(d[1], 14); };   // hors ligne ou logo introuvable : icône neutre
+    lg.onerror = function(){ k++; if(k < srcs.length) lg.src = srcs[k]; else secours(); };
+    lg.onload = function(){ if(lg.naturalWidth < 20 && k < srcs.length - 1){ k++; lg.src = srcs[k]; } else if(lg.naturalWidth < 20) secours(); };
+    lg.src = srcs[0]; si.appendChild(lg); b.appendChild(si); b.appendChild(document.createTextNode(d[2])); b.onclick = function(){ tuto(d[0]); }; ir.appendChild(b);
+  });
+  inst.appendChild(ir);
+  var LC = el('div', 'flex:1 1 280px;min-width:260px;max-width:340px;align-self:flex-start'); L.style.maxWidth = 'none'; L.style.flex = 'none'; L.style.minWidth = '0';
+  LC.appendChild(L); LC.appendChild(inst);
+  c.appendChild(LC); c.appendChild(R);
+  maj();
+}
+function sect(ic, label){ var d = el('div', 'display:flex;align-items:center;gap:7px;font-size:10px;font-weight:700;letter-spacing:.6px;color:var(--text3);margin-bottom:10px'); var i = el('span', 'display:inline-flex;color:var(--text3)'); i.innerHTML = SVG(ic, 14); d.appendChild(i); d.appendChild(el('span', '', label)); return d; }
+function tuto(os){
+  var T = TUTOS[os]; if(!T || document.getElementById('kyfMobTuto')) return;
+  var ov = el('div', 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10000005'); ov.id = 'kyfMobTutoOv';
+  ['click','contextmenu','wheel','touchmove'].forEach(function(ev){ ov.addEventListener(ev, function(e){ e.preventDefault(); e.stopPropagation(); }, { passive:false }); });
+  var m = el('div', "position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(520px,95vw);max-height:88vh;z-index:10000006;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;font-family:'Inter',sans-serif;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.5)"); m.id = 'kyfMobTuto'; m.setAttribute('role', 'dialog');
+  m.addEventListener('contextmenu', function(e){ e.preventDefault(); }); m.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ e.stopPropagation(); fermerTuto(); } });
+  var hd = el('div', 'display:flex;align-items:center;justify-content:space-between;padding:22px 24px 14px;flex-shrink:0');
+  var tt = el('span', 'display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--text)'); var ib = el('span', 'display:inline-flex'); ib.innerHTML = SVG(T.ic, 13); tt.appendChild(ib); tt.appendChild(document.createTextNode(' ' + T.titre)); hd.appendChild(tt);
+  var x = document.createElement('button'); x.type = 'button'; x.className = 'kyf-modal-close'; x.setAttribute('aria-label', 'Fermer'); x.onclick = fermerTuto;
+  x.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'; hd.appendChild(x); m.appendChild(hd);
+  var bd = el('div', 'padding:0 24px 22px;overflow-y:auto;overscroll-behavior:contain;min-height:0');
+  bd.appendChild(el('div', 'font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:14px', T.note));
+  T.etapes.forEach(function(t, i){
+    var r = el('div', 'display:flex;gap:12px;align-items:flex-start;margin-bottom:12px');
+    r.appendChild(el('span', 'flex-shrink:0;width:22px;height:22px;border-radius:50%;background:#f0b429;color:#000;font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center', String(i + 1)));
+    r.appendChild(el('div', 'font-size:12px;color:var(--text);line-height:1.6;padding-top:2px', t)); bd.appendChild(r);
+  });
+  var u = el('div', 'display:flex;align-items:center;gap:8px;margin-top:16px;padding:9px 12px;border:1px solid var(--border2);border-radius:8px;background:var(--btn-secondary-bg)');
+  u.appendChild(el('span', 'flex:1;min-width:0;font-size:11px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap', APP_URL));
+  u.appendChild(btn('COPIER LE LIEN', 'kyf-ia-sec', async function(e){ var b = e.currentTarget, ok = false; try{ ok = await kyfCopyText(APP_URL); }catch(er){} b.textContent = ok ? 'COPIÉ' : 'COPIE IMPOSSIBLE'; setTimeout(function(){ b.textContent = 'COPIER LE LIEN'; }, 2200); }));
+  bd.appendChild(u);
+  var bar = el('div', 'display:flex;gap:8px;justify-content:flex-end;margin-top:16px');
+  bar.appendChild(btn('FERMER', 'kyf-ia-sec', fermerTuto)); bd.appendChild(bar); m.appendChild(bd);
+  document.body.appendChild(ov); document.body.appendChild(m);
+}
+function fermerTuto(){ ['kyfMobTuto','kyfMobTutoOv'].forEach(function(id){ var e = document.getElementById(id); if(e) e.remove(); }); }
+// ---------- transfert par QR codes (PC vers mobile) : mêmes règles que le mobile (KYFQR1) ----------
+function crc32(t){ var T = crc32.t; if(!T){ T = crc32.t = []; for(var n = 0; n < 256; n++){ var c0 = n; for(var k = 0; k < 8; k++) c0 = c0 & 1 ? 0xEDB88320 ^ (c0 >>> 1) : c0 >>> 1; T[n] = c0 >>> 0; } }
+  var c = 0xFFFFFFFF; for(var i = 0; i < t.length; i++) c = T[(c ^ t.charCodeAt(i)) & 255] ^ (c >>> 8); return ((c ^ 0xFFFFFFFF) >>> 0).toString(16).padStart(8, '0'); }
+function b64u(u){ var s = ''; for(var i = 0; i < u.length; i += 8192) s += String.fromCharCode.apply(null, u.subarray(i, i + 8192)); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
+async function strm(Ctor, u){ var cs = new Ctor('deflate-raw'), w = cs.writable.getWriter(); w.write(u); w.close(); return new Uint8Array(await new Response(cs.readable).arrayBuffer()); }
+async function qrPrep(text){
+  var u = new TextEncoder().encode(text), z = null;
+  try{ if(typeof CompressionStream !== 'undefined') z = await strm(CompressionStream, u); }catch(e){}
+  return z && z.length < u.length ? { fl:'z', data:b64u(z) } : { fl:'r', data:b64u(u) };
+}
+function qrChunks(p, size){
+  var n = Math.max(1, Math.ceil(p.data.length / size)), w = Math.ceil(p.data.length / n), id = '', A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', r = crypto.getRandomValues(new Uint8Array(6)), crc = crc32(p.data), o = [];
+  for(var j = 0; j < 6; j++) id += A[r[j] % 36];
+  for(var i = 0; i < n; i++) o.push('KYFQR1.' + id + '.' + (i + 1) + '.' + n + '.' + crc + '.' + p.fl + '.' + p.data.slice(i * w, (i + 1) * w));
+  return o;
+}
+var QR_TAILLES = [['lisible', 300], ['équilibré', 450], ['compact', 800]];
+var _qr = null, _qrFait = null;   // _qrFait : dernier reçu dont tous les QR codes ont été affichés
+function qrOkTexte(n){ return (n > 1 ? 'Les ' + n + ' QR codes ont tous été affichés.' : 'Le QR code a été affiché.') + ' Sur le téléphone, vérifiez que le reçu est bien chargé : un message doit confirmer que les opérations sont enregistrées.'; }
+async function qrOuvrir(texte, titre){
+  if(document.getElementById('kyfMobQr') || !window.kyfQrcode) return;
+  var p = await qrPrep(texte);
+  _qr = { p:p, titre:titre, taille:450, i:0, auto:true, delai:1500, liste:qrChunks(p, 450), t:null, texte:texte, vus:{}, fini:false };
+  var ov = el('div', 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10000005'); ov.id = 'kyfMobQrOv';
+  ['click','contextmenu','wheel','touchmove'].forEach(function(ev){ ov.addEventListener(ev, function(e){ e.preventDefault(); e.stopPropagation(); }, { passive:false }); });
+  var m = el('div', "position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(460px,95vw);max-height:92vh;z-index:10000006;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;font-family:'Inter',sans-serif;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.5)"); m.id = 'kyfMobQr'; m.setAttribute('role', 'dialog');
+  m.addEventListener('contextmenu', function(e){ e.preventDefault(); }); m.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ e.stopPropagation(); qrFermer(); } });
+  document.body.appendChild(ov); document.body.appendChild(m); qrRendu();
+  qrAuto();
+}
+function qrFermer(){ if(_qr && _qr.t) clearInterval(_qr.t); _qr = null; ['kyfMobQr','kyfMobQrOv'].forEach(function(id){ var e = document.getElementById(id); if(e) e.remove(); }); try{ rendu(); }catch(e){} }
+function qrAuto(){
+  if(!_qr) return; if(_qr.t){ clearInterval(_qr.t); _qr.t = null; }
+  if(_qr.auto && _qr.liste.length > 1) _qr.t = setInterval(function(){ if(!_qr) return; _qr.i = (_qr.i + 1) % _qr.liste.length; qrImage(); }, _qr.delai);
+}
+function qrImage(){
+  if(!_qr) return; var box = document.getElementById('kyfMobQrImg'), lab = document.getElementById('kyfMobQrLab'); if(!box) return;
+  box.textContent = '';
+  try{
+    var q = window.kyfQrcode(0, 'L'); q.addData(_qr.liste[_qr.i]); q.make();
+    var doc = new DOMParser().parseFromString(q.createSvgTag({ cellSize:4, margin:16, scalable:true }), 'image/svg+xml');
+    var svg = doc.documentElement && doc.documentElement.nodeName === 'svg' ? document.importNode(doc.documentElement, true) : null;
+    if(svg){ svg.style.cssText = 'width:100%;height:100%;display:block'; svg.setAttribute('role', 'img'); svg.setAttribute('aria-label', 'QR code ' + (_qr.i + 1) + ' sur ' + _qr.liste.length); box.appendChild(svg); }
+  }catch(e){ box.appendChild(el('div', 'color:#000;font-size:12px;padding:20px', 'QR code impossible à afficher : choisissez une taille plus petite.')); }
+  if(lab) lab.textContent = 'QR ' + (_qr.i + 1) + ' / ' + _qr.liste.length;
+  _qr.vus[_qr.i] = 1;
+  if(!_qr.fini && Object.keys(_qr.vus).length >= _qr.liste.length){ _qr.fini = true; _qrFait = { texte:_qr.texte, n:_qr.liste.length }; }
+  var ok = document.getElementById('kyfMobQrOk'); if(ok){ ok.style.display = _qr.fini ? 'flex' : 'none'; var tx = ok.querySelector('span:last-child'); if(tx) tx.textContent = qrOkTexte(_qr.liste.length); }
+}
+function qrRendu(){
+  var m = document.getElementById('kyfMobQr'); if(!m || !_qr) return; m.textContent = '';
+  var hd = el('div', 'display:flex;align-items:center;justify-content:space-between;padding:22px 24px 12px;flex-shrink:0');
+  var tt = el('span', 'display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--text)'); var ib = el('span', 'display:inline-flex'); ib.innerHTML = SVG('<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="14" y1="14" x2="14" y2="14.01"/><line x1="17.5" y1="14" x2="21" y2="14"/><line x1="14" y1="17.5" x2="14" y2="21"/><line x1="21" y1="17.5" x2="21" y2="21"/><line x1="17.5" y1="21" x2="17.5" y2="21.01"/>', 13);
+  tt.appendChild(ib); tt.appendChild(document.createTextNode(' ' + _qr.titre)); hd.appendChild(tt);
+  var x = document.createElement('button'); x.type = 'button'; x.className = 'kyf-modal-close'; x.setAttribute('aria-label', 'Fermer'); x.onclick = qrFermer;
+  x.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'; hd.appendChild(x); m.appendChild(hd);
+  var bd = el('div', 'padding:0 24px 22px;overflow-y:auto;overscroll-behavior:contain;min-height:0;display:flex;flex-direction:column;align-items:center;gap:12px');
+  bd.appendChild(el('div', 'font-size:12px;color:var(--text2);line-height:1.6;text-align:center;align-self:stretch', 'Sur le mobile : onglet « Envoyés », puis « Scanner le reçu en QR codes ». Scannez les QR dans l\u2019ordre qui vous convient, les doublons sont ignorés.'));
+  var img = el('div', 'width:min(340px,78vw);height:min(340px,78vw);background:#fff;border-radius:10px;flex-shrink:0'); img.id = 'kyfMobQrImg'; bd.appendChild(img);
+  var lab = el('div', 'font-size:13px;font-weight:700;color:var(--text)'); lab.id = 'kyfMobQrLab'; bd.appendChild(lab);
+  var okb = el('div', 'display:none;gap:8px;align-items:flex-start;align-self:stretch;padding:9px 12px;border-radius:10px;border:1px solid rgba(0,200,120,0.35);background:rgba(0,200,120,0.10);font-size:11px;line-height:1.5;color:var(--text)'); okb.id = 'kyfMobQrOk';
+  var oki = el('span', 'display:inline-flex;color:var(--green);flex-shrink:0;margin-top:1px'); oki.innerHTML = SVG('<polyline points="20 6 9 17 4 12"/>', 14); okb.appendChild(oki); okb.appendChild(el('span', '', qrOkTexte(_qr.liste.length))); bd.appendChild(okb);
+  var nav = el('div', 'display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center');
+  nav.appendChild(btn('PRÉCÉDENT', 'kyf-ia-sec', function(){ _qr.auto = false; qrAuto(); _qr.i = (_qr.i - 1 + _qr.liste.length) % _qr.liste.length; qrImage(); qrRendu2(); }));
+  var pl = btn(_qr.auto ? 'PAUSE' : 'DÉFILEMENT AUTO', 'kyf-ia-sec', function(){ _qr.auto = !_qr.auto; qrAuto(); pl.textContent = _qr.auto ? 'PAUSE' : 'DÉFILEMENT AUTO'; }); pl.id = 'kyfMobQrPl'; nav.appendChild(pl);
+  nav.appendChild(btn('SUIVANT', 'kyf-ia-sec', function(){ _qr.auto = false; qrAuto(); _qr.i = (_qr.i + 1) % _qr.liste.length; qrImage(); qrRendu2(); }));
+  if(_qr.liste.length < 2) nav.style.display = 'none';
+  bd.appendChild(nav);
+  var opt = el('div', 'display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;font-size:11px;color:var(--text3)');
+  opt.appendChild(el('span', '', 'Taille :'));
+  QR_TAILLES.forEach(function(t){
+    var n = qrChunks(_qr.p, t[1]).length, b = btn(t[0] + ' (' + n + ' QR)', _qr.taille === t[1] ? 'kyf-ia-pri' : 'kyf-ia-sec', function(){ _qr.taille = t[1]; _qr.i = 0; _qr.vus = {}; _qr.fini = false; _qr.liste = qrChunks(_qr.p, t[1]); qrRendu(); qrAuto(); }); opt.appendChild(b);
+  });
+  bd.appendChild(opt);
+  var dl = el('label', 'display:flex;gap:8px;align-items:center;font-size:11px;color:var(--text3)'); dl.appendChild(el('span', '', 'Vitesse :'));
+  var sel = el('select', "background:var(--btn-secondary-bg);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-size:11px;padding:4px 6px"); [[1000, '1 s'], [1500, '1,5 s'], [2000, '2 s'], [3000, '3 s']].forEach(function(o){ var op = document.createElement('option'); op.value = o[0]; op.textContent = o[1]; if(o[0] === _qr.delai) op.selected = true; sel.appendChild(op); });
+  sel.onchange = function(){ _qr.delai = Number(sel.value); qrAuto(); }; dl.appendChild(sel); bd.appendChild(dl);
+  bd.appendChild(btn('FERMER', 'kyf-ia-sec', qrFermer));
+  m.appendChild(bd); qrImage();
+}
+function qrRendu2(){ var pl = document.getElementById('kyfMobQrPl'); if(pl) pl.textContent = 'DÉFILEMENT AUTO'; }
+function dit(ok, m){ _msg = m; _msgOk = ok; rendu(); }
+// ---------- 3e canal : classeur Google (onglet KYF_Mobile_Paquets) ----------
+// Le mobile ajoute des lignes (une par morceau de paquet chiffré) ; KYF ne modifie que la colonne G (statut). La phrase secrète n'est jamais écrite dans le classeur.
+// Colonnes : A paquet_id, B index, C total, D cree, E n, F morceau, G statut. Le contenu des cellules (chiffré) n'est jamais journalisé.
+var TAB = 'KYF_Mobile_Paquets', SH_MAXCH = 50000, SH_MAXTOT = 20;
+function shOk(){ try{ return !!(window._kyfOAuthCache && (window._kyfOAuthCache.token || window._kyfOAuthCache.refresh) && localStorage.getItem('kyf-oauth-sheetid') && typeof kyfFetchAuth === 'function'); }catch(e){ return false; } }
+function shUrl(chemin){ return 'https://sheets.googleapis.com/v4/spreadsheets/' + kyfSafeSheetId_(localStorage.getItem('kyf-oauth-sheetid')) + chemin; }
+// Lit l'onglet. Retourne { absent:true } si l'onglet n'existe pas encore (pas une erreur), { err } si lecture impossible, sinon { paquets:[{id, ligne:[n° lignes], texte, statut, complet}] }
+async function shLire(){
+  var d;
+  try{ var r = await kyfFetchAuth(shUrl('/values/' + TAB + '!A:G'), {}, { timeoutMs: 15000 }); d = await r.json(); }
+  catch(e){ if(e && e.httpStatus === 400) return { absent:true }; return { err:'Lecture du classeur impossible.' }; }
+  var rows = (d && d.values) || [], g = {}, ordre = [];
+  rows.forEach(function(r, i){
+    if(!r || !r.length || r[0] === 'paquet_id') return;
+    var id = String(r[0] || ''), ix = parseInt(r[1], 10), tot = parseInt(r[2], 10), f = String(r[5] || '');
+    if(!/^P-[0-9]{8}-[0-9]{4}-[A-Za-z0-9]{4}$/.test(id)) return;
+    if(!g[id]){ g[id] = { id:id, lignes:[], morceaux:{}, tot:tot, statut:'', ok:true }; ordre.push(id); }
+    var x = g[id];
+    if(!(ix >= 1 && ix <= SH_MAXTOT) || tot !== x.tot || !(tot >= 1 && tot <= SH_MAXTOT) || f.length > SH_MAXCH || x.morceaux[ix] != null) x.ok = false;
+    else x.morceaux[ix] = f;
+    x.lignes.push(i + 1);
+    var st = String(r[6] || ''); if(st) x.statut = st;
+  });
+  var out = ordre.map(function(id){
+    var x = g[id], txt = '', c = 0;
+    if(x.ok){ for(var i = 1; i <= x.tot; i++){ if(x.morceaux[i] == null){ x.ok = false; break; } txt += x.morceaux[i]; c++; } }
+    return { id:id, lignes:x.lignes, texte:txt, statut:x.statut, complet: x.ok && c === x.tot && txt.length <= MAX_FIC };
+  });
+  return { paquets:out };
+}
+function shAFaire(p){ return p.complet && (p.statut === '' || p.statut === 'erreur : phrase'); }
+async function shVerif(creer){
+  if(!shOk() || _sh.busy) return;
+  _sh.busy = true; _sh.err = '';
+  try{
+    var r = await shLire();
+    if(r.absent && creer){
+      try{
+        await kyfFetchAuth(shUrl(':batchUpdate'), { method:'POST', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify({ requests:[{ addSheet:{ properties:{ title:TAB } } }] }) }, { timeoutMs:15000 });
+        await kyfFetchAuth(shUrl('/values/' + TAB + '!A1:G1?valueInputOption=RAW'), { method:'PUT', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify({ values:[['paquet_id','index','total','cree','n','morceau','statut']] }) }, { timeoutMs:15000 });
+        r = { paquets:[] };
+      }catch(e){ _sh.err = 'Création de l’onglet impossible.'; r = { absent:true }; }
+    }
+    _sh.absent = !!r.absent; if(r.err) _sh.err = r.err;
+    _sh.paquets = r.paquets || []; _sh.n = _sh.paquets.filter(shAFaire).length;
+  } finally { _sh.busy = false; maj(); if(document.getElementById('kyfMobModal')) rendu(); }
+}
+async function shImporter(){
+  var pe = document.getElementById('kyfMobPhSh'), ph = pe ? pe.value : ''; if(pe) pe.value = '';
+  if(_sh.busy) return;
+  if(ph.length < 8){ _sh.msg = 'La phrase secrète fait au moins 8 caractères.'; _sh.ok = false; rendu(); return; }
+  if(!window.crypto || !crypto.subtle){ _sh.msg = 'Le chiffrement exige une adresse sécurisée (https).'; _sh.ok = false; rendu(); return; }
+  _sh.busy = true; _sh.msg = 'Import en cours…'; _sh.ok = true; rendu();
+  var nOk = 0, nPh = 0, nKo = 0, maj_g = [];
+  try{
+    var r = await shLire(); if(r.err || r.absent){ _sh.msg = r.err || 'Onglet introuvable.'; _sh.ok = false; return; }
+    var liste = r.paquets.filter(shAFaire);
+    for(var i = 0; i < liste.length; i++){
+      var pk = liste[i], st = '';
+      try{
+        var env = JSON.parse(pk.texte);
+        if(!enveloppeOk(env, 'kyfops-chiffre')) st = 'erreur : format';
+        else {
+          var clair = null; try{ clair = await dechiffrer(env, ph); }catch(e){ st = 'erreur : phrase'; }
+          if(!st){
+            var chk = checkPaquet(clair);
+            if(chk.err) st = 'erreur : paquet invalide';
+            else { var imp = importer(chk.paq, chk.avert, chk.alertes); st = (imp.ok || /déjà chargé/.test(imp.err || '')) ? 'importé' : 'erreur : stockage'; }
+          }
+        }
+      }catch(e){ st = 'erreur : format'; }
+      if(st === 'importé') nOk++; else if(st === 'erreur : phrase') nPh++; else nKo++;
+      pk.lignes.forEach(function(n){ maj_g.push({ range: TAB + '!G' + n, values:[[st]] }); });
+    }
+    if(maj_g.length){
+      try{ await kyfFetchAuth(shUrl('/values:batchUpdate'), { method:'POST', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify({ valueInputOption:'RAW', data:maj_g }) }, { timeoutMs:20000 }); }
+      catch(e){ _sh.err = 'Statut non écrit dans le classeur (les opérations sont bien reçues dans KYF).'; }
+    }
+    _sh.msg = nOk + ' paquet' + (nOk > 1 ? 's' : '') + ' importé' + (nOk > 1 ? 's' : '') + (nPh ? ' · ' + nPh + ' avec une autre phrase secrète (réessayez avec la bonne)' : '') + (nKo ? ' · ' + nKo + ' refusé' + (nKo > 1 ? 's' : '') + ' (illisible ou invalide)' : '') + '.';
+    _sh.ok = nOk > 0 || (!nPh && !nKo);
+  } finally { _sh.busy = false; }
+  await shVerif(false);
+}
+function shBloc(L){
+  if(!shOk()) return;
+  var box = el('div', 'margin-top:14px;padding-top:14px;border-top:1px solid var(--border)');
+  box.appendChild(sect(IC_IN, 'CLASSEUR GOOGLE'));
+  var txt = _sh.busy ? 'Vérification du classeur…' : (_sh.absent ? 'Aucun paquet : l’onglet « ' + TAB + ' » n’existe pas encore dans votre classeur.' : (_sh.n ? _sh.n + ' paquet' + (_sh.n > 1 ? 's' : '') + ' Mobile à importer.' : 'Aucun nouveau paquet dans le classeur.'));
+  box.appendChild(el('div', 'font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:8px', txt));
+  if(_sh.n){
+    var ph = el('input'); ph.type = 'password'; ph.id = 'kyfMobPhSh'; ph.autocomplete = 'off'; ph.placeholder = 'Phrase secrète du mobile';
+    ph.style.cssText = 'width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:Inter,sans-serif;font-size:11px;padding:7px 10px;outline:none';
+    box.appendChild(oeilPhrase(ph, 'margin-bottom:8px'));
+  }
+  var bar = el('div', 'display:flex;gap:8px;flex-wrap:wrap');
+  if(_sh.n) bar.appendChild(btn('IMPORTER LES PAQUETS', 'kyf-ia-pri', shImporter));
+  bar.appendChild(btn(_sh.absent ? 'CRÉER L’ONGLET' : 'ACTUALISER', 'kyf-ia-sec', function(){ shVerif(true); }));
+  box.appendChild(bar);
+  if(_sh.msg) box.appendChild(el('div', 'margin-top:8px;font-size:11px;line-height:1.5;color:' + (_sh.ok ? 'var(--green)' : 'var(--red)'), _sh.msg));
+  if(_sh.err) box.appendChild(el('div', 'margin-top:8px;font-size:11px;line-height:1.5;color:var(--red)', _sh.err));
+  box.appendChild(el('div', 'margin-top:8px;font-size:10px;color:var(--text3);line-height:1.5', 'Le contenu du classeur reste chiffré. La phrase secrète n’y est jamais écrite.'));
+  L.appendChild(box);
+}
+async function lireTexte(){
+  var f = document.getElementById('kyfMobFile'), t = document.getElementById('kyfMobTxt');
+  if(f && f.files && f.files[0]){
+    if(f.files[0].size > MAX_FIC) return { err:'Fichier trop gros (512 Ko au maximum).' };
+    return { txt: await f.files[0].text() };
+  }
+  var s = (t && t.value || '').trim();
+  if(!s) return { err:'Déposez un fichier ou collez le texte du paquet.' };
+  if(s.length > MAX_FIC) return { err:'Texte trop gros (512 Ko au maximum).' };
+  return { txt:s };
+}
+async function lire(){
+  var b = document.getElementById('kyfMobGo');
+  var ph = document.getElementById('kyfMobPh'); _phrase = ph ? ph.value : '';
+  try{
+    if(!window.crypto || !crypto.subtle) return dit(false, 'Le chiffrement exige une adresse sécurisée (https).');
+    var r = await lireTexte(); if(r.err) return dit(false, r.err);
+    if(_phrase.length < 8) return dit(false, 'La phrase secrète fait au moins 8 caractères.');
+    var env; try{ env = JSON.parse(r.txt); }catch(e){ return dit(false, 'Fichier illisible : ce n’est pas un paquet du mobile.'); }
+    if(!enveloppeOk(env, 'kyfops-chiffre')) return dit(false, 'Fichier illisible : ce n’est pas un paquet du mobile.');
+    if(b){ b.disabled = true; b.textContent = 'DÉCHIFFREMENT EN COURS…'; }
+    var clair; try{ clair = await dechiffrer(env, _phrase); }catch(e){ return dit(false, 'Phrase différente de celle du mobile, ou fichier modifié.'); }
+    var chk = checkPaquet(clair); if(chk.err) return dit(false, chk.err);
+    var imp = importer(chk.paq, chk.avert, chk.alertes); if(imp.err) return dit(false, imp.err);
+    _msg = imp.n + ' opération' + (imp.n > 1 ? 's' : '') + ' reçue' + (imp.n > 1 ? 's' : '') + (imp.doublons ? ' (dont ' + imp.doublons + ' déjà reçue' + (imp.doublons > 1 ? 's' : '') + ' ou déjà dans la file)' : '') + '. Validez-les une par une.'; _msgOk = true;
+  } finally {
+    _phrase = ''; if(ph) ph.value = ''; var f = document.getElementById('kyfMobFile'); if(f) f.value = '';
+    rendu();
+  }
+}
+async function recu(pi){
+  var pq = queue().paquets[pi]; if(!pq) return;
+  var pe = document.getElementById('kyfMobPhRecu'), ph = pe ? pe.value : ''; if(pe) pe.value = '';
+  if(!ph) return;
+  var rest = pq.ops.filter(function(x){ return x.etat === 'attente'; }).length;
+  if(rest > 0 && !(await kyfAsk('Générer le reçu maintenant ?\nLe reçu dit au téléphone ce que vous avez fait de ce paquet. ' + rest + ' opération' + (rest > 1 ? 's ne sont pas encore traitées : le téléphone les verra comme ignorées' : ' n\u2019est pas encore traitée : le téléphone la verra comme ignorée') + '. Pour les enregistrer d\u2019abord, revenez à la liste et cliquez sur Valider.', { ok:'Générer le reçu', cancel:'Revenir à la liste' }))){ _askRecu = -1; rendu(); return; }
+  if(ph.length < 8){ dit(false, 'La phrase secrète fait au moins 8 caractères.'); return; }
+  try{ _copie = JSON.stringify(await chiffrer(recuClair(pq), ph, 'kyfrecu-chiffre')); _msg = 'Reçu généré.'; _msgOk = true; }
+  catch(e){ _msg = 'Impossible de générer le reçu.'; _msgOk = false; }
+  ph = ''; _askRecu = -1; rendu();
+}
+
+window.KYFMobile = { open: ouvrir, count: nbAttente, sheetCheck: function(){ return shVerif(false); },
+  _test: { shLire: shLire, shVerif: shVerif, shImporter: shImporter, sh: _sh, qrPrep: qrPrep, qrChunks: qrChunks, crc32: crc32, chiffrer: chiffrer, dechiffrer: dechiffrer, checkPaquet: checkPaquet, enveloppeOk: enveloppeOk, importer: importer, queue: queue, recuClair: recuClair, TYPES: TYPES } };
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', maj); else setTimeout(maj, 0);
+setTimeout(function(){ try{ shVerif(false); }catch(e){} }, 12000);
+})();
+/* KYF-MOBILE fin */
 </script>
 </body>
 </html>
