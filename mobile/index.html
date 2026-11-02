@@ -352,7 +352,7 @@ html[data-rch] .fh2 .tt small{font-size:.95rem;margin-top:4px;opacity:calc(1 - v
 <main id="app"></main>
 <script>
 "use strict";
-var VER="1.18.13", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="1.18.14", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["actif_valeur","Valeur d’un actif"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -1354,6 +1354,14 @@ function kpNum(x){var s=String(x==null?"":x).toLowerCase().replace(/[  \s]+/g
   s=s.replace(/^\./,"0.").replace(/^0+(?=\d)/,"");
   return s.slice(0,12)}
 document.addEventListener("mousedown",function(ev){if(ev.target.closest&&ev.target.closest(".kp"))ev.preventDefault()});
+(function(){var T=0,B=null;
+  function isDel(b){for(var i=0;i<b.attributes.length;i++){var n=b.attributes[i];if(n.name.indexOf("data-")===0&&n.value==="del")return true}return false}
+  function stop(){clearTimeout(T);T=0}
+  document.addEventListener("pointerdown",function(ev){var b=ev.target.closest&&ev.target.closest(".kp");if(!b||!isDel(b))return;stop();T=setTimeout(function(){T=0;kpF="";try{b.onclick&&b.onclick()}catch(_){}kpF=null;b._lp=1;if(navigator.vibrate)try{navigator.vibrate(15)}catch(_){}},450)},true);
+  ["pointerup","pointercancel","pointerleave","scroll"].forEach(function(n){document.addEventListener(n,stop,true)});
+  document.addEventListener("click",function(ev){var b=ev.target.closest&&ev.target.closest(".kp");if(b&&b._lp){b._lp=0;ev.stopImmediatePropagation();ev.preventDefault()}},true);
+  document.addEventListener("contextmenu",function(ev){if(ev.target.closest&&ev.target.closest(".kp"))ev.preventDefault()});
+})();
 document.addEventListener("input",function(ev){var el=ev.target;if(!el||!el.matches||!el.matches(".sw2q,.trq"))return;
   var r=el.closest("[data-na],[data-xn],[data-avn],[data-arn]");if(r&&!r.classList.contains("on")&&r.click)r.click();
   var btn=app.querySelector("[data-mkp],[data-xk],[data-avk],[data-ark],[data-cfk],[data-vkp],[data-akp],[data-lkp],[data-kp]");
