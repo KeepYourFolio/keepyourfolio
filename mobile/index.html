@@ -346,6 +346,8 @@ html[data-rch] .fh2 .tt small{font-size:.95rem;margin-top:4px;opacity:calc(1 - v
 .pqm{padding:6px 0 2px;color:var(--mut);font-size:.85rem;font-weight:600;text-align:center;border-top:1px solid var(--line)}
 .bd.bsv{background:var(--bl,#2a62c9);padding:0;display:flex;align-items:center;justify-content:center}.bd.bsv svg{width:11px;height:11px;stroke:#fff;fill:none;stroke-width:2.4}
 .li.hl{background:color-mix(in srgb,var(--bl,#2a62c9) 14%,transparent);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--bl,#2a62c9) 55%,transparent);border-radius:14px}.li.hl .ic{border-radius:10px;color:var(--bl,#2a62c9);background:color-mix(in srgb,var(--bl,#2a62c9) 22%,transparent)}.li.hl .tg{background:var(--bl,#2a62c9);color:#fff}
+.sw2q:focus,.sw2q:focus-visible{outline:none!important;box-shadow:none!important;border:0!important;background:transparent!important}
+.sw2.nc{min-height:0!important;padding-top:2px!important;padding-bottom:2px!important}.sw2.nc .sw2q{min-height:44px!important}
 :root{--rh:0px}
 .rch,.sp2,.ctt{display:none!important}
 </style>
@@ -354,7 +356,7 @@ html[data-rch] .fh2 .tt small{font-size:.95rem;margin-top:4px;opacity:calc(1 - v
 <main id="app"></main>
 <script>
 "use strict";
-var VER="1.18.16", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="1.18.17", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["actif_valeur","Valeur d’un actif"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -745,7 +747,7 @@ function montantExtra(d){var h="";if(AVEC_TITRE.indexOf(d.type)>-1)h+=`<label>De
   if(d.type==="crypto_achat"||d.type==="crypto_vente")h+=`<label>Heure (facultatif)<input id="hh" type="time" value="${esc(d.hh||"")}"></label><button class="swr" role="switch" data-sw2="hist" aria-checked="${d.hist?"true":"false"}"><span><b>Opération historique</b><small>N’affecte pas les positions actuelles</small></span><span class="trk"></span></button>`;
   if(d.type==="crypto_vente")h+=`<label>Valeur du portefeuille crypto avant la vente, en euros (facultatif)<input id="vpa" inputmode="decimal" value="${esc(d.vpa||"")}"></label><small class="hint" style="margin:-6px 0 0">Utile au calcul fiscal de KYF.</small><label>Montant investi, en euros (facultatif)<input id="inv" inputmode="decimal" value="${esc(d.inv||"")}"></label>`;
   if(d.type==="dividende")h+=`<button class="swr" role="switch" data-sw2="reinv" aria-checked="${d.reinv?"true":"false"}"><span><b>Dividende réinvesti</b><small>KYF crée aussi l’achat correspondant</small></span><span class="trk"></span></button>`;return h}
-function lireMontant(){var d=S.d;if($("dt"))d.date=$("dt").value;if($("qt")){d.qty=$("qt").value;d.prix=$("pr").value}if($("mt"))d.mt=$("mt").value;if($("fr"))d.frais=$("fr").value;if($("dv"))d.dev=$("dv").value;if($("dvx"))d.dvx=$("dvx").value;if($("hh"))d.hh=$("hh").value;if($("vpa"))d.vpa=$("vpa").value;if($("inv"))d.inv=$("inv").value;if($("lv"))d.lv=$("lv").value}
+function lireMontant(){var d=S.d;if($("dt"))d.date=$("dt").value;if($("qt")){d.qty=$("qt").value;d.prix=$("pr").value}if($("mt"))d.mt=$("mt").value;if($("fr"))d.frais=$("fr").value;if($("fp"))d.fp=$("fp").value;if($("dv"))d.dev=$("dv").value;if($("dvx"))d.dvx=$("dvx").value;if($("hh"))d.hh=$("hh").value;if($("vpa"))d.vpa=$("vpa").value;if($("inv"))d.inv=$("inv").value;if($("lv"))d.lv=$("lv").value}
 function lireArb(){var d=S.d,a=d.arb||(d.arb={unite:"eur"});if($("adt"))a.date=$("adt").value;if($("as"))a.src=$("as").value;if($("am"))a.montant=$("am").value;if($("ad"))a.dst=$("ad").value;if($("at"))a.dtype=$("at").value;if($("af"))a.frais=$("af").value;if($("aq"))a.qd=$("aq").value;if($("ap"))a.pd=$("ap").value;if($("asq"))a.qs=$("asq").value;if($("asp"))a.ps=$("asp").value}
 function lireAct(){var d=S.d,a=d.act||(d.act={incl:true});if($("an")){a.nom=$("an").value;a.val=$("aval").value;a.vd=$("avd").value;if($("aty")){a.type=$("aty").value;a.achat=$("aa").value;a.ad=$("aad").value;a.note=$("ano").value}}}
 function fmtJour(d){var t=today();if(d===t)return"Aujourd’hui";var y=new Date();y.setDate(y.getDate()-1);var ys=y.getFullYear()+"-"+p2(y.getMonth()+1)+"-"+p2(y.getDate());return d===ys?"Hier":String(d).split("-").reverse().join("/")}
@@ -1356,6 +1358,7 @@ function kpNum(x){var s=String(x==null?"":x).toLowerCase().replace(/[  \s]+/g
   s=s.replace(/^\./,"0.").replace(/^0+(?=\d)/,"");
   return s.slice(0,12)}
 document.addEventListener("mousedown",function(ev){if(ev.target.closest&&ev.target.closest(".kp"))ev.preventDefault()});
+document.addEventListener("click",function(ev){var el=ev.target;if(!el||!el.matches||!el.matches(".sw2q,.trq"))return;try{var cs=getComputedStyle(el),cv=kpNum.cv||(kpNum.cv=document.createElement("canvas").getContext("2d"));cv.font=cs.fontWeight+" "+cs.fontSize+" "+cs.fontFamily;var w=cv.measureText(el.value).width,r=el.getBoundingClientRect();if(ev.clientX<r.right-w-6){var n=el.value.length;el.setSelectionRange(n,n)}}catch(_){}});
 (function(){var T=0,B=null;
   function isDel(b){for(var i=0;i<b.attributes.length;i++){var n=b.attributes[i];if(n.name.indexOf("data-")===0&&n.value==="del")return true}return false}
   function stop(){clearTimeout(T);T=0}
@@ -1446,12 +1449,12 @@ function render(){
     h+=(S.d.fromSet||S.d.pre?`<div class="fh"><button class="bk" id="bk" aria-label="Retour">${I.back}</button><div><h2>Nouveau compte</h2></div></div>`:fh("Nouveau compte",stepN("compte_new")))+`<div class="cd"><label>Type<select id="nt">${ENV.map(function(e){return `<option value="${e}"${e===(S.d.env||"")?" selected":""}>${e}</option>`}).join("")}</select></label><label>Nom du compte<input id="nn" maxlength="60" placeholder="PEA de Marie" autocomplete="off"></label>${famOn()?`<label>Pour qui (facultatif)<select id="nf"><option value="">Personne</option>${fam().map(function(m){return `<option value="${esc(m.id)}">${esc(m.nom)}</option>`}).join("")}</select></label>`:""}</div><div class="cta"><button class="p" id="ncc">Créer le compte</button></div>`;
   }else if(v==="montant"){
     var sq=SANS_QP.indexOf(S.d.type)>-1,d=S.d,fr0=d.frais!=null?d.frais:(ld(K.frais,{})[fk(d)]||"0"),isCry=d.type==="crypto_achat"||d.type==="crypto_vente",
-      FL=sq?["mt","fr"]:["qt","pr","fr"],act=FL.indexOf(d.na)>-1?d.na:FL[0],
+      pea=!sq&&!isCry&&(d.env==="PEA"||d.env==="PEA-PME"),FL=sq?["mt","fr"]:(pea?["qt","pr","fp","fr"]:["qt","pr","fr"]),act=FL.indexOf(d.na)>-1?d.na:FL[0],
       sy=isCry?(d.ticker||d.nom||"").toUpperCase():(d.ticker||d.isin||""),hdn=isCry?(d.type==="crypto_achat"?"Achat":"Vente"):libType(d.type),
       nm=sq?(d.cpt?d.cpt.nom:(ENVL[d.env]||d.env||"Compte")):(d.nom||d.ticker||d.isin||""),
       nc=function(id,lab,val,ph,suf){return `<div class="sw2 nc${act===id?" on":""}" data-na="${id}" style="grid-template-columns:auto minmax(0,1fr)"><span class="sw2s"><small>${lab}</small></span><input id="${id}" class="sw2q" inputmode="none" autocomplete="off" enterkeyhint="done" placeholder="${ph}" value="${esc(val||"")}" aria-label="${lab}"></div>`};
     h+=fh("Combien ?",stepN("montant"))+`<div class="cd"><div class="lvh"><span class="lgx">${sq?lg("",nm,"compte"):lg(isCry?"":d.ticker||d.isin,isCry?sy:d.nom,isCry?"crypto":"titre")}</span><span><small>${esc(hdn)}</small><b>${esc(sq?nm:(isCry?sy:(d.nom||d.ticker||d.isin||"")))}</b>${!sq&&d.ticker&&d.nom&&!isCry?`<small style="text-transform:none;letter-spacing:0;font-weight:600">${esc(d.ticker)}</small>`:""}</span></div>`;
-    h+=(sq?nc("mt","Montant (€)",d.mt,"0"):nc("qt","Quantité",d.qty,"0")+nc("pr","Prix unitaire (€)",d.prix,"0"))+nc("fr","Frais (€)",fr0,"0");
+    h+=(sq?nc("mt","Montant (€)",d.mt,"0"):nc("qt","Quantité",d.qty,"0")+nc("pr","Prix unitaire (€)",d.prix,"0"))+(pea?nc("fp","Frais (%)",d.fp!=null?d.fp:(ld("fpct",{})[d.env]||""),"0"):"")+nc("fr","Frais (€)",fr0,"0");
     h+=`<div class="kpd" role="group" aria-label="Pavé numérique" style="margin-top:10px">${["1","2","3","4","5","6","7","8","9",".","0","del"].map(function(k){return `<button type="button" class="kp" data-mkp="${k}" aria-label="${k==="del"?"Effacer":k}">${k==="del"?SV('<path d="M21 5H9l-6 7 6 7h12z"/><path d="M13 9.5l5 5M18 9.5l-5 5"/>'):k}</button>`}).join("")}</div>`;
     h+=`${d.frais==null&&ld(K.frais,{})[fk(d)]?`<small class="hint">Frais repris de votre dernière opération en ${esc(d.env)}.</small>`:""}<details style="margin-top:8px"${(d.type==="dividende"||d.type==="crypto_vente"||d.lv||d.reinv||d.hist||(d.dev&&d.dev!=="EUR"))?" open":""}><summary>Date et options</summary><label>Date<input id="dt" type="date" value="${esc(d.date||today())}"></label>${montantExtra(d)}</details></div><p class="tot" id="tot" aria-live="polite"></p><div class="cta"><button class="p" id="nx">Continuer</button></div>`;
   }else if(v==="confirm"){
@@ -1840,7 +1843,11 @@ function rowT(t){return '<button class="li" data-t="'+t+'" style="--k:var('+TI[t
 var I={mic:SV('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>'),shield:SV('<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>'),key:SV('<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/>'),dl:SV('<path d="M12 3v12M7 10l5 5 5-5M4 21h16"/>'),back:SV('<path d="M15 6l-6 6 6 6"/><line class="t2" x1="9" y1="12" x2="20" y2="12"/>'),home:SV('<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>'),pack:SV('<path d="M21 8l-9-5-9 5v8l9 5 9-5V8zM3 8l9 5 9-5M12 13v8"/>'),gear:SV('<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>'),search:SV('<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>'),trash:SV('<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>'),refresh:SV('<path d="M21 12a9 9 0 1 1-3-6.7M21 4v5h-5"/>'),file:SV('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/>')};
 var LOCKB=LOCK.replace('width="22" height="22"','width="34" height="34"');
 function grp(titre,l){return '<p class="gl">'+titre+'</p><div class="list">'+l.map(rowT).join("")+'</div>'}
-function majTot(){var t=$("tot");if(!t)return;var sq=SANS_QP.indexOf(S.d.type)>-1,fr=dec($("fr").value),mc=0;
+function majTot(){var t=$("tot");if(!t)return;
+  if($("fp")&&$("qt")){var on=document.querySelector("[data-na].on"),na=on?on.getAttribute("data-na"):"qt";if(na==="fr")S.d.frMan=1;else if(na==="fp")S.d.frMan=0;
+    var pc=dec($("fp").value),qa=dec($("qt").value),pp=dec($("pr").value);
+    if(!S.d.frMan&&pc&&+pc>0&&qa&&pp){$("fr").value=(Math.round(+qa*+pp*+pc)/100).toFixed(2).replace(/\.?0+$/,"")||"0"}}
+  var sq=SANS_QP.indexOf(S.d.type)>-1,fr=dec($("fr").value),mc=0;
   if(sq){var m=dec($("mt").value);mc=m?toC(m):0}else{var a=dec($("qt").value),p=dec($("pr").value);mc=(a&&p)?mulC(a,p):0}
   var f=fr?toC(fr):0;t.textContent=mc?"Montant "+eur(mc)+(f?" · frais "+eur(f):""):"Saisissez les montants pour voir le total.";
   if(!sq&&S.d.dcaMt){var a0=dec($("qt").value),p0=dec($("pr").value),m0=dec(String(S.d.dcaMt).replace(",","."));
@@ -1953,9 +1960,9 @@ function lier(o){pkBind(app);
   if($("th"))$("th").onclick=function(){sv(K.theme,{dark:"light",light:"auto",auto:"dark"}[themeMode()]);appliquerTheme();render()};
   Array.prototype.forEach.call(app.querySelectorAll("[data-th]"),function(b){b.onclick=function(){sv(K.theme,b.getAttribute("data-th"));appliquerTheme();render()}});
   Array.prototype.forEach.call(app.querySelectorAll("[data-tab]"),function(b){b.onclick=function(){go(b.getAttribute("data-tab"),{})}});
-  if(S.v==="montant"){["qt","pr","mt","fr"].forEach(function(id){if($(id))$(id).oninput=majTot});majTot()}
+  if(S.v==="montant"){["qt","pr","mt","fr","fp"].forEach(function(id){if($(id))$(id).oninput=majTot});majTot()}
   if(S.v==="montant"){Array.prototype.forEach.call(app.querySelectorAll("[data-na]"),function(r){r.onclick=function(){lireMontant();S.d.na=r.getAttribute("data-na");Array.prototype.forEach.call(app.querySelectorAll("[data-na]"),function(x){x.classList.toggle("on",x===r)})}});
-    Array.prototype.forEach.call(app.querySelectorAll("[data-mkp]"),function(b){b.onclick=function(){var d=S.d,sq=SANS_QP.indexOf(d.type)>-1,FL=sq?["mt","fr"]:["qt","pr","fr"],id=FL.indexOf(d.na)>-1?d.na:FL[0],e=$(id),k=b.getAttribute("data-mkp"),v=String(e.value||"");v=kpv(e,v,k,12);if(v===null)return;e.value=v;majTot()}})}
+    Array.prototype.forEach.call(app.querySelectorAll("[data-mkp]"),function(b){b.onclick=function(){var d=S.d,sq=SANS_QP.indexOf(d.type)>-1,FL=sq?["mt","fr"]:($("fp")?["qt","pr","fp","fr"]:["qt","pr","fr"]),id=FL.indexOf(d.na)>-1?d.na:FL[0],e=$(id),k=b.getAttribute("data-mkp"),v=String(e.value||"");v=kpv(e,v,k,12);if(v===null)return;e.value=v;majTot()}})}
   Array.prototype.forEach.call(app.querySelectorAll("[data-c]"),function(b){b.onclick=function(){var a=comptes().filter(function(c){return c.id===b.getAttribute("data-c")})[0];if(!a)return;S.d.env=a.type;S.d.cpt=a;sv(K.lastc,a.id);go(suite())}});
   if($("ncpt"))$("ncpt").onclick=function(){go("compte_new")};
   if($("addc"))$("addc").onclick=function(){go("compte_new",{fromSet:true})};
@@ -2237,7 +2244,7 @@ function lier(o){pkBind(app);
     go(S.d.pre?"montant":"compte")};
   if($("dv"))$("dv").onchange=function(){lireMontant();render()};
   if(S.v==="montant"&&$("nx"))$("nx").onclick=function(){
-    var d=S.d,sq=SANS_QP.indexOf(d.type)>-1,fr=dec($("fr").value),dt=$("dt").value;d.date=dt;d.frais=$("fr").value;d.dev=$("dv")?$("dv").value:(d.dev||"EUR");if($("dvx"))d.dvx=$("dvx").value;var dvc=d.dev;if(d.dev==="Autre"){dvc=String(d.dvx||"").trim().toUpperCase();if(!/^[A-Z]{3}$/.test(dvc)){msg="Indiquez le code de la devise en 3 lettres (par exemple SEK).";return render()}}
+    var d=S.d,sq=SANS_QP.indexOf(d.type)>-1,fr=dec($("fr").value),dt=$("dt").value;d.date=dt;d.frais=$("fr").value;if($("fp")){d.fp=$("fp").value;var fq=ld("fpct",{});fq[d.env]=d.fp;sv("fpct",fq)}d.dev=$("dv")?$("dv").value:(d.dev||"EUR");if($("dvx"))d.dvx=$("dvx").value;var dvc=d.dev;if(d.dev==="Autre"){dvc=String(d.dvx||"").trim().toUpperCase();if(!/^[A-Z]{3}$/.test(dvc)){msg="Indiquez le code de la devise en 3 lettres (par exemple SEK).";return render()}}
     if(!dt||fr===null){msg="Vérifiez la date et les frais.";return render()}
     var qty="",prix="",mc;
     if(sq){var m=dec($("mt").value);d.mt=$("mt").value;if(m===null||+m<=0){msg="Montant invalide.";return render()}mc=toC(m)}
