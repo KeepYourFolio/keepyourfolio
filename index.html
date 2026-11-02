@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_12_1_16.html
+  @file        : KYF_SHARE_beta_2_12_1_17.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.1.16
+  @version     : Beta 2.12.1.17
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -490,7 +490,11 @@ function kyfParisWall(d){
 /* Détecteur : si la politique bloque un jour quelque chose, l'alerte apparaît dans le
    panneau de warnings de KYF au lieu de passer inaperçue. */
 document.addEventListener('securitypolicyviolation', function(e){
-  try{ console.warn('[KYF CSP] Blocage : ' + e.violatedDirective + ' : ' + String(e.blockedURI).slice(0,80)); }catch(err){}
+  try{
+    // Les antivirus (Kaspersky, etc.) injectent leurs propres scripts dans la page : leurs appels bloqués par la politique de sécurité ne concernent pas KYF et ne sont pas journalisés.
+    if(/^https?:\/\/[^\/]*(kaspersky|kis\.v2\.scr)[^\/]*\//i.test(String(e.blockedURI))) return;
+    console.warn('[KYF CSP] Blocage : ' + e.violatedDirective + ' : ' + String(e.blockedURI).slice(0,80));
+  }catch(err){}
 });
 </script>
 <script>
@@ -7473,7 +7477,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.1.16</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.1.17</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -48695,7 +48699,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.1.16\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.1.17\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66124,7 +66128,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.1.16';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.1.17';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -72524,6 +72528,9 @@ function kyfAvisSnoozeRender(){
   let mine = null; try{ mine = (typeof kyfAvisGetMine === 'function') ? kyfAvisGetMine() : null; }catch(e){}
   if(mine){ box.style.display = 'none'; box.innerHTML = ''; return; }
   const t = Date.parse(sn), pending = sn === 'never' || (isFinite(t) && Date.now() < t);
+  // Un nouvel utilisateur (moins de 15 jours d'usage) ne peut pas encore donner d'avis : on ne lui propose pas de « le redemander plus tard ».
+  let anc = NaN; try{ const d0 = localStorage.getItem('kyf-oauth-first-seen') || localStorage.getItem('kyf-first-asset-date') || '', t0 = d0 ? new Date(d0).getTime() : NaN; anc = isFinite(t0) ? Math.floor((Date.now() - t0) / 86400000) : NaN; }catch(e){}
+  if(!pending && !(anc >= 15)){ box.style.display = 'none'; box.innerHTML = ''; return; }
   const txt = sn === 'never' ? 'La mise en avant « À VOUS » du menu est désactivée.'
     : pending ? 'Rappel prévu à partir du ' + new Date(t).toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' }) + '.'
     : 'Pas envie de donner votre avis maintenant ? Le menu cesse de vous le rappeler.';
@@ -75196,6 +75203,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.17 · 02/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Nouvel utilisateur : la page Avis ne propose plus « Me le redemander » avant 15 jours d'usage ; les blocages de l'antivirus (Kaspersky) ne remplissent plus le journal des warnings</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.16 · 02/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Envoi du patrimoine au téléphone par QR codes chiffrés (sans compte Google) : positions, comptes et courbe de valorisation, lus par KYF Mobile 2.4</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.15 · 02/11/2026</div>
