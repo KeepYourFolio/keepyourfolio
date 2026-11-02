@@ -454,6 +454,10 @@ html,body{overflow-x:clip;max-width:100%}main{overflow-x:clip;min-width:0;paddin
 .rgs.pcm{margin-top:6px}.rgs.pcm button{min-height:30px;font-size:.76rem!important}
 /* 3.16.1 : goutte « tirer pour actualiser » discrète, aux couleurs du thème */
 #ptr{color:var(--mut)!important}#ptr svg{opacity:.38;transform:scale(.72);transform-origin:60px 0}
+/* 3.16.7 : boutons de période plus petits et centrés, ligne de variation en deux lignes */
+.rgs{padding:3px!important;gap:3px!important;border-radius:12px!important}
+.rgs button{min-height:30px!important;font-size:.78rem!important;line-height:1!important;padding:0 6px!important;display:flex!important;align-items:center;justify-content:center;border-radius:9px!important}
+.pcd{display:flex;flex-direction:column;align-items:center;gap:2px;margin:10px 0 0;text-align:center}.pcd b{font-size:1.02rem;font-weight:800;letter-spacing:-.01em}.pcd small{font-size:.74rem;font-weight:600;color:var(--mut)}
 </style>
 </head>
 <body>
@@ -461,7 +465,7 @@ html,body{overflow-x:clip;max-width:100%}main{overflow-x:clip;min-width:0;paddin
 <script src="avf.js"></script><script src="qr.js"></script>
 <script>
 "use strict";
-var VER="3.16.6", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="3.16.7", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["actif_valeur","Valeur d’un actif"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -1678,9 +1682,9 @@ function patCurve(sel,live,rg){CV=null;var pcl="",H=ld("hist",[]);if(!Array.isAr
   if(sel!=="Tout")return"";
   if(H.length<2)return `<div class="pcv"><svg viewBox="0 0 300 110" preserveAspectRatio="none" aria-hidden="true"><path d="M0 70 L300 70" stroke="var(--line)" stroke-width="2" stroke-dasharray="4 6" fill="none"/></svg><small class="hint" style="display:block;margin:4px 0 0;text-align:center">La courbe apparaît après la liaison avec KYF PC.</small></div>`;
   var n=H.length,st=Math.max(1,Math.ceil(n/150)),P=[];for(var i=0;i<n;i+=st)P.push(H[i]);if(P[P.length-1]!==H[n-1])P.push(H[n-1]);
-  var a=H[0][1],b=H[n-1][1],up=b>=a,fd=function(t){return t.slice(8)+"/"+t.slice(5,7)+"/"+t.slice(0,4)};
+  var a=H[0][1],b=H[n-1][1],up=b>=a,fd=function(t){return t.slice(8)+"/"+t.slice(5,7)+"/"+t.slice(0,4)},fdc=function(t){return new Date(t+"T12:00:00").toLocaleDateString("fr-FR",{day:"numeric",month:"short"})};
   CV={P:P,tot:tot,up:up,key:rg+"|"+P.length+"|"+H[n-1][0]};
-  return `<div class="pcv" id="pcv" role="img" aria-label="Courbe de valorisation : glissez le doigt pour voir chaque jour"></div>${bar}<small class="hint" style="display:block;margin:6px 0 0;text-align:center">Depuis le ${fd(H[0][0])} (${tot?"espèces comprises":"hors espèces"}, touchez le montant pour changer) : <b class="${up?"up":"dn"}">${sgnE(b-a)}${a>0?" ("+sgnP((b-a)/a)+")":""}</b></small>`}
+  return `<div class="pcv" id="pcv" role="img" aria-label="Courbe de valorisation : glissez le doigt pour voir chaque jour"></div>${bar}<div class="pcd"><b class="${up?"up":"dn"}">${sgnE(b-a)}${a>0?" ("+sgnP((b-a)/a)+")":""}</b><small>Depuis le ${fdc(H[0][0])} · ${tot?"espèces comprises":"hors espèces"} ⇅</small></div>`}
 /* courbe au doigt : le passé s'allume, le futur s'éteint, lueur verte ou rouge selon le gain depuis le début de la période */
 function cvSm(Q){if(Q.length<2)return"M"+Q[0][0].toFixed(1)+" "+Q[0][1].toFixed(1);var d="M"+Q[0][0].toFixed(1)+" "+Q[0][1].toFixed(1);for(var k=0;k<Q.length-1;k++){var p0=Q[k-1]||Q[k],p1=Q[k],p2=Q[k+1],p3=Q[k+2]||p2;d+=" C"+(p1[0]+(p2[0]-p0[0])/6).toFixed(1)+" "+(p1[1]+(p2[1]-p0[1])/6).toFixed(1)+" "+(p2[0]-(p3[0]-p1[0])/6).toFixed(1)+" "+(p2[1]-(p3[1]-p1[1])/6).toFixed(1)+" "+p2[0].toFixed(1)+" "+p2[1].toFixed(1)}return d}
 function cvDraw(){var el=$("pcv");if(!el||!CV)return;var P=CV.P,n=P.length,W=el.clientWidth||358,H=el.clientHeight||176,top=36,bot=26,inset=9,mn=Infinity,mx=-Infinity;
