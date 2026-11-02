@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_12_1_20.html
+  @file        : KYF_SHARE_beta_2_12_1_21.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.1.20
+  @version     : Beta 2.12.1.21
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7477,7 +7477,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.1.20</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.1.21</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -42976,7 +42976,7 @@ function renderETFTable(lp){
   const collapsedEnvs = etfCollapsedEnvsLoad();
 
   const _favSet = new Set(kyfFavLoad().etf);
-  const _multiTi = kyfFamOn() && new Set(ETF.map(x => KYF_TITU[x.titulaire] ? x.titulaire : '')).size > 1;   // plusieurs titulaires : un repère de couleur sur chaque ligne
+  const _multiTi = kyfFamOn() && new Set(ETF.map(x => { const t = kyfFamTiOf(x); return KYF_TITU[t] ? t : ''; })).size > 1;   // plusieurs titulaires : un repère de couleur sur chaque ligne
   const _multiCto = kyfCtoComptes().length > 1;   // plusieurs CTO : le compte est rappelé sur chaque ligne CTO
   let rows = '';
   let lastEnv = null;
@@ -43050,7 +43050,7 @@ function renderETFTable(lp){
       <td style="font-weight:600;cursor:pointer" onclick="etfInlineEditTicker(${ETF.indexOf(e)}, this, ${kyfJsonAttr(e.name)}, 'name')">
         <div style="display:flex;align-items:center;gap:7px">
           ${showLogo?renderAssetLogo(e.ticker,e.name,20):''}
-          <span>${escapeHtml(e.name)}</span>${(_multiTi && KYF_TITU[e.titulaire]) ? `<span class="kyf-ti-dot kyf-env-chip" title="À qui : ${escapeHtml(KYF_TITU[e.titulaire][0])}" style="display:inline-flex;align-items:center;gap:4px;color:${KYF_TITU[e.titulaire][1]};border-color:${KYF_TITU[e.titulaire][1]}"><span style="width:6px;height:6px;border-radius:50%;background:${KYF_TITU[e.titulaire][1]}"></span>${escapeHtml(KYF_TITU[e.titulaire][0])}</span>` : ''}${(env === 'CTO' && _multiCto) ? `<span class="kyf-env-chip" title="Compte CTO">${escapeHtml(kyfCtoNom(kyfCtoCompteOf(e)))}</span>` : ((_grouped || _solo)?'':`<span class="kyf-env-chip" title="Enveloppe">${escapeHtml(({AV:'AV','PEA-PME':'PEA-PME'})[env] || envLabels[env] || env)}</span>`)}
+          <span>${escapeHtml(e.name)}</span>${(() => { const _ti = kyfFamTiOf(e); return (_multiTi && KYF_TITU[_ti]) ? `<span class="kyf-ti-dot kyf-env-chip" title="À qui : ${escapeHtml(KYF_TITU[_ti][0])}" style="display:inline-flex;align-items:center;gap:4px;color:${KYF_TITU[_ti][1]};border-color:${KYF_TITU[_ti][1]}"><span style="width:6px;height:6px;border-radius:50%;background:${KYF_TITU[_ti][1]}"></span>${escapeHtml(KYF_TITU[_ti][0])}</span>` : ''; })()}${(env === 'CTO' && _multiCto) ? `<span class="kyf-env-chip" title="Compte CTO">${escapeHtml(kyfCtoNom(kyfCtoCompteOf(e)))}</span>` : ((_grouped || _solo)?'':`<span class="kyf-env-chip" title="Enveloppe">${escapeHtml(({AV:'AV','PEA-PME':'PEA-PME'})[env] || envLabels[env] || env)}</span>`)}
         </div>
       </td>
       <td style="font-size:9px;color:var(--text3);line-height:1.6;white-space:nowrap">
@@ -48699,7 +48699,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.1.20\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.1.21\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66128,7 +66128,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.1.20';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.1.21';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -75203,6 +75203,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.21 · 02/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Positions ETF &amp; Actions : le repère de la personne (Moi, Conjoint(e)…) s'affiche maintenant aussi sur les lignes d'assurance vie / PER, selon le titulaire du contrat. Avant, seules les lignes saisies directement avaient leur pastille, et en vue « Conjoint(e) » aucune ne s'affichait (retour d'un testeur).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.20 · 02/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance vie / PER : suite du correctif « relevé » (retour d'un testeur) : les ETF importés avec l'ISIN à la place du ticker (iShares Edge MSCI World Momentum, BNP Paribas Easy…) n'étaient pas actualisés, ni par le bouton « Actualiser » du contrat ni automatiquement, car ils n'étaient pas reconnus comme fonds. Ils sont maintenant suivis par leur ISIN comme les autres fonds.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.19 · 02/11/2026</div>
