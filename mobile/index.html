@@ -349,6 +349,7 @@ html[data-rch] .fh2 .tt small{font-size:.95rem;margin-top:4px;opacity:calc(1 - v
 .sw2q:focus,.sw2q:focus-visible{outline:none!important;box-shadow:none!important;border:0!important;background:transparent!important}
 .sw2.nc{min-height:0!important;padding-top:2px!important;padding-bottom:2px!important}.sw2.nc .sw2q{min-height:44px!important}
 .cta.flow{position:static;background:none;margin:14px 0 110px}
+.fh2::before{opacity:1!important;background:linear-gradient(var(--bg,#c6d4ec) 72%,transparent)!important}
 :root{--rh:0px}
 .rch,.sp2,.ctt{display:none!important}
 </style>
@@ -357,7 +358,7 @@ html[data-rch] .fh2 .tt small{font-size:.95rem;margin-top:4px;opacity:calc(1 - v
 <main id="app"></main>
 <script>
 "use strict";
-var VER="1.20", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="1.20.1", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["actif_valeur","Valeur d’un actif"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -1405,9 +1406,10 @@ function regHead(t,sb){return bigHead(t,sb)}
 var TABS=["home","releve","paquet","reglages"];
 function frsAll(){var r=ld("frs",{});return r&&typeof r==="object"&&!Array.isArray(r)?r:{}}
 function frsT(r){if(!r||!r.m)return"";return r.m==="g"?"gratuit":r.m==="x"?eur(toC(dec(r.v)||"0")):String(r.v||"0").replace(".",",")+" %"}
-function frsPremier(d){var dt=String(d.date||today()),mo=dt.slice(0,7),cp=d.cpt;return!ld(K.ops,[]).some(function(x){return x&&x.type==="achat"&&String(x.date||"").slice(0,7)===mo&&x.id!==(d.op&&d.op.id)&&(cp?x.compte===cp.nom:x.enveloppe===d.env)})}
+function frsPremier(d){var dt=String(d.date||today()),mo=dt.slice(0,7),cp=d.cpt;return!ld(K.ops,[]).some(function(x){return x&&x.type==="achat"&&String(x.date||"").slice(0,7)===mo&&x.id!==(d.op&&d.op.id)&&(cp?(x.compte===cp.nom||(cp.kyf&&x.compte_id===cp.kyf)):(x.enveloppe===d.env||x.enveloppe===(d.env==="PEA-PME"?"PME":d.env)))})}
 function frsSide(R,sd){var r=R&&R[sd];if(!r)return null;return R.det?((r.t&&r.t.length)?r:null):(r.m?r:null)}
-function frsHas(d){var R=frsAll()[fk(d)];return!!(R&&(frsSide(R,"a")||frsSide(R,"v")||(R.p&&R.p.on&&R.p.m)||(R.f&&R.f.length)))}
+function frsRules(d){var A=frsAll(),R=A[fk(d)];if(R)return R;var e=d.env||(d.cpt&&d.cpt.type);if(!e)return null;if(A[e])return A[e];var ks=comptes().filter(function(c){return c.type===e&&A[c.id]});return ks.length===1?A[ks[0].id]:null}
+function frsHas(d){var R=frsRules(d);return!!(R&&(frsSide(R,"a")||frsSide(R,"v")||(R.p&&R.p.on&&R.p.m)||(R.f&&R.f.length)))}
 function frsEval(r,mc,det){var e=mc/100,c=0,v=+(dec(r.v)||0);
   if(det){var T=(r.t||[]).map(function(x){return{u:(x.u===""||x.u==null)?Infinity:+(dec(x.u)||0),m:x.m,v:+(dec(x.v)||0)}}).sort(function(a,b){return a.u-b.u});
     if(r.tm==="p"){var prev=0;for(var i=0;i<T.length&&e>prev;i++){var t=T[i],part=Math.min(e,t.u)-prev;if(t.m==="p")c+=part*t.v;else if(t.m==="x")c+=t.v*100;prev=t.u}}
@@ -1415,10 +1417,10 @@ function frsEval(r,mc,det){var e=mc/100,c=0,v=+(dec(r.v)||0);
   else c=r.m==="g"?0:r.m==="x"?v*100:mc*v/100;
   c=Math.round(c);var mn=Math.round(100*+(dec(r.n)||0)),mx=Math.round(100*+(dec(r.x)||0));
   if(c>0&&mn&&c<mn)c=mn;if(mx&&c>mx)c=mx;return c}
-function frsCalc(d,mc){var R=frsAll()[fk(d)];if(!R||!(d.type==="achat"||d.type==="vente"))return null;
+function frsCalc(d,mc){var R=frsRules(d);if(!R||!(d.type==="achat"||d.type==="vente"))return null;
   var sell=d.type==="vente",sd=sell?"v":"a",nm=((d.nom||"")+" "+(d.ticker||"")+" "+(d.isin||"")).toLowerCase(),rule=null,why="",det=false;
   (R.f||[]).forEach(function(f){if(!rule&&f.n&&nm.indexOf(String(f.n).toLowerCase())>-1&&f[sd]&&f[sd].m){rule=f[sd];why=f.n}});
-  if(!rule&&!sell&&R.p&&R.p.on&&R.p.m&&frsPremier(d)){rule=R.p;why="1er achat du mois"}
+  if(!rule&&!sell&&R.p&&R.p.on&&R.p.m&&frsPremier(d)){rule=R.p;why="1er achat du mois (aucun achat ce mois-ci dans l’appli)"}
   if(!rule&&frsSide(R,sd)){rule=R[sd];why=(sell?"vente":"achat")+(R.det?" (barème)":"");det=!!R.det}
   if(!rule)return null;
   var c=frsEval(rule,mc,det);
