@@ -1,7 +1,7 @@
 /* Keep Your Folio Mobile 1.19 : fonctionnement hors ligne.
    Ne met en cache que les fichiers de cette appli (même adresse). Les téléchargements vers
    d’autres sites (base publique) et tout le reste ne passent jamais par ce cache. */
-var CACHE="kyfm-3.16.21";
+var CACHE="kyfm-3.17.0";
 var FICHIERS=["./","index.html","manifest.webmanifest","icon-192.png","icon-512.png","icon-512-maskable.png","apple-touch-icon.png","icon-dark-192.png","icon-mono-512.png","jsqr.js","avf.js","qr.js"].concat(["logos/aave.png","logos/ada.png","logos/algo.png","logos/atom.png","logos/avax.png","logos/bch.png","logos/bnb.png","logos/btc.png","logos/dai.png","logos/dash.png","logos/doge.png","logos/dot.png","logos/etc.png","logos/eth.png","logos/fil.png","logos/icp.png","logos/leo.png","logos/link.png","logos/ltc.png","logos/paxg.png","logos/sol.png","logos/trx.png","logos/uni.png","logos/usdc.png","logos/usdt.png","logos/vet.png","logos/wbtc.png","logos/xlm.png","logos/xmr.png","logos/xrp.png","logos/zec.png"]);
 self.addEventListener("install",function(e){e.waitUntil(caches.open(CACHE).then(function(c){return c.addAll(FICHIERS)}).then(function(){return self.skipWaiting()}))});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(ks){return Promise.all(ks.filter(function(k){return k!==CACHE&&k!=="kyfm-lourd"}).map(function(k){return caches.delete(k)}))}).then(function(){return self.clients.claim()}))});
