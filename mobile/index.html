@@ -419,11 +419,11 @@ html,body{overflow-x:clip;max-width:100%}main{overflow-x:clip;min-width:0;paddin
 .opc .mid small{white-space:normal!important;overflow:visible!important;text-overflow:clip!important}
 /* 3.12 : menu du bas avec + central (encoche) */
 .tbc .tbi{position:relative;display:grid!important;grid-template-columns:repeat(5,1fr);align-items:end;background:none!important;border:0!important;padding:12px 6px calc(6px + env(safe-area-inset-bottom,0px))!important}
-.tbc .tbi::before{content:"";position:absolute;inset:0;z-index:0;background:var(--bg);border-top:1px solid var(--line);-webkit-mask:radial-gradient(circle 39px at 50% 4px,transparent 38px,#000 39px);mask:radial-gradient(circle 39px at 50% 4px,transparent 38px,#000 39px)}
+.tbc .tbi::before{content:"";position:absolute;inset:0;z-index:0;background:var(--bg);border-top:1px solid var(--line);-webkit-mask:radial-gradient(circle 32px at 50% 4px,transparent 31px,#000 32px);mask:radial-gradient(circle 32px at 50% 4px,transparent 31px,#000 32px)}
 .tbc .tbi button{position:relative;z-index:1}
 .tbc .tbi button.tba{min-height:44px}
-.tbc .tbi button.tba .tbic{position:absolute;left:50%;top:-34px;transform:translateX(-50%);width:62px;height:62px;border-radius:50%;background:linear-gradient(145deg,color-mix(in srgb,var(--acc) 88%,#fff),var(--accf,var(--acc)));color:var(--onacc);align-items:center;justify-content:center;box-shadow:0 8px 20px color-mix(in srgb,var(--acc) 45%,transparent)}
-.tbc .tbi button.tba .tbic svg{width:28px;height:28px;stroke-width:2.4}
+.tbc .tbi button.tba .tbic{position:absolute;left:50%;top:-28px;transform:translateX(-50%);width:52px;height:52px;border-radius:50%;background:linear-gradient(145deg,color-mix(in srgb,var(--acc) 88%,#fff),var(--accf,var(--acc)));color:var(--onacc);align-items:center;justify-content:center;box-shadow:0 8px 20px color-mix(in srgb,var(--acc) 45%,transparent)}
+.tbc .tbi button.tba .tbic svg{width:24px;height:24px;stroke-width:2.4}
 .tbc .tbi button.tba:active .tbic{transform:translateX(-50%) scale(.94)}
 </style>
 </head>
@@ -432,7 +432,7 @@ html,body{overflow-x:clip;max-width:100%}main{overflow-x:clip;min-width:0;paddin
 <script src="avf.js"></script><script src="qr.js"></script>
 <script>
 "use strict";
-var VER="3.12.1", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="3.12.2", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["actif_valeur","Valeur d’un actif"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -620,7 +620,11 @@ function pcHist(SN){var out=[];Object.keys(SN).forEach(function(k){var x=SN[k];i
   out.sort(function(a,b){return a[0]>b[0]?1:a[0]<b[0]?-1:0});
   /* Séance incomplète (ex. sans crypto alors que la veille ou le lendemain en ont) : écartée, comme sur KYF PC */
   function sub(a,b){return a.length<b.length&&a.every(function(f){return b.indexOf(f)>-1})}
-  out=out.filter(function(x,i){var p=out[i-1],n=out[i+1];return!((p&&sub(x[2],p[2]))||(n&&sub(x[2],n[2])))});
+  /* Plusieurs séances de suite incomplètes : on compare à toutes les séances des 6 jours autour (catégories présentes ailleurs) et à leur valeur */
+  var tm=out.map(function(x){return Date.parse(x[0])});
+  out=out.filter(function(x,i){var W=[];for(var j=0;j<out.length;j++)if(j!==i&&Math.abs(tm[j]-tm[i])<=6*864e5)W.push(out[j]);if(!W.length)return true;
+    var miss=["valorisation","crypto","av","immo","autres"].some(function(f){return x[2].indexOf(f)<0&&W.some(function(w){return w[2].indexOf(f)>-1&&w[0]<x[0]})&&W.some(function(w){return w[2].indexOf(f)>-1&&w[0]>x[0]})});if(!miss)return true;
+    var vs=W.filter(function(w){return!sub(w[2],x[2])}).map(function(w){return w[1]}).sort(function(a,b){return a-b}),m=vs.length?vs[Math.floor(vs.length/2)]:0;return!(m>0&&x[1]<m*.93)});
   return out.map(function(x){return[x[0],x[1]]}).slice(-1500)}
 function pcHistA(A){var out=[];if(!Array.isArray(A))return out;A.slice(0,3000).forEach(function(x){if(Array.isArray(x)&&/^\d{4}-\d{2}-\d{2}$/.test(String(x[0]))){var v=pcNum(x[1]);if(v>0&&v<1e10)out.push([String(x[0]),Math.round(v*100)/100])}});out.sort(function(a,b){return a[0]>b[0]?1:a[0]<b[0]?-1:0});return out.slice(-1500)}
 /* Transfert par QR codes depuis KYF PC (2.4) : contenu chiffré avec la phrase secrète du mobile (AES-GCM, PBKDF2 600 000).
