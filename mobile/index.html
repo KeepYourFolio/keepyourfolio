@@ -450,6 +450,8 @@ html,body{overflow-x:clip;max-width:100%}main{overflow-x:clip;min-width:0;paddin
 @media (min-width:600px){.gr b{max-width:none}}
 .th.dn,.th.dn.bt{background:color-mix(in srgb,var(--acc) 14%,transparent)!important;color:var(--acc)!important;box-shadow:none!important;animation:none!important;width:40px;height:40px;min-height:40px;top:-2px}
 .th.dn svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round}
+/* 3.16 : choix hors espèces / espèces comprises sur la courbe */
+.rgs.pcm{margin-top:6px}.rgs.pcm button{min-height:30px;font-size:.76rem!important}
 </style>
 </head>
 <body>
@@ -457,7 +459,7 @@ html,body{overflow-x:clip;max-width:100%}main{overflow-x:clip;min-width:0;paddin
 <script src="avf.js"></script><script src="qr.js"></script>
 <script>
 "use strict";
-var VER="3.15.2", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="3.16", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["actif_valeur","Valeur d’un actif"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -645,7 +647,7 @@ function pcPos(D,C){
   /* Stablecoins (USDC, USDT…) : valeur en € enregistrée sur KYF PC, comptée dans le compte Crypto comme sur le PC */
   if(cr&&Array.isArray(cr.stables))cr.stables.forEach(function(x){if(!x||typeof x!=="object")return;var v=pcNum(x.valeur,1e10);if(v>0)add("crypto",{nom:x.nom||x.symbol||"Stablecoin",qty:1,pru:Math.round(v*100)/100,val:Math.round(v*100)/100,st:1,sy:String(x.symbol||x.nom||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,12),lq:pcNum(x.qte,1e12)},1)});
   return out}
-function pcHist(SN){var out=[];var lc=null;Object.keys(SN).sort().forEach(function(k){var x=SN[k];if(x&&typeof x==="object"&&typeof x.cash==="number"&&isFinite(x.cash))lc={d:k.slice(-10),c:Math.round(x.cash*100)/100}});if(lc)sv("hcash",lc);Object.keys(SN).forEach(function(k){var x=SN[k];if(!x||typeof x!=="object")return;var d=k.slice(-10),v=pcNum(x.valorisation)+pcNum(x.crypto)+pcNum(x.av)+pcNum(x.stables);if(v>0&&v<1e10)out.push([d,Math.round(v*100)/100,["valorisation","crypto","av","immo","autres"].filter(function(f){return pcNum(x[f])>0})])});
+function pcHist(SN){var out=[];var lc=null,cm={};Object.keys(SN).sort().forEach(function(k){var x=SN[k];if(x&&typeof x==="object"&&typeof x.cash==="number"&&isFinite(x.cash)){lc={d:k.slice(-10),c:Math.round(x.cash*100)/100};cm[k.slice(-10)]=lc.c}});if(lc)sv("hcash",lc);Object.keys(SN).forEach(function(k){var x=SN[k];if(!x||typeof x!=="object")return;var d=k.slice(-10),v=pcNum(x.valorisation)+pcNum(x.crypto)+pcNum(x.av)+pcNum(x.stables);if(v>0&&v<1e10)out.push([d,Math.round(v*100)/100,["valorisation","crypto","av","immo","autres"].filter(function(f){return pcNum(x[f])>0})])});
   out.sort(function(a,b){return a[0]>b[0]?1:a[0]<b[0]?-1:0});
   /* Séance incomplète (ex. sans crypto alors que la veille ou le lendemain en ont) : écartée, comme sur KYF PC */
   function sub(a,b){return a.length<b.length&&a.every(function(f){return b.indexOf(f)>-1})}
@@ -654,6 +656,7 @@ function pcHist(SN){var out=[];var lc=null;Object.keys(SN).sort().forEach(functi
   out=out.filter(function(x,i){var W=[];for(var j=0;j<out.length;j++)if(j!==i&&Math.abs(tm[j]-tm[i])<=6*864e5)W.push(out[j]);if(!W.length)return true;
     var miss=["valorisation","crypto","av","immo","autres"].some(function(f){return x[2].indexOf(f)<0&&W.some(function(w){return w[2].indexOf(f)>-1&&w[0]<x[0]})&&W.some(function(w){return w[2].indexOf(f)>-1&&w[0]>x[0]})});if(!miss)return true;
     var vs=W.filter(function(w){return!sub(w[2],x[2])}).map(function(w){return w[1]}).sort(function(a,b){return a-b}),m=vs.length?vs[Math.floor(vs.length/2)]:0;return!(m>0&&x[1]<m*.93)});
+  var cs2={};out.forEach(function(x){if(typeof cm[x[0]]==="number")cs2[x[0]]=cm[x[0]]});sv("hcs",cs2);
   return out.map(function(x){return[x[0],x[1]]}).slice(-1500)}
 function pcHistA(A){var out=[];if(!Array.isArray(A))return out;A.slice(0,3000).forEach(function(x){if(Array.isArray(x)&&/^\d{4}-\d{2}-\d{2}$/.test(String(x[0]))){var v=pcNum(x[1]);if(v>0&&v<1e10)out.push([String(x[0]),Math.round(v*100)/100])}});out.sort(function(a,b){return a[0]>b[0]?1:a[0]<b[0]?-1:0});return out.slice(-1500)}
 /* Transfert par QR codes depuis KYF PC (2.4) : contenu chiffré avec la phrase secrète du mobile (AES-GCM, PBKDF2 600 000).
@@ -1661,18 +1664,20 @@ function patLines(LS,tV){var R=LS.map(function(x){var d=x.ok?x.val-x.prev:null,p
   return h+`<div class="pbl"><div class="pbh"><b>Mes lignes</b><small>${R.length} ligne${R.length>1?"s":""}</small></div>${R.map(function(r){var m=r.x.m,c=r.d==null?"":r.d>=0?"up":"dn";return `<div class="pbr"><i class="pbk ${c||"nu"}"></i><span class="pbn"><b>${esc(m.nom)}</b><small>${eur(Math.round(r.x.val*100))} · ${tV>0?(r.x.val/tV*100).toFixed(r.x.val/tV<.1?1:0).replace(".",","):0} % du compte</small></span><span class="pbv">${r.d==null?`<small>${m.nom==="Espèces"?"espèces":m.fix?"valeur du relevé":"cours indisponible"}</small>`:`<b class="${c}">${sgnE(r.d)}</b><small class="${c}">${r.pc==null?"":sgnP(r.pc)}</small>`}</span></div>`}).join("")}</div>`}
 function histSpike(H){var out=[];for(var i=0;i<H.length;i++){if(i>0&&i<H.length-1){var a=out[out.length-1][1],b=H[i+1][1],v=H[i][1],m=(a+b)/2;if(m>0&&Math.abs(a-b)/m<.03&&Math.abs(v-m)/m>.03)continue}out.push(H[i])}return out}
 function patCurve(sel,live,rg){CV=null;var pcl="",H=ld("hist",[]);if(!Array.isArray(H))H=[];H=H.filter(function(x){return Array.isArray(x)&&/^\d{4}-\d{2}-\d{2}$/.test(x[0])&&isFinite(x[1])});
-  if(sel==="Tout"&&live&&live.v>0){var own=ld("hl",{});if(!own||typeof own!=="object"||Array.isArray(own))own={};var td=today(),lv=Math.round(live.v*100)/100;
-    if(live.ok&&own[td]!==lv){own[td]=lv;var ks=Object.keys(own).sort().slice(-400),o2={};ks.forEach(function(k){o2[k]=own[k]});own=o2;sv("hl",own)}
-    var last=H.length?H[H.length-1][0]:"";pcl=last;H=H.slice();Object.keys(own).sort().forEach(function(k){if(k>last&&k<td&&isFinite(own[k]))H.push([k,own[k]])});H.push([td,lv])}
+  var cs=ld("hcs",{}),tot=ld("pcm","hors")==="tot"&&H.some(function(x){return typeof cs[x[0]]==="number"});
+  if(tot)H=H.filter(function(x){return typeof cs[x[0]]==="number"}).map(function(x){return[x[0],Math.round((x[1]+cs[x[0]])*100)/100]});
+  if(sel==="Tout"&&live&&live.v>0){var own=ld("hl",{});if(!own||typeof own!=="object"||Array.isArray(own))own={};var td=today(),lv=Math.round((tot&&live.vt>0?live.vt:live.v)*100)/100;
+    if(!tot&&live.ok&&own[td]!==lv){own[td]=lv;var ks=Object.keys(own).sort().slice(-400),o2={};ks.forEach(function(k){o2[k]=own[k]});own=o2;sv("hl",own)}
+    var last=H.length?H[H.length-1][0]:"";pcl=last;H=H.slice();if(!tot)Object.keys(own).sort().forEach(function(k){if(k>last&&k<td&&isFinite(own[k]))H.push([k,own[k]])});H.push([td,lv])}
   H=histSpike(histClean(H));
   var DY={"1M":31,"3M":93,"1A":366},tdy=today();if(DY[rg]&&H.length){var c=new Date(Date.now()-DY[rg]*864e5),cs=c.getFullYear()+"-"+p2(c.getMonth()+1)+"-"+p2(c.getDate());H=H.filter(function(x){return x[0]>=cs})}
-  var RG=["1M","3M","1A","Tout"],bar=`<div class="rgs" role="group" aria-label="Période">${RG.map(function(r){return `<button type="button" class="${r===(rg||"Tout")?"on":""}" data-rg="${r}">${r}</button>`}).join("")}</div>`;
+  var RG=["1M","3M","1A","Tout"],bar=`<div class="rgs" role="group" aria-label="Période">${RG.map(function(r){return `<button type="button" class="${r===(rg||"Tout")?"on":""}" data-rg="${r}">${r}</button>`}).join("")}</div><div class="rgs pcm" role="group" aria-label="Espèces">${[["hors","Hors espèces"],["tot","Espèces comprises"]].map(function(m){return `<button type="button" class="${(tot?"tot":"hors")===m[0]?"on":""}" data-pm="${m[0]}">${m[1]}</button>`}).join("")}</div>`;
   if(sel!=="Tout")return"";
   if(H.length<2)return `<div class="pcv"><svg viewBox="0 0 300 110" preserveAspectRatio="none" aria-hidden="true"><path d="M0 70 L300 70" stroke="var(--line)" stroke-width="2" stroke-dasharray="4 6" fill="none"/></svg><small class="hint" style="display:block;margin:4px 0 0;text-align:center">La courbe apparaît après la liaison avec KYF PC.</small></div>`;
   var n=H.length,st=Math.max(1,Math.ceil(n/150)),P=[];for(var i=0;i<n;i+=st)P.push(H[i]);if(P[P.length-1]!==H[n-1])P.push(H[n-1]);
   var a=H[0][1],b=H[n-1][1],up=b>=a,fd=function(t){return t.slice(8)+"/"+t.slice(5,7)+"/"+t.slice(0,4)};
-  CV={P:P,up:up,key:rg+"|"+P.length+"|"+H[n-1][0]};
-  return `<div class="pcv" id="pcv" role="img" aria-label="Courbe de valorisation : glissez le doigt pour voir chaque jour"></div>${bar}<small class="hint" style="display:block;margin:6px 0 0;text-align:center">Depuis le ${fd(H[0][0])} (hors espèces) : <b class="${up?"up":"dn"}">${sgnE(b-a)}${a>0?" ("+sgnP((b-a)/a)+")":""}</b></small>`}
+  CV={P:P,tot:tot,up:up,key:rg+"|"+P.length+"|"+H[n-1][0]};
+  return `<div class="pcv" id="pcv" role="img" aria-label="Courbe de valorisation : glissez le doigt pour voir chaque jour"></div>${bar}<small class="hint" style="display:block;margin:6px 0 0;text-align:center">Depuis le ${fd(H[0][0])} (${tot?"espèces comprises":"hors espèces"}) : <b class="${up?"up":"dn"}">${sgnE(b-a)}${a>0?" ("+sgnP((b-a)/a)+")":""}</b></small>`}
 /* courbe au doigt : le passé s'allume, le futur s'éteint, lueur verte ou rouge selon le gain depuis le début de la période */
 function cvSm(Q){if(Q.length<2)return"M"+Q[0][0].toFixed(1)+" "+Q[0][1].toFixed(1);var d="M"+Q[0][0].toFixed(1)+" "+Q[0][1].toFixed(1);for(var k=0;k<Q.length-1;k++){var p0=Q[k-1]||Q[k],p1=Q[k],p2=Q[k+1],p3=Q[k+2]||p2;d+=" C"+(p1[0]+(p2[0]-p0[0])/6).toFixed(1)+" "+(p1[1]+(p2[1]-p0[1])/6).toFixed(1)+" "+(p2[0]-(p3[0]-p1[0])/6).toFixed(1)+" "+(p2[1]-(p3[1]-p1[1])/6).toFixed(1)+" "+p2[0].toFixed(1)+" "+p2[1].toFixed(1)}return d}
 function cvDraw(){var el=$("pcv");if(!el||!CV)return;var P=CV.P,n=P.length,W=el.clientWidth||358,H=el.clientHeight||176,top=36,bot=26,inset=9,mn=Infinity,mx=-Infinity;
@@ -1693,7 +1698,7 @@ function cvDraw(){var el=$("pcv");if(!el||!CV)return;var P=CV.P,n=P.length,W=el.
   set(n-1,true);
   function hero_(i){var N=document.querySelector(".p3n"),D=document.querySelector(".p3d");if(!N)return;if(!hero)hero={n:N.innerHTML,d:D?D.innerHTML:"",c:D?D.className:""};
     var v=P[i][1],e=eurP(Math.round(v*100)),df=v-P[0][1];N.innerHTML="<span>"+e.i+"</span><small>"+e.c+" €</small>";
-    if(D){D.className="p3d sol "+(df>=0?"up":"dn");D.innerHTML=(df>=0?"▲":"▼")+" "+sgnE(df)+(P[0][1]>0?" · "+sgnP(df/P[0][1]):"")+" <em>depuis le "+fdt(P[0][0])+" · hors espèces</em>"}}
+    if(D){D.className="p3d sol "+(df>=0?"up":"dn");D.innerHTML=(df>=0?"▲":"▼")+" "+sgnE(df)+(P[0][1]>0?" · "+sgnP(df/P[0][1]):"")+" <em>depuis le "+fdt(P[0][0])+(CV.tot?"":" · hors espèces")+"</em>"}}
   function back(){touch=false;last=-1;if(hero){var N=document.querySelector(".p3n"),D=document.querySelector(".p3d");if(N)N.innerHTML=hero.n;if(D){D.innerHTML=hero.d;D.className=hero.c}hero=null}set(n-1,true);$c.style.opacity=0}
   function mv(ev){var r=el.getBoundingClientRect(),i=Math.max(0,Math.min(n-1,Math.round(((ev.clientX-r.left-inset)/(r.width-2*inset))*(n-1))));if(i===last)return;last=i;touch=true;
     set(i);hero_(i);$c.textContent=fdt(P[i][0],1);var cx=Math.max(48,Math.min(W-48,XY[i][0]));$c.style.left=cx+"px";$c.style.opacity=1;if(navigator.vibrate)try{navigator.vibrate(4)}catch(_){}}
@@ -1787,7 +1792,7 @@ function render(){autoPlan();if(S.v==="paquet")evStatuts();if(S.v==="pos_e"&&$("
     h+=msgHtml()+(S.pnote?`<p class="msg ${S.pnote.ok?"ok":"err"}" role="status">${esc(S.pnote.t)}</p>`:"");
     h+=`<div class="p3">${sel!=="Tout"&&LS.length?`<div class="pwa ${dD>=0?"up":"dn"}" aria-hidden="true"></div>`:""}${sel!=="Tout"?`<button type="button" class="bk pbk2" id="pbk" aria-label="Retour au patrimoine total">${I.back}</button>`:""}<button type="button" class="p3s" id="psel" aria-haspopup="dialog"><span>${sel==="Tout"?"Tout le patrimoine":esc(sel)}</span>${SV('<path d="M6 9l6 6 6-6"/>')}</button>`;
     h+=LS.length?`<div class="p3n"><span>${pp.i}</span><small>${pp.c} €</small></div><div class="p3d ${dD>=0?"up":"dn"}">${dD>=0?"▲":"▼"} ${sgnE(dD)}${tP>0?" · "+sgnP(dD/tP):""} <em>aujourd’hui</em></div><div class="p3g ${gG>=0?"up":"dn"}">${sgnE(gG)}${tC>0?" ("+sgnP(gG/tC)+")":""} depuis l’achat</div>`:`<div class="p3n"><span>—</span></div><div class="p3g">${P3.all.length?"Aucune position sur ce compte":"Aucune position pour l’instant"}</div>`;
-    h+=patCurve(sel,{v:(function(){var L=P3.all.filter(function(x){return x.m.env!=="Livret"}),t=L.reduce(function(a,x){return a+x.val},0),e=L.filter(function(x){return x.m.nom==="Espèces"}).reduce(function(a,x){return a+x.val},0),hc=ld("hcash",{}).c;return t-(hc>0?hc:e)})(),ok:P3.all.every(function(x){return x.ok||!x.m.ticker})},S.prg||"Tout");
+    h+=patCurve(sel,{vt:P3.all.filter(function(x){return x.m.env!=="Livret"}).reduce(function(a,x){return a+x.val},0),v:(function(){var L=P3.all.filter(function(x){return x.m.env!=="Livret"}),t=L.reduce(function(a,x){return a+x.val},0),e=L.filter(function(x){return x.m.nom==="Espèces"}).reduce(function(a,x){return a+x.val},0),hc=ld("hcash",{}).c;return t-(hc>0?hc:e)})(),ok:P3.all.every(function(x){return x.ok||!x.m.ticker})},S.prg||"Tout");
     var GI=P3.GI,GT=P3.GT;
     if(sel!=="Tout"&&LS.length)h+=patLines(LS,tV);else
     if(sel==="Tout"&&LS.length&&GT>0)h+=patRing(GI,GT);else
@@ -2781,6 +2786,7 @@ function lier(o){pkBind(app);
   if($("pbk"))$("pbk").onclick=function(){S.pa="Tout";S.psh=false;render()};
   if($("pshx"))$("pshx").onclick=function(){S.psh=false;render()};if($("pshd"))$("pshd").onclick=function(){S.psh=false;render()};
   Array.prototype.forEach.call(app.querySelectorAll("[data-psel]"),function(b){b.onclick=function(){S.pa=b.getAttribute("data-psel");S.psh=false;render()}});
+  Array.prototype.forEach.call(app.querySelectorAll("[data-pm]"),function(b){b.onclick=function(){sv("pcm",b.getAttribute("data-pm"));render()}});
   Array.prototype.forEach.call(app.querySelectorAll("[data-rg]"),function(b){b.onclick=function(){S.prg=b.getAttribute("data-rg");render()}});
   Array.prototype.forEach.call(app.querySelectorAll("[data-ac]"),function(b){b.onclick=function(e){if(e&&e.stopPropagation)e.stopPropagation();S.cfrom=S.v==="cpt"?"cpt":"pat";go("cptd",{ac:b.getAttribute("data-ac")})}});
   if($("pdn")&&!S.psh)$("pdn").onclick=function(){S.cfrom="pat";var P=patSel();if(P.sel!=="Tout")go("cptd",{ac:P.sel});else go("cpt",{})};
