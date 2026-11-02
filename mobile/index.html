@@ -421,7 +421,7 @@ html,body{overflow-x:clip;max-width:100%}main{overflow-x:clip;min-width:0;paddin
 <script src="avf.js"></script><script src="qr.js"></script>
 <script>
 "use strict";
-var VER="3.8.1", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="3.9", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["actif_valeur","Valeur d’un actif"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -886,7 +886,7 @@ function lireAct(){var d=S.d,a=d.act||(d.act={incl:true});if($("an")){a.nom=$("a
 function fmtJour(d){var t=today();if(d===t)return"Aujourd’hui";var y=new Date();y.setDate(y.getDate()-1);var ys=y.getFullYear()+"-"+p2(y.getMonth()+1)+"-"+p2(y.getDate());return d===ys?"Hier":String(d).split("-").reverse().join("/")}
 function todo(o){return o.filter(function(x){return!x.st}).length}
 function inTab(x,t){return t==="todo"?!x.st:t==="sent"?x.st==="envoye":!!x.st&&x.st!=="envoye"}
-var STL={envoye:"envoyée",valide:"enregistrée dans KYF",ignore:"ignorée",refuse:"refusée par KYF",doublon:"déjà présente dans KYF"};
+var STL={envoye:"envoyée",file:"à valider sur KYF PC",valide:"intégrée dans KYF PC",ignore:"ignorée",refuse:"refusée par KYF",doublon:"déjà présente dans KYF"};
 function sentAt(x){var t=x.sent;if(!t){var l=ld(K.sent,[]);for(var i=0;i<l.length;i++)if(l[i].ids&&l[i].ids.indexOf(x.id)>-1){t=l[i].date;break}}if(!t)return"";var d=new Date(t);if(isNaN(d))return"";var n=new Date(),hh=d.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});return d.toDateString()===n.toDateString()?"à "+hh:"le "+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+" à "+hh}
 function marquerEnvoi(){marquerEnvoiM(S.fileMeta)}
 function marquerEnvoiM(m,auto){if(!m)return;var o=ld(K.ops,[]);o.forEach(function(x){if(m.ids.indexOf(x.id)>-1&&!x.st){x.st="envoye";x.sent=new Date().toISOString()}});sv(K.ops,o);var l=ld(K.sent,[]);l.unshift({paquet:m.paquet,ids:m.ids,n:m.n,total_c:m.total_c,date:m.date});sv(K.sent,l.slice(0,50));if(auto){render();return}S.file=null;S.fileMeta=null;S.pqt="sent";S.pqn=20;msg="Fichier envoyé. Les opérations attendent le reçu de KYF."+(m.reste>0?" Il reste "+m.reste+" opération(s) à envoyer dans un prochain paquet.":"");msgOk=true;render()}
@@ -1653,7 +1653,7 @@ var QZ=[["Où sont stockées vos données KYF Mobile ?", ["Sur un serveur KYF", 
 var DON={eth:{label:"Ethereum",addr:"0x7f2AefD7dAb80dA03388B2016D2E0BEB9dFB8c56"},sol:{label:"Solana",addr:"ETV2nUcNrwdTwanTaCDgQ9TapTDxjk25k9i4yjTB2LKm"}},ICO_HEART='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M12 21s-7-4.6-9.3-9.2C1.2 8.6 3 5 6.5 5c2 0 3.5 1.1 5.5 3.2C14 6.1 15.5 5 17.5 5 21 5 22.800 8.600 21.300 11.800 19 16.400 12 21 12 21z"/></svg>',navT=0,NAVV=["pat","cpt","cptd","home","paquet","reglages","reg_sec","reg_aff","reg_ges","reg_src","reg_app","reg_don","reg_cor","reg_prof","reg_bak","voix","doc","ex","ops","cpre","titre","compte","compte_new","contact","phrase_chg","arb","avp","actif","cr","montant","confirm"];
 function navSave(){if(!STATE||!KEY)return;var v=S.v;if(NAVV.indexOf(v)<0)return;var j;try{j=JSON.stringify({v:v,d:S.d||{},pa:S.pa||"Tout",prg:S.prg||"Tout"})}catch(e){return}if(j.length>20000||STATE.nav===j)return;STATE.nav=j;persist()}
 function navRestore(){if(!STATE||!STATE.nav)return;try{var n=JSON.parse(STATE.nav);if(n&&NAVV.indexOf(n.v)>-1){S.v=n.v;S.d=(n.d&&typeof n.d==="object")?n.d:{};if(typeof n.pa==="string")S.pa=n.pa.slice(0,120);if(/^(1M|3M|1A|Tout)$/.test(n.prg))S.prg=n.prg}}catch(e){}}
-function render(){autoPlan();if(S.v==="pos_e"&&$("pn"))lirePe();
+function render(){autoPlan();if(S.v==="paquet")evStatuts();if(S.v==="pos_e"&&$("pn"))lirePe();
   var o=ld(K.ops,[]),v=S.v;tabsSet();if(STATE&&patOn()&&v==="home"&&!S._seen){S._seen=1;S.v=v="pat"}
   if(STATE&&PART){var pp=PART;PART=null;if(Date.now()-pp.ts<300000){S.dt=pp.t||"";S.dtn="";S.dfrom="home";S.v=v="doc";msg="Texte reçu par partage : vérifiez-le avant d’envoyer.";msgOk=false;if(!pp.t&&pp.f&&pp.f.length){S.dr=null;setTimeout(function(){lancerOcr(pp.f)},0)}else analyserDoc()}}
   if(!STATE&&v!=="phrase"&&v!=="unlock")v=localStorage.getItem(KV)?"unlock":"phrase";
@@ -1782,11 +1782,11 @@ function render(){autoPlan();if(S.v==="pos_e"&&$("pn"))lirePe();
     h+=`<small class="hint">PDF : Boursorama, Trade Republic, Fortuneo, Bourse Direct, Saxo, DEGIRO, Revolut, HelloBank, N26, Interactive Brokers, Suravenir. Capture : la première fois, le moteur se télécharge (environ 10 Mo), ensuite il marche hors ligne.</small>`;
   }else if(v==="paquet"&&autoOn()){
     var AL=o.map(function(x,i){return{x:x,i:i}}).sort(function(a,b){var da=a.x.sent||a.x.date,db=b.x.sent||b.x.date;return da<db?1:da>db?-1:b.i-a.i}),nT=todo(o),lim2=S.pqn||30,sh2=AL.slice(0,lim2),cur2=null,op2=false,cn2={};AL.forEach(function(q){cn2[q.x.date]=(cn2[q.x.date]||0)+1});
-    h+=`<h1 class="h1t">Opérations</h1><div class="cd" style="margin-top:8px"><small class="hint" style="margin:0">${S.aut?esc(S.aut):nT?"Envoi automatique vers Google en cours ou en attente de réseau.":"Tout est synchronisé avec Google. KYF PC intègre les opérations à son lancement."}</small>${nT?`<button class="p" id="aunow" style="margin-top:8px">Envoyer maintenant (${nT})</button>`:""}</div>`;
+    h+=`<h1 class="h1t">Opérations</h1><div class="cd" style="margin-top:8px"><small class="hint" style="margin:0">${S.aut?esc(S.aut):nT?"Envoi automatique vers Google en cours ou en attente de réseau.":"Tout est synchronisé avec Google. KYF PC applique les opérations à son lancement."}</small>${nT?`<button class="p" id="aunow" style="margin-top:8px">Envoyer maintenant (${nT})</button>`:""}</div>`;
     if(S.undo)h+=`<div class="msg ok" style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span>Opération supprimée</span><button class="l" id="undo" style="min-height:36px;color:inherit;font-weight:700;width:auto">Annuler</button></div>`;
     if(!AL.length)h+=`<div class="hero"><p>Aucune opération pour le moment. Ouvrez un compte pour en ajouter : elles partent seules vers Google.</p><button class="p" id="pqnew" style="width:100%;text-align:center">Ouvrir mes comptes</button></div>`;
     sh2.forEach(function(r){var x=r.x;if(x.date!==cur2){if(op2)h+="</div>";cur2=x.date;op2=true;h+=`<p class="gl">${esc(fmtJour(x.date))} · ${cn2[x.date]}</p><div class="list">`}
-      h+=`<div class="opc" style="--k:var(${TI[x.type][1]})"><span class="ic${isScpi(x.type)&&x.nom||AVEC_TITRE.indexOf(x.type)>-1&&(x.ticker||x.nom)?" lgw":""}">${isScpi(x.type)&&x.nom?lg("",x.nom,"scpi"):AVEC_TITRE.indexOf(x.type)>-1&&(x.ticker||x.nom)?lg(x.ticker||x.isin,x.nom,/^crypto/.test(x.type)?"crypto":"titre"):TI[x.type][0]}</span><div class="mid"><b>${libType(x.type)} · ${esc(x.compte||x.enveloppe)}</b><small>${esc(sousTitre(x))}${x.titulaire?" · "+esc(nomFam(x.titulaire)):""}${x.st==="envoye"?" · envoyée "+sentAt(x):x.st&&STL[x.st]?" · "+STL[x.st]:" · en attente d’envoi"}</small></div><span class="amtv">${amtOp(x)}</span>${!x.st||x.st==="envoye"?`<button class="x" data-opm="${r.i}" aria-label="Modifier">${SV('<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>')}</button>`:""}${x.st?"":`<button class="x" data-del="${r.i}" aria-label="Supprimer">${I.trash}</button>`}</div>`});
+      h+=`<div class="opc" style="--k:var(${TI[x.type][1]})"><span class="ic${isScpi(x.type)&&x.nom||AVEC_TITRE.indexOf(x.type)>-1&&(x.ticker||x.nom)?" lgw":""}">${isScpi(x.type)&&x.nom?lg("",x.nom,"scpi"):AVEC_TITRE.indexOf(x.type)>-1&&(x.ticker||x.nom)?lg(x.ticker||x.isin,x.nom,/^crypto/.test(x.type)?"crypto":"titre"):TI[x.type][0]}</span><div class="mid"><b>${libType(x.type)} · ${esc(x.compte||x.enveloppe)}</b><small>${esc(sousTitre(x))}${x.titulaire?" · "+esc(nomFam(x.titulaire)):""}${x.st==="envoye"?" · envoyée "+sentAt(x):x.st&&STL[x.st]?" · "+STL[x.st]:" · en attente d’envoi"}</small></div><span class="amtv">${amtOp(x)}</span>${true?`<button class="x" data-opm="${r.i}" aria-label="Modifier">${SV('<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>')}</button>`:""}${x.st==="refuse"||x.st==="doublon"?"":`<button class="x" data-del="${r.i}" aria-label="Supprimer">${I.trash}</button>`}</div>`});
     if(op2)h+="</div>";
     if(AL.length>lim2)h+=`<button id="more">Afficher plus · ${AL.length-lim2} restante${AL.length-lim2>1?"s":""}</button>`;
     h+=`<div class="cd" style="margin-top:14px"><small class="hint" style="margin:0">Besoin du mode manuel (fichier chiffré, QR codes, reçu) ?</small><button class="l" id="autt" style="min-height:36px;width:auto;margin-top:6px">Désactiver l’envoi automatique</button></div>`;
@@ -2319,7 +2319,7 @@ function lier(o){pkBind(app);
   if($("chg"))$("chg").onclick=function(){S.d.fromOps=true;go("cpre")};
   Array.prototype.forEach.call(app.querySelectorAll("[data-e]"),function(b){b.onclick=function(){S.d.env=b.getAttribute("data-e");S.d.cpt=null;sv(K.lastc,"");go(suite())}});
   Array.prototype.forEach.call(app.querySelectorAll("[data-m]"),function(b){b.onclick=function(){var x=S.m[+b.getAttribute("data-m")];S.d.ticker=x.ticker||"";S.d.isin=x.isin||"";S.d.nom=x.nom||"";S.d.inconnu=false;S.d.q=x.ticker||x.isin;go(S.d.pre?"montant":"compte")}});
-  Array.prototype.forEach.call(app.querySelectorAll("[data-del]"),function(b){b.onclick=function(){var l=ld(K.ops,[]);var idx=+b.getAttribute("data-del");S.undo={x:l[idx],i:idx};trashAdd([l[idx]]);l.splice(idx,1);sv(K.ops,l);S.file=null;render()}});
+  Array.prototype.forEach.call(app.querySelectorAll("[data-del]"),function(b){b.onclick=function(){var l=ld(K.ops,[]);var idx=+b.getAttribute("data-del");S.undo={x:l[idx],i:idx};if(l[idx].st)evtQ("del",l[idx]);trashAdd([l[idx]]);l.splice(idx,1);sv(K.ops,l);S.file=null;render()}});
   Array.prototype.forEach.call(app.querySelectorAll("[data-pq]"),function(b){b.onclick=function(){sv(K.pour,b.getAttribute("data-pq"));render()}});
   if($("th"))$("th").onclick=function(){sv(K.theme,{dark:"light",light:"auto",auto:"dark"}[themeMode()]);appliquerTheme();render()};
   Array.prototype.forEach.call(app.querySelectorAll("[data-th]"),function(b){b.onclick=function(){sv(K.theme,b.getAttribute("data-th"));appliquerTheme();render()}});
@@ -2550,7 +2550,7 @@ function lier(o){pkBind(app);
     var op={id:"O-"+stamp()+"-"+hms()+"-"+rnd(8),date:a.vd||today(),type:d.type,enveloppe:"Autres actifs",ticker:"",isin:"",nom:nom.slice(0,80),qty:"",prix:"",frais_c:0,montant_c:toC(val),ticker_inconnu:false,titulaire:pour(),compte:"",compte_id:"",note:nv?(a.note||"").trim().slice(0,200):""};
     if(nv){op.actif_type=a.type||"vehicule";op.achat_c=ach?toC(ach):0;op.achat_date=a.ad||"";op.inclus=a.incl!==false}
     d.op=op;go("confirm")};
-  if($("undo"))$("undo").onclick=function(){var l=ld(K.ops,[]);if(S.undo){var tr0=ld("trash",[]);if(tr0[0]&&tr0[0].x===S.undo.x||tr0[0]&&tr0[0].x&&S.undo.x&&tr0[0].x.id===S.undo.x.id){tr0.shift();sv("trash",tr0)}l.splice(Math.min(S.undo.i,l.length),0,S.undo.x);sv(K.ops,l);S.undo=null;S.file=null}render()};
+  if($("undo"))$("undo").onclick=function(){var l=ld(K.ops,[]);if(S.undo){var tr0=ld("trash",[]);if(tr0[0]&&tr0[0].x===S.undo.x||tr0[0]&&tr0[0].x&&S.undo.x&&tr0[0].x.id===S.undo.x.id){tr0.shift();sv("trash",tr0)}delete S.undo.x.st;delete S.undo.x.sent;l.splice(Math.min(S.undo.i,l.length),0,S.undo.x);sv(K.ops,l);S.undo=null;S.file=null}render()};
   if($("more"))$("more").onclick=function(){S.pqn=(S.pqn||20)+20;render()};
   if($("clr"))$("clr").onclick=function(){var t=S.pqt||"todo";kAsk(t==="todo"?"Vider les opérations à envoyer ?":"Effacer l’historique ?",t==="todo"?"Elles iront dans la corbeille pendant 30 jours.":"Les opérations enregistrées seront effacées de l’historique.",t==="todo"?"Vider":"Effacer",function(){if(t==="todo")trashAdd(ld(K.ops,[]).filter(function(x){return inTab(x,t)}));sv(K.ops,ld(K.ops,[]).filter(function(x){return!inTab(x,t)}));S.file=null;S.fileMeta=null;S.undo=null;S.pqn=20;S.pqq="";render()},1)};
   if($("rst"))$("rst").onclick=function(){kAsk("Remettre dans « À envoyer » ?","À utiliser si KYF n’a pas reçu le fichier.","Remettre",function(){var o=ld(K.ops,[]);o.forEach(function(x){if(x.st==="envoye")delete x.st});sv(K.ops,o);S.pqt="todo";S.pqn=20;render()})};
@@ -2735,25 +2735,41 @@ async function envoyer(){
   }catch(e){msg="Chiffrement impossible: "+(e.message||"erreur inconnue")}
   render();
 }
-/* Envoi automatique (3.6) : dès qu'une opération est validée, le paquet chiffré part dans le classeur Google ; KYF PC l'intègre au lancement. */
-var AEB=false,AET=0,AEF=0;
+/* Envoi automatique vers Google (3.9) : chaque opération validée devient une ligne EN CLAIR dans l'onglet KYF_Mobile_Ops du classeur (comme les positions). KYF PC les lit à son lancement et les applique. */
+var G_OPS="KYF_Mobile_Ops",AEB=false,AET=0,AEF=0,EVT_ST=0;
 function autoOn(){return ld("kyfm-aut","1")!=="0"&&!!ld("grefresh",null)}
-function autoPlan(){if(AET||!STATE||!PH||!autoOn()||S.file)return;if(!ld(K.ops,[]).some(function(x){return!x.st}))return;AET=setTimeout(function(){AET=0;autoEnvoi()},1500)}
+function evtQ(act,x){var q=ld("kyfm-evt",[]);if(!Array.isArray(q))q=[];q.push({act:act,opid:x.id,op:act==="del"?null:x,ts:Date.now()});sv("kyfm-evt",q.slice(-500));AEF=0;autoPlan()}
+function evtOp(x){var o=cleanOp(Object.assign({},x));delete o.st;delete o.sent;delete o.remplace;return o}
+function autoPlan(){if(AET||!STATE||!autoOn())return;var q=ld("kyfm-evt",[]);if(!ld(K.ops,[]).some(function(x){return!x.st})&&!(Array.isArray(q)&&q.length))return;AET=setTimeout(function(){AET=0;autoEnvoi()},1500)}
+async function gOpsTab(){
+  var f=await gGet("https://www.googleapis.com/drive/v3/files?q="+encodeURIComponent("name='"+G_SHEET+"' and mimeType='application/vnd.google-apps.spreadsheet' and trashed=false")+"&fields=files(id)&spaces=drive"),
+    id=f.files&&f.files[0]&&f.files[0].id;if(!id||!/^[A-Za-z0-9_-]{20,100}$/.test(id))throw new Error("g:nosheet");
+  var base="https://sheets.googleapis.com/v4/spreadsheets/"+id,meta=await gGet(base+"?fields=sheets.properties.title"),ok=(meta.sheets||[]).some(function(x){return x.properties&&x.properties.title===G_OPS});
+  if(!ok){await gSend("POST",base+":batchUpdate",{requests:[{addSheet:{properties:{title:G_OPS}}}]});
+    await gSend("PUT",base+"/values/"+G_OPS+"!A1:H1?valueInputOption=RAW",{values:[["event_id","ts","action","op_id","json","source","statut","ref"]]})}
+  return base}
 async function autoEnvoi(){
-  if(AEB||!STATE||!PH||!autoOn()||S.file||(navigator.onLine===false)||Date.now()-AEF<60000)return;
-  var o0=ld(K.ops,[]).filter(function(x){return!x.st});if(!o0.length||!window.crypto||!crypto.subtle)return;
-  AEB=true;S.aut="Envoi automatique en cours…";if(S.v==="paquet")render();
-  try{var o=o0.slice(0,200).map(function(x){return cleanOp(Object.assign({},x))}),tot=0;o.forEach(function(x){tot+=x.montant_c});
-    var paq={v:1,format:"kyfops",paquet:"P-"+stamp()+"-"+hms().slice(0,4)+"-"+rnd(4),cree:new Date().toISOString(),appli:"Kyf-Mobile "+VER,n:o.length,total_c:tot,ops:o};
-    while(JSON.stringify(paq).length>350000&&paq.ops.length>1){paq.ops=paq.ops.slice(0,Math.ceil(paq.ops.length/2));o=paq.ops;paq.n=o.length;tot=0;o.forEach(function(x){tot+=x.montant_c});paq.total_c=tot}
-    var txt=JSON.stringify(await chiffrer(paq,PH));
-    await gEnvoiPaquet(txt,{paquet:paq.paquet,date:paq.cree,n:o.length});
-    marquerEnvoiM({paquet:paq.paquet,ids:o.map(function(x){return x.id}),n:o.length,total_c:tot,date:paq.cree,reste:o0.length-o.length},true);
-    S.aut="Envoyé automatiquement au classeur Google ("+o.length+" opération"+(o.length>1?"s":"")+"). KYF PC les intègre à son prochain lancement.";AEF=0;
-  }catch(e){AEF=Date.now();S.aut="Envoi automatique impossible pour l’instant ("+(String(e&&e.message||"").slice(0,60)||"erreur")+"). Nouvel essai dans une minute, ou utilisez les boutons ci-dessous."}
-  AEB=false;if(S.v==="paquet")render();else if(ld(K.ops,[]).some(function(x){return!x.st}))autoPlan()}
+  if(AEB||!STATE||!autoOn()||(navigator.onLine===false)||Date.now()-AEF<60000)return;
+  var q=ld("kyfm-evt",[]);if(!Array.isArray(q))q=[];var ad=ld(K.ops,[]).filter(function(x){return!x.st});if(!q.length&&!ad.length)return;
+  AEB=true;S.aut="Envoi vers Google en cours…";if(S.v==="paquet")render();
+  try{var base=await gOpsTab(),rows=[],iso=new Date().toISOString(),n=0;
+    q.forEach(function(e){rows.push(["E-"+stamp()+hms()+"-"+rnd(8),new Date(e.ts).toISOString(),e.act,e.opid,e.act==="del"?"":JSON.stringify(evtOp(e.op)),"mobile","",""])});
+    ad.slice(0,200).forEach(function(x){rows.push(["E-"+stamp()+hms()+"-"+rnd(8),iso,"add",x.id,JSON.stringify(evtOp(x)),"mobile","",""]);n++});
+    await gSend("POST",base+"/values/"+G_OPS+"!A:H:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS",{values:rows});
+    sv("kyfm-evt",[]);var o=ld(K.ops,[]),ids={};ad.slice(0,200).forEach(function(x){ids[x.id]=1});o.forEach(function(x){if(ids[x.id]&&!x.st){x.st="envoye";x.sent=iso}});sv(K.ops,o);
+    S.aut="Synchronisé avec Google ("+rows.length+" mise"+(rows.length>1?"s":"")+" à jour). KYF PC les applique à son lancement.";AEF=0;
+  }catch(e){AEF=Date.now();S.aut="Envoi vers Google impossible pour l’instant ("+(String(e&&e.message||"").slice(0,60)||"erreur")+"). Nouvel essai dans une minute."}
+  AEB=false;if(S.v==="paquet")render();else autoPlan()}
+/* Statuts renvoyés par KYF PC (colonne G de l'onglet) : intégrée, à valider sur le PC, ignorée */
+async function evStatuts(){
+  if(!autoOn()||!STATE||Date.now()-EVT_ST<45000)return;EVT_ST=Date.now();
+  try{var f=await gGet("https://www.googleapis.com/drive/v3/files?q="+encodeURIComponent("name='"+G_SHEET+"' and mimeType='application/vnd.google-apps.spreadsheet' and trashed=false")+"&fields=files(id)&spaces=drive"),id=f.files&&f.files[0]&&f.files[0].id;
+    if(!id||!/^[A-Za-z0-9_-]{20,100}$/.test(id))return;var d=await gGet("https://sheets.googleapis.com/v4/spreadsheets/"+id+"/values/"+G_OPS+"!A:H"),m={};
+    (d.values||[]).slice(1).forEach(function(r){var op=r&&r[3],st=String(r&&r[6]||"");if(!op||!st)return;m[op]=st});
+    var o=ld(K.ops,[]),ch=0;o.forEach(function(x){var st=m[x.id];if(!st||x.st!=="envoye"&&x.st!=="valide"&&x.st!=="file")return;var ns=/^appliqué/.test(st)?"valide":/^en file/.test(st)?"file":/^ignoré|^erreur/.test(st)?"ignore":null;if(ns&&x.st!==ns){x.st=ns;x.pcs=st;ch++}});
+    if(ch){sv(K.ops,o);render()}}catch(e){}}
 /* Modifier une opération (3.6.1) : à envoyer ou envoyée. Une opération déjà envoyée repart avec un nouvel identifiant et la mention « remplace ». */
-function opEdit(i){var l=ld(K.ops,[]),x=l[i];if(!x||(x.st&&x.st!=="envoye"))return;
+function opEdit(i){var l=ld(K.ops,[]),x=l[i];if(!x||x.st==="refuse"||x.st==="doublon")return;
   var tit=x.type==="achat"||x.type==="vente"||x.type==="dividende",EV=["PEA","PEA-PME","CTO"],chEnv=tit&&EV.indexOf(x.enveloppe)>-1,simple=!tit&&typeof x.montant_c==="number"&&x.unite!=="pct"&&x.type!=="scpi_maj"&&x.type!=="av_valeur"&&!/^crypto_(swap|transfert)$/.test(x.type);
   var o=document.createElement("div");o.className="kq";o.setAttribute("role","dialog");o.setAttribute("aria-modal","true");o.style.alignItems="flex-start";o.style.overflow="auto";
   var b=document.createElement("div");b.style.margin="auto 0";
@@ -2767,7 +2783,7 @@ function opEdit(i){var l=ld(K.ops,[]),x=l[i];if(!x||(x.st&&x.st!=="envoye"))retu
     '<label style="'+LB+'" id="oe-cw">Compte<select id="oe-c" style="'+IS+'"></select></label>'+
     (tit?fld("Action (nom)","oe-n",x.nom||x.ticker||"","text",'list="oe-dl" autocomplete="off" inputmode="text" ').replace('inputmode="decimal" ','')+'<datalist id="oe-dl">'+dl+'</datalist>'+fld("Ticker ou ISIN","oe-t",x.isin||x.ticker||"","text",'autocapitalize="characters" autocomplete="off" ').replace('inputmode="decimal" ','')+fld("Quantité","oe-q",x.qty,"text")+fld("Prix unitaire","oe-p",x.prix,"text")+fld("Frais (€)","oe-f",fe?String(fe).replace(".",","):"","text"):"")+
     (simple?fld("Montant (€)","oe-m",String(x.montant_c/100).replace(".",","),"text"):"")+
-    '<p id="oe-e2" style="color:var(--err);min-height:0"></p>'+(x.st==="envoye"?'<p style="font-size:.82rem">Déjà envoyée : elle repartira dans l’envoi et remplacera l’envoi précédent.</p>':"");
+    '<p id="oe-e2" style="color:var(--err);min-height:0"></p>'+(x.st==="envoye"?'<p style="font-size:.82rem">Déjà envoyée : KYF PC la mettra à jour à son prochain lancement.</p>':"");
   var ok=document.createElement("button");ok.type="button";ok.className="kb";ok.textContent="Enregistrer";
   var no=document.createElement("button");no.type="button";no.textContent="Annuler";
   var dg=document.createElement("button");dg.type="button";dg.className="kb dg";dg.textContent="Supprimer l’opération";
@@ -2776,7 +2792,7 @@ function opEdit(i){var l=ld(K.ops,[]),x=l[i];if(!x||(x.st&&x.st!=="envoye"))retu
     if(!cpsC.length){sel.innerHTML='<option value="">— aucun compte —</option>';return}
     sel.innerHTML=cpsC.map(function(c,k){return '<option value="'+k+'"'+(en===x.enveloppe&&((c.kyf&&c.kyf===x.compte_id)||c.nom===x.compte)?" selected":"")+'>'+esc(c.nom)+'</option>'}).join("")}
   fillC();var ee=b.querySelector("#oe-e");if(ee)ee.onchange=fillC;
-  dg.onclick=function(){kAsk("Supprimer cette opération ?",x.st==="envoye"?"Elle est déjà dans le classeur Google : la supprimer ici ne l’enlève pas de KYF PC si elle y a déjà été intégrée.":"Elle ne sera pas envoyée.","Supprimer",function(){var l2=ld(K.ops,[]),k=-1;l2.forEach(function(y,j){if(y.id===x.id)k=j});if(k<0)return;S.undo={x:l2[k],i:k};trashAdd([l2[k]]);l2.splice(k,1);sv(K.ops,l2);S.file=null;fin();render()},true)};
+  dg.onclick=function(){kAsk("Supprimer cette opération ?",x.st==="envoye"?"Elle est déjà dans le classeur Google : KYF PC la retirera aussi à son prochain lancement.":"Elle ne sera pas envoyée.","Supprimer",function(){var l2=ld(K.ops,[]),k=-1;l2.forEach(function(y,j){if(y.id===x.id)k=j});if(k<0)return;S.undo={x:l2[k],i:k};if(l2[k].st)evtQ("del",l2[k]);trashAdd([l2[k]]);l2.splice(k,1);sv(K.ops,l2);S.file=null;fin();render()},true)};
   ok.onclick=function(){var e=$("oe-e2"),d=$("oe-d").value;if(!/^\d{4}-\d{2}-\d{2}$/.test(d)){e.textContent="Date invalide.";return}
     var n=Object.assign({},x);n.date=d;
     if(chEnv)n.enveloppe=$("oe-e").value;
@@ -2790,8 +2806,8 @@ function opEdit(i){var l=ld(K.ops,[]),x=l[i];if(!x||(x.st&&x.st!=="envoye"))retu
         else{if(!nm&&!tk){e.textContent="Indiquez l’action.";return}n.nom=nm||tk;if(/^[A-Z]{2}[A-Z0-9]{9}\d$/.test(tk)){n.isin=tk;n.ticker=""}else{n.ticker=tk;n.isin=""}n.ticker_inconnu=!n.ticker}}}
     else if(simple){var mm=dec($("oe-m").value);if(mm===null||+mm<=0){e.textContent="Montant invalide.";return}n.montant_c=toC(mm)}
     cleanOp(n);
-    if(x.st==="envoye"){n.remplace=x.remplace||x.id;n.id="O-"+stamp()+"-"+hms()+"-"+rnd(8);delete n.st;delete n.sent;S.pqt="todo"}
-    l[i]=n;sv(K.ops,l);fin();AEF=0;S.aut=null;msg=x.st==="envoye"?"Opération modifiée : elle repart vers Google.":"Opération modifiée.";msgOk=true;render()};
+    if(x.st){n.st="envoye";n.sent=new Date().toISOString();delete n.pcs;evtQ("mod",n)}
+    l[i]=n;sv(K.ops,l);fin();AEF=0;S.aut=null;msg=x.st?"Opération modifiée : KYF PC la mettra à jour.":"Opération modifiée.";msgOk=true;render()};
   b.appendChild(ok);b.appendChild(no);b.appendChild(dg);o.appendChild(b);document.body.appendChild(o);o.addEventListener("click",function(ev){if(ev.target===o)fin()})}
 function partager(){
   var f=S.file;if(!f)return;
