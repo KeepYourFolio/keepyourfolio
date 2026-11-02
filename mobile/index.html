@@ -335,6 +335,15 @@ html[data-rch] .fh2 .tt{left:56px;right:56px;text-align:center;transform-origin:
 html[data-rch] .fh2 .tt h2{font-size:2.3rem;font-weight:600;letter-spacing:-.02em;line-height:1.1}
 html[data-rch] .fh2 .tt small{font-size:.95rem;margin-top:4px;opacity:calc(1 - var(--p,0)*2.2)}
 @media (prefers-reduced-motion:reduce){.fh2 .tt{animation:none}}
+.pq{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;cursor:pointer;box-shadow:0 1px 0 color-mix(in srgb,var(--acc) 12%,transparent)}
+.pqh{display:flex;align-items:center;gap:12px;padding:10px 14px;min-height:56px;background:color-mix(in srgb,var(--acc) 9%,transparent)}
+.pqh .ic{width:38px;height:38px;border-radius:12px;color:var(--acc);background:color-mix(in srgb,var(--acc) 18%,transparent)}
+.pqh>span:nth-child(2){flex:1;min-width:0;display:flex;flex-direction:column}.pqh small{color:var(--mut);font-weight:500}
+.pql{padding:4px 14px 8px}
+.pqr{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;min-height:36px;border-top:1px solid var(--line)}.pqr:first-child{border-top:0}
+.pqr i{font-style:normal;font-size:.72rem;font-weight:700;letter-spacing:.02em;padding:3px 9px;border-radius:99px;color:var(--acc);background:color-mix(in srgb,var(--acc) 14%,transparent)}
+.pqr span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}.pqr em{font-style:normal;font-weight:700;font-variant-numeric:tabular-nums}
+.pqm{padding:6px 0 2px;color:var(--mut);font-size:.85rem;font-weight:600;text-align:center;border-top:1px solid var(--line)}
 :root{--rh:0px}
 .rch,.sp2,.ctt{display:none!important}
 </style>
@@ -343,7 +352,7 @@ html[data-rch] .fh2 .tt small{font-size:.95rem;margin-top:4px;opacity:calc(1 - v
 <main id="app"></main>
 <script>
 "use strict";
-var VER="1.18.12", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="1.18.13", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["actif_valeur","Valeur d’un actif"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -758,7 +767,8 @@ async function chargerRecu(t){
   catch(e){msg=(e&&e.name==="OperationError")?"Phrase différente de celle de KYF, ou reçu modifié.":"Reçu illisible.";msgOk=false}
   render()}
 function homeTop(o){var h="",n=todo(o),bk=ld("bak",0);if(o.length&&(!bk||Date.now()-bk>30*864e5))h+=`<button class="li cd" data-reg="reg_bak" style="--k:var(--bl);padding:0 14px;min-height:56px"><span class="ic">${I.file}</span><span><b>Sauvegardez votre coffre</b><small>Pour ne rien perdre si vous changez de téléphone</small></span><span class="ch">${CHEV}</span></button>`;
-  if(n)h+=`<button class="li cd" id="gopq" style="--k:var(--acc);padding:0 14px;min-height:56px"><span class="ic">${I.pack}</span><span><b>${n} opération${n>1?"s":""} à envoyer</b><small>Voir et préparer le fichier</small></span><span class="ch">${CHEV}</span></button>`;
+  if(n>1){var tl=o.filter(function(x){return!x.st}).reverse(),sh=tl.slice(0,3);h+=`<div class="pq" id="gopq" role="button" tabindex="0" aria-label="${n} opérations à envoyer : voir et préparer le fichier"><div class="pqh"><span class="ic">${I.pack}</span><span><b>${n} opérations à envoyer</b><small>Voir et préparer le fichier</small></span><span class="ch">${CHEV}</span></div><div class="pql">${sh.map(function(x){var nm=x.ticker||x.nom||x.compte||"",mt=typeof x.montant_c==="number"&&x.montant_c?eur(x.montant_c):"";return `<div class="pqr"><i>${esc(libType(x.type)||"")}</i><span>${esc(nm)}</span><em>${esc(mt)}</em></div>`}).join("")}${n>3?`<div class="pqm">+ ${n-3} autre${n-3>1?"s":""}</div>`:""}</div></div>`}
+  else if(n)h+=`<button class="li cd" id="gopq" style="--k:var(--acc);padding:0 14px;min-height:56px"><span class="ic">${I.pack}</span><span><b>${n} opération${n>1?"s":""} à envoyer</b><small>Voir et préparer le fichier</small></span><span class="ch">${CHEV}</span></button>`;
   if(famOn()){var fh=hcfg().f;if(S.hedit)h+=`<div class="fed"><p>Pour qui ?</p><button class="hb sm" data-hf="1">${fh?"Afficher":"Masquer"}</button></div>${fh?whoRow().replace('class="who"','class="who off"'):whoRow()}`;else if(!fh)h+=`<p>Pour qui ?</p>${whoRow()}`}
   return h}
 function lireCr(){var c=S.d.cr||(S.d.cr={sens:"entrant",inv:true});if($("crd")){c.date=$("crd").value;["n1","q1","n2","q2","de","vers","pf","cfm"].forEach(function(id){if($(id))c[id]=$(id).value});if($("cv"))c.v=$("cv").value}}
