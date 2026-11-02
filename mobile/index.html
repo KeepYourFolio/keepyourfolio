@@ -421,7 +421,7 @@ html,body{overflow-x:clip;max-width:100%}main{overflow-x:clip;min-width:0;paddin
 <script src="avf.js"></script><script src="qr.js"></script>
 <script>
 "use strict";
-var VER="3.7", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="3.7.1", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["actif_valeur","Valeur d’un actif"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -2742,30 +2742,45 @@ async function autoEnvoi(){
   AEB=false;if(S.v==="paquet")render();else if(ld(K.ops,[]).some(function(x){return!x.st}))autoPlan()}
 /* Modifier une opération (3.6.1) : à envoyer ou envoyée. Une opération déjà envoyée repart avec un nouvel identifiant et la mention « remplace ». */
 function opEdit(i){var l=ld(K.ops,[]),x=l[i];if(!x||(x.st&&x.st!=="envoye"))return;
-  var tit=x.type==="achat"||x.type==="vente"||x.type==="dividende",cps=comptes().filter(function(c){return c.type===x.enveloppe}),simple=!tit&&typeof x.montant_c==="number"&&x.unite!=="pct"&&x.type!=="scpi_maj"&&x.type!=="av_valeur"&&!/^crypto_(swap|transfert)$/.test(x.type);
-  var o=document.createElement("div");o.className="kq";o.setAttribute("role","dialog");o.setAttribute("aria-modal","true");
-  var b=document.createElement("div");
-  function fld(l,id,v,t){return '<label style="display:flex;flex-direction:column;gap:4px;font-size:.82rem;color:var(--mut)">'+l+'<input id="'+id+'" type="'+(t||"text")+'" '+(t==="text"?'inputmode="decimal" ':"")+'value="'+esc(String(v==null?"":v))+'" style="min-height:44px;font-size:1rem"></label>'}
-  var fe=(x.frais_c||0)/100;
-  b.innerHTML='<h3>Modifier l’opération</h3><p style="max-height:none">'+esc(libType(x.type)+" · "+(x.nom||x.ticker||x.enveloppe))+'</p>'+
+  var tit=x.type==="achat"||x.type==="vente"||x.type==="dividende",EV=["PEA","PEA-PME","CTO"],chEnv=tit&&EV.indexOf(x.enveloppe)>-1,simple=!tit&&typeof x.montant_c==="number"&&x.unite!=="pct"&&x.type!=="scpi_maj"&&x.type!=="av_valeur"&&!/^crypto_(swap|transfert)$/.test(x.type);
+  var o=document.createElement("div");o.className="kq";o.setAttribute("role","dialog");o.setAttribute("aria-modal","true");o.style.alignItems="flex-start";o.style.overflow="auto";
+  var b=document.createElement("div");b.style.margin="auto 0";
+  var LB='display:flex;flex-direction:column;gap:4px;font-size:.82rem;color:var(--mut)',IS='min-height:44px;font-size:1rem';
+  function fld(lb,id,v,t,ex){return '<label style="'+LB+'">'+lb+'<input id="'+id+'" type="'+(t||"text")+'" '+(t==="text"?'inputmode="decimal" ':"")+(ex||"")+'value="'+esc(String(v==null?"":v))+'" style="'+IS+'"></label>'}
+  var fe=(x.frais_c||0)/100,srcs=tit?sources():[],seen={},dl="";
+  srcs.forEach(function(y){var n=y&&(y.nom||y.ticker);if(n&&!seen[n]&&dl.length<30000){seen[n]=1;dl+='<option value="'+esc(String(n).slice(0,80))+'">'}});
+  b.innerHTML='<h3>Modifier l’opération</h3><p style="max-height:none">'+esc(libType(x.type))+'</p>'+
     fld("Date","oe-d",x.date,"date")+
-    (cps.length?'<label style="display:flex;flex-direction:column;gap:4px;font-size:.82rem;color:var(--mut)">Compte<select id="oe-c" style="min-height:44px;font-size:1rem">'+cps.map(function(c,k){return '<option value="'+k+'"'+((c.kyf&&c.kyf===x.compte_id)||c.nom===x.compte?" selected":"")+'>'+esc(c.nom)+'</option>'}).join("")+'</select></label>':"")+
-    (tit?fld("Quantité","oe-q",x.qty,"text")+fld("Prix unitaire","oe-p",x.prix,"text")+fld("Frais (€)","oe-f",fe?String(fe).replace(".",","):"","text"):"")+
+    (chEnv?'<label style="'+LB+'">Type de compte<select id="oe-e" style="'+IS+'">'+EV.map(function(e){return '<option value="'+e+'"'+(e===x.enveloppe?" selected":"")+'>'+esc(ENVL[e]||e)+'</option>'}).join("")+'</select></label>':"")+
+    '<label style="'+LB+'" id="oe-cw">Compte<select id="oe-c" style="'+IS+'"></select></label>'+
+    (tit?fld("Action (nom)","oe-n",x.nom||x.ticker||"","text",'list="oe-dl" autocomplete="off" inputmode="text" ').replace('inputmode="decimal" ','')+'<datalist id="oe-dl">'+dl+'</datalist>'+fld("Ticker ou ISIN","oe-t",x.isin||x.ticker||"","text",'autocapitalize="characters" autocomplete="off" ').replace('inputmode="decimal" ','')+fld("Quantité","oe-q",x.qty,"text")+fld("Prix unitaire","oe-p",x.prix,"text")+fld("Frais (€)","oe-f",fe?String(fe).replace(".",","):"","text"):"")+
     (simple?fld("Montant (€)","oe-m",String(x.montant_c/100).replace(".",","),"text"):"")+
-    '<p id="oe-e" style="color:var(--err);min-height:0"></p>'+(x.st==="envoye"?'<p style="font-size:.82rem">Déjà envoyée : elle repartira dans « À envoyer » et remplacera l’envoi précédent.</p>':"");
+    '<p id="oe-e2" style="color:var(--err);min-height:0"></p>'+(x.st==="envoye"?'<p style="font-size:.82rem">Déjà envoyée : elle repartira dans l’envoi et remplacera l’envoi précédent.</p>':"");
   var ok=document.createElement("button");ok.type="button";ok.className="kb";ok.textContent="Enregistrer";
   var no=document.createElement("button");no.type="button";no.textContent="Annuler";
+  var dg=document.createElement("button");dg.type="button";dg.className="kb dg";dg.textContent="Supprimer l’opération";
   function fin(){if(o.parentNode)o.parentNode.removeChild(o)}no.onclick=fin;
-  ok.onclick=function(){var e=$("oe-e"),d=$("oe-d").value;if(!/^\d{4}-\d{2}-\d{2}$/.test(d)){e.textContent="Date invalide.";return}
+  var cpsC=[];function fillC(){var sel=b.querySelector("#oe-c"),ev=b.querySelector("#oe-e"),en=ev?ev.value:x.enveloppe;cpsC=comptes().filter(function(c){return c.type===en});
+    if(!cpsC.length){sel.innerHTML='<option value="">— aucun compte —</option>';return}
+    sel.innerHTML=cpsC.map(function(c,k){return '<option value="'+k+'"'+(en===x.enveloppe&&((c.kyf&&c.kyf===x.compte_id)||c.nom===x.compte)?" selected":"")+'>'+esc(c.nom)+'</option>'}).join("")}
+  fillC();var ee=b.querySelector("#oe-e");if(ee)ee.onchange=fillC;
+  dg.onclick=function(){kAsk("Supprimer cette opération ?",x.st==="envoye"?"Elle est déjà dans le classeur Google : la supprimer ici ne l’enlève pas de KYF PC si elle y a déjà été intégrée.":"Elle ne sera pas envoyée.","Supprimer",function(){var l2=ld(K.ops,[]),k=-1;l2.forEach(function(y,j){if(y.id===x.id)k=j});if(k<0)return;S.undo={x:l2[k],i:k};trashAdd([l2[k]]);l2.splice(k,1);sv(K.ops,l2);S.file=null;fin();render()},true)};
+  ok.onclick=function(){var e=$("oe-e2"),d=$("oe-d").value;if(!/^\d{4}-\d{2}-\d{2}$/.test(d)){e.textContent="Date invalide.";return}
     var n=Object.assign({},x);n.date=d;
-    if(cps.length&&$("oe-c")){var c=cps[+$("oe-c").value];if(c){n.compte=c.nom;n.compte_id=c.kyf||""}}
+    if(chEnv)n.enveloppe=$("oe-e").value;
+    var c=cpsC[+($("oe-c").value||-1)];if(cpsC.length&&c){n.compte=c.nom;n.compte_id=c.kyf||""}else if(chEnv){n.compte="";n.compte_id=""}
     if(tit){var q=dec($("oe-q").value),p=dec($("oe-p").value),f=String($("oe-f").value||"").trim()?dec($("oe-f").value):"0";if(q===null||p===null||f===null||+q<=0){e.textContent="Quantité, prix ou frais invalides.";return}
-      n.qty=q;n.prix=p;n.frais_c=toC(f);n.montant_c=mulC(q,p);if(!isFinite(n.montant_c)||n.montant_c>1e12){e.textContent="Montant trop grand.";return}}
-    else if(simple){var m=dec($("oe-m").value);if(m===null||+m<=0){e.textContent="Montant invalide.";return}n.montant_c=toC(m)}
+      n.qty=q;n.prix=p;n.frais_c=toC(f);n.montant_c=mulC(q,p);if(!isFinite(n.montant_c)||n.montant_c>1e12){e.textContent="Montant trop grand.";return}
+      var nm=String($("oe-n").value||"").trim(),tk=String($("oe-t").value||"").trim().toUpperCase(),old=(x.nom||x.ticker||"");
+      if(nm!==old||tk!==String(x.isin||x.ticker||"").toUpperCase()){
+        var up=function(v){return String(v||"").toUpperCase()},m=srcs.filter(function(y){return tk&&(up(y.ticker)===tk||up(y.isin)===tk)})[0]||srcs.filter(function(y){return nm&&(String(y.nom||"").toLowerCase()===nm.toLowerCase()||up(y.ticker)===up(nm))})[0];
+        if(m&&(!tk||up(m.ticker)===tk||up(m.isin)===tk)){n.ticker=m.ticker||"";n.isin=m.isin||"";n.nom=m.nom||nm;n.ticker_inconnu=false}
+        else{if(!nm&&!tk){e.textContent="Indiquez l’action.";return}n.nom=nm||tk;if(/^[A-Z]{2}[A-Z0-9]{9}\d$/.test(tk)){n.isin=tk;n.ticker=""}else{n.ticker=tk;n.isin=""}n.ticker_inconnu=!n.ticker}}}
+    else if(simple){var mm=dec($("oe-m").value);if(mm===null||+mm<=0){e.textContent="Montant invalide.";return}n.montant_c=toC(mm)}
     cleanOp(n);
     if(x.st==="envoye"){n.remplace=x.remplace||x.id;n.id="O-"+stamp()+"-"+hms()+"-"+rnd(8);delete n.st;delete n.sent;S.pqt="todo"}
-    l[i]=n;sv(K.ops,l);fin();AEF=0;S.aut=null;msg=x.st==="envoye"?"Opération modifiée : elle repart dans « À envoyer ».":"Opération modifiée.";msgOk=true;render()};
-  b.appendChild(ok);b.appendChild(no);o.appendChild(b);document.body.appendChild(o);o.addEventListener("click",function(ev){if(ev.target===o)fin()})}
+    l[i]=n;sv(K.ops,l);fin();AEF=0;S.aut=null;msg=x.st==="envoye"?"Opération modifiée : elle repart vers Google.":"Opération modifiée.";msgOk=true;render()};
+  b.appendChild(ok);b.appendChild(no);b.appendChild(dg);o.appendChild(b);document.body.appendChild(o);o.addEventListener("click",function(ev){if(ev.target===o)fin()})}
 function partager(){
   var f=S.file;if(!f)return;
   if(navigator.share&&navigator.canShare&&navigator.canShare({files:[f]})){
