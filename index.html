@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_12_1_21.html
+  @file        : KYF_SHARE_beta_2_12_1_22.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.1.21
+  @version     : Beta 2.12.1.22
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7477,7 +7477,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.1.21</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.1.22</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -213850,6 +213850,7 @@ async function shLire(){
 function shAFaire(p){ return p.complet && (p.statut === '' || p.statut === 'erreur : phrase'); }
 async function shVerif(creer){
   if(!shOk() || _sh.busy) return;
+  if(creer){ try{ maAuto(); }catch(e){} }
   _sh.busy = true; _sh.err = '';
   try{
     var r = await shLire();
@@ -214034,10 +214035,192 @@ function envoyerOuvrir(){
   setTimeout(function(){ ph.focus(); }, 50);
 }
 
-window.KYFMobile = { open: ouvrir, envoyer: envoyerOuvrir, _snap: snapBuild, count: nbAttente, sheetCheck: function(){ return shVerif(false); },
-  _test: { shLire: shLire, shVerif: shVerif, shImporter: shImporter, sh: _sh, qrPrep: qrPrep, qrChunks: qrChunks, crc32: crc32, chiffrer: chiffrer, dechiffrer: dechiffrer, checkPaquet: checkPaquet, enveloppeOk: enveloppeOk, importer: importer, queue: queue, recuClair: recuClair, TYPES: TYPES } };
+
+// ---------- Mobile -> PC automatique (classeur Google, onglet KYF_Mobile_Ops, lignes en clair) ----------
+// Le mobile ajoute un évènement par ligne : A id, B date, C action (add / mod / del), D id de l'opération, E opération (JSON), F source, G statut (écrit par KYF), H référence (écrite par KYF).
+// KYF applique tout seul les achats, ventes, dividendes, versements et retraits. Ce qu'il ne peut pas appliquer sans risque (devise, PEA-PME, compte introuvable, vente supérieure à la quantité détenue...) va dans la file de validation habituelle.
+var OPS_TAB = 'KYF_Mobile_Ops', _ma = { busy:false, last:'' }, majBadge_ = function(){ try{ maj(); }catch(e){} };
+function maUrl(chemin){ return shUrl(chemin); }
+async function maLire(){
+  var d;
+  try{ var r = await kyfFetchAuth(maUrl('/values/' + OPS_TAB + '!A:H'), {}, { timeoutMs: 15000 }); d = await r.json(); }
+  catch(e){ if(e && e.httpStatus === 400) return { absent:true }; return { err:'Lecture impossible.' }; }
+  var rows = (d && d.values) || [], ev = [];
+  rows.forEach(function(r, i){
+    if(!r || !r.length || r[0] === 'event_id') return;
+    var id = String(r[0] || ''), act = String(r[2] || ''), opid = String(r[3] || '');
+    if(!/^E-[A-Za-z0-9-]{6,60}$/.test(id) || ['add','mod','del'].indexOf(act) < 0 || !/^O-[A-Za-z0-9-]{1,40}$/.test(opid)) return;
+    var op = null; if(act !== 'del'){ try{ op = JSON.parse(String(r[4] || '')); }catch(e){ op = null; } }
+    var ref = null; try{ ref = r[7] ? JSON.parse(String(r[7])) : null; }catch(e){ ref = null; }
+    ev.push({ ligne:i + 1, id:id, act:act, opid:opid, op:op, statut:String(r[6] || ''), ref:ref });
+  });
+  return { ev:ev };
+}
+// Dernière référence connue d'une opération du mobile (add ou mod appliqué)
+function maRef(ev, opid){
+  var ref = null;
+  ev.forEach(function(e){ if(e.opid === opid && e.ref && /^appliqué|^en file/.test(e.statut)) ref = e.ref; });
+  return ref;
+}
+// Contrôle avant application automatique : retourne '' si tout est sûr, sinon le motif qui renvoie l'opération en validation manuelle
+function maMotif(o){
+  if(!o || typeof o !== 'object') return 'Opération illisible.';
+  var e = checkOp(o, 0); if(e) return e === 'TYPE' ? 'Type d’opération inconnu de cette version de KYF.' : e;
+  if(hors(o)) return 'Devise étrangère : KYF compte en euros.';
+  if(o.enveloppe === 'PEA-PME') return 'PEA-PME : choisissez l’enveloppe vous-même.';
+  if(compteManquant(o)) return 'Compte introuvable dans KYF.';
+  if(o.type === 'achat' || o.type === 'vente'){
+    if(['PEA','CTO','AV','PER'].indexOf(o.enveloppe) < 0) return 'Enveloppe à valider à la main.';
+    if(!o.ticker || o.ticker_inconnu) return 'Titre inconnu : choisissez-le dans KYF.';
+    if(!(Number(o.qty) > 0) || !(Number(o.prix) > 0)) return 'Quantité ou prix invalide.';
+    if(o.enveloppe === 'CTO' && kyfCtoComptes().length > 1 && !kyfCtoComptes().some(function(c){ return String(c.id) === String(o.compte_id); })) return 'Plusieurs CTO : choisissez le compte.';
+    if(o.type === 'vente'){
+      var tk = o.ticker.toUpperCase(), cpt = (o.enveloppe === 'CTO' && kyfCtoComptes().length > 1) ? String(o.compte_id) : null;
+      var lines = ETF.filter(function(x){ return x.ticker && x.ticker.toUpperCase() === tk && (x.enveloppe || 'PEA') === o.enveloppe && (!cpt || String(kyfCtoCompteOf(x)) === cpt); });
+      var held = lines.reduce(function(t, x){ return t + (parseFloat(x.qty) || 0); }, 0);
+      if(!lines.length || Number(o.qty) > held + 1e-9) return 'Vente supérieure à la quantité détenue (' + held + ').';
+    }
+    return '';
+  }
+  if(o.type === 'dividende'){
+    if(['PEA','CTO','AV','PER'].indexOf(o.enveloppe) < 0) return 'Enveloppe à valider à la main.';
+    if(!(o.montant_c > 0)) return 'Montant invalide.';
+    if(!((o.ticker && !o.ticker_inconnu) || o.nom)) return 'Titre manquant.';
+    return '';
+  }
+  if(o.type === 'versement' || o.type === 'retrait'){
+    if(o.enveloppe !== 'PEA' && o.enveloppe !== 'CTO') return 'Enveloppe à valider à la main.';
+    if(!(o.montant_c > 0)) return 'Montant invalide.';
+    return '';
+  }
+  return 'Type d’opération à valider à la main.';
+}
+// Applique une opération avec les formulaires et fonctions de KYF, sans clic. Retourne { ok, ref } ou { err }
+async function maAppliquer(o){
+  var sNum2 = function(v){ return String(v == null ? '' : v).replace('.', ','); };
+  try{
+    if(o.type === 'versement' || o.type === 'retrait'){
+      var cpt = (o.enveloppe === 'CTO' && kyfCtoComptes().length > 1 && kyfCtoComptes().some(function(c){ return String(c.id) === String(o.compte_id); })) ? String(o.compte_id) : undefined;
+      var avant = {}; kyfCashMvts().forEach(function(m){ avant[m.id] = 1; });
+      var r = kyfCashMvtAdd(o.enveloppe, o.type === 'versement' ? 'in' : 'out', o.montant_c / 100, o.date, '', cpt, o.livret_id ? String(o.livret_id) : undefined);
+      if(!r || !r.ok) return { err:(r && r.msg) || 'Refusé par KYF.' };
+      var nv = kyfCashMvts().filter(function(m){ return !avant[m.id]; })[0];
+      return nv ? { ok:true, ref:{ k:'mvt', id:nv.id } } : { err:'Mouvement non enregistré.' };
+    }
+    var set = function(id, v){ var e = document.getElementById(id); if(e) e.value = v; };
+    if(o.type === 'achat' || o.type === 'vente'){
+      var av = {}; etfTransLoad().forEach(function(t){ av[t.id] = 1; });
+      openAddTransaction(o.type);
+      set('transInputTicker', o.ticker.toUpperCase()); set('transInputNom', o.nom || o.ticker);
+      set('transInputQty', sNum2(o.qty)); set('transInputPrix', sNum2(o.prix)); set('transInputFrais', sNum2(((o.frais_c || 0) / 100).toFixed(2)));
+      try{ kyfDateSetValue('transInputDate', o.date); }catch(e){}
+      set('transInputDate', o.date);
+      try{ transSetEnv(o.enveloppe); }catch(e){}
+      if(o.enveloppe === 'CTO' && o.compte_id){ try{ if(kyfCtoComptes().some(function(c){ return String(c.id) === String(o.compte_id); })){ window._transCpt = String(o.compte_id); kyfTransCptRender(); } }catch(e){} }
+      await confirmAddTransaction();
+      var m = document.getElementById('modalAddTransaction'); try{ if(m && m.style.display !== 'none') closeAddTransaction(); }catch(e){}
+      var nt = etfTransLoad().filter(function(t){ return !av[t.id] && t.type === o.type; });
+      return nt.length ? { ok:true, ref:{ k:'trans', id:nt[nt.length - 1].id } } : { err:'KYF n’a pas enregistré la transaction.' };
+    }
+    if(o.type === 'dividende'){
+      var ad = {}; divLoad().forEach(function(d){ ad[d.id] = 1; });
+      openAddDividende();
+      set('divTicker', (o.ticker && !o.ticker_inconnu) ? o.ticker.toUpperCase() : (o.nom || ''));
+      set('divMontant', sNum2((o.montant_c / 100).toFixed(2))); if(o.qty) set('divQty', sNum2(o.qty)); set('divNote', o.note || '');
+      try{ kyfDateSetValue('divDate', o.date); }catch(e){}
+      set('divDate', o.date);
+      var envD = { PEA:'pea', CTO:'cto', AV:'av', PER:'per' }[o.enveloppe], se = document.getElementById('divEnveloppe');
+      if(se && envD){ se.value = envD; try{ se.dispatchEvent(new Event('change')); }catch(e){} }
+      saveDividende();
+      var md = document.getElementById('divModal'); try{ if(md && md.style.display !== 'none') closeDividende(); }catch(e){}
+      var nd = divLoad().filter(function(d){ return !ad[d.id]; });
+      return nd.length ? { ok:true, ref:{ k:'div', id:nd[nd.length - 1].id } } : { err:'KYF n’a pas enregistré le dividende.' };
+    }
+  }catch(e){ return { err:'Erreur : ' + String(e && e.message || e).slice(0, 80) }; }
+  return { err:'Type non géré.' };
+}
+// Annule ce qui a été appliqué (suppression ou avant une modification). Retourne true si fait, false si introuvable (déjà supprimé sur le PC)
+function maAnnuler(ref){
+  try{
+    if(ref.k === 'trans'){
+      var all = etfTransLoad(), i = all.findIndex(function(t){ return String(t.id) === String(ref.id); }); if(i < 0) return false;
+      var tx = all[i], next = all.slice(); next.splice(i, 1); etfTransSave(next); kyfTradeRevert(tx); loadEtfTransactions(); try{ renderTransactions(); }catch(e){} try{ onIntradayTransaction(); }catch(e){}
+      return true;
+    }
+    if(ref.k === 'div'){
+      var d = divLoad().find(function(x){ return x.id === ref.id; }); if(!d) return false;
+      var tx2 = d.reinvestTxId ? etfTransLoad().find(function(t){ return t.id === d.reinvestTxId; }) : null;
+      if(tx2){ etfTransSave(etfTransLoad().filter(function(t){ return t.id !== tx2.id; })); kyfTradeRevert(tx2); loadEtfTransactions(); }
+      try{ kyfDivCashUndo(d); }catch(e){}
+      divSave(divLoad().filter(function(x){ return x.id !== ref.id; })); try{ renderDividendes(); }catch(e){}
+      return true;
+    }
+    if(ref.k === 'mvt'){
+      var a = kyfCashMvts(), j = a.findIndex(function(m){ return m.id === ref.id; }); if(j < 0) return false;
+      var m = a[j]; kyfCashMvtReverse_(m); a.splice(j, 1); kyfCashMvtsSave(a); try{ renderCashKPI(); }catch(e){} try{ kyfCashMvtRefresh(); }catch(e){}
+      return true;
+    }
+  }catch(e){}
+  return false;
+}
+// Met l'opération dans la file de validation habituelle (cas que KYF ne tranche pas seul)
+function maEnFile(o, motif){
+  var tc = new Date(); var p2 = function(n){ return (n < 10 ? '0' : '') + n; };
+  var op = JSON.parse(JSON.stringify(o)); delete op.st; delete op.sent; delete op.remplace;
+  var paq = { v:1, format:'kyfops', paquet:'P-' + tc.getFullYear() + p2(tc.getMonth() + 1) + p2(tc.getDate()) + '-' + p2(tc.getHours()) + p2(tc.getMinutes()) + '-' + Math.random().toString(36).slice(2, 6).replace(/[^a-z0-9]/g, 'x').padEnd(4, 'x'),
+    cree:tc.toISOString(), appli:'Kyf-Mobile Google', n:1, total_c:op.montant_c, ops:[op] };
+  var chk = checkPaquet(paq); if(chk.err) return { err:chk.err };
+  var imp = importer(chk.paq, chk.avert, chk.alertes); if(imp.err) return { err:imp.err };
+  return { ok:true };
+}
+async function maEcrire(maj){
+  if(!maj.length) return;
+  try{ await kyfFetchAuth(maUrl('/values:batchUpdate'), { method:'POST', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify({ valueInputOption:'RAW', data:maj }) }, { timeoutMs:20000 }); }
+  catch(e){ _ma.last = 'Statuts non écrits dans le classeur.'; }
+}
+async function maAuto(){
+  if(!shOk() || _ma.busy) return { skip:true };
+  _ma.busy = true; var nOk = 0, nFile = 0, nIgn = 0, maj = [];
+  try{
+    var r = await maLire(); if(r.err || r.absent) return r;
+    var evs = r.ev;
+    for(var i = 0; i < evs.length; i++){
+      var e = evs[i]; if(e.statut) continue;
+      var st = '', ref = null;
+      if(e.act === 'add'){
+        var mot = maMotif(e.op);
+        if(mot){ var f = maEnFile(e.op || {}, mot); st = f.ok ? 'en file : ' + mot : 'erreur : ' + (f.err || mot); ref = f.ok ? { k:'file', id:e.opid } : null; if(f.ok) nFile++; }
+        else { var a = await maAppliquer(e.op); if(a.ok){ st = 'appliqué'; ref = a.ref; nOk++; } else { var f2 = maEnFile(e.op, a.err); st = f2.ok ? 'en file : ' + a.err : 'erreur : ' + a.err; ref = f2.ok ? { k:'file', id:e.opid } : null; if(f2.ok) nFile++; } }
+      } else if(e.act === 'mod'){
+        var old = maRef(evs, e.opid) || (function(){ var x = evs.filter(function(z){ return z.opid === e.opid && z.ref && /^appliqué|^en file/.test(z.statut); }); return x.length ? x[x.length - 1].ref : null; })();
+        if(!old){ st = 'ignoré : opération introuvable sur le PC'; nIgn++; }
+        else if(old.k === 'file'){
+          var qf = queue(), tr = false; qf.paquets.forEach(function(pq){ pq.ops.forEach(function(x){ if(x.op.id === e.opid && x.etat === 'attente'){ x.op = e.op; tr = true; } }); }); if(tr){ sv(QK, qf); st = 'en file : modifiée'; ref = old; nFile++; } else { st = 'ignoré : déjà traitée dans KYF'; nIgn++; }
+        }
+        else if(!maAnnuler(old)){ st = 'ignoré : supprimée sur le PC'; nIgn++; }
+        else { var mot2 = maMotif(e.op); if(mot2){ var f3 = maEnFile(e.op, mot2); st = f3.ok ? 'en file : ' + mot2 : 'erreur : ' + (f3.err || mot2); ref = f3.ok ? { k:'file', id:e.opid } : null; nFile++; } else { var a2 = await maAppliquer(e.op); if(a2.ok){ st = 'appliqué'; ref = a2.ref; nOk++; } else { st = 'erreur : ' + a2.err; } } }
+      } else if(e.act === 'del'){
+        var rf = (function(){ var x = evs.filter(function(z){ return z.opid === e.opid && z.ref && /^appliqué|^en file/.test(z.statut); }); return x.length ? x[x.length - 1].ref : null; })();
+        if(!rf){ st = 'ignoré : opération introuvable sur le PC'; nIgn++; }
+        else if(rf.k === 'file'){ var q2 = queue(); q2.paquets.forEach(function(pq){ pq.ops.forEach(function(x){ if(x.op.id === e.opid && x.etat === 'attente') x.etat = 'ignoree'; }); }); sv(QK, q2); st = 'appliqué'; nOk++; }
+        else if(maAnnuler(rf)){ st = 'appliqué'; nOk++; } else { st = 'ignoré : déjà supprimée sur le PC'; nIgn++; }
+      }
+      e.statut = st; e.ref = ref;
+      maj.push({ range: OPS_TAB + '!G' + e.ligne + ':H' + e.ligne, values:[[st, ref ? JSON.stringify(ref) : '']] });
+      if(/^appliqué|^en file/.test(st) && ref) addId(e.opid);
+    }
+    await maEcrire(maj);
+    if(nOk || nFile){ try{ showToast('Mobile : ' + nOk + ' opération' + (nOk > 1 ? 's' : '') + ' appliquée' + (nOk > 1 ? 's' : '') + (nFile ? ' · ' + nFile + ' à valider' : '')); }catch(e){} majBadge_(); }
+    return { nOk:nOk, nFile:nFile, nIgn:nIgn };
+  } finally { _ma.busy = false; majBadge_(); }
+}
+
+window.KYFMobile = { open: ouvrir, envoyer: envoyerOuvrir, _snap: snapBuild, count: nbAttente, sheetCheck: function(){ return shVerif(false); }, auto: maAuto,
+  _test: { maAuto: maAuto, maLire: maLire, maMotif: maMotif, shLire: shLire, shVerif: shVerif, shImporter: shImporter, sh: _sh, qrPrep: qrPrep, qrChunks: qrChunks, crc32: crc32, chiffrer: chiffrer, dechiffrer: dechiffrer, checkPaquet: checkPaquet, enveloppeOk: enveloppeOk, importer: importer, queue: queue, recuClair: recuClair, TYPES: TYPES } };
 if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', maj); else setTimeout(maj, 0);
 setTimeout(function(){ try{ shVerif(false); }catch(e){} }, 12000);
+setTimeout(function(){ try{ maAuto(); }catch(e){} }, 14000);
+setInterval(function(){ try{ if(!document.hidden) maAuto(); }catch(e){} }, 180000);
 })();
 /* KYF-MOBILE fin */
 </script>
