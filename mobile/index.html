@@ -71,6 +71,7 @@ label{display:flex;flex-direction:column;gap:6px;color:var(--mut);font-size:.9re
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .logo .kk{color:#9ab4d4}}
 :root[data-theme="dark"] .logo .kk{color:#9ab4d4}
 .pills{display:flex;flex-wrap:wrap;gap:8px}.pills button{min-height:44px;border-radius:999px;padding:0 14px;display:flex;align-items:center;gap:8px}.pills button[aria-pressed="true"]{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc);font-weight:600}.dot{width:10px;height:10px;border-radius:50%;flex:none}
+.hs{overscroll-behavior-x:contain;will-change:transform}
 .who{display:flex;gap:14px;overflow-x:auto;padding:6px 2px 12px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .who::-webkit-scrollbar{display:none}
 .wh{flex:none;width:72px;min-height:0;border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:8px;scroll-snap-align:start;text-align:center;border-radius:14px}
@@ -481,7 +482,7 @@ html,body{overflow-x:clip;max-width:100%}main{overflow-x:clip;min-width:0;paddin
 <script src="avf.js"></script><script src="qr.js"></script>
 <script>
 "use strict";
-var VER="3.23.0", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="3.24.0", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["actif_valeur","Valeur d’un actif"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -630,10 +631,10 @@ function patTop(L){var R=[];L.forEach(function(x){if(!x||!x.m||x.m.nom==="Espèc
   var pane=function(t,A,bad){var mx=A.length?Math.abs(A[0].p):1,col=bad?"var(--rd)":"var(--gn)",bar=bad?"var(--rd)":"var(--acc)",h='<div class="ptp" style="flex:0 0 100%;min-width:0;max-width:100%;overflow:hidden;scroll-snap-align:start;scroll-snap-stop:always;box-sizing:border-box;padding:0 2px"><div style="display:flex;justify-content:space-between;align-items:baseline;margin:26px 0 12px"><b style="font-size:1.15rem">'+t+'</b><small style="color:var(--mut)">'+(QC.at?'<span style="color:var(--gn)">●</span> '+new Date(QC.at).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}):"")+'</small></div>';
     if(!A.length)return h+'<p class="hint" style="margin:0">'+(bad?"Aucune ligne en perte.":"Aucune ligne en gain.")+'</p></div>';
     A.forEach(function(r,i){h+='<div style="margin:0 0 16px"><div style="display:flex;align-items:center;gap:12px"><span style="width:28px;height:28px;border-radius:14px;background:color-mix(in srgb,'+bar+' 18%,transparent);color:'+bar+';font-weight:800;display:flex;align-items:center;justify-content:center;flex:none">'+(i+1)+'</span><span style="flex:1;min-width:0"><b style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(r.n)+'</b><small style="color:var(--mut)">'+esc(r.c)+'</small></span><span style="text-align:right;flex:none"><b style="color:'+col+';display:block">'+sgnP(r.p)+'</b><small style="color:var(--mut)">'+sgnE(r.g)+'</small></span></div><div style="height:7px;border-radius:4px;background:var(--line);margin:8px 0 0 40px;overflow:hidden"><div style="height:7px;border-radius:4px;width:'+Math.max(4,Math.abs(r.p)/mx*100).toFixed(1)+'%;background:linear-gradient(90deg,'+bar+',color-mix(in srgb,'+bar+' 30%,var(--card)));transition:width .4s"></div></div></div>'});return h+"</div>"};
-  var ix=S.ptp||0;return'<div class="ptop" style="text-align:left"><div class="ptsl" id="ptsl" style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch">'+pane("Les 5 meilleures lignes",BE,false)+pane("Les 5 moins bonnes lignes",MA,true)+'</div><div style="display:flex;justify-content:center;gap:8px;margin-top:2px">'+[0,1].map(function(i){return'<button type="button" data-pt="'+i+'" aria-label="'+(i?"Moins bonnes lignes":"Meilleures lignes")+'" style="width:'+(ix===i?22:8)+'px;min-height:0;height:8px;padding:0;border:0;border-radius:4px;background:'+(ix===i?"var(--acc)":"var(--line)")+'"></button>'}).join("")+'</div></div>'}
+  var ix=S.ptp||0;return'<div class="ptop" style="text-align:left"><div class="ptsl hs" id="ptsl" style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch">'+pane("Les 5 meilleures lignes",BE,false)+pane("Les 5 moins bonnes lignes",MA,true)+'</div><div style="display:flex;justify-content:center;gap:8px;margin-top:2px">'+[0,1].map(function(i){return'<button type="button" data-pt="'+i+'" aria-label="'+(i?"Moins bonnes lignes":"Meilleures lignes")+'" style="width:'+(ix===i?22:8)+'px;min-height:0;height:8px;padding:0;border:0;border-radius:4px;background:'+(ix===i?"var(--acc)":"var(--line)")+'"></button>'}).join("")+'</div></div>'}
 function cryAcc(ac,L){var c=comptes().filter(function(y){return y.nom===ac})[0];return(L&&L.length&&L[0].m.env==="Crypto")||!!(c&&c.type==="Crypto")}
 function cryKpi(ac,P,OPS){var fr=0;OPS.forEach(function(r){var x=r.x;if(/^crypto_/.test(x.type||""))fr+=(parseFloat(x.frais_c)||0)/100});var g=P.tV-P.tC,d=P.tV-P.tP,k=function(l,v,c){return'<div style="flex:none;min-width:128px;padding:13px 14px;border-radius:14px;background:var(--card);border:1px solid var(--line)"><small style="color:var(--mut)">'+l+'</small><b style="display:block;font-size:1.05rem;margin-top:4px'+(c?";color:"+c:"")+'">'+v+'</b></div>'};
-  return'<div style="display:flex;gap:10px;margin:18px 0 0;overflow-x:auto;scrollbar-width:none">'+k("Investi",eur(Math.round(P.tC*100)))+k("Performance",P.tC>0?sgnP(g/P.tC):"—",g>=0?"var(--gn)":"var(--rd)")+(P.tP>0?k("Variation 24 h",sgnP(d/P.tP),d>=0?"var(--gn)":"var(--rd)"):"")+(fr>0?k("Frais",eur(Math.round(fr*100))):"")+'</div>'}
+  return'<div class="hs" style="display:flex;gap:10px;margin:18px 0 0;overflow-x:auto;scrollbar-width:none">'+k("Investi",eur(Math.round(P.tC*100)))+k("Performance",P.tC>0?sgnP(g/P.tC):"—",g>=0?"var(--gn)":"var(--rd)")+(P.tP>0?k("Variation 24 h",sgnP(d/P.tP),d>=0?"var(--gn)":"var(--rd)"):"")+(fr>0?k("Frais",eur(Math.round(fr*100))):"")+'</div>'}
 function cryKey(m){return String(m.sy||String(m.ticker||"").replace(/-EUR$/,"")||m.nom||"").toUpperCase()}
 var RGL={ex:"Plateforme d’échange",wl:"Wallet"};
 function cryLoc(m){var e=(ld("kyfm-cryloc",{})||{})[cryKey(m)];return e&&(e.t==="ex"||e.t==="wl")?e:null}
@@ -649,6 +650,61 @@ function cryRep(L,mode){var R=L.filter(function(x){return x.m.nom!=="Espèces"&&
   else G=R.map(function(x){return{n:x.m.nom+(x.m.st?" · stablecoin":""),sub:"",v:x.val}});
   var tg='<div class="ctb" style="margin-top:18px;justify-content:flex-start;gap:26px"><button data-cr="c" class="'+(mode==="l"?"":"on")+'">Par crypto</button><button data-cr="l" class="'+(mode==="l"?"on":"")+'">Par lieu</button></div>';
   return tg+'<div class="list" style="margin-top:20px">'+G.slice(0,15).map(function(x,i){var p=x.v/tot*100,c=PCOL[i%PCOL.length];return'<div class="li" style="--k:var(--acc);display:block;padding:12px 14px"><div style="display:flex;justify-content:space-between;gap:8px"><b>'+esc(x.n)+(x.sub?' <small style="color:var(--mut);font-weight:400">· '+x.sub+"</small>":"")+'</b><span>'+(Math.round(p*10)/10).toString().replace(".",",")+' %</span></div><div style="height:8px;border-radius:4px;background:var(--line);margin-top:7px;overflow:hidden"><div style="height:8px;border-radius:4px;width:'+Math.min(100,p).toFixed(1)+'%;background:linear-gradient(90deg,'+c+',color-mix(in srgb,'+c+' 30%,var(--card)))"></div></div></div>'}).join("")+"</div>"}
+
+/* ===== 3.24 : rebond des cadres, gel des mises à jour pendant le glissement ===== */
+var HOLDT=0,HOLDING=false,RPEND=0;
+function holdOn(){return HOLDING||Date.now()<HOLDT}
+function holdEnd(){HOLDING=false;HOLDT=Date.now()+1500;setTimeout(function(){if(RPEND&&!holdOn()){RPEND=0;if(S.v==="pat")render()}},1600)}
+(function(){var el=null,x0=0,y0=0,mv=false;
+  document.addEventListener("touchstart",function(e){var t=e.target&&e.target.closest?e.target.closest(".hs"):null;if(!t)return;el=t;HOLDING=true;x0=e.touches[0].clientX;y0=e.touches[0].clientY;mv=false;el.style.transition="none"},{passive:true});
+  document.addEventListener("touchmove",function(e){if(!el)return;HOLDING=true;var dx=e.touches[0].clientX-x0,dy=e.touches[0].clientY-y0;if(!mv&&Math.abs(dy)>Math.abs(dx))return;mv=true;
+    var max=el.scrollWidth-el.clientWidth,over=0;if(el.scrollLeft<=0&&dx>0)over=dx;else if(el.scrollLeft>=max-1&&dx<0)over=dx;
+    if(over){var d=Math.max(-70,Math.min(70,over*.35));el.style.transform="translateX("+d+"px)"}else el.style.transform=""},{passive:true});
+  function fin(){if(!el)return;var t=el;el=null;t.style.transition="transform .45s cubic-bezier(.2,1.4,.4,1)";t.style.transform="";holdEnd()}
+  document.addEventListener("visibilitychange",function(){if(document.hidden&&S.pu){persoLock();S.pd=null}});
+  document.addEventListener("touchend",fin,{passive:true});document.addEventListener("touchcancel",fin,{passive:true})})();
+/* ===== 3.24 : garde-fou seed phrase / clé privée ===== */
+function seedSuspect(t){t=String(t||"");if(!t)return false;
+  if(/\b(xprv|yprv|zprv|tprv)[1-9A-HJ-NP-Za-km-z]{20,}/i.test(t))return true;
+  if(/\b[0-9a-f]{64}\b/i.test(t)||/\b0x[0-9a-f]{64}\b/i.test(t))return true;
+  if(/\b[5KL][1-9A-HJ-NP-Za-km-z]{50,51}\b/.test(t))return true;
+  var w=t.toLowerCase().replace(/[,;:.\n\r\t]+/g," ").split(/\s+/).filter(Boolean);
+  if(w.length>=11){var ok=w.filter(function(x){return /^[a-z]{3,8}$/.test(x)}).length;if(ok/w.length>=.9)return true}
+  return false}
+var SEEDMSG="Interdit : ne saisissez jamais une seed phrase ni une clé privée. Gardez-la hors ligne, sur papier, loin de tout écran.";
+/* ===== 3.24 : informations personnelles (coffre chiffré, révélées après vérification) ===== */
+async function persoVerif(ph){var c=JSON.parse(localStorage.getItem(KV)),k=await deriveKey(ph,unb64(c.sel),c.iter||ITER);await crypto.subtle.decrypt({name:"AES-GCM",iv:unb64(c.iv)},k,unb64(c.donnees));return true}
+var PERT=0;
+function persoOn(nom){return S.pu===nom}
+function persoLock(){S.pu=null;S.pv=0;clearTimeout(PERT)}
+function persoGet(nom){var P=ld("kyfm-perso",{})||{};var e=P[nom]||{};return{d:e.d||"",l:e.l||"",x:Array.isArray(e.x)?e.x:[]}}
+function persoOuvrir(nom){var ok=function(){S.pu=nom;S.pv=0;msg="";clearTimeout(PERT);PERT=setTimeout(function(){if(S.pu){persoLock();if(S.v==="cptd")render()}},90000);render()};
+  if(bioActif()){bioPhrase().then(persoVerif).then(ok).catch(function(){S.pv=1;msg="Vérification annulée. Entrez votre phrase secrète.";msgOk=false;render()})}
+  else{S.pv=1;render()}}
+function persoLire(){var g=function(i){var e=$(i);return e?String(e.value||""):""},x=[];Array.prototype.forEach.call(app.querySelectorAll("[data-pk]"),function(k){var v=app.querySelector('[data-pw="'+k.getAttribute("data-pk")+'"]');x.push({k:k.value,v:v?v.value:""})});return{d:g("pd"),l:g("pl"),x:x}}
+function persoHtml(nom,L,ev){var cus=/^(PEA|PEA-PME|CTO|PER)$/.test(ev||""),on=persoOn(nom),h='<p class="gl" style="margin-top:22px">Informations personnelles</p>';
+  if(!on){var lk='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+    h+='<div class="list"><div class="li" style="--k:var(--acc);display:flex;justify-content:space-between;gap:10px"><span>Date du 1er investissement</span><b>••••••</b></div><div class="li" style="--k:var(--acc);display:flex;justify-content:space-between;gap:10px"><span>Lieu de conservation</span><b>••••••</b></div>'+(cus?'<div class="li" style="--k:var(--acc);display:flex;justify-content:space-between;gap:10px"><span>Lignes personnalisées</span><b>••••••</b></div>':"")+'</div>';
+    if(S.pv){h+='<div class="cd" style="margin-top:12px"><label class="sr" style="display:block;border:0;min-height:0;padding:0">Phrase secrète<input id="pph" type="password" autocomplete="off" style="width:100%;box-sizing:border-box;margin-top:6px"></label><button class="p" id="pok" style="width:100%;margin-top:12px">Vérifier</button></div>'}
+    else h+='<button class="p" id="pop" style="width:100%;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px">'+lk+(bioActif()?(bioKind()==="key"?"Afficher avec la clé d’accès":"Afficher avec l’empreinte"):"Afficher avec la phrase secrète")+'</button>';
+    h+='<p class="hint" style="margin:10px 2px 0">Ces informations restent dans votre coffre chiffré, sur cet appareil. Elles ne sont jamais envoyées à KYF PC ni à Google.</p>';return h}
+  var g=S.pd||persoGet(nom);S.pd=g;
+  h+='<div class="cd" style="margin-top:6px"><label class="sr" style="display:block;border:0;min-height:0;padding:0">Date du 1er investissement<input id="pd" type="date" value="'+esc(g.d)+'" style="width:100%;box-sizing:border-box;margin-top:6px"></label><label class="sr" style="display:block;border:0;min-height:0;padding:12px 0 0">Lieu de conservation<input id="pl" maxlength="80" placeholder="'+(ev==="Crypto"?"Coffre, Ledger… (jamais la seed phrase)":"Banque, coffre, classeur…")+'" value="'+esc(g.l)+'" style="width:100%;box-sizing:border-box;margin-top:6px"></label>';
+  if(cus){h+='<p class="hint" style="margin:16px 0 6px">Lignes personnalisées</p>';g.x.forEach(function(r,i){h+='<div style="display:flex;gap:8px;margin-bottom:8px"><input data-pk="'+i+'" maxlength="40" placeholder="Intitulé" value="'+esc(r.k)+'" style="flex:1;min-width:0"><input data-pw="'+i+'" maxlength="80" placeholder="Valeur" value="'+esc(r.v)+'" style="flex:1;min-width:0"><button type="button" class="l" data-pdel="'+i+'" aria-label="Supprimer la ligne" style="flex:none;padding:0 12px">×</button></div>'});
+    h+='<button type="button" class="l" id="padd" style="width:100%">+ Ajouter une ligne</button>'}
+  h+='<div style="display:flex;gap:10px;margin-top:16px"><button class="l" id="pcl" style="flex:1">Masquer</button><button class="p" id="psv" style="flex:1">Enregistrer</button></div></div>';return h}
+function persoBind(nom){
+  var st=function(){S.pd=persoLire()};
+  if($("pop"))$("pop").onclick=function(){persoOuvrir(nom)};
+  if($("pok"))$("pok").onclick=function(){var v=String(($("pph")||{}).value||"");if(!v)return;persoVerif(v).then(function(){S.pu=nom;S.pv=0;msg="";clearTimeout(PERT);PERT=setTimeout(function(){if(S.pu){persoLock();if(S.v==="cptd")render()}},90000);render()}).catch(function(){msg="Phrase secrète incorrecte.";msgOk=false;render()})};
+  if($("pcl"))$("pcl").onclick=function(){S.pd=null;persoLock();render()};
+  if($("padd"))$("padd").onclick=function(){st();if(S.pd.x.length<12)S.pd.x.push({k:"",v:""});render()};
+  Array.prototype.forEach.call(app.querySelectorAll("[data-pdel]"),function(b){b.onclick=function(){st();S.pd.x.splice(+b.getAttribute("data-pdel"),1);render()}});
+  if($("psv"))$("psv").onclick=function(){st();var g=S.pd,all=[g.l].concat(g.x.map(function(r){return r.k+" "+r.v}));
+    if(all.some(seedSuspect)){msg=SEEDMSG;msgOk=false;render();return}
+    var clean=function(t){return String(t||"").replace(/[<>"`&]/g,"").trim()};
+    var o={d:/^\d{4}-\d{2}-\d{2}$/.test(g.d)?g.d:"",l:clean(g.l).slice(0,80),x:g.x.map(function(r){return{k:clean(r.k).slice(0,40),v:clean(r.v).slice(0,80)}}).filter(function(r){return r.k||r.v})};
+    var P=ld("kyfm-perso",{})||{};P[nom]=o;sv("kyfm-perso",P);S.pd=null;persoLock();msg="Informations enregistrées dans votre coffre.";msgOk=true;render()}}
 async function chargerListe(t){
   try{var a=(t&&typeof t==="object")?t:JSON.parse(String(t).trim());
     if(a&&a.format==="kyfliste-chiffre"){if(!PH)throw new Error("verrouillé");a=await dechiffrer(a,PH)}
@@ -1767,7 +1823,7 @@ async function qtRefresh(force){if(QBUSY)return;var P=patLedger(),c=qtLoad();if(
   QBUSY=1;try{var r=await idxGet("action=quotes&t="+encodeURIComponent(all.join(",")),20000);if(!r||!r.q)throw new Error("réponse vide");Object.keys(r.q).forEach(function(k){c.q[k]=r.q[k]});
     var fx=qtNeed(P).filter(function(t){return/=X$/.test(t)});if(fx.length){var r2=await idxGet("action=quotes&t="+encodeURIComponent(fx.join(",")),20000);if(r2&&r2.q)Object.keys(r2.q).forEach(function(k){c.q[k]=r2.q[k]})}
     try{await qtMid(c)}catch(e){}c.at=Date.now();c.fail=0;qtSave()}catch(e){c.fail=Date.now();qtSave();klog("cours : "+(e&&(e.message||e.name)||e))}
-  QBUSY=0;if(S.v==="pat")render()}
+  QBUSY=0;if(S.v==="pat"){if(holdOn())RPEND=1;else render()}}
 function qtDay(){var f=new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/Paris",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}),o={};f.formatToParts(new Date()).forEach(function(x){o[x.type]=+x.value});var off=Date.UTC(o.year,o.month-1,o.day,o.hour,o.minute,o.second)-Math.floor(Date.now()/1000)*1000;return{d:o.year+"-"+o.month+"-"+o.day,t:Date.UTC(o.year,o.month-1,o.day)-off}}
 async function qtMid(c){var D=qtDay();if(!c.mid||c.mid.d!==D.d)c.mid={d:D.d,p:{}};
   var T=Object.keys(c.q).filter(function(t){return/^[A-Z0-9]{2,10}-EUR$/.test(t)});
@@ -1980,7 +2036,7 @@ function render(){autoPlan();if(S.v==="paquet")evStatuts();if(S.v==="pos_e"&&$("
     else if(T5==="r"&&CRY5)h+=cryRep(L5,S.crm);
     else if(T5==="r"){var RS=S.rsub||"g";h+=`<div class="ctb" style="margin-top:18px;justify-content:flex-start;gap:26px"><button data-rs="g" class="${RS==="g"?"on":""}">Géographie</button><button data-rs="s" class="${RS==="s"?"on":""}">Secteurs</button></div>`+geoHtml(L5.filter(function(x){return x.m.nom!=="Espèces"}),RS==="s")+geoLines(L5,ac)}
     else if(T5==="f")h+=fraisHtml(ac,P5.tV);
-    else if(T5==="i"){var IR=function(a,b){return `<div class="li" style="--k:var(--acc);display:flex;justify-content:space-between;gap:10px"><span>${a}</span><b style="text-align:right">${b}</b></div>`},cm=comptes().filter(function(c){return c.nom===ac})[0]||{};h+=`<div class="list">${IR("Nom",esc(ac))+IR("Type",esc(L5.length?L5[0].m.env:"—"))+IR("Devise","EUR")+IR("Lignes",L5.filter(function(x){return x.m.nom!=="Espèces"}).length)+IR("Valeur",eur(Math.round(P5.tV*100)))+IR("Investi",eur(Math.round(P5.tC*100)))+(cm.src==="pc"||cm.kyf?IR("Source","KYF PC"):"")}</div>`}
+    else if(T5==="i"){var IR=function(a,b){return `<div class="li" style="--k:var(--acc);display:flex;justify-content:space-between;gap:10px"><span>${a}</span><b style="text-align:right">${b}</b></div>`},cm=comptes().filter(function(c){return c.nom===ac})[0]||{};h+=`<div class="list">${IR("Nom",esc(ac))+IR("Type",esc(L5.length?L5[0].m.env:"—"))+IR("Devise","EUR")+IR("Lignes",L5.filter(function(x){return x.m.nom!=="Espèces"}).length)+IR("Valeur",eur(Math.round(P5.tV*100)))+IR("Investi",eur(Math.round(P5.tC*100)))+(cm.src==="pc"||cm.kyf?IR("Source","KYF PC"):"")}</div>`+persoHtml(ac,L5,cm.type||(L5.length?L5[0].m.env:""))}
     else{var DO5=S.dco==null?DUE5:S.dco;
       if(PC5&&DP5)h+=`<div class="list" style="margin-top:12px"><button class="li" data-dco="1" style="--k:var(--acc);text-align:left"><span class="ic">${SV('<path d="M7 7h10l-3-3M17 17H7l3 3M17 7v4M7 17v-4"/>')}</span><span class="tn"><b>Plans DCA</b><small>${DUE5?"Un achat est à saisir":"Achats programmés"}</small></span><span class="ch" style="display:flex;transform:rotate(${DO5?90:0}deg);transition:transform .15s">${CHEV}</span></button></div>`+(DO5?`<div class="list" style="margin-top:6px">${DP5}</div>`:"");
       if(CRY5)h+=cryPvHtml();
@@ -2974,7 +3030,7 @@ function lier(o){pkBind(app);
   Array.prototype.forEach.call(app.querySelectorAll("[data-sw11]"),function(b){b.onclick=function(){try{localStorage.setItem("kyfm-pat",patOn()?"0":"1")}catch(e){}S._seen=0;render()}});
     var PSL=$("ptsl");if(PSL){PSL.scrollLeft=(S.ptp||0)*PSL.clientWidth;PSL.onscroll=function(){var i=PSL.scrollLeft>PSL.clientWidth/2?1:0;if(i!==(S.ptp||0)){S.ptp=i;Array.prototype.forEach.call(app.querySelectorAll("[data-pt]"),function(b){var on=+b.getAttribute("data-pt")===i;b.style.width=on?"22px":"8px";b.style.background=on?"var(--acc)":"var(--line)"})}}}
   Array.prototype.forEach.call(app.querySelectorAll("[data-pt]"),function(b){b.onclick=function(){var i=+b.getAttribute("data-pt");if(PSL)PSL.scrollTo({left:i*PSL.clientWidth,behavior:"smooth"})}});
-  clearInterval(PLV);PLV=0;if(S.v==="pat")PLV=setInterval(function(){if(!document.hidden&&S.v==="pat"&&!S.psh&&!QBUSY)qtRefresh(true)},60000);
+  clearInterval(PLV);PLV=0;if(S.v==="pat")PLV=setInterval(function(){if(!document.hidden&&S.v==="pat"&&!S.psh&&!QBUSY&&!holdOn())qtRefresh(true)},60000);
   if(S.v==="pat"){cvDraw();qtRefresh(false);if($("qtr"))$("qtr").onclick=function(){qtRefresh(true);render()}}
   if($("psel"))$("psel").onclick=function(){S.psh=true;render()};
   if($("pbk"))$("pbk").onclick=function(){S.pa="Tout";S.psh=false;render()};
@@ -3026,11 +3082,13 @@ function lier(o){pkBind(app);
   Array.prototype.forEach.call(app.querySelectorAll("[data-ln]"),function(b){b.onclick=function(){var ac=(S.d&&S.d.ac)||"",L=patSel(ac).LS,x=L[+b.getAttribute("data-ln")];if(!x)return;var en=x.m.env;
     if(en==="PEA"||en==="PEA-PME"||en==="CTO"||(en==="Crypto"&&!x.m.nom.match(/^Espèces$/))){S.lsh=+b.getAttribute("data-ln");return render()}
     var c=comptes().filter(function(y){return y.nom===ac})[0];S.d={env:en,cpt:c||null,pre:true};go("ops")}});
+  if(!(S.v==="cptd"&&S.ctab==="i")){S.pu=null;S.pd=null;S.pv=0}
+  if(S.v==="cptd"&&S.d&&S.d.ac)persoBind(S.d.ac);
   if($("lbg"))$("lbg").onclick=function(){S.lsh=null;render()};
   if($("la-rg"))$("la-rg").onclick=function(){var ac=(S.d&&S.d.ac)||"",L=patSel(ac).LS,m=L[S.lsh]&&L[S.lsh].m;if(!m)return;var e=cryLoc(m)||{};S.lrg={k:cryKey(m),nom:m.nom,t:e.t||"ex",n:e.n||""};S.lsh=null;render()};
   if($("rgbg"))$("rgbg").onclick=function(){S.lrg=null;render()};
   Array.prototype.forEach.call(app.querySelectorAll("[data-rt]"),function(b){b.onclick=function(){S.lrg.n=($("rgn")||{}).value||"";S.lrg.t=b.getAttribute("data-rt");render()}});
-  if($("rgsv"))$("rgsv").onclick=function(){var G=ld("kyfm-cryloc",{})||{},n=String(($("rgn")||{}).value||"").replace(/[<>"`&]/g,"").trim().slice(0,40);G[S.lrg.k]={t:S.lrg.t,n:n};sv("kyfm-cryloc",G);S.lrg=null;render()};
+  if($("rgsv"))$("rgsv").onclick=function(){var G=ld("kyfm-cryloc",{})||{},n=String(($("rgn")||{}).value||"").replace(/[<>"`&]/g,"").trim().slice(0,40);if(seedSuspect(($("rgn")||{}).value)){msg=SEEDMSG;msgOk=false;S.lrg=null;render();return}G[S.lrg.k]={t:S.lrg.t,n:n};sv("kyfm-cryloc",G);S.lrg=null;render()};
   if($("rgno"))$("rgno").onclick=function(){var G=ld("kyfm-cryloc",{})||{};delete G[S.lrg.k];sv("kyfm-cryloc",G);S.lrg=null;render()};
   Array.prototype.forEach.call(app.querySelectorAll("[data-cr]"),function(b){b.onclick=function(){S.crm=b.getAttribute("data-cr");render()}});
   ["achat","vente","dividende"].forEach(function(t){var b=$("la-"+t);if(b)b.onclick=function(){var ac=(S.d&&S.d.ac)||"",L=patSel(ac).LS,m=L[S.lsh]&&L[S.lsh].m;if(!m)return;var c=comptes().filter(function(y){return y.nom===ac})[0];S.lsh=null;
