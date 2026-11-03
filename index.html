@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_1_24.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.1.26
+  @version     : Beta 2.12.1.27
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7477,7 +7477,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.1.26</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.1.27</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -48793,7 +48793,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.1.26\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.1.27\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -213296,7 +213296,7 @@ var MAX_FIC = 512 * 1024, MAX_OPS = 200, MAX_IDS = 5000;
 var TYPES = ['achat','vente','dividende','versement','retrait','crypto_achat','crypto_vente','crypto_swap','crypto_transfert','crypto_frais',
   'livret_depot','livret_retrait','livret_interets','livret_dca','arbitrage','frais_av','av_versement','av_programme','av_rachat','av_valeur',
   'av_ligne_valeur','av_ligne_nouvelle','actif_nouveau','actif_valeur','immo_valeur','immo_loyer','or_achat','or_vente','crowd_projet','crowd_maj',
-  'scpi_achat','scpi_vente','scpi_dividende','scpi_maj','flux_recurrent','pee_versement','pee_retrait','dca_plan','cash_maj'];
+  'scpi_achat','scpi_vente','scpi_dividende','scpi_maj','flux_recurrent','pee_versement','pee_retrait','dca_plan','cash_maj','renommage'];
 var ENVS = ['PEA','PEA-PME','CTO','AV','PER','Livret','Crypto','Or','Immobilier','Crowdfunding','SCPI','Autres actifs','Budget','PEE','DCA','Liquidités'];
 var LIB = { achat:'Achat', vente:'Vente', dividende:'Dividende', versement:'Versement', retrait:'Retrait', crypto_achat:'Achat crypto', crypto_vente:'Vente crypto',
   crypto_swap:'Échange crypto', crypto_transfert:'Transfert crypto', crypto_frais:'Frais crypto', livret_depot:'Dépôt livret', livret_retrait:'Retrait livret',
@@ -213304,9 +213304,9 @@ var LIB = { achat:'Achat', vente:'Vente', dividende:'Dividende', versement:'Vers
   av_rachat:'Rachat AV', av_valeur:'Valeur du contrat', av_ligne_valeur:'Valeur d’une ligne', av_ligne_nouvelle:'Nouvelle ligne AV', actif_nouveau:'Nouvel actif',
   actif_valeur:'Valeur d’un actif', immo_valeur:'Valeur d’un bien', immo_loyer:'Loyer', or_achat:'Achat or', or_vente:'Vente or', crowd_projet:'Projet crowdfunding',
   crowd_maj:'Suivi crowdfunding', scpi_achat:'Achat SCPI', scpi_vente:'Vente SCPI', scpi_dividende:'Dividende SCPI', scpi_maj:'Mise à jour SCPI', flux_recurrent:'Flux récurrent',
-  pee_versement:'Versement PEE', pee_retrait:'Retrait PEE', dca_plan:'Plan DCA', cash_maj:'Solde de liquidités' };
+  pee_versement:'Versement PEE', pee_retrait:'Retrait PEE', dca_plan:'Plan DCA', cash_maj:'Solde de liquidités', renommage:'Renommage' };
 // Types que le bouton Valider sait ouvrir dans cette version (les autres restent à saisir à la main, puis Ignorer)
-var BRANCHES = { achat:1, vente:1, dividende:1, versement:1, retrait:1 };
+var BRANCHES = { achat:1, vente:1, dividende:1, versement:1, retrait:1, renommage:1 };
 // Versements et retraits : seuls PEA et CTO ont des espèces suivies par KYF (le PEA-PME n'en a pas)
 function peutValider(o){ if(!BRANCHES[o.type]) return false; if(o.type === 'versement' || o.type === 'retrait') return o.enveloppe === 'PEA' || o.enveloppe === 'CTO'; return true; }
 var SVG = function(p, w){ return '<svg viewBox="0 0 24 24" width="' + (w || 16) + '" height="' + (w || 16) + '" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>'; };
@@ -213387,7 +213387,8 @@ function checkOp(o, i){
   if(typeof o.id !== 'string' || !/^O-[A-Za-z0-9-]{1,40}$/.test(o.id)) return p + 'le champ id est invalide (attendu : O- suivi de lettres, chiffres, tirets).';
   if(TYPES.indexOf(o.type) < 0) return 'TYPE';
   if(!dateOk(o.date)) return p + 'le champ date n\u2019est pas une date valide (format AAAA-MM-JJ).';
-  if(ENVS.indexOf(o.enveloppe) < 0) return p + 'le champ enveloppe a une valeur inconnue de KYF.';
+  if(ENVS.indexOf(o.enveloppe) < 0 && !(o.type === 'renommage' && (o.enveloppe == null || o.enveloppe === ''))) return p + 'le champ enveloppe a une valeur inconnue de KYF.';
+  if(o.type === 'renommage'){ if(['compte','ligne'].indexOf(o.cible) < 0) return p + 'le champ cible du renommage est invalide.'; if(typeof o.ancien !== 'string' || typeof o.nouveau !== 'string' || !o.ancien.trim() || !o.nouveau.trim() || o.ancien.length > 100 || o.nouveau.length > 100 || /[<>"`]/.test(o.ancien + o.nouveau)) return p + 'les champs ancien et nouveau du renommage sont invalides.'; }
   var w; if(w = pourquoi(o.compte == null ? '' : o.compte, 60, true)) return p + 'le champ compte ' + w + '.';
   if(w = pourquoi(o.compte_id == null ? '' : o.compte_id, 60, true)) return p + 'le champ compte_id ' + w + '.';
   if(!(o.ticker == null || o.ticker === '' || (typeof o.ticker === 'string' && /^[A-Za-z0-9.\-]{1,20}$/.test(o.ticker)))) return p + 'le champ ticker doit faire 1 à 20 caractères (lettres, chiffres, point, tiret).';
@@ -213480,7 +213481,7 @@ function recuClair(pq){
 function sNum(v){ return String(v == null ? '' : v).replace('.', ','); }
 function eur(c){ return (typeof fmt === 'function' ? fmt(c / 100, 2) : (c / 100).toFixed(2)) + ' €'; }
 function hors(o){ return !!(o.devise && o.devise !== 'EUR'); }
-function montantTxt(o){ return hors(o) ? (o.montant_c / 100).toFixed(2).replace('.', ',') + ' ' + o.devise : eur(o.montant_c); }
+function montantTxt(o){ if(o.type === 'renommage') return String(o.ancien || '') + ' → ' + String(o.nouveau || ''); return hors(o) ? (o.montant_c / 100).toFixed(2).replace('.', ',') + ' ' + o.devise : eur(o.montant_c); }
 // Le compte cité par l'opération existe-t-il encore dans KYF ? (vérifiable pour les comptes titres et les contrats AV / PER)
 function compteManquant(o){
   if(!o.compte_id) return false;
@@ -213536,6 +213537,11 @@ async function valider(pi, oi, opt){
   var q = queue(), pq = q.paquets[pi], x = pq && pq.ops[oi]; if(!x || x.etat !== 'attente') return;
   var o = x.op;
   if(!peutValider(o)) return;
+  if(o.type === 'renommage'){
+    var rr = renomAppliquer(o);
+    if(rr.err){ try{ showToast(rr.err); }catch(e){} return; }
+    x.etat = 'validee'; x.montant_c_reel = 0; sv(QK, q); addId(o.id); maStatut(o.id, 'appliqué'); try{ showToast('Renommage appliqué : ' + o.nouveau); }catch(e){} rendu(); maj(); return;
+  }
   var vide = !!(opt && opt.vide);
   if(hors(o) && !vide) return;   // jamais de pré-remplissage d'un montant en devise étrangère
   var pre = !vide, pme = o.enveloppe === 'PEA-PME', cptKo = compteManquant(o), nettoie = function(){};
@@ -213642,7 +213648,7 @@ function finOp(pi, oi, etat, reel){
 }
 function ignorer(pi, oi){
   var q = queue(), x = q.paquets[pi] && q.paquets[pi].ops[oi]; if(!x || x.etat !== 'attente') return;
-  x.etat = 'ignoree'; sv(QK, q); rendu();
+  x.etat = 'ignoree'; sv(QK, q); if(x.op.type === 'renommage') maStatut(x.op.id, 'ignoré : refusé sur le PC'); rendu(); maj();
 }
 function retirer(pi){ var q = queue(); q.paquets.splice(pi, 1); sv(QK, q); rendu(); maj(); }
 
@@ -214177,6 +214183,7 @@ function maRef(ev, opid){
 function maMotif(o){
   if(!o || typeof o !== 'object') return 'Opération illisible.';
   var e = checkOp(o, 0); if(e) return e === 'TYPE' ? 'Type d’opération inconnu de cette version de KYF.' : e;
+  if(o.type === 'renommage') return 'Renommage : à valider sur le PC.';
   if(hors(o)) return 'Devise étrangère : KYF compte en euros.';
   if(o.enveloppe === 'PEA-PME') return 'PEA-PME : choisissez l’enveloppe vous-même.';
   if(compteManquant(o)) return 'Compte introuvable dans KYF.';
@@ -214274,6 +214281,40 @@ function maAnnuler(ref){
   }catch(e){}
   return false;
 }
+// Renommage demandé depuis le mobile : appliqué seulement quand l'utilisateur clique sur Valider dans la file
+function renomAppliquer(o){
+  var anc = String(o.ancien || '').trim(), nv = String(o.nouveau || '').replace(/[<>"`&]/g, '').replace(/\s+/g, ' ').trim().slice(0, 60);
+  if(!anc || !nv) return { err:'Nom vide.' };
+  var tk = String(o.ticker || '').toUpperCase(), isin = String(o.isin || '').toUpperCase(), fait = false;
+  try{
+    if(o.cible === 'compte'){
+      var l = kyfCtoComptes(), c = l.find(function(x){ return x.nom === anc; });
+      if(c){ if(l.some(function(x){ return x !== c && x.nom.toLowerCase() === nv.toLowerCase(); })) return { err:'Un compte CTO porte déjà ce nom.' }; c.nom = nv.slice(0, 40); kyfCtoSave(l); fait = true; }
+      if(!fait){ var av = avLoad(), k = av.find(function(x){ return x && x.contratNom === anc; }); if(k){ k.contratNom = nv; avSave(av); fait = true; } }
+      if(!fait) return { err:'« ' + anc + ' » n’est pas un compte renommable dans KYF PC.' };
+    } else {
+      var m = ETF.find(function(e){ return e && e.name === anc && (!tk || String(e.ticker || '').toUpperCase() === tk); }) || (tk ? ETF.find(function(e){ return e && String(e.ticker || '').toUpperCase() === tk; }) : null);
+      if(m){ m.name = nv; etfSave(); fait = true; }
+      if(!fait){
+        var all = avPosLoadAll();
+        Object.keys(all).forEach(function(id){ var ch = false; (all[id] || []).forEach(function(p){ if(p && p.nom === anc && (!tk || String(p.ticker || '').toUpperCase() === tk || (isin && String(p.isin || '').toUpperCase() === isin))){ p.nom = nv; ch = true; } }); if(ch){ avPosSave(id, all[id]); fait = true; } });
+      }
+      if(!fait) return { err:'Ligne « ' + anc + ' » introuvable dans KYF PC.' };
+    }
+  }catch(e){ return { err:'Erreur : ' + String(e && e.message || e).slice(0, 80) }; }
+  ['ctRender','renderAV','renderPortfolio','renderCryptoPage'].forEach(function(f){ try{ if(typeof window[f] === 'function') window[f](); }catch(e){} });
+  return { ok:true };
+}
+// Écrit dans le classeur le statut final d'une opération restée « en file » (le mobile en déduit : validée ou ignorée)
+async function maStatut(opid, st){
+  try{
+    if(!shOk()) return;
+    var r = await maLire(); if(r.err || r.absent) return;
+    var maj2 = [];
+    r.ev.forEach(function(e){ if(e.opid === opid && /^en file/.test(e.statut)) maj2.push({ range: OPS_TAB + '!G' + e.ligne + ':H' + e.ligne, values:[[st, e.ref ? JSON.stringify(e.ref) : '']] }); });
+    await maEcrire(maj2);
+  }catch(e){}
+}
 // Met l'opération dans la file de validation habituelle (cas que KYF ne tranche pas seul)
 function maEnFile(o, motif){
   var tc = new Date(); var p2 = function(n){ return (n < 10 ? '0' : '') + n; };
@@ -214327,7 +214368,7 @@ async function maAuto(){
 }
 
 window.KYFMobile = { open: ouvrir, envoyer: envoyerOuvrir, _snap: snapBuild, count: nbAttente, sheetCheck: function(){ return shVerif(false); }, auto: maAuto,
-  _test: { maAuto: maAuto, maLire: maLire, maMotif: maMotif, shLire: shLire, shVerif: shVerif, shImporter: shImporter, sh: _sh, qrPrep: qrPrep, qrChunks: qrChunks, crc32: crc32, chiffrer: chiffrer, dechiffrer: dechiffrer, checkPaquet: checkPaquet, enveloppeOk: enveloppeOk, importer: importer, queue: queue, recuClair: recuClair, TYPES: TYPES } };
+  _test: { maAuto: maAuto, maLire: maLire, maMotif: maMotif, shLire: shLire, shVerif: shVerif, shImporter: shImporter, sh: _sh, qrPrep: qrPrep, qrChunks: qrChunks, crc32: crc32, chiffrer: chiffrer, dechiffrer: dechiffrer, checkPaquet: checkPaquet, enveloppeOk: enveloppeOk, importer: importer, queue: queue, recuClair: recuClair, TYPES: TYPES, valider: valider, ignorer: ignorer, renomAppliquer: renomAppliquer } };
 if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', maj); else setTimeout(maj, 0);
 setTimeout(function(){ try{ shVerif(false); }catch(e){} }, 12000);
 setTimeout(function(){ try{ maAuto(); }catch(e){} }, 14000);
