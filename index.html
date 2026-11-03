@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_1_24.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.1.28
+  @version     : Beta 2.12.1.29
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7477,7 +7477,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.1.28</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.1.29</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -48806,7 +48806,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.1.28\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.1.29\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -214119,14 +214119,20 @@ function snapBuild(){
   var cr = snapLire('pea-crypto-v1'), cl = (typeof cryptoState !== 'undefined' && cryptoState && Array.isArray(cryptoState.positions) && cryptoState.positions.length) ? cryptoState.positions : (cr && cr.positions);
   D['pea-crypto-v1'] = { positions: snapPick(cl, ['symbol','nom','qte','pru']) };
   var ci = snapLire('kyf-ct-info'); if(ci && typeof ci === 'object' && !Array.isArray(ci)) D['kyf-ct-info'] = ci;
+  D['kyf-etf-transactions'] = snapPick((snapLire('kyf-etf-transactions') || []).filter(function(t){ return t && t.type === 'vente' && typeof t.gainNet === 'number'; }), ['type','date','gainNet','assetClass']);
+  D['kyf-dividendes'] = snapPick(snapLire('kyf-dividendes'), ['date','ticker','nom','montant','enveloppe']);
+  ['kyf-pea-date-ouverture','kyf-pea-total-verse','kyf-pea-plafond','kyf-pea-taux-ir','kyf-pea-taux-ps','kyf-cto-taux-pfu'].forEach(function(k){ var r = localStorage.getItem(k); if(r !== null && r !== '') D[k] = r; });
+  var as = snapLire('kyf-alerts-seuils'); if(as && typeof as === 'object' && !Array.isArray(as)) D['kyf-alerts-seuils'] = as;
+  var ac = snapLire('kyf-alerts-cibles'); if(Array.isArray(ac)) D['kyf-alerts-cibles'] = snapPick(ac, ['id','t','n','s','p','d']);
   var idx = snapLire('kyf-snapshots-index'); if(!Array.isArray(idx)) idx = [];
   idx = idx.filter(function(d){ return /^\d{4}-\d{2}-\d{2}$/.test(String(d)); }).sort();
   var hist = [];
   idx.forEach(function(d, k){
     var recent = k >= idx.length - 120 || (idx.length - 1 - k) % 7 === 0, sn;
     if(!recent) return; sn = snapLire('kyf-snapshot-' + d); if(!sn || typeof sn !== 'object') return;
-    var v = n(sn.valorisation) + n(sn.crypto) + n(sn.av) + n(sn.stables);
-    if(v > 0) hist.push([d, Math.round(v * 100) / 100]);
+    var v = n(sn.total) > 0 ? n(sn.total) + n(sn.autres) : n(sn.valorisation) + n(sn.crypto) + n(sn.av) + n(sn.stables);
+    var fl = ['valorisation','crypto','av','immo','autres'].filter(function(f){ return n(sn[f]) > 0; });
+    if(v > 0) hist.push([d, Math.round(v * 100) / 100, fl, Math.round(n(sn.investi) * 100) / 100, Math.round(n(sn.valorisation) * 100) / 100, Math.round(n(sn.crypto) * 100) / 100, sn.invEtf, sn.invCrypto]);
   });
   return { at: new Date().toISOString(), D: D, hist: hist };
 }
