@@ -379,7 +379,7 @@ html[data-rch] .fh2 .tt small{font-size:.95rem;margin-top:4px;opacity:calc(1 - v
 .sw2q:focus,.sw2q:focus-visible{outline:none!important;box-shadow:none!important;border:0!important;background:transparent!important}
 .sw2.nc{min-height:0!important;padding-top:2px!important;padding-bottom:2px!important}.sw2.nc .sw2q{min-height:44px!important}
 .cta.flow{position:static;background:none;margin:14px 0 110px}
-.fh2::before{opacity:1!important;background:linear-gradient(var(--bg,#c6d4ec) 72%,transparent)!important}
+.fh2::before{opacity:var(--sc,0)!important;transition:opacity .15s;background:linear-gradient(var(--bg,#c6d4ec) 72%,transparent)!important}
 :root{--rh:0px}
 .rch,.sp2,.ctt{display:none!important}
 
@@ -492,7 +492,7 @@ html,body{overflow-x:clip;max-width:100%}main{overflow-x:clip;min-width:0;paddin
 <script src="avf.js"></script><script src="qr.js"></script>
 <script>
 "use strict";
-var VER="3.28.0", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="3.28.1", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["actif_valeur","Valeur d’un actif"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -663,7 +663,8 @@ function cryRep(L,mode){if(mode==="l"&&Object.keys(ld("kyfm-cryloc",{})||{}).len
 
 /* ===== 3.24 : rebond des cadres, gel des mises à jour pendant le glissement ===== */
 function capUp(){var c=$("cap");if(!c)return;var on=window.scrollY>24;if(on!==c.classList.contains("on")){c.classList.toggle("on",on);if(on){c.style.boxShadow="0 14px 36px rgba(255,154,31,.28)";setTimeout(function(){c.style.boxShadow=""},350);try{if(navigator.vibrate)navigator.vibrate(8)}catch(e){}}}}
-window.addEventListener("scroll",capUp,{passive:true});
+function scUp(){var v=Math.min(1,Math.max(0,window.scrollY/20));document.documentElement.style.setProperty("--sc",v.toFixed(2))}
+window.addEventListener("scroll",function(){capUp();scUp()},{passive:true});
 var HOLDT=0,HOLDING=false,RPEND=0;
 function holdOn(){return HOLDING||Date.now()<HOLDT}
 function holdEnd(){HOLDING=false;HOLDT=Date.now()+1500;setTimeout(function(){if(RPEND&&!holdOn()){RPEND=0;if(S.v==="pat")render()}},1600)}
