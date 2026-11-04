@@ -586,7 +586,7 @@ html,body{overflow-x:clip;max-width:100%}main{overflow-x:clip;min-width:0;paddin
 <script src="avf.js"></script><script src="qr.js"></script>
 <script>
 "use strict";
-var VER="3.80.5", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="3.80.6", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["groupe_projet","Projet"],["alerte_seuils","Seuils d’alerte"],["alerte_cible","Objectif de prix"],["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["renommage","Renommage"],["actif_valeur","Valeur d’un actif"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -1588,7 +1588,7 @@ function trouverTitre(tk,env){var L=sources(),i,x;
   return null}
 function parseVoix(txt,envCtx){
   var raw=String(txt||"").trim();if(raw.length<3)return{ok:false,why:"Écrivez ou dictez une phrase complète."};
-  var t=nrm(raw).replace(/['’]/g," ").replace(/(\d)\s(?=\d{3}(?!\d))/g,"$1").replace(/(\d),(\d)/g,"$1.$2").replace(/€/g," euro ");
+  var t=nrm(raw).replace(/['’]/g," ").replace(/(\d)\s(?=\d{3}(?!\d))/g,"$1").replace(/(\d),(\d)/g,"$1.$2").replace(/€/g," euro ").replace(/\bapplications?\b/g,"actions");
   var date=today(),dm;
   if(/avant hier/.test(t)){var a1=new Date();a1.setDate(a1.getDate()-2);date=isoD(a1);t=t.replace(/avant hier/,"")}
   else if(/\bhier\b/.test(t)){var a2=new Date();a2.setDate(a2.getDate()-1);date=isoD(a2);t=t.replace(/\bhier\b/,"")}
@@ -1607,7 +1607,7 @@ function parseVoix(txt,envCtx){
     return{ok:true,creer:true,env:envT,nomC:nomC,date:date,montant:mtC,resume:"Nouveau compte · "+nomC+" · ouvert le "+String(date).split("-").reverse().join("/")+(mtC?" · versement initial "+eur(toC(mtC)):"")}}
   var ty=/dividende/.test(t)?"dividende":/interet/.test(t)?"interets":/rachat|racheter/.test(t)?"rachat":/\bvend|\bvente|cession|\bceder/.test(t)?"vente":/\bachet|\bachat|souscri/.test(t)?"achat":/depos|depot|\bverse|versement|virement/.test(t)?"versement":/\bretir|retrait/.test(t)?"retrait":"";
   if(!ty)return{ok:false,why:"Je n’ai pas reconnu l’opération (achat, vente, dividende, versement, retrait…)."};
-  var defE=false;if(!env){env=ld(K.last,"")||"PEA";defE=true}
+  var defE=false;if(!env){env=ld(K.last,"")||"PEA";defE=true;if((ty==="achat"||ty==="vente"||ty==="dividende")&&["PEA","PEA-PME","CTO","Crypto"].indexOf(env)<0)env="PEA"}
   var T=null;
   if(env==="Livret")T=ty==="versement"?"livret_depot":ty==="retrait"?"livret_retrait":ty==="interets"?"livret_interets":null;
   else if(env==="AV"||env==="PER")T=ty==="versement"?"av_versement":(ty==="rachat"||ty==="retrait")?"av_rachat":null;
@@ -1615,7 +1615,7 @@ function parseVoix(txt,envCtx){
   else if(["PEA","PEA-PME","CTO"].indexOf(env)>-1)T=({achat:"achat",vente:"vente",dividende:"dividende",versement:"versement",retrait:"retrait"})[ty]||null;
   if(!T)return{ok:false,why:"Cette opération n’est pas gérée par la saisie rapide pour ce type de compte. Utilisez le menu."};
   var tok=t.split(/[^a-z0-9.]+/).map(function(x){return x.replace(/^\.+|\.+$/g,"")}).filter(Boolean),pr=null,tot=null,am=null,used={};
-  tok.forEach(function(x,i){var nx=tok[i+1];if(nx&&numTok(nx)){if((x==="a"||x==="prix")&&pr===null){pr=nx;used[i+1]=1}else if((x==="pour"||x==="total"||x==="soit")&&tot===null){tot=nx;used[i+1]=1}else if((x==="de")&&am===null&&tok[i+2]&&/^euros?$/.test(tok[i+2])){am=nx;used[i+1]=1}}});
+  tok.forEach(function(x,i){var nx=tok[i+1];if(nx&&numTok(nx)){if((x==="a"||x==="prix")&&pr===null){pr=nx;used[i+1]=1}else if((x==="pour"||x==="total"||x==="soit")&&tot===null){tot=nx;used[i+1]=1}else if((x==="de"||x==="d")&&tot===null&&(tok[i-1]==="total"||tok[i-1]==="montant")){tot=nx;used[i+1]=1}else if((x==="de")&&tok[i-1]!=="prix"&&am===null&&tok[i+2]&&/^euros?$/.test(tok[i+2])){am=nx;used[i+1]=1}}});
   if(pr===null&&tok.indexOf("prix")>-1){var pi=tok.indexOf("prix");for(var j=pi+1;j<Math.min(tok.length,pi+3);j++)if(numTok(tok[j])&&!used[j]){pr=tok[j];used[j]=1;break}}
   var nums=[];tok.forEach(function(x,i){if(numTok(x)&&!used[i])nums.push(x)});
   var res={ok:true,type:T,env:env,date:date,defEnv:defE},sym="";
