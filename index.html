@@ -9407,7 +9407,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
       <!-- Donut AV -->
       <div class="card" id="avDonutCard" style="min-width:0;overflow:visible">
-        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 12px"><div class="card-title" style="margin:0">RÉPARTITION AV</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 12px"><div class="card-title" style="margin:0">RÉPARTITION AV</div>
         <div id="avDonutModes" role="group" aria-label="Vue de la répartition" style="display:flex;gap:4px;flex-wrap:wrap"></div></div>
         <div style="display:flex;align-items:center;justify-content:center;gap:24px">
           <div style="width:200px;height:200px;flex-shrink:0;overflow:visible"><canvas id="avDonut"></canvas></div>
@@ -100813,7 +100813,7 @@ function renderAVDonut(data){
       backgroundColor:avGradients, hoverBackgroundColor:avGradients, borderColor:kyfDonutBorderColor(),
       borderWidth:kyfDonutBorderWidth(values, avBw), borderRadius:0, spacing:kyfDonutSpacing(values), hoverOffset:kyfDonutHoverOffsets(values) }] },
     // tooltip désactivée : le texte central affiche déjà valeur + libellé.
-    options:{...d, layout:{padding:10}, cutout:avCutout, interaction:{mode:'nearest',intersect:true},
+    options:{...d, ...(chartPrefs.donutAnim===false ? { animation:false } : {}), layout:{padding:10}, cutout:avCutout, interaction:{mode:'nearest',intersect:true},
       scales:{x:{display:false},y:{display:false}},
       plugins:{...d.plugins, legend:{display:false}, tooltip:{enabled:false}}}
   });
