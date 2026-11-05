@@ -7404,7 +7404,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
     </div>
 
     <div class="sb-item" data-page="etranger" data-label="Avoirs à l'étranger" onclick="showPage('etranger',null)" oncontextmenu="kyfSidebarHideViaRightClick(event,'etranger')">
-      <span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18z"/></svg></span><span class="sb-label">Avoirs à l'étranger</span>
+      <span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18z"/></svg></span><span class="sb-label">Avoirs à l'étranger</span><span class="kyf-new-badge" data-new="etranger" style="display:none;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;margin-left:auto;pointer-events:none">NOUVEAU</span>
     </div>
 
     <!-- GROUPE ASSURANCE VIE & PER -->
@@ -21068,7 +21068,7 @@ function kyfConfirmSidebarCtxHide(){
   kyfCloseSidebarCtxMenu();
 }
 // ── KPI au choix sur toutes les pages (2.10.0.24) : clic droit sur un KPI, ou Paramètres > Cartes KPI ──
-const KYF_KPI_PAGES = [['portfolio','Tableau de bord'],['portefeuille','Portefeuille'],['av','Assurance vie / PER'],['pee','PEE (Mes contrats)'],['livrets','Livrets'],['or','Or & Métaux Précieux'],['autres','Autres actifs'],['immo','Immobilier, Mes biens'],['credit','Immobilier, Crédits'],['revenus','Immobilier, Revenus'],['scpi','SCPI'],['crypto','Cryptomonnaies'],['dividendes','Dividendes'],['transactions','Transactions'],['bilan','Bilan annuel'],['frais','Frais'],['alertes','Alertes'],['profil','Profil']];
+const KYF_KPI_PAGES = [['portfolio','Tableau de bord'],['portefeuille','Portefeuille'],['av','Assurance vie / PER'],['pee','PEE (Mes contrats)'],['livrets','Livrets'],['or','Or & Métaux Précieux'],['autres','Autres actifs'],['etranger',"Avoirs à l'étranger"],['immo','Immobilier, Mes biens'],['credit','Immobilier, Crédits'],['revenus','Immobilier, Revenus'],['scpi','SCPI'],['crypto','Cryptomonnaies'],['dividendes','Dividendes'],['transactions','Transactions'],['bilan','Bilan annuel'],['frais','Frais'],['alertes','Alertes'],['profil','Profil']];
 const KYF_KPI_ROWSEL = '.kpi-row[data-kpi-row] .kpi[data-kpi-id]';
 function kyfKpiLabel(k){ return ((k.querySelector('.kpi-lbl') || {}).textContent || k.dataset.kpiId || '').replace(/\s+/g, ' ').trim(); }
 function kyfKpiCtx(e){
@@ -21487,7 +21487,7 @@ function showPage(id,tab,fromPopstate){
   if(id === 'avis') try{ loadAvis(); }catch(e){}
   if(id === 'livrets') try{ renderLivrets(); }catch(e){}
   if(id === 'livrets-recurrents') try{ renderRecurrentsPage(); }catch(e){}
-  if(id === 'etranger'){ try{ kyfEtrRender(); }catch(e){} }
+  if(id === 'etranger'){ try{ kyfEtrRender(); }catch(e){} try{ kyfNewBadgeSeen('etranger'); }catch(e){} }
   if(id === 'autres'){ try{ kyfAutRender(); }catch(e){} try{ kyfNewBadgeSeen('autres'); }catch(e){} }
   if(id === 'or') try{
     renderOr();
@@ -33175,21 +33175,21 @@ function kyfInitAnnonce(){
     textEl.textContent = '';
     Object.assign(textEl.style, { whiteSpace:'normal', overflow:'visible', textOverflow:'clip', lineHeight:'1.5', fontSize:'12px', flex:'1', minWidth:'0' });
     const tt = document.createElement('div');
-    tt.style.cssText = 'display:flex;align-items:flex-start;gap:8px;font-size:13px;font-weight:700;color:var(--text);line-height:1.35;flex:0 1 190px;min-width:150px';
+    tt.style.cssText = 'display:flex;align-items:flex-start;gap:8px;font-size:12px;font-weight:700;color:var(--text);line-height:1.3;flex:0 0 auto;white-space:nowrap';
     tt.innerHTML = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>';
     const tn = document.createElement('span'); gras(tn, lignes[0]); tt.appendChild(tn);
-    const row = document.createElement('div'); row.style.cssText = 'display:flex;flex-wrap:wrap;gap:10px 16px;align-items:flex-start';
+    const row = document.createElement('div'); row.style.cssText = 'display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center';
     row.appendChild(tt);
     cols.forEach((l, i) => {
       const k = l.indexOf('::'), c = document.createElement('div');
-      c.style.cssText = 'flex:1 1 200px;min-width:0;font-size:12px;border-left:1px solid var(--border2);padding-left:16px';
-      const h = document.createElement('b'); h.textContent = l.slice(0, k).trim(); h.style.cssText = 'display:block;color:var(--accent);font-size:10px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:1px';
-      const d = document.createElement('div'); gras(d, l.slice(k + 2).trim());
+      c.style.cssText = 'flex:1 1 220px;min-width:0;font-size:11.5px;line-height:1.35;border-left:1px solid var(--border2);padding-left:14px';
+      const h = document.createElement('b'); h.textContent = l.slice(0, k).trim(); h.style.cssText = 'display:inline;color:var(--accent);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;margin-right:6px';
+      const d = document.createElement('span'); gras(d, l.slice(k + 2).trim());
       c.appendChild(h); c.appendChild(d); row.appendChild(c);
     });
     textEl.appendChild(row);
-    Object.assign(bandEl.style, { height:'auto', padding:'10px 40px 10px 16px', borderRadius:'12px', alignItems:'flex-start', position:'relative', borderLeft:'4px solid var(--accent)', background:'linear-gradient(90deg,color-mix(in srgb,var(--accent) 13%,transparent),var(--idx-band-bg,rgba(46,53,80,0.55)) 40%)', maxWidth:'min(var(--kyf-annonce-max,760px),92vw)', width:'100%' });
-    const xb = bandEl.querySelector('button'); if(xb) Object.assign(xb.style, { position:'absolute', top:'12px', right:'12px', margin:'0' });
+    Object.assign(bandEl.style, { height:'auto', padding:'7px 36px 7px 14px', borderRadius:'10px', alignItems:'center', position:'relative', borderLeft:'4px solid var(--accent)', background:'linear-gradient(90deg,color-mix(in srgb,var(--accent) 13%,transparent),var(--idx-band-bg,rgba(46,53,80,0.55)) 40%)', maxWidth:'min(var(--kyf-annonce-max,760px),92vw)', width:'100%' });
+    const xb = bandEl.querySelector('button'); if(xb) Object.assign(xb.style, { position:'absolute', top:'8px', right:'10px', margin:'0' });
     const wrap = document.getElementById('idxBandWrap');
     if(wrap){ wrap.style.height = 'auto'; wrap.style.minHeight = '30px'; wrap.style.padding = '5px 12px'; }
     bandEl.style.display = 'flex';
@@ -63691,6 +63691,7 @@ const GUIDE_PAGES = [
           <div onclick="guideGoTo(15)" style="cursor:pointer;font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px"><span>4. Or &amp; Métaux Précieux</span></div>
           <div onclick="guideGoTo(15)" class="guide-sommaire-subitem"><span>Or &amp; Métaux</span></div>
           <div onclick="guideGoTo(60)" class="guide-sommaire-subitem"><span>Autres actifs</span></div>
+          <div onclick="guideGoTo(61)" class="guide-sommaire-subitem"><span>Avoirs à l'étranger</span></div>
         </div>
         <div style="break-inside:avoid;margin-bottom:12px">
           <div onclick="guideGoTo(16)" style="cursor:pointer;font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px"><span>5. Livrets</span></div>
@@ -66305,6 +66306,37 @@ const GUIDE_PAGES = [
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Vos données</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9">Comme le reste de KYF, tout reste dans votre navigateur. Les biens sont inclus dans l'export de sauvegarde (IMPORT / EXPORT) et se remettent à zéro depuis la réinitialisation par module (« Autres actifs »). Les photos (jusqu'à 4 par bien) restent sur votre appareil et dans la sauvegarde en fichier, mais ne partent pas dans Google Sheets. Le graphique RÉPARTITION montre le poids de chaque type de bien ; il reste grisé tant qu'aucun bien n'est saisi.</div>
+      </div>
+    `
+  }
+  ,{
+    chapter: 'Chapitre 4',
+    sub: 'Avoirs à l\'étranger',
+    title: 'Avoirs à <span style="color:var(--accent)">l\'étranger</span>',
+    icon: '',
+    body: `
+      <div style="background:rgba(155,109,255,0.07);border:1px solid rgba(155,109,255,0.28);border-radius:10px;padding:14px 16px;margin-bottom:14px">
+        <div style="font-size:13px;color:var(--text2);line-height:1.8">Page <strong style="color:var(--accent)">Avoirs à l'étranger</strong>, juste sous Autres actifs dans le menu. Elle sert aux avoirs détenus dans une autre devise que l'euro : compte en francs suisses, bien ou actions à l'étranger, or conservé dans un coffre étranger... Vous saisissez le montant dans sa devise d'origine.</div>
+      </div>
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Jamais converti, jamais compté</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">KYF ne convertit aucun montant en euros et n'ajoute jamais ces avoirs à votre patrimoine (Tableau de bord, répartition, historique). Ils restent dans un espace à part, chacun dans sa devise : mélanger des francs suisses et des euros n'aurait pas de sens sans taux de change, et KYF préfère ne rien inventer.</div>
+      </div>
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Ajouter un avoir</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Bouton <strong style="color:var(--text)">AJOUTER</strong> : donnez un nom, indiquez le pays, le type (compte bancaire, titres, or, immobilier, SCPI et fonds, autre), le montant et la devise. Une vingtaine de devises sont proposées ; pour une autre, choisissez « Autre devise » et tapez son code sur 3 lettres (ex : ZAR). La date du montant et les notes (banque, numéro de contrat) sont facultatives.</div>
+      </div>
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Filtrer et totaliser</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Dès que vous avez plusieurs devises, des boutons en haut du tableau (TOUTES, CHF, GBP...) n'affichent qu'une devise. Sous le tableau, le <strong style="color:var(--text)">total par devise</strong> additionne uniquement des montants de même devise. Les cartes du haut comptent les devises, les avoirs et les pays.</div>
+      </div>
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Mettre à jour</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Dans le menu <strong style="color:var(--text)">⋯</strong> de chaque ligne, <strong style="color:var(--text)">Actualiser le montant</strong> change le montant et la date, <strong style="color:var(--text)">Modifier</strong> ouvre toute la fiche et <strong style="color:var(--text)">Supprimer</strong> demande une confirmation. Il n'y a aucune mise à jour automatique : c'est vous qui saisissez.</div>
+      </div>
+      <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Vos données</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Comme le reste de KYF, tout reste dans votre navigateur. Les avoirs sont inclus dans l'export de sauvegarde (IMPORT / EXPORT) et dans la synchronisation Google Sheets, et se remettent à zéro depuis la réinitialisation par module (« Avoirs à l'étranger »). Vous pouvez masquer la page du menu depuis Personnaliser la sidebar.</div>
       </div>
     `
   }
@@ -72483,8 +72515,11 @@ document.addEventListener('DOMContentLoaded', function(){
 // Pour annoncer une nouveauté : AJOUTER EN TÊTE de KYF_NOUVEAUTES.annonces une annonce { id, date (AAAA-MM-JJ), items }. Pas d'annonce = rien d'affiché, quel que soit le nombre de pushes.
 // Chaque utilisateur voit une seule fois les annonces qu'il n'a pas encore vues (les plus récentes d'abord, 5 au plus, 7 jours au plus). Un nouvel utilisateur (écran de bienvenue pas encore vu) ne voit rien : tout est nouveau pour lui.
 const KYF_NOUVEAUTES = {
-  badge: ['arbmulti', 'nueprop', 'kpichips', 'kpiset', 'autres', 'envvue', 'famille', 'avjrn', 'arb', 'immo', 'avref', 'avfrais', 'fraispg', 'avevo', 'avsuivi', 'dcaprix', 'ct', 'tend', 'tipstyle', 'ptf', 'pee', 'ctlg', 'vue'],   // clés des badges (une ou plusieurs ; tableau) ; clé du badge « Nouveau » (span .kyf-new-badge data-new="...") ; vide = aucun badge
+  badge: ['etranger', 'arbmulti', 'nueprop', 'kpichips', 'kpiset', 'autres', 'envvue', 'famille', 'avjrn', 'arb', 'immo', 'avref', 'avfrais', 'fraispg', 'avevo', 'avsuivi', 'dcaprix', 'ct', 'tend', 'tipstyle', 'ptf', 'pee', 'ctlg', 'vue'],   // clés des badges (une ou plusieurs ; tableau) ; clé du badge « Nouveau » (span .kyf-new-badge data-new="...") ; vide = aucun badge
   annonces: [
+    { id: 'a-2026-11-05', date: '2026-11-05', items: [
+      { titre: 'Avoirs à l\u2019étranger', important: true, texte: 'Nouvelle page pour vos avoirs en devises étrangères (franc suisse, dollar, livre...). Vous saisissez le montant dans sa devise : KYF ne le convertit pas et ne l\u2019ajoute jamais à votre patrimoine en euros. Un filtre par devise et un total par devise sont affichés.' }
+    ] },
     { id: 'a-2026-10-31', date: '2026-10-31', items: [
       { titre: 'Zones géographiques refaites', version: '2.11.5.12', important: true, texte: 'Nouveau design : le Top 10 entreprises s\u2019affiche en tuiles avec les logos (cliquez sur Autres pour voir la suite), et le DÉTAIL PAR POSITION ET COMMUNAUTÉ compare vos répartitions pays et secteurs à celles de la communauté, ligne par ligne.' },
       { titre: 'Relevé Linxea Vie', version: '2.11.5.11', texte: 'KYF lit maintenant le relevé de situation Linxea Vie (nombre de parts et prix d\u2019achat moyen). CCF est ajouté à la liste des banques.' },
@@ -72754,7 +72789,7 @@ function kyfAvisPromoOn_(){
 // Une pastille NOUVEAU ne vit que 48 heures après la date de sortie de sa fonction (ou jusqu'à ce qu'on ouvre le bouton concerné).
 // Chaque clé de KYF_NOUVEAUTES.badge DOIT avoir sa date ici ; sans date, la pastille est éteinte (un utilisateur ne doit jamais voir un arc-en-ciel de NOUVEAU).
 const KYF_NEW_BADGE_HOURS = 48;
-const KYF_NEW_BADGE_DATES = { arbmulti:'2026-10-30', nueprop:'2026-10-30', kpichips:'2026-10-30', kpiset:'2026-10-29', autres:'2026-10-29', envvue:'2026-10-28', famille:'2026-10-28', avjrn:'2026-10-28' };
+const KYF_NEW_BADGE_DATES = { etranger:'2026-11-05', arbmulti:'2026-10-30', nueprop:'2026-10-30', kpichips:'2026-10-30', kpiset:'2026-10-29', autres:'2026-10-29', envvue:'2026-10-28', famille:'2026-10-28', avjrn:'2026-10-28' };
 function kyfNewBadgesExpire_(){
   try{
     const now = Date.now();
@@ -213543,7 +213578,7 @@ var TYPES = ['achat','vente','dividende','versement','retrait','crypto_achat','c
   'livret_depot','livret_retrait','livret_interets','livret_dca','arbitrage','frais_av','av_versement','av_programme','av_rachat','av_valeur',
   'av_ligne_valeur','av_ligne_nouvelle','actif_nouveau','actif_valeur','immo_valeur','immo_loyer','or_achat','or_vente','crowd_projet','crowd_maj',
   'scpi_achat','scpi_vente','scpi_dividende','scpi_maj','flux_recurrent','pee_versement','pee_retrait','dca_plan','cash_maj','renommage','alerte_seuils','alerte_cible','groupe_projet'];
-var ENVS = ['PEA','PEA-PME','CTO','AV','PER','Livret','Crypto','Or','Immobilier','Crowdfunding','SCPI','Autres actifs','Budget','PEE','DCA','Liquidités'];
+var ENVS = ['PEA','PEA-PME','CTO','AV','PER','Livret','Crypto','Or','Immobilier','Crowdfunding','SCPI','Autres actifs','Avoirs à l\'étranger','Budget','PEE','DCA','Liquidités'];
 var LIB = { achat:'Achat', vente:'Vente', dividende:'Dividende', versement:'Versement', retrait:'Retrait', crypto_achat:'Achat crypto', crypto_vente:'Vente crypto',
   crypto_swap:'Échange crypto', crypto_transfert:'Transfert crypto', crypto_frais:'Frais crypto', livret_depot:'Dépôt livret', livret_retrait:'Retrait livret',
   livret_interets:'Intérêts livret', livret_dca:'Versement programmé livret', arbitrage:'Arbitrage', frais_av:'Frais AV', av_versement:'Versement AV', av_programme:'Versement programmé AV',
