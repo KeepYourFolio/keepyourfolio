@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.2.12
+  @version     : Beta 2.12.2.13
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7498,7 +7498,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.2.12</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.2.13</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -7568,7 +7568,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
       </div>
       <div style="flex:1;min-width:0;position:relative;z-index:2;transform:translateZ(18px);backface-visibility:hidden;-webkit-backface-visibility:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility">
         <div style="display:inline-flex;align-items:center;gap:7px;cursor:pointer" onclick="profilEditNom()">
-          <div style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:var(--text)" id="profilNomDisplay">Mon Profil</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:var(--text)" id="profilNomDisplay">Mon compte</div>
           <svg id="profilNomEditIcon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text3);flex-shrink:0"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           <input id="profilNomInput" type="text" placeholder="ex: Jerem, MonPortefeuille..." maxlength="30"
             style="display:none;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:var(--text);background:transparent;border:none;border-bottom:2px solid var(--accent);outline:none;width:220px;padding:0 0 1px 0"
@@ -27763,7 +27763,7 @@ function profilLoad(){
   const nomEl = document.getElementById('profilNomInput');
   if(nomEl) nomEl.value = nom;
   const dispEl = document.getElementById('profilNomDisplay');
-  if(dispEl) dispEl.textContent = nom || 'Mon Profil';
+  if(dispEl) dispEl.textContent = nom || 'Mon compte';
   const emailEl = document.getElementById('profilEmailDisplay');
   if(emailEl) emailEl.textContent = kyfShowEmail(email);
   const firstSeenEl = document.getElementById('profilFirstSeenDisplay');
@@ -27987,7 +27987,7 @@ function profilSaveNomInline(){
   if(!input) return;
   const nom = input.value.trim();
   localStorage.setItem('kyf-profil-nom', nom);
-  if(disp) disp.textContent = nom || 'Mon Profil';
+  if(disp) disp.textContent = nom || 'Mon compte';
   profilRenderAvatar(localStorage.getItem('kyf-profil-avatar')||'', nom);
   input.style.display = 'none';
   if(disp) disp.style.display = '';
@@ -35694,7 +35694,13 @@ function kyfFinaBuild_(R){
   (groups.etf || []).forEach(i => { const c = R.rows[i]; const e = fiClassifyFinaHackEnvelope(X.env>=0?c[X.env]:'', X.et>=0?c[X.et]:'', X.acc>=0?c[X.acc]:''); det.etf[e] = (det.etf[e]||0) + 1; });
   R.detail = { etf: ['PEA','CTO','AUTRE'].filter(e => det.etf[e]).map(e => (e === 'AUTRE' ? 'enveloppe à préciser' : e) + ' ' + det.etf[e]).join(', ') };
   R.skipped = [];
-  if(env.PEE) R.skipped.push('épargne salariale (PEE) ' + env.PEE);
+  if(env.PEE) R.skipped.push({ n:env.PEE, lbl:'Épargne salariale (PEE)', why:'KYF ne la reprend pas encore depuis un fichier : à saisir à la main dans KYF.' });
+  // Classes d'actifs que KYF ne sait pas lire : jamais ignorées en silence
+  const KNOWN = ['security','fonds_euro','fiat','crypto','scpi','real_estate','Matières premières'];
+  Object.keys(classes).filter(k => KNOWN.indexOf(k) < 0).forEach(k => R.skipped.push({ n:classes[k], lbl:'Type « ' + k + ' »', why:'type d’actif non reconnu par KYF : à saisir à la main.' }));
+  // Lignes d'une classe reprise, mais laissées de côté (valeur nulle, espèces d'un portefeuille crypto)
+  let _cw = 0; R.rows.forEach((c, i) => { if(i === 0 || R.del[i]) return; if(String(c[X.cls]||'').trim() === 'fiat' && String(c[X.et]||'').trim() === 'crypto_wallet') _cw++; });
+  if(_cw) R.skipped.push({ n:_cw, lbl:'Espèces d’un portefeuille crypto', why:'montant sans intérêt, volontairement ignoré.' });
 }
 // Espèces et livrets : chaque ligne « fiat » va à un seul endroit de KYF, décidé par des règles fermées (enveloppe PEA/CTO, nom de livret connu, néobanque connue), sinon au compte courant
 const KYF_FINA_LIV_ = [[/^livret\s*a\b/i,'Livret A'],[/^ldds\b/i,'LDDS'],[/^ldd\b/i,'LDDS'],[/^lep\b/i,'LEP'],[/^pel\b/i,'PEL'],[/^cel\b/i,'CEL']];
@@ -35816,9 +35822,9 @@ function kyfFinaRecapRender(){
               : `<button type="button" class="kyf-fina-btn" onclick="kyfFinaGo('${g.k}')" style="font-family:'Inter',sans-serif;font-size:9px;padding:8px 18px;border-radius:7px;cursor:pointer;font-weight:700;border:none;background:#f0b429;color:#000;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">IMPORTER</button>`)
       + `</div>${open ? list.map(i => kyfFinaLineHtml_(R, g.k, i)).join('') : ''}</div>`;
   }).join('');
-  st.innerHTML = KYF_CHECK_SVG + ' Fichier Finary lu : ' + (R.rows.length - 1) + ' ligne(s). Cliquez sur un groupe pour voir et corriger ses lignes, puis importez-le : KYF revient ici entre deux.';
+  st.innerHTML = KYF_CHECK_SVG + ' Fichier Finary lu : ' + (R.rows.length - 1) + ' ligne(s), dont ' + kyfFinaList_(R).reduce((t, g) => t + (R.groups[g.k]||[]).length, 0) + ' reprise(s) par KYF. Cliquez sur un groupe pour voir et corriger ses lignes, puis importez-le : KYF revient ici entre deux.';
   pv.innerHTML = (rowsHtml || '<div style="padding:12px 0;font-size:11px;color:var(--text3)">Aucune ligne importable trouvée dans ce fichier.</div>')
-    + (R.skipped.length ? `<div style="padding:10px 0;font-size:10px;line-height:1.5;color:var(--text3)">Non repris par cet import : ${escapeHtml(R.skipped.join(', '))}. À saisir à la main.</div>` : '')
+    + (R.skipped.length ? `<div style="padding:10px 0;font-size:10px;line-height:1.6;color:var(--text3)"><div style="font-weight:700;color:var(--text2);margin-bottom:2px">Non repris par cet import</div>${R.skipped.map(k => `<div>${escapeHtml(k.lbl)} (${k.n}) : ${escapeHtml(k.why)}</div>`).join('')}</div>` : '')
     + (nDel ? `<div style="padding:0 0 10px;font-size:10px;color:var(--text3)">${nDel} ligne(s) retirée(s) de l'import. <button type="button" onclick="kyfFinaRestore()" class="kyf-hint-link" style="background:none;border:none;padding:0;font:inherit;font-size:10px;font-weight:600;cursor:pointer">Tout rétablir</button></div>` : '');
   document.getElementById('importConfirmBtn').style.display = 'none';
   const ab = document.getElementById('importAllBtn');
@@ -43298,6 +43304,16 @@ function renderETFTable(lp){
   const _favSet = new Set(kyfFavLoad().etf);
   const _multiTi = kyfFamOn() && new Set(ETF.map(x => { const t = kyfFamTiOf(x); return KYF_TITU[t] ? t : ''; })).size > 1;   // plusieurs titulaires : un repère de couleur sur chaque ligne
   const _multiCto = kyfCtoComptes().length > 1;   // plusieurs CTO : le compte est rappelé sur chaque ligne CTO
+  // Un même titre détenu sur plusieurs comptes (même ISIN ou même ticker) : repère « ×2 » sur chaque ligne, avec le détail et le total au survol (les lignes restent séparées)
+  const _multiCompte = {}; try{ const _tk = e => String(e.isin || e.ticker || '').toUpperCase();
+    ETF.forEach(x => { const k = _tk(x); if(k) (_multiCompte[k] = _multiCompte[k] || []).push(x); });
+    Object.keys(_multiCompte).forEach(k => { if(_multiCompte[k].length < 2) delete _multiCompte[k]; });
+  }catch(_){}
+  const _mcInfo = x => { const k = String(x.isin || x.ticker || '').toUpperCase(), l = _multiCompte[k]; if(!l) return ''; const q = v => (Math.round((parseFloat(v)||0) * 1e4) / 1e4).toString().replace('.', ',');
+    const lab = y => (y.enveloppe === 'CTO' && _multiCto ? kyfCtoNom(kyfCtoCompteOf(y)) : ((y.enveloppe === 'AV' || y.enveloppe === 'PER') && _avNom[String(y.contratId)] ? (y.enveloppe + ' · ' + _avNom[String(y.contratId)]) : (y.enveloppe || 'PEA')));
+    const tot = l.reduce((t, y) => t + (parseFloat(y.qty)||0), 0);
+    return `<span class="kyf-env-chip" title="${escapeHtml('Même titre sur ' + l.length + ' comptes : ' + l.map(y => lab(y) + ' ' + q(y.qty)).join(' · ') + ' (total ' + q(tot) + ')')}">×${l.length}</span>`; };
+  const _avNom = {}; try{ avLoad().forEach(c => { _avNom[String(c.id)] = String(c.contratNom || c.assureur || '').trim(); }); }catch(_){}   // nom du contrat AV / PER, rappelé sur ses lignes en vue mélangée
   let rows = '';
   let lastEnv = null;
   if(!_solo && !_grouped && kyfEnvList().length >= 2 && _fa.view.length){   // vue mélangée : la ligne de navigation entre comptes reste présente (menu des comptes + flèches)
@@ -43370,7 +43386,7 @@ function renderETFTable(lp){
       <td style="font-weight:600;cursor:pointer" onclick="etfInlineEditTicker(${ETF.indexOf(e)}, this, ${kyfJsonAttr(e.name)}, 'name')">
         <div style="display:flex;align-items:center;gap:7px">
           ${showLogo?renderAssetLogo(e.ticker,e.name,20):''}
-          <span>${escapeHtml(e.name)}</span>${(() => { const _ti = kyfFamTiOf(e); return (_multiTi && KYF_TITU[_ti]) ? `<span class="kyf-ti-dot kyf-env-chip" title="À qui : ${escapeHtml(KYF_TITU[_ti][0])}" style="display:inline-flex;align-items:center;gap:4px;color:${KYF_TITU[_ti][1]};border-color:${KYF_TITU[_ti][1]}"><span style="width:6px;height:6px;border-radius:50%;background:${KYF_TITU[_ti][1]}"></span>${escapeHtml(KYF_TITU[_ti][0])}</span>` : ''; })()}${(env === 'CTO' && _multiCto) ? `<span class="kyf-env-chip" title="Compte CTO">${escapeHtml(kyfCtoNom(kyfCtoCompteOf(e)))}</span>` : ((_grouped || _solo)?'':`<span class="kyf-env-chip" title="Enveloppe">${escapeHtml(({AV:'AV','PEA-PME':'PEA-PME'})[env] || envLabels[env] || env)}</span>`)}
+          <span>${escapeHtml(e.name)}</span>${_mcInfo(e)}${(() => { const _ti = kyfFamTiOf(e); return (_multiTi && KYF_TITU[_ti]) ? `<span class="kyf-ti-dot kyf-env-chip" title="À qui : ${escapeHtml(KYF_TITU[_ti][0])}" style="display:inline-flex;align-items:center;gap:4px;color:${KYF_TITU[_ti][1]};border-color:${KYF_TITU[_ti][1]}"><span style="width:6px;height:6px;border-radius:50%;background:${KYF_TITU[_ti][1]}"></span>${escapeHtml(KYF_TITU[_ti][0])}</span>` : ''; })()}${(env === 'CTO' && _multiCto) ? `<span class="kyf-env-chip" title="Compte CTO">${escapeHtml(kyfCtoNom(kyfCtoCompteOf(e)))}</span>` : ((_grouped || _solo)?'':`<span class="kyf-env-chip" title="${(env === 'AV' || env === 'PER') && _avNom[String(e.contratId)] ? 'Contrat : ' + escapeHtml(_avNom[String(e.contratId)]) : 'Enveloppe'}">${escapeHtml(({AV:'AV','PEA-PME':'PEA-PME'})[env] || envLabels[env] || env)}${(env === 'AV' || env === 'PER') && _avNom[String(e.contratId)] ? ' · ' + escapeHtml(_avNom[String(e.contratId)].slice(0, 22)) : ''}</span>`)}
         </div>
       </td>
       <td style="font-size:9px;color:var(--text3);line-height:1.6;white-space:nowrap">
@@ -49019,7 +49035,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.12\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.13\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -65352,7 +65368,7 @@ const GUIDE_PAGES = [
     icon: '',
     body: `
       <div style="background:rgba(77,159,255,0.05);border:1px solid rgba(77,159,255,0.2);border-radius:10px;padding:14px 16px;margin-bottom:14px">
-        <div style="font-size:13px;color:var(--text2);line-height:1.8">Accessible depuis <strong style="color:var(--accent)">Mon Profil → SAUVEGARDE DES DONNÉES → Export / Import avancé</strong>. C'est le moyen le plus simple de sauvegarder votre portefeuille ou de le transférer sur un autre appareil, sans passer par Google ou GitHub.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.8">Accessible depuis <strong style="color:var(--accent)">Mon compte → SAUVEGARDE DES DONNÉES → Export / Import avancé</strong>. C'est le moyen le plus simple de sauvegarder votre portefeuille ou de le transférer sur un autre appareil, sans passer par Google ou GitHub.</div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
         <div style="padding:12px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px">
@@ -65370,11 +65386,11 @@ const GUIDE_PAGES = [
       </div>
       <div style="padding:12px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;margin-bottom:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Profil d'apparence</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9">Dans <strong style="color:var(--accent)">Mon Profil → SAUVEGARDE DES DONNÉES → Export / Import avancé → Profil d'apparence</strong>, <strong style="color:var(--text)">Exporter mon profil</strong> enregistre dans un fichier toute votre personnalisation : couleurs, polices, densité, disposition des cadres et cadres masqués, raccourcis clavier et sidebar. <strong style="color:var(--text)">Importer un profil</strong> l'applique sur un autre appareil ou un autre navigateur. Vos données financières ne sont jamais incluses. Le mode discret reste propre à chaque appareil. À l'import, chaque réglage est vérifié un par un : tout ce qui n'est pas un réglage d'apparence connu (code, lien externe, valeur suspecte) est ignoré.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Dans <strong style="color:var(--accent)">Mon compte → SAUVEGARDE DES DONNÉES → Export / Import avancé → Profil d'apparence</strong>, <strong style="color:var(--text)">Exporter mon profil</strong> enregistre dans un fichier toute votre personnalisation : couleurs, polices, densité, disposition des cadres et cadres masqués, raccourcis clavier et sidebar. <strong style="color:var(--text)">Importer un profil</strong> l'applique sur un autre appareil ou un autre navigateur. Vos données financières ne sont jamais incluses. Le mode discret reste propre à chaque appareil. À l'import, chaque réglage est vérifié un par un : tout ce qui n'est pas un réglage d'apparence connu (code, lien externe, valeur suspecte) est ignoré.</div>
       </div>
       <div style="padding:12px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;margin-bottom:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Rapports PDF</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9">Dans <strong style="color:var(--accent)">Mon Profil</strong>, le bouton <strong style="color:var(--text)">Rapports PDF</strong> propose 6 rapports, à télécharger séparément ou tous ensemble : <strong style="color:var(--text)">Synthèse du patrimoine</strong> (total, répartition par classe, par personne et par projet), <strong style="color:var(--text)">Détail par classe d'actifs</strong> (toutes les lignes, avec quantité, PRU et gain quand ils existent, le compte de chaque ligne et la personne à qui elle appartient), <strong style="color:var(--text)">Comptes titres</strong> (PEA, PEA-PME et CTO : valeur, plus-value, total versé, plafond et lignes de chaque compte, avec une section par compte si vous avez plusieurs CTO), <strong style="color:var(--text)">Historique et performances</strong> (courbe du portefeuille ETF, actions et crypto, évolution mois par mois), <strong style="color:var(--text)">Journal assurance vie et PER</strong> (pour chaque contrat : valeur, total versé, rendement annuel et dernières opérations) et <strong style="color:var(--text)">Fiscalité et objectifs</strong> (gains latents, dividendes, frais, réglages fiscaux, liberté financière).</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Dans <strong style="color:var(--accent)">Mon compte</strong>, le bouton <strong style="color:var(--text)">Rapports PDF</strong> propose 6 rapports, à télécharger séparément ou tous ensemble : <strong style="color:var(--text)">Synthèse du patrimoine</strong> (total, répartition par classe, par personne et par projet), <strong style="color:var(--text)">Détail par classe d'actifs</strong> (toutes les lignes, avec quantité, PRU et gain quand ils existent, le compte de chaque ligne et la personne à qui elle appartient), <strong style="color:var(--text)">Comptes titres</strong> (PEA, PEA-PME et CTO : valeur, plus-value, total versé, plafond et lignes de chaque compte, avec une section par compte si vous avez plusieurs CTO), <strong style="color:var(--text)">Historique et performances</strong> (courbe du portefeuille ETF, actions et crypto, évolution mois par mois), <strong style="color:var(--text)">Journal assurance vie et PER</strong> (pour chaque contrat : valeur, total versé, rendement annuel et dernières opérations) et <strong style="color:var(--text)">Fiscalité et objectifs</strong> (gains latents, dividendes, frais, réglages fiscaux, liberté financière).</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">KYF compose le rapport aux couleurs du thème actuel puis ouvre l'impression de votre navigateur : choisissez « Enregistrer au format PDF ». Rien ne quitte votre appareil, aucun service externe n'intervient. Quand un cours ou un montant manque, la ligne est exclue ou marquée « indisponible » : aucun chiffre n'est estimé.</div>
       </div>
       <div style="background:rgba(240,180,41,0.06);border:1px solid rgba(240,180,41,0.25);border-radius:10px;padding:12px 14px;margin-bottom:14px">
@@ -65516,7 +65532,7 @@ const GUIDE_PAGES = [
     icon: '',
     body: `
       <div style="background:rgba(77,159,255,0.05);border:1px solid rgba(77,159,255,0.2);border-radius:10px;padding:14px 16px;margin-bottom:14px">
-        <div style="font-size:13px;color:var(--text2);line-height:1.8">Accessible depuis <strong style="color:var(--accent)">Mon Profil → SAUVEGARDE DES DONNÉES</strong>, onglet <strong style="color:var(--accent)">GitHub (Gist privé)</strong>. Une alternative à Google Sheets pour les utilisateurs qui préfèrent ne pas connecter de compte Google.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.8">Accessible depuis <strong style="color:var(--accent)">Mon compte → SAUVEGARDE DES DONNÉES</strong>, onglet <strong style="color:var(--accent)">GitHub (Gist privé)</strong>. Une alternative à Google Sheets pour les utilisateurs qui préfèrent ne pas connecter de compte Google.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Mise en place</div>
@@ -66162,7 +66178,7 @@ const GUIDE_PAGES = [
     icon: '',
     body: `
       <div style="background:rgba(77,159,255,0.05);border:1px solid rgba(77,159,255,0.2);border-radius:10px;padding:14px 16px;margin-bottom:14px">
-        <div style="font-size:13px;color:var(--text2);line-height:1.8">Accessible depuis <strong style="color:var(--accent)">Mon Profil → SAUVEGARDE DES DONNÉES</strong> (carte dépliable, juste au-dessus d'Export/Import avancé). Deux options supplémentaires à Google Sheets et GitHub, pensées pour ceux qui préfèrent éviter les services Google, ou qui veulent simplement une alternative. Un seul backend actif à la fois.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.8">Accessible depuis <strong style="color:var(--accent)">Mon compte → SAUVEGARDE DES DONNÉES</strong> (carte dépliable, juste au-dessus d'Export/Import avancé). Deux options supplémentaires à Google Sheets et GitHub, pensées pour ceux qui préfèrent éviter les services Google, ou qui veulent simplement une alternative. Un seul backend actif à la fois.</div>
       </div>
 
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
@@ -66482,7 +66498,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.2.12';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.2.13';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -75464,7 +75480,7 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
           <path d="M3 9v4c0 1.66 4.03 3 9 3s9-1.34 9-3V9"/>
           <path d="M3 13v4c0 1.66 4.03 3 9 3s9-1.34 9-3v-4"/>
         </svg>
-        Plusieurs systèmes de sauvegarde sont disponibles depuis <a onclick="document.getElementById('aboutPanel').style.display='none';document.getElementById('aboutOverlay').style.display='none';document.body.style.overflow='';document.querySelector('.topbar').classList.remove('topbar--blurred');kyfOpenStorageCard();" style="color:#ff9f43;text-decoration:underline;cursor:pointer;font-weight:700">Mon Profil</a>.
+        Plusieurs systèmes de sauvegarde sont disponibles depuis <a onclick="document.getElementById('aboutPanel').style.display='none';document.getElementById('aboutOverlay').style.display='none';document.body.style.overflow='';document.querySelector('.topbar').classList.remove('topbar--blurred');kyfOpenStorageCard();" style="color:#ff9f43;text-decoration:underline;cursor:pointer;font-weight:700">Mon compte</a>.
       </div>
       <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px">
         <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:10px 12px">
@@ -75567,6 +75583,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.13 · 05/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Positions : le nom du contrat (par exemple AV · BoursoVie) s’affiche sur les lignes d’assurance vie et de PER, et un repère ×2 signale un même titre détenu sur plusieurs comptes, avec le détail et le total au survol. Import Finary : la liste « Non repris » donne la raison de chaque ligne laissée de côté. Les derniers « Mon Profil » deviennent « Mon compte ».</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.12 · 05/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Positions : la fenêtre qui s’ouvre quand vous saisissez un ISIN est plus claire. L’ISIN est toujours enregistré ; le choix porte seulement sur le ticker et le nom, qui servent à récupérer le cours. Une ligne sans cours n’est pas comptée à 0 € : elle est exclue des totaux.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.11 · 05/11/2026</div>
