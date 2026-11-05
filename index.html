@@ -381,13 +381,16 @@ function kyfParisWall(d){
         Un message court tient sur une ligne ; plus long, il s'affiche
         sur plusieurs lignes dans un encadré, sans déborder.
         Limite : 320 caractères. Au-delà, coupé proprement avec "…".
+        Mise en page « titre + colonnes » : 1re ligne = le titre ; chaque ligne
+        suivante au format « Intitulé :: texte » devient une colonne ; **mot**
+        met le mot en gras. Sans « :: », le texte s'affiche en simple bloc.
 
      Ne touche à rien d'autre dans ce bloc - c'est le seul endroit à
      modifier pour publier/retirer une annonce.
      ══════════════════════════════════════════════════════════════════ -->
 <script>
   const KYF_ANNONCE_ACTIVE = true;
-  const KYF_ANNONCE_TEXTE  = "Merci à tous d'utiliser Keep Your Folio.\nUn bug, un souci de design ? Écrivez-nous, nous répondons le plus vite possible.\nSi l'appli vous plaît, partagez-la avec le bouton « Partager KYF » de Mon Profil.";
+  const KYF_ANNONCE_TEXTE  = "Merci à tous d'utiliser Keep Your Folio\nUn bug, un souci de design ? :: Écrivez-nous, nous répondons le plus vite possible.\nL'appli vous plaît ? :: Partagez-la avec le bouton **Partager KYF** de Mon Profil.";
   // Annonce ciblée : affichée à la place de la générale, seulement chez ceux qui ont configuré l'Intraday (URL enregistrée).
   // Fermée, elle ne revient plus ; la générale reprend alors sa place. Mets false pour la retirer.
   const KYF_ANNONCE_INTRADAY_ACTIVE = true;
@@ -33120,6 +33123,36 @@ function kyfInitAnnonce(){
   const bandEl = document.getElementById('kyfAnnonceBand');
   if(!textEl || !bandEl) return;
 
+  // Mise en page « titre + colonnes » : 1re ligne = titre ; chaque ligne suivante « Intitulé :: texte » devient une colonne ; **mot** = gras.
+  const lignes = texteBrut.split('\n').map(l => l.trim()).filter(Boolean);
+  const cols = lignes.slice(1).filter(l => l.indexOf('::') > 0);
+  if(lignes.length >= 2 && cols.length === lignes.length - 1){
+    const gras = (el, t) => t.split('**').forEach((seg, i) => { if(!seg) return; if(i % 2){ const b = document.createElement('b'); b.style.color = 'var(--text)'; b.textContent = seg; el.appendChild(b); } else el.appendChild(document.createTextNode(seg)); });
+    bandEl.querySelectorAll(':scope > svg').forEach(sv => { sv.style.display = 'none'; });
+    textEl.textContent = '';
+    Object.assign(textEl.style, { whiteSpace:'normal', overflow:'visible', textOverflow:'clip', lineHeight:'1.5', fontSize:'13px', flex:'1', minWidth:'0' });
+    const tt = document.createElement('div');
+    tt.style.cssText = 'display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;color:var(--text);margin-bottom:10px';
+    tt.innerHTML = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>';
+    const tn = document.createElement('span'); gras(tn, lignes[0]); tt.appendChild(tn);
+    textEl.appendChild(tt);
+    const row = document.createElement('div'); row.style.cssText = 'display:flex;flex-wrap:wrap;gap:12px 18px';
+    cols.forEach((l, i) => {
+      const k = l.indexOf('::'), c = document.createElement('div');
+      c.style.cssText = 'flex:1 1 240px;min-width:0' + (i ? ';border-left:1px solid var(--border2);padding-left:18px' : '');
+      const h = document.createElement('b'); h.textContent = l.slice(0, k).trim(); h.style.cssText = 'display:block;color:var(--accent);font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px';
+      const d = document.createElement('div'); gras(d, l.slice(k + 2).trim());
+      c.appendChild(h); c.appendChild(d); row.appendChild(c);
+    });
+    textEl.appendChild(row);
+    Object.assign(bandEl.style, { height:'auto', padding:'14px 44px 14px 18px', borderRadius:'12px', alignItems:'flex-start', position:'relative', borderLeft:'4px solid var(--accent)', background:'linear-gradient(90deg,color-mix(in srgb,var(--accent) 13%,transparent),var(--idx-band-bg,rgba(46,53,80,0.55)) 40%)', maxWidth:'min(var(--kyf-annonce-max,760px),92vw)', width:'100%' });
+    const xb = bandEl.querySelector('button'); if(xb) Object.assign(xb.style, { position:'absolute', top:'12px', right:'12px', margin:'0' });
+    const wrap = document.getElementById('idxBandWrap');
+    if(wrap){ wrap.style.height = 'auto'; wrap.style.minHeight = '30px'; wrap.style.padding = '5px 12px'; }
+    bandEl.style.display = 'flex';
+    requestAnimationFrame(()=>{ bandEl.style.opacity='1'; bandEl.style.transform='translateY(0) scale(1)'; });
+    return;
+  }
   textEl.textContent = texte;
   // Retour à la ligne naturel : une phrase courte (80 caractères au plus, finie par . ou !) reste d'un seul bloc et passe entière à la ligne
   // quand elle ne tient plus, au lieu d'être coupée au milieu (ex. « Une anomalie ? Forum Linxea / ou ... »). Une phrase longue s'écoule normalement.
