@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.2.10
+  @version     : Beta 2.12.2.11
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7498,7 +7498,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.2.10</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.2.11</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -35631,7 +35631,8 @@ const KYF_FINA_GROUPS = [
   { k:'crypto', lbl:'Cryptomonnaies' },
   { k:'or',     lbl:'Or et métaux précieux' },
   { k:'scpi',   lbl:'SCPI' },
-  { k:'bien',   lbl:'Bien immobilier' }
+  { k:'bien',   lbl:'Bien immobilier' },
+  { k:'cash',   lbl:'Espèces et livrets' }
 ];
 function kyfFinaRecapMode(){
   window._finaMode = true;
@@ -35651,7 +35652,7 @@ function kyfFinaRows_(text){
   return lines.map(l => fiParseCSVLine(l, d));
 }
 // Colonnes du fichier, groupe de chaque ligne (mêmes règles que les lecteurs FinaHack), fichier relu après corrections
-function kyfFinaCols_(h){ const i = n => h.indexOf(n); return { nom:i('assetName'), cls:i('assetClass'), val:i('currentValue'), qty:i('quantity'), pnl:i('pnl_amount'), env:i('virtual_envelop'), et:i('envelopeType'), acc:i('accountName') }; }
+function kyfFinaCols_(h){ const i = n => h.indexOf(n); return { nom:i('assetName'), cls:i('assetClass'), val:i('currentValue'), qty:i('quantity'), pnl:i('pnl_amount'), env:i('virtual_envelop'), et:i('envelopeType'), acc:i('accountName'), inst:i('institutionName') }; }
 function kyfFinaGroupOf_(c, X){
   const cls = String(c[X.cls]||'').trim(), nom = String(c[X.nom]||'').trim();
   if(!nom) return '';
@@ -35661,6 +35662,7 @@ function kyfFinaGroupOf_(c, X){
     if(!(val > 0)) return '';
     return fiClassifyFinaHackEnvelope(X.env>=0?c[X.env]:'', X.et>=0?c[X.et]:'', X.acc>=0?c[X.acc]:'') === 'PER' ? 'per' : 'av';
   }
+  if(cls === 'fiat') return (val > 0 && String(c[X.et]||'').trim() !== 'crypto_wallet') ? 'cash' : '';   // les espèces d'un portefeuille crypto ne sont pas reprises
   if(!(qty > 0)) return '';
   if(cls === 'crypto') return 'crypto';
   if(cls === 'Matières premières') return 'or';
@@ -35693,7 +35695,54 @@ function kyfFinaBuild_(R){
   R.detail = { etf: ['PEA','CTO','AUTRE'].filter(e => det.etf[e]).map(e => (e === 'AUTRE' ? 'enveloppe à préciser' : e) + ' ' + det.etf[e]).join(', ') };
   R.skipped = [];
   if(env.PEE) R.skipped.push('épargne salariale (PEE) ' + env.PEE);
-  if(classes.fiat) R.skipped.push('espèces ' + classes.fiat);
+}
+// Espèces et livrets : chaque ligne « fiat » va à un seul endroit de KYF, décidé par des règles fermées (enveloppe PEA/CTO, nom de livret connu, néobanque connue), sinon au compte courant
+const KYF_FINA_LIV_ = [[/^livret\s*a\b/i,'Livret A'],[/^ldds\b/i,'LDDS'],[/^ldd\b/i,'LDDS'],[/^lep\b/i,'LEP'],[/^pel\b/i,'PEL'],[/^cel\b/i,'CEL']];
+function kyfFinaCashDest_(R, i){
+  const X = R.X, c = R.rows[i], et = String(c[X.et]||'').trim().toLowerCase(), nom = String(c[X.acc]||c[X.nom]||'').trim(), inst = X.inst >= 0 ? String(c[X.inst]||'').trim() : '';
+  if(et === 'pea' || et === 'pea_pme') return { d:'pea', lbl:'Espèces du PEA' };
+  if(et === 'cto') return { d:'cto', lbl:'Espèces du CTO' };
+  const lv = KYF_FINA_LIV_.find(r => r[0].test(nom));
+  if(lv) return { d:'liv', type:lv[1], banque:inst && inst !== 'Default' ? inst : '', lbl:'Livret · ' + lv[1] };
+  const neo = /trade\s*republic|revolut|wise/i.exec(inst);
+  if(neo){ const t = /trade/i.test(neo[0]) ? 'Trade Republic' : (/revolut/i.test(neo[0]) ? 'Revolut' : 'Wise'); return { d:'liv', type:t, banque:t, lbl:'Livret · ' + t }; }
+  return { d:'ccp', lbl:'Compte courant' };
+}
+function kyfFinaCashPlan_(R){
+  const X = R.X, pl = { pea:0, cto:0, ccp:0, liv:[], n:0 };
+  (R.groups.cash || []).forEach(i => {
+    const c = R.rows[i], v = Math.round((fiParseNum(c[X.val])||0)*100)/100, d = kyfFinaCashDest_(R, i); if(!(v > 0)) return;
+    pl.n++;
+    if(d.d === 'liv'){ const ex = pl.liv.find(l => l.type === d.type && l.banque.toLowerCase() === d.banque.toLowerCase()); if(ex) ex.solde = Math.round((ex.solde + v)*100)/100; else pl.liv.push({ type:d.type, banque:d.banque, solde:v }); }
+    else pl[d.d] = Math.round((pl[d.d] + v)*100)/100;
+  });
+  return pl;
+}
+async function kyfFinaCashGo_(R){
+  const pl = kyfFinaCashPlan_(R), L = [], f = n => fmt(n, 2) + ' €';
+  if(pl.pea > 0) L.push('Espèces PEA : ' + f(getCashPea()) + ' → ' + f(pl.pea));
+  if(pl.cto > 0) L.push('Espèces CTO : ' + f(getCashCto()) + ' → ' + f(pl.cto));
+  if(pl.ccp > 0) L.push('Compte courant : ' + f(getCashCcp()) + ' → ' + f(pl.ccp));
+  pl.liv.forEach(l => L.push('Livret ' + l.type + (l.banque && l.banque !== l.type ? ' (' + l.banque + ')' : '') + ' : ' + f(l.solde)));
+  if(!L.length) return;
+  const ok = await kyfAsk('Reprendre ces espèces et livrets ?\n' + L.join('\n') + '\nLes soldes remplacent ceux déjà saisis (jamais additionnés).', { ok:'Reprendre' });
+  if(!ok) return;
+  if(pl.pea > 0) setCashPea(pl.pea);
+  if(pl.cto > 0) setCashCto(pl.cto);
+  if(pl.ccp > 0) setCashCcp(pl.ccp);
+  if(pl.liv.length){
+    const lv = livLoad();
+    pl.liv.forEach((n, k) => {
+      const ex = lv.find(x => x.type === n.type && String(x.banque||'').toLowerCase() === n.banque.toLowerCase());
+      if(ex) ex.solde = n.solde;
+      else lv.push({ id:'liv_' + Date.now().toString(36) + '_' + k, banque:n.banque, type:n.type, solde:n.solde, taux:LIV_TAUX_DEFAUT[n.type] || 0, plafond:LIV_PLAFONDS[n.type] || 0, liquide:1, tauxHistory:[] });
+    });
+    livSave(lv);
+  }
+  try{ renderLivrets(); }catch(e){}
+  try{ renderCashKPI(); }catch(e){}
+  try{ showToast('Espèces et livrets repris.'); }catch(e){}
+  R.done.cash = true; kyfFinaRecapRender();
 }
 function kyfFinaList_(R){
   const out = [];
@@ -35725,6 +35774,10 @@ async function kyfFinaRecapLoad(file){
 }
 function kyfFinaLineHtml_(R, g, i){
   const X = R.X, c = R.rows[i], nom = String(c[X.nom]||'').trim();
+  if(g === 'cash'){
+    const d = kyfFinaCashDest_(R, i), v = fiParseNum(c[X.val]);
+    return `<div style="display:flex;align-items:center;gap:8px;padding:6px 0 6px 22px;border-top:1px solid var(--border)"><div style="flex:1;min-width:0"><div title="${escapeHtml(nom)}" style="font-size:11px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(nom)}</div><div style="font-size:10px;color:var(--text3);margin-top:1px">${fmt(v, 2)} € → ${escapeHtml(d.lbl)}</div></div><button type="button" onclick="kyfFinaDel(${i})" class="kyf-icon-btn" title="Retirer cette ligne de l'import" aria-label="Retirer" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;display:inline-flex;align-items:center">${KYF_ICONS.trash || '×'}</button></div>`;
+  }
   const ib = 'background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;display:inline-flex;align-items:center';
   const sec = ['etf','per','av'].indexOf(kyfFinaBase_(g)) >= 0;   // lignes de titres : recherche de l'ISIN / du ticker
   const acts = '<div style="display:inline-flex;gap:2px;flex-shrink:0">'
@@ -35795,6 +35848,7 @@ function kyfFinaEditSave(i){
 }
 function kyfFinaGo(k){
   const R = window._finaRecap; if(!R) return;
+  if(k === 'cash'){ kyfFinaCashGo_(R); return; }
   const csv = kyfFinaCsv_(R, k), base = kyfFinaBase_(k);
   if(k === 'scpi' || k === 'bien'){
     try{ if(k === 'scpi') scpiImportFinaryText(csv); else immoImportFinaryText(csv); }catch(e){}
@@ -48965,7 +49019,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.10\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.11\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66428,7 +66482,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.2.10';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.2.11';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -75513,6 +75567,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.11 · 05/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Finary (FinaHack) : les espèces et les livrets sont repris. Espèces du PEA et du CTO, Livret A, LDDS, LEP, PEL, CEL et comptes Trade Republic, Revolut, Wise vont dans les livrets, les autres comptes bancaires dans le compte courant. Un récapitulatif demande confirmation, et les soldes remplacent ceux déjà saisis.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.10 · 05/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Finary (FinaHack) : les fonds en euros sont maintenant repris et rangés dans le bon contrat d’assurance vie ou de PER. Si le fichier contient plusieurs contrats, chacun a sa propre ligne d’import.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.09 · 05/11/2026</div>
