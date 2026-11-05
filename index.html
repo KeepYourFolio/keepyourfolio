@@ -72539,6 +72539,7 @@ const KYF_NOUVEAUTES = {
   annonces: [
     { id: 'a-2026-11-05', date: '2026-11-05', items: [
       { titre: 'Avoirs à l\u2019étranger', important: true, texte: 'Nouvelle page pour vos avoirs en devises étrangères (franc suisse, dollar, livre...). Vous saisissez le montant dans sa devise : KYF ne le convertit pas et ne l\u2019ajoute jamais à votre patrimoine en euros. Un filtre par devise et un total par devise sont affichés.' }
+      ,{ titre: 'Fonds gérés : classe de risque', texte: 'Sur un fonds géré d\u2019un contrat, choisissez une classe (monétaire, obligataire daté, performance absolue, obligataire, matières premières, actions, crypto). Le bouton Répartition du contrat a un nouvel onglet PAR RISQUE.' }
     ] },
     { id: 'a-2026-10-31', date: '2026-10-31', items: [
       { titre: 'Zones géographiques refaites', version: '2.11.5.12', important: true, texte: 'Nouveau design : le Top 10 entreprises s\u2019affiche en tuiles avec les logos (cliquez sur Autres pour voir la suite), et le DÉTAIL PAR POSITION ET COMMUNAUTÉ compare vos répartitions pays et secteurs à celles de la communauté, ligne par ligne.' },
@@ -86076,10 +86077,23 @@ function avEvoClose(){
 
 // ── Fenêtre « Répartition » d'un contrat (AV, PER) ou d'un plan PEE (2.9.0.48) : anneau par type, par support, ou par compartiment (PER) ──
 let _avRepId = '', _avRepMode = 't';
+// Classes de risque d'un « Fonds géré » (choisies à la main, facultatives) : servent à la répartition PAR RISQUE d'un contrat
+const KYF_FCL = [
+  { key:'mon', label:'Monétaire', color:'#06b6d4' }, { key:'obd', label:'Obligataire daté', color:'#84cc16' }, { key:'pa', label:'Performance absolue', color:'#14b8a6' },
+  { key:'obl', label:'Obligataire', color:'#a3e635' }, { key:'mp', label:'Matières premières', color:'#f59e0b' }, { key:'act', label:'Actions', color:'#f0b429' }, { key:'cry', label:'Crypto', color:'#ff4fa0' }
+];
+function kyfFclOk(k){ return KYF_FCL.some(c => c.key === k) ? k : ''; }
 const KYF_REP_TYPES = [
   { key:'fe', label:'Fonds euros', color:'#06b6d4' }, { key:'etf', label:'ETF & Actions', color:'#f0b429' }, { key:'immo', label:'Immobilier', color:'#4d9fff' },
   { key:'fonds', label:'Fonds gérés', color:'#9b6dff' }, { key:'obl', label:'Obligations', color:'#a3e635' }, { key:'pe', label:'Private equity', color:'#ff4fa0' }, { key:'dp', label:'Dette privée', color:'#ff7a1a' }, { key:'str', label:'Produits structurés', color:'#14b8a6' }
 ];
+const KYF_REP_RISK = [
+  { key:'fe', label:'Fonds euros', color:'#06b6d4' }, { key:'k:mon', label:'Monétaire', color:'#22d3ee' }, { key:'k:obd', label:'Obligataire daté', color:'#84cc16' },
+  { key:'k:obl', label:'Obligataire', color:'#a3e635' }, { key:'k:pa', label:'Performance absolue', color:'#14b8a6' }, { key:'immo', label:'Immobilier', color:'#4d9fff' },
+  { key:'etf', label:'ETF & Actions', color:'#f0b429' }, { key:'k:act', label:'Fonds actions', color:'#fbbf24' }, { key:'k:mp', label:'Matières premières', color:'#f59e0b' }, { key:'k:cry', label:'Crypto', color:'#ff4fa0' },
+  { key:'fonds', label:'Fonds gérés non classés', color:'#9b6dff' }, { key:'pe', label:'Private equity', color:'#e879f9' }, { key:'dp', label:'Dette privée', color:'#ff7a1a' }, { key:'str', label:'Produits structurés', color:'#14b8a6' }
+];
+function kyfRepRiskKey(l){ return l.type === 'obl' ? 'k:obl' : (l.type === 'fonds' && l.cl) ? 'k:' + l.cl : l.type; }
 const KYF_REP_CT = [ { key:'etf', label:'ETF', color:'#f0b429' }, { key:'action', label:'Actions', color:'#4d9fff' }, { key:'cash', label:'Espèces', color:'#06b6d4' } ];
 const KYF_REP_COMP = [
   { key:'ev-ded', label:'EV Déductible', color:'#9b6dff' }, { key:'ev-non-ded', label:'EV Non Déductible', color:'#f0b429' }, { key:'obligatoire', label:'Obligatoire', color:'#4d9fff' },
@@ -86090,7 +86104,7 @@ function kyfRepData(id){   // lignes { nom, type, val, comp } d'un contrat ou d'
   let c = null; try{ c = avLoad().find(x => x.id === id); }catch(e){}
   if(c){
     const lp = window._lp || {}, linked = kyfAvLinkedTk(c), pos = avPosLoad(c.id), lines = [];
-    pos.forEach(p => { const v = kyfAvPosValue(p, linked, lp).val; if(v > 0) lines.push({ nom: p.nom || p.ticker || 'Support', type: p.type === 'action' ? 'etf' : p.type, val: v, comp: p.compartiment || '' }); });
+    pos.forEach(p => { const v = kyfAvPosValue(p, linked, lp).val; if(v > 0) lines.push({ nom: p.nom || p.ticker || 'Support', type: p.type === 'action' ? 'etf' : p.type, val: v, comp: p.compartiment || '', cl: p.type === 'fonds' ? kyfFclOk(p.classe) : '' }); });
     const fe = parseFloat(c.fondsEuros) || 0;
     if(!pos.some(p => p.type === 'fe') && fe > 0) lines.push({ nom: 'Fonds en euros', type: 'fe', val: fe, comp: '' });
     if(!pos.length && (parseFloat(c.uc) || 0) > 0) lines.push({ nom: 'Unités de compte', type: 'etf', val: parseFloat(c.uc) || 0, comp: '' });
@@ -86135,7 +86149,7 @@ function avRepOpen(id){
 function avRepMode(md){ _avRepMode = md; avRepRender(); }
 function avRepRender(){
   const D = kyfRepData(_avRepId), body = document.getElementById('avRepBody'), tabs = document.getElementById('avRepTabs'); if(!D || !body || !tabs) return;
-  const modes = D.kind === 'pee' ? [['s', 'PAR FONDS']] : D.kind === 'ct' ? [['t', 'PAR TYPE'], ['s', 'PAR LIGNE']] : [['t', 'PAR TYPE'], ['s', 'PAR SUPPORT']].concat(D.per ? [['c', 'PAR COMPARTIMENT']] : []);
+  const modes = D.kind === 'pee' ? [['s', 'PAR FONDS']] : D.kind === 'ct' ? [['t', 'PAR TYPE'], ['s', 'PAR LIGNE']] : [['t', 'PAR TYPE'], ['r', 'PAR RISQUE'], ['s', 'PAR SUPPORT']].concat(D.per ? [['c', 'PAR COMPARTIMENT']] : []);
   if(!modes.some(x => x[0] === _avRepMode)) _avRepMode = modes[0][0];
   tabs.innerHTML = modes.length > 1 ? modes.map(x => '<button type="button" onclick="avRepMode(\'' + x[0] + '\')" aria-pressed="' + (_avRepMode === x[0]) + '" class="' + (_avRepMode === x[0] ? 'kyf-toggle-active' : '') + '" style="font-size:10px;font-weight:700;padding:6px 14px;border-radius:7px;border:1px solid ' + (_avRepMode === x[0] ? 'var(--accent)' : 'var(--border2)') + ';background:' + (_avRepMode === x[0] ? 'rgba(240,180,41,.14)' : 'transparent') + ';color:' + (_avRepMode === x[0] ? 'var(--accent)' : 'var(--text2)') + ';cursor:pointer" onmouseover="if(this.getAttribute(\'aria-pressed\')!==\'true\')this.style.background=\'var(--hov-bg)\'" onmouseout="if(this.getAttribute(\'aria-pressed\')!==\'true\')this.style.background=\'transparent\'">' + x[1] + '</button>').join('') : '';
   let groups = [];
@@ -86143,7 +86157,7 @@ function avRepRender(){
     const by = {}; D.lines.forEach(l => { by[l.nom] = (by[l.nom] || 0) + l.val; });
     groups = Object.keys(by).map(n => ({ label: n, val: by[n] })).sort((a, b) => b.val - a.val).map((g, i) => ({ label: g.label, val: g.val, color: KYF_REP_PAL[i % KYF_REP_PAL.length] }));
   } else {
-    const ref = _avRepMode === 'c' ? KYF_REP_COMP : D.kind === 'ct' ? KYF_REP_CT : KYF_REP_TYPES, kf = _avRepMode === 'c' ? (l => l.comp || '') : (l => l.type);
+    const ref = _avRepMode === 'c' ? KYF_REP_COMP : _avRepMode === 'r' ? KYF_REP_RISK : D.kind === 'ct' ? KYF_REP_CT : KYF_REP_TYPES, kf = _avRepMode === 'c' ? (l => l.comp || '') : _avRepMode === 'r' ? kyfRepRiskKey : (l => l.type);
     groups = ref.map(g => ({ label: g.label, color: g.color, val: D.lines.filter(l => kf(l) === g.key).reduce((s, l) => s + l.val, 0) })).filter(g => g.val > 0).sort((a, b) => b.val - a.val);
   }
   const total = groups.reduce((s, g) => s + g.val, 0);
@@ -98387,6 +98401,7 @@ function openAddAVPos(contratId){
   document.getElementById('avPosContratLabel').textContent = contrat ? (contrat.contratNom||contrat.assureur) : '';
   document.getElementById('avPosRowCompartiment').style.display = isPER ? '' : 'none';
   document.getElementById('avPosType').value    = 'fe';
+  { const _cl = document.getElementById('avPosClasse'); if(_cl) _cl.value = ''; }
   const si = document.getElementById('avPosSearchInput'); if(si) si.value = '';
   document.getElementById('avPosTicker').value  = '';
   document.getElementById('avPosNom').value     = '';
@@ -98751,6 +98766,7 @@ function avPosTypeChange(){
   const isCoté = t === 'etf' || t === 'action';
   const isImmo = t === 'immo';
   const isFonds = kyfFondsLike(t);
+  { const _rc = document.getElementById('avPosRowClasse'); if(_rc) _rc.style.display = t === 'fonds' ? '' : 'none'; }
   document.getElementById('avPosRowTicker').style.display = (isCoté || isImmo || isFonds) ? '' : 'none';
   { const _ri = document.getElementById('avPosRowIsin'); if(_ri){ if(isFonds) _ri.style.display = ''; else if(isFE || isImmo) _ri.style.display = 'none'; }   // 2.10.0.18 : l'ISIN se saisit aussi pour un fonds de private equity, dette privée, obligations, structuré
     const _rs = document.getElementById('avPosRowShareType'); if(_rs) _rs.style.display = (isFonds && kyfGeoCommOn()) ? 'flex' : 'none'; }
@@ -99206,6 +99222,7 @@ function saveAVPos(){
     valeur:  valeur || Math.round(pru*qty*100)/100,
     tauxRendement: taux
   };
+  pos.classe = type === 'fonds' ? kyfFclOk((document.getElementById('avPosClasse') || {}).value) : '';
   const _typeManual = !!window.__avPosTypeTouched && kyfFondsLike(type);
   if(_typeManual) pos.typeSrc = 'm';   // 2.10.0.18 : un type choisi à la main n'est jamais changé par la communauté
   else if(!kyfFondsLike(type)) pos.typeSrc = '';
@@ -99258,6 +99275,7 @@ function editAVPos(contratId, posId){
   setTimeout(()=>{
     document.getElementById('avPosModalTitle').innerHTML = KYF_ICONS.edit + ' MODIFIER LA POSITION';
     document.getElementById('avPosType').value   = pos.type||'fe';
+    { const _cl = document.getElementById('avPosClasse'); if(_cl) _cl.value = kyfFclOk(pos.classe); }
     document.getElementById('avPosTicker').value = pos.ticker||'';
     document.getElementById('avPosNom').value    = pos.nom||'';
     document.getElementById('avPosNom').dataset.auto = '';   // nom enregistré : jamais effacé ni remplacé automatiquement
@@ -102481,6 +102499,12 @@ function orInlineEdit(id, td, currentVal){
         </select>
       </div>
       <div id="avPosPfHint" style="display:flex;align-items:flex-start;gap:8px;margin-top:8px;padding:8px 10px;border-radius:8px;background:rgba(77,159,255,0.10);border:1px solid rgba(77,159,255,0.35);font-size:11px;line-height:1.5;color:var(--text2)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4d9fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;margin-top:2px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><span id="avPosPfHintTxt"></span></div>
+    </div>
+
+    <div id="avPosRowClasse" style="display:none;grid-column:span 2">
+      <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">CLASSE DE RISQUE (FACULTATIF)</div>
+      <select id="avPosClasse" style="width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none"><option value="">Non classé</option><option value="mon">Monétaire</option><option value="obd">Obligataire daté</option><option value="pa">Performance absolue</option><option value="obl">Obligataire</option><option value="mp">Matières premières</option><option value="act">Actions</option><option value="cry">Crypto</option></select>
+      <div style="font-size:9px;color:var(--text3);margin-top:4px;line-height:1.5">Sert à la répartition « Par risque » du contrat (bouton Répartition).</div>
     </div>
 
     <div id="avPosRowTicker" style="display:none;grid-column:span 2">
