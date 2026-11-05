@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.2.09
+  @version     : Beta 2.12.2.10
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7498,7 +7498,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.2.09</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.2.10</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -34797,9 +34797,26 @@ function fiParseFinaHackCSV(text){
   const firstLine = lines[0] || '';
   const delimiter = firstLine.includes(';') ? ';' : (firstLine.includes('\t') ? '\t' : ',');
   const rows = lines.map(l => fiParseCSVLine(l, delimiter));
-  return fiExtractFinaHackRows(rows, 'security').map(r => ({
+  const titres = fiExtractFinaHackRows(rows, 'security').map(r => ({
     isin: '', nom: r.nom, qty: r.qty, pru: r.pru, _needsPru: !(r.pru>0), _finaEnv: r._finaEnv, _source: 'finahack'
   }));
+  return titres.concat(fiFinaHackFondsEuro_(rows));
+}
+// Fonds en euros (assetClass « fonds_euro », quantité 1, valeur = currentValue) : repérés avec certitude, rangés comme ceux d'un relevé AV/PER
+// (typeHint « fondseuro » : jamais cherchés en bourse, la valeur du fonds REMPLACE l'ancienne au lieu de s'additionner)
+function fiFinaHackFondsEuro_(rows){
+  if(!rows.length || !fiFinaHackHeaderOk(rows[0])) return [];
+  const h = rows[0].map(c => String(c||'').trim()), ix = n => h.indexOf(n);
+  const iN = ix('assetName'), iC = ix('assetClass'), iV = ix('currentValue'), iE = ix('virtual_envelop'), iT = ix('envelopeType'), iA = ix('accountName');
+  const out = [];
+  for(let i=1;i<rows.length;i++){
+    const c = rows[i]; if(!c || String(c[iC]||'').trim() !== 'fonds_euro') continue;
+    const nom = String(c[iN]||'').trim(), val = Math.round((fiParseNum(c[iV])||0)*100)/100;
+    if(!nom || !(val > 0)) continue;
+    out.push({ isin:'', nom, qty:1, pru:val, valMkt:val, cours:0, dateVal:'', typeHint:'fondseuro', catTxt:'FONDS EN EUROS', contrat:'', contratNum:'',
+      _finaEnv: fiClassifyFinaHackEnvelope(iE>=0?c[iE]:'', iT>=0?c[iT]:'', iA>=0?c[iA]:''), _source:'finahack' });
+  }
+  return out;
 }
 
 // SCPI : même logique parts/PRU que security (assetClass='scpi' dans
@@ -35640,6 +35657,10 @@ function kyfFinaGroupOf_(c, X){
   if(!nom) return '';
   const qty = fiParseNum(c[X.qty]), val = fiParseNum(c[X.val]);
   if(cls === 'real_estate') return val > 0 ? 'bien' : '';
+  if(cls === 'fonds_euro'){
+    if(!(val > 0)) return '';
+    return fiClassifyFinaHackEnvelope(X.env>=0?c[X.env]:'', X.et>=0?c[X.et]:'', X.acc>=0?c[X.acc]:'') === 'PER' ? 'per' : 'av';
+  }
   if(!(qty > 0)) return '';
   if(cls === 'crypto') return 'crypto';
   if(cls === 'Matières premières') return 'or';
@@ -35657,6 +35678,15 @@ function kyfFinaBuild_(R){
     if(g && !R.del[i]) (groups[g] = groups[g] || []).push(i);
     if(cl === 'security' && !R.del[i]){ const e = fiClassifyFinaHackEnvelope(X.env>=0?c[X.env]:'', X.et>=0?c[X.et]:'', X.acc>=0?c[X.acc]:''); if(e === 'PEE') env.PEE = (env.PEE||0) + 1; }
   });
+  // Plusieurs contrats AV (ou PER) dans le fichier : un groupe par contrat (clé « av#0 », « av#1 »…), pour ne jamais mélanger leurs lignes
+  R.sub = {};
+  ['av','per'].forEach(b => {
+    const lst = groups[b] || [], names = [];
+    lst.forEach(i => { const a = String(R.rows[i][X.acc]||'').trim(); if(names.indexOf(a) < 0) names.push(a); });
+    if(names.length < 2) return;
+    delete groups[b];
+    names.forEach((a, n) => { const k = b + '#' + n; groups[k] = lst.filter(i => String(R.rows[i][X.acc]||'').trim() === a); R.sub[k] = { base:b, nom:a }; });
+  });
   R.groups = groups;
   const det = { etf: {} };
   (groups.etf || []).forEach(i => { const c = R.rows[i]; const e = fiClassifyFinaHackEnvelope(X.env>=0?c[X.env]:'', X.et>=0?c[X.et]:'', X.acc>=0?c[X.acc]:''); det.etf[e] = (det.etf[e]||0) + 1; });
@@ -35664,11 +35694,20 @@ function kyfFinaBuild_(R){
   R.skipped = [];
   if(env.PEE) R.skipped.push('épargne salariale (PEE) ' + env.PEE);
   if(classes.fiat) R.skipped.push('espèces ' + classes.fiat);
-  if(classes.fonds_euro) R.skipped.push('fonds en euros ' + classes.fonds_euro);
 }
-function kyfFinaCsv_(R){
+function kyfFinaList_(R){
+  const out = [];
+  KYF_FINA_GROUPS.forEach(g => {
+    if((R.groups[g.k]||[]).length) out.push(g);
+    Object.keys(R.sub||{}).filter(k => R.sub[k].base === g.k).forEach(k => out.push({ k, lbl: g.lbl + ' · ' + R.sub[k].nom }));
+  });
+  return out;
+}
+function kyfFinaBase_(k){ return String(k).split('#')[0]; }
+function kyfFinaCsv_(R, k){
   const q = v => { v = String(v == null ? '' : v); return /[",\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
-  return R.rows.filter((c, i) => i === 0 || !R.del[i]).map(c => c.map(q).join(',')).join('\n');
+  const only = (k && R.sub && R.sub[k]) ? new Set(R.groups[k] || []) : null;   // un contrat précis : uniquement ses lignes
+  return R.rows.filter((c, i) => i === 0 || (!R.del[i] && (!only || only.has(i)))).map(c => c.map(q).join(',')).join('\n');
 }
 async function kyfFinaRecapLoad(file){
   const st = document.getElementById('importStatus');
@@ -35687,7 +35726,7 @@ async function kyfFinaRecapLoad(file){
 function kyfFinaLineHtml_(R, g, i){
   const X = R.X, c = R.rows[i], nom = String(c[X.nom]||'').trim();
   const ib = 'background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;display:inline-flex;align-items:center';
-  const sec = g === 'etf' || g === 'per' || g === 'av';   // lignes de titres : recherche de l'ISIN / du ticker
+  const sec = ['etf','per','av'].indexOf(kyfFinaBase_(g)) >= 0;   // lignes de titres : recherche de l'ISIN / du ticker
   const acts = '<div style="display:inline-flex;gap:2px;flex-shrink:0">'
     + (sec ? `<button type="button" onmousedown="event.preventDefault()" onclick="kyfFinaSearch(${i})" class="kyf-icon-btn" title="Chercher l'ISIN sur Google" aria-label="Chercher l'ISIN sur Google" style="${ib}" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text3)'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>`
         + `<button type="button" onmousedown="event.preventDefault()" onclick="kyfFinaIa(${i})" class="kyf-icon-btn" title="Demander l'ISIN au mode IA de Google" aria-label="Demander l'ISIN au mode IA de Google" style="${ib}" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text3)'"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 6.1L20 10l-6.1 1.9L12 18l-1.9-6.1L4 10l6.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></button>` : '')
@@ -35715,7 +35754,7 @@ function kyfFinaRecapRender(){
   const st = document.getElementById('importStatus'), pv = document.getElementById('importPreview');
   const nDel = Object.keys(R.del).length;
   const chev = open => `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;transition:transform .15s;${open ? 'transform:rotate(90deg)' : ''}"><polyline points="9 18 15 12 9 6"/></svg>`;
-  const rowsHtml = KYF_FINA_GROUPS.filter(g => (R.groups[g.k]||[]).length > 0).map(g => {
+  const rowsHtml = kyfFinaList_(R).map(g => {
     const done = !!R.done[g.k], list = R.groups[g.k], det = R.detail[g.k], open = !!R.open[g.k];
     return `<div style="border-bottom:1px solid var(--border)"><div style="display:flex;align-items:center;gap:10px;padding:10px 0">`
       + `<div role="button" tabindex="0" class="kyf-fina-tg" onclick="kyfFinaToggle('${g.k}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();kyfFinaToggle('${g.k}')}" title="Voir le détail des lignes" style="flex:1;min-width:0;display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--text)">${chev(open)}`
@@ -35730,7 +35769,7 @@ function kyfFinaRecapRender(){
     + (nDel ? `<div style="padding:0 0 10px;font-size:10px;color:var(--text3)">${nDel} ligne(s) retirée(s) de l'import. <button type="button" onclick="kyfFinaRestore()" class="kyf-hint-link" style="background:none;border:none;padding:0;font:inherit;font-size:10px;font-weight:600;cursor:pointer">Tout rétablir</button></div>` : '');
   document.getElementById('importConfirmBtn').style.display = 'none';
   const ab = document.getElementById('importAllBtn');
-  if(ab) ab.style.display = KYF_FINA_GROUPS.some(g => (R.groups[g.k]||[]).length && !R.done[g.k]) ? '' : 'none';
+  if(ab) ab.style.display = kyfFinaList_(R).some(g => !R.done[g.k]) ? '' : 'none';
 }
 function kyfFinaName_(i){ const R = window._finaRecap; return R ? String(R.rows[i][R.X.nom] || '').trim() : ''; }
 function kyfFinaSearch(i){ const n = kyfFinaName_(i); if(n) kyfIsinSearch(n, ''); }
@@ -35756,13 +35795,18 @@ function kyfFinaEditSave(i){
 }
 function kyfFinaGo(k){
   const R = window._finaRecap; if(!R) return;
-  const csv = kyfFinaCsv_(R);
+  const csv = kyfFinaCsv_(R, k), base = kyfFinaBase_(k);
   if(k === 'scpi' || k === 'bien'){
     try{ if(k === 'scpi') scpiImportFinaryText(csv); else immoImportFinaryText(csv); }catch(e){}
     R.done[k] = true; kyfFinaRecapRender(); return;
   }
-  importGoToStep2(k);
+  importGoToStep2(base);
   window._finaFrom = k;
+  // Contrat déjà créé dans KYF sous le même nom que le compte Finary : choisi d'office (sinon la destination reste à choisir)
+  try{
+    const nom = R.sub && R.sub[k] ? R.sub[k].nom : '', sel = document.getElementById('importDest'), norm = t => String(t||'').toLowerCase().replace(/\s+/g,' ').trim();
+    if(nom && sel){ const o = [...sel.options].find(x => x.value !== '__nouveau__' && norm(x.textContent).indexOf(norm(nom)) === 0); if(o){ sel.value = o.value; sel.dispatchEvent(new Event('change')); } }
+  }catch(e){}
   const lb = document.getElementById('importStep2BackLabel'); if(lb) lb.textContent = 'Retour au récapitulatif';
   return importHandleFile({ files: [new File([csv], R.name || 'finary.csv', { type: 'text/csv' })], value: '' });
 }
@@ -35775,7 +35819,7 @@ async function kyfFinaAll(){
 }
 async function kyfFinaNext(){
   const R = window._finaRecap; if(!R || !R.all) return;
-  for(const k of ['scpi','bien','or','crypto','etf','per','av']){
+  for(const k of ['scpi','bien','or','crypto','etf'].concat(kyfFinaList_(R).map(g => g.k).filter(x => kyfFinaBase_(x) === 'per' || kyfFinaBase_(x) === 'av').sort((a, b) => (kyfFinaBase_(a) === kyfFinaBase_(b) ? 0 : (kyfFinaBase_(a) === 'per' ? -1 : 1))))){
     if(!(R.groups[k]||[]).length || R.done[k]) continue;
     if(k === 'scpi' || k === 'bien'){ kyfFinaGo(k); continue; }
     try{ await kyfFinaGo(k); }catch(e){ R.all = false; return; }
@@ -48921,7 +48965,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.09\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.10\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66384,7 +66428,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.2.09';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.2.10';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -75469,6 +75513,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.10 · 05/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Finary (FinaHack) : les fonds en euros sont maintenant repris et rangés dans le bon contrat d’assurance vie ou de PER. Si le fichier contient plusieurs contrats, chacun a sa propre ligne d’import.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.09 · 05/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Avoirs à l’étranger saisis sur KYF Mobile : ils arrivent dans les opérations en attente et s’ajoutent à la page Avoirs à l’étranger après validation sur le PC (ou refus). Avertissements de la fenêtre Opérations du téléphone en couleur d’accent, plus lisibles.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.08 · 05/11/2026</div>
