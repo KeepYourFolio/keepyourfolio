@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_12_1_31.html
+  @file        : KYF_SHARE_beta_2_12_1_32.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.1.31
+  @version     : Beta 2.12.1.32
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7484,7 +7484,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.1.31</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.1.32</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -8585,6 +8585,10 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
       <div style="font-family:'Inter',sans-serif;font-size:9px;color:var(--text3);padding:8px 0 2px;border-top:1px solid var(--border);margin-top:4px;line-height:1.8">
         Ces avoirs sont gardés dans leur devise d'origine : KYF ne les convertit pas et ne les ajoute jamais à votre patrimoine en euros. Vous saisissez le montant, vous le mettez à jour quand vous le souhaitez.
       </div>
+    </div>
+    <div id="etrDonutsWrap" style="display:none">
+      <div class="card-title" style="margin:6px 0 10px">RÉPARTITION PAR PAYS, DEVISE PAR DEVISE</div>
+      <div id="etrDonuts" style="display:flex;gap:14px;flex-wrap:wrap;align-items:stretch"></div>
     </div>
   </div>
 </div>
@@ -48902,7 +48906,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.1.31\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.1.32\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66348,7 +66352,7 @@ const GUIDE_PAGES = [
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Filtrer et totaliser</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9">Dès que vous avez plusieurs devises, des boutons en haut du tableau (TOUTES, CHF, GBP...) n'affichent qu'une devise. Sous le tableau, le <strong style="color:var(--text)">total par devise</strong> additionne uniquement des montants de même devise. Les cartes du haut comptent les devises, les avoirs et les pays.</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9">Dès que vous avez plusieurs devises, des boutons en haut du tableau (TOUTES, CHF, GBP...) n'affichent qu'une devise. Sous le tableau, le <strong style="color:var(--text)">total par devise</strong> additionne uniquement des montants de même devise. Les cartes du haut comptent les devises, les avoirs et les pays. Plus bas, un donut par devise montre la part de chaque pays à l'intérieur de cette devise.</div>
       </div>
       <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:14px">
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Mettre à jour</div>
@@ -66365,7 +66369,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.1.31';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.1.32';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -75459,6 +75463,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.32 · 05/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Avoirs à l'étranger : un donut par devise sous le tableau, avec la part de chaque pays à l'intérieur de cette devise (jamais de mélange entre devises, montants affichés dans leur devise).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.31 · 05/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">NOUVEAU : page « Avoirs à l'étranger » (Mes actifs), sous Autres actifs. Vous saisissez des montants dans leur devise d'origine (franc suisse, dollar, livre...) : KYF ne les convertit pas et ne les ajoute jamais au patrimoine en euros. Filtre par devise, total par devise, menu ⋯ par ligne. Inclus dans la sauvegarde, la synchronisation Google Sheets, la réinitialisation par module, le Guide, Quoi de neuf et les cartes KPI.</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Annonce KYF : affichage plus compact (une ligne, trois colonnes) et elle attend maintenant la fermeture de « Quoi de neuf » avant d'apparaître.</div>
@@ -86615,6 +86621,63 @@ function kyfEtrRender(){
       ]) + '</td></tr>').join('');
   const te = document.getElementById('etrTotals');
   if(te) te.innerHTML = devs.length ? '<span style="font-size:9px;font-weight:700;letter-spacing:.5px;color:var(--text3)">TOTAL PAR DEVISE</span>' + devs.filter(c => _etrFilter === 'all' || c === _etrFilter).map(c => '<span style="font-size:12px;color:var(--text2);padding:4px 10px;border-radius:6px;border:1px solid var(--border2)"><strong style="color:var(--text)">' + kyfEtrFmt(tot[c], c) + '</strong></span>').join('') : '';
+  kyfEtrDonuts(all, devs, tot);
+}
+// Texte au centre du donut : montant dans SA devise (le plugin commun ajoute toujours « € »)
+function kyfEtrCenterPlugin(cur){
+  return { id:'etrCenter_' + cur, afterDraw(chart){
+    const {ctx:c, chartArea} = chart; if(!chartArea) return;
+    const ds = chart.data.datasets[0]; if(!ds || !ds.data || !ds.data.length) return;
+    const total = ds.data.reduce((x, y) => x + (y || 0), 0); if(!total) return;
+    const light = document.documentElement.getAttribute('data-theme') === 'light';
+    const cx = (chartArea.left + chartArea.right) / 2, cy = (chartArea.top + chartArea.bottom) / 2;
+    const act = chart.getActiveElements(), on = act && act.length && act[0].datasetIndex === 0;
+    const val = on ? ds.data[act[0].index] : total;
+    const sub = on ? String(chart.data.labels[act[0].index] || '').toUpperCase() : 'TOTAL ' + cur;
+    c.save(); c.textAlign = 'center'; c.textBaseline = 'middle';
+    let txt = fmt(val, val % 1 ? 2 : 0), fs = 17; c.font = "700 " + fs + "px 'Space Grotesk',Inter,sans-serif";
+    const hole = (chart.getDatasetMeta(0).data[0] || {}).innerRadius * 2 * 0.86 || 80;
+    while(c.measureText(txt).width > hole && fs > 9){ fs--; c.font = "700 " + fs + "px 'Space Grotesk',Inter,sans-serif"; }
+    c.fillStyle = light ? '#0d1118' : '#ffffff'; c.fillText(txt, cx, cy - 8);
+    c.font = "700 9px Inter,sans-serif"; c.fillStyle = on && chart._segColors ? (chart._segColors[act[0].index] || '#8a94a8') : (light ? '#6a7488' : '#8a94a8');
+    let st = sub; while(st.length > 3 && c.measureText(st).width > hole) st = st.slice(0, -2) + '…';
+    c.fillText(st, cx, cy + 11); c.restore();
+  } };
+}
+// Un donut par devise : parts des pays à l'intérieur d'une seule devise (jamais de mélange entre devises)
+function kyfEtrDonuts(all, devs, tot){
+  const wrap = document.getElementById('etrDonutsWrap'), box = document.getElementById('etrDonuts'); if(!wrap || !box) return;
+  Object.keys(charts).forEach(k => { if(k.indexOf('etrD_') === 0){ try{ charts[k].destroy(); }catch(e){} delete charts[k]; } });
+  wrap.style.display = devs.length ? '' : 'none';
+  const blocks = devs.map(c => {
+    const by = {}; all.filter(d => d.devise === c).forEach(d => { const n = (d.pays || '').trim() || 'Non précisé'; by[n] = (by[n] || 0) + d.montant; });
+    const rows = Object.keys(by).sort((a, b) => by[b] - by[a]).map((n, i) => ({ nom:n, val:by[n], col:KYF_REP_PAL[i % KYF_REP_PAL.length] }));
+    return { c, id:'etrD_' + c, rows, total:tot[c] };
+  });
+  box.innerHTML = blocks.map(B => '<div class="card" style="flex:1 1 250px;min-width:0;overflow:visible"><div class="card-title">' + escapeHtml(B.c) + '</div>'
+    + '<div style="display:flex;justify-content:center"><div style="width:170px;height:170px;overflow:visible"><canvas id="' + B.id + '"></canvas></div></div>'
+    + '<div style="margin-top:10px;font-family:\'Inter\',sans-serif">' + B.rows.map((r, i) => {
+      const pct = r.val / B.total * 100, small = pct < 2;
+      const hv = small ? 'title="Part trop faible pour être mise en évidence sur le graphique" style="cursor:not-allowed;' : 'onmouseenter="kyfDonutLegendHover(\'' + B.id + '\',' + i + ');this.style.background=\'var(--hov-bg)\'" onmouseleave="kyfDonutLegendLeave(\'' + B.id + '\');this.style.background=\'none\'" style="cursor:pointer;';
+      return '<div ' + hv + 'display:flex;align-items:center;gap:8px;margin-bottom:6px;padding:3px 6px;border-radius:6px;transition:background .15s"><div style="width:7px;height:7px;border-radius:50%;background:' + r.col + ';flex-shrink:0"></div>'
+        + '<div style="flex:1;min-width:0;font-size:11px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + escapeHtml(r.nom) + '">' + escapeHtml(r.nom) + '</div>'
+        + '<div style="font-size:10px;color:var(--accent);white-space:nowrap">' + pct.toFixed(1) + '% · ' + kyfEtrFmt(r.val, B.c) + '</div></div>';
+    }).join('') + '</div></div>').join('');
+  try{
+    if(typeof Chart === 'undefined') return;
+    blocks.forEach(B => {
+      const cv = document.getElementById(B.id); if(!cv) return;
+      const colors = B.rows.map(r => r.col), values = B.rows.map(r => r.val), d = chartDefaults(), bw = chartPrefs.donutBorderWidth !== undefined ? chartPrefs.donutBorderWidth : 2;
+      const grad = kyfDonutBuildGradients(cv, colors, false), gradDim = kyfDonutBuildGradients(cv, colors, true);
+      charts[B.id] = new Chart(cv.getContext('2d'), {
+        type:'doughnut', plugins:[kyfEtrCenterPlugin(B.c)],
+        data:{ labels:B.rows.map(r => r.nom), datasets:[{ data:values, backgroundColor:grad, hoverBackgroundColor:grad, borderColor:kyfDonutBorderColor(),
+          borderWidth:kyfDonutBorderWidth(values, bw), borderRadius:0, spacing:kyfDonutSpacing(values), hoverOffset:kyfDonutHoverOffsets(values) }] },
+        options:{...d, layout:{padding:10}, cutout:kyfDonutCutout(), interaction:{mode:'nearest', intersect:true}, scales:{x:{display:false}, y:{display:false}}, plugins:{...d.plugins, legend:{display:false}, tooltip:{enabled:false}}}
+      });
+      charts[B.id]._segGradients = grad; charts[B.id]._segGradientsDim = gradDim; charts[B.id]._segColors = colors;
+    });
+  }catch(e){}
 }
 function kyfEtrDevPick(){
   const v = (document.getElementById('etrDev') || {}).value, w = document.getElementById('etrCodeWrap'); if(w) w.style.display = v === 'AUTRE' ? 'flex' : 'none';
