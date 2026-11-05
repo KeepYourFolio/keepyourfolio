@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.2.14
+  @version     : Beta 2.12.2.15
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7498,7 +7498,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.2.14</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.2.15</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -43914,6 +43914,7 @@ function kyfDonutLegendLeave(chartKey){
 
 // Fabrique un plugin de texte central : total par défaut (libellé
 // paramétrable), catégorie survolée à la place le temps du survol.
+function kyfDiscPctTxt(v, total){ return (total ? (v / total * 100) : 0).toFixed(1).replace('.', ',') + ' %'; }
 function kyfMakeDonutCenterPlugin(defaultLabel){
   return {
     id: 'donutCenterText_'+defaultLabel.replace(/[^a-zA-Z0-9]/g,''),
@@ -43927,17 +43928,18 @@ function kyfMakeDonutCenterPlugin(defaultLabel){
       const isLight = document.documentElement.getAttribute('data-theme') === 'light';
       const cx = (chartArea.left + chartArea.right) / 2;
       const cy = (chartArea.top + chartArea.bottom) / 2;
+      const _disc = document.body.classList.contains('kyf-discreet') && /^(av|per|pee)Donut$/.test(chart.canvas.id);   // mode discret : le centre affiche la part en %, jamais le montant
       const active = chart.getActiveElements();
       let mainText, subText, subColor;
       if(active && active.length && active[0].datasetIndex === 0){
         const idx = active[0].index;
         const val = dataset.data[idx];
-        mainText = kyfDonutMainText(c, val, chart);
+        mainText = _disc ? kyfDiscPctTxt(val, total) : kyfDonutMainText(c, val, chart);
         subText = (chart.data.labels[idx]||'').toUpperCase();
         const segColor = chart._segColors && chart._segColors[idx];
         subColor = segColor || (isLight?'#3a4356':'#a8b2c4');
       } else {
-        mainText = kyfDonutMainText(c, total, chart);
+        mainText = _disc ? '100 %' : kyfDonutMainText(c, total, chart);
         subText = defaultLabel;
         subColor = isLight ? '#6a7488' : '#8a94a8';
       }
@@ -52682,7 +52684,7 @@ input[type=number] { -moz-appearance:textfield; }
 .kyf-reorg-hint{color:var(--text3)}
 .icon-btn.kyf-on{color:var(--accent);border-color:var(--accent)}
 body.kyf-discreet .kyf-amt{filter:blur(7px);user-select:none;-webkit-user-select:none}
-body.kyf-discreet canvas{filter:blur(5px)}
+body.kyf-discreet canvas:not(#avDonut):not(#perDonut):not(#peeDonut){filter:blur(5px)}   /* camemberts de répartition AV / PER / PEE : parts en % visibles, montants masqués au centre */
 body.kyf-discreet #ctF_cash:not(:focus){filter:blur(7px)}
 .kyf-rit-days{display:flex;gap:4px}
 .kyf-rit-day{flex:1;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:6px 0;border-radius:6px;border:1px solid var(--border2);background:none;color:var(--text3);cursor:pointer;transition:background .15s,color .15s}
@@ -72320,7 +72322,7 @@ function kyfDiscMarkText(node){
   const pz = !!p.closest(KYF_DISC_PCT_ZONE), reT = pz ? KYF_DISC_RE_PZ : KYF_DISC_RE, reG = pz ? KYF_DISC_RE_PZ_G : KYF_DISC_RE_G;
   const hit = reT.test(t) || (cell && KYF_DISC_RE_NUM.test(tt) && !kyfDiscIsYear(tt));
   if(!hit) return;
-  if(!p.children.length && t.trim().length <= 40){ p.classList.add('kyf-amt'); return; }
+  if(!p.children.length && t.trim().length <= 40 && (pz || !/%/.test(t))){ p.classList.add('kyf-amt'); return; }   // texte mêlant % et montant (« +15,5 % · +3 100 € ») : seul le montant est flouté, le rendement reste lisible
   const parts = []; let last = 0, m;
   reG.lastIndex = 0;
   while((m = reG.exec(t))){
@@ -72363,10 +72365,12 @@ function kyfDiscreetSync(){
   b.innerHTML = ic;
   b.title = (_kyfDisc ? 'Mode discret actif : cliquer pour réafficher les montants' : 'Mode discret : masquer les montants') + ' (Alt + M)';
 }
+function kyfDiscDonutsRedraw(){ try{ ['avDonut','perDonut','peeDonut'].forEach(k => { if(charts[k]) charts[k].draw(); }); }catch(_){} }   // le texte central (dessiné sur le canevas) passe du montant au pourcentage, et inversement
 function kyfDiscreetOn(){
   if(_kyfDisc) return;
   _kyfDisc = true;
   document.body.classList.add('kyf-discreet');
+  kyfDiscDonutsRedraw();
   kyfDiscScan(document.body);
   // Traitement immédiat (micro-tâche, avant l'affichage) : aucun délai pendant lequel un montant serait lisible
   _kyfDiscObs = new MutationObserver(muts => {
@@ -72385,6 +72389,7 @@ function kyfDiscreetOff(){
   if(_kyfDiscObs){ _kyfDiscObs.disconnect(); _kyfDiscObs = null; }
   clearTimeout(_kyfDiscT); _kyfDiscT = 0; _kyfDiscQ.clear();
   document.body.classList.remove('kyf-discreet');
+  kyfDiscDonutsRedraw();
   document.querySelectorAll('span[data-kyfw]').forEach(sp => sp.replaceWith(document.createTextNode(sp.textContent)));
   document.querySelectorAll('.kyf-amt').forEach(el => el.classList.remove('kyf-amt'));
   kyfDiscreetSync();
@@ -75600,6 +75605,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.15 · 05/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Mode discret (œil) : les rendements restent lisibles, seuls les montants sont floutés. Sur Mes contrats, la performance de chaque contrat (« +15,5 % ») et la part de chaque ligne dans la répartition (« 82,97 % du contrat ») s’affichent, et les camemberts de répartition AV, PER et PEE ne sont plus floutés : leur centre indique la part en % au lieu du montant. Vous pouvez ainsi montrer votre répartition sans dévoiler vos sommes. Suggestion d’un utilisateur.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.14 · 05/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Positions : le compte de chaque ligne s’affiche par un petit logo rond (banque ou assureur) avec son enveloppe (PEA, CTO, AV, PER) en étiquette dans le coin, à la place des pastilles de texte. Un même titre détenu sur plusieurs comptes montre ses logos superposés, avec le détail et le total au survol. Sans logo connu, ce sont les initiales du compte.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.13 · 05/11/2026</div>
