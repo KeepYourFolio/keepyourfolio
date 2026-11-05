@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.2.06
+  @version     : Beta 2.12.2.07
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -2918,6 +2918,11 @@ html.kyf-boot #sidebar, html.kyf-boot #mainContent, html.kyf-boot #mainContent .
 #sidebar:not(.mini) .sb-item:has(> .sb-badge):not(.sb-bl) { padding-right: 26px; }
 #sidebar:not(.mini) .sb-item.sb-bl > .sb-badge { top: 4px; right: auto; left: 25px; transform: none; box-shadow: 0 0 0 2px var(--bg2); }
 #sidebar.mini .sb-item .kyf-new-badge { display: none !important; }
+/* 2.12.2.07 : dans le menu, la pastille est toujours un simple point (menu déplié ou section repliée) ; le mot NOUVEAU reste réservé aux boutons et aux pages */
+#sidebar .kyf-new-badge{font-size:0!important;line-height:0!important;padding:0!important;width:8px!important;height:8px!important;min-width:8px!important;border-radius:50%!important;letter-spacing:0!important;flex-shrink:0}
+.sb-section .kyf-sec-badge{font-size:0!important;line-height:0!important;padding:0!important;width:8px!important;height:8px!important;min-width:8px!important;border-radius:50%!important;letter-spacing:0!important}
+#sidebar .sb-group-header.open .kyf-new-badge{display:none!important}
+#sidebar.mini .sb-group-header .kyf-new-badge,#sidebar.mini .sb-child-item .kyf-new-badge{display:none!important}
 /* 2.8.10.40 : badge NOUVEAU du menu. Barre large : le nom est réduit pour ne pas passer dessous (badge compact, puis simple point si rien ne tient). Barre repliée : l'icône prend la couleur d'attention ; survol conservé, et une fois le menu ouvert (actif) l'icône reprend la couleur active */
 .sb-item .kyf-new-badge.kyf-new-compact{font-size:7px!important;padding:1px 4px!important;letter-spacing:.2px!important}
 .sb-item .kyf-new-badge.kyf-new-dot{font-size:0!important;padding:0!important;width:8px;height:8px;min-width:8px;letter-spacing:0!important}
@@ -7494,7 +7499,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.2.06</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.2.07</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -48917,7 +48922,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.06\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.07\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66380,7 +66385,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.2.06';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.2.07';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -72845,7 +72850,7 @@ function kyfNewBadgesRefresh(){
       let vu = false; try{ vu = localStorage.getItem(kyfNewBadgeKey_(k)) === '1'; }catch(e){}
       const on = k === 'avis' ? kyfAvisPromoOn_() : !!(k && [].concat(KYF_NOUVEAUTES.badge || []).indexOf(k) > -1 && !vu);
       el.style.display = on ? 'inline-block' : 'none';
-      if(!el.getAttribute('title') && el.closest && el.closest('#edPanel')){ el.setAttribute('title', 'Nouveau'); el.setAttribute('aria-label', 'Nouveau'); }
+      if(!el.getAttribute('title') && el.closest && (el.closest('#edPanel') || el.closest('#sidebar'))){ const nm = /VOUS/i.test(el.textContent || '') ? 'À vous' : 'Nouveau'; el.setAttribute('title', nm); el.setAttribute('aria-label', nm); }
       const it = el.closest ? el.closest('.sb-item') : null; if(it) it.classList.toggle('sb-has-new', on);   // menu replié : l'icône porte la couleur d'attention
     });
   }catch(e){}
@@ -72854,18 +72859,7 @@ function kyfNewBadgesRefresh(){
 }
 // Badge NOUVEAU du menu : le nom est réduit (jusqu'à 8 px) pour ne pas passer dessous ; sinon badge compact, puis simple point
 function kyfSbFitNew(){
-  const sb = document.getElementById('sidebar'), mini = sb && sb.classList.contains('mini');
-  document.querySelectorAll('#sidebar .sb-item').forEach(it => {
-    const b = it.querySelector(':scope > .kyf-new-badge'), lab = it.querySelector(':scope > .sb-label'); if(!b || !lab) return;
-    lab.style.removeProperty('font-size'); b.classList.remove('kyf-new-compact', 'kyf-new-dot');
-    if(mini || b.style.display === 'none' || !lab.clientWidth) return;
-    it.style.transition = 'none'; void it.offsetWidth; setTimeout(() => { try{ it.style.removeProperty('transition'); }catch(e){} }, 60);
-    const over = () => lab.scrollWidth > lab.clientWidth + 0.5;
-    const shrink = min => { let fs = parseFloat(getComputedStyle(lab).fontSize) || 11; while(over() && fs > min){ fs -= 0.5; lab.style.setProperty('font-size', fs + 'px', 'important'); } };
-    shrink(9.5);
-    if(over()){ lab.style.removeProperty('font-size'); b.classList.add('kyf-new-compact'); shrink(8.5); }
-    if(over()){ lab.style.removeProperty('font-size'); b.classList.remove('kyf-new-compact'); b.classList.add('kyf-new-dot'); shrink(8.5); }
-  });
+  document.querySelectorAll('#sidebar .sb-item > .sb-label').forEach(l => l.style.removeProperty('font-size'));   // le nom du menu garde sa taille : la pastille est un point
 }
 try{ window.addEventListener('resize', () => { try{ kyfSbFitNew(); }catch(e){} }); }catch(e){}
 function kyfNewBadgeSeen(k){
@@ -75476,6 +75470,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.07 · 05/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Menu : les pastilles NOUVEAU deviennent toujours un point, que le menu soit déplié ou replié. Le mot NOUVEAU reste sur les boutons et les pages.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.06 · 05/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Pastilles NOUVEAU sur le menu Ass. Vie / PER et sur les boutons de répartition des contrats AV ; elles disparaissent au clic. Nouveauté importante ajoutée dans Quoi de neuf, à côté de « Répartition d’un contrat en fenêtre ».</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.05 · 05/11/2026</div>
@@ -100744,7 +100740,7 @@ function kyfAvDonutPos(d, perMode){
   const vna = kyfAvVersNA(d); if(vna > 0) rows.push({ type:'vna', valeur: vna, compartiment: null });
   return rows;
 }
-// 2.12.2.06 : la répartition de la vue générale des contrats AV se choisit comme celle d'un contrat : par type (vue d'origine), par risque ou par support
+// 2.12.2.05 : la répartition de la vue générale des contrats AV se choisit comme celle d'un contrat : par type (vue d'origine), par risque ou par support
 let _avDonutMode = 't'; try{ const m = localStorage.getItem('kyf-av-donut-mode'); if(m === 'r' || m === 's') _avDonutMode = m; }catch(e){}
 function avDonutMode(m){
   if(m !== 't' && m !== 'r' && m !== 's') return; _avDonutMode = m;
