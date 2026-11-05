@@ -33173,22 +33173,22 @@ function kyfInitAnnonce(){
     const gras = (el, t) => t.split('**').forEach((seg, i) => { if(!seg) return; if(i % 2){ const b = document.createElement('b'); b.style.color = 'var(--text)'; b.textContent = seg; el.appendChild(b); } else el.appendChild(document.createTextNode(seg)); });
     bandEl.querySelectorAll(':scope > svg').forEach(sv => { sv.style.display = 'none'; });
     textEl.textContent = '';
-    Object.assign(textEl.style, { whiteSpace:'normal', overflow:'visible', textOverflow:'clip', lineHeight:'1.5', fontSize:'13px', flex:'1', minWidth:'0' });
+    Object.assign(textEl.style, { whiteSpace:'normal', overflow:'visible', textOverflow:'clip', lineHeight:'1.5', fontSize:'12px', flex:'1', minWidth:'0' });
     const tt = document.createElement('div');
-    tt.style.cssText = 'display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;color:var(--text);margin-bottom:10px';
+    tt.style.cssText = 'display:flex;align-items:flex-start;gap:8px;font-size:13px;font-weight:700;color:var(--text);line-height:1.35;flex:0 1 190px;min-width:150px';
     tt.innerHTML = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>';
     const tn = document.createElement('span'); gras(tn, lignes[0]); tt.appendChild(tn);
-    textEl.appendChild(tt);
-    const row = document.createElement('div'); row.style.cssText = 'display:flex;flex-wrap:wrap;gap:12px 18px';
+    const row = document.createElement('div'); row.style.cssText = 'display:flex;flex-wrap:wrap;gap:10px 16px;align-items:flex-start';
+    row.appendChild(tt);
     cols.forEach((l, i) => {
       const k = l.indexOf('::'), c = document.createElement('div');
-      c.style.cssText = 'flex:1 1 240px;min-width:0' + (i ? ';border-left:1px solid var(--border2);padding-left:18px' : '');
-      const h = document.createElement('b'); h.textContent = l.slice(0, k).trim(); h.style.cssText = 'display:block;color:var(--accent);font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px';
+      c.style.cssText = 'flex:1 1 200px;min-width:0;font-size:12px;border-left:1px solid var(--border2);padding-left:16px';
+      const h = document.createElement('b'); h.textContent = l.slice(0, k).trim(); h.style.cssText = 'display:block;color:var(--accent);font-size:10px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:1px';
       const d = document.createElement('div'); gras(d, l.slice(k + 2).trim());
       c.appendChild(h); c.appendChild(d); row.appendChild(c);
     });
     textEl.appendChild(row);
-    Object.assign(bandEl.style, { height:'auto', padding:'14px 44px 14px 18px', borderRadius:'12px', alignItems:'flex-start', position:'relative', borderLeft:'4px solid var(--accent)', background:'linear-gradient(90deg,color-mix(in srgb,var(--accent) 13%,transparent),var(--idx-band-bg,rgba(46,53,80,0.55)) 40%)', maxWidth:'min(var(--kyf-annonce-max,760px),92vw)', width:'100%' });
+    Object.assign(bandEl.style, { height:'auto', padding:'10px 40px 10px 16px', borderRadius:'12px', alignItems:'flex-start', position:'relative', borderLeft:'4px solid var(--accent)', background:'linear-gradient(90deg,color-mix(in srgb,var(--accent) 13%,transparent),var(--idx-band-bg,rgba(46,53,80,0.55)) 40%)', maxWidth:'min(var(--kyf-annonce-max,760px),92vw)', width:'100%' });
     const xb = bandEl.querySelector('button'); if(xb) Object.assign(xb.style, { position:'absolute', top:'12px', right:'12px', margin:'0' });
     const wrap = document.getElementById('idxBandWrap');
     if(wrap){ wrap.style.height = 'auto'; wrap.style.minHeight = '30px'; wrap.style.padding = '5px 12px'; }
