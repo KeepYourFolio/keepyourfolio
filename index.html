@@ -1,9 +1,9 @@
 <!--
   ============================================================
-  @file        : KYF_SHARE_beta_2_12_1_24.html
+  @file        : KYF_SHARE_beta_2_12_1_31.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.1.30
+  @version     : Beta 2.12.1.31
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7484,7 +7484,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.1.30</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.1.31</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -21353,7 +21353,7 @@ document.documentElement.classList.toggle('kyf-no-crumb', kyfCrumbHidden());
 function kyfCrumbFill(d,id){
   var alias=(id==='immo-scpi-liste')?'immo-scpi':id;
   var it=document.querySelector('.sb-item[data-page="'+alias+'"],.sb-child-item[data-page="'+alias+'"]'); if(!it) return false;
-  var sec=({portfolio:1,crypto:1,livrets:1,or:1,autres:1,dividendes:1,historique:2,dca:2,transactions:2,bilan:2,frais:2,heatmap:3,geo:3,groupes:3,alertes:3,'fiscal-pea-cto':3,'comptes-titres':1,avis:0})[id];
+  var sec=({portfolio:1,crypto:1,livrets:1,or:1,autres:1,etranger:1,dividendes:1,historique:2,dca:2,transactions:2,bilan:2,frais:2,heatmap:3,geo:3,groupes:3,alertes:3,'fiscal-pea-cto':3,'comptes-titres':1,avis:0})[id];
   sec=sec===undefined?'':(['','Mes actifs','Mon historique','Analyses'][sec]||'');
   var gc=it.closest('.sb-group-children');
   if(gc){ var gh=document.getElementById('sbg-'+gc.id.replace('sbgc-','')); var gl=gh&&gh.querySelector('.sb-label'); if(gl) sec=gl.textContent.trim(); }
@@ -21368,7 +21368,7 @@ function kyfCrumbFill(d,id){
   if(ic) d.querySelector('.kc-ic').appendChild(ic.cloneNode(true));
   return true;
 }
-var KYF_CRUMB_NEW=['portfolio','comptes-titres','crypto','livrets','or','autres','historique','dca','transactions','bilan','frais','heatmap','geo','groupes','alertes','avis'];
+var KYF_CRUMB_NEW=['portfolio','comptes-titres','crypto','livrets','or','autres','etranger','historique','dca','transactions','bilan','frais','heatmap','geo','groupes','alertes','avis'];
 var KYF_CRUMB_CONV=['dividendes','budget','livrets-recurrents','immobilier','immo-credits','immo-revenus','immo-scpi','immo-scpi-liste','immo-crowdfunding','assurance','av-comparateur','per-comprendre','av-fiscalite','fiscal-pea-cto'];
 function kyfCrumb(id){
   try{
@@ -48902,7 +48902,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.1.30\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.1.31\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66365,7 +66365,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.1.23';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.1.31';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -75459,6 +75459,11 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.31 · 05/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">NOUVEAU : page « Avoirs à l'étranger » (Mes actifs), sous Autres actifs. Vous saisissez des montants dans leur devise d'origine (franc suisse, dollar, livre...) : KYF ne les convertit pas et ne les ajoute jamais au patrimoine en euros. Filtre par devise, total par devise, menu ⋯ par ligne. Inclus dans la sauvegarde, la synchronisation Google Sheets, la réinitialisation par module, le Guide, Quoi de neuf et les cartes KPI.</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Annonce KYF : affichage plus compact (une ligne, trois colonnes) et elle attend maintenant la fermeture de « Quoi de neuf » avant d'apparaître.</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance vie / PER : classe de risque facultative sur les fonds gérés (monétaire, obligataire daté, performance absolue, obligataire, matières premières, actions, crypto) et nouvel onglet PAR RISQUE dans Répartition.</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fil d'Ariane : « Mes actifs · Avoirs à l'étranger » affiché en haut de la page.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.24 · 02/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Google Sheets : une donnée du Sheet modifiée depuis la dernière lecture de cet appareil (autre PC, ancienne version, nouvel appareil) n'est plus jamais écrasée par une sauvegarde automatique, même si la copie de cet appareil est plus récente. L'envoi est suspendu et l'avertissement « Sheet plus récent » s'affiche.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.1.23 · 02/11/2026</div>
