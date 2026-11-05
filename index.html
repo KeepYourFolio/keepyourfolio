@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.2.13
+  @version     : Beta 2.12.2.14
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7498,7 +7498,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.2.13</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.2.14</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -43313,7 +43313,24 @@ function renderETFTable(lp){
     const lab = y => (y.enveloppe === 'CTO' && _multiCto ? kyfCtoNom(kyfCtoCompteOf(y)) : ((y.enveloppe === 'AV' || y.enveloppe === 'PER') && _avNom[String(y.contratId)] ? (y.enveloppe + ' · ' + _avNom[String(y.contratId)]) : (y.enveloppe || 'PEA')));
     const tot = l.reduce((t, y) => t + (parseFloat(y.qty)||0), 0);
     return `<span class="kyf-env-chip" title="${escapeHtml('Même titre sur ' + l.length + ' comptes : ' + l.map(y => lab(y) + ' ' + q(y.qty)).join(' · ') + ' (total ' + q(tot) + ')')}">×${l.length}</span>`; };
-  const _avNom = {}; try{ avLoad().forEach(c => { _avNom[String(c.id)] = String(c.contratNom || c.assureur || '').trim(); }); }catch(_){}   // nom du contrat AV / PER, rappelé sur ses lignes en vue mélangée
+  const _avNom = {}; try{ avLoad().forEach(c => { _avNom[String(c.id)] = String(c.contratNom || c.assureur || '').trim(); }); }catch(_){}
+  const _avAss = {}; try{ avLoad().forEach(c => { _avAss[String(c.id)] = String(c.assureur || c.contratNom || '').trim(); }); }catch(_){}
+  // Compte d'une ligne : petit logo rond de la banque (PEA, CTO) ou de l'assureur (AV, PER) ; sans logo connu, les initiales du compte. Plusieurs comptes pour un même titre : logos superposés.
+  const _acctEtab = y => { try{ const ev = y.enveloppe || 'PEA'; if(ev === 'CTO'){ const id = kyfCtoCompteOf(y); return ctCptInfo(id).etab || (id === 'c1' ? ctEtabAuto('CTO') : ''); } if(ev === 'AV' || ev === 'PER') return _avAss[String(y.contratId)] || ''; return (ctInfo()[ev] || {}).etab || ctEtabAuto(ev); }catch(_){ return ''; } };
+  const _acctLab = y => { const ev = y.enveloppe || 'PEA', c = (ev === 'AV' || ev === 'PER') ? (_avNom[String(y.contratId)] || '') : String(_acctEtab(y) || '').split(',')[0]; return (ev === 'CTO' && _multiCto ? kyfCtoNom(kyfCtoCompteOf(y)) : ev) + (c ? ' · ' + c : ''); };
+  const _acctBadge = (y, z, over) => { const ev = y.enveloppe || 'PEA', et = _acctEtab(y), sz = 18, ini = ({'PEA-PME':'PME'})[ev] || ev;
+    const sp = `<span style=&quot;font-size:7px;font-weight:800;letter-spacing:.3px;color:var(--text3)&quot;>${ini}</span>`;
+    let inner = `<span style="font-size:7px;font-weight:800;letter-spacing:.3px;color:var(--text3)">${ini}</span>`;
+    if(et){ if(ev === 'AV' || ev === 'PER'){ inner = assureurLogoImg(et, sz); }
+      else { const d = ctDomaineDe(et); if(d){ const src = Object.prototype.hasOwnProperty.call(KYF_CT_LOGOS_LOCAL, d) ? KYF_CT_LOGOS_LOCAL[d] : 'https://www.google.com/s2/favicons?domain=' + d + '&sz=64'; inner = `<img src="${src}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:contain;display:block" onerror="this.outerHTML='${sp}'">`; } } }
+    const tag = ({'PEA-PME':'PME'})[ev] || ev;
+    return `<span style="position:relative;z-index:${z};display:inline-flex;width:${sz}px;height:${sz}px;${over ? 'margin-left:-4px;' : ''}flex-shrink:0"><span style="display:inline-flex;align-items:center;justify-content:center;width:100%;height:100%;border-radius:50%;overflow:hidden;background:#fff;box-shadow:0 0 0 1.5px var(--bg2)">${inner}</span>${over ? '' : `<span style="position:absolute;right:-5px;bottom:-4px;font-size:6px;font-weight:800;letter-spacing:.2px;line-height:1;padding:1.5px 2.5px;border-radius:4px;background:var(--bg3);color:var(--text2);box-shadow:0 0 0 1px var(--bg2)">${tag}</span>`}</span>`; };
+  const _acctStack = x => { const k = String(x.isin || x.ticker || '').toUpperCase(), l = _multiCompte[k] || [x];
+    const ord = [x].concat(l.filter(y => y !== x)), shown = ord.slice(0, 3), more = ord.length - shown.length;
+    const q = v => (Math.round((parseFloat(v)||0) * 1e4) / 1e4).toString().replace('.', ',');
+    const tip = l.length > 1 ? 'Même titre sur ' + l.length + ' comptes : ' + l.map(y => _acctLab(y) + ' ' + q(y.qty)).join(' · ') + ' (total ' + q(l.reduce((a, y) => a + (parseFloat(y.qty)||0), 0)) + ')' : _acctLab(x);
+    return `<span class="kyf-acct" title="${escapeHtml(tip)}" style="display:inline-flex;align-items:center;margin-left:3px;margin-right:8px;vertical-align:middle">${shown.map((y, i) => _acctBadge(y, 10 - i, i > 0)).join('')}${more > 0 ? `<span style="margin-left:3px;font-size:9px;font-weight:700;color:var(--text3)">+${more}</span>` : ''}</span>`; };
+  const _acctShow = x => { const k = String(x.isin || x.ticker || '').toUpperCase(); return (_grouped || _solo) && !_multiCompte[k] ? '' : _acctStack(x); };   // nom du contrat AV / PER, rappelé sur ses lignes en vue mélangée
   let rows = '';
   let lastEnv = null;
   if(!_solo && !_grouped && kyfEnvList().length >= 2 && _fa.view.length){   // vue mélangée : la ligne de navigation entre comptes reste présente (menu des comptes + flèches)
@@ -43386,7 +43403,7 @@ function renderETFTable(lp){
       <td style="font-weight:600;cursor:pointer" onclick="etfInlineEditTicker(${ETF.indexOf(e)}, this, ${kyfJsonAttr(e.name)}, 'name')">
         <div style="display:flex;align-items:center;gap:7px">
           ${showLogo?renderAssetLogo(e.ticker,e.name,20):''}
-          <span>${escapeHtml(e.name)}</span>${_mcInfo(e)}${(() => { const _ti = kyfFamTiOf(e); return (_multiTi && KYF_TITU[_ti]) ? `<span class="kyf-ti-dot kyf-env-chip" title="À qui : ${escapeHtml(KYF_TITU[_ti][0])}" style="display:inline-flex;align-items:center;gap:4px;color:${KYF_TITU[_ti][1]};border-color:${KYF_TITU[_ti][1]}"><span style="width:6px;height:6px;border-radius:50%;background:${KYF_TITU[_ti][1]}"></span>${escapeHtml(KYF_TITU[_ti][0])}</span>` : ''; })()}${(env === 'CTO' && _multiCto) ? `<span class="kyf-env-chip" title="Compte CTO">${escapeHtml(kyfCtoNom(kyfCtoCompteOf(e)))}</span>` : ((_grouped || _solo)?'':`<span class="kyf-env-chip" title="${(env === 'AV' || env === 'PER') && _avNom[String(e.contratId)] ? 'Contrat : ' + escapeHtml(_avNom[String(e.contratId)]) : 'Enveloppe'}">${escapeHtml(({AV:'AV','PEA-PME':'PEA-PME'})[env] || envLabels[env] || env)}${(env === 'AV' || env === 'PER') && _avNom[String(e.contratId)] ? ' · ' + escapeHtml(_avNom[String(e.contratId)].slice(0, 22)) : ''}</span>`)}
+          <span>${escapeHtml(e.name)}</span>${_acctShow(e)}${(() => { const _ti = kyfFamTiOf(e); return (_multiTi && KYF_TITU[_ti]) ? `<span class="kyf-ti-dot kyf-env-chip" title="À qui : ${escapeHtml(KYF_TITU[_ti][0])}" style="display:inline-flex;align-items:center;gap:4px;color:${KYF_TITU[_ti][1]};border-color:${KYF_TITU[_ti][1]}"><span style="width:6px;height:6px;border-radius:50%;background:${KYF_TITU[_ti][1]}"></span>${escapeHtml(KYF_TITU[_ti][0])}</span>` : ''; })()}${(env === 'CTO' && _multiCto) ? `<span class="kyf-env-chip" title="Compte CTO">${escapeHtml(kyfCtoNom(kyfCtoCompteOf(e)))}</span>` : ''}
         </div>
       </td>
       <td style="font-size:9px;color:var(--text3);line-height:1.6;white-space:nowrap">
@@ -49035,7 +49052,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.13\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.14\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66498,7 +66515,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.2.13';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.2.14';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -75583,6 +75600,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.14 · 05/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Positions : le compte de chaque ligne s’affiche par un petit logo rond (banque ou assureur) avec son enveloppe (PEA, CTO, AV, PER) en étiquette dans le coin, à la place des pastilles de texte. Un même titre détenu sur plusieurs comptes montre ses logos superposés, avec le détail et le total au survol. Sans logo connu, ce sont les initiales du compte.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.13 · 05/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Positions : le nom du contrat (par exemple AV · BoursoVie) s’affiche sur les lignes d’assurance vie et de PER, et un repère ×2 signale un même titre détenu sur plusieurs comptes, avec le détail et le total au survol. Import Finary : la liste « Non repris » donne la raison de chaque ligne laissée de côté. Les derniers « Mon Profil » deviennent « Mon compte ».</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.12 · 05/11/2026</div>
