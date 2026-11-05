@@ -33145,7 +33145,27 @@ function kyfAnnonceEff(){
   return { texte: (typeof KYF_ANNONCE_TEXTE === 'string' ? KYF_ANNONCE_TEXTE : '').trim(), cle: 'kyf-annonce-fermee', generale: true };
 }
 // L'annonce occupe-t-elle le bandeau ? (active, avec un texte, et pas déjà fermée pour ce texte)
+// Tant que « Quoi de neuf » doit s'afficher (nouveauté non vue), l'annonce KYF attend : elle apparaît à la fermeture de Quoi de neuf (kyfNewReleaseAnnonce)
+function kyfNewHoldsAnnonce_(){
+  try{
+    if(window._kyfNewReleased) return false;
+    if(typeof kyfNewPopOff_ !== 'function' || kyfNewPopOff_()) return false;
+    if(!localStorage.getItem(WELCOME_KEY)) return false;
+    return kyfNewPending_().length > 0;
+  }catch(e){ return false; }
+}
+window.kyfNewReleaseAnnonce = function(){
+  if(window._kyfNewReleased) return;
+  window._kyfNewReleased = true;
+  try{
+    if(kyfAnnonceAffichee()){
+      const ib = document.getElementById('idxBand'); if(ib){ ib.style.display = 'none'; ib.style.opacity = '0'; }
+      kyfInitAnnonce();
+    }
+  }catch(e){}
+};
 function kyfAnnonceAffichee(){
+  if(kyfNewHoldsAnnonce_()) return false;
   const e = kyfAnnonceEff();
   if(e.generale && (typeof KYF_ANNONCE_ACTIVE === 'undefined' || !KYF_ANNONCE_ACTIVE)) return false;
   if(!e.texte) return false;
@@ -72852,6 +72872,7 @@ function kyfNewClose(){
   document.body.style.overflow = '';
   try{ if(KYF_NOUVEAUTES.annonces.length) localStorage.setItem(KYF_NEW_SEEN_KEY, KYF_NOUVEAUTES.annonces[0].id); }catch(e){}
   document.removeEventListener('keydown', kyfNewKey_);
+  try{ kyfNewReleaseAnnonce(); }catch(e){}
 }
 // « Ne plus afficher cette fenêtre » : ferme sans marquer la nouveauté comme vue, ouvre Paramètres > Affichage sur la case (surlignée 3 s)
 function kyfNewOpenPref(){
@@ -73043,7 +73064,7 @@ function kyfNewCapClose(why){
   kyfNewCapBack_(false);
   if(why !== 'x' && why !== 'esc' && why !== 'pref') kyfNewCapMarkSeen_();   // la croix, Échap et le lien des Paramètres rangent la notification pour cette fois seulement : elle revient au prochain lancement
   const el = c.el;
-  const done = () => { try{ el.remove(); }catch(e){} if(_kyfCap === c) _kyfCap = null; };
+  const done = () => { try{ el.remove(); }catch(e){} if(_kyfCap === c) _kyfCap = null; try{ if(!document.getElementById('kyfNewModal')) kyfNewReleaseAnnonce(); }catch(e){} };
   let reduce = false; try{ reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
   if(reduce){ done(); return; }
   try{   // elle file vers la cloche : on calcule le trajet
@@ -73084,11 +73105,11 @@ function kyfNewCalme_(){
 window.kyfNewBusy = function(){ return !!document.getElementById('kyfNewModal') || !!document.getElementById('kyfNewCap') || !!window._kyfNewWaiting; };   // l'invitation aux statistiques passe après
 function kyfNewTry_(n){
   try{
-    if(kyfNewPopOff_()){ window._kyfNewWaiting = false; return; }   // réglage Paramètres > Affichage : fenêtre désactivée
-    const list = kyfNewPending_(); if(!list.length){ window._kyfNewWaiting = false; return; }
+    if(kyfNewPopOff_()){ window._kyfNewWaiting = false; kyfNewReleaseAnnonce(); return; }   // réglage Paramètres > Affichage : fenêtre désactivée
+    const list = kyfNewPending_(); if(!list.length){ window._kyfNewWaiting = false; kyfNewReleaseAnnonce(); return; }
     window._kyfNewWaiting = true;
     if(kyfNewCalme_()){ window._kyfNewWaiting = false; kyfNewCapShow(list); return; }
-    if(n < 150) setTimeout(function(){ kyfNewTry_(n + 1); }, 4000); else window._kyfNewWaiting = false;   // abandon : l'annonce reste à voir au prochain lancement
+    if(n < 150) setTimeout(function(){ kyfNewTry_(n + 1); }, 4000); else { window._kyfNewWaiting = false; kyfNewReleaseAnnonce(); }   // abandon : l'annonce reste à voir au prochain lancement
   }catch(e){ window._kyfNewWaiting = false; }
 }
 document.addEventListener('DOMContentLoaded', function(){
