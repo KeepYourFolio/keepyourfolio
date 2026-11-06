@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.2.48
+  @version     : Beta 2.12.2.49
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5302,7 +5302,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.12.2.48</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.12.2.49</span></div>
       </div>
     </div>
   </div>
@@ -7681,7 +7681,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.2.48</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.2.49</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -49305,7 +49305,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.48\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.49\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66767,7 +66767,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.2.48';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.2.49';     // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -73039,25 +73039,28 @@ function kyfTourSteps(mode){
   ];
   defs.forEach(function(d){ if(!d.ch) d.ch = 'Démarrer'; });
   if(mode === 'full'){          // visite complète : on ajoute 3 chapitres avant la dernière étape
-    const S = function(ch, page, t, x){ return {ch:ch, sb:true, page:page, side:'right', sel:'#sidebar [data-page="' + page + '"]', t:t, x:x}; };
+    const S = function(ch, page, sel, t, x){ return {ch:ch, page:page, sel:sel, t:t, x:x}; };
+    const B = function(page, call){ return '#page-' + page + ' button[onclick*="' + call + '"]'; };
+    const F = function(page){ return 'FIRST:page-' + page; };
+    const A = 'Suivre mes actifs', N = 'Analyser', P = 'Piloter';
     const more = [
-      S('Suivre mes actifs','comptes-titres','Comptes titres','PEA, PEA-PME et CTO sur trois onglets, avec le gain de chaque compte. « Comptes affichés » choisit ceux que vous voulez voir.'),
-      S('Suivre mes actifs','dividendes','Dividendes','« Saisir un dividende » enregistre ce que vous touchez. Trois vues : Reçus, Projection et Capitalisants, plus l\u2019historique complet.'),
-      S('Suivre mes actifs','crypto','Crypto','Vos positions avec les cours CoinGecko en continu. Onglets Portefeuille, Achats / Pertes, Swaps et transferts, Opérations, et un import de relevé.'),
-      S('Suivre mes actifs','livrets','Livrets et comptes','Livret A, LDDS, comptes courants : ajoutez-les à la main ou importez un relevé PDF. Les virements programmés se projettent à fin de mois, à 30 jours ou en fin d\u2019année.'),
-      S('Suivre mes actifs','or','Or et métaux précieux','Or, argent, platine et palladium avec leurs cours. Vous pouvez ajouter, importer un relevé, vendre ou modifier chaque ligne.'),
-      S('Suivre mes actifs','immobilier','Immobilier','Biens directs et SCI, une carte, une estimation de valeur et les risques. Le bouton Guide explique comment saisir chaque cas.'),
-      S('Suivre mes actifs','etranger','Avoirs à l\u2019étranger','Comptes et placements détenus hors de France, regroupés au même endroit.'),
-      S('Suivre mes actifs','autres','Autres actifs','Tout ce qui n\u2019entre pas ailleurs (véhicule, objets de valeur…). Un réglage permet de les compter ou non dans votre patrimoine.'),
-      S('Analyser','historique','Historique des séances','Le journal de chaque séance, la performance mensuelle et des statistiques sur vos jours en hausse ou en baisse.'),
-      S('Analyser','heatmap','Heatmap','Un calendrier de vos performances mensuelles, vos meilleures et pires séances, et la répartition des variations.'),
-      S('Analyser','geo','Zones géographiques','Votre exposition par zone, pays, secteur et entreprise, calculée depuis vos ETF et actions. Vous pouvez aussi voir ce que détient la communauté.'),
-      S('Analyser','bilan','Bilan annuel','La performance année par année avec le détail, et des projections en trois scénarios : petit, moyen, grand.'),
-      S('Piloter','dca','Investissement / DCA','Planifiez vos versements réguliers (ETF, crypto, assurance vie) et retrouvez l\u2019historique de ceux déjà faits.'),
-      S('Piloter','fiscal-pea-cto','Fiscalité','Plafonds et taux du PEA, du PEA-PME, du CTO et de la crypto, plus l\u2019historique de vos versements.'),
-      S('Piloter','alertes','Alertes prix','Fixez un seuil sur un actif et retrouvez le journal des alertes déclenchées.'),
-      S('Piloter','frais','Frais','Vos frais d\u2019assurance vie, de courtage et autres, avec un comparateur et un simulateur pour voir ce qu\u2019ils coûtent sur la durée.'),
-      S('Piloter','groupes','Mes projets','Regroupez vos actifs par objectif (retraite, maison, enfants, vacances) et suivez chaque projet séparément.')
+      S(A,'comptes-titres','#ctBtnAdd','Comptes titres : ajouter une ligne','« Ajouter une ligne » complète un compte (PEA, PEA-PME ou CTO) : indiquez l’actif, la quantité et le prix. Pour aller plus vite, « Importer un relevé » le fait à votre place.'),
+      S(A,'dividendes',B('dividendes','openAddDividende'),'Dividendes : saisir un dividende','Cliquez ici puis renseignez : la date, le montant net reçu sur votre compte, le ticker ou le nom de l’actif (ex. TTE.PA), le nombre de titres et l’enveloppe (CTO, PEA, assurance vie). KYF ne calcule aucune fiscalité.'),
+      S(A,'crypto',B('crypto','openAddCryptoPosition'),'Crypto : ajouter une position','Cherchez la crypto par son nom, indiquez la quantité et votre prix d’achat. Le cours se met ensuite à jour tout seul. Les achats, swaps et transferts se saisissent dans les autres onglets.'),
+      S(A,'livrets',B('livrets','openAddLivret'),'Livrets : ajouter un compte','Renseignez la banque, le type (Livret A, LDDS…), le solde et le taux. Le plafond se remplit tout seul selon le type. Un relevé PDF peut aussi mettre le solde à jour.'),
+      S(A,'or',B('or','openAddOr'),'Or et métaux : ajouter un métal','Choisissez le métal (or, argent, platine, palladium), la quantité en grammes ou en pièces, le prix d’achat et la date. Le cours du jour sert à valoriser votre ligne.'),
+      S(A,'immobilier','#immoAddBtn','Immobilier : ajouter un bien','Donnez un nom, la valeur estimée, la surface et le loyer éventuel. Les autres champs sont facultatifs : vous les complétez quand vous voulez. Le bouton Guide détaille chaque cas.'),
+      S(A,'etranger','#page-etranger button[onclick*="kyfEtrOpen"]','Avoirs à l’étranger : ajouter','Indiquez le nom de l’avoir, le pays et le montant. Une note libre permet d’ajouter un détail utile pour votre déclaration.'),
+      S(A,'autres','#page-autres button[onclick*="kyfAutOpen"]','Autres actifs : ajouter un bien','Nom du bien, valeur estimée et prix d’achat. Une case permet de compter ou non ce bien dans votre patrimoine total.'),
+      S(N,'historique',F('historique'),'Historique des séances','Rien à saisir ici : chaque ouverture de KYF enregistre une séance. Vous y voyez le journal, la performance mensuelle et des statistiques.'),
+      S(N,'heatmap',F('heatmap'),'Heatmap','Rien à saisir non plus : un calendrier de vos performances par mois, vos meilleures et pires séances, et la répartition des variations.'),
+      S(N,'geo',F('geo'),'Zones géographiques','Pour que ces graphiques se remplissent, renseignez pays et secteurs de vos ETF (bouton « Remplir les ETF », qui reprend aussi ce que la communauté a déjà saisi).'),
+      S(N,'bilan',F('bilan'),'Bilan annuel','Rien à saisir : la performance année par année se calcule depuis vos positions. Les projections proposent trois scénarios : petit, moyen, grand.'),
+      S(P,'dca','#dcaNewBtn','DCA : créer un plan','Décrivez votre versement régulier : l’actif, le montant et la fréquence. « Ajouter un versement prévu » sert pour un versement ponctuel à venir. Chaque versement réalisé s’ajoute à l’historique.'),
+      S(P,'fiscal-pea-cto',F('fiscal-pea-cto'),'Fiscalité','Rien à saisir sauf vos versements PEA : les simulateurs de retrait et de plus-value utilisent vos positions. Plafonds et taux se modifient dans Paramètres fiscaux.'),
+      S(P,'alertes',F('alertes'),'Alertes prix','Réglez le seuil de variation qui déclenche une alerte (ETF, actions, crypto). Le journal se remplit ensuite tout seul.'),
+      S(P,'frais','#fraisManBtn','Frais : ajouter un frais','Choisissez le placement et le type de frais, puis la date et le montant lus sur votre relevé (droits de garde, inactivité, versement). Le comparateur et le simulateur sont dans les autres onglets.'),
+      S(P,'groupes','#grpName','Projets : créer un projet','Tapez un nom (Retraite, Maison, Vacances…) puis « Créer ». Vous rattachez ensuite chaque actif au projet qui le concerne.')
     ];
     defs.splice(defs.length - 1, 0, ...more);
   }
@@ -73073,12 +73076,23 @@ function kyfTourStart(then, mode){
     kyfTourShow();
   }, 300);
 }
+function kyfTourFind(sel){          // 'FIRST:page-xxx' = premier grand bloc visible de la page (pour les pages où il n'y a rien à saisir)
+  if(sel.indexOf('FIRST:') !== 0) return document.querySelector(sel);
+  const root = document.getElementById(sel.slice(6)); if(!root) return null;
+  const vh = window.innerHeight, c = root.querySelectorAll('[class*="card"], .card, [id$="Card"]');
+  for(let k = 0; k < c.length; k++){ const r = c[k].getBoundingClientRect(); if(r.width > 260 && r.height > 70 && r.height < vh * 0.7) return c[k]; }
+  const d = root.querySelectorAll('div');
+  for(let k = 0; k < d.length; k++){ const r = d[k].getBoundingClientRect(); if(r.width > 260 && r.height > 70 && r.height < vh * 0.7) return d[k]; }
+  for(let k = 0; k < d.length; k++){ const r = d[k].getBoundingClientRect(); if(r.width > 200 && r.height > 30) return d[k]; }
+  return null;
+}
 function kyfTourShow(){
   const d = _kt.steps[_kt.i];
   const want = d.page || 'dashboard';
   if(_kt.page !== want){ _kt.page = want; try{ showPage(want, null); }catch(e){} setTimeout(kyfTourShow, 400); return; }   // on se rend sur la page de l'étape, puis on la vise
-  const el = document.querySelector(d.sel);
-  if(!el || el.getBoundingClientRect().width === 0){ kyfTourGo(_kt.dir || 1); return; }
+  const el = kyfTourFind(d.sel);
+  if(!el || el.getBoundingClientRect().width === 0){ if((_kt.tries = (_kt.tries || 0) + 1) <= 6 && d.page){ setTimeout(kyfTourShow, 450); return; } _kt.tries = 0; kyfTourGo(_kt.dir || 1); return; }
+  _kt.tries = 0;
   el.scrollIntoView({block:'nearest', inline:'nearest'});
   const r = el.getBoundingClientRect(), pad = 6, spot = document.getElementById('ktSpot'), tip = document.getElementById('ktTip');
   spot.style.left = (r.left - pad) + 'px'; spot.style.top = (r.top - pad) + 'px';
@@ -76091,6 +76105,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.49 · 06/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Visite complète : après les 10 premières étapes, chaque page montre le vrai bouton « Ajouter » (dividendes, crypto, livrets, or, immobilier, DCA, frais, projets…) et explique quoi renseigner. Les pages sans saisie expliquent simplement ce qu’elles montrent. Fini les menus de la barre latérale.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.48 · 06/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Dernier pop-up d’accueil : plus d’espace entre le titre et les deux visites guidées.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.47 · 06/11/2026</div>
