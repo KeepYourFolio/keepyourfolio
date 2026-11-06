@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.2.71
+  @version     : Beta 2.12.2.72
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -217,7 +217,7 @@ function kyfDemoAsk(){   // entrée permanente (barre latérale) : on prévient 
 function kyfDemoStart(){
   var sp = document.getElementById('kyfSplash'), from = 0;
   if(sp){ var w0 = document.getElementById('kyfWelcomeModal'); from = (w0 && getComputedStyle(w0).display !== 'none') ? 2 : 1; }   // lancée depuis l'étape 1 ou 2 : la barre de démo proposera d'y revenir
-  // 2.12.2.71 : la démo s'ouvre dans un NOUVEL onglet (marqueur passé par le nom de l'onglet) : cet onglet reste tel quel, on n'a plus à recharger le site en entrant ni en sortant
+  // 2.12.2.72 : la démo s'ouvre dans un NOUVEL onglet (marqueur passé par le nom de l'onglet) : cet onglet reste tel quel, on n'a plus à recharger le site en entrant ni en sortant
   try{
     var nt = window.open(location.href.split('#')[0] + '#demo', '[kyfDemo:' + Date.now() + ']' + (from ? '[kyfBack:' + from + ']' : ''));
     if(nt){ try{ nt.focus(); }catch(e){} return; }
@@ -5328,7 +5328,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.12.2.71</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.12.2.72</span></div>
       </div>
     </div>
   </div>
@@ -7713,7 +7713,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.2.71</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.2.72</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -22061,7 +22061,7 @@ async function perecolIsinSearch(){
   if(!name){   // à défaut : le nom que l'utilisateur a déjà saisi pour ce fonds dans ses propres positions
     try{ var mine = (typeof ETF !== 'undefined' ? ETF : []).find(function(p){ return p && p.isin && fiNormalizeISIN(p.isin) === isin && (p.nom || p.name); }); if(mine) name = mine.nom || mine.name; }catch(e){}
   }
-  var head = '<div style="font-size:12px;font-weight:700;color:var(--text)">'+escapeHtml(name || isin)+'</div><div style="font-size:10px;color:var(--text3);margin-bottom:8px">'+escapeHtml(isin)+(name?'':' \u00b7 nom non répertorié')+'</div>';
+  var head = '<div style="font-size:12px;font-weight:700;color:var(--text)">'+escapeHtml(name || isin)+'</div><div style="font-size:10px;color:var(--text3);margin-bottom:8px">'+escapeHtml(isin)+(fund && fund.managementCompany ? ' \u00b7 '+escapeHtml(fund.managementCompany) : '')+(name?'':' \u00b7 nom non répertorié')+'</div>';
   if(price && price.found){
     var fmt = function(x){ try{ return new Date(x).toLocaleDateString('fr-FR'); }catch(e){ return ''; } };
     var v = Number(price.value).toLocaleString('fr-FR',{maximumFractionDigits:4});
@@ -49480,7 +49480,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.71\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.72\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66942,7 +66942,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.2.71';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.2.72';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -76391,7 +76391,7 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
-      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.71 · 06/11/2026</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.72 · 06/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Démo : elle s’ouvre dans un nouvel onglet, donc plus de rechargement du site en entrant ni en quittant (fermer l’onglet de la démo suffit). Visite guidée : les suggestions de la démo de recherche ne cachent plus l’étape « À qui », la bulle se place dans la zone libre des pop-up d’import et d’ajout, et une étape dont la cible est introuvable montre la page au lieu d’être sautée.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.59 · 06/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Accueil : le grand encart « Essayez KYF en un clic » disparaît de l’étape 2, et le bouton « Essayer la démo » est plus visible sur l’étape 1 (fond teinté, icône, un peu plus grand).</div>
