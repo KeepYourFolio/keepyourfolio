@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.2.72
+  @version     : Beta 2.12.2.73
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -217,7 +217,7 @@ function kyfDemoAsk(){   // entrée permanente (barre latérale) : on prévient 
 function kyfDemoStart(){
   var sp = document.getElementById('kyfSplash'), from = 0;
   if(sp){ var w0 = document.getElementById('kyfWelcomeModal'); from = (w0 && getComputedStyle(w0).display !== 'none') ? 2 : 1; }   // lancée depuis l'étape 1 ou 2 : la barre de démo proposera d'y revenir
-  // 2.12.2.72 : la démo s'ouvre dans un NOUVEL onglet (marqueur passé par le nom de l'onglet) : cet onglet reste tel quel, on n'a plus à recharger le site en entrant ni en sortant
+  // 2.12.2.73 : la démo s'ouvre dans un NOUVEL onglet (marqueur passé par le nom de l'onglet) : cet onglet reste tel quel, on n'a plus à recharger le site en entrant ni en sortant
   try{
     var nt = window.open(location.href.split('#')[0] + '#demo', '[kyfDemo:' + Date.now() + ']' + (from ? '[kyfBack:' + from + ']' : ''));
     if(nt){ try{ nt.focus(); }catch(e){} return; }
@@ -5328,7 +5328,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.12.2.72</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.12.2.73</span></div>
       </div>
     </div>
   </div>
@@ -7713,7 +7713,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.2.72</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.2.73</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -9761,11 +9761,25 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
          barre TOUS/AV/PER ci-dessus (pas une page à part) -->
     <div id="avPerecolPanel" style="display:none">
 
-      <div id="perecolSourceBar" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;padding:10px 14px;border-radius:10px;border:1px solid var(--border2);background:var(--btn-secondary-bg);font-size:11px;color:var(--text2);line-height:1.5">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:var(--accent)"><path d="M3 21h18M5 21V10l7-5 7 5v11M9 21v-6h6v6"/></svg>
-        <span id="perecolSourceText" style="flex:1;min-width:200px"></span>
-        <button type="button" onclick="kyfGecoAccordOpen()" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:6px 12px;border-radius:6px;border:1px solid var(--border2);background:var(--bg2);color:var(--accent);cursor:pointer;transition:background .15s,color .15s,transform .15s" onmouseover="this.style.background='#f0b429';this.style.color='#000';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='var(--bg2)';this.style.color='var(--accent)';this.style.transform='none'">VOIR L'ACCORD</button>
+      <div id="perecolSourceBar" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:14px">
+        <div class="card" style="padding:16px 18px"><div style="font-size:10px;font-weight:700;letter-spacing:1.2px;color:var(--text3)">FONDS SUIVIS</div><div id="perecolKpiCount" style="font-size:26px;font-weight:800;color:var(--text);margin-top:6px">0</div></div>
+        <div class="card" style="padding:16px 18px"><div style="font-size:10px;font-weight:700;letter-spacing:1.2px;color:var(--text3)">DERNIÈRE MISE À JOUR GECO</div><div id="perecolKpiMaj" style="font-size:26px;font-weight:800;color:var(--text);margin-top:6px">-</div></div>
+        <div class="card" style="padding:16px 18px"><div style="font-size:10px;font-weight:700;letter-spacing:1.2px;color:var(--text3)">MISE À JOUR</div><div style="font-size:26px;font-weight:800;color:var(--text);margin-top:6px">Chaque nuit</div><div style="font-size:10px;color:var(--text3);margin-top:2px">jours de bourse, entre 23 h et 6 h</div></div>
+        <div class="card" style="padding:16px 18px;display:flex;flex-direction:column;justify-content:space-between;gap:8px"><div style="font-size:10px;font-weight:700;letter-spacing:1.2px;color:var(--text3)">SOURCE</div><div id="perecolSourceText" style="font-size:11px;color:var(--text2);line-height:1.5"></div><button type="button" onclick="kyfGecoAccordOpen()" style="align-self:flex-start;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:7px 14px;border-radius:8px;border:1px solid var(--accent);background:var(--btn-secondary-bg);color:var(--accent);cursor:pointer;transition:all .15s" onmouseover="this.style.background='#f0b429';this.style.color='#000';this.style.boxShadow='0 2px 8px rgba(240,180,41,0.35)';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='var(--btn-secondary-bg)';this.style.color='var(--accent)';this.style.boxShadow='none';this.style.transform='translateY(0)'">VOIR L'ACCORD</button></div>
       </div>
+
+      <div id="perecolLayout" style="display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start;margin-bottom:14px">
+      <div style="flex:2 1 600px;min-width:0">
+        <div class="card" id="perecolWatchCard">
+          <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:var(--gap-lg)">
+            <span>MES FONDS PERECOL</span>
+            <button type="button" onclick="perecolWatchFocus()" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:7px 14px;border-radius:8px;border:1px solid var(--accent);background:var(--btn-secondary-bg);color:var(--accent);cursor:pointer;transition:all .15s" onmouseover="this.style.background='#f0b429';this.style.color='#000';this.style.boxShadow='0 2px 8px rgba(240,180,41,0.35)';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='var(--btn-secondary-bg)';this.style.color='var(--accent)';this.style.boxShadow='none';this.style.transform='translateY(0)'">AJOUTER UN FONDS</button>
+          </div>
+          <div style="overflow-x:auto"><div id="perecolWatchList" style="min-width:560px"></div></div>
+          <div style="font-size:10px;color:var(--text3);line-height:1.6;margin-top:12px">Source : AMF, GECO (geco.amf-france.org). ©Autorité des marchés financiers – droits réservés. Données restituées telles que transmises à l’AMF par les sociétés de gestion, sans retraitement ni validation de l’AMF. L’AMF ne saurait être tenue responsable d’une erreur ou d’une omission affectant ces données.</div>
+        </div>
+      </div>
+      <div style="flex:1 1 340px;min-width:0">
 
       <div class="card" id="perecolMyCompanyCard" style="margin-bottom:14px;display:none">
         <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--gap-lg)">
@@ -9779,7 +9793,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
       </div>
 
       <div class="card" id="perecolIsinCard" style="margin-bottom:14px">
-        <div class="card-title" style="margin-bottom:var(--gap-lg)">RECHERCHER UN FONDS PAR SON ISIN</div>
+        <div class="card-title" style="margin-bottom:var(--gap-lg)">VÉRIFIER UN FONDS PAR SON ISIN</div>
         <div style="display:flex;gap:8px;margin-bottom:6px;flex-wrap:wrap">
           <input id="perecolIsinInput" type="text" maxlength="14" autocomplete="off" spellcheck="false" placeholder="Code ISIN, par exemple FR0010135103"
             onkeydown="if(event.key==='Enter')perecolIsinSearch()"
@@ -9791,11 +9805,11 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
             RECHERCHER
           </button>
         </div>
-        <div style="font-size:10px;color:var(--text3);line-height:1.6">Dernière valeur liquidative publiée par l\u2019AMF (GECO), lue dans le cache de KYF.</div>
+        <div style="font-size:10px;color:var(--text3);line-height:1.6">Dernière valeur liquidative publiée par l’AMF (GECO), lue dans le cache de KYF.</div>
         <div id="perecolIsinResult" style="margin-top:10px"></div>
       </div>
 
-      <div id="perecolSearchGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;margin-bottom:14px">
+      <div id="perecolSearchGrid" style="display:grid;grid-template-columns:1fr;gap:14px;align-items:start;margin-bottom:14px">
 
         <div class="card">
           <div class="card-title" style="margin-bottom:var(--gap-lg)">RECHERCHER MON ENTREPRISE</div>
@@ -9854,6 +9868,9 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           </div>
         </div>
 
+      </div>
+
+      </div>
       </div>
 
       <div class="card" id="perecolPlanCard" style="display:none">
@@ -21926,6 +21943,7 @@ function perecolLoadMyCompany(){
 // changement d'entreprise explicite).
 function perecolRenderPanel(){
   try{ kyfGecoRefreshBar(); }catch(e){}
+  try{ perecolWatchRender(); }catch(e){}
   const my = perecolLoadMyCompany();
   const myCard = document.getElementById('perecolMyCompanyCard');
   const searchGrid = document.getElementById('perecolSearchGrid');
@@ -21972,7 +21990,7 @@ function kyfGecoSourceText(){
   var u = window.KYF_GECO_META && window.KYF_GECO_META.updated, d = '';
   if(u){ try{ d = new Date(u).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}); }catch(e){} }
   if(d) return 'Source : AMF, GECO (geco.amf-france.org). Dernière récupération par KYF : ' + d + '.';
-  return 'Source : AMF, GECO (geco.amf-france.org). Valeurs liquidatives récupérées chaque nuit de bourse pour les fonds suivis, affichées avec leurs dates. La liste des entreprises vient des contributions d\u2019utilisateurs KYF.';
+  return 'AMF, GECO (geco.amf-france.org). Valeurs liquidatives récupérées pour les fonds suivis, affichées avec leurs dates.';
 }
 // Mention obligatoire (dossier GECO section 7), à afficher à côté de chaque donnée GECO. rec = {vlDate, geco, fetched} (dates ISO)
 function kyfGecoMention(rec){
@@ -22053,6 +22071,7 @@ async function perecolIsinSearch(){
   var msg = function(t, c){ el.innerHTML = '<div style="font-size:11px;color:'+(c||'var(--text3)')+';line-height:1.6">'+t+'</div>'; };
   if(!isin){ msg('Saisissez un code ISIN.'); return; }
   if(!kyfIsinFormatOk(isin)){ msg('Ce code ISIN n\u2019est pas valide (12 caractères, clé de contrôle incluse).', '#f0b429'); return; }
+  perecolWatchAdd(isin); perecolWatchRender();
   msg('Recherche...');
   var fund = null, price = null;
   try{ fund = await window.KYF_FUND_REPO.FundRepository.getFundByISIN(isin); }catch(e){}
@@ -22079,6 +22098,53 @@ async function perecolIsinSearch(){
   }catch(e){}
   el.innerHTML = '<div style="padding:12px 14px;border-radius:10px;background:var(--btn-secondary-bg);border:1px solid var(--border2)">'+head
     +'<div style="font-size:11px;color:var(--text2);line-height:1.6">Pas encore de valeur en cache pour ce fonds. Il est désormais suivi : la valeur liquidative publiée par l\u2019AMF sera disponible après le prochain passage de la nuit (jours de bourse).</div></div>';
+}
+
+// ===== PERECOL : tableau "Mes fonds" (fonds recherchés ou ajoutés par l'utilisateur) =====
+const PERECOL_WATCH_KEY = 'kyf-perecol-watch';
+function perecolWatchGet(){ try{ var a = JSON.parse(localStorage.getItem(PERECOL_WATCH_KEY)||'[]'); return Array.isArray(a) ? a : []; }catch(e){ return []; } }
+function perecolWatchSet(a){ try{ localStorage.setItem(PERECOL_WATCH_KEY, JSON.stringify(a.slice(0,100))); }catch(e){} }
+function perecolWatchAdd(isin){ var a = perecolWatchGet(); if(a.indexOf(isin) < 0){ a.unshift(isin); perecolWatchSet(a); } }
+function perecolWatchRemove(isin){ perecolWatchSet(perecolWatchGet().filter(function(x){ return x !== isin; })); perecolWatchRender(); }
+function perecolWatchFocus(){ var i = document.getElementById('perecolIsinInput'); if(i){ try{ i.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} setTimeout(function(){ i.focus(); }, 250); } }
+function perecolWatchInfo(id){ var e = document.getElementById(id); if(e) e.style.display = (e.style.display === 'none') ? 'block' : 'none'; }
+async function perecolWatchRender(){
+  var box = document.getElementById('perecolWatchList'); if(!box) return;
+  var list = perecolWatchGet();
+  document.getElementById('perecolKpiCount').textContent = String(list.length);
+  if(!list.length){
+    box.innerHTML = '<div style="font-size:11px;color:var(--text3);line-height:1.7;padding:6px 2px">Aucun fonds pour l’instant. Saisissez un code ISIN dans « Vérifier un fonds par son ISIN » : il est ajouté ici avec sa valeur liquidative publiée par l’AMF.</div>';
+    document.getElementById('perecolKpiMaj').textContent = '-'; return;
+  }
+  var fmtD = function(x){ try{ var d = new Date(x); return isNaN(d) ? '' : d.toLocaleDateString('fr-FR'); }catch(e){ return ''; } };
+  var rows = await Promise.all(list.map(async function(isin){
+    var fund = null, price = null;
+    try{ fund = await window.KYF_FUND_REPO.FundRepository.getFundByISIN(isin); }catch(e){}
+    try{ var r = await fetch(window.KYF_FUND_GAS_URL + '?action=price&isin=' + encodeURIComponent(isin), { redirect:'follow' }); price = await r.json(); }catch(e){}
+    var name = fund && fund.name ? fund.name : null;
+    if(!name){ try{ var m = (typeof ETF !== 'undefined' ? ETF : []).find(function(p){ return p && p.isin && fiNormalizeISIN(p.isin) === isin && (p.nom || p.name); }); if(m) name = m.nom || m.name; }catch(e){} }
+    return { isin:isin, name:name, gest:(fund && fund.managementCompany) || '', price:(price && price.found) ? price : null };
+  }));
+  var maj = '';
+  rows.forEach(function(r){ if(r.price && r.price.gecoUpdate){ var t = new Date(r.price.gecoUpdate).getTime(); if(!isNaN(t) && (!maj || t > maj)) maj = t; } });
+  document.getElementById('perecolKpiMaj').textContent = maj ? fmtD(maj) : '-';
+  var G = 'display:grid;grid-template-columns:minmax(0,2.4fr) minmax(0,1.1fr) minmax(0,1fr) minmax(0,1.1fr) 34px;gap:12px;align-items:center';
+  var html = '<div style="'+G+';padding:0 12px 8px;font-size:9px;font-weight:700;letter-spacing:1px;color:var(--text3)"><span>FONDS</span><span>VALEUR LIQUIDATIVE</span><span>VALEUR DU</span><span>MISE À JOUR GECO</span><span></span></div>';
+  rows.forEach(function(r, k){
+    var p = r.price, id = 'perecolInfo' + k;
+    var vl = p ? Number(p.value).toLocaleString('fr-FR',{maximumFractionDigits:4}) + ' ' + escapeHtml(p.currency||'') : '<span style="color:var(--text3);font-weight:400">en attente de la nuit</span>';
+    html += '<div style="'+G+';padding:10px 12px;border-radius:8px;background:var(--btn-secondary-bg);margin-bottom:6px;transition:background .15s" onmouseover="this.style.background=\'var(--hov-bg)\'" onmouseout="this.style.background=\'var(--btn-secondary-bg)\'">'
+      +'<div style="min-width:0"><div style="font-size:11px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escapeHtml(r.name || r.isin)+'</div><div style="font-size:9px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escapeHtml(r.isin)+(r.gest?' · '+escapeHtml(r.gest):'')+'</div></div>'
+      +'<div style="font-size:12px;font-weight:700;color:var(--text)">'+vl+'</div>'
+      +'<div style="font-size:11px;color:var(--text2)">'+(p ? fmtD(p.date) : '-')+'</div>'
+      +'<div style="font-size:11px;color:var(--text2)">'+(p && p.gecoUpdate ? fmtD(p.gecoUpdate) : '-')+'</div>'
+      +'<div style="display:flex;gap:4px;justify-content:flex-end">'
+      + (p ? '<button type="button" aria-label="Voir la mention légale de la source" title="Mention légale de la source" onclick="perecolWatchInfo(\''+id+'\')" style="width:26px;height:26px;border-radius:6px;border:1px solid var(--border2);background:none;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s,color .15s" onmouseover="this.style.background=\'var(--hov-bg)\';this.style.color=\'var(--text)\'" onmouseout="this.style.background=\'none\';this.style.color=\'var(--text3)\'"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M11 12h1v5h1"/></svg></button>' : '')
+      +'<button type="button" aria-label="Retirer ce fonds" title="Retirer de la liste" onclick="perecolWatchRemove(\''+escJsAttr(r.isin)+'\')" style="width:26px;height:26px;border-radius:6px;border:1px solid var(--border2);background:none;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s,color .15s" onmouseover="this.style.background=\'var(--hov-bg)\';this.style.color=\'var(--text)\'" onmouseout="this.style.background=\'none\';this.style.color=\'var(--text3)\'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>'
+      +'</div>';
+    if(p) html += '<div id="'+id+'" style="display:none;font-size:10px;color:var(--text3);line-height:1.6;padding:2px 12px 10px">'+escapeHtml(kyfGecoMention({vlDate:p.date, geco:p.gecoUpdate||p.date, fetched:p.retrievedAt}))+'</div>';
+  });
+  box.innerHTML = html;
 }
 async function perecolSearch(){
   const q = document.getElementById('perecolSearchInput').value.trim();
@@ -49480,7 +49546,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.72\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.73\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66942,7 +67008,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.2.72';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.2.73';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -76391,7 +76457,7 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
-      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.72 · 06/11/2026</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.73 · 06/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Démo : elle s’ouvre dans un nouvel onglet, donc plus de rechargement du site en entrant ni en quittant (fermer l’onglet de la démo suffit). Visite guidée : les suggestions de la démo de recherche ne cachent plus l’étape « À qui », la bulle se place dans la zone libre des pop-up d’import et d’ajout, et une étape dont la cible est introuvable montre la page au lieu d’être sautée.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.59 · 06/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Accueil : le grand encart « Essayez KYF en un clic » disparaît de l’étape 2, et le bouton « Essayer la démo » est plus visible sur l’étape 1 (fond teinté, icône, un peu plus grand).</div>
