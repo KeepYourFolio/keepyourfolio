@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.2.33
+  @version     : Beta 2.12.2.34
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7668,7 +7668,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.2.33</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.2.34</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -16866,6 +16866,7 @@ async function sheetsSyncPushOAuth(opts){
 }
 
 async function sheetsSyncPullOAuth(opts){
+  try{ localStorage.removeItem('kyf-tour-pending'); }catch(e){}   // restauration : la personne retrouve ses données, pas besoin de la visite
   opts = opts || {};
   const hasOAuth = !!(window._kyfOAuthCache.token || window._kyfOAuthCache.refresh);
   const sheetId  = localStorage.getItem('kyf-oauth-sheetid');
@@ -19015,6 +19016,7 @@ function resetImportFileName(){
 }
 
 function importConfig(input){
+  try{ localStorage.removeItem('kyf-tour-pending'); }catch(e){}   // restauration : la personne retrouve ses données, pas besoin de la visite
   const file = input.files[0];
   input.value = '';
   if(!file){ resetImportFileName(); return; }
@@ -27889,6 +27891,7 @@ function storageUiShowSyncBtn(show){
  * pouvait réellement récupérer une sauvegarde GitHub depuis KYF.
  */
 async function storageGithubRestore(){
+  try{ localStorage.removeItem('kyf-tour-pending'); }catch(e){}   // restauration : la personne retrouve ses données, pas besoin de la visite
   if(!(await kyfAsk('Restaurer depuis GitHub ?\nCela écrasera les données locales.'))) return;
   const statusEl = document.getElementById('storageGithubStatus');
   if(statusEl) statusEl.innerHTML = KYF_HOURGLASS_SVG+' Récupération depuis GitHub...';
@@ -49286,7 +49289,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.33\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.34\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66748,7 +66751,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.2.33';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.2.34';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -73052,16 +73055,21 @@ function kyfTourEnd(){
 }
 // Lancement automatique, une seule fois : pour quelqu'un passé par l'accueil, dès que sa première donnée est là et qu'aucun pop-up n'est ouvert.
 function kyfTourWatch(){
+  if(window._ktWatch) return;
   try{ if(localStorage.getItem(KYF_TOUR_KEY) || !localStorage.getItem(KYF_TOUR_PENDING)) return; }catch(e){ return; }
-  const h = setInterval(function(){
+  window._ktWatch = setInterval(function(){
+    let pend = false, seen = false;
+    try{ pend = !!localStorage.getItem(KYF_TOUR_PENDING); seen = !!localStorage.getItem(KYF_TOUR_KEY); }catch(e){}
+    if(!pend || seen){ clearInterval(window._ktWatch); window._ktWatch = null; return; }   // restauration faite entre-temps, ou visite déjà vue
     if(document.getElementById('kyfSplash') || document.body.style.overflow === 'hidden') return;
-    if(typeof kyfHasAnyAsset === 'function' && kyfHasAnyAsset()){ clearInterval(h); kyfTourStart(); }
-  }, 3000);
+    if(typeof kyfHasAnyAsset === 'function' && kyfHasAnyAsset()){ clearInterval(window._ktWatch); window._ktWatch = null; kyfTourStart(); }
+  }, 2000);
 }
 window.addEventListener('resize', function(){ const t = document.getElementById('kyfTour'); if(t && t.classList.contains('on')) kyfTourShow(); });
 function kyfSplash3(a){
   const c3 = document.getElementById('kyfSplashC3');
   if(a === 'backup' || a === 'restore'){      // sous-écrans déjà présents dans le pop-up : on l'ouvre sur le même fond
+    try{ localStorage.removeItem(KYF_TOUR_PENDING); }catch(e){}   // quelqu'un qui restaure sa sauvegarde n'a pas besoin de la visite
     if(c3) c3.classList.remove('on');
     openOnboardingChoice();
     if(a === 'backup') kyfShowBackupChoice(); else kyfShowRestoreChoice();
@@ -73080,6 +73088,7 @@ function kyfSplashNext(){
   const b = wm && wm.querySelector('.kyf-welcome-badge');
   if(b) b.textContent = 'ÉTAPE 2 SUR 3';
   try{ if(!localStorage.getItem(KYF_TOUR_KEY)) localStorage.setItem(KYF_TOUR_PENDING, '1'); }catch(e){}   // la visite guidée se lancera après la première donnée
+  kyfTourWatch();
   const sb = wm && wm.querySelector('.kyf-start-button');   // dans ce parcours, le bouton annonce l'étape 3 : le remplissage des données
   const ph = wm && wm.querySelector('.kyf-privacy-card h2'); if(ph) ph.textContent = 'Local-first, par conception.';
   if(sb && sb.firstChild) sb.firstChild.textContent = '\n          REMPLIR MES DONNÉES\n          ';
@@ -76030,6 +76039,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.34 · 06/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Visite guidée : correction, elle se lance bien après la première position ajoutée (le guetteur ne démarrait qu’au rechargement de la page). Elle n’est plus proposée à quelqu’un qui restaure sa sauvegarde (fichier, Google Sheets, GitHub).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.33 · 06/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Visite guidée : la barre du haut (en direct, avis, mode discret, sauvegarde, informations, feedback) tient maintenant en une seule étape, la visite passe à 3 étapes.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.32 · 06/11/2026</div>
