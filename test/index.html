@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.2.20
+  @version     : Beta 2.12.2.21
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -2921,6 +2921,16 @@ html.kyf-boot #sidebar, html.kyf-boot #mainContent, html.kyf-boot #mainContent .
 #sidebar:not(.mini) .sb-item:has(> .sb-badge):not(.sb-bl) { padding-right: 26px; }
 #sidebar:not(.mini) .sb-item.sb-bl > .sb-badge { top: 4px; right: auto; left: 25px; transform: none; box-shadow: 0 0 0 2px var(--bg2); }
 #sidebar.mini .sb-item .kyf-new-badge { display: none !important; }
+/* 2.12.2.21 : dans le menu, plus de point « nouveau » : une lueur dorée qui s'efface vers la droite (menu replié : lueur ronde derrière l'icône). Elle s'éteint avec la pastille (48 h ou ouverture du menu). */
+#sidebar .kyf-new-badge, .sb-section .kyf-sec-badge{display:none!important}
+#sidebar:not(.mini) .sb-item.sb-has-new:not(.active), #sidebar:not(.mini) .sb-child-item.sb-has-new:not(.active), #sidebar:not(.mini) .sb-group-header.sb-has-new:not(.active), #sidebar:not(.mini) .sb-group-header.sb-has-new-in:not(.open):not(.active), #sidebar:not(.mini) .sb-section.collapsed.sb-sec-has-new{background:linear-gradient(90deg,rgba(240,180,41,.20),rgba(240,180,41,0) 85%)}
+#sidebar:not(.mini) .sb-item.sb-has-new:not(.active):hover, #sidebar:not(.mini) .sb-child-item.sb-has-new:not(.active):hover, #sidebar:not(.mini) .sb-group-header.sb-has-new:hover, #sidebar:not(.mini) .sb-group-header.sb-has-new-in:not(.open):hover, #sidebar:not(.mini) .sb-section.collapsed.sb-sec-has-new:hover{background:var(--hov-bg)}
+#sidebar.mini .sb-item.sb-has-new:not(.active), #sidebar.mini .sb-group-header.sb-has-new:not(.active), #sidebar.mini .sb-group-header.sb-has-new-in:not(.active){background:radial-gradient(circle at 50% 50%,rgba(240,180,41,.26),rgba(240,180,41,0) 72%)}
+#sidebar.mini .sb-item.sb-has-new:hover, #sidebar.mini .sb-group-header.sb-has-new:hover, #sidebar.mini .sb-group-header.sb-has-new-in:hover{background:var(--hov-bg)}
+#sidebar.mini .sb-item.sb-has-new .sb-icon svg, #sidebar.mini .sb-item.sb-has-new:hover .sb-icon svg{stroke:currentColor!important}
+#sidebar.mini .sb-item.sb-has-new.active .sb-icon svg{stroke:var(--sb-active)!important}
+#sidebar.mini .sb-item.sb-has-new .sb-icon::after{display:none}
+
 /* 2.12.2.07 : dans le menu, la pastille est toujours un simple point (menu déplié ou section repliée) ; le mot NOUVEAU reste réservé aux boutons et aux pages */
 #sidebar .kyf-new-badge{font-size:0!important;line-height:0!important;padding:0!important;width:8px!important;height:8px!important;min-width:8px!important;border-radius:50%!important;letter-spacing:0!important;flex-shrink:0}
 .sb-section .kyf-sec-badge{font-size:0!important;line-height:0!important;padding:0!important;width:8px!important;height:8px!important;min-width:8px!important;border-radius:50%!important;letter-spacing:0!important}
@@ -7501,7 +7511,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.2.20</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.2.21</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -49069,7 +49079,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.20\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.21\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66532,7 +66542,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.2.20';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.2.21';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -73058,9 +73068,10 @@ function kyfNewBadgesRefresh(){
       const on = k === 'avis' ? kyfAvisPromoOn_() : !!(k && [].concat(KYF_NOUVEAUTES.badge || []).indexOf(k) > -1 && !vu);
       el.style.display = on ? 'inline-block' : 'none';
       if(!el.getAttribute('title') && el.closest && (el.closest('#edPanel') || el.closest('#sidebar'))){ const nm = /VOUS/i.test(el.textContent || '') ? 'À vous' : 'Nouveau'; el.setAttribute('title', nm); el.setAttribute('aria-label', nm); }
-      const it = el.closest ? el.closest('.sb-item') : null; if(it) it.classList.toggle('sb-has-new', on);   // menu replié : l'icône porte la couleur d'attention
+      const it = el.closest ? el.closest('.sb-item, .sb-child-item, .sb-group-header') : null; if(it) it.classList.toggle('sb-has-new', on);   // menu : lueur dorée (déplié) ou lueur ronde derrière l'icône (replié)
     });
   }catch(e){}
+  try{ document.querySelectorAll('.sb-group-header').forEach(h => { const c = document.getElementById('sbgc-' + h.id.replace('sbg-', '')); h.classList.toggle('sb-has-new-in', !!(c && c.querySelector('.sb-has-new'))); }); }catch(e){}
   try{ kyfSbSectionNewReveal(); }catch(e){}
   try{ kyfSbFitNew(); }catch(e){}
 }
@@ -75677,6 +75688,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.21 · 06/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Menu : les points « nouveau » sont remplacés par une lueur dorée qui s’efface vers la droite (menu déplié, sous-menus, sections repliées) ou une lueur ronde derrière l’icône (menu replié).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.20 · 06/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Carte communautaire : tant qu’il y a moins de 10 membres, elle devient une petite carte avec un anneau de progression et un bouton Participer.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.19 · 06/11/2026</div>
