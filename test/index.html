@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.2.61
+  @version     : Beta 2.12.2.62
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -217,7 +217,7 @@ function kyfDemoAsk(){   // entrée permanente (barre latérale) : on prévient 
 function kyfDemoStart(){
   var sp = document.getElementById('kyfSplash'), from = 0;
   if(sp){ var w0 = document.getElementById('kyfWelcomeModal'); from = (w0 && getComputedStyle(w0).display !== 'none') ? 2 : 1; }   // lancée depuis l'étape 1 ou 2 : la barre de démo proposera d'y revenir
-  // 2.12.2.61 : la démo s'ouvre dans un NOUVEL onglet (marqueur passé par le nom de l'onglet) : cet onglet reste tel quel, on n'a plus à recharger le site en entrant ni en sortant
+  // 2.12.2.62 : la démo s'ouvre dans un NOUVEL onglet (marqueur passé par le nom de l'onglet) : cet onglet reste tel quel, on n'a plus à recharger le site en entrant ni en sortant
   try{
     var nt = window.open(location.href.split('#')[0] + '#demo', '[kyfDemo:' + Date.now() + ']' + (from ? '[kyfBack:' + from + ']' : ''));
     if(nt){ try{ nt.focus(); }catch(e){} return; }
@@ -5328,7 +5328,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.12.2.61</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.12.2.62</span></div>
       </div>
     </div>
   </div>
@@ -7713,7 +7713,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.2.61</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.2.62</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -21954,8 +21954,13 @@ window.KYF_GECO_META = window.KYF_GECO_META || { updated: null };
 function kyfGecoSourceText(){
   var u = window.KYF_GECO_META && window.KYF_GECO_META.updated, d = '';
   if(u){ try{ d = new Date(u).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}); }catch(e){} }
-  if(d) return 'Données issues de GECO (AMF), réutilisées avec l\u2019accord de l\u2019AMF. Dernière mise à jour : ' + d + '.';
-  return 'Source AMF (GECO) : réutilisation des données avec l\u2019accord de l\u2019AMF, mise à jour quotidienne bientôt disponible. En attendant, la liste vient des contributions d\u2019utilisateurs KYF.';
+  if(d) return 'Source : AMF, GECO (geco.amf-france.org). Dernière récupération par KYF : ' + d + '.';
+  return 'Source AMF (GECO) : la récupération automatique des valeurs liquidatives n\u2019est pas encore activée, en attente de la réponse définitive de l\u2019AMF. En attendant, la liste vient des contributions d\u2019utilisateurs KYF.';
+}
+// Mention obligatoire (dossier GECO section 7), à afficher à côté de chaque donnée GECO. rec = {vlDate, geco, fetched} (dates ISO)
+function kyfGecoMention(rec){
+  function f(x){ try{ return new Date(x).toLocaleDateString('fr-FR'); }catch(e){ return ''; } }
+  return 'Source : AMF, GECO (geco.amf-france.org). Valeur du ' + f(rec.vlDate) + '. Dernière mise à jour sur GECO : ' + f(rec.geco) + '. Récupérée par KYF le : ' + f(rec.fetched) + '. \u00a9Autorité des marchés financiers \u2013 droits réservés. Données restituées telles que transmises à l\u2019AMF par les sociétés de gestion, sans retraitement ni validation de l\u2019AMF. L\u2019AMF ne saurait être tenue responsable d\u2019une erreur ou d\u2019une omission affectant ces données.';
 }
 function kyfGecoRefreshBar(){ var e=document.getElementById('perecolSourceText'); if(e) e.textContent = kyfGecoSourceText(); }
 function kyfGecoAccordOpen(){
@@ -21964,14 +21969,14 @@ function kyfGecoAccordOpen(){
   o.style.cssText='position:fixed;inset:0;z-index:10000200;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:16px;font-family:Inter,sans-serif';
   o.oncontextmenu=function(e){e.preventDefault();};
   o.innerHTML='<div role="dialog" aria-modal="true" style="width:min(560px,100%);max-height:85vh;overflow-y:auto;overscroll-behavior:contain;background:var(--bg2);border:1px solid rgba(240,180,41,.3);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.5);padding:26px">'
-   +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px"><div style="font-size:14px;font-weight:800;color:var(--text);letter-spacing:.5px">ACCORD DE L\u2019AMF SUR LES DONNÉES GECO</div>'
+   +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px"><div style="font-size:14px;font-weight:800;color:var(--text);letter-spacing:.5px">AMF ET DONNÉES GECO</div>'
    +'<button type="button" id="kyfGecoAccordX" aria-label="Fermer" style="background:none;border:1px solid var(--border2);color:var(--text3);border-radius:8px;width:30px;height:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s,color .15s" onmouseover="this.style.background=\'var(--hov-bg)\';this.style.color=\'var(--text)\'" onmouseout="this.style.background=\'none\';this.style.color=\'var(--text3)\'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>'
    +'<div style="font-size:12px;color:var(--text2);line-height:1.7">'
-   +'<p style="margin:0 0 10px">L\u2019Autorité des marchés financiers (service PRADA, Direction des affaires juridiques) a donné son accord à KYF pour réutiliser les données publiques de la base GECO relatives aux fonds proposés dans les dispositifs d\u2019épargne retraite d\u2019entreprise (PERECOL).</p>'
-   +'<p style="margin:0 0 6px;font-weight:700;color:var(--text)">Conditions de réutilisation respectées par KYF</p>'
-   +'<ul style="margin:0 0 10px;padding-left:18px"><li>les données ne sont ni altérées ni modifiées ;</li><li>leur sens n\u2019est pas dénaturé ;</li><li>la source (AMF, GECO) et la date de dernière mise à jour sont toujours indiquées.</li></ul>'
-   +'<p style="margin:0 0 10px">Les données sont récupérées une fois par jour, la nuit, les jours de bourse, et uniquement pour les fonds suivis par au moins un utilisateur.</p>'
-   +'<p style="margin:0;color:var(--text3);font-size:11px">Cet accord porte sur la réutilisation des données. Il ne vaut ni approbation ni label de KYF par l\u2019AMF. Texte provisoire, en attente de validation par l\u2019AMF.</p>'
+   +'<p style="margin:0 0 10px">L\u2019AMF (Direction des affaires juridiques, service PRADA) a confirmé par écrit que la réutilisation des données publiées sur GECO est possible, y compris à des fins commerciales, sous réserve du respect de ses conditions de reproduction.</p>'
+   +'<p style="margin:0 0 6px;font-weight:700;color:var(--text)">Engagements de KYF</p>'
+   +'<ul style="margin:0 0 10px;padding-left:18px"><li>informations publiques non altérées, sens non dénaturé ;</li><li>source et date de dernière mise à jour affichées à côté de chaque donnée ;</li><li>un seul passage automatique par jour de bourse, la nuit, uniquement pour les fonds suivis ;</li><li>aucune requête vers GECO lors de la consultation par un utilisateur.</li></ul>'
+   +'<p style="margin:0 0 10px">KYF a transmis à l\u2019AMF ses modalités techniques détaillées. La récupération automatique ne sera activée qu\u2019après sa réponse définitive.</p>'
+   +'<p style="margin:0;color:var(--text3);font-size:11px">Cette réutilisation ne vaut ni approbation ni label de KYF par l\u2019AMF.</p>'
    +'</div></div>';
   function close(){ o.remove(); document.body.style.overflow=o._ov||''; document.removeEventListener('keydown',kd,true); }
   function kd(e){ if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); close(); } }
@@ -49380,7 +49385,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.61\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.62\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66842,7 +66847,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.2.61';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.2.62';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -76291,7 +76296,7 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
-      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.61 · 06/11/2026</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.62 · 06/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Démo : elle s’ouvre dans un nouvel onglet, donc plus de rechargement du site en entrant ni en quittant (fermer l’onglet de la démo suffit). Visite guidée : les suggestions de la démo de recherche ne cachent plus l’étape « À qui », la bulle se place dans la zone libre des pop-up d’import et d’ajout, et une étape dont la cible est introuvable montre la page au lieu d’être sautée.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.59 · 06/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Accueil : le grand encart « Essayez KYF en un clic » disparaît de l’étape 2, et le bouton « Essayer la démo » est plus visible sur l’étape 1 (fond teinté, icône, un peu plus grand).</div>
