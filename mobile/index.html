@@ -25,6 +25,11 @@
 html,body{height:100%;margin:0}
 html{background:var(--bg);overscroll-behavior-y:contain;min-height:100vh;min-height:100lvh}
 #qrc{display:flex;flex-wrap:wrap;gap:6px}#qrc i{font-style:normal;min-width:28px;height:28px;border-radius:8px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:.8rem;color:var(--mut)}#qrc i.on{background:var(--acc);color:var(--onacc);border-color:var(--acc);font-weight:700}
+#ptl{position:fixed;left:0;right:0;z-index:70;text-align:center;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--acc);opacity:0;pointer-events:none;transition:opacity .25s}
+html.ptrw #ptl{opacity:.8}
+html.ptrw .top .th{animation:ptrw 2.4s ease-in-out infinite;animation-delay:calc(var(--wi,0)*.18s)}
+@keyframes ptrw{0%,40%,100%{box-shadow:none}15%{box-shadow:0 0 9px 1px color-mix(in srgb,var(--acc) 38%,transparent);background:color-mix(in srgb,var(--acc) 10%,transparent)}}
+@media (prefers-reduced-motion:reduce){html.ptrw .top .th{animation:none}}
 #ptr{position:fixed;left:42%;top:0;z-index:70;width:120px;height:180px;margin-left:-60px;pointer-events:none;opacity:0;color:var(--acc)}
 #ptr svg{display:block;overflow:visible}#ptr .rg{transform-origin:60px 46px;opacity:0}
 #ptr.sp .rg{opacity:1;animation:ptrs .8s linear infinite}@keyframes ptrs{to{transform:rotate(360deg)}}
@@ -602,7 +607,7 @@ html,body{overflow-x:clip;max-width:100%}main{overflow-x:clip;min-width:0;paddin
 <script src="avf.js"></script><script src="qr.js"></script>
 <script>
 "use strict";
-var VER="3.97.3", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="3.97.4", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["groupe_projet","Projet"],["alerte_seuils","Seuils d’alerte"],["alerte_cible","Objectif de prix"],["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["renommage","Renommage"],["actif_valeur","Valeur d’un actif"],["etranger_nouveau","Avoir à l’étranger"],["etranger_valeur","Valeur d’un avoir à l’étranger"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -4350,8 +4355,10 @@ document.addEventListener("touchmove",function(e){if(y0===null||busy||hz)return;
  if(dy<=0||window.scrollY>0){if(d>0)fin();else y0=null;return}
  if(dy<18&&d===0)return;
  d=Math.min(MAX,(dy-18)*.5);ok=d>=TH;if(e.cancelable)e.preventDefault();pose()},{passive:false});
-function end(){if(y0===null||busy)return;if(ok){busy=true;el.classList.add("sp");el.style.opacity="1";anim(46,17);
-  var t0=Date.now(),W=function(p){return Promise.race([Promise.resolve(p).catch(function(){}),new Promise(function(r){setTimeout(r,15000)})])},J=[W(Promise.resolve().then(function(){return navigator.serviceWorker&&navigator.serviceWorker.getRegistration().then(function(r){return r&&r.update()})}))];
+function end(){if(y0===null||busy)return;if(ok){busy=true;anim(-8,19,function(){el.style.opacity="0"});
+  var bt=[].slice.call(document.querySelectorAll(".top .th")).sort(function(a,b){return a.getBoundingClientRect().left-b.getBoundingClientRect().left}),lb=document.getElementById("ptl");if(!lb){lb=document.createElement("div");lb.id="ptl";lb.setAttribute("aria-hidden","true");document.body.appendChild(lb)}
+  bt.forEach(function(b,i){b.style.setProperty("--wi",i)});var r0=bt.length?bt[0].getBoundingClientRect():null;lb.style.top=(r0?r0.bottom+14:70)+"px";lb.textContent="Actualisation des cours…";requestAnimationFrame(function(){document.documentElement.classList.add("ptrw")});
+  var t0=Date.now(),W=function(p){return Promise.race([Promise.resolve(p).catch(function(){}),new Promise(function(r){setTimeout(r,15000)})])},J=[W(Promise.resolve().then(function(){return navigator.serviceWorker&&navigator.serviceWorker.getRegistration().then(function(r){return r&&r.update().then(function(){if(r.installing||r.waiting)lb.textContent="Mise à jour de l’application…"})})}))];
   try{if(patLedger().length)J.push(W(qtRefresh(true)));if(intraOn())J.push(W(intraFetch(true)))}catch(e){}
   Promise.all(J).then(function(){try{var q0=qtLoad(),hm=new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});sessionStorage.setItem("kyfm-ptr",patLedger().length?(q0.fail&&Date.now()-q0.at>6e5?"Cours non actualisés (réseau)":"Cours actualisés · "+hm):"À jour")}catch(e){}setTimeout(function(){location.reload()},Math.max(0,1100-(Date.now()-t0)))})}
  else fin()}
