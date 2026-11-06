@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.2.56
+  @version     : Beta 2.12.2.57
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -210,7 +210,10 @@ function kyfDemoAsk(){   // entrée permanente (barre latérale) : on prévient 
   go();
 }
 function kyfDemoStart(){
-  try{ window.name = (window.name || '').replace(/\[kyfDemo:\d+\]/g, '') + '[kyfDemo:' + Date.now() + ']'; location.reload(); }catch(e){}
+  var sp = document.getElementById('kyfSplash');
+  if(sp){ sp.classList.add('dwait'); var w = document.getElementById('kyfWelcomeModal'); if(w) w.style.display = 'none'; }   // le fond neutre reste et annonce l'ouverture de la démo, au lieu de montrer l'application vide pendant le rechargement
+  var go = function(){ try{ window.name = (window.name || '').replace(/\[kyfDemo:\d+\]/g, '') + '[kyfDemo:' + Date.now() + ']'; location.reload(); }catch(e){} };
+  if(sp) setTimeout(go, 280); else go();
 }
 </script>
 <script>
@@ -5183,6 +5186,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 <script>
 (function(){
   var h = document.documentElement;
+  try{ if(/\[kyfDemo:\d+\]/.test(window.name || '')) h.classList.add('kyf-demo-load'); }catch(e){}   // 2.12.2.57 : ouverture de la démo, le fond neutre s'affiche pendant le chargement
   try{ if(!localStorage.getItem('kyf-welcome-seen')) h.classList.add('kyf-first'); }catch(e){}   // 2.12.2.24 : tout premier lancement : l'écran d'accueil léger s'affiche tout de suite
   document.addEventListener('keydown', function(e){ if(e.key === 'Tab') h.classList.add('kyf-nav-clavier'); }, true);
   document.addEventListener('pointerdown', function(){ h.classList.remove('kyf-nav-clavier'); }, true);
@@ -5195,7 +5199,14 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
      quand l'application est chargée (kyfSplashReady) ; kyfSplashGo ferme l'écran. -->
 <style>
 #kyfSplash{display:none}
-html.kyf-first #kyfSplash{display:flex}
+html.kyf-first #kyfSplash,html.kyf-demo-load #kyfSplash,#kyfSplash.dwait{display:flex}
+html.kyf-demo-load body{overflow:hidden}
+#kyfSplash .ksp-dload{display:none;position:relative;flex-direction:column;align-items:center;gap:18px;padding:34px 44px;border-radius:24px;background:#141415;box-shadow:0 30px 100px rgba(0,0,0,.45);text-align:center;font-family:'Inter',system-ui,sans-serif}
+html.kyf-demo-load #kyfSplash .ksp-dload,#kyfSplash.dwait .ksp-dload{display:flex}
+html.kyf-demo-load #kyfSplash .ksp-card,html.kyf-demo-load #kyfSplash .ksp-c3,#kyfSplash.dwait .ksp-card,#kyfSplash.dwait .ksp-c3{display:none !important}
+#kyfSplash.dleave{opacity:0;transition:opacity .4s ease;pointer-events:none}
+#kyfSplash .ksp-dload svg{animation:kspSpin 1s linear infinite;transform-origin:center}
+@media (prefers-reduced-motion:reduce){#kyfSplash .ksp-dload svg{animation:none}}
 html.kyf-first body{overflow:hidden}
 #kyfSplash{position:fixed;inset:0;z-index:99998;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;background:#0b0b0c;color:#f2f2f2;font-family:'Inter',system-ui,sans-serif;overflow:hidden}
 #kyfSplash .ksp-blob{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none}
@@ -5275,6 +5286,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
 @media (prefers-reduced-motion:reduce){#kyfSplash .ksp-bar b,#kyfSplash .ksp-wait svg{animation:none}}
 </style>
 <div id="kyfSplash" role="dialog" aria-modal="true" aria-label="Bienvenue dans KYF">
+  <div class="ksp-dload" role="status"><div style="display:flex;align-items:baseline"><span class="ksp-keep">Keep</span><span class="ksp-dot"></span><span class="ksp-your">Your</span><span class="ksp-dot"></span><span class="ksp-folio">Folio</span></div><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg><div style="font-size:15px;font-weight:700;color:#f2f2f2">Ouverture de la démo…</div><div style="font-size:11px;line-height:1.6;color:#a3a3a3;max-width:280px">Des données fictives se chargent. Rien n'est enregistré, et vos vraies données reviennent en quittant la démo.</div></div>
   <div class="ksp-blob" style="width:420px;height:420px;background:#f0b429;opacity:.32;top:-12%;left:-8%"></div>
   <div class="ksp-blob" style="width:400px;height:400px;background:#4d9fff;opacity:.28;bottom:-14%;right:-8%"></div>
   <div class="ksp-blob" style="width:380px;height:380px;background:#9b6dff;opacity:.28;top:-10%;right:-6%"></div>
@@ -5304,7 +5316,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.12.2.56</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.12.2.57</span></div>
       </div>
     </div>
   </div>
@@ -7689,7 +7701,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.2.56</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.2.57</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -49315,7 +49327,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.56\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.57\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66777,7 +66789,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.2.56';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.2.57';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -73038,8 +73050,8 @@ function kyfSplashGo(a){
     if(typeof openGuide === 'function') openGuide();
     return;
   }
-  kyfSplashClose();
   if(a === 'demo'){ kyfDemoStart(); return; }
+  kyfSplashClose();
   localStorage.setItem(WELCOME_KEY, '1');
   if(a === 'guide'){ if(typeof openGuide === 'function') openGuide(); return; }
   setTimeout(openOnboardingChoice, 250);   // « Par quoi voulez-vous commencer ? », comme avant
@@ -73266,6 +73278,14 @@ function kyfSplashNext(){
   if(c) c.classList.add('out');
   setTimeout(function(){ if(c) c.style.display = 'none'; openAcfWelcome(); }, 300);   // la carte 1 glisse, puis la page 2 arrive
 }
+function kyfDemoLoadDone(){
+  const h = document.documentElement, sp = document.getElementById('kyfSplash');
+  if(!h.classList.contains('kyf-demo-load')) return;
+  if(!sp){ h.classList.remove('kyf-demo-load'); return; }
+  sp.classList.add('dleave');
+  setTimeout(function(){ h.classList.remove('kyf-demo-load'); if(!h.classList.contains('kyf-first')) sp.remove(); else { sp.classList.remove('dleave'); } }, 420);
+}
+if(document.readyState === 'complete') setTimeout(kyfDemoLoadDone, 500); else window.addEventListener('load', function(){ setTimeout(kyfDemoLoadDone, 500); });
 document.addEventListener('DOMContentLoaded', function(){
   if(!localStorage.getItem(WELCOME_KEY)){
     if(!kyfSplashReady()) openAcfWelcome(); // démo AuCoffre.com : remplace l'écran BIENVENUE habituel
@@ -76208,6 +76228,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.57 · 06/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Ouverture de la démo : le fond neutre reste et affiche « Ouverture de la démo… » pendant le rechargement, au lieu de montrer l’application vide puis une page blanche. Il disparaît en fondu quand la démo est prête.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.56 · 06/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Visite guidée : le cadre jaune est retiré à chaque étape puis reconstruit à sa place, au lieu de glisser d’un endroit à l’autre. Le fond reste assombri entre deux étapes, donc plus de saut visuel.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.55 · 06/11/2026</div>
