@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.2.52
+  @version     : Beta 2.12.2.53
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5302,7 +5302,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.12.2.52</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.12.2.53</span></div>
       </div>
     </div>
   </div>
@@ -7683,7 +7683,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.2.52</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.2.53</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -49307,7 +49307,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.52\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.53\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66769,7 +66769,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.2.52';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.2.53';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -67443,6 +67443,16 @@ function kyfShowRestoreChoice(){
   if(main) main.style.display = 'none';
   if(backup) backup.style.display = 'none';
   if(restore) restore.style.display = 'block';
+}
+function kyfOnboardingBack(){          // « Retour » dans Sauvegarde / Restauration : on revient à la nouvelle étape 3 si elle est là, pas à l'ancien visuel
+  const c3 = document.getElementById('kyfSplashC3');
+  if(c3 && document.getElementById('kyfSplash')){
+    const o = document.getElementById('modalOnboardingChoiceOverlay'), m = document.getElementById('modalOnboardingChoice');
+    if(o) o.style.display = 'none'; if(m) m.style.display = 'none';
+    document.body.style.overflow = '';
+    kyfShowOnboardingMain(); c3.classList.add('on'); return;
+  }
+  kyfShowOnboardingMain();
 }
 function kyfShowOnboardingMain(){
   const main = document.getElementById('onboardingChoiceMain');
@@ -72910,7 +72920,7 @@ window.addEventListener('load', () => { setTimeout(kyfEmptySweep, 1500); setTime
 const KYF_ACTIONS = {
   'welcome-import':          () => kyfWelcomeImport(),
   'onboarding-show-restore': () => kyfShowRestoreChoice(),
-  'onboarding-back':         () => kyfShowOnboardingMain(),
+  'onboarding-back':         () => kyfOnboardingBack(),
   'restore-file':            () => kyfRestoreShortcut(() => toggleIOPanel()),
   'restore-google':          () => kyfRestoreShortcut(() => openEditorToApi()),
   'restore-storage':         () => kyfRestoreShortcut(() => kyfOpenStorageCard()),
@@ -76162,6 +76172,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.53 · 06/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Premier lancement : le bouton Retour des écrans Sauvegarde et Restauration ramène à la nouvelle étape 3 (fond neutre) au lieu de l’ancien visuel.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.52 · 06/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Visite guidée : transitions plus fluides. La bulle s’efface et réapparaît à sa nouvelle place, les pop-up (import, ajout) apparaissent et disparaissent en fondu, et des appuis rapides sur Suivant ne se marchent plus dessus.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.51 · 06/11/2026</div>
@@ -106080,7 +106092,7 @@ function orInlineEdit(id, td, currentVal){
     </div>
     <div style="text-align:center;margin-top:14px;font-size:10px;color:var(--text3)">Dossier local ou WebDAV vous conviennent mieux ? Ces options existent aussi, dans le même écran de Paramètres.</div>
     <div style="text-align:center;margin-top:10px">
-      <button onclick="kyfShowOnboardingMain()" style="background:none;border:none;color:var(--text3);font-size:10px;cursor:pointer;text-decoration:underline">Retour</button>
+      <button onclick="kyfOnboardingBack()" style="background:none;border:none;color:var(--text3);font-size:10px;cursor:pointer;text-decoration:underline">Retour</button>
     </div>
   </div>
 
