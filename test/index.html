@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.2.50
+  @version     : Beta 2.12.2.51
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5302,7 +5302,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.12.2.50</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.12.2.51</span></div>
       </div>
     </div>
   </div>
@@ -7681,7 +7681,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.2.50</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.2.51</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -49305,7 +49305,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.50\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.51\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66767,7 +66767,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.2.50';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.2.51';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -73038,17 +73038,18 @@ function kyfTourSteps(mode){
     {page:'dashboard', sel:'.sb-item[data-page="profil"]', side:'right', t:'Mon compte', x:'Votre profil et vos objectifs. Vous pouvez aussi y revoir cette visite guidée à tout moment.', ch:'Pour finir'}
   ];
   defs.forEach(function(d){ if(!d.ch) d.ch = 'Démarrer'; });
-  if(mode === 'full'){          // visite complète : on ajoute 3 chapitres avant la dernière étape
+  if(mode === 'full'){
+    const PI = [{ch:'Démarrer', page:'portfolio', pop:'import', big:true, open:function(){ openImportRelevé('etf'); }, act:function(){ importBackToStep1(); }, sel:'#importRelevéModal', t:'Importer un relevé (1/2)', x:'Voici la fenêtre qui s’ouvre. Choisissez d’abord le type d’import : Finary, Portfolio Performance, ETF et actions, ou votre Excel maison.'},
+      {ch:'Démarrer', page:'portfolio', pop:'import', big:true, act:function(){ importGoToStep2('etf'); }, sel:'#importRelevéModal', t:'Importer un relevé (2/2)', x:'Puis indiquez la destination (PEA, PEA-PME ou CTO), le nom de votre courtier (obligatoire) et déposez le fichier. KYF repère le tableau, vous vérifiez les lignes lues, puis vous validez.'}], PA = [{ch:'Démarrer', page:'portfolio', pop:'add', big:true, open:function(){ openAddETF(); }, act:function(){ kyfTourTypeDemo(); }, sel:'#etfAddModal', t:'Ajouter un actif : la recherche', x:'Ici, nous avons tapé Air Liquide à votre place. Vous pouvez saisir le nom, ou mieux le ticker : c’est le code boursier (AI.PA pour Air Liquide, CW8.PA, AAPL…). Ticker inconnu ? Un champ d’ajout manuel est proposé sous les suggestions. Renseignez ensuite l’enveloppe, la quantité, le prix de revient (PRU) et la date.'},
+      {ch:'Démarrer', page:'portfolio', pop:'add', sel:'#etfTiWrap', t:'« À qui » : la famille', x:'Facultatif. Un repère pour savoir à qui appartient la ligne : vous, votre conjoint, un enfant ou la famille. Utile pour s’y retrouver quand le portefeuille est partagé.'},
+      {ch:'Démarrer', page:'portfolio', pop:'add', sel:'#etfGoogleCode', t:'Le code Google Finance', x:'Facultatif. C’est un cours de secours si Yahoo Finance est indisponible. Trouvez le code sur google.com/finance (ex. MC:EPA pour LVMH) et collez-le ici.'}];
+    let p = defs.findIndex(function(d){ return d.t === 'Importer un relevé'; }); if(p >= 0) defs.splice(p + 1, 0, ...PI);          // pop-up d'import juste après le bouton
+    p = defs.findIndex(function(d){ return d.t === 'Ajouter une position'; }); if(p >= 0) defs.splice(p + 1, 0, ...PA);          // pop-up d'ajout juste après le bouton          // visite complète : on ajoute 3 chapitres avant la dernière étape
     const S = function(ch, page, sel, t, x){ return {ch:ch, page:page, sel:sel, t:t, x:x}; };
     const B = function(page, call){ return '#page-' + page + ' button[onclick*="' + call + '"]'; };
     const F = function(page){ return 'FIRST:page-' + page; };
     const A = 'Suivre mes actifs', N = 'Analyser', P = 'Piloter';
     const more = [
-      {ch:A, page:'portfolio', pop:'import', big:true, open:function(){ openImportRelevé('etf'); }, act:function(){ importBackToStep1(); }, sel:'#importRelevéModal', t:'Importer un relevé (1/2)', x:'Voici la fenêtre qui s’ouvre. Choisissez d’abord le type d’import : Finary, Portfolio Performance, ETF et actions, ou votre Excel maison.'},
-      {ch:A, page:'portfolio', pop:'import', big:true, act:function(){ importGoToStep2('etf'); }, sel:'#importRelevéModal', t:'Importer un relevé (2/2)', x:'Puis indiquez la destination (PEA, PEA-PME ou CTO), le nom de votre courtier (obligatoire) et déposez le fichier. KYF repère le tableau, vous vérifiez les lignes lues, puis vous validez.'},
-      {ch:A, page:'portfolio', pop:'add', big:true, open:function(){ openAddETF(); }, sel:'#etfAddModal', t:'Ajouter un actif : la recherche', x:'Tapez le nom de l’ETF ou de l’action, ou mieux son ticker : c’est le code boursier (CW8.PA, AAPL…). Avec le ticker exact, KYF trouve le bon cours et le bon logo. Ticker inconnu ? Un champ d’ajout manuel est proposé sous les suggestions. Renseignez ensuite l’enveloppe, la quantité, votre prix de revient (PRU) et la date.'},
-      {ch:A, page:'portfolio', pop:'add', sel:'#etfTiWrap', t:'« À qui » : la famille', x:'Facultatif. Un repère pour savoir à qui appartient la ligne : vous, votre conjoint, un enfant ou la famille. Utile pour s’y retrouver quand le portefeuille est partagé.'},
-      {ch:A, page:'portfolio', pop:'add', sel:'#etfGoogleCode', t:'Le code Google Finance', x:'Facultatif. C’est un cours de secours si Yahoo Finance est indisponible. Trouvez le code sur google.com/finance (ex. MC:EPA pour LVMH) et collez-le ici.'},
       {ch:A, page:'dividendes', sel:B('dividendes','openAddDividende'), t:'Un bouton Ajouter par page', list:function(){ return [
         ['Dividendes','date, montant net reçu, ticker, nombre de titres, enveloppe'],
         ['Crypto','la crypto, la quantité, le prix d’achat'],
@@ -73090,6 +73091,22 @@ function kyfTourFind(sel){          // 'FIRST:page-xxx' = premier grand bloc vis
   for(let k = 0; k < d.length; k++){ const r = d[k].getBoundingClientRect(); if(r.width > 200 && r.height > 30) return d[k]; }
   return null;
 }
+function kyfTourTypeDemo(){          // saisit Air Liquide dans la recherche, comme le ferait l'utilisateur
+  try{
+    const i = document.getElementById('etfSearchInput'); if(!i) return;
+    i.value = 'Air Liquide'; i.dispatchEvent(new Event('input', {bubbles:true}));
+  }catch(e){}
+}
+// Clavier : flèches = étape précédente / suivante, Entrée = suivante, Échap = quitter. Capture : les raccourcis du pop-up dessous (Entrée, Échap, flèches) sont neutralisés pendant la visite pour éviter les bugs.
+window.addEventListener('keydown', function(e){
+  const t = document.getElementById('kyfTour'); if(!t || !t.classList.contains('on')) return;
+  const k = e.key;
+  if(k !== 'Escape' && k !== 'Enter' && k !== 'ArrowRight' && k !== 'ArrowLeft' && k !== 'ArrowDown' && k !== 'ArrowUp') return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  if(k === 'Escape') kyfTourEnd();
+  else if(k === 'ArrowLeft' || k === 'ArrowUp') kyfTourGo(-1);
+  else kyfTourGo(1);
+}, true);
 function kyfTourClosePops(){          // referme les pop-up montrés par la visite (sans confirmation)
   _kt.opened = false;
   try{
@@ -73125,7 +73142,7 @@ function kyfTourShow(){
   nx.innerHTML = last ? (_kt.then ? 'AJOUTER MA POSITION<span style="margin-left:7px;font-size:12px;line-height:1">&#8594;</span>' : 'TERMINER') : '\u00c9TAPE SUIVANTE<span style="margin-left:7px;font-size:12px;line-height:1">&#8594;</span>';
   const vw = window.innerWidth, vh = window.innerHeight, tw = Math.min(320, vw - 24), th = tip.offsetHeight || 190;   // th lu après le texte posé
   let left, top;
-  if(d.big){ left = r.right + 18; if(left + tw > vw - 12) left = r.left - tw - 18; top = Math.max(12, Math.min(r.top + 20, vh - th - 12)); }   // pop-up : bulle à côté
+  if(d.big){ left = r.right + 18; top = Math.max(12, Math.min(r.top + 20, vh - th - 12)); if(left + tw > vw - 12){ left = r.left - tw - 18; if(left < 12){ left = r.left + 24; top = Math.max(12, Math.min(r.bottom - th - 12, vh - th - 12)); } } }   // pop-up : bulle à côté
   else if(d.side === 'right'){ left = r.right + 18; top = Math.max(12, Math.min(r.top + r.height/2 - th/2, vh - th - 12)); }     // menu de la barre latérale : bulle à droite, centrée sur l'entrée
   else if(r.width < 320 && r.height > vh * 0.5){ left = r.right + 18; top = Math.max(12, Math.min(r.top + 40, vh - th - 12)); }   // grande colonne (sidebar) : bulle à droite
   else { left = r.left + r.width/2 - tw/2; top = r.bottom + pad + 14; if(top + th > vh - 12) top = Math.max(12, r.top - pad - 14 - th); }
@@ -76123,6 +76140,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.51 · 06/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Visite guidée : navigation au clavier (flèches gauche et droite, Entrée pour continuer, Échap pour quitter, sans effet sur les pop-up dessous). Dans la visite complète, les pop-up d’import et d’ajout suivent directement le bouton correspondant, et la recherche d’actif est démontrée avec Air Liquide.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.50 · 06/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Visite complète : un seul bouton « Ajouter » montré avec la liste des pages concernées, et les vrais pop-up « Importer un relevé » et « Ajouter un actif » s’ouvrent pendant la visite. Elle passe à 25 étapes : le pop-up d’import en deux écrans, et le pop-up d’ajout avec le ticker, « À qui » et le code Google Finance.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.49 · 06/11/2026</div>
