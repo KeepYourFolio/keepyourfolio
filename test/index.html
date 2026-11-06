@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.2.36
+  @version     : Beta 2.12.2.37
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5239,7 +5239,7 @@ html.kyf-first body{overflow:hidden}
 #kyfWelcomeModal.ksp-step2 .kyf-welcome-modal{animation:kspStep2In .42s cubic-bezier(.16,1,.3,1) both}
 #kyfWelcomeModal.ksp-step2 .kyf-welcome-intro,#kyfWelcomeModal.ksp-step2 .kyf-asset-line{display:none}
 @media (prefers-reduced-motion:reduce){#kyfSplash .ksp-card,#kyfWelcomeModal.ksp-step2 .kyf-welcome-modal{transition:none;animation:none}}
-html.kyf-first #modalOnboardingChoiceOverlay{background:transparent !important}
+html.kyf-first #modalOnboardingChoiceOverlay,html.kyf-first #modalGuideOverlay{background:transparent !important}
 @keyframes kspFade{from{opacity:0}to{opacity:1}}
 html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,.3,1) both}
 .ksp-step3{display:inline-flex;padding:7px 12px;border:1px solid var(--border2);border-radius:999px;font-size:10px;font-weight:800;letter-spacing:1.3px;color:var(--text3);margin-bottom:12px}
@@ -7672,7 +7672,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.2.36</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.2.37</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -49290,7 +49290,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.36\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.37\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66752,7 +66752,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.2.36';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.2.37';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -67214,6 +67214,11 @@ function closeGuide(){
   const badge = document.getElementById('guideContextBadge');
   if(badge) badge.style.display = 'none';
   localStorage.setItem(GUIDE_KEY, '1');
+  if(window._kyfGuideFromStep3){            // venu de l'étape 3 : on y retourne pour choisir une action
+    window._kyfGuideFromStep3 = false;
+    const c3 = document.getElementById('kyfSplashC3');
+    if(c3 && document.getElementById('kyfSplash')){ c3.classList.add('on'); return; }
+  }
   // Surligner le bouton ? pendant 3s
   const btn = document.getElementById('guideBtn');
   if(btn){ btn.style.color = 'var(--accent)'; setTimeout(()=>btn.style.color='', 3000); }
@@ -73066,12 +73071,17 @@ function kyfSplash3(a){
     if(a === 'backup') kyfShowBackupChoice(); else kyfShowRestoreChoice();
     return;
   }
+  if(a === 'modules' && c3){                    // le guide s'ouvre sur le même fond neutre, et on revient à l'étape 3 en le fermant
+    window._kyfGuideFromStep3 = true;
+    c3.classList.remove('on');
+    openGuide();
+    return;
+  }
   localStorage.setItem(ONBOARDING_CHOICE_KEY, '1');
   kyfSplashClose();
   if(a === 'import') openImportRelevé();
   else if(a === 'add') openAddETF();
   else if(a === 'addtour') kyfTourStart(openAddETF);
-  else if(a === 'modules') openGuide();
 }
 function kyfSplashNext(){
   const sp = document.getElementById('kyfSplash');
@@ -76028,6 +76038,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.37 · 06/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Premier lancement : « Découvrir les modules » ouvre le guide sur le même fond neutre que l’accueil, et sa fermeture ramène à l’étape 3. Le guide ouvert autrement garde son apparence habituelle.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.36 · 06/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Accueil, étape 3 : « Ajouter ma première position, avec visite guidée » passe en grande carte recommandée (Importer un relevé devient une tuile), et la tuile sauvegarde affiche les icônes Google Sheets et GitHub.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.35 · 06/11/2026</div>
