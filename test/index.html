@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.2.54
+  @version     : Beta 2.12.2.55
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5243,7 +5243,9 @@ html.kyf-first body{overflow:hidden}
 #kyfWelcomeModal.ksp-step2 .kyf-welcome-modal{animation:kspStep2In .42s cubic-bezier(.16,1,.3,1) both}
 #kyfWelcomeModal.ksp-step2 .kyf-welcome-intro,#kyfWelcomeModal.ksp-step2 .kyf-asset-line{display:none}
 @media (prefers-reduced-motion:reduce){#kyfSplash .ksp-card,#kyfWelcomeModal.ksp-step2 .kyf-welcome-modal{transition:none;animation:none}}
-html.kyf-first #modalOnboardingChoiceOverlay,html.kyf-first #modalGuideOverlay{background:transparent !important}
+html.kyf-first #modalOnboardingChoiceOverlay,html.kyf-first #modalGuideOverlay,html.kyf-first #etfAddOverlay,html.kyf-first #importRelevéOverlay{background:transparent !important}
+html.kyf-first #etfAddOverlay{z-index:100000 !important}
+html.kyf-first #etfAddModal{z-index:100001 !important}
 @keyframes kspFade{from{opacity:0}to{opacity:1}}
 html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,.3,1) both}
 .ksp-step3{display:inline-flex;padding:7px 12px;border:1px solid var(--border2);border-radius:999px;font-size:10px;font-weight:800;letter-spacing:1.3px;color:var(--text3);margin-bottom:12px}
@@ -5302,7 +5304,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.12.2.54</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.12.2.55</span></div>
       </div>
     </div>
   </div>
@@ -6338,7 +6340,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
       <span style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:12px;color:var(--text);letter-spacing:0.5px" id="etfModalTitle"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> AJOUTER UN ACTIF</span>
       <div style="font-size:9px;color:var(--text3);margin-top:3px">Position à ajouter à votre portefeuille</div>
     </div>
-    <button type="button" onclick="closeAddETF()" class="kyf-modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <button type="button" onclick="kyfAddCancel()" class="kyf-modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
 
   <div class="av-body"><div class="av-side" style="padding:22px 22px 16px">
@@ -6597,7 +6599,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
 
     </div></div>
   <div class="av-foot" style="display:flex;gap:8px;justify-content:flex-end;align-items:center;padding:12px 18px;border-top:1px solid var(--border);flex-shrink:0">
-    <button type="button" id="etfCancelBtn" onclick="closeAddETF()" style="font-family:'Inter',sans-serif;font-size:9px;padding:8px 18px;border-radius:7px;border:1px solid var(--border2);background:none;color:var(--text3);cursor:pointer;transition:background .15s" onmouseover="this.style.background='var(--hov-bg)'" onmouseout="this.style.background='none'">ANNULER</button>
+    <button type="button" id="etfCancelBtn" onclick="kyfAddCancel()" style="font-family:'Inter',sans-serif;font-size:9px;padding:8px 18px;border-radius:7px;border:1px solid var(--border2);background:none;color:var(--text3);cursor:pointer;transition:background .15s" onmouseover="this.style.background='var(--hov-bg)'" onmouseout="this.style.background='none'">ANNULER</button>
     <button type="button" id="etfAddBtn" onclick="confirmAddETFGate()" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:8px 18px;border-radius:7px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">AJOUTER LA POSITION</button>
   </div>
 </div></div>
@@ -7683,7 +7685,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.2.54</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.2.55</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -28640,6 +28642,7 @@ function openEditETF(idx){
 
 // ── Fermer modal ──────────────────────────────────────────────
 function closeAddETF(){
+  setTimeout(kyfAfterPop, 0);
   document.getElementById('etfAddModal').style.display   = 'none';
   etfAddBtnReset();
   document.getElementById('etfAddOverlay').style.display = 'none';
@@ -35356,9 +35359,10 @@ function kyfImpCatsOff(){ const nav = document.getElementById('importCatNav'); i
 async function closeImportRelevé(){
   if(_importResolutionInProgress){
     const ok = await kyfAsk('Une résolution est en cours, la fermer maintenant arrêtera le traitement des lignes restantes. Continuer ?', { kind:'danger', ok:'Fermer quand même', cancel:'Continuer l\'import' });
-    if(!ok) return;
+    if(!ok){ window._kyfCancel3 = false; return; }
     _importResolutionInProgress = false; importDropzoneLock(); // fait sortir la boucle en cours à la prochaine itération
   }
+  setTimeout(kyfAfterPop, 0);
   document.getElementById('importRelevéModal').style.display = 'none';
   { const _m = document.getElementById('importRelevéModal'); if(_m.dataset.w0 !== undefined) _m.style.width = _m.dataset.w0; }
   document.getElementById('importRelevéOverlay').style.display = 'none';
@@ -49307,7 +49311,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.54\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.55\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66769,7 +66773,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.2.54';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.2.55';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -67231,6 +67235,7 @@ function closeGuide(){
   const badge = document.getElementById('guideContextBadge');
   if(badge) badge.style.display = 'none';
   localStorage.setItem(GUIDE_KEY, '1');
+  if(typeof window._kyfGuideBack === 'function'){ const bk = window._kyfGuideBack; window._kyfGuideBack = null; window._kyfGuideFromStep3 = false; bk(); return; }   // retour au pop-up d'où l'on vient
   if(window._kyfGuideFromStep3){            // venu de l'étape 3 : on y retourne pour choisir une action
     window._kyfGuideFromStep3 = false;
     const c3 = document.getElementById('kyfSplashC3');
@@ -73022,6 +73027,13 @@ function kyfSplashClose(){
   if(sp) sp.remove();
 }
 function kyfSplashGo(a){
+  const sp1 = document.getElementById('kyfSplash'), card1 = sp1 && sp1.querySelector('.ksp-card');
+  if(a === 'guide' && card1){          // le guide s'ouvre sur le même fond, et sa fermeture ramène à la page 1
+    card1.style.display = 'none';
+    window._kyfGuideBack = function(){ const c = document.querySelector('#kyfSplash .ksp-card'); if(c){ c.style.display = ''; c.classList.remove('out'); } };
+    if(typeof openGuide === 'function') openGuide();
+    return;
+  }
   kyfSplashClose();
   if(a === 'demo'){ kyfDemoStart(); return; }
   localStorage.setItem(WELCOME_KEY, '1');
@@ -73206,8 +73218,14 @@ function kyfSplash3(a){
   }
   if(a === 'modules' && c3){                    // le guide s'ouvre sur le même fond neutre, et on revient à l'étape 3 en le fermant
     window._kyfGuideFromStep3 = true;
+    window._kyfGuideBack = function(){ const c = document.getElementById('kyfSplashC3'); if(c && document.getElementById('kyfSplash')) c.classList.add('on'); };
     c3.classList.remove('on');
     openGuide();
+    return;
+  }
+  if((a === 'import' || a === 'add') && c3 && document.getElementById('kyfSplash')){      // le fond reste : si on annule, on revient à l'étape 3
+    c3.classList.remove('on'); window._kyfBackTo3 = true; window._kyfCancel3 = false;
+    if(a === 'import') openImportRelevé(); else openAddETF();
     return;
   }
   localStorage.setItem(ONBOARDING_CHOICE_KEY, '1');
@@ -73217,6 +73235,17 @@ function kyfSplash3(a){
   else if(a === 'addtour') kyfTourStart(openAddETF, 'quick');
   else if(a === 'addtourfull') kyfTourStart(openAddETF, 'full');
 }
+// Après la fermeture d'un pop-up ouvert depuis l'étape 3 : annulé = retour à l'étape 3, validé = le fond disparaît et l'application prend la main
+function kyfAfterPop(){
+  if(!window._kyfBackTo3) return;
+  const cancelled = !!window._kyfCancel3; window._kyfCancel3 = false; window._kyfBackTo3 = false;
+  const c3 = document.getElementById('kyfSplashC3');
+  if(cancelled && c3 && document.getElementById('kyfSplash')){ c3.classList.add('on'); return; }
+  try{ localStorage.setItem(ONBOARDING_CHOICE_KEY, '1'); }catch(e){}
+  kyfSplashClose();
+}
+function kyfAddCancel(){ window._kyfCancel3 = !(typeof _etfSessionAdded !== 'undefined' && _etfSessionAdded.length > 0); closeAddETF(); }
+function kyfImportCancel(){ window._kyfCancel3 = true; closeImportRelevé(); }
 function kyfSplashNext(){
   const sp = document.getElementById('kyfSplash');
   const c = sp && sp.querySelector('.ksp-card');
@@ -76172,6 +76201,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.55 · 06/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Premier lancement : audit des liens entre pop-up. Le guide ouvert depuis la page 1 garde le fond et y ramène à la fermeture. « Importer un relevé » et « Ajouter une position » ouverts depuis l’étape 3 gardent le fond : croix ou Annuler ramène à l’étape 3, une validation rend la main à l’application.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.54 · 06/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Pop-up d’accueil : le liseré tricolore est centré sous le logo sur les trois pages.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.53 · 06/11/2026</div>
@@ -107377,7 +107408,7 @@ function orInlineEdit(id, td, currentVal){
 
   <div class="imp-hdr" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-shrink:0">
     <span id="importRelevéTitle" style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--text)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> IMPORTER UN RELEVÉ</span>
-    <button type="button" onclick="closeImportRelevé()" class="kyf-modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <button type="button" onclick="kyfImportCancel()" class="kyf-modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
 
   <!-- ÉTAPE 1 - choix du type d'actif -->
@@ -107442,7 +107473,7 @@ function orInlineEdit(id, td, currentVal){
         <span><strong style="font-size:12px">Crowdfunding</strong><br><span style="font-size:9px;color:var(--text3)">Export de vos prêts : Bienprêter (PDF), ou CSV / Excel d'une autre plateforme</span></span>
       </button>
     </div>
-    <button type="button" onclick="closeImportRelevé()" style="width:100%;margin-top:10px;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:8px;border-radius:8px;border:1px solid var(--border2);background:none;color:var(--text3);cursor:pointer;transition:background .15s" onmouseover="this.style.background='var(--hov-bg)'" onmouseout="this.style.background='none'">Annuler</button>
+    <button type="button" onclick="kyfImportCancel()" style="width:100%;margin-top:10px;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:8px;border-radius:8px;border:1px solid var(--border2);background:none;color:var(--text3);cursor:pointer;transition:background .15s" onmouseover="this.style.background='var(--hov-bg)'" onmouseout="this.style.background='none'">Annuler</button>
   </div>
 
   <!-- MASTER-DETAIL EXCHANGES - colonne de gauche (liste compacte, toujours
@@ -107548,7 +107579,7 @@ function orInlineEdit(id, td, currentVal){
 
     <div class="imp-foot" style="display:flex;gap:8px;justify-content:flex-end">
       <button id="importPrevBtn" type="button" onclick="importStep2GoBack()" style="font-family:'Inter',sans-serif;font-size:9px;padding:8px 18px;border-radius:7px;cursor:pointer;border:1px solid var(--border2);background:none;color:var(--text3);transition:background .15s" onmouseover="this.style.background='var(--hov-bg)'" onmouseout="this.style.background='none'">‹ PRÉCÉDENT</button>
-      <button onclick="closeImportRelevé()" style="font-family:'Inter',sans-serif;font-size:9px;padding:8px 18px;border-radius:7px;cursor:pointer;border:1px solid var(--border2);background:none;color:var(--text3);transition:background .15s" onmouseover="this.style.background='var(--hov-bg)'" onmouseout="this.style.background='none'">ANNULER</button>
+      <button onclick="kyfImportCancel()" style="font-family:'Inter',sans-serif;font-size:9px;padding:8px 18px;border-radius:7px;cursor:pointer;border:1px solid var(--border2);background:none;color:var(--text3);transition:background .15s" onmouseover="this.style.background='var(--hov-bg)'" onmouseout="this.style.background='none'">ANNULER</button>
       <button id="importConfirmBtn" onclick="importConfirm()" style="display:none;font-family:'Inter',sans-serif;font-size:9px;padding:8px 18px;border-radius:7px;cursor:pointer;font-weight:700;border:none;background:#f0b429;color:#000;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">IMPORTER</button>
       <button id="importAllBtn" onclick="kyfFinaAll()" style="display:none;font-family:'Inter',sans-serif;font-size:9px;padding:8px 18px;border-radius:7px;cursor:pointer;font-weight:700;border:none;background:#f0b429;color:#000;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">TOUT IMPORTER</button>
     </div>
