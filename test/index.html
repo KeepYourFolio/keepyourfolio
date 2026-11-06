@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.2.23
+  @version     : Beta 2.12.2.24
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5183,12 +5183,93 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 <script>
 (function(){
   var h = document.documentElement;
+  try{ if(!localStorage.getItem('kyf-welcome-seen')) h.classList.add('kyf-first'); }catch(e){}   // 2.12.2.24 : tout premier lancement : l'écran d'accueil léger s'affiche tout de suite
   document.addEventListener('keydown', function(e){ if(e.key === 'Tab') h.classList.add('kyf-nav-clavier'); }, true);
   document.addEventListener('pointerdown', function(){ h.classList.remove('kyf-nav-clavier'); }, true);
 })();
 </script>
 </head>
 <body>
+<!-- 2.12.2.24 : ÉCRAN D'ACCUEIL LÉGER du tout premier lancement. Du HTML et du CSS seulement, placé tout en haut pour s'afficher dès que le début du fichier est arrivé,
+     sans attendre le reste. Visible uniquement si <html> porte la classe kyf-first (posée plus haut quand kyf-welcome-seen est absent). Les boutons s'activent
+     quand l'application est chargée (kyfSplashReady) ; kyfSplashGo ferme l'écran. -->
+<style>
+#kyfSplash{display:none}
+html.kyf-first #kyfSplash{display:flex}
+html.kyf-first body{overflow:hidden}
+#kyfSplash{position:fixed;inset:0;z-index:99998;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;background:#0b0b0c;color:#f2f2f2;font-family:'Inter',system-ui,sans-serif;overflow:hidden}
+#kyfSplash .ksp-blob{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none}
+#kyfSplash .ksp-card{position:relative;width:min(860px,100%);max-height:100%;border-radius:24px;background:#141415;box-shadow:0 30px 100px rgba(0,0,0,.45);display:flex;overflow:hidden}
+#kyfSplash .ksp-left{width:300px;flex-shrink:0;background:#101011;border-right:1px solid #2a2a2c;padding:30px;display:flex;flex-direction:column;justify-content:space-between;box-sizing:border-box}
+#kyfSplash .ksp-right{flex:1;min-width:0;padding:34px 38px;display:flex;flex-direction:column;justify-content:space-between;gap:22px;box-sizing:border-box;overflow-y:auto}
+#kyfSplash .ksp-keep{color:#a3a3a3;font-weight:400;font-size:13px;letter-spacing:2px;text-transform:uppercase}
+#kyfSplash .ksp-your{color:#f2f2f2;font-weight:300;font-size:13px;letter-spacing:2px;text-transform:uppercase}
+#kyfSplash .ksp-folio{color:#d97706;font-weight:700;font-size:18px;letter-spacing:1px;text-transform:uppercase}
+#kyfSplash .ksp-dot{display:inline-block;width:4px;height:4px;border-radius:50%;background:#d97706;margin:0 4px;vertical-align:middle}
+#kyfSplash .ksp-badge{display:inline-flex;padding:7px 12px;border:1px solid #2a2a2c;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:1.3px;color:#a3a3a3}
+#kyfSplash h1{margin:0;font-size:clamp(28px,4.4vw,38px);line-height:1;letter-spacing:-1.8px;font-weight:850;color:#f2f2f2}
+#kyfSplash h1 span{color:#6a6a6e}
+#kyfSplash .ksp-intro{margin:0;font-size:13px;line-height:1.65;color:#a3a3a3;max-width:400px}
+#kyfSplash .ksp-assets{display:flex;gap:8px;flex-wrap:wrap;font-size:11px;font-weight:650;color:#6a6a6e}
+#kyfSplash .ksp-assets i{font-style:normal;opacity:.6}
+#kyfSplash .ksp-values{display:flex;gap:7px;flex-wrap:wrap;font-size:9px;font-weight:800;letter-spacing:1px;color:#6a6a6e;border-top:1px solid #2a2a2c;padding-top:12px}
+#kyfSplash .ksp-values i{font-style:normal;opacity:.6}
+#kyfSplash .ksp-bar{height:3px;border-radius:2px;background:#262628;overflow:hidden}
+#kyfSplash .ksp-bar b{display:block;height:3px;width:35%;border-radius:2px;background:#f0b429;animation:kspSlide 1.3s ease-in-out infinite}
+#kyfSplash.ready .ksp-bar{display:none}
+@keyframes kspSlide{0%{margin-left:-35%}100%{margin-left:100%}}
+@keyframes kspSpin{to{transform:rotate(360deg)}}
+#kyfSplash .ksp-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+#kyfSplash .ksp-demo{display:inline-flex;align-items:center;padding:9px 18px;border-radius:7px;border:1px solid #f0b429;background:transparent;color:#f0b429;font-family:'Inter',system-ui,sans-serif;font-size:9px;font-weight:700;letter-spacing:.3px;cursor:pointer;transition:background .2s}
+#kyfSplash .ksp-demo:hover,#kyfSplash .ksp-demo:focus-visible{background:rgba(240,180,41,.16);outline:none}
+#kyfSplash .ksp-guide{font-size:10px;font-weight:700;color:#a3a3a3;text-decoration:underline;text-underline-offset:2px;cursor:pointer;transition:color .35s cubic-bezier(.16,1,.3,1);background:none;border:0;padding:0;font-family:'Inter',system-ui,sans-serif}
+#kyfSplash .ksp-guide:hover,#kyfSplash .ksp-guide:focus-visible{color:#f0b429;outline:none}
+#kyfSplash .ksp-start{margin-left:auto;display:inline-flex;align-items:center;padding:8px 18px;border:none;border-radius:7px;background:#f0b429;color:#000;font-family:'Inter',system-ui,sans-serif;font-size:9px;font-weight:700;letter-spacing:.3px;cursor:pointer;transition:opacity .35s cubic-bezier(.16,1,.3,1),transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s cubic-bezier(.16,1,.3,1)}
+#kyfSplash .ksp-start span{margin-left:7px;font-size:12px;line-height:1;transition:transform .35s cubic-bezier(.16,1,.3,1)}
+#kyfSplash .ksp-start:hover,#kyfSplash .ksp-start:focus-visible{opacity:.85;transform:translateY(-2px);box-shadow:0 8px 20px rgba(240,180,41,.3);outline:none}
+#kyfSplash .ksp-start:hover span,#kyfSplash .ksp-start:focus-visible span{transform:translateX(3px)}
+#kyfSplash .ksp-wait{margin-left:auto;display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:7px;border:1px solid #2a2a2c;background:#1c1c1e;color:#8a8a8e;font-size:9px;font-weight:700;letter-spacing:.3px}
+#kyfSplash .ksp-wait svg{animation:kspSpin 1s linear infinite;transform-origin:center}
+#kyfSplash .ksp-start,#kyfSplash.ready .ksp-wait{display:none}
+#kyfSplash.ready .ksp-start{display:inline-flex}
+#kyfSplash:not(.ready) .ksp-demo,#kyfSplash:not(.ready) .ksp-guide{opacity:.45;pointer-events:none}
+@media (max-width:720px){#kyfSplash .ksp-left{display:none}#kyfSplash .ksp-right{padding:26px 22px}#kyfSplash .ksp-start,#kyfSplash .ksp-wait{margin-left:0}}
+@media (prefers-reduced-motion:reduce){#kyfSplash .ksp-bar b,#kyfSplash .ksp-wait svg{animation:none}}
+</style>
+<div id="kyfSplash" role="dialog" aria-modal="true" aria-label="Bienvenue dans KYF">
+  <div class="ksp-blob" style="width:420px;height:420px;background:#f0b429;opacity:.32;top:-12%;left:-8%"></div>
+  <div class="ksp-blob" style="width:400px;height:400px;background:#4d9fff;opacity:.28;bottom:-14%;right:-8%"></div>
+  <div class="ksp-blob" style="width:380px;height:380px;background:#9b6dff;opacity:.28;top:-10%;right:-6%"></div>
+  <div class="ksp-blob" style="width:380px;height:380px;background:#00d4aa;opacity:.25;bottom:-12%;left:-6%"></div>
+  <div class="ksp-card">
+    <div class="ksp-left">
+      <div>
+        <div style="display:flex;align-items:baseline"><span class="ksp-keep">Keep</span><span class="ksp-dot"></span><span class="ksp-your">Your</span><span class="ksp-dot"></span><span class="ksp-folio">Folio</span></div>
+        <div style="color:#6a6a6e;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;margin-top:3px">Dashboard patrimonial</div>
+        <div style="margin-top:4px"><div style="display:flex;gap:2px;width:48px"><div style="flex:1;height:2px;background:#0015FF;border-radius:1px"></div><div style="flex:1;height:2px;background:#FFFFFF;border:1px solid rgba(128,128,128,.25);border-radius:1px;box-sizing:border-box"></div><div style="flex:1;height:2px;background:#FF0000;border-radius:1px"></div></div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:9px;letter-spacing:.8px;color:#f0b429;font-weight:700">PRIVACY BY DESIGN</div><div style="font-size:14px;font-weight:700;line-height:1.4">Votre patrimoine n'est pas notre produit.</div><div style="font-size:11px;color:#a3a3a3;line-height:1.7">Vos données restent sur votre appareil, sous votre contrôle.</div></div>
+    </div>
+    <div class="ksp-right">
+      <div style="display:flex;flex-direction:column;gap:16px;align-items:flex-start">
+        <div class="ksp-badge">BIENVENUE DANS KYF</div>
+        <h1>Votre patrimoine.<br><span>Votre vision. Vos données.</span></h1>
+        <p class="ksp-intro">KeepYourFolio est un tableau de bord patrimonial gratuit conçu pour centraliser et suivre votre patrimoine dans un seul espace.</p>
+        <div class="ksp-assets"><span>Investissements</span><i>·</i><span>Épargne</span><i>·</i><span>Crypto</span><i>·</i><span>Immobilier</span><i>·</i><span>Métaux précieux</span><i>·</i><span>SCPI</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="ksp-bar" aria-hidden="true"><b></b></div>
+        <div class="ksp-actions">
+          <button type="button" class="ksp-demo" onclick="kyfSplashGo('demo')">ESSAYER LA DÉMO</button>
+          <button type="button" class="ksp-guide" onclick="kyfSplashGo('guide')">Découvrir le guide</button>
+          <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
+          <button type="button" class="ksp-start" onclick="kyfSplashGo('start')">COMMENCER AVEC KYF<span>&#8594;</span></button>
+        </div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span></div>
+      </div>
+    </div>
+  </div>
+</div>
 <div id="betaGate" style="display:none;position:fixed;inset:0;z-index:999999;background:#080f1e;font-family:'Inter',sans-serif;overflow:hidden">
   <!-- Fond animé -->
   <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,color-mix(in srgb,var(--green) 6%,transparent) 0%,transparent 60%),radial-gradient(ellipse at 70% 30%,rgba(77,159,255,0.05) 0%,transparent 60%)"></div>
@@ -7511,7 +7592,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.2.23</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.2.24</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -49129,7 +49210,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.23\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.24\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66592,7 +66673,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.2.23';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.2.24';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -72806,9 +72887,29 @@ function closeAcfWelcomeAndGoToOr(){
   // déjà vu, contrairement à avant où on l'envoyait directement sur Or.
   setTimeout(openOnboardingChoice, 250);
 }
+// 2.12.2.24 : écran d'accueil léger (kyfSplash, tout en haut de la page). Prêt = les boutons s'activent ; fermé = l'application prend la main.
+function kyfSplashReady(){
+  const sp = document.getElementById('kyfSplash');
+  if(!sp) return false;
+  if(!document.documentElement.classList.contains('kyf-first')){ sp.remove(); return false; }
+  sp.classList.add('ready');
+  return true;
+}
+function kyfSplashClose(){
+  const sp = document.getElementById('kyfSplash');
+  document.documentElement.classList.remove('kyf-first');
+  if(sp) sp.remove();
+}
+function kyfSplashGo(a){
+  kyfSplashClose();
+  if(a === 'demo'){ kyfDemoStart(); return; }
+  localStorage.setItem(WELCOME_KEY, '1');
+  if(a === 'guide'){ if(typeof openGuide === 'function') openGuide(); return; }
+  setTimeout(openOnboardingChoice, 250);   // « Par quoi voulez-vous commencer ? », comme avant
+}
 document.addEventListener('DOMContentLoaded', function(){
   if(!localStorage.getItem(WELCOME_KEY)){
-    openAcfWelcome(); // démo AuCoffre.com : remplace l'écran BIENVENUE habituel
+    if(!kyfSplashReady()) openAcfWelcome(); // démo AuCoffre.com : remplace l'écran BIENVENUE habituel
   } else if(!localStorage.getItem(ONBOARDING_CHOICE_KEY) && typeof kyfHasAnyAsset==='function' && !kyfHasAnyAsset()){
     // Utilisateur déjà existant (popup de bienvenue déjà vu avant l'ajout de
     // ce nouveau popup) mais toujours sans donnée - il n'aurait sinon jamais
@@ -75739,6 +75840,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.24 · 06/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Premier lancement : un écran d’accueil léger s’affiche tout de suite, sans attendre que toute l’application soit chargée (barre de chargement, puis boutons Essayer la démo, Guide et Commencer). Aucun changement pour les utilisateurs déjà installés.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.23 · 06/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Synchro Google Sheets : chaque appareil a un nom (modifiable dans la synchro) écrit dans la colonne APPAREIL et cité dans les messages de conflit. Un envoi complet ne peut plus écraser en silence des données du Sheet très différentes (par exemple 3 cryptos remplacées par 1) : KYF s’arrête et te demande.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.22 · 06/11/2026</div>
