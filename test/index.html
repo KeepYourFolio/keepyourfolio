@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.2.18
+  @version     : Beta 2.12.2.19
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7501,7 +7501,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.2.18</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.2.19</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -10615,6 +10615,11 @@ function kyfPctTxt(v){
   if(v === null || v === undefined || v === '') return '';
   const n = typeof v === 'number' ? v : (typeof v === 'string' && /^\s*-?\d+([.,]\d+)?\s*$/.test(v) ? parseFloat(v.replace(',', '.')) : NaN);
   return isFinite(n) ? String(n) : '';
+}
+// 2.12.2.19 : quantité affichée dans le tableau des positions, toujours au même format (4 décimales au plus, virgule, espace des milliers)
+function kyfQteTxt(v){
+  const t = kyfPctTxt(v); if(t === '') return '';
+  return (Math.round(parseFloat(t) * 1e4) / 1e4).toLocaleString('fr-FR', { maximumFractionDigits: 4 });
 }
 function escapeHtml(str){
   return String(str == null ? '' : str)
@@ -43339,7 +43344,7 @@ function renderETFTable(lp){
     const ord = [x].concat(l.filter(y => y !== x)), shown = ord.slice(0, 3), more = ord.length - shown.length;
     const q = v => (Math.round((parseFloat(v)||0) * 1e4) / 1e4).toString().replace('.', ',');
     const tip = l.length > 1 ? 'Même titre sur ' + l.length + ' comptes : ' + l.map(y => _acctLab(y) + ' ' + q(y.qty)).join(' · ') + ' (total ' + q(l.reduce((a, y) => a + (parseFloat(y.qty)||0), 0)) + ')' : _acctLab(x);
-    return `<span class="kyf-acct" title="${escapeHtml(tip)}" style="display:inline-flex;align-items:center;margin-left:3px;margin-right:8px;vertical-align:middle">${shown.map((y, i) => _acctBadge(y, 10 - i, i > 0)).join('')}${more > 0 ? `<span style="margin-left:3px;font-size:9px;font-weight:700;color:var(--text3)">+${more}</span>` : ''}</span>`; };
+    return `<span class="kyf-acct" title="${escapeHtml(tip)}" style="display:inline-flex;align-items:center;margin-left:auto;padding-left:6px;margin-right:8px;vertical-align:middle;flex-shrink:0">${shown.map((y, i) => _acctBadge(y, 10 - i, i > 0)).join('')}${more > 0 ? `<span style="margin-left:3px;font-size:9px;font-weight:700;color:var(--text3)">+${more}</span>` : ''}</span>`; };
   const _acctShow = x => { const k = String(x.isin || x.ticker || '').toUpperCase(); return (_grouped || _solo) && !_multiCompte[k] ? '' : _acctStack(x); };   // nom du contrat AV / PER, rappelé sur ses lignes en vue mélangée
   let rows = '';
   let lastEnv = null;
@@ -43413,7 +43418,7 @@ function renderETFTable(lp){
       <td style="font-weight:600;cursor:pointer" onclick="etfInlineEditTicker(${ETF.indexOf(e)}, this, ${kyfJsonAttr(e.name)}, 'name')">
         <div style="display:flex;align-items:center;gap:7px">
           ${showLogo?renderAssetLogo(e.ticker,e.name,20):''}
-          <span>${escapeHtml(e.name)}</span>${_acctShow(e)}${(() => { const _ti = kyfFamTiOf(e); return (_multiTi && KYF_TITU[_ti]) ? `<span class="kyf-ti-dot kyf-env-chip" title="À qui : ${escapeHtml(KYF_TITU[_ti][0])}" style="display:inline-flex;align-items:center;gap:4px;color:${KYF_TITU[_ti][1]};border-color:${KYF_TITU[_ti][1]}"><span style="width:6px;height:6px;border-radius:50%;background:${KYF_TITU[_ti][1]}"></span>${escapeHtml(KYF_TITU[_ti][0])}</span>` : ''; })()}${(env === 'CTO' && _multiCto) ? `<span class="kyf-env-chip" title="Compte CTO">${escapeHtml(kyfCtoNom(kyfCtoCompteOf(e)))}</span>` : ''}
+          <span style="min-width:0">${escapeHtml(e.name)}</span>${_acctShow(e)}${(() => { const _ti = kyfFamTiOf(e); return (_multiTi && KYF_TITU[_ti]) ? `<span class="kyf-ti-dot kyf-env-chip" title="À qui : ${escapeHtml(KYF_TITU[_ti][0])}" style="display:inline-flex;align-items:center;gap:4px;color:${KYF_TITU[_ti][1]};border-color:${KYF_TITU[_ti][1]}"><span style="width:6px;height:6px;border-radius:50%;background:${KYF_TITU[_ti][1]}"></span>${escapeHtml(KYF_TITU[_ti][0])}</span>` : ''; })()}${(env === 'CTO' && _multiCto) ? `<span class="kyf-env-chip" title="Compte CTO">${escapeHtml(kyfCtoNom(kyfCtoCompteOf(e)))}</span>` : ''}
         </div>
       </td>
       <td style="font-size:9px;color:var(--text3);line-height:1.6;white-space:nowrap">
@@ -43422,7 +43427,7 @@ function renderETFTable(lp){
       </td>
       ${showCol('investi')?`<td style="font-weight:500;letter-spacing:0.3px;cursor:pointer" onclick="etfInlineEdit(${ETF.indexOf(e)}, this, 'montant', ${kyfJsNum(invest)}, {type:'number', step:'0.01', min:0, width:'100px'})"><span>${fmt(invest,2)} €</span></td>`:''}
       ${showCol('pru')?`<td style="cursor:pointer" onclick="etfInlineEdit(${ETF.indexOf(e)}, this, 'pru', ${kyfJsNum(e.pru)}, {type:'number', step:'0.001', min:0, width:'90px'})"><span>${fmt(e.pru,3)}</span></td>`:''}
-      ${showCol('qte')?`<td style="cursor:pointer" onclick="etfInlineEdit(${ETF.indexOf(e)}, this, 'qty', ${kyfJsNum(e.qty)}, {type:'number', step:'1', min:0, width:'80px'})"><span>${kyfPctTxt(e.qty) || '-'}</span></td>`:''}
+      ${showCol('qte')?`<td style="cursor:pointer" onclick="etfInlineEdit(${ETF.indexOf(e)}, this, 'qty', ${kyfJsNum(e.qty)}, {type:'number', step:'1', min:0, width:'80px'})"><span>${kyfQteTxt(e.qty) || '-'}</span></td>`:''}
       ${showCol('eval')?(fxMiss?`<td style="color:var(--text2)" title="${kyfEscAttrStale(kyfFxNote(p.currency || getTickerCurrency(e.ticker, p)))}">indisponible</td>`:(noVal?`<td style="color:var(--text2)" title="Cours indisponible : valeur non calculée">indisponible</td>`:`<td>${fmt(evalV,2)} €</td>`)):''}
       ${showCol('cours')?`<td id="cours-${String(e.ticker||'').replace(/[^a-zA-Z0-9]/g,'_')}" style="white-space:nowrap;text-align:center">${hasLive?`
         <div style="font-weight:700;color:var(--text)"${kyfVolTitle(p)?` title="${kyfEscAttrStale(kyfVolTitle(p))}"`:''}>${fmt(p.price,3)} ${getCurrencySymbol(p.currency||getTickerCurrency(e.ticker,p))}</div>
@@ -49064,7 +49069,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.18\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.19\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66527,7 +66532,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.2.18';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.2.19';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -75665,6 +75670,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.19 · 06/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Tableau des positions : les pastilles de compte (PEA, AV, PER…) sont alignées dans une même colonne, et la quantité s’affiche toujours avec 4 décimales au plus.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.18 · 06/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Carte communautaire : les actions affichent le vrai logo de l’entreprise.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.17 · 06/11/2026</div>
