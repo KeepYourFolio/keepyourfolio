@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.2.57
+  @version     : Beta 2.12.2.58
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -181,8 +181,9 @@
     // n'est récupéré pour relancer le calcul : on le refait une fois la page prête, pour que le montant et la courbe racontent la même chose.
     window.addEventListener('load', function(){ setTimeout(function(){ try{ renderKPIs(window._lp || {}); }catch(e){} try{ renderPfFullChart(); }catch(e){} }, 1200); });
     // Sortie de la démo : on retire le marqueur et on recharge (les vraies données n'ont jamais été touchées)
-    window.kyfDemoExit = function(){
+    window.kyfDemoExit = function(keepBack){
       window.name = (window.name || '').replace(/\[kyfDemo:\d+\]/g, '');
+      if(keepBack !== true) window.name = window.name.replace(/\[kyfBack:\d\]/g, '');
       try{ history.replaceState(null, '', location.pathname + location.search); }catch(e){}
       location.reload();
     };
@@ -198,7 +199,10 @@
       var bar = document.createElement('div'); bar.id = 'kyfDemoBar'; bar.setAttribute('role', 'status');
       var tx = document.createElement('span'); tx.textContent = 'Mode démo : données fictives, rien n’est enregistré.';
       var bt = document.createElement('button'); bt.type = 'button'; bt.textContent = 'Quitter la démo'; bt.onclick = function(){ window.kyfDemoExit(); };
-      bar.appendChild(tx); bar.appendChild(bt); document.body.appendChild(bar);
+      var mb = /\[kyfBack:(\d)\]/.exec(window.name || '');
+      bar.appendChild(tx);
+      if(mb){ var bb = document.createElement('button'); bb.type = 'button'; bb.textContent = '\u2190 Retour à l\u2019étape ' + mb[1]; bb.onclick = function(){ window.kyfDemoExit(true); }; bar.appendChild(bb); }   // retour au pop-up d'où l'on est parti
+      bar.appendChild(bt); document.body.appendChild(bar);
     });
   }catch(e){}
 })();
@@ -210,9 +214,10 @@ function kyfDemoAsk(){   // entrée permanente (barre latérale) : on prévient 
   go();
 }
 function kyfDemoStart(){
-  var sp = document.getElementById('kyfSplash');
+  var sp = document.getElementById('kyfSplash'), from = 0;
+  if(sp){ var w0 = document.getElementById('kyfWelcomeModal'); from = (w0 && getComputedStyle(w0).display !== 'none') ? 2 : 1; }   // lancée depuis l'étape 1 ou 2 : la barre de démo proposera d'y revenir
   if(sp){ sp.classList.add('dwait'); var w = document.getElementById('kyfWelcomeModal'); if(w) w.style.display = 'none'; }   // le fond neutre reste et annonce l'ouverture de la démo, au lieu de montrer l'application vide pendant le rechargement
-  var go = function(){ try{ window.name = (window.name || '').replace(/\[kyfDemo:\d+\]/g, '') + '[kyfDemo:' + Date.now() + ']'; location.reload(); }catch(e){} };
+  var go = function(){ try{ window.name = (window.name || '').replace(/\[kyfDemo:\d+\]/g, '').replace(/\[kyfBack:\d\]/g, '') + (from ? '[kyfBack:' + from + ']' : '') + '[kyfDemo:' + Date.now() + ']'; try{ history.replaceState(null, '', location.pathname + location.search + '#demo'); }catch(e){} location.reload(); }catch(e){} };
   if(sp) setTimeout(go, 280); else go();
 }
 </script>
@@ -5186,7 +5191,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 <script>
 (function(){
   var h = document.documentElement;
-  try{ if(/\[kyfDemo:\d+\]/.test(window.name || '')) h.classList.add('kyf-demo-load'); }catch(e){}   // 2.12.2.57 : ouverture de la démo, le fond neutre s'affiche pendant le chargement
+  try{ if(/\[kyfDemo:\d+\]/.test(window.name || '')) h.classList.add('kyf-demo-load'); else { var mb = /\[kyfBack:(\d)\]/.exec(window.name || ''); if(mb){ window.__kyfBackN = +mb[1]; window.name = window.name.replace(/\[kyfBack:\d\]/g, ''); } } }catch(e){}   // 2.12.2.57 : ouverture de la démo, le fond neutre s'affiche pendant le chargement
   try{ if(!localStorage.getItem('kyf-welcome-seen')) h.classList.add('kyf-first'); }catch(e){}   // 2.12.2.24 : tout premier lancement : l'écran d'accueil léger s'affiche tout de suite
   document.addEventListener('keydown', function(e){ if(e.key === 'Tab') h.classList.add('kyf-nav-clavier'); }, true);
   document.addEventListener('pointerdown', function(){ h.classList.remove('kyf-nav-clavier'); }, true);
@@ -5316,7 +5321,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.12.2.57</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.12.2.58</span></div>
       </div>
     </div>
   </div>
@@ -7701,7 +7706,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.2.57</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.2.58</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -21746,7 +21751,8 @@ function showPage(id,tab,fromPopstate){
   // retour arrière/avant (popstate, ci-dessous), le navigateur a déjà mis
   // à jour l'URL tout seul : on ne touche pas à l'historique pour éviter
   // de fausser la pile.
-  if(!fromPopstate && window.location.hash !== '#'+id) history.pushState(null,'','#'+id);
+  if(!fromPopstate && /\[kyfDemo:\d+\]/.test(window.name || '')){ if(window.location.hash !== '#demo') history.replaceState(null,'','#demo'); }   // en démo, l'adresse reste le vrai lien …/#demo
+  else if(!fromPopstate && window.location.hash !== '#'+id) history.pushState(null,'','#'+id);
   localStorage.setItem('kyf-last-page', id);
   // Fermer le popup flottant sidebar mini (si ouvert)
   document.querySelectorAll('.sb-group-children.mini-popup-open').forEach(c=>{
@@ -49327,7 +49333,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.57\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.58\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -49361,7 +49367,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
     // Pages actives APRÈS routing
     const activesAfter = [...document.querySelectorAll('.page.active')].map(p=>p.id);
-    if(!hash || !validPages.includes(hash)) history.replaceState(null,'','#'+lastPage);
+    if((!hash || !validPages.includes(hash)) && !/\[kyfDemo:\d+\]/.test(window.name || '')) history.replaceState(null,'','#'+lastPage);
     setSidebarActive(lastPage);
     // Fil d'Ariane et note de périmètre : sans cet appel, la page restaurée au chargement (rechargement, retour) restait sans titre jusqu'à un changement de page
     try{ kyfCrumb(lastPage); kyfScopeNote(lastPage); kyfBadDataNote(lastPage); }catch(e){}
@@ -49433,7 +49439,7 @@ document.addEventListener('DOMContentLoaded', function(){
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     const pg = document.getElementById('page-portfolio'); if(pg) pg.classList.add('active');
     setSidebarActive('portfolio');
-    if(!hash || !validPages.includes(hash)) history.replaceState(null,'','#portfolio');
+    if((!hash || !validPages.includes(hash)) && !/\[kyfDemo:\d+\]/.test(window.name || '')) history.replaceState(null,'','#portfolio');
   }
 
   // Attendre la fin de l'ouverture éventuelle du groupe sidebar (transition
@@ -66789,7 +66795,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.2.57';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.2.58';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -73289,6 +73295,7 @@ if(document.readyState === 'complete') setTimeout(kyfDemoLoadDone, 500); else wi
 document.addEventListener('DOMContentLoaded', function(){
   if(!localStorage.getItem(WELCOME_KEY)){
     if(!kyfSplashReady()) openAcfWelcome(); // démo AuCoffre.com : remplace l'écran BIENVENUE habituel
+    else if(window.__kyfBackN === 2){ window.__kyfBackN = 0; setTimeout(function(){ if(document.getElementById('kyfSplash')) kyfSplashNext(); }, 450); }   // retour de la démo : on rouvre directement l'étape 2
   } else if(!localStorage.getItem(ONBOARDING_CHOICE_KEY) && typeof kyfHasAnyAsset==='function' && !kyfHasAnyAsset()){
     // Utilisateur déjà existant (popup de bienvenue déjà vu avant l'ajout de
     // ce nouveau popup) mais toujours sans donnée - il n'aurait sinon jamais
@@ -76228,6 +76235,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.58 · 06/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Démo : l’adresse reste le vrai lien …/#demo pendant toute la démo (au lieu de #dashboard). Quand la démo est lancée depuis l’étape 1 ou 2 de l’accueil, la barre de démo propose « Retour à l’étape 1 » ou « Retour à l’étape 2 » et y ramène.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.57 · 06/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Ouverture de la démo : le fond neutre reste et affiche « Ouverture de la démo… » pendant le rechargement, au lieu de montrer l’application vide puis une page blanche. Il disparaît en fondu quand la démo est prête.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.56 · 06/11/2026</div>
