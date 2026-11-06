@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.2.59
+  @version     : Beta 2.12.2.60
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -182,6 +182,7 @@
     window.addEventListener('load', function(){ setTimeout(function(){ try{ renderKPIs(window._lp || {}); }catch(e){} try{ renderPfFullChart(); }catch(e){} }, 1200); });
     // Sortie de la démo : on retire le marqueur et on recharge (les vraies données n'ont jamais été touchées)
     window.kyfDemoExit = function(keepBack){
+      try{ if(window.opener && !window.opener.closed){ window.close(); var _fb = function(){ window.name = (window.name || '').replace(/\[kyfDemo:\d+\]/g, '').replace(/\[kyfBack:\d\]/g, ''); try{ history.replaceState(null, '', location.pathname + location.search); }catch(e){} location.reload(); }; setTimeout(_fb, 500); return; } }catch(e){}   // onglet de démo ouvert par KYF : on le ferme, l'onglet d'origine est resté intact
       window.name = (window.name || '').replace(/\[kyfDemo:\d+\]/g, '');
       if(keepBack !== true) window.name = window.name.replace(/\[kyfBack:\d\]/g, '');
       try{ history.replaceState(null, '', location.pathname + location.search); }catch(e){}
@@ -209,13 +210,18 @@
 function kyfDemoAsk(){   // entrée permanente (barre latérale) : on prévient avant de recharger l'onglet
   var go = function(){ kyfDemoStart(); };
   try{
-    if(typeof kyfAsk === 'function'){ kyfAsk('Ouvrir la démo ?\n\nUn portefeuille fictif complet s\'ouvre dans cet onglet. Vos vraies données ne sont ni lues ni modifiées. « Quitter la démo » vous ramène à vos données.', { ok:'Ouvrir la démo' }).then(function(ok){ if(ok) go(); }); return; }
+    if(typeof kyfAsk === 'function'){ kyfAsk('Ouvrir la démo ?\n\nUn portefeuille fictif complet s\'ouvre dans un nouvel onglet. Vos vraies données ne sont ni lues ni modifiées. Fermer l\'onglet de la démo vous ramène ici, sans rechargement.', { ok:'Ouvrir la démo' }).then(function(ok){ if(ok) go(); }); return; }
   }catch(e){}
   go();
 }
 function kyfDemoStart(){
   var sp = document.getElementById('kyfSplash'), from = 0;
   if(sp){ var w0 = document.getElementById('kyfWelcomeModal'); from = (w0 && getComputedStyle(w0).display !== 'none') ? 2 : 1; }   // lancée depuis l'étape 1 ou 2 : la barre de démo proposera d'y revenir
+  // 2.12.2.60 : la démo s'ouvre dans un NOUVEL onglet (marqueur passé par le nom de l'onglet) : cet onglet reste tel quel, on n'a plus à recharger le site en entrant ni en sortant
+  try{
+    var nt = window.open(location.href.split('#')[0] + '#demo', '[kyfDemo:' + Date.now() + ']' + (from ? '[kyfBack:' + from + ']' : ''));
+    if(nt){ try{ nt.focus(); }catch(e){} return; }
+  }catch(e){}
   if(sp){ sp.classList.add('dwait'); var w = document.getElementById('kyfWelcomeModal'); if(w) w.style.display = 'none'; }   // le fond neutre reste et annonce l'ouverture de la démo, au lieu de montrer l'application vide pendant le rechargement
   var go = function(){ try{ window.name = (window.name || '').replace(/\[kyfDemo:\d+\]/g, '').replace(/\[kyfBack:\d\]/g, '') + (from ? '[kyfBack:' + from + ']' : '') + '[kyfDemo:' + Date.now() + ']'; try{ history.replaceState(null, '', location.pathname + location.search + '#demo'); }catch(e){} location.reload(); }catch(e){} };
   if(sp) setTimeout(go, 280); else go();
@@ -5322,7 +5328,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.12.2.59</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.12.2.60</span></div>
       </div>
     </div>
   </div>
@@ -7707,7 +7713,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.2.59</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.2.60</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -49334,7 +49340,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.59\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.60\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66796,7 +66802,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.2.59';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.2.60';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -73088,8 +73094,8 @@ function kyfTourSteps(mode){
   if(mode === 'full'){
     const PI = [{ch:'Démarrer', page:'portfolio', pop:'import', big:true, open:function(){ openImportRelevé('etf'); }, act:function(){ importBackToStep1(); }, sel:'#importRelevéModal', t:'Importer un relevé (1/2)', x:'Voici la fenêtre qui s’ouvre. Choisissez d’abord le type d’import : Finary, Portfolio Performance, ETF et actions, ou votre Excel maison.'},
       {ch:'Démarrer', page:'portfolio', pop:'import', big:true, act:function(){ importGoToStep2('etf'); }, sel:'#importRelevéModal', t:'Importer un relevé (2/2)', x:'Puis indiquez la destination (PEA, PEA-PME ou CTO), le nom de votre courtier (obligatoire) et déposez le fichier. KYF repère le tableau, vous vérifiez les lignes lues, puis vous validez.'}], PA = [{ch:'Démarrer', page:'portfolio', pop:'add', big:true, open:function(){ openAddETF(); }, act:function(){ kyfTourTypeDemo(); }, sel:'#etfAddModal', t:'Ajouter un actif : la recherche', x:'Ici, nous avons tapé Air Liquide à votre place. Vous pouvez saisir le nom, ou mieux le ticker : c’est le code boursier (AI.PA pour Air Liquide, CW8.PA, AAPL…). Ticker inconnu ? Un champ d’ajout manuel est proposé sous les suggestions. Renseignez ensuite l’enveloppe, la quantité, le prix de revient (PRU) et la date.'},
-      {ch:'Démarrer', page:'portfolio', pop:'add', sel:'#etfTiWrap', t:'« À qui » : la famille', x:'Facultatif. Un repère pour savoir à qui appartient la ligne : vous, votre conjoint, un enfant ou la famille. Utile pour s’y retrouver quand le portefeuille est partagé.'},
-      {ch:'Démarrer', page:'portfolio', pop:'add', sel:'#etfGoogleCode', t:'Le code Google Finance', x:'Facultatif. C’est un cours de secours si Yahoo Finance est indisponible. Trouvez le code sur google.com/finance (ex. MC:EPA pour LVMH) et collez-le ici.'}];
+      {ch:'Démarrer', page:'portfolio', pop:'add', act:function(){ kyfTourClearDemo(); }, sel:'#etfTiWrap', t:'« À qui » : la famille', x:'Facultatif. Un repère pour savoir à qui appartient la ligne : vous, votre conjoint, un enfant ou la famille. Utile pour s’y retrouver quand le portefeuille est partagé.'},
+      {ch:'Démarrer', page:'portfolio', pop:'add', act:function(){ kyfTourClearDemo(); }, sel:'#etfGoogleCode', t:'Le code Google Finance', x:'Facultatif. C’est un cours de secours si Yahoo Finance est indisponible. Trouvez le code sur google.com/finance (ex. MC:EPA pour LVMH) et collez-le ici.'}];
     let p = defs.findIndex(function(d){ return d.t === 'Importer un relevé'; }); if(p >= 0) defs.splice(p + 1, 0, ...PI);          // pop-up d'import juste après le bouton
     p = defs.findIndex(function(d){ return d.t === 'Ajouter une position'; }); if(p >= 0) defs.splice(p + 1, 0, ...PA);          // pop-up d'ajout juste après le bouton          // visite complète : on ajoute 3 chapitres avant la dernière étape
     const S = function(ch, page, sel, t, x){ return {ch:ch, page:page, sel:sel, t:t, x:x}; };
@@ -73139,6 +73145,9 @@ function kyfTourFind(sel){          // 'FIRST:page-xxx' = premier grand bloc vis
   for(let k = 0; k < d.length; k++){ const r = d[k].getBoundingClientRect(); if(r.width > 200 && r.height > 30) return d[k]; }
   return null;
 }
+function kyfTourClearDemo(){          // quitte la démo de recherche : les suggestions ne masquent plus le reste du formulaire
+  try{ const i = document.getElementById('etfSearchInput'); if(i) i.value = ''; const sg = document.getElementById('etfSuggestions'); if(sg) sg.style.display = 'none'; }catch(e){}
+}
 function kyfTourTypeDemo(){          // saisit Air Liquide dans la recherche, comme le ferait l'utilisateur
   try{
     const i = document.getElementById('etfSearchInput'); if(!i) return;
@@ -73184,8 +73193,14 @@ function kyfTourShow(){
   if(_kt.page !== want){ _kt.page = want; try{ showPage(want, null); }catch(e){} kyfTourLater(400); return; }   // on se rend sur la page de l'étape, puis on la vise
   if((d.open || d.pop) && !_kt.opened){ kyfTourClosePops(); _kt.opened = true; try{ (d.open || (d.pop === 'import' ? function(){ openImportRelevé('etf'); } : openAddETF))(); }catch(e){} kyfTourFadeIn(); kyfTourLater(550); return; }   // pop-up réel : on l'ouvre, puis on le vise
   if(d.act && _kt.acted !== _kt.i){ _kt.acted = _kt.i; try{ d.act(); }catch(e){} kyfTourLater(450); return; }
-  const el = kyfTourFind(d.sel);
-  if(!el || el.getBoundingClientRect().width === 0){ if((_kt.tries = (_kt.tries || 0) + 1) <= 6 && d.page){ kyfTourLater(450); return; } _kt.tries = 0; kyfTourGo(_kt.dir || 1); return; }
+  let el = kyfTourFind(d.sel);
+  if(!el || el.getBoundingClientRect().width === 0){
+    _kt.tries = (_kt.tries || 0) + 1;
+    const fb = (d.page && d.page !== 'dashboard' && _kt.tries > 3) ? kyfTourFind('FIRST:page-' + d.page) : null;   // cible introuvable après un court délai : on montre la page plutôt que de sauter l'étape
+    if(fb && fb.getBoundingClientRect().width > 0) el = fb;
+    else if(_kt.tries <= 8 && d.page){ kyfTourLater(450); return; }
+    else { _kt.tries = 0; kyfTourGo(_kt.dir || 1); return; }
+  }
   _kt.tries = 0;
   el.scrollIntoView({block:'nearest', inline:'nearest'});
   const r = el.getBoundingClientRect(), pad = 6, spot = document.getElementById('ktSpot'), tip = document.getElementById('ktTip');
@@ -73206,7 +73221,7 @@ function kyfTourShow(){
   nx.innerHTML = last ? (_kt.then ? 'AJOUTER MA POSITION<span style="margin-left:7px;font-size:12px;line-height:1">&#8594;</span>' : 'TERMINER') : '\u00c9TAPE SUIVANTE<span style="margin-left:7px;font-size:12px;line-height:1">&#8594;</span>';
   const vw = window.innerWidth, vh = window.innerHeight, tw = Math.min(320, vw - 24), th = tip.offsetHeight || 190;   // th lu après le texte posé
   let left, top;
-  if(d.big){ left = r.right + 18; top = Math.max(12, Math.min(r.top + 20, vh - th - 12)); if(left + tw > vw - 12){ left = r.left - tw - 18; if(left < 12){ left = r.left + 24; top = Math.max(12, Math.min(r.bottom - th - 12, vh - th - 12)); } } }   // pop-up : bulle à côté
+  if(d.big){ left = r.right + 18; top = Math.max(12, Math.min(r.top + 20, vh - th - 12)); if(left + tw > vw - 12){ left = r.left - tw - 18; if(left < 12){ left = r.right - tw - 24; top = Math.max(12, Math.min(r.bottom - th - 72, vh - th - 12)); } } }   // pop-up : bulle à côté
   else if(d.side === 'right'){ left = r.right + 18; top = Math.max(12, Math.min(r.top + r.height/2 - th/2, vh - th - 12)); }     // menu de la barre latérale : bulle à droite, centrée sur l'entrée
   else if(r.width < 320 && r.height > vh * 0.5){ left = r.right + 18; top = Math.max(12, Math.min(r.top + 40, vh - th - 12)); }   // grande colonne (sidebar) : bulle à droite
   else { left = r.left + r.width/2 - tw/2; top = r.bottom + pad + 14; if(top + th > vh - 12) top = Math.max(12, r.top - pad - 14 - th); }
@@ -76236,6 +76251,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.60 · 06/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Démo : elle s’ouvre dans un nouvel onglet, donc plus de rechargement du site en entrant ni en quittant (fermer l’onglet de la démo suffit). Visite guidée : les suggestions de la démo de recherche ne cachent plus l’étape « À qui », la bulle se place dans la zone libre des pop-up d’import et d’ajout, et une étape dont la cible est introuvable montre la page au lieu d’être sautée.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.59 · 06/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Accueil : le grand encart « Essayez KYF en un clic » disparaît de l’étape 2, et le bouton « Essayer la démo » est plus visible sur l’étape 1 (fond teinté, icône, un peu plus grand).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.58 · 06/11/2026</div>
