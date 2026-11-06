@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.2.21
+  @version     : Beta 2.12.2.22
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7511,7 +7511,7 @@ html:not(.kyf-nav-clavier) .icon-btn:focus-visible,html:not(.kyf-nav-clavier) bu
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.2.21</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.2.22</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -16683,7 +16683,7 @@ async function sheetsSyncPullOAuth(opts){
     }catch(e){}
     const lastLoc = localStorage.getItem('kyf-sheets-last-sync');
     const dates = '\n\nSheet modifié le : ' + kyfSheetFmt_(remoteMax) + '\nDernière synchro de cet appareil : ' + kyfSheetFmt_(lastLoc ? kyfSheetMs_(lastLoc) : 0);
-    if(!(await kyfAsk('Restaurer depuis Google Sheets ?\nLes données du Sheet remplaceront celles de cet appareil. Ce qui n\'est pas dans le Sheet reste en place.' + dates))) return;
+    if(!(await kyfAsk('Restaurer depuis Google Sheets ?\nLes données de cet appareil seront supprimées puis remplacées par celles du Sheet (un point de restauration local est créé avant, au cas où). Rien n\'est supprimé si le Sheet ne peut pas être lu.' + dates))) return;
   }
   sheetsSyncSetStatus('⏳ Récupération...','var(--text3)');
 
@@ -16696,19 +16696,28 @@ async function sheetsSyncPullOAuth(opts){
     const r = await kyfFetchAuth(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/KYF_Data!A:D`,
       {}, { timeoutMs: 15000 });
     const d = await r.json();
+    if(d && d.error) throw new Error((d.error && d.error.message) || 'lecture du Sheet refusée');
     const rows = (d.values||[]).slice(1);
-    let count=0;
+    // 2.12.2.22 : on LIT et on contrôle tout le Sheet avant de toucher aux données locales
+    const entries = [];
     rows.forEach(row=>{
-      const [key,,json] = row; // col A=key, col B=json
-      // Note: col B is JSON (eventuellement compresse LZ-String), col C est le timestamp
+      const key = row[0];
       const jsonVal = kyfLZUnpack(row[1]);
       if(key && jsonVal && kyfSyncKeyOk(key)){
-        const _se = kyfShapeError(key, jsonVal);   // R04 : donnée illisible ignorée, la copie de cet appareil est gardée
+        const _se = kyfShapeError(key, jsonVal);   // R04 : donnée illisible ignorée
         if(_se){ console.warn('[KYF Import] Ignoré : ' + _se); return; }
-        localStorage.setItem(key, kyfSanitizeImported(key, jsonVal));
-        count++;
+        entries.push([key, kyfSanitizeImported(key, jsonVal), kyfSheetMs_(row[2])]);
       }
     });
+    if(entries.length < 3){ sheetsSyncSetStatus(kyfStatusIcon('err')+'Le Sheet est vide ou illisible : rien n\u2019a été supprimé sur cet appareil.','#ff4560'); return; }
+    try{ await kyfRpTake('avant-restauration-sheet'); }catch(e){}   // filet de sécurité : copie locale avant suppression
+    try{ showToast('Suppression des données locales en attente de restauration Google Sheet…'); }catch(e){}
+    // suppression des données synchronisées de cet appareil (liste fixe : ni les réglages de connexion Google, ni les instantanés, qui ont leur propre feuille)
+    Object.keys(localStorage).filter(k => SHEETS_SYNC_KEYS.includes(k) && !/^kyf-oauth-/.test(k)).forEach(k => localStorage.removeItem(k));
+    try{ localStorage.removeItem(KYF_QUEUE_KEY); localStorage.removeItem(KYF_TS_KEY); }catch(e){}   // plus de vieilles modifications en attente qui écraseraient le Sheet
+    let count=0; const _ts = {};
+    entries.forEach(([k, v, ms]) => { localStorage.setItem(k, v); count++; if(ms > 0) _ts[k] = ms; });
+    try{ kyfTsSave(_ts); }catch(e){}
     localStorage.setItem('kyf-sheets-last-sync', new Date().toISOString());
     kyfFlagIntradayRestoreIfNew_();
     sheetsSyncSetStatus(kyfStatusIcon('ok')+`${count} clés restaurées, rechargement...`,'var(--green)');
@@ -49079,7 +49088,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.21\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.22\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -66542,7 +66551,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.2.21';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.2.22';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -75688,6 +75697,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.22 · 06/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Restaurer depuis Google Sheets : le Sheet est lu et contrôlé d’abord, un point de restauration local est créé, puis les données de l’appareil sont supprimées (notification en bas) et remplacées par celles du Sheet. Plus de vieilles données ni de modifications en attente qui reviennent.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.21 · 06/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Menu : les points « nouveau » sont remplacés par une lueur dorée qui s’efface vers la droite (menu déplié, sous-menus, sections repliées) ou une lueur ronde derrière l’icône (menu replié).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.20 · 06/11/2026</div>
