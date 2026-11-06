@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.12.2.24
+  @version     : Beta 2.12.2.26
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5233,6 +5233,12 @@ html.kyf-first body{overflow:hidden}
 #kyfSplash .ksp-start,#kyfSplash.ready .ksp-wait{display:none}
 #kyfSplash.ready .ksp-start{display:inline-flex}
 #kyfSplash:not(.ready) .ksp-demo,#kyfSplash:not(.ready) .ksp-guide{opacity:.45;pointer-events:none}
+#kyfSplash .ksp-card{transition:opacity .32s cubic-bezier(.16,1,.3,1),transform .32s cubic-bezier(.16,1,.3,1)}
+#kyfSplash .ksp-card.out{opacity:0;transform:translateX(-28px) scale(.98)}
+@keyframes kspStep2In{from{opacity:0;transform:translateX(28px) scale(.98)}to{opacity:1;transform:none}}
+#kyfWelcomeModal.ksp-step2 .kyf-welcome-modal{animation:kspStep2In .42s cubic-bezier(.16,1,.3,1) both}
+#kyfWelcomeModal.ksp-step2 .kyf-welcome-intro,#kyfWelcomeModal.ksp-step2 .kyf-asset-line{display:none}
+@media (prefers-reduced-motion:reduce){#kyfSplash .ksp-card,#kyfWelcomeModal.ksp-step2 .kyf-welcome-modal{transition:none;animation:none}}
 @media (max-width:720px){#kyfSplash .ksp-left{display:none}#kyfSplash .ksp-right{padding:26px 22px}#kyfSplash .ksp-start,#kyfSplash .ksp-wait{margin-left:0}}
 @media (prefers-reduced-motion:reduce){#kyfSplash .ksp-bar b,#kyfSplash .ksp-wait svg{animation:none}}
 </style>
@@ -5252,7 +5258,7 @@ html.kyf-first body{overflow:hidden}
     </div>
     <div class="ksp-right">
       <div style="display:flex;flex-direction:column;gap:16px;align-items:flex-start">
-        <div class="ksp-badge">BIENVENUE DANS KYF</div>
+        <div class="ksp-badge">ÉTAPE 1 SUR 2</div>
         <h1>Votre patrimoine.<br><span>Votre vision. Vos données.</span></h1>
         <p class="ksp-intro">KeepYourFolio est un tableau de bord patrimonial gratuit conçu pour centraliser et suivre votre patrimoine dans un seul espace.</p>
         <div class="ksp-assets"><span>Investissements</span><i>·</i><span>Épargne</span><i>·</i><span>Crypto</span><i>·</i><span>Immobilier</span><i>·</i><span>Métaux précieux</span><i>·</i><span>SCPI</span></div>
@@ -5263,7 +5269,7 @@ html.kyf-first body{overflow:hidden}
           <button type="button" class="ksp-demo" onclick="kyfSplashGo('demo')">ESSAYER LA DÉMO</button>
           <button type="button" class="ksp-guide" onclick="kyfSplashGo('guide')">Découvrir le guide</button>
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
-          <button type="button" class="ksp-start" onclick="kyfSplashGo('start')">COMMENCER AVEC KYF<span>&#8594;</span></button>
+          <button type="button" class="ksp-start" onclick="kyfSplashNext()">COMMENCER AVEC KYF<span>&#8594;</span></button>
         </div>
         <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span></div>
       </div>
@@ -7592,7 +7598,7 @@ html.kyf-first body{overflow:hidden}
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.12.2.24</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.12.2.26</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -49210,7 +49216,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.24\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.12.2.26\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -61725,7 +61731,7 @@ function contactDownloadCopy(){
       </div>
       <div>
         <strong>Conçu pour ordinateur</strong>
-        <p>KYF n'est pas encore optimisé pour smartphone et tablette : l'affichage peut y être incomplet. Pour la meilleure expérience, utilisez un ordinateur. Une version mobile est prévue.</p>
+        <p>KYF n'est pas encore optimisé pour smartphone et tablette : l'affichage peut y être incomplet. Pour la meilleure expérience, utilisez un ordinateur. Une version mobile arrive très prochainement en bêta.</p>
       </div>
     </section>
 
@@ -66673,7 +66679,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.12.2.24';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.12.2.26';   // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -72840,6 +72846,7 @@ document.addEventListener('click', e => {
 function closeKYFWelcome(){
   const modal = document.getElementById('kyfWelcomeModal');
   if(!modal) return;
+  setTimeout(kyfSplashClose, 180);
   modal.style.opacity = '0';
   setTimeout(function(){ modal.style.display = 'none'; }, 180);
   document.body.style.overflow = '';
@@ -72878,6 +72885,7 @@ function openAcfWelcome(){
 }
 function closeAcfWelcomeAndGoToOr(){
   const modal = document.getElementById('kyfWelcomeModal');
+  setTimeout(kyfSplashClose, 180);
   modal.style.opacity = '0';
   setTimeout(function(){ modal.style.display = 'none'; }, 180);
   document.body.style.overflow = '';
@@ -72906,6 +72914,17 @@ function kyfSplashGo(a){
   localStorage.setItem(WELCOME_KEY, '1');
   if(a === 'guide'){ if(typeof openGuide === 'function') openGuide(); return; }
   setTimeout(openOnboardingChoice, 250);   // « Par quoi voulez-vous commencer ? », comme avant
+}
+// 2.12.2.25 : « Commencer » ouvre le pop-up de bienvenue complet, sur le même fond neutre (la carte K2 disparaît, le fond reste)
+function kyfSplashNext(){
+  const sp = document.getElementById('kyfSplash');
+  const c = sp && sp.querySelector('.ksp-card');
+  const wm = document.getElementById('kyfWelcomeModal');
+  const b = wm && wm.querySelector('.kyf-welcome-badge');
+  if(b) b.textContent = 'ÉTAPE 2 SUR 2';
+  if(wm) wm.classList.add('ksp-step2');
+  if(c) c.classList.add('out');
+  setTimeout(function(){ if(c) c.style.display = 'none'; openAcfWelcome(); }, 300);   // la carte 1 glisse, puis la page 2 arrive
 }
 document.addEventListener('DOMContentLoaded', function(){
   if(!localStorage.getItem(WELCOME_KEY)){
@@ -75840,6 +75859,10 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.26 · 06/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Premier lancement : accueil en deux étapes (« Étape 1 sur 2 » puis « Étape 2 sur 2 ») avec une transition animée entre les deux, sans répéter le même texte de bienvenue. L’encart « Conçu pour ordinateur » annonce la version mobile en bêta très prochainement.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.25 · 06/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Premier lancement : le bouton Commencer ouvre de nouveau le pop-up de bienvenue complet, sur le même fond neutre.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.24 · 06/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Premier lancement : un écran d’accueil léger s’affiche tout de suite, sans attendre que toute l’application soit chargée (barre de chargement, puis boutons Essayer la démo, Guide et Commencer). Aucun changement pour les utilisateurs déjà installés.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.12.2.23 · 06/11/2026</div>
