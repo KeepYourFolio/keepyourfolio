@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.33
+  @version     : Beta 2.13.0.35
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5260,7 +5260,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.13.0.33</div>
+  <div class="kl-ver">Beta 2.13.0.35</div>
 </div>
 <script>
 (function(){
@@ -5422,7 +5422,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.33</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.35</span></div>
       </div>
     </div>
   </div>
@@ -7832,7 +7832,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.33</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.35</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -12988,6 +12988,7 @@ function ctNorm(v){ return String(v || '').toLowerCase().replace(/[\u2019\u2018`
 let _ctDomMap = null;
 function ctDomaineDe(nom){
   const n = ctNorm(nom); if(!n) return '';
+  if(typeof LIV_BANK_DOMAINS === 'undefined') return ''; // 2.13.0.35 : table définie plus loin, pas encore chargée au premier rendu
   if(!_ctDomMap || _ctDomMap.n !== Object.keys(LIV_BANK_DOMAINS).length){ _ctDomMap = { n: Object.keys(LIV_BANK_DOMAINS).length, m: {} }; Object.keys(LIV_BANK_DOMAINS).forEach(k => { _ctDomMap.m[ctNorm(k)] = LIV_BANK_DOMAINS[k]; }); }
   const m = _ctDomMap.m;
   if(Object.prototype.hasOwnProperty.call(m, n)) return m[n];
@@ -50037,6 +50038,26 @@ kyfDBLoad();
 // 2.13.0.32 : ces deux constantes sont déclarées ICI, avant le premier appel (elles l'étaient plus bas : « Cannot access 'KYF_MACRO_CACHE' before initialization »)
 const KYF_MACRO_CACHE = 'kyf-macro-cache';
 const KYF_MACRO_TTL   = 5 * 60 * 1000; // 5 min - la source côté script se met à jour à l'heure/au mois, mais on vérifie plus souvent pour récupérer les nouvelles valeurs sous 5 min max
+// 2.13.0.35 : déclarées ici aussi (TDZ si le script s'arrêtait avant leur ancienne place)
+const KYF_MACRO_DEFAULT = {
+  rows: [
+    { key:'eurUsd',  label:'EUR / USD',                value:1.14134, decimals:5, suffix:'', group:'change' },
+    { key:'usdEur',  label:'USD / EUR',                value:0.87615, decimals:5, suffix:'', group:'change' },
+    { key:'inflFr',  label:'Inflation France',         value:0.7,     decimals:2, suffix:'%', group:'monthly' },
+    { key:'inflZe',  label:'Inflation Zone Euro',      value:2,       decimals:2, suffix:'%', group:'monthly' },
+    { key:'inflUs',  label:'Inflation USA',            value:4.17,    decimals:2, suffix:'%', group:'monthly' },
+    { key:'tauxBce', label:'Taux directeur BCE',       value:2.25,    decimals:2, suffix:'%', group:'monthly' },
+    { key:'tauxFed', label:'Taux directeur Fed (USA)', value:3.63,    decimals:2, suffix:'%', group:'monthly' },
+    { key:'brent',     label:'Brent (USD / baril)',      value:95.13,   decimals:2, suffix:'',  group:'hourly' },
+    { key:'or',        label:'Or (once en USD)',         value:4354.80, decimals:2, suffix:'',  group:'hourly' },
+    { key:'argent',    label:'Argent (once en USD)',     value:64.23,   decimals:2, suffix:'',  group:'hourly' },
+    { key:'platine',   label:'Platine (once en USD)',    value:1723.70, decimals:2, suffix:'',  group:'hourly' },
+    { key:'palladium', label:'Palladium (once en USD)',  value:1313.00, decimals:2, suffix:'',  group:'hourly' }
+  ],
+  lastUpdate: new Date().toISOString().slice(0,10)
+};
+const KYF_PER_CACHE = 'kyf-per-cache', KYF_PER_TTL = 24 * 3600 * 1000;
+const KYF_AV_CACHE = 'kyf-av-cache';
 if(typeof kyfMacroLoad === 'function'){
   kyfMacroLoad();
   setTimeout(kyfPerLoad, 1500);
@@ -50049,7 +50070,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.33\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.35\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -51481,8 +51502,8 @@ function scheduleCatchUp(){
 }
 setTimeout(scheduleCatchUp, 5000);
 // ETF table renders with static evalBase until prices arrive
-renderETFTable({});
-startAutoRefresh();
+try{ renderETFTable({}); }catch(e){ console.warn('[KYF] Rendu initial renderETFTable:', e.message); }
+try{ startAutoRefresh(); }catch(e){ console.warn('[KYF] startAutoRefresh:', e.message); }
 // KYF: setInterval fetchIndicesHistory supprimé
 // KYF: setInterval fetchAlertesGAS supprimé
 // KYF: setInterval fetchPositionsGAS supprimé
@@ -51499,23 +51520,7 @@ setInterval(updateMarketIndicator, 60*1000);
 
 // ── Sélecteur indices ─────────────────────────────────────────
 // ── Données macro (EUR/USD, inflation, taux directeurs, Or, Brent) ──────────⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠
-const KYF_MACRO_DEFAULT = {
-  rows: [
-    { key:'eurUsd',  label:'EUR / USD',                value:1.14134, decimals:5, suffix:'', group:'change' },
-    { key:'usdEur',  label:'USD / EUR',                value:0.87615, decimals:5, suffix:'', group:'change' },
-    { key:'inflFr',  label:'Inflation France',         value:0.7,     decimals:2, suffix:'%', group:'monthly' },
-    { key:'inflZe',  label:'Inflation Zone Euro',      value:2,       decimals:2, suffix:'%', group:'monthly' },
-    { key:'inflUs',  label:'Inflation USA',            value:4.17,    decimals:2, suffix:'%', group:'monthly' },
-    { key:'tauxBce', label:'Taux directeur BCE',       value:2.25,    decimals:2, suffix:'%', group:'monthly' },
-    { key:'tauxFed', label:'Taux directeur Fed (USA)', value:3.63,    decimals:2, suffix:'%', group:'monthly' },
-    { key:'brent',     label:'Brent (USD / baril)',      value:95.13,   decimals:2, suffix:'',  group:'hourly' },
-    { key:'or',        label:'Or (once en USD)',         value:4354.80, decimals:2, suffix:'',  group:'hourly' },
-    { key:'argent',    label:'Argent (once en USD)',     value:64.23,   decimals:2, suffix:'',  group:'hourly' },
-    { key:'platine',   label:'Platine (once en USD)',    value:1723.70, decimals:2, suffix:'',  group:'hourly' },
-    { key:'palladium', label:'Palladium (once en USD)',  value:1313.00, decimals:2, suffix:'',  group:'hourly' }
-  ],
-  lastUpdate: new Date().toISOString().slice(0,10)
-};
+
 // Signature de structure : recalculée à partir des clés de KYF_MACRO_DEFAULT.
 // Si une donnée sauvegardée localement (kyf-macro-data / cache fetch) ne porte pas
 // cette même signature, elle provient d'une version antérieure du code (ex. avant
@@ -51547,7 +51552,6 @@ function macroSave(d){ localStorage.setItem('kyf-macro-data', JSON.stringify(d))
 // Cache 24 h ; si le script ne répond pas ou renvoie autre chose, les données intégrées restent en place.
 // Adresse du script Google du comparateur (déploiement « Application Web »). Vide : on interroge le script principal KYF_IDX_URL.
 const KYF_PER_URL = 'https://script.google.com/macros/s/AKfycbzLBu0NZGRg-9j4wgVWCm07ONBb0Z4U3Y70rGJd7h-qB1xD2vH1TmXoiqsT6d5LNOef/exec';
-const KYF_PER_CACHE = 'kyf-per-cache', KYF_PER_TTL = 24 * 3600 * 1000;
 function kyfPerKey(n){ return String(n||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,''); }
 function kyfPerApply(rows){
   if(!Array.isArray(rows) || rows.length < 20) return 0;   // un tableau trop court = scrap cassé : on n'y touche pas
@@ -51584,7 +51588,6 @@ async function kyfPerLoad(){
     }
   }catch(e){ console.warn('[KYF PER] mise à jour impossible, données intégrées conservées :', e && e.message); }
 }
-const KYF_AV_CACHE = 'kyf-av-cache';
 function kyfAvApply(rows){
   if(!Array.isArray(rows) || rows.length < 50) return 0;
   const avs = AV_COMPARATEUR_DATA.filter(c => c.type==='av' || !c.type);
@@ -56518,6 +56521,40 @@ const KYF_STORAGE_KEYS = [
   'kyf-sidebar-groups',
   'kyf-avis-snooze',
   'kyf-oauth-first-seen',
+  // 2.13.0.34 : réglages d'apparence et de menus oubliés par l'export et les sauvegardes (la synchronisation Google Sheets les reprend : elle suit l'union des listes).
+  // Thème choisi à la main, gabarit et réglages de l'éditeur, menus masqués de la barre latérale, ordre des cartes KPI de chaque rangée, hauteur des graphiques.
+  'pea-theme-manual',
+  'pea-preset',
+  'pea-hover-color',
+  'pea-hm-cell',
+  'pea-ed-fontsize',
+  'pea-editor-bg',
+  'kyf-sidebar-hidden',
+  'kyf-sidebar-hidden-ts',
+  'kyf-rah-h',
+  'kyf-chart-h-pfFullWrap',
+  'kyf-chart-h-intradayWrap',
+  'kyf-chart-h-allTimeWrap',
+  'kyf-chart-h-annualWrap',
+  'pea-kpi-order-alertes',
+  'pea-kpi-order-autres',
+  'pea-kpi-order-av',
+  'pea-kpi-order-bilan',
+  'pea-kpi-order-credit',
+  'pea-kpi-order-crypto',
+  'pea-kpi-order-dividendes',
+  'pea-kpi-order-etranger',
+  'pea-kpi-order-frais',
+  'pea-kpi-order-immo',
+  'pea-kpi-order-livrets',
+  'pea-kpi-order-or',
+  'pea-kpi-order-pee',
+  'pea-kpi-order-portefeuille',
+  'pea-kpi-order-portfolio',
+  'pea-kpi-order-profil',
+  'pea-kpi-order-revenus',
+  'pea-kpi-order-scpi',
+  'pea-kpi-order-transactions',
 ];
 // Préfixes de clés dynamiques (une clé par date) : mêmes familles que
 // KYF_WATCHED_PREFIXES plus haut (historique de patrimoine + journal
@@ -67461,7 +67498,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.13.0.33';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de Keep Your Folio
+const KYF_GUIDE_POUR = '2.13.0.35';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de Keep Your Folio
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -69771,7 +69808,7 @@ function kyfScReset(){
   kyfScRender();
 }
 // ── Profil d'apparence : export / import en fichier ──
-const KYF_AP_KEYS = 'kyf-views-v1,kyf-rituals-v1,kyf-columns-v1,kyf-display-cur,kyf-widgets-v1,pea-style-v2,pea-theme,pea-theme-manual,pea-font,pea-accent-,pea-preset,pea-nav-order,pea-kpi-order,pea-kpi-order-,kyf-card-layout-v2,kyf-card-hidden-v1,kyf-shortcuts-v1,kyf-views-v1,kyf-rituals-v1,kyf-columns-v1,kyf-display-cur,kyf-widgets-v1,pea-hover-color,pea-hm-cell,pea-ed-fontsize,pea-editor-bg,kyf-sidebar-mini,kyf-sidebar-groups,kyf-sidebar-order-,kyf-idx-band-mode,kyf-indices-sel,kyf-chart-h-,kyf-rah-h'.split(',');
+const KYF_AP_KEYS = 'kyf-views-v1,kyf-rituals-v1,kyf-columns-v1,kyf-display-cur,kyf-widgets-v1,pea-style-v2,pea-theme,pea-theme-manual,pea-font,pea-accent-,pea-preset,pea-nav-order,pea-kpi-order,pea-kpi-order-,kyf-card-layout-v2,kyf-card-hidden-v1,kyf-shortcuts-v1,kyf-views-v1,kyf-rituals-v1,kyf-columns-v1,kyf-display-cur,kyf-widgets-v1,pea-hover-color,pea-hm-cell,pea-ed-fontsize,pea-editor-bg,kyf-sidebar-mini,kyf-sidebar-groups,kyf-sidebar-hidden,kyf-sidebar-order-,kyf-idx-band-mode,kyf-indices-sel,kyf-chart-h-,kyf-rah-h'.split(',');
 function kyfApMatch(k){ return k !== 'pea-accent-migrated-v1' && KYF_AP_KEYS.some(p => p.slice(-1) === '-' ? k.indexOf(p) === 0 : k === p); }
 // Validation stricte (liste blanche) de chaque réglage importé : un profil peut venir d'un tiers, il ne doit jamais pouvoir
 // injecter du CSS libre, du HTML, une URL externe ou une clé d'objet piégée. Toute clé ou valeur inconnue est ignorée.
@@ -69845,6 +69882,7 @@ function kyfApClean(k, v){
     case 'kyf-rah-h': return kyfApNum(v, 3000) ? v : null;
     case 'kyf-idx-band-mode': return /^[a-z0-9]{1,8}$/.test(v) ? v : null;
     case 'pea-nav-order': case 'pea-kpi-order': return kyfApJson(v, o => kyfApIdArr(o, 100));
+    case 'kyf-sidebar-hidden': return kyfApJson(v, o => kyfApIdArr(o, 100));
     case 'kyf-indices-sel': return kyfApJson(v, o => (Array.isArray(o) && o.length <= 100 && o.every(n => typeof n === 'string' && /^[A-Za-z0-9 &.\/()+-]{1,40}$/.test(n))) ? o : null);
     case 'kyf-card-layout-v2': return kyfApJson(v, kyfApLayout);
     case 'kyf-card-hidden-v1': return kyfApJson(v, kyfApHidden);
@@ -76960,6 +76998,10 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.35 · 07/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Correctif de démarrage : un rendu initial du tableau des positions pouvait s'interrompre (table des logos de courtiers pas encore chargée) et empêcher les mises à jour Macro, PER et notes AV (avertissements « avant initialisation »). Le rendu est protégé et les constantes sont déclarées plus tôt.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.34 · 07/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Sauvegarde : l'export, la sauvegarde sécurisée, GitHub, WebDAV, le dossier local et Google Sheets reprennent maintenant les menus masqués de la barre latérale, le fait d'avoir choisi son thème à la main, l'ordre des cartes KPI de chaque page, les réglages de l'éditeur (couleur de survol, police, fond, carte de chaleur, gabarit) et la hauteur des graphiques. Le profil d'apparence en fichier et la réinitialisation de l'apparence couvrent aussi les menus masqués.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.33 · 07/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Menu latéral sur écran court (petit PC) : le pied du menu n'est plus deux icônes perdues au milieu du vide, mais une rangée de deux boutons à bord fin (essayer la démo, contact et bugs), avec survol doré. Sur grand écran, les trois lignes (version, démo, contact) ne changent pas.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.32 · 07/11/2026</div>
@@ -83651,7 +83693,7 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
 
         <label class="kyf-reset-row" style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer">
           <input type="checkbox" class="kyf-reset-check" data-module="prefs"
-            data-keys="pea-style-v2,pea-theme,pea-theme-manual,pea-font,pea-accent-,pea-accent-dark,pea-accent-light,pea-preset,pea-nav-order,pea-kpi-order,pea-kpi-order-,kyf-card-layout-v2,kyf-card-hidden-v1,kyf-shortcuts-v1,kyf-views-v1,kyf-rituals-v1,kyf-columns-v1,kyf-display-cur,kyf-widgets-v1,pea-hover-color,pea-hm-cell,pea-ed-fontsize,pea-editor-bg,kyf-sidebar-mini,kyf-sidebar-groups,kyf-idx-band-mode,kyf-indices-sel,kyf-chart-h-,kyf-rah-h"
+            data-keys="pea-style-v2,pea-theme,pea-theme-manual,pea-font,pea-accent-,pea-accent-dark,pea-accent-light,pea-preset,pea-nav-order,pea-kpi-order,pea-kpi-order-,kyf-card-layout-v2,kyf-card-hidden-v1,kyf-shortcuts-v1,kyf-views-v1,kyf-rituals-v1,kyf-columns-v1,kyf-display-cur,kyf-widgets-v1,pea-hover-color,pea-hm-cell,pea-ed-fontsize,pea-editor-bg,kyf-sidebar-mini,kyf-sidebar-groups,kyf-sidebar-hidden,kyf-sidebar-hidden-ts,kyf-idx-band-mode,kyf-indices-sel,kyf-chart-h-,kyf-rah-h"
             style="accent-color:var(--accent);flex-shrink:0">
           <div>
             <div style="font-size:12px;font-weight:700;color:var(--text2)">PRÉFÉRENCES UI</div>
