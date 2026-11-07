@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.06
+  @version     : Beta 2.13.0.09
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -3471,7 +3471,8 @@ html.kyf-boot #sidebar, html.kyf-boot #mainContent, html.kyf-boot #mainContent .
 /* ── GRID ── */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
 /* Zones géographiques : la largeur de chaque cadre suit son nombre de tuiles (variable --w posée par kyfGeoTiles) */
-.geo-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:stretch;grid-template-rows:minmax(268px,auto) minmax(372px,auto);margin-bottom:14px}
+.geo-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:stretch;grid-template-rows:minmax(268px,auto) auto;margin-bottom:14px}
+.geo-row>.geo-off{display:none}   /* cadre sans donnée : pas de cadre */
 .geo-row>.card{min-width:0;max-width:100%;overflow-y:auto}
 .geo-row>.geo-pays{overflow:visible} /* TOP PAYS : pas d'ascenseur, la ligne s'agrandit selon les tuiles */
 .geo-row>.geo-zone{align-self:start;height:268px} /* PAR ZONE reste indépendant : garde sa hauteur quand « Autres pays » déplie TOP PAYS */
@@ -3525,6 +3526,14 @@ html.kyf-boot #sidebar, html.kyf-boot #mainContent, html.kyf-boot #mainContent .
 .kyf-gd-ghost:active{background:#f0b429;border-color:#f0b429;color:#000}
 @media(max-width:1000px){.kyf-gd-row{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) 120px 36px}.kyf-gd-row>:nth-child(2),.kyf-gd-row>:nth-child(4),.kyf-gd-row>:nth-child(5){display:none}.kyf-gd-det{grid-template-columns:1fr}}
 .geo-com{flex:1 1 380px;min-width:320px}
+/* 2.13.0.09 : tableau DÉTAIL PAR POSITION lisible sur téléphone (position, valeur, flèche) et pastille VOUS L'AVEZ plus compacte */
+@media(max-width:600px){
+  .kyf-gd-row{grid-template-columns:minmax(0,1fr) auto 36px;gap:10px;padding:12px 4px}
+  .kyf-gd-row>:nth-child(6){display:none}
+  .kyf-gd-row>:nth-child(3){text-align:right}
+  #geoDetTabs .av-tab{padding:8px 10px}
+  .kyf-com-mine{font-size:8px;padding:3px 6px}
+}
 @media(max-width:900px){.geo-row{grid-template-columns:minmax(0,1fr);grid-template-rows:none}.geo-row>.card{max-height:420px}.geo-com{flex:1 1 100%}}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px}
 .g13{display:grid;grid-template-columns:1fr 3fr;gap:14px;margin-bottom:14px}
@@ -5328,7 +5337,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.06</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.09</span></div>
       </div>
     </div>
   </div>
@@ -5366,6 +5375,17 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
 #kyfSplash .ksp-geco span{display:block;font-size:12px;line-height:1.6;color:#a3a3a3}
 #kyfSplash .ksp-c3 .ksp-geco{max-width:none;margin-top:14px;padding:10px 14px}
 @media (max-height:760px){#kyfSplash .ksp-c3 .ksp-geco span{display:none}}
+</style>
+<style>
+/* 2.13.0.08 : barres de couleur en dégradé franc (lisible aussi en thème clair) et liste communauté sur deux colonnes */
+.kyf-bar{height:8px;border-radius:4px;background:var(--border2);overflow:hidden;margin-top:6px}
+.kyf-bar-f{height:100%;border-radius:4px;background:linear-gradient(90deg,#d97706,#f0b429 60%,#ffd24d);transition:width .6s}
+.kyf-com-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 40px}
+.kyf-com-row{display:flex;align-items:center;gap:12px;min-width:0}
+.kyf-com-rk{width:20px;font-size:12px;font-weight:800;color:var(--text3);flex-shrink:0}
+.kyf-com-rk.top{color:var(--accent)}
+.kyf-com-mine{font-size:9px;font-weight:800;letter-spacing:.6px;color:#10b981;border:1px solid rgba(16,185,129,.55);border-radius:999px;padding:4px 8px;white-space:nowrap;flex-shrink:0}
+@media (max-width:900px){.kyf-com-grid{grid-template-columns:minmax(0,1fr)}}
 </style>
 <style>
 /* 2.12.2.84 : fluidité de la visite guidée et des fenêtres Importer un relevé / Ajouter un actif. Le flou de verre des cartes, du menu et de la barre du haut est recalculé à chaque image pendant que la fenêtre apparaît ou que la bulle se déplace : on le coupe tant qu'une fenêtre ou la visite est ouverte (le fond est de toute façon assombri). */
@@ -7726,7 +7746,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.06</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.09</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -14240,22 +14260,28 @@ document.addEventListener('keydown', (e)=>{
       <div id="geoTopBody"></div>
     </div>
   </div>
-  <div class="card" id="geoComCard" style="display:none">
+  <div class="card" id="geoDetCard">
+    <div class="card-title" id="geoDetHead" role="button" tabindex="0" aria-expanded="true" aria-controls="geoDetBody" onclick="kyfGeoDetToggle()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();kyfGeoDetToggle()}" style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;cursor:pointer;user-select:none;outline:none">
+      <span style="display:inline-flex;align-items:center;gap:6px">DÉTAIL PAR POSITION ET COMMUNAUTÉ<button type="button" class="ct-ibtn" id="geoNewBtn" onclick="event.stopPropagation();kyfGeoNewToggle()" onkeydown="event.stopPropagation()" aria-expanded="false" aria-controls="geoNewNote" title="Derniers secteurs et pays ajoutés" aria-label="Derniers secteurs et pays ajoutés"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></button></span>
+      <span style="display:inline-flex;gap:8px;flex-wrap:wrap;align-items:center"><a onclick="event.stopPropagation()" href="https://docs.google.com/spreadsheets/d/1ujkiS_PhrJShCL9gwRyr7qnIWRgKuHXczR0YxOtnw18/edit?usp=sharing" target="_blank" rel="noopener noreferrer" class="kyf-geo-mod" title="Ouvrir la base communautaire (Google Sheets)" style="display:inline-flex;align-items:center;gap:5px;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:6px 12px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);text-decoration:none;letter-spacing:.5px">BASE COMMUNAUTAIRE <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><button type="button" onclick="event.stopPropagation();kyfGeoOpen()" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:6px 12px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;transition:background .2s,box-shadow .2s,transform .2s;letter-spacing:.5px" onmouseover="this.style.background='#f0b429';this.style.color='#000';this.style.boxShadow='0 2px 8px rgba(240,180,41,0.35)';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)';this.style.boxShadow='none';this.style.transform='translateY(0)'">REMPLIR LES ETF</button><span id="geoDetChev" style="display:flex;align-items:center;justify-content:center;box-sizing:border-box;width:34px;height:34px;border:1px solid var(--border2);border-radius:8px;color:var(--text3);transition:transform .25s ease,color .15s,background .15s;transform:rotate(0deg);flex-shrink:0" onmouseover="this.style.color='var(--accent)';this.style.background=kyfChevronHoverBg()" onmouseout="this.style.color='var(--text3)';this.style.background='transparent'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></span>
+    </div>
+    <div id="geoDetBody">
+    <div class="av-tabs" id="geoDetTabs" role="tablist" style="display:none;margin:12px 0 14px">
+      <button type="button" class="av-tab on" id="geoTabPos" role="tab" aria-selected="true" onclick="kyfGeoDetTab('pos')">MES POSITIONS<span class="n" id="geoTabPosN">0</span></button>
+      <button type="button" class="av-tab" id="geoTabCom" role="tab" aria-selected="false" onclick="kyfGeoDetTab('com')">COMMUNAUTÉ<span class="n" id="geoTabComN">0</span></button>
+    </div>
+    <div id="geoPanePos">
+    <div id="geoNewNote" style="display:none;margin:10px 0 0;padding:10px 14px;border-radius:8px;background:rgba(77,159,255,0.07);border:1px solid rgba(77,159,255,0.2);width:fit-content;max-width:100%;box-sizing:border-box;font-family:'Inter',sans-serif;font-size:10px;font-weight:400;letter-spacing:0;color:var(--text2);line-height:1.7"></div>
+    <div style="font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);line-height:1.7;margin-bottom:10px;margin-top:10px">Les ETF n'ont ni pays ni secteurs connus : saisissez leur répartition avec MODIFIER (fiche de l'émetteur). Une action prend par défaut le pays de son ISIN, modifiable aussi.</div>
+    <div id="geoTable" style="overflow-x:auto"></div>
+    </div>
+    <div id="geoComCard" data-on="" style="display:none">
     <div class="card-title" id="geoComTitle" style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
       <span style="display:inline-flex;align-items:center;gap:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><circle cx="17" cy="9" r="2.4"/><path d="M17 14.5c2.4 0 4 1.7 4 4.5"/></svg>LES PLUS DÉTENUS PAR LA COMMUNAUTÉ</span>
       <span id="geoComCount" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:400;color:var(--text3);letter-spacing:0"></span>
     </div>
     <div id="geoComBody"></div>
   </div>
-  <div class="card">
-    <div class="card-title" id="geoDetHead" role="button" tabindex="0" aria-expanded="true" aria-controls="geoDetBody" onclick="kyfGeoDetToggle()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();kyfGeoDetToggle()}" style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;cursor:pointer;user-select:none;outline:none">
-      <span style="display:inline-flex;align-items:center;gap:6px">DÉTAIL PAR POSITION ET COMMUNAUTÉ<button type="button" class="ct-ibtn" id="geoNewBtn" onclick="event.stopPropagation();kyfGeoNewToggle()" onkeydown="event.stopPropagation()" aria-expanded="false" aria-controls="geoNewNote" title="Derniers secteurs et pays ajoutés" aria-label="Derniers secteurs et pays ajoutés"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></button></span>
-      <span style="display:inline-flex;gap:8px;flex-wrap:wrap;align-items:center"><a onclick="event.stopPropagation()" href="https://docs.google.com/spreadsheets/d/1ujkiS_PhrJShCL9gwRyr7qnIWRgKuHXczR0YxOtnw18/edit?usp=sharing" target="_blank" rel="noopener noreferrer" class="kyf-geo-mod" title="Ouvrir la base communautaire (Google Sheets)" style="display:inline-flex;align-items:center;gap:5px;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:6px 12px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);text-decoration:none;letter-spacing:.5px">BASE COMMUNAUTAIRE <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><button type="button" onclick="event.stopPropagation();kyfGeoOpen()" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:6px 12px;border-radius:7px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;transition:background .2s,box-shadow .2s,transform .2s;letter-spacing:.5px" onmouseover="this.style.background='#f0b429';this.style.color='#000';this.style.boxShadow='0 2px 8px rgba(240,180,41,0.35)';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)';this.style.boxShadow='none';this.style.transform='translateY(0)'">REMPLIR LES ETF</button><span id="geoDetChev" style="display:flex;align-items:center;justify-content:center;box-sizing:border-box;width:34px;height:34px;border:1px solid var(--border2);border-radius:8px;color:var(--text3);transition:transform .25s ease,color .15s,background .15s;transform:rotate(0deg);flex-shrink:0" onmouseover="this.style.color='var(--accent)';this.style.background=kyfChevronHoverBg()" onmouseout="this.style.color='var(--text3)';this.style.background='transparent'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></span>
-    </div>
-    <div id="geoDetBody">
-    <div id="geoNewNote" style="display:none;margin:10px 0 0;padding:10px 14px;border-radius:8px;background:rgba(77,159,255,0.07);border:1px solid rgba(77,159,255,0.2);width:fit-content;max-width:100%;box-sizing:border-box;font-family:'Inter',sans-serif;font-size:10px;font-weight:400;letter-spacing:0;color:var(--text2);line-height:1.7"></div>
-    <div style="font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);line-height:1.7;margin-bottom:10px;margin-top:10px">Les ETF n'ont ni pays ni secteurs connus : saisissez leur répartition avec MODIFIER (fiche de l'émetteur). Une action prend par défaut le pays de son ISIN, modifiable aussi.</div>
-    <div id="geoTable" style="overflow-x:auto"></div>
     </div>
   </div>
 </div>
@@ -49661,7 +49687,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.06\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.09\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -67143,7 +67169,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.13.0.06';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.13.0.09';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -70520,19 +70546,18 @@ function kyfComMin(n){ return n >= 200 ? Math.ceil(n * 0.02) : n >= 50 ? 5 : 3; 
 function kyfComSubSet(s){ _kyfComSub = s === 'act' ? 'act' : 'etf'; if(_kyfHoldD) kyfComRender(_kyfHoldD); }
 function kyfComRender(D){
   const card = document.getElementById('geoComCard'), el = document.getElementById('geoComBody'); if(!card || !el) return;
-  if(!kyfGeoCommOn()){ card.style.display = 'none'; return; }
-  card.style.display = '';
+  if(!kyfGeoCommOn()){ card.setAttribute('data-on', ''); kyfGeoDetTabApply(); return; }
+  card.setAttribute('data-on', '1'); kyfGeoDetTabApply();
   if(!_kyfTopComm) el.innerHTML = '<div style="font-family:\'Inter\',sans-serif;font-size:10px;color:var(--text3)">Chargement…</div>';
   kyfTopCommLoad().then(C => { try{ kyfComDraw(el, C); }catch(e){} });
 }
 function kyfComDraw(el, C){
-  { const _c = document.getElementById('geoComCard'), _t = document.getElementById('geoComTitle'); if(_c) _c.style.padding = ''; if(_t) _t.style.display = ''; }
   const mut = 'font-family:\'Inter\',sans-serif;font-size:10px;color:var(--text3);line-height:1.7';
   const cnt = document.getElementById('geoComCount'); if(cnt) cnt.textContent = C && C.n ? 'Basé sur ' + C.n + ' contributeur' + (C.n > 1 ? 's' : '') : '';
+  { const tn = document.getElementById('geoTabComN'); if(tn) tn.textContent = C && C.n ? String(C.n) : '0'; }
   if(!C){ el.innerHTML = '<div style="' + mut + '">La communauté n\u2019est pas joignable pour le moment.</div>' + kyfTopPartBox(''); return; }
   const card = document.getElementById('geoComCard'), ttl = document.getElementById('geoComTitle'), compact = C.n < KYF_COM_MIN;
   if(ttl) ttl.style.display = compact ? 'none' : '';
-  if(card) card.style.padding = compact ? '14px 18px' : '';
   if(compact){
     const on = kyfPfOn(), r = 19, circ = 2 * Math.PI * r, off = circ * (1 - Math.min(1, C.n / KYF_COM_MIN));
     el.innerHTML = '<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-family:\'Inter\',sans-serif">'
@@ -70547,23 +70572,21 @@ function kyfComDraw(el, C){
   const tab = (id, lab) => '<button type="button" class="av-tab' + (_kyfComSub === id ? ' on' : '') + '" role="tab" aria-selected="' + (_kyfComSub === id ? 'true' : 'false') + '" onclick="kyfComSubSet(\'' + id + '\')">' + lab + '</button>';
   let h = '<div class="av-tabs" role="tablist" style="margin:0 0 14px">' + tab('etf', 'ETF ET FONDS') + tab('act', 'ACTIONS') + '</div>';
   if(!list.length){ el.innerHTML = h + '<div style="' + mut + '">Pas encore assez de membres sur ces lignes (au moins ' + kyfComMin(C.n) + ' pour chacune).</div>' + kyfTopPartBox(''); return; }
-  const medal = [['#f0b429', 'rgba(240,180,41,0.35)'], ['#c4cad4', 'rgba(196,202,212,0.28)'], ['#d08a4e', 'rgba(208,138,78,0.30)']];
   const nm = e => escapeHtml(e.nm || e.tk || e.i), logo = (e, z) => {
     const fb = renderAssetLogo(e.tk, e.nm || e.tk || e.i, z), dom = _kyfComSub === 'act' ? KYF_HOLD_DOM[kyfHoldKey(e.nm || e.tk)] : '';
     const inner = dom ? '<img src="' + escapeHtml(kyfSafeImgSrc('https://www.google.com/s2/favicons?domain=' + dom + '&sz=128')) + '" alt="" loading="lazy" data-fb="' + escapeHtml(fb) + '" onerror="this.outerHTML=this.getAttribute(\'data-fb\')">' : fb;
     return '<div class="kyf-cl" style="--z:' + z + ';width:' + z + 'px;height:' + z + 'px">' + inner + '</div>';
   };
-  h += '<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:6px">' + list.slice(0, 3).map((e, i) =>
-    '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:16px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;font-family:\'Inter\',sans-serif">'
-    + '<div style="font-size:10px;font-weight:700;color:' + medal[i][0] + '">#' + (i + 1) + '</div>'
-    + '<div style="padding:3px;border-radius:50%;border:2px solid ' + medal[i][0] + ';box-shadow:0 0 22px 4px ' + medal[i][1] + ';display:flex">' + logo(e, 48) + '</div>'
-    + '<div style="font-size:12px;font-weight:600;line-height:1.3;color:var(--text);min-height:31px;display:flex;align-items:center">' + nm(e) + '</div>'
-    + '<div style="font-size:22px;font-weight:700;color:var(--text)">' + pc(e.n) + '</div></div>').join('') + '</div>';
-  h += list.slice(3).map((e, i) =>
-    '<div style="display:grid;grid-template-columns:26px 30px minmax(0,1fr) 52px;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--border);font-family:\'Inter\',sans-serif">'
-    + '<div style="font-size:11px;font-weight:600;color:var(--text3)">#' + (i + 4) + '</div>' + logo(e, 30)
-    + '<div style="min-width:0"><div style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + nm(e) + '</div>' + (e.tk ? '<div style="font-size:9px;color:var(--text3);margin-top:2px">' + escapeHtml(e.tk) + '</div>' : '') + '</div>'
-    + '<div style="font-size:12px;font-weight:700;color:var(--text);text-align:right">' + pc(e.n) + '</div></div>').join('');
+  const mine = {}; try{ ((_kyfHoldD && _kyfHoldD.rows) || []).forEach(r => { if(r.ticker) mine['t:' + String(r.ticker).toUpperCase()] = 1; if(r.isin) mine['i:' + String(r.isin).toUpperCase()] = 1; }); }catch(x){}
+  const has = e => !!((e.tk && mine['t:' + String(e.tk).toUpperCase()]) || (e.i && mine['i:' + String(e.i).toUpperCase()]));
+  h += '<div class="kyf-com-grid">' + list.map((e, i) => {
+    const w = Math.max(3, Math.min(100, e.n / C.n * 100));
+    return '<div class="kyf-com-row">'
+      + '<div class="kyf-com-rk' + (i < 3 ? ' top' : '') + '">' + (i + 1) + '</div>' + logo(e, 34)
+      + '<div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;gap:8px;font-size:12px;font-weight:700;color:var(--text)"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + nm(e) + '</span><span>' + pc(e.n) + '</span></div>'
+      + '<div class="kyf-bar"><div class="kyf-bar-f" style="width:' + w.toFixed(1) + '%"></div></div></div>'
+      + (has(e) ? '<span class="kyf-com-mine">VOUS L\u2019AVEZ</span>' : '<span class="kyf-com-mine" style="visibility:hidden">VOUS L\u2019AVEZ</span>') + '</div>';
+  }).join('') + '</div>';
   h += kyfTopPartBox('Part des ' + C.n + ' contributeurs qui détiennent la ligne' + (small ? ' (arrondie à 5 % près tant qu\u2019ils sont moins de 50)' : '') + '. Données anonymes, sans montant ni identité. Une ligne n\u2019apparaît que si au moins ' + kyfComMin(C.n) + ' contributeurs la détiennent.');
   el.innerHTML = h;
 }
@@ -70771,6 +70794,21 @@ function kyfGeoDetApply(){
   if(c) c.style.transform = open ? 'rotate(0deg)' : 'rotate(-90deg)';
   if(h){ h.setAttribute('aria-expanded', open ? 'true' : 'false'); h.style.marginBottom = open ? '' : '0'; }   // replié : plus de marge de 14 px sous le titre, il est centré dans le cadre
 }
+
+// 2.13.0.08 : un seul cadre DÉTAIL PAR POSITION ET COMMUNAUTÉ, deux onglets (MES POSITIONS / COMMUNAUTÉ). L'onglet COMMUNAUTÉ n'existe que si le partage communautaire est actif.
+let _geoDetTab = 'pos';
+function kyfGeoDetTab(t){ _geoDetTab = t === 'com' ? 'com' : 'pos'; kyfGeoDetTabApply(); }
+function kyfGeoDetTabApply(){
+  const com = document.getElementById('geoComCard'), pos = document.getElementById('geoPanePos'), tabs = document.getElementById('geoDetTabs');
+  if(!com || !pos || !tabs) return;
+  const on = com.getAttribute('data-on') === '1';
+  if(!on) _geoDetTab = 'pos';
+  tabs.style.display = on ? '' : 'none';
+  pos.style.display = _geoDetTab === 'pos' ? '' : 'none';
+  com.style.display = on && _geoDetTab === 'com' ? '' : 'none';
+  [['geoTabPos','pos'],['geoTabCom','com']].forEach(function(x){ const b = document.getElementById(x[0]); if(b){ b.classList.toggle('on', _geoDetTab === x[1]); b.setAttribute('aria-selected', _geoDetTab === x[1] ? 'true' : 'false'); } });
+  const pn = document.getElementById('geoTabPosN'); if(pn){ try{ pn.textContent = String((_geoLastD && _geoLastD.rows ? _geoLastD.rows.length : 0)); }catch(e){} }
+}
 function kyfGeoDetToggle(){
   let open = true; try{ open = localStorage.getItem('kyf-geo-detail-open') !== '0'; }catch(e){}
   try{ localStorage.setItem('kyf-geo-detail-open', open ? '0' : '1'); }catch(e){}
@@ -70863,7 +70901,7 @@ function kyfGeoDetail(){
     return '<div data-tip="' + escapeHtml(tip) + '" onmouseenter="kyfGeoTipShow(this)" onmouseleave="kyfGeoTipHide()" tabindex="0" onfocus="kyfGeoTipShow(this)" onblur="kyfGeoTipHide()" style="cursor:help;color:var(--text);min-width:0;max-width:230px">' + arr.slice(0, 3).map(p => line(p, 12, 2)).join('') + more + '</div>';
   };
   const leg = (arr, nameOf) => arr.length ? arr.slice(0, 4).map((p, i) => '<span class="kyf-gd-leg"><i style="background:' + KYF_GD_PAL[i] + '"></i>' + escapeHtml(nameOf(p[0])) + ' ' + kyfGeoPct(p[1]) + '</span>').join('') + (arr.length > 4 ? '<span class="kyf-gd-leg"><i style="background:#5b6580"></i>Autres ' + kyfGeoPct(Math.max(0, 100 - arr.slice(0, 4).reduce((t, p) => t + p[1], 0))) + '</span>' : '') : '<span class="kyf-gd-leg" style="color:var(--text3)"><i style="background:#5b6580"></i>Non renseigné</span>';
-  const gauge = (lab, v) => '<div style="width:200px"><div style="display:flex;justify-content:space-between;font-size:10px;letter-spacing:1.2px;color:var(--text3)"><span>' + lab + '</span><span style="color:var(--text);font-weight:700">' + kyfGeoPct(v) + '</span></div><div style="height:6px;border-radius:3px;background:var(--border);overflow:hidden;margin-top:6px"><div style="height:100%;width:' + Math.min(100, Math.max(0, v)).toFixed(1) + '%;background:linear-gradient(90deg,#f0b429,rgba(240,180,41,.5));border-radius:3px"></div></div></div>';
+  const gauge = (lab, v) => '<div style="width:200px"><div style="display:flex;justify-content:space-between;font-size:10px;letter-spacing:1.2px;color:var(--text3)"><span>' + lab + '</span><span style="color:var(--text);font-weight:700">' + kyfGeoPct(v) + '</span></div><div class="kyf-bar"><div class="kyf-bar-f" style="width:' + Math.min(100, Math.max(0, v)).toFixed(1) + '%"></div></div></div>';
   const pP = D.tot > 0 ? (D.tot - D.nd) / D.tot * 100 : 0, pS = D.tot > 0 ? (D.tot - D.ndS) / D.tot * 100 : 0;
   const BT = { ok:['kyf-gd-b-ok', 'Concordant'], gap:['kyf-gd-b-gap', 'Écart à voir'], new:['kyf-gd-b-new', ''], none:['kyf-gd-b-none', 'Pas de données'] };
   const chev = () => '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>';
@@ -70946,6 +70984,17 @@ function kyfGeoRender(){
   kyfGeoMap(D);
   try{ kyfHoldRender(D); }catch(e){}
   try{ kyfComRender(D); kyfPfShare(D); }catch(e){}
+  try{   // 2.13.0.07 : un cadre sans donnée disparaît, et le dernier cadre seul d'une ligne prend toute la largeur
+    const hasHold = (function(){ try{ return kyfHoldCompute(D).items.length > 0; }catch(e){ return true; } })();
+    const on = { geoPaysCard: cl.length > 0, geoSectCard: sl.length > 0, geoTopCard: hasHold };
+    Object.keys(on).forEach(function(id){ const c = document.getElementById(id); if(c) c.classList.toggle('geo-off', !on[id]); });
+    const row = document.querySelector('.geo-row');
+    if(row){
+      const cards = Array.prototype.slice.call(row.children).filter(function(c){ return !c.classList.contains('geo-off'); });
+      cards.forEach(function(c){ c.style.gridColumn = ''; });
+      if(cards.length % 2 === 1) cards[cards.length - 1].style.gridColumn = '1 / -1';
+    }
+  }catch(e){}
   (function(){
     let nt = document.getElementById('geoFundNote');
     if(!nt && tel && tel.parentNode){ nt = document.createElement('div'); nt.id = 'geoFundNote'; nt.style.cssText = 'font-size:11px;line-height:1.6;color:var(--text3);margin-top:10px'; tel.parentNode.insertBefore(nt, tel.nextSibling); }
@@ -76609,6 +76658,12 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.09 · 07/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Zones géographiques sur téléphone : le tableau DÉTAIL PAR POSITION n’affiche plus que la position, sa valeur et la flèche de détail (les colonnes qui se chevauchaient sont retirées), et les filtres TOUS, ETF, À COMPLÉTER restent accessibles.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.08 · 07/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Zones géographiques : LES PLUS DÉTENUS PAR LA COMMUNAUTÉ et DÉTAIL PAR POSITION ET COMMUNAUTÉ ne font plus qu’un seul cadre, avec deux onglets (MES POSITIONS, COMMUNAUTÉ ; l’onglet communauté apparaît quand le partage est actif). Le classement devient une liste sur deux colonnes avec une barre par ligne et la pastille VOUS L’AVEZ. Les barres de couleur (jauges PAYS et SECTEURS, classement) sont en dégradé franc, plus épaisses, bien visibles aussi en thème clair.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.07 · 06/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Zones géographiques : un cadre sans donnée (TOP PAYS, PAR SECTEUR, TOP ENTREPRISES) n’est plus affiché, et le grand vide sous les cadres disparaît : la ligne prend la hauteur de son contenu, et un cadre resté seul sur sa ligne occupe toute la largeur.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.06 · 06/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PERECOL : les boutons bleus (loupes de recherche ISIN et entreprise, ENVOYER MA CONTRIBUTION) passent au style KYF : contour doré, fond plein doré au survol, comme + AJOUTER. La case à cocher de consentement passe aussi en doré.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.05 · 06/11/2026</div>
