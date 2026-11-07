@@ -1,7 +1,7 @@
 /* Keep Your Folio Mobile 1.19 : fonctionnement hors ligne.
    Ne met en cache que les fichiers de cette appli (même adresse). Les téléchargements vers
    d’autres sites (base publique) et tout le reste ne passent jamais par ce cache. */
-var CACHE="kyfm-3.103.5.2";
+var CACHE="kyfm-3.103.5.3";
 var FICHIERS=["./","index.html","manifest.webmanifest","icon-192.png","icon-512.png","icon-512-maskable.png","apple-touch-icon.png","icon-dark-192.png","icon-mono-512.png","jsqr.js","avf.js","qr.js","countries.json"].concat(["logos/aave.png","logos/ada.png","logos/algo.png","logos/atom.png","logos/avax.png","logos/bch.png","logos/bnb.png","logos/btc.png","logos/dai.png","logos/dash.png","logos/doge.png","logos/dot.png","logos/etc.png","logos/eth.png","logos/fil.png","logos/icp.png","logos/leo.png","logos/link.png","logos/ltc.png","logos/paxg.png","logos/sol.png","logos/trx.png","logos/uni.png","logos/usdc.png","logos/usdt.png","logos/vet.png","logos/wbtc.png","logos/xlm.png","logos/xmr.png","logos/xrp.png","logos/zec.png"]);
 /* Installation rapide : seul le noyau est téléchargé avant l’activation (la bannière « Relancer » arrive plus vite).
    Le reste (logos, bibliothèques) est mis en cache ensuite, en arrière-plan ; au pire il l’est à la première utilisation. */
