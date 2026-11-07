@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.50
+  @version     : Beta 2.13.0.51
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5260,7 +5260,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.13.0.50</div>
+  <div class="kl-ver">Beta 2.13.0.51</div>
 </div>
 <script>
 (function(){
@@ -5422,7 +5422,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.50</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.51</span></div>
       </div>
     </div>
   </div>
@@ -7845,7 +7845,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.50</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.51</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -35766,6 +35766,19 @@ function finaryLightbox(src){
 // Republic/Bitpanda. Le PRU n'est pas fourni directement mais se déduit de
 // la P&L fournie par Finary : coût total = currentValue - pnl_amount,
 // PRU = coût / quantité.
+// Classe d'actif d'une ligne FinaHack : les valeurs brutes de Finary (security, fiat...) sont gardées telles quelles ;
+// les noms en français qu'un utilisateur a choisis dans « Manage myAssetType » (Actions, Cash...) sont ramenés à leur équivalent
+function fiFhCls(v){
+  const t = String(v||'').trim();
+  const k = t.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ');
+  const M = { 'actions':'security', 'action':'security', 'actions et etf':'security', 'etf':'security', 'titres':'security',
+    'cash':'fiat', 'liquidites':'fiat', 'especes':'fiat', 'liquidite':'fiat',
+    'crypto':'crypto', 'cryptos':'crypto', 'cryptomonnaies':'crypto', 'cryptomonnaie':'crypto',
+    'scpi':'scpi', 'immobilier':'real_estate', 'bien immobilier':'real_estate', 'immobilier direct':'real_estate',
+    'fonds euro':'fonds_euro', 'fonds euros':'fonds_euro', 'fonds en euros':'fonds_euro',
+    'matieres premieres':'Matières premières', 'or':'Matières premières' };
+  return Object.prototype.hasOwnProperty.call(M, k) ? M[k] : t;
+}
 function fiFinaHackHeaderOk(headerRow){
   const h = (headerRow||[]).map(c => String(c||'').trim());
   return ['assetName','assetClass','currentValue','quantity','pnl_amount'].every(c => h.includes(c));
@@ -35800,7 +35813,7 @@ function fiExtractFinaHackRows(rows, wantedClass){
   const out = [];
   for(let i=1;i<rows.length;i++){
     const cols = rows[i];
-    if(!cols || (cols[classIdx]||'').trim() !== wantedClass) continue;
+    if(!cols || fiFhCls(cols[classIdx]) !== wantedClass) continue;
     const nom = (cols[nomIdx]||'').trim();
     const qty = fiParseNum(cols[qtyIdx]);
     const val = fiParseNum(cols[valIdx]);
@@ -35836,7 +35849,7 @@ function fiFinaHackFondsEuro_(rows){
   const iN = ix('assetName'), iC = ix('assetClass'), iV = ix('currentValue'), iE = ix('virtual_envelop'), iT = ix('envelopeType'), iA = ix('accountName');
   const out = [];
   for(let i=1;i<rows.length;i++){
-    const c = rows[i]; if(!c || String(c[iC]||'').trim() !== 'fonds_euro') continue;
+    const c = rows[i]; if(!c || fiFhCls(c[iC]) !== 'fonds_euro') continue;
     const nom = String(c[iN]||'').trim(), val = Math.round((fiParseNum(c[iV])||0)*100)/100;
     if(!nom || !(val > 0)) continue;
     out.push({ isin:'', nom, qty:1, pru:val, valMkt:val, cours:0, dateVal:'', typeHint:'fondseuro', catTxt:'FONDS EN EUROS', contrat:'', contratNum:'',
@@ -35875,7 +35888,7 @@ function fiParseFinaHackBienCSV(text){
   const out = [];
   for(let i=1;i<rows.length;i++){
     const cols = rows[i];
-    if(!cols || (cols[classIdx]||'').trim() !== 'real_estate') continue;
+    if(!cols || fiFhCls(cols[classIdx]) !== 'real_estate') continue;
     const nom = (cols[nomIdx]||'').trim();
     const valeur = fiParseNum(cols[valIdx]);
     if(!nom || !(valeur>0)) continue;
@@ -35903,7 +35916,7 @@ function fiParseFinaHackOrCSV(text){
   const out = [];
   for(let i=1;i<rows.length;i++){
     const cols = rows[i];
-    if(!cols || (cols[classIdx]||'').trim() !== 'Matières premières') continue;
+    if(!cols || fiFhCls(cols[classIdx]) !== 'Matières premières') continue;
     const nom = (cols[nomIdx]||'').trim();
     const qty = fiParseNum(cols[qtyIdx]);
     const val = fiParseNum(cols[valIdx]);
@@ -36681,7 +36694,7 @@ function kyfFinaRows_(text){
 // Colonnes du fichier, groupe de chaque ligne (mêmes règles que les lecteurs FinaHack), fichier relu après corrections
 function kyfFinaCols_(h){ const i = n => h.indexOf(n); return { nom:i('assetName'), cls:i('assetClass'), val:i('currentValue'), qty:i('quantity'), pnl:i('pnl_amount'), env:i('virtual_envelop'), et:i('envelopeType'), acc:i('accountName'), inst:i('institutionName') }; }
 function kyfFinaGroupOf_(c, X){
-  const cls = String(c[X.cls]||'').trim(), nom = String(c[X.nom]||'').trim();
+  const cls = fiFhCls(c[X.cls]), nom = String(c[X.nom]||'').trim();
   if(!nom) return '';
   const qty = fiParseNum(c[X.qty]), val = fiParseNum(c[X.val]);
   if(cls === 'real_estate') return val > 0 ? 'bien' : '';
@@ -36702,7 +36715,7 @@ function kyfFinaBuild_(R){
   const X = R.X, groups = {}, env = {}, classes = {};
   R.rows.forEach((c, i) => {
     if(i === 0) return;
-    const cl = String(c[X.cls]||'').trim(); if(cl) classes[cl] = (classes[cl]||0) + 1;
+    const cl = fiFhCls(c[X.cls]); if(cl) classes[cl] = (classes[cl]||0) + 1;
     const g = kyfFinaGroupOf_(c, X);
     if(g && !R.del[i]) (groups[g] = groups[g] || []).push(i);
     if(cl === 'security' && !R.del[i]){ const e = fiClassifyFinaHackEnvelope(X.env>=0?c[X.env]:'', X.et>=0?c[X.et]:'', X.acc>=0?c[X.acc]:''); if(e === 'PEE') env.PEE = (env.PEE||0) + 1; }
@@ -36726,7 +36739,7 @@ function kyfFinaBuild_(R){
   const KNOWN = ['security','fonds_euro','fiat','crypto','scpi','real_estate','Matières premières'];
   Object.keys(classes).filter(k => KNOWN.indexOf(k) < 0).forEach(k => R.skipped.push({ n:classes[k], lbl:'Type « ' + k + ' »', why:'type d’actif non reconnu par KYF : à saisir à la main.' }));
   // Lignes d'une classe reprise, mais laissées de côté (valeur nulle, espèces d'un portefeuille crypto)
-  let _cw = 0; R.rows.forEach((c, i) => { if(i === 0 || R.del[i]) return; if(String(c[X.cls]||'').trim() === 'fiat' && String(c[X.et]||'').trim() === 'crypto_wallet') _cw++; });
+  let _cw = 0; R.rows.forEach((c, i) => { if(i === 0 || R.del[i]) return; if(fiFhCls(c[X.cls]) === 'fiat' && String(c[X.et]||'').trim() === 'crypto_wallet') _cw++; });
   if(_cw) R.skipped.push({ n:_cw, lbl:'Espèces d’un portefeuille crypto', why:'montant sans intérêt, volontairement ignoré.' });
 }
 // Espèces et livrets : chaque ligne « fiat » va à un seul endroit de KYF, décidé par des règles fermées (enveloppe PEA/CTO, nom de livret connu, néobanque connue), sinon au compte courant
@@ -50150,7 +50163,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.50\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.51\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -67598,7 +67611,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.13.0.50';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de Keep Your Folio
+const KYF_GUIDE_POUR = '2.13.0.51';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de Keep Your Folio
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -77161,6 +77174,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.51 · 07/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import FinaHack : les classes d'actifs écrites en français dans « Manage myAssetType » (Actions, Cash, Crypto, SCPI, Immobilier, Fonds euro, Matières premières) sont maintenant reconnues, au lieu d'être refusées comme « type non reconnu » avec 0 ligne importée. Retour d'un utilisateur par mail.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.50 · 07/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Quoi de neuf, annonce du 7 novembre : trois nouveautés en peu de mots (menu Placements privés avec Private equity, case fonds ou ETF dans Zones géographiques, tuiles ouvertes en même temps), sans entrer dans le détail.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.49 · 07/11/2026</div>
