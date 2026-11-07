@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.52
+  @version     : Beta 2.13.0.55
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5260,7 +5260,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.13.0.52</div>
+  <div class="kl-ver">Beta 2.13.0.55</div>
 </div>
 <script>
 (function(){
@@ -5422,7 +5422,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.52</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.55</span></div>
       </div>
     </div>
   </div>
@@ -7845,7 +7845,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.52</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.55</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -50163,7 +50163,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.52\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.55\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -51459,6 +51459,21 @@ function kyfSpinRound(val, step){
   const factor = Math.pow(10, decimals);
   return Math.round(val * factor) / factor;
 }
+// Plancher d'une case à flèches : son attribut min s'il existe, sinon 0 (aucune case de Keep Your Folio ne porte une valeur négative sans min explicite)
+function kyfSpinMin(inp){
+  if(inp.min !== '' && isFinite(parseFloat(inp.min))) return parseFloat(inp.min);
+  return inp.hasAttribute('data-allow-neg') ? -Infinity : 0;
+}
+// Signe moins tapé ou collé dans une case dont le plancher est 0 ou plus : retiré aussitôt
+document.addEventListener('input', function(e){
+  try{
+    const t = e.target;
+    if(!t || t.tagName !== 'INPUT' || !(t.type === 'number' || t.hasAttribute('data-kyf-spin'))) return;
+    if(kyfSpinMin(t) < 0) return;
+    const v = String(t.value == null ? '' : t.value);
+    if(v.indexOf('-') >= 0) t.value = v.replace(/-/g, '');
+  }catch(err){}
+}, true);
 function kyfApplySpinButtons(){
   document.querySelectorAll('input[type=number],input[data-kyf-spin]').forEach(inp => {
     if(inp.closest('.kyf-spin-wrap')) return; // déjà wrappé
@@ -51477,14 +51492,14 @@ function kyfApplySpinButtons(){
       const step = parseFloat(inp.step)||1;
       const max  = inp.max !== '' ? parseFloat(inp.max) : Infinity;
       const cur  = parseFloat(inp.value)||0;
-      inp.value  = Math.min(kyfSpinRound(cur + step, step), max);
+      inp.value  = Math.max(Math.min(kyfSpinRound(cur + step, step), max), kyfSpinMin(inp));
       inp.dispatchEvent(new Event('input', {bubbles:true}));
       inp.dispatchEvent(new Event('change', {bubbles:true}));
     });
     btns.children[1].addEventListener('mousedown', e => {
       e.preventDefault();
       const step = parseFloat(inp.step)||1;
-      const min  = inp.min !== '' ? parseFloat(inp.min) : -Infinity;
+      const min  = kyfSpinMin(inp);
       const cur  = parseFloat(inp.value)||0;
       inp.value  = Math.max(kyfSpinRound(cur - step, step), min);
       inp.dispatchEvent(new Event('input', {bubbles:true}));
@@ -56754,9 +56769,9 @@ const KYF_FIELDS = {
     ['fraisGestion','frais de gestion'], ['fraisEntree','frais d\'entrée'], ['fraisPilotage','frais de pilotage'], ['versNonAffectes','versements non affectés']] },
   'kyf-pee': { label: 'PEE', date: 'dateOuv', pos: [['versements','versements'], ['valeur','valeur']] },
   // PRU : un nombre lisible suffit (un PRU négatif peut sortir d'un arbitrage ou d'un import : inhabituel mais pas un fichier abîmé, il ne doit pas bloquer la page)
-  'kyf-av-positions': { label: 'Positions AV/PER', pos: [['qty','quantité'], ['valeur','valeur']], num: [['pru','PRU'], ['tauxRendement','rendement']] },
+  'kyf-av-positions': { label: 'Positions AV/PER', pos: [['qty','quantité'], ['valeur','valeur']], num: [['pru','PRU'], ['tauxRendement','rendement'], ['fraisSousc','frais de souscription']] },
   'kyf-scpi': { label: 'SCPI', date: 'dateAchat', pos: [['parts','parts'], ['prixAchat','prix d\'achat'], ['prixActuel','prix actuel'], ['td','taux de distribution'], ['valAchat','valeur d\'achat'],
-    ['valActuel','valeur actuelle'], ['revMens','revenu mensuel'], ['revTheo','revenu théorique'], ['dividendeBrut','dividende'], ['partsJouissance','parts en jouissance'], ['divRecuMois','dividende reçu']], num: [['pv','plus-value']] },
+    ['valActuel','valeur actuelle'], ['revMens','revenu mensuel'], ['revTheo','revenu théorique'], ['dividendeBrut','dividende'], ['partsJouissance','parts en jouissance'], ['divRecuMois','dividende reçu']], num: [['pv','plus-value'], ['fraisSousc','frais de souscription']] },
   // Crypto (objet pea-crypto-v1) : dates d'import de plateforme souvent suivies de l'heure (dateLoose)
   'pea-crypto-v1:positions': { label: 'Crypto, positions', pos: [['qte','quantité'], ['pru','PRU'], ['valeur','valeur'], ['montant','montant'], ['investi','investi']] },
   'pea-crypto-v1:stables': { label: 'Crypto, stablecoins', pos: [['qte','quantité'], ['pru','PRU'], ['valeur','valeur'], ['montant','montant']] },
@@ -67611,7 +67626,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.13.0.52';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de Keep Your Folio
+const KYF_GUIDE_POUR = '2.13.0.55';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de Keep Your Folio
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -77174,6 +77189,12 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.55 · 07/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">SCPI : nouveau champ « Frais de souscription (%) » dans la fiche d'une SCPI en direct et dans la ligne SCPI d'un contrat AV ou PER. Il passe avant la valeur de la base SCPI (utile quand elle est absente ou fausse, par exemple 10 % pour Épargne Pierre) et alimente le suivi d'amortissement des frais et la page des frais. Retour d'un utilisateur par le forum Linxea.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.54 · 07/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Audit des cases à flèches haute et basse : 36 cases passées en revue. Les flèches du bas ne descendent plus sous 0 dans les cases sans minimum déclaré (quantités crypto, année), et un signe moins tapé ou collé dans une case dont le minimum est 0 ou plus est retiré aussitôt. Les cases qui acceptent une valeur négative (min négatif ou attribut data-allow-neg) ne changent pas.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.53 · 07/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtres Private equity et Crowdfunding : les cases de montant (montant investi, valeur actuelle, distributions perçues, capital remboursé, perte) ont maintenant les flèches haute et basse comme les autres cases chiffrées, par pas de 100 €. L'espace des milliers reste affiché.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.52 · 07/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Lien avec le mobile pour le Private equity : le paquet du mobile accepte les nouveaux types « Placement private equity » et « Suivi private equity » (à saisir à la main dans Keep Your Folio PC, comme le crowdfunding), et l'envoi du patrimoine par QR codes (sans Google, toujours suspendu) porte maintenant aussi Crowdfunding et Private equity.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.51 · 07/11/2026</div>
@@ -89631,8 +89652,8 @@ function fraisAutresAgg(){
   });
   let scpi = []; try{ scpi = scpiLoad(); }catch(e){}
   scpi.forEach(s => {
-    const nom = escapeHtml(s.nom || 'SCPI'), db = (() => { try{ return kyfScpiDbFind(s.nom); }catch(e){ return null; } })(), pct = db ? parseFloat(db.frais_sousc) : NaN;
-    if(!(pct > 0)) { notes.push(nom + ' : frais de souscription inconnus (fiche SCPI), non comptés'); return; }
+    const nom = escapeHtml(s.nom || 'SCPI'), pct = kyfScpiFraisPct(s);
+    if(!(pct > 0)) { notes.push(nom + ' : frais de souscription inconnus ou nuls (à renseigner dans la fiche de la SCPI), non comptés'); return; }
     if(!/^\d{4}-\d{2}-\d{2}/.test(String(s.dateAchat || '')) || !(s.valAchat > 0)){ notes.push(nom + ' : date ou montant d\'achat manquant, non compté'); return; }
     add(String(s.dateAchat).slice(0, 4), 'scpi', Math.round(s.valAchat * pct) / 100);
   });
@@ -91705,7 +91726,7 @@ function scpiNomSelect(s){
 const _origOpenAddSCPI = typeof openAddSCPI === 'function' ? openAddSCPI : null;
 function scpiResetFields(keepEnv){
   document.getElementById('scpiEditId').value = '';
-  ['scpiNom','scpiParts','scpiPrixAchat','scpiPrixActuel','scpiTD','scpiPartsJouis','scpiDivRecu'].forEach(id=>{
+  ['scpiNom','scpiParts','scpiPrixAchat','scpiPrixActuel','scpiTD','scpiPartsJouis','scpiDivRecu','scpiFraisSousc'].forEach(id=>{
     const e=document.getElementById(id); if(e) e.value='';
   });
   kyfDateSetValue('scpiDateAchat', '', 'JJ/MM/AAAA');
@@ -92070,6 +92091,8 @@ function saveSCPI(){
   const nueOn      = !!document.getElementById('scpiNue')?.checked && enveloppe !== 'av' && enveloppe !== 'per';
   const nueFin     = document.getElementById('scpiNueFin')?.value||'';
   const nuePrix    = parseNum(document.getElementById('scpiNuePrix')?.value||'0') || 0;
+  const _fsRaw     = (document.getElementById('scpiFraisSousc')||{}).value, _fsNum = parseFloat(String(_fsRaw == null ? '' : _fsRaw).replace(',', '.'));
+  const fraisSousc = (String(_fsRaw||'').trim() !== '' && isFinite(_fsNum) && _fsNum >= 0 && _fsNum <= 30) ? _fsNum : null;
   if(nueOn && (!nueFin || !(nuePrix > 0))){
     if(err){ err.style.display='block'; err.innerHTML=kyfEmoHtml('⚠️ Nue-propriété : indiquez la date de fin du démembrement et le prix de la part en pleine propriété.'); }
     return;
@@ -92099,7 +92122,8 @@ function saveSCPI(){
         valeur: Math.round(valActuel),
         tauxRendement: td||0,
         pays: pays||'', secteurs: secteurs||'',
-        visual: visual||'', visualShape: visualShape||'diamond', visualBadge: visualBadge!==false
+        visual: visual||'', visualShape: visualShape||'diamond', visualBadge: visualBadge!==false,
+        fraisSousc: fraisSousc
       };
       const idx = editId ? positions.findIndex(p=>p.id===editId) : -1;
       if(idx>=0) positions[idx]=pos; else positions.push(pos);
@@ -92134,6 +92158,7 @@ function saveSCPI(){
     visualShape: visualShape,
     visualBadge: visualBadge,
     nueProp: nueOn || undefined, nueFin: nueOn ? nueFin : undefined, nuePrixPleine: nueOn ? nuePrix : undefined,
+    fraisSousc: fraisSousc === null ? undefined : fraisSousc,
   };
   const data = scpiLoad();
   if(editId){ const i=data.findIndex(d=>d.id===editId); if(i>-1) data[i]=scpi; else data.push(scpi); }
@@ -92192,6 +92217,12 @@ function kyfScpiDbFind(nom){
   });
   return best;
 }
+// Frais de souscription d'une SCPI : la valeur saisie par l'utilisateur d'abord (champ de la fiche), sinon celle de la base SCPI ; NaN si inconnus
+function kyfScpiFraisPct(s){
+  if(s && typeof s.fraisSousc === 'number' && isFinite(s.fraisSousc) && s.fraisSousc >= 0) return s.fraisSousc;
+  let db = null; try{ db = kyfScpiDbFind(s && s.nom); }catch(e){}
+  return db ? parseFloat(db.frais_sousc) : NaN;
+}
 function scpiFromAVContracts(){
   const contrats = avLoad();
   const out = [];
@@ -92218,6 +92249,7 @@ function scpiFromAVContracts(){
         dividendeBrut: _db ? (kyfScpiDivEff_(_db) || (_db.dividende_brut ?? null)) : null, frequence: _db?.frequence || '',
         visual: p.visual||'', visualShape: p.visualShape||'diamond', visualBadge: p.visualBadge!==false,
         titulaire: c.titulaire,
+        fraisSousc: typeof p.fraisSousc === 'number' ? p.fraisSousc : undefined,
         _fromAVContrat: c.id, // marqueur : édition/suppression doivent rediriger vers le contrat
         _avContratNom: c.contratNom || c.assureur || 'Contrat',
       });
@@ -92338,8 +92370,7 @@ function renderSCPI(){
       }
     }
     // IMM-0xx : frais de souscription = ceux de la fiche SCPI (base portail-scpi) ; plus de 9 % inventés. Inconnus : 0 (suivi d'amortissement masqué, mention affichée)
-    const _fsDb = (() => { try{ return kyfScpiDbFind(s.nom); }catch(e){ return null; } })();
-    const _fsPct = _fsDb ? parseFloat(_fsDb.frais_sousc) : NaN;
+    const _fsPct = kyfScpiFraisPct(s);   // saisie de l'utilisateur d'abord, sinon base SCPI
     const fraisSouscription = _fsPct > 0 ? Math.round((s.valAchat||0) * _fsPct / 100) : 0;
     const moisDepuisAchat = s.dateAchat ? Math.max(0,(Date.now()-new Date(s.dateAchat).getTime())/(1000*60*60*24*30.44)) : 0;
     const revCumulDepuisAchat = s.dateAchat ? Math.round((s.revMens||0)*moisDepuisAchat) : 0;
@@ -92404,7 +92435,7 @@ function renderSCPI(){
       // 2) Revente : seulement s'il y a des frais de retrait
       const revente = k.valRecuperable === null ? line(svgBag, (s._nue && s._nue.actif) ? `Montant récupérable : <strong style="color:var(--text3)">aucun</strong> avant la fin du démembrement` : `Montant récupérable : <strong style="color:var(--text3)">indisponible</strong> (prix de retrait non renseigné)`) : '';
       // 3) Frais de souscription : mini-barre
-      const frais = k.pctFraisRecup===null ? `<div style="font-size:10px;color:var(--text3)">Frais de souscription inconnus : suivi d'amortissement indisponible</div>` : `<div>
+      const frais = k.pctFraisRecup===null ? `<div style="font-size:10px;color:var(--text3)">Frais de souscription inconnus ou nuls : suivi d'amortissement indisponible (à renseigner dans la fiche)</div>` : `<div>
         <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3)"><span>Frais de souscription amortis</span><span style="font-weight:700;color:${k.pctFraisRecup>=100?'var(--green)':'var(--accent)'}">${k.pctFraisRecup} %</span></div>
         <div style="height:3px;border-radius:2px;background:rgba(128,128,128,0.18);margin-top:3px;overflow:hidden"><div style="height:100%;width:${k.pctFraisRecup}%;background:linear-gradient(90deg,${hexToRgba(green,0.55)},${green});border-radius:2px"></div></div>
         ${k.pctFraisRecup<100 && k.moisAvantAmortissement ? `<div style="font-size:9px;color:var(--text3);margin-top:3px">complet dans ${(()=>{const a=Math.floor(k.moisAvantAmortissement/12),mo=k.moisAvantAmortissement%12;return [a?a+(a>1?' ans':' an'):'',mo?mo+' mois':''].filter(Boolean).join(' et ');})()}</div>` : ''}
@@ -92645,6 +92676,7 @@ function editSCPI(id){
   document.getElementById('scpiPrixAchat').value   = s.prixAchat||'';
   document.getElementById('scpiPrixActuel').value  = s.prixActuel||'';
   document.getElementById('scpiTD').value          = s.td||'';
+  { const _f = document.getElementById('scpiFraisSousc'); if(_f) _f.value = (typeof s.fraisSousc === 'number') ? s.fraisSousc : ''; }
   { const a=document.getElementById('scpiPartsJouis'), b=document.getElementById('scpiDivRecu'); if(a) a.value = s.partsJouissance||''; if(b) b.value = s.divRecuMois||''; }
   kyfCSelSetValue('scpiEnveloppe', s.enveloppe||'direct', SCPI_ENVELOPPE_LABELS[s.enveloppe||'direct']||'En direct');
   kyfDateSetValue('scpiDateAchat', s.dateAchat||'', 'JJ/MM/AAAA');
@@ -100648,6 +100680,7 @@ function openAddAVPos(contratId){
   document.getElementById('avPosValeur').value  = '';
   kyfAvPosValeurReset_();
   document.getElementById('avPosTaux').value    = '';
+  { const _ff = document.getElementById('avPosFraisSousc'); if(_ff) _ff.value = ''; }
   document.getElementById('avPosEditIdH').value = '';
   { const _si = document.getElementById('avPosSearchInput'); if(_si) _si.dataset.typed = ''; }
   avPosTypeChange();
@@ -101014,6 +101047,7 @@ function avPosTypeChange(){
       : 'Ce type n\'a pas de cours coté : il reste dans ce contrat, à la valeur du relevé.'; }
   document.getElementById('avPosRowPRUQty').style.display = (isCoté || isImmo || isFonds) ? 'grid' : 'none';
   document.getElementById('avPosRowTaux').style.display   = (isFE || isImmo) ? '' : 'none';
+  { const _rf = document.getElementById('avPosRowFraisSousc'); if(_rf) _rf.style.display = isImmo ? '' : 'none'; }
   { const _nh = document.getElementById('avPosNomHint'); if(_nh) _nh.style.display = (isCoté || isImmo || isFonds) ? '' : 'none'; }   // pas de recherche pour un fonds en euros : le nom se saisit à la main
   // Icône SVG à côté du menu, mise à jour selon le type choisi, un
   // <option> natif ne peut contenir que du texte, jamais de SVG, d'où
@@ -101442,6 +101476,8 @@ function saveAVPos(){
   const qty     = parseNum(document.getElementById('avPosQty').value);
   const valeur  = parseNum(document.getElementById('avPosValeur').value);
   const taux    = parseFloat(document.getElementById('avPosTaux').value)||0;
+  const _fsA    = parseFloat(String((document.getElementById('avPosFraisSousc') || {}).value || '').replace(',', '.'));
+  const fraisSouscA = (type === 'immo' && isFinite(_fsA) && _fsA >= 0 && _fsA <= 30) ? _fsA : null;
   const editId  = document.getElementById('avPosEditIdH').value;
 
   if(!nom && !ticker){ alert('Saisissez un nom ou un ticker.'); return; }
@@ -101458,7 +101494,8 @@ function saveAVPos(){
     type, ticker, nom, compartiment,
     pru:     pru||0, qty: qty||0,
     valeur:  valeur || Math.round(pru*qty*100)/100,
-    tauxRendement: taux
+    tauxRendement: taux,
+    fraisSousc: fraisSouscA
   };
   pos.classe = type === 'fonds' ? kyfFclOk((document.getElementById('avPosClasse') || {}).value) : '';
   const _typeManual = !!window.__avPosTypeTouched && kyfFondsLike(type);
@@ -101525,6 +101562,7 @@ function editAVPos(contratId, posId){
     // 208 : quantité et valeur d'origine, pour que la valeur suive un changement de quantité (même prix par part qu'avant)
     { const _q = parseFloat(pos.qty), _v = parseFloat(pos.valeur); if(_q > 0 && _v > 0) document.getElementById('avPosQty').dataset.base = JSON.stringify({ qty:_q, valeur:_v }); }
     document.getElementById('avPosTaux').value   = pos.tauxRendement||'';
+    { const _ff = document.getElementById('avPosFraisSousc'); if(_ff) _ff.value = (typeof pos.fraisSousc === 'number') ? pos.fraisSousc : ''; }
     document.getElementById('avPosEditIdH').value= pos.id;
     { const _ir = document.getElementById('avPosRowIsin'), _ii = document.getElementById('avPosIsin'); if(_ii) _ii.value = pos.isin || ''; if(_ir) _ir.style.display = (pos.type === 'etf' || pos.type === 'action' || kyfFondsLike(pos.type)) ? '' : 'none'; }
     { const _si = document.getElementById('avPosSearchInput'); if(_si) _si.value = pos.ticker || pos.isin || ''; }   // l'identifiant actuel reste visible : pas besoin de le ressaisir
@@ -104836,6 +104874,11 @@ function orInlineEdit(id, td, currentVal){
       <input id="avPosTaux" type="number" oninput="this.dataset.auto=''" min="0" step="0.01" placeholder="1.67"
         style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none">
     </div>
+    <div id="avPosRowFraisSousc" style="display:none">
+      <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">FRAIS DE SOUSCRIPTION SCPI (%) <span style="opacity:.5">facultatif</span></div>
+      <input id="avPosFraisSousc" type="number" min="0" max="30" step="0.1" placeholder="Base SCPI si vide"
+        style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none">
+    </div>
   </div>
 
   <input type="hidden" id="avPosEditIdH" value="">
@@ -105274,6 +105317,12 @@ function orInlineEdit(id, td, currentVal){
         <input id="scpiNewContratNom" placeholder="Nom du contrat" style="box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none">
         <input id="scpiNewContratAssureur" placeholder="Assureur" style="box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none">
       </div>
+    </div>
+    <div style="grid-column:span 2">
+      <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">FRAIS DE SOUSCRIPTION (%) <span style="opacity:.5">facultatif</span></div>
+      <input id="scpiFraisSousc" type="number" min="0" max="30" step="0.1" placeholder="Valeur de la base SCPI si vide"
+        style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none">
+      <div style="font-size:10px;color:var(--text3);margin-top:4px;line-height:1.5">Laissez vide pour reprendre la base SCPI. Renseignez-le si elle est absente ou fausse : votre valeur passe avant.</div>
     </div>
     <div id="scpiNueRow" style="grid-column:span 2">
       <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
@@ -107343,7 +107392,7 @@ function orInlineEdit(id, td, currentVal){
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:0">
     <div>
       <div style="font-size:9px;color:var(--text3);margin-bottom:3px">MONTANT INVESTI (€)</div>
-      <input type="text" inputmode="numeric" id="cfMontant" oninput="kyfFormatMilliersInput(this)" placeholder="Ex : 1 000" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg) !important;border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 10px;border-radius:6px;outline:none">
+      <input type="text" inputmode="numeric" id="cfMontant" data-kyf-spin="1" min="0" step="100" oninput="kyfFormatMilliersInput(this)" placeholder="Ex : 1 000" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg) !important;border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 10px;border-radius:6px;outline:none">
     </div>
     <div>
       <div style="font-size:9px;color:var(--text3);margin-bottom:3px">TAUX CIBLE ANNONCÉ (%)</div>
@@ -107369,15 +107418,15 @@ function orInlineEdit(id, td, currentVal){
   </div>
     <div style="margin-bottom:0">
     <div style="font-size:9px;color:var(--text3);margin-bottom:3px">MONTANT DÉJÀ PERÇU (€, capital + intérêts)</div>
-    <input type="text" inputmode="numeric" id="cfMontantPercu" oninput="kyfFormatMilliersInput(this)" placeholder="Ex : 0" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg) !important;border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 10px;border-radius:6px;outline:none">
+    <input type="text" inputmode="numeric" id="cfMontantPercu" data-kyf-spin="1" min="0" step="100" oninput="kyfFormatMilliersInput(this)" placeholder="Ex : 0" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg) !important;border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 10px;border-radius:6px;outline:none">
   </div>
     <div style="margin-top:10px">
       <div style="font-size:9px;color:var(--text3);margin-bottom:3px">DONT CAPITAL REMBOURSÉ (€) <span style="opacity:.5">facultatif, part du montant perçu · vide = inconnu</span></div>
-      <input type="text" inputmode="numeric" id="cfCapitalRembourse" oninput="kyfFormatMilliersInput(this)" placeholder="Inconnu" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg) !important;border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 10px;border-radius:6px;outline:none">
+      <input type="text" inputmode="numeric" id="cfCapitalRembourse" data-kyf-spin="1" min="0" step="100" oninput="kyfFormatMilliersInput(this)" placeholder="Inconnu" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg) !important;border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 10px;border-radius:6px;outline:none">
     </div>
     <div id="cfPerteRow" style="display:none">
       <div style="font-size:9px;color:var(--text3);margin-bottom:3px">CAPITAL PERDU ESTIMÉ (€) <span style="opacity:.5">défaut partiel - déduit de votre patrimoine</span></div>
-      <input type="text" inputmode="numeric" id="cfPerte" oninput="kyfFormatMilliersInput(this)" placeholder="Ex : 300" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg) !important;border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none">
+      <input type="text" inputmode="numeric" id="cfPerte" data-kyf-spin="1" min="0" step="100" oninput="kyfFormatMilliersInput(this)" placeholder="Ex : 300" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg) !important;border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none">
     </div>
   </div></div>
   <div class="av-foot" style="display:flex;gap:8px;justify-content:flex-end;align-items:center;padding:12px 18px;border-top:1px solid var(--border);flex-shrink:0">
@@ -107422,7 +107471,7 @@ function orInlineEdit(id, td, currentVal){
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
       <div>
         <div style="font-size:9px;color:var(--text3);margin-bottom:3px">MONTANT INVESTI (€)</div>
-        <input type="text" inputmode="numeric" id="prvMontant" oninput="kyfFormatMilliersInput(this)" placeholder="Ex : 5 000" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg) !important;border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 10px;border-radius:6px;outline:none">
+        <input type="text" inputmode="numeric" id="prvMontant" data-kyf-spin="1" min="0" step="100" oninput="kyfFormatMilliersInput(this)" placeholder="Ex : 5 000" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg) !important;border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 10px;border-radius:6px;outline:none">
       </div>
       <div>
         <div style="font-size:9px;color:var(--text3);margin-bottom:3px">DATE DE SOUSCRIPTION</div>
@@ -107433,7 +107482,7 @@ function orInlineEdit(id, td, currentVal){
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
       <div>
         <div style="font-size:9px;color:var(--text3);margin-bottom:3px">VALEUR ACTUELLE ESTIMÉE (€) <span style="opacity:.5">facultatif</span></div>
-        <input type="text" inputmode="numeric" id="prvValeur" oninput="kyfFormatMilliersInput(this)" placeholder="Dernière valeur liquidative" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg) !important;border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 10px;border-radius:6px;outline:none">
+        <input type="text" inputmode="numeric" id="prvValeur" data-kyf-spin="1" min="0" step="100" oninput="kyfFormatMilliersInput(this)" placeholder="Dernière valeur liquidative" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg) !important;border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 10px;border-radius:6px;outline:none">
       </div>
       <div>
         <div style="font-size:9px;color:var(--text3);margin-bottom:3px">DATE DE CETTE VALEUR</div>
@@ -107445,7 +107494,7 @@ function orInlineEdit(id, td, currentVal){
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
       <div>
         <div style="font-size:9px;color:var(--text3);margin-bottom:3px">DISTRIBUTIONS DÉJÀ PERÇUES (€)</div>
-        <input type="text" inputmode="numeric" id="prvMontantPercu" oninput="kyfFormatMilliersInput(this)" placeholder="Ex : 0" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg) !important;border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 10px;border-radius:6px;outline:none">
+        <input type="text" inputmode="numeric" id="prvMontantPercu" data-kyf-spin="1" min="0" step="100" oninput="kyfFormatMilliersInput(this)" placeholder="Ex : 0" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg) !important;border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:8px 10px;border-radius:6px;outline:none">
       </div>
       <div>
         <div style="font-size:9px;color:var(--text3);margin-bottom:3px">FIN DE BLOCAGE PRÉVUE</div>
