@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.09
+  @version     : Beta 2.13.0.17
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5337,7 +5337,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.09</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.17</span></div>
       </div>
     </div>
   </div>
@@ -7746,7 +7746,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.09</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.17</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer KYF avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -22202,7 +22202,240 @@ async function perecolWatchEdit(isin){
   try{ localStorage.setItem(PERECOL_NAMES_KEY, JSON.stringify(names)); }catch(e){}
   perecolWatchRender();
 }
-function perecolWatchRemove(isin){ perecolWatchSet(perecolWatchGet().filter(function(x){ return x !== isin; })); perecolWatchRender(); }
+function perecolWatchRemove(isin){ perecolWatchSet(perecolWatchGet().filter(function(x){ return x !== isin; })); var p = perecolPosGet(); if(p[isin] !== undefined){ delete p[isin]; perecolPosSet(p); } var iv = perecolInvGet(); if(iv[isin] !== undefined){ delete iv[isin]; perecolInvSet(iv); } perecolWatchRender(); try{ renderETFTable(window._lp || {}); }catch(e){} }
+// 2.13.0.10 : mes parts par fonds PERECOL (saisie à la main, comme les fonds du PEE). Valeur = parts x valeur liquidative AMF (GECO), calculée à l'affichage.
+const PERECOL_POS_KEY = 'kyf-perecol-pos', PERECOL_VL_KEY = 'kyf-perecol-vl';
+function perecolPosGet(){
+  try{ var o = JSON.parse(localStorage.getItem(PERECOL_POS_KEY)||'{}'), r = {}; if(o && typeof o === 'object' && !Array.isArray(o)) Object.keys(o).slice(0,100).forEach(function(k){ var v = Number(o[k]); if(/^[A-Z]{2}[A-Z0-9]{9}[0-9]$/.test(k) && isFinite(v) && v > 0 && v < 1e9) r[k] = v; }); return r; }catch(e){ return {}; }
+}
+const PERECOL_INV_KEY = 'kyf-perecol-inv';
+function perecolInvGet(){
+  try{ var o = JSON.parse(localStorage.getItem(PERECOL_INV_KEY)||'{}'), r = {}; if(o && typeof o === 'object' && !Array.isArray(o)) Object.keys(o).slice(0,100).forEach(function(k){ var v = Number(o[k]); if(/^[A-Z]{2}[A-Z0-9]{9}[0-9]$/.test(k) && isFinite(v) && v > 0 && v < 1e12) r[k] = v; }); return r; }catch(e){ return {}; }
+}
+function perecolInvSet(o){ try{ if(Object.keys(o).length) localStorage.setItem(PERECOL_INV_KEY, JSON.stringify(o)); else localStorage.removeItem(PERECOL_INV_KEY); }catch(e){} }
+function perecolPosSet(o){ try{ if(Object.keys(o).length) localStorage.setItem(PERECOL_POS_KEY, JSON.stringify(o)); else localStorage.removeItem(PERECOL_POS_KEY); }catch(e){} }
+// Copie locale des dernières valeurs liquidatives (propre à cet appareil, jamais sauvegardée : elle se reconstruit seule) pour que Portefeuille s'affiche sans attendre le réseau
+function perecolVlGet(){ try{ var o = JSON.parse(localStorage.getItem(PERECOL_VL_KEY)||'{}'); return (o && typeof o === 'object' && !Array.isArray(o)) ? o : {}; }catch(e){ return {}; } }
+function perecolVlPut(isin, p, name){
+  if(!p || !isFinite(Number(p.value))) return;
+  var o = perecolVlGet(), old = o[isin] || {};
+  o[isin] = { v:Number(p.value), c:String(p.currency||'EUR').slice(0,3), d:String(p.date||'').slice(0,10), n:String(name || old.n || '').slice(0,120), t:Date.now() };
+  try{ localStorage.setItem(PERECOL_VL_KEY, JSON.stringify(o)); }catch(e){}
+}
+async function perecolPartsEdit(isin){
+  var cur = perecolPosGet()[isin];
+  var v = await kyfDialog({ kind:'input', q:'Mes parts de ce fonds', d:'Nombre de parts que vous détenez (par exemple 12,5). Valeur = parts x valeur liquidative officielle. Laissez vide pour retirer ce fonds de Portefeuille.', value:cur ? String(cur).replace('.', ',') : '', ok:'Enregistrer' });
+  if(v === false || v === null || v === undefined) return;
+  var n = parseFloat(String(v).replace(/[\s\u202f\u00a0]/g, '').replace(',', '.'));
+  var pos = perecolPosGet();
+  if(String(v).trim() === ''){ delete pos[isin]; }
+  else if(!isFinite(n) || n <= 0 || n >= 1e9){ showToast('Nombre de parts non valide'); return; }
+  else pos[isin] = Math.round(n * 10000) / 10000;
+  perecolPosSet(pos);
+  var inv = perecolInvGet();
+  if(!pos[isin]){ if(inv[isin] !== undefined){ delete inv[isin]; perecolInvSet(inv); } }
+  else {
+    var m = await kyfDialog({ kind:'input', q:'Montant investi dans ce fonds', d:'Facultatif : la somme que vous avez versée (en euros), pour calculer la plus-value. Laissez vide si vous ne la connaissez pas.', value:inv[isin] ? String(inv[isin]).replace('.', ',') : '', ok:'Enregistrer' });
+    if(m !== false && m !== null && m !== undefined){
+      var a = parseFloat(String(m).replace(/[\s\u202f\u00a0]/g, '').replace(',', '.'));
+      if(String(m).trim() === '') delete inv[isin];
+      else if(isFinite(a) && a > 0 && a < 1e12) inv[isin] = Math.round(a * 100) / 100;
+      else showToast('Montant non valide, ignoré');
+      perecolInvSet(inv);
+    }
+  }
+  perecolWatchRender();
+  try{ renderETFTable(window._lp || {}); }catch(e){}
+  showToast(pos[isin] ? 'Enregistré : le fonds apparaît dans Portefeuille' : 'Fonds retiré de Portefeuille');
+}
+
+// 2.13.0.12 : historique des valeurs liquidatives (courbe GECO, relayée par le référentiel : le téléphone ou l'ordinateur ne parle jamais à GECO).
+// Copie locale, propre à cet appareil, jamais sauvegardée : elle se reconstruit seule.
+const PERECOL_COURBE_KEY = 'kyf-perecol-courbe';
+let _perecolCourbes = null;
+function perecolCourbesLoad(){
+  if(_perecolCourbes) return _perecolCourbes;
+  try{ var o = JSON.parse(localStorage.getItem(PERECOL_COURBE_KEY)||'{}'); _perecolCourbes = (o && typeof o === 'object' && !Array.isArray(o)) ? o : {}; }catch(e){ _perecolCourbes = {}; }
+  return _perecolCourbes;
+}
+function perecolCourbesSave(){
+  var o = perecolCourbesLoad(), k = Object.keys(o);
+  if(k.length > 25){ k.sort(function(a, b){ return (o[a].t || 0) - (o[b].t || 0); }).slice(0, k.length - 25).forEach(function(x){ delete o[x]; }); }
+  try{ localStorage.setItem(PERECOL_COURBE_KEY, JSON.stringify(o)); }catch(e){ try{ localStorage.removeItem(PERECOL_COURBE_KEY); }catch(_){} }
+}
+async function perecolCourbeFetch(isin){
+  if(!window.KYF_FUND_GAS_URL || /\[kyfDemo:\d+\]/.test(window.name||'')) return null;
+  try{
+    var r = await fetch(window.KYF_FUND_GAS_URL + '?action=courbe&isin=' + encodeURIComponent(isin), { redirect:'follow' }), j = await r.json();
+    if(j && j.found && Array.isArray(j.x) && Array.isArray(j.y) && j.x.length === j.y.length && j.x.length){
+      perecolCourbesLoad()[isin] = { t:Date.now(), x:j.x, y:j.y, nuit:String(j.nuit||'') }; perecolCourbesSave(); return perecolCourbesLoad()[isin];
+    }
+    perecolCourbesLoad()[isin] = { t:Date.now(), x:[], y:[], nuit:'' }; perecolCourbesSave();
+  }catch(e){}
+  return null;
+}
+// Points [date ISO, valeur] des N derniers jours (jours comptés à partir du dernier point connu), valeurs jamais modifiées
+function perecolSerie(isin, jours){
+  var c = perecolCourbesLoad()[isin]; if(!c || !c.x || !c.x.length) return null;
+  var last = Date.parse(c.x[c.x.length - 1] + 'T12:00:00Z'), from = last - jours * 86400000, out = [];
+  for(var i = 0; i < c.x.length; i++){ var t = Date.parse(c.x[i] + 'T12:00:00Z'), v = Number(c.y[i]); if(t >= from && isFinite(v) && v > 0) out.push([c.x[i], v]); }
+  return out;
+}
+function perecolSparkCell(isin){ return kyfSparkCell({ ticker:isin }); }
+// Un code ISIN suivi par PERECOL (la fenêtre Bourse et la colonne TENDANCE s'en servent comme d'un ticker)
+function perecolIsFund(t){ return /^[A-Z]{2}[A-Z0-9]{9}[0-9]$/.test(String(t||'')) && !!(perecolCourbesLoad()[t] || perecolPosGet()[t]); }
+function perecolPts(isin){ const c = perecolCourbesLoad()[isin]; if(!c || !c.x) return []; const o = []; for(let i = 0; i < c.x.length; i++){ const v = Number(c.y[i]); if(v > 0 && /^\d{4}-\d{2}-\d{2}$/.test(c.x[i])) o.push([c.x[i], v]); } return o; }
+
+// ── Fiche d'un fonds PERECOL (clic sur le nom ou sur la mini-courbe) : informations à gauche, courbe à droite ──
+let _perecolFiche = null;
+async function perecolFicheOpen(isin){
+  if(!kyfIsinFormatOk(isin)) return;
+  if(document.getElementById('perecolFicheModal')){ if(!_perecolFiche || _perecolFiche.isin !== isin) perecolFicheGo(isin); return; }
+  var names = perecolNamesGet(), vlc = perecolVlGet()[isin] || null;
+  var o = document.createElement('div'); o.id = 'perecolFicheModal';
+  o.style.cssText = 'position:fixed;inset:0;z-index:10000200;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:16px;font-family:Inter,sans-serif';
+  o.oncontextmenu = function(e){ e.preventDefault(); };
+  o.innerHTML = '<div role="dialog" aria-modal="true" aria-label="Fiche du fonds" style="width:min(1040px,100%);max-height:90vh;overflow-y:auto;overscroll-behavior:contain;background:var(--bg2);border:1px solid rgba(240,180,41,.3);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.5);padding:22px 24px">'
+    + '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px"><div style="min-width:0"><div id="pfTitle" style="font-size:16px;font-weight:800;color:var(--text);line-height:1.3">' + escapeHtml(names[isin] || (vlc && vlc.n) || isin) + '</div><div id="pfIsin" style="font-size:10px;color:var(--text3);margin-top:3px;letter-spacing:.4px">' + escapeHtml(isin) + '</div></div>'
+    + '<span style="display:inline-flex;align-items:center;gap:6px;flex-shrink:0"><span id="pfNav" style="display:none;align-items:center;gap:2px"><button type="button" class="kbNavB" onclick="perecolFicheNav(-1)" aria-label="Fonds précédent" title="Fonds précédent"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg></button><button type="button" class="kbNavB" onclick="perecolFicheNav(1)" aria-label="Fonds suivant" title="Fonds suivant"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></button></span>'
+    + '<button type="button" id="pfX" class="kyf-modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></span></div>'
+    + '<div class="kyf-seg" id="pfTabs" role="group" aria-label="Onglets" style="border-radius:5px;margin-bottom:16px;display:inline-flex"><button type="button" id="pfTabBc" onclick="perecolFicheTab(\'c\')" aria-pressed="true" class="kyf-toggle-active" style="padding:6px 14px">COURBE</button><button type="button" id="pfTabBi" onclick="perecolFicheTab(\'i\')" aria-pressed="false" style="padding:6px 14px">INFORMATIONS DU FONDS</button></div>'
+    + '<div id="pfTabC" style="display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start"><div id="pfInfo" style="flex:1 1 260px;max-width:340px;min-width:240px"></div><div id="kyfBourseBody" style="flex:3 1 460px;min-width:0"></div></div>'
+    + '<div id="pfTabI" style="display:none"></div></div>';
+  function close(){ _kyfBourseT = ''; var tp = document.getElementById('kyfBourseTip'); if(tp) tp.remove(); o.remove(); document.body.style.overflow = o._ov || ''; document.removeEventListener('keydown', kd, true); _perecolFiche = null; }
+  function kd(e){ if(e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); close(); } else if((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && !(e.target && e.target.matches && e.target.matches('input,textarea,select'))){ e.preventDefault(); perecolFicheNav(e.key === 'ArrowRight' ? 1 : -1); } }
+  o._ov = document.body.style.overflow; document.body.style.overflow = 'hidden';
+  document.body.appendChild(o); o.querySelector('#pfX').onclick = close; document.addEventListener('keydown', kd, true);
+  _perecolFiche = { isin:isin, per:'3M' };
+  o.querySelector('#pfInfo').innerHTML = '<div style="font-size:11px;color:var(--text3)">Chargement...</div>';
+  o.querySelector('#kyfBourseBody').innerHTML = '<div style="font-size:11px;color:var(--text3);padding:30px 0">Chargement de la courbe...</div>';
+  await perecolFicheLoad(isin);
+}
+async function perecolFicheLoad(isin){
+  var fund = null, price = null;
+  try{ fund = await window.KYF_FUND_REPO.FundRepository.getFundByISIN(isin); }catch(e){}
+  try{ var r = await fetch(window.KYF_FUND_GAS_URL + '?action=price&isin=' + encodeURIComponent(isin), { redirect:'follow' }); var pj = await r.json(); if(pj && pj.found) price = pj; }catch(e){}
+  if(price) perecolVlPut(isin, price, fund && fund.name);
+  var gf = null;
+  if(!/\[kyfDemo:\d+\]/.test(window.name||'') && window.KYF_FUND_GAS_URL){ try{ var fr = await fetch(window.KYF_FUND_GAS_URL + '?action=fiche&isin=' + encodeURIComponent(isin), { redirect:'follow' }), fj = await fr.json(); if(fj && fj.found && fj.fiche && typeof fj.fiche === 'object') gf = fj; }catch(e){} }
+  if(!/\[kyfDemo:\d+\]/.test(window.name||'') && window.KYF_FUND_GAS_URL){ var cc = perecolCourbesLoad()[isin]; if(!cc || Date.now() - (cc.t || 0) > 3600000) await perecolCourbeFetch(isin); }
+  if(!document.getElementById('perecolFicheModal') || !_perecolFiche || _perecolFiche.isin !== isin) return;
+  _perecolFiche.fund = fund; _perecolFiche.price = price; if(gf) _perecolFiche.gfiche = gf;
+  perecolFicheRender();
+}
+// Passer d'un fonds à l'autre sans fermer la fenêtre (flèches de la fenêtre ou du clavier)
+function perecolFicheGo(isin){
+  var tab = (_perecolFiche && _perecolFiche.tab) || 'c';
+  _perecolFiche = { isin:isin, per:'3M', tab:tab };
+  var nm = perecolNamesGet()[isin] || (perecolVlGet()[isin] || {}).n || isin;
+  document.getElementById('pfTitle').textContent = nm; document.getElementById('pfIsin').textContent = isin;
+  document.getElementById('pfInfo').innerHTML = '<div style="font-size:11px;color:var(--text3)">Chargement...</div>';
+  document.getElementById('kyfBourseBody').innerHTML = '<div style="font-size:11px;color:var(--text3);padding:30px 0">Chargement de la courbe...</div>';
+  document.getElementById('pfTabI').innerHTML = '';
+  _kyfBourseT = '';
+  void perecolFicheLoad(isin);
+}
+function perecolFicheNav(d){
+  var l = perecolWatchGet(), F = _perecolFiche; if(!F || l.length < 2) return;
+  var i = l.indexOf(F.isin); perecolFicheGo(l[((i < 0 ? 0 : i) + d + l.length) % l.length]);
+}
+function perecolFicheTab(k){
+  var F = _perecolFiche; if(!F) return; F.tab = k === 'i' ? 'i' : 'c';
+  var c = document.getElementById('pfTabC'), i = document.getElementById('pfTabI'), bc = document.getElementById('pfTabBc'), bi = document.getElementById('pfTabBi');
+  if(!c || !i) return;
+  c.style.display = F.tab === 'c' ? 'flex' : 'none'; i.style.display = F.tab === 'i' ? 'block' : 'none';
+  bc.className = F.tab === 'c' ? 'kyf-toggle-active' : ''; bi.className = F.tab === 'i' ? 'kyf-toggle-active' : '';
+  bc.setAttribute('aria-pressed', String(F.tab === 'c')); bi.setAttribute('aria-pressed', String(F.tab === 'i'));
+}
+function perecolInfosHtml(){
+  var F = _perecolFiche, fund = F.fund || {}, p = F.price, c = perecolCourbesLoad()[F.isin], G = (F.gfiche && F.gfiche.fiche) || null;
+  var fmtD = function(x){ if(!x) return ''; var d = new Date(x); return isNaN(d) ? String(x) : d.toLocaleDateString('fr-FR'); };
+  var row = function(l, v){ if(v === undefined || v === null || v === '') return ''; return '<div style="display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px solid var(--border);font-size:11px"><span style="color:var(--text3);flex-shrink:0">' + escapeHtml(l) + '</span><span style="color:var(--text);font-weight:600;text-align:right;word-break:break-word">' + escapeHtml(String(v)) + '</span></div>'; };
+  var box = function(t, body){ return body ? '<div style="min-width:0"><div style="font-size:9px;font-weight:700;letter-spacing:1px;color:var(--accent);margin:0 0 2px">' + t + '</div>' + body + '</div>' : ''; };
+  var sections = '';
+  if(G){
+    sections += box('IDENTITÉ', row('Nom du fonds', G.nom) + row('Code ISIN de la part', F.isin) + row('Code AMF', G.codeAmf) + row('Code LEI', G.lei) + row('Statut', G.statut) + row('Date de création', fmtD(G.creation)) + row('Domiciliation', G.domiciliation));
+    sections += box('TYPE DE FONDS', row('Famille', G.famille) + row('Nature', G.nature) + row('Sous-nature', G.sousNature) + row('Classification AMF', G.classification) + row('Souscripteurs', G.souscripteurs));
+    sections += box('ACTEURS', row('Société de gestion', G.gestionnaire) + row('Forme juridique', G.gestionnaireForme) + row('Pays de la société', G.gestionnairePays) + row('Site de la société', G.gestionnaireWeb) + row('Dépositaire', G.depositaire));
+    sections += box('DERNIÈRE AUTORISATION', row('Type', G.dernAutoType) + row('Numéro', G.dernAutoNum) + row('Date', fmtD(G.dernAutoDate)));
+  } else {
+    sections += box('FONDS', row('Nom du fonds', fund.name || perecolNamesGet()[F.isin]) + row('Code ISIN', F.isin) + row('Société de gestion', fund.managementCompany) + row('Classification AMF', fund.amfClassification) + row('Nature', fund.nature) + row('Dépositaire', fund.depositary) + row('Date de création', fmtD(fund.creationDate)));
+  }
+  var vl = (p ? row('Dernière valeur liquidative', Number(p.value).toLocaleString('fr-FR',{maximumFractionDigits:4}) + ' ' + (p.currency || 'EUR') + ' au ' + fmtD(p.date)) : '') + (c && c.x && c.x.length ? row('Historique disponible', c.x.length + ' valeurs, du ' + fmtD(c.x[0]) + ' au ' + fmtD(c.x[c.x.length - 1])) : '');
+  sections += box('VALEUR LIQUIDATIVE', vl);
+  var h = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:6px 32px">' + sections + '</div>';
+  if(!sections.replace(/<[^>]+>/g, '').trim()) h = '<div style="font-size:11px;color:var(--text3)">Aucune information reçue pour ce fonds pour le moment : elle arrive après le prochain passage de nuit.</div>';
+  if(G && Array.isArray(G.parts) && G.parts.length){
+    var ps = G.parts.slice().sort(function(a, b){ var av = a.statut === 'Vivant' ? 0 : 1, bv = b.statut === 'Vivant' ? 0 : 1; return (a.isin === F.isin ? -1 : b.isin === F.isin ? 1 : av - bv) || String(a.nom).localeCompare(String(b.nom)); });
+    var th = function(t){ return '<th style="text-align:left;padding:8px 10px;font-size:9px;font-weight:700;letter-spacing:.8px;color:var(--text3);white-space:nowrap">' + t + '</th>'; };
+    var td = function(t, st){ return '<td style="padding:8px 10px;font-size:11px;' + (st || '') + '">' + escapeHtml(String(t || '')) + '</td>'; };
+    h += '<div style="font-size:9px;font-weight:700;letter-spacing:1px;color:var(--accent);margin:22px 0 8px">PARTS DU FONDS (' + ps.length + ')</div><div style="overflow-x:auto;border:1px solid var(--border);border-radius:10px"><table style="width:100%;border-collapse:collapse;min-width:640px"><thead><tr style="border-bottom:1px solid var(--border)">' + th('CODE ISIN') + th('PART') + th('STATUT') + th('DEVISE') + th('AFFECTATION') + th('CRÉATION') + th('DOCUMENT') + '</tr></thead><tbody>'
+      + ps.map(function(x){ var me = x.isin === F.isin, d = x.docs && x.docs[0]; return '<tr style="border-bottom:1px solid var(--border);' + (me ? 'background:var(--btn-secondary-bg)' : '') + '">' + td(x.isin, 'font-weight:' + (me ? 800 : 600)) + td(x.nom + (me ? '  (la vôtre)' : '')) + td(x.statut, x.statut === 'Vivant' ? '' : 'color:var(--text3)') + td(x.devise) + td(x.affectation) + td(fmtD(x.creation)) + td(d ? d.type + ' du ' + fmtD(d.date) : '') + '</tr>'; }).join('') + '</tbody></table></div>';
+  }
+  var nuit = F.gfiche && F.gfiche.nuit ? fmtD(F.gfiche.nuit) : '';
+  h += '<div style="font-size:10px;color:var(--text3);line-height:1.7;margin-top:16px">Source : AMF, GECO' + (nuit ? ', informations relevées le ' + nuit : '') + '. Données non modifiées, mises à jour une fois par mois. Tous droits réservés.</div>'
+    + '<div style="margin-top:12px"><button type="button" onclick="window.open(\'https://geco.amf-france.org/\',\'_blank\',\'noopener,noreferrer\')" class="kyf-geo-mod" style="font-size:10px;padding:8px 14px;border-radius:8px;cursor:pointer">VOIR SUR GECO</button></div>';
+  return '<div>' + h + '</div>';
+}
+function perecolFicheRender(){
+  var F = _perecolFiche; if(!F) return;
+  var isin = F.isin, fund = F.fund || {}, p = F.price, pos = perecolPosGet()[isin], inv = perecolInvGet()[isin];
+  var fmtD = function(x){ try{ var d = new Date(x); return isNaN(d) ? '' : d.toLocaleDateString('fr-FR'); }catch(e){ return ''; } };
+  var nm = perecolNamesGet()[isin] || (fund && fund.name) || (perecolVlGet()[isin] || {}).n || isin;
+  var t = document.getElementById('pfTitle'); if(t) t.textContent = nm;
+  var row = function(l, v){ return v ? '<div style="display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);font-size:11px"><span style="color:var(--text3)">' + escapeHtml(l) + '</span><span style="color:var(--text);font-weight:600;text-align:right">' + escapeHtml(String(v)) + '</span></div>' : ''; };
+  var h = '';
+  if(p){ h += '<div style="padding:12px 14px;border-radius:10px;background:var(--btn-secondary-bg);margin-bottom:10px"><div style="font-size:9px;font-weight:700;letter-spacing:1px;color:var(--text3)">DERNIÈRE VALEUR LIQUIDATIVE</div><div style="font-size:22px;font-weight:800;color:var(--text);margin-top:4px">' + Number(p.value).toLocaleString('fr-FR',{maximumFractionDigits:4}) + ' ' + escapeHtml(p.currency||'EUR') + '</div><div style="font-size:10px;color:var(--text3);margin-top:2px">au ' + fmtD(p.date) + '</div></div>'; }
+  else h += '<div style="font-size:11px;color:var(--text3);line-height:1.7;margin-bottom:10px">Valeur liquidative pas encore reçue : elle arrive après le prochain passage de nuit.</div>';
+  h += row('Société de gestion', fund.managementCompany) + row('Classification AMF', fund.amfClassification) + row('Nature', fund.nature) + row('Dépositaire', fund.depositary) + row('Date de création', fund.creationDate ? fmtD(fund.creationDate) : '');
+  if(pos){
+    var val = p ? pos * Number(p.value) : null;
+    h += '<div style="font-size:9px;font-weight:700;letter-spacing:1px;color:var(--text3);margin:14px 0 2px">MA POSITION</div>' + row('Parts', pos.toLocaleString('fr-FR',{maximumFractionDigits:4})) + row('Valeur', val != null ? val.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' €' : '') + row('Investi', inv ? inv.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' €' : '');
+    if(val != null && inv){ var g = val - inv; h += '<div style="display:flex;justify-content:space-between;padding:8px 0;font-size:11px"><span style="color:var(--text3)">Plus-value</span><span style="font-weight:800;color:' + (g >= 0 ? 'var(--green)' : 'var(--red)') + '">' + (g >= 0 ? '+' : '') + g.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' € (' + (g >= 0 ? '+' : '') + (g / inv * 100).toFixed(2).replace('.', ',') + ' %)</span></div>'; }
+  } else h += '<div style="margin-top:12px"><button type="button" class="kyf-geo-mod" onclick="perecolPartsEdit(\'' + escJsAttr(isin) + '\')" style="font-size:10px;padding:8px 14px;border-radius:8px;cursor:pointer">SAISIR MES PARTS</button></div>';
+  document.getElementById('pfInfo').innerHTML = h;
+  var pi = document.getElementById('pfTabI'); if(pi) pi.innerHTML = perecolInfosHtml();
+  var nv = document.getElementById('pfNav'); if(nv) nv.style.display = perecolWatchGet().length > 1 ? 'inline-flex' : 'none';
+  var pit = document.getElementById('pfIsin'); if(pit) pit.textContent = isin;
+  perecolFicheTab(F.tab || 'c');
+  perecolChartDraw();
+}
+function perecolChartDraw(){
+  const F = _perecolFiche; if(!F || !document.getElementById('kyfBourseBody')) return;
+  _kyfBourseT = F.isin; if(!KYF_BOURSE_PER[_kyfBourseP]) _kyfBourseP = kyfBourseFavPer() || kyfSparkPer();
+  _kyfBourseH[F.isin] = { pts: perecolPts(F.isin), full: true }; kyfBourseRender();
+}
+function perecolSourceHtml(isin){
+  const c = perecolCourbesLoad()[isin], d = c && c.x && c.x.length ? c.x[c.x.length - 1] : '';
+  return '<div style="font-size:10px;color:var(--text3);line-height:1.6;margin-top:14px;display:flex;align-items:flex-start;gap:6px"><span>Source : AMF, GECO' + (d ? ', dernière valeur du ' + d.split('-').reverse().join('/') : '') + '. Données non modifiées.</span><button type="button" onclick="perecolFicheMention()" title="Mention complète de la source" aria-label="Mention complète de la source" class="kyf-icon-btn" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:0;display:inline-flex"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button></div><div id="pfMention" style="display:none;font-size:10px;color:var(--text3);line-height:1.6;margin-top:4px"></div>';
+}
+function perecolFicheMention(){
+  var e = document.getElementById('pfMention'), F = _perecolFiche || { isin:_kyfBourseT, price:{} }; if(!e || !F.isin) return;
+  if(e.style.display !== 'none'){ e.style.display = 'none'; return; }
+  var cd = perecolCourbesLoad()[F.isin], p = F.price || perecolVlGet()[F.isin] || {};
+  e.textContent = kyfGecoMention({ vlDate: (cd && cd.x && cd.x.length ? cd.x[cd.x.length - 1] : p.date), geco: p.gecoUpdate || p.date, fetched: (cd && cd.t) || p.retrievedAt }); e.style.display = 'block';
+}
+
+// Rafraîchit (au plus toutes les 6 h) les valeurs liquidatives des fonds dont j'ai des parts, puis redessine Portefeuille une seule fois
+let _perecolVlBusy = false;
+async function perecolVlRefresh(){
+  if(_perecolVlBusy || /\[kyfDemo:\d+\]/.test(window.name||'')) return;
+  var pos = perecolPosGet(), ids = Object.keys(pos), cache = perecolVlGet(), now = Date.now();
+  var todo = ids.filter(function(i){ return !cache[i] || now - (cache[i].t || 0) > 6 * 3600000; });
+  var todoC = ids.filter(function(i){ var c = perecolCourbesLoad()[i]; return !c || now - (c.t || 0) > 12 * 3600000; });
+  if((!todo.length && !todoC.length) || !window.KYF_FUND_GAS_URL) return;
+  _perecolVlBusy = true;
+  try{
+    for(var q = 0; q < todoC.length; q++){ await perecolCourbeFetch(todoC[q]); }
+    for(var k = 0; k < todo.length; k++){
+      var isin = todo[k], fund = null, price = null;
+      try{ fund = await window.KYF_FUND_REPO.FundRepository.getFundByISIN(isin); }catch(e){}
+      try{ var r = await fetch(window.KYF_FUND_GAS_URL + '?action=price&isin=' + encodeURIComponent(isin), { redirect:'follow' }); price = await r.json(); }catch(e){}
+      if(price && price.found) perecolVlPut(isin, price, fund && fund.name);
+    }
+  }finally{ _perecolVlBusy = false; }
+  try{ renderETFTable(window._lp || {}); }catch(e){}
+}
 function perecolWatchFocus(){
   var i = document.getElementById('perecolIsinInput'), c = document.getElementById('perecolSearchCard');
   if(i){ try{ i.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} setTimeout(function(){ i.focus(); }, 250); }
@@ -22229,26 +22462,30 @@ async function perecolWatchRender(){
     var name = fund && fund.name ? fund.name : null;
     if(!name){ try{ var m = (typeof ETF !== 'undefined' ? ETF : []).find(function(p){ return p && p.isin && fiNormalizeISIN(p.isin) === isin && (p.nom || p.name); }); if(m) name = m.nom || m.name; }catch(e){} }
     var mine2 = perecolNamesGet()[isin]; if(mine2) name = mine2;
+    if(price && price.found) perecolVlPut(isin, price, name);
     return { isin:isin, name:name, gest:(fund && fund.managementCompany) || '', price:(price && price.found) ? price : null };
   }));
   var maj = '';
   rows.forEach(function(r){ if(r.price && r.price.gecoUpdate){ var t = new Date(r.price.gecoUpdate).getTime(); if(!isNaN(t) && (!maj || t > maj)) maj = t; } });
   document.getElementById('perecolKpiMaj').textContent = maj ? fmtD(maj) : '-';
-  var G = 'display:grid;grid-template-columns:minmax(0,2.4fr) minmax(0,1.1fr) minmax(0,1fr) minmax(0,1.1fr) 34px;gap:12px;align-items:center';
-  var html = '<div style="'+G+';padding:0 12px 8px;font-size:9px;font-weight:700;letter-spacing:1px;color:var(--text3)"><span>FONDS</span><span>VALEUR LIQUIDATIVE</span><span>VALEUR DU</span><span>MISE À JOUR GECO</span><span></span></div>';
+  var G = 'display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1.1fr) minmax(0,.9fr) minmax(0,1fr) minmax(0,1.1fr) 34px;gap:12px;align-items:center'; var POS = perecolPosGet(), INV = perecolInvGet();
+  var html = '<div style="'+G+';padding:0 12px 8px;font-size:9px;font-weight:700;letter-spacing:1px;color:var(--text3)"><span>FONDS</span><span>VALEUR LIQUIDATIVE</span><span>VALEUR DU</span><span>MISE À JOUR GECO</span><span>MA POSITION</span><span></span></div>';
   rows.forEach(function(r, k){
     var p = r.price, id = 'perecolInfo' + k;
     var vl = p ? Number(p.value).toLocaleString('fr-FR',{maximumFractionDigits:4}) + ' ' + escapeHtml(p.currency||'') : '<span style="color:var(--text3);font-weight:400">en attente de la nuit</span>';
     html += '<div style="'+G+';padding:10px 12px;border-radius:8px;background:var(--btn-secondary-bg);margin-bottom:6px;transition:background .15s" onmouseover="this.style.background=\'var(--hov-bg)\'" onmouseout="this.style.background=\'var(--btn-secondary-bg)\'">'
-      +'<div style="min-width:0"><div style="font-size:11px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escapeHtml(r.name || r.isin)+'</div><div style="font-size:9px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escapeHtml(r.isin)+(r.gest?' · '+escapeHtml(r.gest):'')+'</div></div>'
+      +'<div style="min-width:0"><button type="button" onclick="perecolFicheOpen(\''+escJsAttr(r.isin)+'\')" title="Ouvrir la fiche du fonds" style="display:block;max-width:100%;background:none;border:none;padding:0;font:inherit;font-size:11px;font-weight:700;color:var(--text);cursor:pointer;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .15s" onmouseover="this.style.color=\'var(--accent)\'" onmouseout="this.style.color=\'var(--text)\'">'+escapeHtml(r.name || r.isin)+'</button><div style="font-size:9px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escapeHtml(r.isin)+(r.gest?' · '+escapeHtml(r.gest):'')+'</div></div>'
       +'<div style="font-size:12px;font-weight:700;color:var(--text)">'+vl+'</div>'
       +'<div style="font-size:11px;color:var(--text2)">'+(p ? fmtD(p.date) : '-')+'</div>'
       +'<div style="font-size:11px;color:var(--text2)">'+(p && p.gecoUpdate ? fmtD(p.gecoUpdate) : '-')+'</div>'
+      +'<div style="font-size:11px;color:var(--text2);line-height:1.5">'+(POS[r.isin] ? '<div style="font-weight:700;color:var(--text)">'+(p ? (POS[r.isin]*Number(p.value)).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €' : '-')+'</div><div style="font-size:9px;color:var(--text3)">'+POS[r.isin].toLocaleString('fr-FR',{maximumFractionDigits:4})+' parts</div>'+(p && INV[r.isin] ? (function(){ var g = POS[r.isin]*Number(p.value)-INV[r.isin]; return '<div style="font-size:9px;font-weight:700;color:'+(g>=0?'#10b981':'#ff4560')+'">'+(g>=0?'+':'')+g.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' € ('+(g>=0?'+':'')+(g/INV[r.isin]*100).toFixed(2).replace('.',',')+' %)</div>'; })() : '') : '<button type="button" onclick="perecolPartsEdit(\''+escJsAttr(r.isin)+'\')" class="kyf-geo-mod" style="font-size:9px;padding:4px 8px;border-radius:6px;cursor:pointer">SAISIR MES PARTS</button>')+'</div>'
       +'<div style="display:flex;justify-content:flex-end"><span style="position:relative;display:inline-block">'
       +'<button type="button" onclick="event.stopPropagation();avToggleActionsMenu(\'pw-'+k+'\')" title="Actions" aria-label="Actions" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 6px;display:inline-flex;align-items:center;font-size:16px;letter-spacing:1px">⋯</button>'
       +'<div id="avActionsMenu-pw-'+k+'" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;min-width:170px">'
       +'<div class="kyf-menu-h">FONDS</div>'
+      +'<div onclick="avCloseActionsMenu(\'pw-'+k+'\');perecolFicheOpen(\''+escJsAttr(r.isin)+'\')" style="padding:8px 12px;font-family:\'Inter\',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background=\'var(--hov-bg-soft)\'" onmouseout="this.style.background=\'\'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 17 9 11 13 15 21 7"/></svg> Voir la fiche et la courbe</div>'
       + (p ? '<div onclick="avCloseActionsMenu(\'pw-'+k+'\');perecolWatchInfo(\''+id+'\')" style="padding:8px 12px;font-family:\'Inter\',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background=\'var(--hov-bg-soft)\'" onmouseout="this.style.background=\'\'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M11 12h1v5h1"/></svg> Mention légale de la source</div>' : '')
+      +'<div onclick="avCloseActionsMenu(\'pw-'+k+'\');perecolPartsEdit(\''+escJsAttr(r.isin)+'\')" style="padding:8px 12px;font-family:\'Inter\',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background=\'var(--hov-bg-soft)\'" onmouseout="this.style.background=\'\'">'+KYF_ICONS.edit+' '+(POS[r.isin] ? 'Modifier mes parts' : 'Saisir mes parts')+'</div>'
       +'<div onclick="avCloseActionsMenu(\'pw-'+k+'\');perecolWatchEdit(\''+escJsAttr(r.isin)+'\')" style="padding:8px 12px;font-family:\'Inter\',sans-serif;font-size:10px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background=\'var(--hov-bg-soft)\'" onmouseout="this.style.background=\'\'">'+KYF_ICONS.edit+' Modifier</div>'
       +'<div class="kyf-menu-sep" role="separator"></div>'
       +'<div onclick="avCloseActionsMenu(\'pw-'+k+'\');perecolWatchRemove(\''+escJsAttr(r.isin)+'\')" style="padding:8px 12px;font-family:\'Inter\',sans-serif;font-size:10px;color:#ff4560;cursor:pointer;display:flex;align-items:center;gap:6px" onmouseover="this.style.background=\'var(--hov-bg-soft)\'" onmouseout="this.style.background=\'\'"><svg aria-hidden="true" style="vertical-align:-.18em;flex-shrink:0" width="1.1em" height="1.1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg> Retirer du suivi</div>'
@@ -31575,6 +31812,8 @@ const KYF_WATCHED_KEYS = new Set([
   'kyf-perecol-my-company', // PERECOL "Mon entreprise"
   'kyf-perecol-watch',    // PERECOL : fonds suivis (codes ISIN)
   'kyf-perecol-names',    // PERECOL : noms affichés choisis
+  'kyf-perecol-pos',      // PERECOL : mes parts par fonds
+  'kyf-perecol-inv',      // PERECOL : montant investi par fonds
   'kyf-geco-follow-off',  // PERECOL : suivi GECO désactivé
   'kyf-fund-held',        // Fonds marqués "détenus" (référentiel fonds)
   'kyf-sidebar-order-assets',  // Ordre glisser-déposer sidebar, section Mes Actifs
@@ -42848,6 +43087,7 @@ function kyfEnvList(){
   const l = KYF_ENV_ORDER.filter(k => seen.has(k));
   seen.forEach(k => { if(!l.includes(k)) l.push(k); });
   try{ if(typeof peeLoad === 'function' && peeLoad().length) l.push('PEE'); }catch(e){}
+  try{ if(typeof perecolPosGet === 'function' && Object.keys(perecolPosGet()).length) l.push('PERECOL'); }catch(e){}
   return l;
 }
 // Vue « Séparé » (actifs rangés par enveloppe, avec titres et sous-menus) ou « Mélangé » (une seule liste, par défaut : « TOUT » montre tout dans une liste).
@@ -42949,7 +43189,7 @@ document.addEventListener('keydown', e => {
   if(_solo) kyfEnvStep(e.key === 'ArrowRight' ? 1 : -1);
   else kyfEnvGo(e.key === 'ArrowRight' ? _l[0] : _l[_l.length - 1], e.key === 'ArrowRight' ? 'r' : 'l');
 });
-const KYF_ENV_LABELS = { PEA:'PEA', 'PEA-PME':'PEA-PME', CTO:'CTO', AV:'Assurance Vie', PER:'PER', PEE:'PEE' };
+const KYF_ENV_LABELS = { PEA:'PEA', 'PEA-PME':'PEA-PME', CTO:'CTO', AV:'Assurance Vie', PER:'PER', PEE:'PEE', PERECOL:'PERECOL' };
 // Chevron : il sert seulement à replier ou déplier les lignes du compte
 function kyfEnvFoldBtn(env, collapsed){
   const t = collapsed ? 'Déplier' : 'Replier';
@@ -42978,7 +43218,7 @@ function kyfEnvMenuPick(env){
 function kyfEnvMenu(btn, current){
   if(document.getElementById('kyfEnvMenu')){ kyfEnvMenuClose(); return; }
   const l = kyfEnvList(), solo = kyfEnvSoloValid(), ic = window._kyfEnvIcons || {};
-  const nb = env => env === 'PEE' ? (() => { try{ return peeLoad().length; }catch(e){ return 0; } })() : ETF.filter(e => (e.enveloppe || 'PEA') === env).length;
+  const nb = env => env === 'PERECOL' ? Object.keys(perecolPosGet()).length : env === 'PEE' ? (() => { try{ return peeLoad().length; }catch(e){ return 0; } })() : ETF.filter(e => (e.enveloppe || 'PEA') === env).length;
   const m = document.createElement('div'); m.id = 'kyfEnvMenu'; m.setAttribute('role', 'menu'); m.setAttribute('aria-label', 'Accéder à un compte'); m._btn = btn;
   m.style.cssText = 'position:fixed;z-index:9000;min-width:210px;box-sizing:border-box;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;box-shadow:0 10px 24px rgba(0,0,0,0.3);padding:6px;display:flex;flex-direction:column;gap:2px;font-family:Inter,sans-serif;animation:kyfEnvMenuIn .16s ease-out';
   const item = (env, label, icon, right, on) => `<button type="button" role="menuitem" class="kyf-env-mi${on ? ' on' : ''}" onclick="kyfEnvMenuPick('${escJsAttr(String(env))}')"><span class="ico">${icon || ''}</span><span class="lb">${escapeHtml(label)}</span><span class="rt">${right}</span>${on ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>' : '<span style="width:12px"></span>'}</button>`;
@@ -43356,6 +43596,41 @@ function kyfPeeTableRows(showCol, showLogo, subOn, collapsed){
   return h;
 }
 
+
+// PERECOL dans le tableau du Portefeuille (2.13.0.10) : bloc à part sous le PEE, hors total, lecture seule. Une ligne par fonds dont j'ai saisi les parts ; valeur = parts x valeur liquidative AMF (GECO) gardée localement.
+function kyfPerecolTableRows(showCol, showLogo, subOn, collapsed){
+  if(typeof perecolPosGet !== 'function') return '';
+  const pos = perecolPosGet(), ids = Object.keys(pos); if(!ids.length) return '';
+  const inv = perecolInvGet(), cache = perecolVlGet(), names = (typeof perecolNamesGet === 'function') ? perecolNamesGet() : {};
+  setTimeout(() => { try{ perecolVlRefresh(); }catch(e){} }, 0);
+  const lines = ids.map(i => { const c = cache[i], vl = c && isFinite(c.v) ? c.v : null; return { isin: i, nom: names[i] || (c && c.n) || i, parts: pos[i], vl, d: c && c.d || '', val: vl != null ? pos[i] * vl : null, inv: inv[i] || null, gp: vl != null && inv[i] ? pos[i] * vl - inv[i] : null }; });
+  const known = lines.filter(l => l.val != null), sEval = known.reduce((t, l) => t + l.val, 0);
+  const withInv = lines.filter(l => l.inv), sInv = withInv.reduce((t, l) => t + l.inv, 0), both = lines.filter(l => l.gp != null), sGp = both.reduce((t, l) => t + l.gp, 0), sGpInv = both.reduce((t, l) => t + l.inv, 0);
+  const sc = v => v >= 0 ? 'up' : 'dn';
+  const sTd = (k, html, cls) => showCol(k) ? '<td class="kyf-env-sub ' + (subOn ? (cls || '') : '') + '">' + (subOn ? html : '') + '</td>' : '';
+  const cells = sTd('investi', withInv.length ? fmt(sInv, 2) + ' €' : '-') + sTd('pru', '') + sTd('qte', '') + sTd('eval', known.length ? fmt(sEval, 2) + ' €' : '-') + sTd('cours', '') + sTd('varje', '') + sTd('tend', '') + sTd('gpe', both.length ? (sGp >= 0 ? '+' : '') + fmt(sGp, 2) + ' €' : '-', both.length ? sc(sGp) : '') + sTd('gpp', both.length && sGpInv > 0 ? (sGp >= 0 ? '+' : '') + (sGp / sGpInv * 100).toFixed(2) + ' %' : '-', both.length ? sc(sGp) : '') + sTd('repartition', '');
+  const ico = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.2 7.8-8 9-4.8-1.2-8-4.5-8-9V6l8-3z"/></svg>';
+  window._kyfEnvIcons = window._kyfEnvIcons || {}; window._kyfEnvIcons.PERECOL = ico;
+  let h = '<tr class="kyf-env-row" id="perecolTblHead"><td colspan="2" style="padding:14px 10px 4px"><div style="display:flex;align-items:center;gap:8px">' +
+    kyfEnvFoldBtn('PERECOL', collapsed) + kyfEnvNavHtml('PERECOL','pre') + kyfEnvNameBtn('PERECOL', 'PERECOL', ico) + kyfEnvNavHtml('PERECOL','post') +
+    '<span title="PERECOL est saisi à la main (vos parts) et suivi à part : il n\'est pas compté dans la ligne TOTAL ni dans les totaux du tableau de bord" style="font-size:8px;font-weight:700;letter-spacing:.6px;padding:2px 6px;border-radius:4px;border:1px solid var(--border2);color:var(--text3)">HORS TOTAL</span>' +
+    '<div style="flex:1;height:1px;background:linear-gradient(to right,var(--border2),transparent)"></div><span style="font-size:9px;color:var(--text3)">' + lines.length + ' actif' + (lines.length > 1 ? 's' : '') + '</span></div></td>' + cells + '<td></td></tr>';
+  if(collapsed) return h;
+  const dash = '<td style="color:var(--text3)">-</td>';
+  lines.forEach(l => {
+    const dt = l.d ? l.d.split('-').reverse().join('/') : '';
+    h += '<tr class="kyf-pee-row"><td style="font-weight:600"><div style="display:flex;align-items:center;gap:7px">' + (showLogo ? kyfDefaultLogoHTML(20) : '') + '<button type="button" onclick="event.stopPropagation();perecolFicheOpen(\'' + escJsAttr(l.isin) + '\')" title="Ouvrir la fiche du fonds" style="background:none;border:none;padding:0;font:inherit;font-weight:600;color:inherit;cursor:pointer;text-align:left;transition:color .15s" onmouseover="this.style.color=\'var(--accent)\'" onmouseout="this.style.color=\'inherit\'">' + escapeHtml(l.nom) + '</button><span class="kyf-env-chip" title="Fonds PERECOL, valeur officielle AMF (GECO)">PERECOL</span></div></td>' +
+      '<td style="font-size:9px;color:var(--text3);line-height:1.6;white-space:nowrap"><div style="color:var(--text2);font-weight:600">-</div><div style="font-size:8px;letter-spacing:.3px">' + escapeHtml(l.isin) + '</div></td>' +
+      (showCol('investi') ? (l.inv ? '<td>' + fmt(l.inv, 2) + ' €</td>' : dash) : '') + (showCol('pru') ? dash : '') +
+      (showCol('qte') ? '<td>' + peeFmtN(l.parts, 4) + '</td>' : '') +
+      (showCol('eval') ? (l.val != null ? '<td>' + fmt(l.val, 2) + ' €</td>' : '<td style="color:var(--text2)" title="Valeur liquidative pas encore reçue : valeur non calculée">indisponible</td>') : '') +
+      (showCol('cours') ? (l.vl != null ? '<td style="white-space:nowrap;text-align:center"><div style="font-weight:700;color:var(--text)">' + peeFmtN(l.vl, 4) + ' €</div>' + (dt ? '<div style="font-size:9px;color:var(--text3);margin-top:2px">AMF au ' + dt + '</div>' : '') + '</td>' : '<td style="text-align:center;color:var(--text3)">-</td>') : '') +
+      (showCol('varje') ? dash : '') + (showCol('tend') ? perecolSparkCell(l.isin) : '') + (showCol('gpe') ? (l.gp != null ? '<td class="' + sc(l.gp) + '" style="font-weight:700">' + (l.gp >= 0 ? '+' : '') + fmt(l.gp, 2) + ' €</td>' : dash) : '') + (showCol('gpp') ? (l.gp != null ? '<td class="' + sc(l.gp) + '" style="font-weight:700">' + (l.gp >= 0 ? '+' : '') + (l.gp / l.inv * 100).toFixed(2) + ' %</td>' : dash) : '') + (showCol('repartition') ? dash : '') +
+      '<td style="white-space:nowrap;padding:4px 6px"><button type="button" onclick="event.stopPropagation();showPage(\'assurance\');setAVFilter(\'perecol\')" title="Ouvrir PERECOL pour modifier mes parts" aria-label="Ouvrir PERECOL" class="kyf-icon-btn" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:4px 6px;display:inline-flex;align-items:center">' + KYF_ICONS.edit + '</button></td></tr>';
+  });
+  return h;
+}
+
 // ── TENDANCE : mini-courbe du cours sur 1 ou 3 mois (2.8.12.12) ──
 // Copie d'affichage, propre à cet appareil : rafraîchie au plus une fois par jour depuis l'historique des cours, jamais
 // synchronisée ni sauvegardée (elle se reconstruit seule). Aucun cours inventé : moins de 3 points connus = « indisponible ».
@@ -43390,6 +43665,7 @@ function kyfHistSpikes(a){
 }
 function kyfHistClean(a){ if(!Array.isArray(a) || a.length < 3) return a; const b = kyfHistSpikes(a); return b.size ? a.filter((_, i) => !b.has(i)) : a; }
 function kyfSparkSeries(ticker){
+  if(typeof perecolIsFund === 'function' && perecolIsFund(ticker)){ const pts = perecolSerie(ticker, kyfSparkPer() === '1m' ? 31 : 92); return pts && pts.length >= 3 ? pts : null; }
   const h0 = kyfSparkLoad().h[ticker]; if(!Array.isArray(h0)) return null;
   const h = kyfHistClean(h0.filter(x => Array.isArray(x) && Number.isFinite(x[1]) && x[1] > 0));
   const today = kyfParisNow().date, days = kyfSparkPer() === '1m' ? 31 : 92;
@@ -43631,11 +43907,12 @@ async function kyfBourseOpen(t, dir){
     + '<div id="kyfBourseBody" style="padding:22px 26px 26px"></div>';
   document.body.appendChild(ov); document.body.appendChild(m); document.body.style.overflow = 'hidden'; document.addEventListener('keydown', kyfBourseKey);
   }
-  document.getElementById('kyfBourseTitre').textContent = '· ' + ((e && e.name) || t) + ' (' + t + ')';
+  document.getElementById('kyfBourseTitre').textContent = '· ' + ((e && e.name) || (perecolIsFund(t) && (perecolNamesGet()[t] || (perecolVlGet()[t] || {}).n)) || t) + ' (' + t + ')';
   const nv = document.getElementById('kyfBourseNav'); if(nv) nv.style.display = kyfBourseList().length > 1 ? 'inline-flex' : 'none';
   if(keep){ const b = document.getElementById('kyfBourseBody'); if(b){ b.style.transition = 'none'; b.style.opacity = ''; b.style.transform = ''; b.style.animation = 'none'; void b.offsetWidth; b.style.setProperty('--kb-dx', (dir > 0 ? 14 : -14) + 'px'); b.style.animation = 'kbSwap .22s ease-out'; } }
   // Historique déjà connu (cache de la colonne TENDANCE) en attendant la lecture complète
-  if(!_kyfBourseH[t]) _kyfBourseH[t] = { pts: kyfSparkLoad().h[t] || [], full: false };
+  if(perecolIsFund(t)) _kyfBourseH[t] = { pts: perecolPts(t), full: true };
+  else if(!_kyfBourseH[t]) _kyfBourseH[t] = { pts: kyfSparkLoad().h[t] || [], full: false };
   try{ kyfSparkMarkActive(); }catch(_){}
   // Le chargement est déclaré AVANT le premier dessin : tant que l'historique ne couvre pas la période, on attend au lieu d'afficher une courbe partielle qui changerait ensuite
   const willFetch = !_kyfBourseH[t].full && KYF_HIST_URL && !_kyfBourseBusy[t];
@@ -43685,7 +43962,7 @@ function kyfBourseRender(){
     const area = line + 'L' + X(pts[pts.length - 1][0]).toFixed(1) + ' ' + y0.toFixed(1) + 'L' + X(pts[0][0]).toFixed(1) + ' ' + y0.toFixed(1) + 'Z';
     const hi = Math.max(...pts.map(x => x[1])), lo = Math.min(...pts.map(x => x[1]));
     const stat = (l, v, c) => '<div><div style="font-size:9px;color:var(--text3);letter-spacing:.5px;margin-bottom:3px">' + l + '</div><div style="font-size:14px;font-weight:700;' + (c ? 'color:' + c : '') + '">' + v + '</div></div>';
-    h += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">' + stat('DERNIER COURS', nf(last), '') + stat('VARIATION', (up ? '+' : '') + nf((last / first - 1) * 100) + ' %', col) + stat('PLUS HAUT', nf(hi), '') + stat('PLUS BAS', nf(lo), '') + '</div>';
+    h += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">' + stat(perecolIsFund(t) ? 'DERNIÈRE VALEUR LIQUIDATIVE' : 'DERNIER COURS', nf(last), '') + stat('VARIATION', (up ? '+' : '') + nf((last / first - 1) * 100) + ' %', col) + stat('PLUS HAUT', nf(hi), '') + stat('PLUS BAS', nf(lo), '') + '</div>';
     let g = '<defs><linearGradient id="kbA" gradientUnits="userSpaceOnUse" x1="0" x2="0" y1="' + y0.toFixed(1) + '" y2="' + T + '"><stop offset="0" stop-color="' + col + '" stop-opacity=".30"/><stop offset="1" stop-color="' + col + '" stop-opacity=".03"/></linearGradient><linearGradient id="kbB" gradientUnits="userSpaceOnUse" x1="0" x2="0" y1="' + y0.toFixed(1) + '" y2="' + (HT - B) + '"><stop offset="0" stop-color="' + col + '" stop-opacity=".30"/><stop offset="1" stop-color="' + col + '" stop-opacity=".03"/></linearGradient>'
       + '<clipPath id="kbCa"><rect x="0" y="0" width="' + W + '" height="' + y0.toFixed(1) + '"/></clipPath><clipPath id="kbCb"><rect x="0" y="' + y0.toFixed(1) + '" width="' + W + '" height="' + HT + '"/></clipPath></defs>';
     [mx - pd, (mx + mn) / 2, mn + pd].forEach(v => { g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(v).toFixed(1) + '" y2="' + Y(v).toFixed(1) + '" stroke="var(--border)" stroke-width="1"/><text x="' + (L - 8) + '" y="' + (Y(v) + 3).toFixed(1) + '" text-anchor="end" font-size="10" fill="var(--text3)">' + nf(v) + '</text>'; });
@@ -43703,11 +43980,12 @@ function kyfBourseRender(){
     const nOut = (kyfBourseOpt('bourseTx') ? tx.filter(x => !(x.d >= from && x.d <= today)).length : 0) + dv.filter(x => !(x.d >= from && x.d <= today)).length;
     const lg = (svg, l) => '<span style="display:inline-flex;align-items:center;gap:5px">' + svg + l + '</span>';
     h += '<div style="display:flex;gap:16px;margin:10px 0 0;font-size:10px;color:var(--text3);flex-wrap:wrap">'
-      + (kyfBourseOpt('bourseTx') ? lg('<svg width="10" height="10"><circle cx="5" cy="5" r="4.5" fill="var(--green)"/></svg>', 'Achat') + lg('<svg width="10" height="10"><circle cx="5" cy="5" r="4.5" fill="var(--red)"/></svg>', 'Vente') : '')
+      + (kyfBourseOpt('bourseTx') && !perecolIsFund(t) ? lg('<svg width="10" height="10"><circle cx="5" cy="5" r="4.5" fill="var(--green)"/></svg>', 'Achat') + lg('<svg width="10" height="10"><circle cx="5" cy="5" r="4.5" fill="var(--red)"/></svg>', 'Vente') : '')
       + (dv.length ? lg('<svg width="10" height="10"><path d="M5 0L10 5L5 10L0 5Z" fill="var(--blue)"/></svg>', 'Dividende') : '')
       + '<span>Pointillé gris : cours du début de période</span>' + (pru ? '<span style="color:var(--accent)">Pointillé orange : votre PRU</span>' : pru0 ? '<span style="color:var(--accent)">Votre PRU : ' + nf(pru0) + ' (hors du graphique)</span>' : '')
       + (nOut ? '<span>' + nOut + ' opération' + (nOut > 1 ? 's' : '') + ' hors période</span>' : '') + (!H.full ? '<span>Historique partiel (100 jours)</span>' : '') + (nSpk.length ? '<span title="Un cours isolé, au moins 3 fois plus haut ou plus bas que la veille et le lendemain, est écarté de la courbe et des chiffres">' + nSpk.length + ' cours aberrant' + (nSpk.length > 1 ? 's' : '') + ' ignoré' + (nSpk.length > 1 ? 's' : '') + ' : ' + nSpk.map(x => fr(x[0]) + ' (' + nf(x[1]) + ')').join(', ') + '</span>' : '') + '</div>';
   }
+  if(perecolIsFund(t)){ body.innerHTML = h + perecolSourceHtml(t); return; }
   // Vos opérations sur ce titre
   h += '<div style="font-size:11px;color:var(--accent);font-weight:700;letter-spacing:.5px;margin:26px 0 8px;padding-top:20px;border-top:1px solid var(--border)">VOS OPÉRATIONS</div>';
   if(!tx.length && !dv.length) h += '<div style="font-size:11px;color:var(--text2)">Aucun achat, vente ni dividende enregistré pour ce titre.</div>';
@@ -44083,7 +44361,7 @@ function renderETFTable(lp){
   rows += kyfFavMoreRow('etf', colCount, _fa, '€');
   let _tt = _solo ? ETF.filter(e => (e.enveloppe || 'PEA') === _solo) : ETF;
   if(_per) _tt = _tt.filter(e => kyfFamFiltreOk(kyfFamTiOf(e)));   // v2.8.12.92 : la ligne TOTAL suit l'enveloppe affichée (avant : toujours tout le portefeuille)
-  if(_solo !== 'PEE') rows += `<tr class="etf-total-row" style="border-top:2px solid var(--accent)">
+  if(_solo !== 'PEE' && _solo !== 'PERECOL') rows += `<tr class="etf-total-row" style="border-top:2px solid var(--accent)">
     <td style="font-weight:800;font-size:11px;letter-spacing:1px;color:var(--text-hi)">TOTAL${_solo ? ' ' + escapeHtml(_solo) : ''}${_per ? ' ' + escapeHtml(_per === 'none' ? 'NON ATTRIBUÉ' : String(KYF_TITU[_per][0]).toUpperCase()) : ''}</td>
     <td></td>
     ${showCol('investi')?`<td style="letter-spacing:0.3px;font-weight:700">${fmt(_tt.reduce((s,e)=>s+(e.montant!==undefined?e.montant:e.pru*e.qty),0),2)} €</td>`:''}
@@ -44099,6 +44377,7 @@ function renderETFTable(lp){
     <td></td>
   </tr>`;
   try{ if(!_per && (!_solo || _solo === 'PEE') && !(_fa.filtering || (_kyfFavUi.etf && _kyfFavUi.etf.only))) rows += kyfPeeTableRows(showCol, showLogo, (_s.subtot || {}).PEE !== false, collapsedEnvs.includes('PEE')); }catch(e){ console.error('PEE tableau', e); }
+  try{ if(!_per && (!_solo || _solo === 'PERECOL') && !(_fa.filtering || (_kyfFavUi.etf && _kyfFavUi.etf.only))) rows += kyfPerecolTableRows(showCol, showLogo, (_s.subtot || {}).PERECOL !== false, collapsedEnvs.includes('PERECOL')); }catch(e){ console.error('PERECOL tableau', e); }
   tb.innerHTML = rows;
   if(window._kyfEnvAnim){ const _d = window._kyfEnvAnim; window._kyfEnvAnim = ''; if(_d !== 'f') kyfEnvMoving(tb, 900); tb.classList.remove('kyf-env-anim-r','kyf-env-anim-l','kyf-env-anim-f'); void tb.offsetWidth; tb.classList.add('kyf-env-anim-' + _d); setTimeout(() => tb.classList.remove('kyf-env-anim-' + _d), 900); }
 }
@@ -49687,7 +49966,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.09\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.17\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -56134,6 +56413,8 @@ const KYF_STORAGE_KEYS = [
   'kyf-perecol-my-company',
   'kyf-perecol-watch',
   'kyf-perecol-names',
+  'kyf-perecol-pos',
+  'kyf-perecol-inv',
   'kyf-geco-follow-off',
   'kyf-fund-held',
   'kyf-sidebar-order-assets',
@@ -67169,7 +67450,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.29';
-const KYF_GUIDE_POUR = '2.13.0.09';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
+const KYF_GUIDE_POUR = '2.13.0.17';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de KYF
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -76658,6 +76939,22 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.17 · 07/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fiche d’un fonds PERECOL, onglet INFORMATIONS DU FONDS : identité (codes AMF et LEI, statut, création), type de fonds (famille, nature, classification AMF, souscripteurs), société de gestion et dépositaire, dernière autorisation, et la liste de toutes les parts du fonds avec leur document d’information. Données de la base GECO de l’AMF, relevées chaque mois et non modifiées.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.16 · 07/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fiche d’un fonds PERECOL : le bouton VOIR SUR GECO reprend le style des boutons KYF.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.15 · 07/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fiche d’un fonds PERECOL : deux onglets, COURBE et INFORMATIONS DU FONDS (toutes les données GECO reçues, avec un lien vers GECO), et des flèches (ou les touches gauche et droite du clavier) pour passer au fonds suivant ou précédent sans fermer la fenêtre.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.14 · 07/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Graphique des fonds PERECOL : le nom du fonds s’affiche dans le titre et la légende Achat / Vente, sans objet pour un fonds PERECOL, est retirée.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.13 · 07/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fonds PERECOL : le graphique est désormais le même que celui des ETF et actions (périodes 1 M, 3 M, 6 M, 1 AN et MAX, bulle de survol, mesure entre deux points). Un clic sur la mini-courbe de la colonne TENDANCE ouvre cette fenêtre ; la fiche d’un fonds l’affiche aussi, avec la mention de la source AMF, GECO.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.12 · 07/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fonds PERECOL : un clic sur le nom d’un fonds (Mes fonds PERECOL ou Portefeuille) ou sur sa mini-courbe ouvre sa fiche : dernière valeur liquidative, informations du fonds, ma position et la courbe officielle de l’AMF (GECO) sur 5J, 1M, 3M, 6M, 1A ou 3A. Dans Portefeuille, la colonne TENDANCE affiche la courbe sur 1 ou 3 mois comme pour les ETF. L’historique est relayé par le référentiel et se remplit chaque nuit de bourse.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.11 · 07/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PERECOL : en plus des parts, vous pouvez saisir le montant investi par fonds (facultatif). Mes fonds PERECOL et le bloc PERECOL de Portefeuille affichent alors la somme investie et la plus-value en euros et en pourcentage. Sans montant, la plus-value reste « - », jamais zéro.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.10 · 07/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PERECOL dans Portefeuille, comme le PEE : saisissez vos parts par fonds (Mes fonds PERECOL, colonne MA POSITION ou menu ⋯ « Saisir mes parts »). Le fonds apparaît alors dans un bloc PERECOL sous le PEE, hors total, avec sa valeur = parts x valeur liquidative officielle de l’AMF (GECO). Vos parts sont sauvegardées et synchronisées comme le reste de PERECOL.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.09 · 07/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Zones géographiques sur téléphone : le tableau DÉTAIL PAR POSITION n’affiche plus que la position, sa valeur et la flèche de détail (les colonnes qui se chevauchaient sont retirées), et les filtres TOUS, ETF, À COMPLÉTER restent accessibles.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.08 · 07/11/2026</div>
