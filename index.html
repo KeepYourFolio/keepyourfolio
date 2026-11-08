@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.69
+  @version     : Beta 2.13.0.70
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -2284,6 +2284,13 @@ button.kyf-toggle-active[style],.kyf-seg button.kyf-toggle-active{background:#f0
 #importRelevéModal.imp2p .imp-left{padding:20px 20px 16px}
 #importRelevéModal.imp2p #importStep2BackBtn{margin-bottom:18px!important}
 #importRelevéModal.imp2p #importStep2Hint{margin-bottom:26px!important}
+#importRelevéModal.imp2p #importStep2.fina-rail .imp-left{padding:0!important;overflow:hidden}
+#importRelevéModal.imp2p #importStep2.fina-rail .imp-left>*:not(#finaRailTxt){display:none!important}
+#finaRailTxt{display:none;flex-direction:column;align-items:center;gap:14px;padding:58px 0 14px}
+#importRelevéModal.imp2p #importStep2.fina-rail #finaRailTxt{display:flex}
+#finaRailTxt span.v{writing-mode:vertical-rl;transform:rotate(180deg);font-size:10px;font-weight:700;letter-spacing:1.4px;color:var(--text3);white-space:nowrap}
+#finaRailBtn{position:absolute;top:14px;z-index:3;width:28px;height:28px;border-radius:50%;border:none;padding:0;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;background:var(--kyf-chev-hover,rgba(255,255,255,.07));color:var(--text);transition:background .15s}
+#finaRailBtn svg{transition:transform .2s}
 .kyf-fina-it:hover,.kyf-fina-it:focus-visible{background:var(--hov-bg-soft)!important;outline:none}
 .kyf-hint-link{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .15s,filter .15s}
 .kyf-hint-link:hover,.kyf-hint-link:focus-visible{border-bottom-color:var(--accent);filter:brightness(1.15)}
@@ -5261,7 +5268,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.13.0.69</div>
+  <div class="kl-ver">Beta 2.13.0.70</div>
 </div>
 <script>
 (function(){
@@ -5425,7 +5432,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.69</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.70</span></div>
       </div>
     </div>
   </div>
@@ -7848,7 +7855,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.69</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.70</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -36473,7 +36480,7 @@ function importStep2GoBack(){
 
 function importGoToStep2(type){
   window._finaMode = false;
-  try{ const s2 = document.getElementById('importStep2'); if(s2) s2.style.removeProperty('--imp-left-w'); }catch(e){}
+  try{ const s2 = document.getElementById('importStep2'); if(s2){ s2.style.removeProperty('--imp-left-w'); s2.classList.remove('fina-rail'); } ['finaRailBtn','finaRailTxt'].forEach(id => { const x = document.getElementById(id); if(x) x.remove(); }); }catch(e){}
   window._importContratPick = null; window._importContratAfterCreate = null;
   { const _ab = document.getElementById('importAllBtn'); if(_ab) _ab.style.display = 'none'; }
   kyfImportTopReset();
@@ -36944,7 +36951,25 @@ function kyfFinaRecapRender(){
   const nFait = LST.filter(g => !pend(g.k)).length;
   if(nFait > (R.prevFait || 0) || !R.sel || !LST.some(g => g.k === R.sel)){ const idx = LST.findIndex(g => g.k === R.sel); const nx = LST.slice(idx + 1).concat(LST.slice(0, idx + 1)).find(g => pend(g.k)); R.sel = nx ? nx.k : (LST[0] || {}).k; }
   R.prevFait = nFait;
-  try{ const s2 = document.getElementById('importStep2'); if(s2) s2.style.setProperty('--imp-left-w', '270px'); }catch(e){}
+  try{   // fichier lu et premier compte repris (ou « Tout importer ») : la colonne « Fichier Finary » se replie en rail, un chevron la rouvre
+    const s2 = document.getElementById('importStep2'); if(s2){
+      const rail = (nFait > 0 || R.queue) && !R.leftOpen;
+      s2.classList.toggle('fina-rail', rail);
+      s2.style.setProperty('--imp-left-w', rail ? '52px' : '270px');
+      const il = s2.querySelector('.imp-left');
+      let btn = document.getElementById('finaRailBtn'), tx = document.getElementById('finaRailTxt');
+      if(!(nFait > 0 || R.queue)){ if(btn) btn.remove(); if(tx) tx.remove(); }
+      else{
+        if(!btn){ btn = document.createElement('button'); btn.id = 'finaRailBtn'; btn.type = 'button'; btn.onclick = kyfFinaRail; s2.appendChild(btn); }
+        btn.style.left = rail ? '12px' : 'calc(var(--imp-left-w) - 42px)';
+        btn.title = rail ? 'Afficher le fichier Finary' : 'Replier le fichier Finary'; btn.setAttribute('aria-label', btn.title);
+        btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="' + (rail ? '' : 'transform:rotate(180deg)') + '"><polyline points="9 6 15 12 9 18"/></svg>';
+        btn.onmouseover = () => { btn.style.background = 'var(--hov-bg)'; }; btn.onmouseout = () => { btn.style.background = ''; };
+        if(!tx && il){ tx = document.createElement('div'); tx.id = 'finaRailTxt'; il.appendChild(tx); }
+        if(tx) tx.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span class="v">FICHIER FINARY · ' + (R.rows.length - 1) + ' LIGNES</span>';
+      }
+    }
+  }catch(e){}
   const dot = k => R.done[k] ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polyline points="20 6 9 17 4 12"/></svg>`
                   : R.ign[k] ? `<span style="width:8px;height:8px;border-radius:4px;border:1.5px solid var(--text3);flex-shrink:0;box-sizing:border-box"></span>`
                   : `<span style="width:8px;height:8px;border-radius:4px;background:var(--accent);flex-shrink:0;${R.wait[k] ? '' : 'opacity:.55'}"></span>`;
@@ -36980,6 +37005,7 @@ function kyfFinaRecapRender(){
   const ab = document.getElementById('importAllBtn');
   if(ab) ab.style.display = (!R.queue && LST.some(g => pend(g.k))) ? '' : 'none';
 }
+function kyfFinaRail(){ const R = window._finaRecap; if(!R) return; R.leftOpen = !R.leftOpen; kyfFinaRecapRender(); }
 function kyfFinaSel(k){ const R = window._finaRecap; if(!R) return; R.sel = k; R.edit = null; kyfFinaRecapRender(); }
 function kyfFinaIgnore(k){ const R = window._finaRecap; if(!R) return; R.ign = R.ign || {}; if(R.ign[k]) delete R.ign[k]; else R.ign[k] = true; R.edit = null; kyfFinaRecapRender(); }
 function kyfFinaName_(i){ const R = window._finaRecap; return R ? String(R.rows[i][R.X.nom] || '').trim() : ''; }
@@ -50309,7 +50335,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.69\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.70\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -77341,6 +77367,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.70 · 08/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Finary : dès qu'un compte est repris (ou après « Tout importer »), la colonne « Fichier Finary » de gauche se replie en une fine bande avec un chevron, ce qui laisse plus de place à la liste des comptes et à leurs lignes. Un clic sur le chevron la rouvre.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.69 · 08/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Finary (FinaHack) : le récapitulatif passe en double volet. À gauche la liste des comptes (repris, en attente, ignoré), à droite le compte choisi avec ses lignes et un bouton « Valider et passer au suivant ». « Tout importer » ne fait plus défiler les fenêtres : SCPI et bien immobilier sont repris tout de suite, les autres comptes passent en attente et se valident un par un. Possibilité d'ignorer un compte.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.68 · 08/11/2026</div>
