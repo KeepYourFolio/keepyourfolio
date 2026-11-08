@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.77
+  @version     : Beta 2.13.0.78
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5296,7 +5296,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.13.0.77</div>
+  <div class="kl-ver">Beta 2.13.0.78</div>
 </div>
 <script>
 (function(){
@@ -5460,7 +5460,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.77</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.78</span></div>
       </div>
     </div>
   </div>
@@ -7883,7 +7883,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.77</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.78</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -50369,7 +50369,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.77\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.78\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -68495,7 +68495,7 @@ function closeOnboardingChoice(){
   if(overlay) overlay.style.display = 'none';
   if(modal) modal.style.display = 'none';
   document.body.style.overflow = '';
-  localStorage.setItem(ONBOARDING_CHOICE_KEY, '1');
+  if(!document.documentElement.classList.contains('kyf-first')) localStorage.setItem(ONBOARDING_CHOICE_KEY, '1');
   kyfShowOnboardingMain(); // réinitialise la vue pour la prochaine ouverture éventuelle
 }
 function kyfShowBackupChoice(){
@@ -74100,7 +74100,7 @@ function closeKYFWelcome(){
   modal.style.opacity = '0';
   setTimeout(function(){ modal.style.display = 'none'; }, 180);
   document.body.style.overflow = '';
-  localStorage.setItem(WELCOME_KEY, '1');
+  if(!document.documentElement.classList.contains('kyf-first')) localStorage.setItem(WELCOME_KEY, '1');   // parcours du 1er lancement : les étapes 1 à 3 reviennent tant qu'on n'a pas cliqué « Plus tard »
 }
 
 /* Redirige vers l'ancienne instance de KYF (kyf-beta), pour permettre à
@@ -74140,7 +74140,7 @@ function closeAcfWelcomeAndGoToOr(){
   modal.style.opacity = '0';
   setTimeout(function(){ modal.style.display = 'none'; }, 180);
   document.body.style.overflow = '';
-  localStorage.setItem(WELCOME_KEY, '1');
+  if(!document.documentElement.classList.contains('kyf-first')) localStorage.setItem(WELCOME_KEY, '1');   // 1er lancement : voir « Plus tard » (étape 3)
   // 2.12.2.30 : dans le parcours du premier lancement, l'étape 3 est affichée sur le fond neutre (voir kyfSplash3)
   const c3 = document.getElementById('kyfSplashC3');
   if(c3 && document.getElementById('kyfSplash')){ setTimeout(function(){ c3.classList.add('on'); }, 200); return; }
@@ -74390,7 +74390,8 @@ function kyfSplash3(a){
     if(a === 'import') openImportRelevé(); else openAddETF();
     return;
   }
-  localStorage.setItem(ONBOARDING_CHOICE_KEY, '1');
+  // Parcours du 1er lancement : seul « Plus tard » met fin aux étapes 1 à 3 (un import ou un ajout fait en route ne suffit pas : au rechargement on les retrouve)
+  if(a === 'later' || !(c3 && document.getElementById('kyfSplash'))){ localStorage.setItem(ONBOARDING_CHOICE_KEY, '1'); if(a === 'later') localStorage.setItem(WELCOME_KEY, '1'); }
   kyfSplashClose();
   if(a === 'import') openImportRelevé();
   else if(a === 'add') openAddETF();
@@ -74403,8 +74404,7 @@ function kyfAfterPop(){
   const cancelled = !!window._kyfCancel3; window._kyfCancel3 = false; window._kyfBackTo3 = false;
   const c3 = document.getElementById('kyfSplashC3');
   if(cancelled && c3 && document.getElementById('kyfSplash')){ c3.classList.add('on'); return; }
-  try{ localStorage.setItem(ONBOARDING_CHOICE_KEY, '1'); }catch(e){}
-  kyfSplashClose();
+  kyfSplashClose();   // pas de mémorisation ici : seul « Plus tard » termine les étapes 1 à 3
 }
 function kyfAddCancel(){ window._kyfCancel3 = !(typeof _etfSessionAdded !== 'undefined' && _etfSessionAdded.length > 0); closeAddETF(); }
 function kyfImportCancel(){ window._kyfCancel3 = true; closeImportRelevé(); }
@@ -77401,6 +77401,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.78 · 08/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Premier lancement : les pop-ups de bienvenue (étapes 1 à 3) reviennent à chaque rechargement de la page tant qu'on n'a pas cliqué sur « Plus tard » à l'étape 3. Avant, passer l'étape 2 ou faire un import ou un ajout depuis l'étape 3 suffisait à ne plus jamais les revoir. Les utilisateurs déjà installés ne sont pas concernés.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.77 · 08/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Finary : quand on valide un compte, les lignes reconnues sont maintenant à gauche et le remplissage du contrat (destination, courtier, espèces, total versé) est à droite, dans le sens de lecture : on voit les lignes, puis on complète.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.76 · 08/11/2026</div>
