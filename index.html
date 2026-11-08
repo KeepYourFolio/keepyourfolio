@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.81
+  @version     : Beta 2.13.0.82
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -2294,6 +2294,8 @@ button.kyf-toggle-active[style],.kyf-seg button.kyf-toggle-active{background:#f0
 #importRelevéModal.imp2p #importStep2{position:relative;display:grid!important;grid-template-columns:var(--imp-left-w,340px) minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;width:100%;min-height:0}
 #importRelevéModal.imp2p .imp-left{grid-column:1;grid-row:1;overflow-y:auto;padding:14px 16px;border-right:1px solid var(--border);background:rgba(255,255,255,0.015);min-height:0}
 #importRelevéModal.imp2p #importPreview{grid-column:2;grid-row:1;margin:0!important;border:none!important;border-radius:0!important;max-height:none!important;overflow-y:auto;padding:0 16px!important;min-height:0}
+#importRelevéModal.imp2p #importPreview:has(>.kyf-fina-split){overflow:hidden!important;padding:0!important;display:flex;flex-direction:column}
+#importRelevéModal.imp2p #importPreview .kyf-fina-scroll{overscroll-behavior:contain}
 #importRelevéModal.imp2p #importPreview:empty::before{content:"Les lignes du relevé s'afficheront ici une fois le fichier choisi.";display:block;padding:40px 10px;text-align:center;font-size:11px;color:var(--text3)}
 #importRelevéModal.imp2p #importTickerHelp{grid-column:2;grid-row:1;align-self:start;margin:16px 16px 0!important;z-index:1}
 #importRelevéModal.imp2p #importStep2.imp-help-on #importPreview:empty::before{display:none}
@@ -5297,7 +5299,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.13.0.81</div>
+  <div class="kl-ver">Beta 2.13.0.82</div>
 </div>
 <script>
 (function(){
@@ -5461,7 +5463,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.81</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.82</span></div>
       </div>
     </div>
   </div>
@@ -7884,7 +7886,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.81</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.82</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -37057,11 +37059,9 @@ function kyfFinaRecapRender(){
           + (isIgn ? '' : `<button type="button" class="kyf-fina-btn" onclick="kyfFinaGo('${cur.k}')" style="${bt}border:none;background:#f0b429;color:#000">${R.queue && nxt ? 'VALIDER ET PASSER AU SUIVANT' : 'IMPORTER CE COMPTE'}</button>`))
       + `</div>`;
   }
-  const rowsHtml = `<div style="display:flex;align-items:stretch;min-height:100%;margin:0 -16px"><div style="width:232px;flex-shrink:0;border-right:1px solid var(--border);padding:12px 10px;display:flex;flex-direction:column;gap:3px;background:rgba(255,255,255,0.015)">${cptHtml}${itemsHtml}</div><div style="flex:1;min-width:0;padding:0 16px;display:flex;flex-direction:column">${detailHtml}</div></div>`;
+  const rowsHtml = `<div class="kyf-fina-split" style="display:flex;align-items:stretch;flex:1;min-height:0"><div class="kyf-fina-scroll" style="width:232px;flex-shrink:0;border-right:1px solid var(--border);padding:12px 10px;display:flex;flex-direction:column;gap:3px;background:rgba(255,255,255,0.015);overflow-y:auto;min-height:0">${cptHtml}${itemsHtml}${R.skipped.length ? `<div style="padding:10px 4px 4px;font-size:10px;line-height:1.6;color:var(--text3)"><div style="font-weight:700;color:var(--text2);margin-bottom:2px">Non repris par cet import</div>${R.skipped.map(k => `<div>${escapeHtml(k.lbl)} (${k.n}) : ${escapeHtml(k.why)}</div>`).join('')}</div>` : ''}${nDel ? `<div style="padding:6px 4px 0;font-size:10px;color:var(--text3)">${nDel} ligne(s) retirée(s) de l'import. <button type="button" onclick="kyfFinaRestore()" class="kyf-hint-link" style="background:none;border:none;padding:0;font:inherit;font-size:10px;font-weight:600;cursor:pointer">Tout rétablir</button></div>` : ''}</div><div class="kyf-fina-scroll" style="flex:1;min-width:0;padding:0 16px;display:flex;flex-direction:column;overflow-y:auto;min-height:0">${detailHtml}</div></div>`;
   st.innerHTML = KYF_CHECK_SVG + ' Fichier Finary lu : ' + (R.rows.length - 1) + ' ligne(s), dont ' + LST.reduce((t, g) => t + (R.groups[g.k]||[]).length, 0) + ' reprise(s) par Keep Your Folio. ' + (nFait ? nFait + ' compte(s) sur ' + LST.length + ' traité(s). ' : '') + 'Choisissez un compte à gauche, vérifiez ses lignes, puis validez-le : Keep Your Folio revient ici entre deux.';
-  pv.innerHTML = (rowsHtml || '<div style="padding:12px 0;font-size:11px;color:var(--text3)">Aucune ligne importable trouvée dans ce fichier.</div>')
-    + (R.skipped.length ? `<div style="padding:10px 0;font-size:10px;line-height:1.6;color:var(--text3)"><div style="font-weight:700;color:var(--text2);margin-bottom:2px">Non repris par cet import</div>${R.skipped.map(k => `<div>${escapeHtml(k.lbl)} (${k.n}) : ${escapeHtml(k.why)}</div>`).join('')}</div>` : '')
-    + (nDel ? `<div style="padding:0 0 10px;font-size:10px;color:var(--text3)">${nDel} ligne(s) retirée(s) de l'import. <button type="button" onclick="kyfFinaRestore()" class="kyf-hint-link" style="background:none;border:none;padding:0;font:inherit;font-size:10px;font-weight:600;cursor:pointer">Tout rétablir</button></div>` : '');
+  pv.innerHTML = rowsHtml || '<div style="padding:12px 0;font-size:11px;color:var(--text3)">Aucune ligne importable trouvée dans ce fichier.</div>';
   document.getElementById('importConfirmBtn').style.display = 'none';
   const ab = document.getElementById('importAllBtn');
   if(ab) ab.style.display = (!R.queue && LST.some(g => pend(g.k))) ? '' : 'none';
@@ -50404,7 +50404,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.81\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.82\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -77436,6 +77436,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.82 · 08/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Finary compte par compte : la liste des comptes (à gauche) et les lignes du compte (à droite) ont chacune leur propre ascenseur, au lieu d'un seul pour les deux colonnes ; le bouton « Valider et passer au suivant » reste toujours visible en bas.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.81 · 08/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Importer un relevé : l'onglet « Tout-en-un » devient « Finary et Portfolio Performance » et affiche deux cadres, Import Finary et Import Portfolio Performance. Le cadre Portfolio Performance reprend pour l'instant l'import existant (actions et ETF) ; il fonctionnera comme Finary (récapitulatif, validation compte par compte) quand la partie Finary sera validée.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.80 · 08/11/2026</div>
