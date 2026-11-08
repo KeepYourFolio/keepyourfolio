@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.88
+  @version     : Beta 2.13.0.89
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5299,7 +5299,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.13.0.88</div>
+  <div class="kl-ver">Beta 2.13.0.89</div>
 </div>
 <script>
 (function(){
@@ -5463,7 +5463,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.88</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.89</span></div>
       </div>
     </div>
   </div>
@@ -7886,7 +7886,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.88</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.89</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -38333,9 +38333,8 @@ function kyfImportAvPerHtml(){
   const nImp = gNew.length + gChg.length + xNew.length + xChg.length;
   h += `<div class="import-sticky" style="padding-top:8px">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
-      <span style="font-size:10px;font-weight:700;color:${nSame && !nImp && !todo.length ? 'var(--green)' : 'var(--text2)'}">${KYF_CHECK_SVG} ${nSame && !nImp && !todo.length ? 'Tout est déjà à jour : rien à importer' : (nSame ? nSame + ' position' + (nSame>1?'s':'') + ' déjà à jour, rien à faire pour elle' + (nSame>1?'s':'') : (_importPendingResolved.length + _importPendingMissing.length) + ' positions lues')}</span>
-      <button type="button" id="impInfoBtn" class="av-info-btn" onclick="impInfoToggle(event)" title="Comment lire cet aperçu" aria-label="Informations sur l'aperçu de l'import" aria-expanded="false" style="width:22px;height:22px;flex-shrink:0;margin-right:auto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></button>
-      <label id="importSelectAllLbl" style="display:${(active==='same'||!(gNew.length||gChg.length||todo.length))?'none':'flex'};align-items:center;gap:5px;font-size:9px;color:var(--text3);cursor:pointer;user-select:none"><input type="checkbox" id="importSelectAllBox" checked onchange="importToggleSelectAll(this.checked);kyfImportUpdateCount()" style="cursor:pointer"> Tout sélectionner</label>
+      <span style="display:${nSame ? 'inline' : 'none'};font-size:10px;font-weight:700;color:${nSame && !nImp && !todo.length ? 'var(--green)' : 'var(--text2)'}">${KYF_CHECK_SVG} ${nSame && !nImp && !todo.length ? 'Tout est déjà à jour : rien à importer' : (nSame ? nSame + ' position' + (nSame>1?'s':'') + ' déjà à jour, rien à faire pour elle' + (nSame>1?'s':'') : (_importPendingResolved.length + _importPendingMissing.length) + ' positions lues')}</span>
+      <label id="importSelectAllLbl" style="margin-left:auto;display:${(active==='same'||!(gNew.length||gChg.length||todo.length))?'none':'flex'};align-items:center;gap:5px;font-size:9px;color:var(--text3);cursor:pointer;user-select:none"><input type="checkbox" id="importSelectAllBox" checked onchange="importToggleSelectAll(this.checked);kyfImportUpdateCount()" style="cursor:pointer"> Tout sélectionner</label>
     </div>
     <div id="impInfoPop" style="display:none;position:absolute;left:0;right:0;top:44px;z-index:6;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:11px 13px;box-shadow:0 10px 32px rgba(0,0,0,.35);font-size:10px;line-height:1.6;color:var(--text2);font-weight:400;letter-spacing:0;text-transform:none">
       Le relevé est comparé à votre contrat, ligne par ligne. Seuls les onglets qui contiennent des lignes sont affichés.
@@ -38373,6 +38372,12 @@ function kyfImportTopSync(table){
   const sm = document.getElementById('importTopSummary'); if(sm) sm.textContent = [dn, fl && !/^Cliquez/.test(fl) ? fl : ''].filter(Boolean).join(' · ');
 }
 function kyfImportCompOpen(){}
+// Le point d'information de l'aperçu se place à droite, au bout de « N positions reconnues automatiquement » (le texte « positions lues » de la colonne de gauche faisait doublon)
+function kyfImportInfoMount(){
+  const st = document.getElementById('importStatus');
+  if(!st || st.querySelector('#impInfoBtn') || !document.getElementById('impInfoPop')) return;
+  st.innerHTML = `<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px"><span>${st.innerHTML}</span><button type="button" id="impInfoBtn" class="av-info-btn" onclick="impInfoToggle(event)" title="Comment lire cet aperçu" aria-label="Informations sur l'aperçu de l'import" aria-expanded="false" style="width:22px;height:22px;flex-shrink:0;margin-top:-2px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></button></div>`;
+}
 function importRenderPreviewETF(){
   const el = document.getElementById('importPreview');
   let html = _importType==='etf' ? ciSheetPickerHtml() : '';
@@ -38533,6 +38538,7 @@ function importRenderPreviewETF(){
     const _st = document.getElementById('importStatus');
     if(_st && /à compléter/.test(_st.innerHTML)) _st.innerHTML = _missNormal.length ? _st.innerHTML.replace(/\d+ à compléter/, _missNormal.length + ' à compléter') : _st.innerHTML.replace(/,\s*\d+ à compléter/, '');
   }
+  kyfImportInfoMount();
   kyfImportCompMenusInit();
   // Le bouton reste toujours accessible dès qu'il y a quelque chose à
   // traiter (reconnu automatiquement, à compléter, SCPI ou fonds en
@@ -50443,7 +50449,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.88\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.89\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -77475,6 +77481,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.89 · 08/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Aperçu d'import : « N positions lues » (en double avec « N positions reconnues automatiquement » à droite) est supprimé à gauche, et le point d'information passe à droite au bout de la ligne « positions reconnues automatiquement ».</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.88 · 08/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Listes de suggestions (courtier, recherche de ticker, listes des fenêtres) : le clic droit les referme toutes, sans fermer la fenêtre, comme les menus déroulants.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.87 · 08/11/2026</div>
