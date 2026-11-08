@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.114
+  @version     : Beta 2.13.0.115
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -2289,15 +2289,23 @@ button.kyf-toggle-active[style],.kyf-seg button.kyf-toggle-active{background:#f0
 /* Importer un relevé : deux volets (texte, fichier et destination à gauche ; résultats à droite), comme Répartition pays et secteurs */
 #modalContact.imp-win{background:transparent!important;pointer-events:none}
 #modalContact.imp-win>div{pointer-events:auto;width:min(1040px,96vw)!important;height:min(680px,92vh);max-height:none!important;box-sizing:border-box;box-shadow:0 28px 80px rgba(0,0,0,.6)!important;border-color:var(--border2)}
-#modalContact.imp-win #contactFormView{max-width:640px;margin:0 auto}
+#modalContact.imp-win>div{display:flex!important;flex-direction:column}
+#modalContact.imp-win #contactFormView{flex:1;min-height:0;display:flex!important;flex-direction:column;width:100%;max-width:980px;margin:0 auto}
+#modalContact.imp-win #contactSuccessView{margin:auto 0}
+#ctCols{flex:1;min-height:0;display:grid;grid-template-columns:minmax(250px,320px) minmax(0,1fr);gap:0 32px;padding-top:6px}
+#ctColL,#ctColR{display:flex;flex-direction:column;min-height:0;min-width:0}
+#ctColL{padding-right:32px;border-right:1px solid var(--border)}
+#ctColL #contactCategoryChips{display:flex!important;flex-direction:column;gap:6px;margin-bottom:14px!important}
+#ctColL #contactCategoryChips button{flex-direction:row!important;justify-content:flex-start!important;gap:10px!important;padding:9px 12px!important;font-size:11px!important}
+#ctColR #contactMessage{flex:1;min-height:140px;max-height:none!important;resize:none}
+#ctColR #contactSubmitBtn{margin-top:auto}
+@media (max-width:900px){#modalContact.imp-win>div{overflow-y:auto}#ctCols{grid-template-columns:1fr;display:block}#ctColL{padding-right:0;border-right:none}#ctColR #contactMessage{min-height:110px}}
 #modalContact.imp-win .ct-adv,#modalContact.imp-win #contactNavigateurWrap,#modalContact.imp-win #contactBackEdBtn,#modalContact.imp-win #contactContextBadge{display:none!important}
-#modalContact.imp-win #contactMessage{min-height:110px}
 #modalContact.imp-win>div{padding:16px 22px!important}
 #modalContact.imp-win #contactCategoryChips{margin-bottom:10px!important}
 #modalContact.imp-win #contactCategoryChips button{padding:6px 6px!important;flex-direction:row!important;justify-content:center}
 #modalContact.imp-win #contactDiagWrap{margin-bottom:8px!important;padding:8px 12px!important}
 #modalContact.imp-win #contactFormView>div:first-child{margin-bottom:10px!important}
-@media (min-height:820px){#modalContact.imp-win #contactMessage{min-height:180px}}
 @media (max-height:780px){.kyf-fina-it{padding:3px 10px!important}.kyf-fina-scroll{padding-top:8px!important;padding-bottom:8px!important;gap:1px!important}}
 @media (max-height:700px){.kyf-fina-scroll{padding-top:4px!important;padding-bottom:4px!important}.kyf-fina-scroll>div:first-child{padding-bottom:4px!important}.kyf-fina-it{padding:2px 10px!important}.kyf-fina-it>div:last-child>div:last-child{margin-top:0!important;line-height:1.25}.kyf-fina-it>div:last-child>div:first-child{line-height:1.25}}
 #impContactBtn{position:fixed;right:24px;bottom:56px;z-index:10000001;display:flex;flex-direction:column;align-items:center;gap:8px;width:96px;cursor:pointer;user-select:none;-webkit-user-select:none;background:none;border:none;padding:0;font-family:'Inter',sans-serif}
@@ -5321,7 +5329,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.13.0.114</div>
+  <div class="kl-ver">Beta 2.13.0.115</div>
 </div>
 <script>
 (function(){
@@ -5488,7 +5496,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.114</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.115</span></div>
       </div>
     </div>
   </div>
@@ -7911,7 +7919,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.114</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.115</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -50698,7 +50706,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.114\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.115\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -62513,11 +62521,25 @@ function openContactForm(prefilledCategorie, prefilledSujet, prefilledMessage){
 }
 
 // Contact depuis l'import : même taille que la fenêtre d'import, posée par-dessus et légèrement décalée (comme une fenêtre Windows), formulaire simplifié, rapport technique joint par défaut
+function kyfContactCols_(on){
+  const v = document.getElementById('contactFormView'); if(!v) return;
+  if(on){
+    if(v._ct) return;
+    const kids = Array.from(v.children); v._ct = kids;
+    const w = document.createElement('div'); w.id = 'ctCols'; const L = document.createElement('div'), Rr = document.createElement('div'); L.id = 'ctColL'; Rr.id = 'ctColR'; w.appendChild(L); w.appendChild(Rr);
+    kids.forEach(k => { const c = k.getAttribute && k.getAttribute('data-ctcol'); if(c === 'l') L.appendChild(k); else if(c === 'r') Rr.appendChild(k); });
+    v.appendChild(w);
+  } else {
+    if(!v._ct) return;
+    v._ct.forEach(k => v.appendChild(k)); const w = document.getElementById('ctCols'); if(w) w.remove(); v._ct = null;
+  }
+}
 function openContactImport(){
   window._kyfContactWin = true;
   openContactForm('import', 'Import : ' + ((window._finaRecap) ? 'Finary' : 'relevé'), '');
   _contactState.simple = true;
   const modal = document.getElementById('modalContact'); if(modal) modal.classList.add('imp-win');
+  kyfContactCols_(true);
   { const bg = document.getElementById('contactContextBadge'); if(bg) bg.style.display = 'none'; }   // pas de pastille « Contactez-nous » en haut à gauche : la fenêtre se suffit
   document.body.style.overflow = 'hidden';
   renderContactCategoryChips(); kyfDiagWrapRefresh(true);
@@ -62540,6 +62562,7 @@ function kyfImpContactSync(){
 function closeContactForm(){
   const modal = document.getElementById('modalContact');
   modal.style.display = 'none';
+  try{ kyfContactCols_(false); }catch(e){}
   modal.classList.remove('open'); modal.classList.remove('imp-win');
   { const _ov = window._kyfContactWin && (document.getElementById('importRelevéModal') || {}).style && document.getElementById('importRelevéModal').style.display !== 'none'; document.body.style.overflow = _ov ? 'hidden' : ''; }
   window._kyfContactWin = false; if(_contactState) _contactState.simple = false;
@@ -77766,6 +77789,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.115 · 08/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Contact depuis l'import : le formulaire passe en deux colonnes (catégories, sujet et e-mail à gauche ; message, rapport technique et ENVOYER à droite), le message occupe toute la hauteur, plus de grand vide. Sur un écran étroit, il repasse sur une colonne.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.114 · 08/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Contact depuis l'import : la pastille « Contactez-nous » en haut à gauche n'apparaît plus.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.113 · 08/11/2026</div>
@@ -107982,17 +108007,17 @@ function orInlineEdit(id, td, currentVal){
       </div>
 
       <!-- Catégorie -->
-      <div style="font-size:9px;color:var(--text3);letter-spacing:.5px;margin-bottom:8px">CATÉGORIE</div>
-      <div id="contactCategoryChips" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:6px;margin-bottom:16px"></div>
+      <div data-ctcol="l" style="font-size:9px;color:var(--text3);letter-spacing:.5px;margin-bottom:8px">CATÉGORIE</div>
+      <div data-ctcol="l" id="contactCategoryChips" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:6px;margin-bottom:16px"></div>
 
       <!-- Sujet -->
-      <div style="font-size:9px;color:var(--text3);letter-spacing:.5px;margin-bottom:6px">SUJET</div>
-      <input id="contactSujet" placeholder="En une phrase..." maxlength="150" style="width:100%;box-sizing:border-box;font-family:'Inter',sans-serif;font-size:11px;padding:10px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text);outline:none;margin-bottom:12px"
+      <div data-ctcol="l" style="font-size:9px;color:var(--text3);letter-spacing:.5px;margin-bottom:6px">SUJET</div>
+      <input data-ctcol="l" id="contactSujet" placeholder="En une phrase..." maxlength="150" style="width:100%;box-sizing:border-box;font-family:'Inter',sans-serif;font-size:11px;padding:10px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text);outline:none;margin-bottom:12px"
         onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border2)'">
 
       <!-- Message -->
-      <div style="font-size:9px;color:var(--text3);letter-spacing:.5px;margin-bottom:6px">MESSAGE</div>
-      <textarea id="contactMessage" placeholder="Décrivez votre bug, votre idée, votre question..." rows="5" style="width:100%;box-sizing:border-box;font-family:'Inter',sans-serif;font-size:11px;padding:10px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text);outline:none;resize:vertical;min-height:80px;max-height:280px;margin-bottom:12px"
+      <div data-ctcol="r" style="font-size:9px;color:var(--text3);letter-spacing:.5px;margin-bottom:6px">MESSAGE</div>
+      <textarea data-ctcol="r" id="contactMessage" placeholder="Décrivez votre bug, votre idée, votre question..." rows="5" style="width:100%;box-sizing:border-box;font-family:'Inter',sans-serif;font-size:11px;padding:10px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text);outline:none;resize:vertical;min-height:80px;max-height:280px;margin-bottom:12px"
         onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border2)'"></textarea>
 
       <!-- Service concerné -->
@@ -108015,7 +108040,7 @@ function orInlineEdit(id, td, currentVal){
       </div>
 
       <!-- Rapport technique (bug) -->
-      <div id="contactDiagWrap" style="display:none;margin-bottom:14px;padding:10px 12px;border:1px solid var(--border2);border-radius:8px;background:var(--btn-secondary-bg)">
+      <div data-ctcol="r" id="contactDiagWrap" style="display:none;margin-bottom:14px;padding:10px 12px;border:1px solid var(--border2);border-radius:8px;background:var(--btn-secondary-bg)">
         <label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;color:var(--text);font-weight:600">
           <input type="checkbox" id="contactDiagCheck" checked style="margin-top:2px;accent-color:var(--accent);cursor:pointer">
           <span>Joindre le rapport technique<span style="display:block;font-weight:400;font-size:10px;color:var(--text3);line-height:1.6;margin-top:2px">Version, navigateur, taille des données, erreurs récentes et forme du dernier fichier importé (noms de colonnes seulement). Aucun montant, aucun nom de support, aucun e-mail.</span></span>
@@ -108038,17 +108063,17 @@ function orInlineEdit(id, td, currentVal){
       <div id="contactFileList" class="ct-adv" style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px"></div>
 
       <!-- Email -->
-      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:6px">
+      <div data-ctcol="l" style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:6px">
         <span style="font-size:9px;color:var(--text3);letter-spacing:.5px">E-MAIL <span style="letter-spacing:0">(facultatif)</span></span>
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3)">
           <input type="checkbox" id="contactNoFollow" onchange="contactNoFollowChange()" style="accent-color:var(--accent);cursor:pointer;margin:0">
           <span>Pas de suivi</span>
         </label>
       </div>
-      <input id="contactEmail" type="email" placeholder="vous@exemple.fr" style="width:100%;box-sizing:border-box;font-family:'Inter',sans-serif;font-size:11px;padding:10px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text);outline:none"
+      <input data-ctcol="l" id="contactEmail" type="email" placeholder="vous@exemple.fr" style="width:100%;box-sizing:border-box;font-family:'Inter',sans-serif;font-size:11px;padding:10px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text);outline:none"
         onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border2)'">
-      <div style="font-size:9px;color:var(--text3);line-height:1.5;margin-top:5px;margin-bottom:12px">Pour vous répondre. Sans e-mail, l'envoi reste anonyme.</div>
-      <div id="contactNoEmailNotice" style="display:none;margin-bottom:12px;border:1px solid rgba(240,180,41,0.35);background:rgba(240,180,41,0.08);border-radius:8px;padding:8px 10px">
+      <div data-ctcol="l" style="font-size:9px;color:var(--text3);line-height:1.5;margin-top:5px;margin-bottom:12px">Pour vous répondre. Sans e-mail, l'envoi reste anonyme.</div>
+      <div data-ctcol="l" id="contactNoEmailNotice" style="display:none;margin-bottom:12px;border:1px solid rgba(240,180,41,0.35);background:rgba(240,180,41,0.08);border-radius:8px;padding:8px 10px">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
           <span style="font-size:10px;color:var(--text);font-weight:600;display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>Sans e-mail, pas de réponse possible</span>
           <span style="display:flex;gap:6px">
@@ -108058,8 +108083,8 @@ function orInlineEdit(id, td, currentVal){
         </div>
       </div>
 
-      <button id="contactSubmitBtn" onclick="contactSubmit()" style="width:100%;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;padding:11px;border-radius:8px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Envoyer</button>
-      <div id="contactStatus" style="font-size:10px;margin-top:10px;text-align:center"></div>
+      <button data-ctcol="r" id="contactSubmitBtn" onclick="contactSubmit()" style="width:100%;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;padding:11px;border-radius:8px;border:none;background:#f0b429;color:#000;cursor:pointer;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Envoyer</button>
+      <div data-ctcol="r" id="contactStatus" style="font-size:10px;margin-top:10px;text-align:center"></div>
     </div>
 
     <!-- Vue succès -->
