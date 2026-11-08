@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.78
+  @version     : Beta 2.13.0.79
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5296,7 +5296,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.13.0.78</div>
+  <div class="kl-ver">Beta 2.13.0.79</div>
 </div>
 <script>
 (function(){
@@ -5460,7 +5460,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.78</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.79</span></div>
       </div>
     </div>
   </div>
@@ -7883,7 +7883,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.78</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.79</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -37007,6 +37007,10 @@ function kyfFinaRecapRender(){
     return `<div role="button" tabindex="0" class="kyf-fina-it${on ? ' on' : ''}" onclick="kyfFinaSel('${g.k}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();kyfFinaSel('${g.k}')}" style="display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;border:1px solid ${on ? 'var(--accent)' : 'transparent'};background:${on ? 'rgba(240,180,41,.10)' : 'transparent'};transition:background .15s,border-color .15s${!pend(g.k) && !on ? ';opacity:.7' : ''}">`
       + dot(g.k) + `<div style="min-width:0;flex:1"><div style="font-size:12px;font-weight:${on ? 700 : 600};color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${escapeHtml(g.lbl)}">${escapeHtml(g.lbl)}</div><div style="font-size:10px;color:var(--text3);margin-top:1px">${escapeHtml(sub)}</div></div></div>`;
   }).join('');
+  const nOk = LST.filter(g => R.done[g.k]).length, nIg = LST.filter(g => R.ign[g.k]).length, pct = LST.length ? Math.round(((nOk + nIg) / LST.length) * 100) : 0;
+  const cptHtml = `<div style="padding:2px 8px 10px"><div style="font-size:12px;font-weight:700;color:var(--text)">${nOk} compte${nOk > 1 ? 's' : ''} validé${nOk > 1 ? 's' : ''} sur ${LST.length}</div>`
+    + (nIg ? `<div style="font-size:10px;color:var(--text3);margin-top:2px">${nIg} ignoré${nIg > 1 ? 's' : ''}</div>` : '')
+    + `<div style="height:5px;border-radius:3px;background:var(--border);overflow:hidden;margin-top:8px"><div style="width:${pct}%;height:5px;border-radius:3px;background:linear-gradient(90deg,#d97706,#f0b429,#ffd24d);transition:width .3s"></div></div></div>`;
   const cur = LST.find(g => g.k === R.sel), curList = cur ? R.groups[cur.k] : [];
   const bt = 'font-family:\'Inter\',sans-serif;font-size:9px;padding:9px 18px;border-radius:7px;cursor:pointer;font-weight:700;';
   const nPend = LST.filter(g => pend(g.k)).length;
@@ -37024,7 +37028,7 @@ function kyfFinaRecapRender(){
           + (isIgn ? '' : `<button type="button" class="kyf-fina-btn" onclick="kyfFinaGo('${cur.k}')" style="${bt}border:none;background:#f0b429;color:#000">${R.queue && nxt ? 'VALIDER ET PASSER AU SUIVANT' : 'IMPORTER CE COMPTE'}</button>`))
       + `</div>`;
   }
-  const rowsHtml = `<div style="display:flex;align-items:stretch;min-height:100%;margin:0 -16px"><div style="width:232px;flex-shrink:0;border-right:1px solid var(--border);padding:12px 10px;display:flex;flex-direction:column;gap:3px;background:rgba(255,255,255,0.015)">${itemsHtml}</div><div style="flex:1;min-width:0;padding:0 16px;display:flex;flex-direction:column">${detailHtml}</div></div>`;
+  const rowsHtml = `<div style="display:flex;align-items:stretch;min-height:100%;margin:0 -16px"><div style="width:232px;flex-shrink:0;border-right:1px solid var(--border);padding:12px 10px;display:flex;flex-direction:column;gap:3px;background:rgba(255,255,255,0.015)">${cptHtml}${itemsHtml}</div><div style="flex:1;min-width:0;padding:0 16px;display:flex;flex-direction:column">${detailHtml}</div></div>`;
   st.innerHTML = KYF_CHECK_SVG + ' Fichier Finary lu : ' + (R.rows.length - 1) + ' ligne(s), dont ' + LST.reduce((t, g) => t + (R.groups[g.k]||[]).length, 0) + ' reprise(s) par Keep Your Folio. ' + (nFait ? nFait + ' compte(s) sur ' + LST.length + ' traité(s). ' : '') + 'Choisissez un compte à gauche, vérifiez ses lignes, puis validez-le : Keep Your Folio revient ici entre deux.';
   pv.innerHTML = (rowsHtml || '<div style="padding:12px 0;font-size:11px;color:var(--text3)">Aucune ligne importable trouvée dans ce fichier.</div>')
     + (R.skipped.length ? `<div style="padding:10px 0;font-size:10px;line-height:1.6;color:var(--text3)"><div style="font-weight:700;color:var(--text2);margin-bottom:2px">Non repris par cet import</div>${R.skipped.map(k => `<div>${escapeHtml(k.lbl)} (${k.n}) : ${escapeHtml(k.why)}</div>`).join('')}</div>` : '')
@@ -50369,7 +50373,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.78\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.79\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -77401,6 +77405,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.79 · 08/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Finary : le récapitulatif affiche en haut de la liste « X comptes validés sur Y », avec les comptes ignorés et une barre de progression en dégradé.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.78 · 08/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Premier lancement : les pop-ups de bienvenue (étapes 1 à 3) reviennent à chaque rechargement de la page tant qu'on n'a pas cliqué sur « Plus tard » à l'étape 3. Avant, passer l'étape 2 ou faire un import ou un ajout depuis l'étape 3 suffisait à ne plus jamais les revoir. Les utilisateurs déjà installés ne sont pas concernés.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.77 · 08/11/2026</div>
