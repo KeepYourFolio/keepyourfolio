@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.104
+  @version     : Beta 2.13.0.105
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5301,7 +5301,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.13.0.104</div>
+  <div class="kl-ver">Beta 2.13.0.105</div>
 </div>
 <script>
 (function(){
@@ -5468,7 +5468,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.104</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.105</span></div>
       </div>
     </div>
   </div>
@@ -7891,7 +7891,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.104</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.105</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -36933,8 +36933,9 @@ function kyfFinaScpiGo_(R, csv){
 }
 async function kyfFinaPeeGo_(R){
   const pl = kyfFinaPeePlans_(R), f = n => fmt(n, 2) + ' €'; if(!pl.length) return;
-  const d = peeLoad(), L = pl.map(p => { const ex = d.find(x => String(x.nom||'').toLowerCase() === p.nom.toLowerCase()); return 'PEE ' + p.nom + ' : ' + (ex ? f(ex.valeur || 0) + ' → ' : '') + f(p.valeur) + (p.fonds.length ? ' (' + p.fonds.length + ' fonds)' : ''); });
-  const ok = await kyfAsk('Reprendre ces plans d\'épargne salariale (PEE) ?\n' + L.join('\n') + '\nLa valeur remplace celle déjà saisie (jamais additionnée).', { ok:'Reprendre' });
+  const d = peeLoad(), L = pl.map(p => { const ex = d.find(x => String(x.nom||'').toLowerCase() === p.nom.toLowerCase()); return (/^pee/i.test(p.nom) ? '' : 'PEE ') + p.nom + ' : ' + (ex ? f(ex.valeur || 0) + ' → ' : '') + f(p.valeur) + (p.fonds.length ? ' (' + p.fonds.length + ' fonds)' : '') + (ex ? '' : ' (nouveau)'); });
+  const nEx = pl.filter(p => d.some(x => String(x.nom||'').toLowerCase() === p.nom.toLowerCase())).length;
+  const ok = await kyfAsk((nEx === pl.length ? 'Mettre à jour ' : 'Ajouter à Keep Your Folio ') + (pl.length > 1 ? 'ces ' + pl.length + ' plans d\'épargne salariale' : 'ce plan d\'épargne salariale') + ' ?\n' + L.join('\n') + (nEx ? '\n' + (nEx === pl.length ? 'Déjà présent dans Keep Your Folio : sa valeur est remplacée par celle de Finary.' : 'Ceux déjà présents voient leur valeur remplacée par celle de Finary.') : ''), { ok: nEx === pl.length ? 'Mettre à jour' : 'Ajouter' });
   if(!ok) return;
   pl.forEach((p, k) => {
     const ex = d.find(x => String(x.nom||'').toLowerCase() === p.nom.toLowerCase());
@@ -36958,8 +36959,9 @@ function kyfFinaPercolPlans_(R){
 }
 async function kyfFinaPercolGo_(R){
   const pl = kyfFinaPercolPlans_(R), f = n => fmt(n, 2) + ' €'; if(!pl.length) return;
-  const d = avLoad(), isPc = x => x && ['per-col','per'].includes(x.type), L = pl.map(p => { const ex = d.find(x => isPc(x) && String(x.contratNom||'').toLowerCase() === p.nom.toLowerCase()); return 'PERCOL ' + p.nom + ' : ' + (ex ? f(ex.valeur || 0) + ' → ' : '') + f(p.valeur); });
-  const ok = await kyfAsk('Reprendre ces PERCOL ?\n' + L.join('\n') + '\nLa valeur remplace celle déjà saisie (jamais additionnée).', { ok:'Reprendre' });
+  const d = avLoad(), isPc = x => x && ['per-col','per'].includes(x.type), L = pl.map(p => { const ex = d.find(x => isPc(x) && String(x.contratNom||'').toLowerCase() === p.nom.toLowerCase()); return (/^per/i.test(p.nom) ? '' : 'PERCOL ') + p.nom + ' : ' + (ex ? f(ex.valeur || 0) + ' → ' : '') + f(p.valeur) + (ex ? '' : ' (nouveau)'); });
+  const nEx = pl.filter(p => d.some(x => isPc(x) && String(x.contratNom||'').toLowerCase() === p.nom.toLowerCase())).length;
+  const ok = await kyfAsk((nEx === pl.length ? 'Mettre à jour ' : 'Ajouter à Keep Your Folio ') + (pl.length > 1 ? 'ces ' + pl.length + ' PERCOL' : 'ce PERCOL') + ' ?\n' + L.join('\n') + (nEx ? '\n' + (nEx === pl.length ? 'Déjà présent dans Keep Your Folio : sa valeur est remplacée par celle de Finary.' : 'Ceux déjà présents voient leur valeur remplacée par celle de Finary.') : ''), { ok: nEx === pl.length ? 'Mettre à jour' : 'Ajouter' });
   if(!ok) return;
   pl.forEach((p, k) => {
     const ex = d.find(x => isPc(x) && String(x.contratNom||'').toLowerCase() === p.nom.toLowerCase());
@@ -36978,7 +36980,8 @@ async function kyfFinaCashGo_(R){
   if(pl.ccp > 0) L.push('Compte courant : ' + f(getCashCcp()) + ' → ' + f(pl.ccp));
   pl.liv.forEach(l => L.push('Livret ' + l.type + (l.banque && l.banque !== l.type ? ' (' + l.banque + ')' : '') + ' : ' + f(l.solde)));
   if(!L.length) return;
-  const ok = await kyfAsk('Reprendre ces espèces et livrets ?\n' + L.join('\n') + '\nLes soldes remplacent ceux déjà saisis (jamais additionnés).', { ok:'Reprendre' });
+  const hasEx = (pl.pea > 0 && getCashPea() > 0) || (pl.cto > 0 && getCashCto() > 0) || (pl.ccp > 0 && getCashCcp() > 0) || pl.liv.some(l => livLoad().some(x => x.type === l.type && String(x.banque||'').toLowerCase() === String(l.banque||'').toLowerCase()));
+  const ok = await kyfAsk('Reprendre ces espèces et livrets dans Keep Your Folio ?\n' + L.join('\n') + (hasEx ? '\nLes soldes déjà saisis dans Keep Your Folio sont remplacés par ceux de Finary.' : ''), { ok:'Reprendre' });
   if(!ok) return;
   if(pl.pea > 0) setCashPea(pl.pea);
   if(pl.cto > 0) setCashCto(pl.cto);
@@ -50624,7 +50627,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.104\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.105\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -77656,6 +77659,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.105 · 08/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Finary, confirmation PERCOL / PEE / espèces : plus de « PERCOL PERCOL » en double, plus de phrase « remplace celle déjà saisie (jamais additionnée) » quand rien n'existe encore. Le message dit clairement « Ajouter à Keep Your Folio » (ligne marquée « nouveau ») ou « Mettre à jour » avec l'ancienne valeur → la nouvelle.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.104 · 08/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Écran d'accueil : la liste des domaines (Investissements, Épargne, Crypto, SCPI...) ne disparaît plus sur les écrans peu hauts ; elle passe en plus petit sur deux lignes, et l'encadré « Aucun serveur » se resserre sur une ligne.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.103 · 08/11/2026</div>
