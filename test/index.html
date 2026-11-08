@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.99
+  @version     : Beta 2.13.0.100
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5300,7 +5300,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.13.0.99</div>
+  <div class="kl-ver">Beta 2.13.0.100</div>
 </div>
 <script>
 (function(){
@@ -5464,7 +5464,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.99</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.100</span></div>
       </div>
     </div>
   </div>
@@ -7887,7 +7887,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.99</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.100</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -36210,6 +36210,7 @@ async function closeImportRelevé(){
   _importScpiRows = [];
   _importFondsEuroRows = [];
   _importEspecesRows = [];
+  if(window._finaRecap && window._finaRecap.binOn) kyfFinaBinEnd_(); else { const _fb = document.getElementById('finaBin'); if(_fb) _fb.remove(); }
   window._finaRecap = null; window._finaFrom = null; window._finaMode = false;
 }
 // Importer un relevé : bascule en deux volets dès que l'étape 2 est affichée (hors liste d'exchanges)
@@ -37024,7 +37025,7 @@ function kyfFinaLineHtml_(R, g, i){
   const X = R.X, c = R.rows[i], nom = String(c[X.nom]||'').trim();
   if(g === 'cash'){
     const d = kyfFinaCashDest_(R, i), v = fiParseNum(c[X.val]);
-    return `<div style="display:flex;align-items:center;gap:8px;padding:6px 0 6px 22px;border-top:1px solid var(--border)"><div style="flex:1;min-width:0"><div title="${escapeHtml(nom)}" style="font-size:11px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(nom)}</div><div style="font-size:10px;color:var(--text3);margin-top:1px">${fmt(v, 2)} € → ${escapeHtml(d.lbl)}</div></div><button type="button" onclick="kyfFinaDel(${i})" class="kyf-icon-btn" title="Retirer cette ligne de l'import" aria-label="Retirer" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;display:inline-flex;align-items:center">${KYF_ICONS.trash || '×'}</button></div>`;
+    return `<div style="display:flex;align-items:center;gap:8px;padding:6px 0 6px 22px;border-top:1px solid var(--border)"><div style="flex:1;min-width:0"><div title="${escapeHtml(nom)}" style="font-size:11px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(nom)}</div><div style="font-size:10px;color:var(--text3);margin-top:1px">${fmt(v, 2)} € → ${escapeHtml(d.lbl)}</div></div><button type="button" onclick="kyfFinaDel(${i},this)" class="kyf-icon-btn" title="Retirer cette ligne de l'import" aria-label="Retirer" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;display:inline-flex;align-items:center">${KYF_ICONS.trash || '×'}</button></div>`;
   }
   const ib = 'background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;display:inline-flex;align-items:center';
   const sec = ['etf','per','av'].indexOf(kyfFinaBase_(g)) >= 0;   // lignes de titres : recherche de l'ISIN / du ticker
@@ -37032,7 +37033,7 @@ function kyfFinaLineHtml_(R, g, i){
     + (sec ? `<button type="button" onmousedown="event.preventDefault()" onclick="kyfFinaSearch(${i})" class="kyf-icon-btn" title="Chercher l'ISIN sur Google" aria-label="Chercher l'ISIN sur Google" style="${ib}" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text3)'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>`
         + `<button type="button" onmousedown="event.preventDefault()" onclick="kyfFinaIa(${i})" class="kyf-icon-btn" title="Demander l'ISIN au mode IA de Google" aria-label="Demander l'ISIN au mode IA de Google" style="${ib}" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text3)'"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 6.1L20 10l-6.1 1.9L12 18l-1.9-6.1L4 10l6.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></button>` : '')
     + `<button type="button" onclick="kyfFinaEdit(${i})" class="kyf-icon-btn" title="Corriger cette ligne" aria-label="Corriger" style="${ib}" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">${KYF_ICONS.edit}</button>`
-    + `<button type="button" onclick="kyfFinaDel(${i})" class="kyf-icon-btn" title="Retirer cette ligne de l'import" aria-label="Retirer" style="${ib}" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text3)'">${KYF_ICONS.trash}</button></div>`;
+    + `<button type="button" onclick="kyfFinaDel(${i},this)" class="kyf-icon-btn" title="Retirer cette ligne de l'import" aria-label="Retirer" style="${ib}" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text3)'">${KYF_ICONS.trash}</button></div>`;
   const inp = 'width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid var(--border2);color:var(--text);font-family:\'Inter\',sans-serif;font-size:11px;padding:6px 8px;border-radius:6px;outline:none';
   if(R.edit === i){
     const qty = fiParseNum(c[X.qty]), val = fiParseNum(c[X.val]), pnl = fiParseNum(c[X.pnl]);
@@ -37062,6 +37063,7 @@ function kyfFinaRecapRender(){
   const nFait = LST.filter(g => !pend(g.k)).length;
   if(nFait > (R.prevFait || 0) || !R.sel || !LST.some(g => g.k === R.sel)){ const idx = LST.findIndex(g => g.k === R.sel); const nx = LST.slice(idx + 1).concat(LST.slice(0, idx + 1)).find(g => pend(g.k)); R.sel = nx ? nx.k : (LST[0] || {}).k; }
   R.prevFait = nFait;
+  if(LST.length && nFait === LST.length && R.binOn && !R.binEnding){ R.binEnding = true; setTimeout(kyfFinaBinEnd_, 1200); }
   try{   // fichier lu : la colonne « Fichier Finary » se replie en rail, un chevron la rouvre
     const s2 = document.getElementById('importStep2'); if(s2){
       const rail = !R.leftOpen;
@@ -37112,7 +37114,7 @@ function kyfFinaRecapRender(){
           + (isIgn ? '' : `<button type="button" class="kyf-fina-btn" onclick="kyfFinaGo('${cur.k}')" style="${bt}border:none;background:#f0b429;color:#000">${R.queue && nxt ? 'VALIDER ET PASSER AU SUIVANT' : 'IMPORTER CE COMPTE'}</button>`))
       + `</div>`;
   }
-  const rowsHtml = `<div class="kyf-fina-split" style="display:flex;align-items:stretch;flex:1;min-height:0"><div class="kyf-fina-scroll" style="width:232px;flex-shrink:0;border-right:1px solid var(--border);padding:12px 10px;display:flex;flex-direction:column;gap:3px;background:rgba(255,255,255,0.015);overflow-y:auto;min-height:0">${cptHtml}${itemsHtml}${R.skipped.length ? `<div style="padding:10px 4px 4px;font-size:10px;line-height:1.6;color:var(--text3)"><div style="font-weight:700;color:var(--text2);margin-bottom:2px">Non repris par cet import</div>${R.skipped.map(k => `<div>${escapeHtml(k.lbl)} (${k.n}) : ${escapeHtml(k.why)}</div>`).join('')}</div>` : ''}${nDel ? `<div style="padding:6px 4px 0;font-size:10px;color:var(--text3)">${nDel} ligne(s) retirée(s) de l'import. <button type="button" onclick="kyfFinaRestore()" class="kyf-hint-link" style="background:none;border:none;padding:0;font:inherit;font-size:10px;font-weight:600;cursor:pointer">Tout rétablir</button></div>` : ''}</div><div class="kyf-fina-scroll" style="flex:1;min-width:0;padding:0 16px;display:flex;flex-direction:column;overflow-y:auto;min-height:0">${detailHtml}</div></div>`;
+  const rowsHtml = `<div class="kyf-fina-split" style="display:flex;align-items:stretch;flex:1;min-height:0"><div class="kyf-fina-scroll" style="width:232px;flex-shrink:0;border-right:1px solid var(--border);padding:12px 10px;display:flex;flex-direction:column;gap:3px;background:rgba(255,255,255,0.015);overflow-y:auto;min-height:0">${cptHtml}${itemsHtml}${R.skipped.length ? `<div style="padding:10px 4px 4px;font-size:10px;line-height:1.6;color:var(--text3)"><div style="font-weight:700;color:var(--text2);margin-bottom:2px">Non repris par cet import</div>${R.skipped.map(k => `<div>${escapeHtml(k.lbl)} (${k.n}) : ${escapeHtml(k.why)}</div>`).join('')}</div>` : ''}</div><div class="kyf-fina-scroll" style="flex:1;min-width:0;padding:0 16px;display:flex;flex-direction:column;overflow-y:auto;min-height:0">${detailHtml}</div></div>`;
   st.innerHTML = KYF_CHECK_SVG + ' Fichier Finary lu : ' + (R.rows.length - 1) + ' ligne(s), dont ' + LST.reduce((t, g) => t + (R.groups[g.k]||[]).length, 0) + ' reprise(s) par Keep Your Folio. ' + (nFait ? nFait + ' compte(s) sur ' + LST.length + ' traité(s). ' : '') + 'Choisissez un compte à gauche, vérifiez ses lignes, puis validez-le : Keep Your Folio revient ici entre deux.';
   pv.innerHTML = rowsHtml || '<div style="padding:12px 0;font-size:11px;color:var(--text3)">Aucune ligne importable trouvée dans ce fichier.</div>';
   if(document.getElementById('finaScpiDest')){ kyfCSelEnsureDrop('finaScpiDest'); kyfCSelBuildDrop('finaScpiDest', kyfFinaScpiOptions_(R)); }
@@ -37132,8 +37134,101 @@ function kyfFinaName_(i){ const R = window._finaRecap; return R ? String(R.rows[
 function kyfFinaSearch(i){ const n = kyfFinaName_(i); if(n) kyfIsinSearch(n, ''); }
 function kyfFinaIa(i){ const n = kyfFinaName_(i); if(n) kyfIsinIa(n); }
 function kyfFinaToggle(k){ const R = window._finaRecap; if(!R) return; R.open[k] = !R.open[k]; R.edit = null; kyfFinaRecapRender(); }
-function kyfFinaDel(i){ const R = window._finaRecap; if(!R) return; R.del[i] = true; R.edit = null; kyfFinaBuild_(R); kyfFinaRecapRender(); }
-function kyfFinaRestore(){ const R = window._finaRecap; if(!R) return; R.del = {}; kyfFinaBuild_(R); kyfFinaRecapRender(); }
+const KYF_BIN_SVG = '<g class="kyf-bin-lid"><polyline points="3 6 5 6 21 6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></g><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/>';
+function kyfFinaNDel_(R){ let n = 0; for(const k in R.del) if(!(R.gone && R.gone[k])) n++; return n; }
+function kyfFinaDel(i, btn){
+  const R = window._finaRecap; if(!R) return;
+  let ghost = null;
+  try{ const row = btn && btn.parentElement; if(row){ const r = row.getBoundingClientRect(); ghost = row.cloneNode(true); ghost.style.cssText += ';position:fixed;left:'+r.left+'px;top:'+r.top+'px;width:'+r.width+'px;height:'+r.height+'px;margin:0;z-index:10000002;pointer-events:none;background:var(--bg3,#3a4568);border-radius:8px;box-sizing:border-box;transform-origin:right center'; document.body.appendChild(ghost); } }catch(e){ ghost = null; }
+  R.del[i] = true; R.edit = null; R.binOn = true; kyfFinaBuild_(R); kyfFinaRecapRender();
+  const bin = kyfFinaBinShow_(R);
+  if(ghost && bin){
+    const rc = ghost.getBoundingClientRect(), bc = bin.getBoundingClientRect();
+    const dx = bc.left + bc.width/2 - (rc.left + rc.width), dy = bc.top + bc.height/2 - (rc.top + rc.height/2);
+    if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches){ ghost.remove(); kyfFinaBinBump_(); return; }
+    if(!ghost.animate){ ghost.remove(); kyfFinaBinBump_(); return; }
+    const lid = bin.querySelector('.kyf-bin-lid'); if(lid) lid.style.transform = 'rotate(-28deg)';
+    const a = ghost.animate([
+      { transform:'translate(0,0) rotate(0) scale(1)', opacity:1 },
+      { transform:'translate('+(dx*.25)+'px,'+(dy*.1-6)+'px) rotate(4deg) scale(.9)', opacity:.9, offset:.3 },
+      { transform:'translate('+dx+'px,'+dy+'px) rotate(12deg) scale(.1)', opacity:0 }
+    ], { duration:650, easing:'cubic-bezier(.5,0,.3,1)' });
+    a.onfinish = () => { ghost.remove(); if(lid) lid.style.transform = ''; kyfFinaBinBump_(); };
+    a.oncancel = () => ghost.remove();
+  } else if(ghost) ghost.remove();
+}
+function kyfFinaBinBump_(){
+  const b = document.getElementById('finaBin'); if(!b) return;
+  const p = b.querySelector('.kyf-bin-pill'), bd = b.querySelector('.kyf-bin-badge');
+  if(p && p.animate) p.animate([{transform:'scale(1)'},{transform:'scale(1.14)',offset:.35},{transform:'scale(.97)',offset:.65},{transform:'scale(1)'}], {duration:340});
+  if(bd && bd.animate) bd.animate([{transform:'scale(.2)'},{transform:'scale(1.35)',offset:.5},{transform:'scale(1)'}], {duration:300});
+}
+function kyfFinaBinShow_(R){
+  let b = document.getElementById('finaBin');
+  const n = kyfFinaNDel_(R);
+  if(!R.binOn || (!n && !R.binKeep)){ if(b) b.remove(); kyfFinaBinPanel_(false); return null; }
+  if(!b){
+    if(!document.getElementById('finaBinCss')){ const st = document.createElement('style'); st.id = 'finaBinCss'; st.textContent = '#finaBin{position:fixed;right:24px;bottom:56px;z-index:10000001;display:flex;flex-direction:column;align-items:center;gap:8px;width:96px;cursor:pointer;user-select:none;-webkit-user-select:none}#finaBin .kyf-bin-pill{position:relative;width:76px;height:76px;border-radius:20px;background:var(--bg2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;box-shadow:0 14px 34px rgba(0,0,0,.5);color:var(--text);transition:opacity .15s,box-shadow .15s}#finaBin:hover .kyf-bin-pill{opacity:.85;box-shadow:0 0 0 4px rgba(240,180,41,.25),0 14px 34px rgba(0,0,0,.5)}#finaBin .kyf-bin-lid{transform-origin:5px 7px;transition:transform .18s}#finaBin .kyf-bin-badge{position:absolute;top:-7px;right:-7px;min-width:22px;height:22px;border-radius:11px;background:var(--red,#ff5c72);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);padding:0 4px;box-sizing:border-box}#finaBin .kyf-bin-lbl{font-size:11px;font-weight:700;letter-spacing:.3px;color:var(--text)}@media (max-width:1250px){#finaBin{width:60px;right:10px}#finaBin .kyf-bin-pill{width:52px;height:52px;border-radius:14px}#finaBin .kyf-bin-lbl{display:none}}'; document.head.appendChild(st); }
+    b = document.createElement('div'); b.id = 'finaBin'; b.title = 'Lignes retirées de l\'import';
+    b.setAttribute('role','button'); b.setAttribute('tabindex','0'); b.setAttribute('aria-label','Corbeille de l\'import');
+    b.onclick = e => { e.stopPropagation(); kyfFinaBinPanel_(!document.getElementById('finaBinPanel')); };
+    b.onkeydown = e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); b.onclick(e); } };
+    b.innerHTML = '<div class="kyf-bin-pill"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + KYF_BIN_SVG + '</svg><div class="kyf-bin-badge"></div></div><div class="kyf-bin-lbl">Corbeille</div>';
+    document.body.appendChild(b);
+    if(b.animate) b.animate([{transform:'translateY(30px) scale(.6)',opacity:0},{transform:'translateY(0) scale(1)',opacity:1}], {duration:300, easing:'cubic-bezier(.2,.8,.3,1)'});
+  }
+  b.querySelector('.kyf-bin-badge').textContent = n;
+  b.querySelector('.kyf-bin-badge').style.display = n ? '' : 'none';
+  if(document.getElementById('finaBinPanel')) kyfFinaBinPanel_(true);
+  return b;
+}
+function kyfFinaBinPanel_(open){
+  let p = document.getElementById('finaBinPanel');
+  const R = window._finaRecap;
+  if(!open || !R){ if(p) p.remove(); document.removeEventListener('mousedown', kyfFinaBinOut_, true); document.removeEventListener('contextmenu', kyfFinaBinOut_, true); document.removeEventListener('keydown', kyfFinaBinKey_, true); return; }
+  if(!p){ p = document.createElement('div'); p.id = 'finaBinPanel'; document.body.appendChild(p);
+    document.addEventListener('mousedown', kyfFinaBinOut_, true); document.addEventListener('contextmenu', kyfFinaBinOut_, true); document.addEventListener('keydown', kyfFinaBinKey_, true); }
+  const ids = Object.keys(R.del).filter(k => !(R.gone && R.gone[k]));
+  const btn = 'font-family:inherit;font-size:10px;font-weight:700;letter-spacing:.4px;padding:7px 12px;border-radius:8px;cursor:pointer;';
+  const lines = ids.map(k => {
+    const c = R.rows[k] || [], nom = String(c[R.X.nom] || '').trim() || 'Ligne ' + k, acc = R.X.acc >= 0 ? String(c[R.X.acc] || '').trim() : '', val = R.X.val >= 0 ? String(c[R.X.val] || '').trim() : '';
+    return '<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid var(--border)"><div style="flex:1;min-width:0"><div title="' + escapeHtml(nom) + '" style="font-size:11px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(nom) + '</div><div style="font-size:10px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml([acc, val].filter(Boolean).join(' · ')) + '</div></div><button type="button" class="kyf-fina-btn" onclick="kyfFinaRestoreOne(' + k + ')" style="' + btn + 'border:1px solid var(--border2);background:none;color:var(--text2)">RÉTABLIR</button></div>';
+  }).join('');
+  p.style.cssText = 'position:fixed;right:24px;bottom:176px;width:340px;max-width:calc(100vw - 20px);max-height:min(60vh,420px);display:flex;flex-direction:column;z-index:10000002;background:var(--bg2);border:1px solid var(--border2);border-radius:14px;box-shadow:0 24px 60px rgba(0,0,0,.55);padding:14px 16px;box-sizing:border-box';
+  p.innerHTML = '<div style="font-size:10px;font-weight:800;letter-spacing:1.1px;color:var(--text3)">CORBEILLE DE L\'IMPORT</div><div style="font-size:13px;font-weight:800;color:var(--text);margin:4px 0 10px">' + (ids.length ? ids.length + ' ligne(s) retirée(s)' : 'Aucune ligne retirée') + '</div>'
+    + (ids.length ? '<div style="display:flex;gap:8px;margin-bottom:8px"><button type="button" class="kyf-fina-btn" onclick="kyfFinaRestore()" style="' + btn + 'flex:1;border:none;background:#f0b429;color:#000">TOUT RÉTABLIR</button><button type="button" class="kyf-fina-btn" onclick="kyfFinaBinPurge()" style="' + btn + 'flex:1;border:1px solid var(--red);background:none;color:var(--red)">TOUT SUPPRIMER</button></div><div style="overflow-y:auto;min-height:0;scrollbar-width:thin">' + lines + '</div>' : '<div style="font-size:11px;color:var(--text3)">Les lignes que vous retirez apparaissent ici.</div>');
+}
+function kyfFinaBinOut_(e){ const p = document.getElementById('finaBinPanel'), b = document.getElementById('finaBin'); if(p && !p.contains(e.target) && !(b && b.contains(e.target)) && !e.target.closest('.kyf-dlg')) kyfFinaBinPanel_(false); }
+function kyfFinaBinKey_(e){ if(e.key === 'Escape' && document.getElementById('finaBinPanel')){ kyfFinaBinPanel_(false); e.stopPropagation(); } }
+function kyfFinaRestoreOne(i){ const R = window._finaRecap; if(!R) return; delete R.del[i]; kyfFinaBuild_(R); kyfFinaRecapRender(); kyfFinaBinShow_(R); }
+async function kyfFinaBinPurge(){
+  const R = window._finaRecap; if(!R) return;
+  const n = kyfFinaNDel_(R); if(!n) return;
+  const ok = await kyfAsk('Supprimer définitivement ces ' + n + ' ligne(s) de l\'import ? Elles ne pourront plus être rétablies pour cet import.', { kind:'danger', ok:'Tout supprimer', cancel:'Annuler' });
+  if(!ok || window._finaRecap !== R) return;
+  R.gone = R.gone || {}; for(const k in R.del) R.gone[k] = true;
+  R.binKeep = true; kyfFinaBinShow_(R); kyfFinaBinPanel_(true);
+}
+function kyfFinaRestore(){ const R = window._finaRecap; if(!R) return; for(const k in R.del) if(!(R.gone && R.gone[k])) delete R.del[k]; kyfFinaBuild_(R); kyfFinaRecapRender(); kyfFinaBinShow_(R); }
+function kyfFinaBinEnd_(){
+  const b = document.getElementById('finaBin'); kyfFinaBinPanel_(false);
+  if(!b) return;
+  const top = document.getElementById('corbeilleBtn');
+  if(!top || !b.animate){ b.remove(); return; }
+  const wasHidden = getComputedStyle(top).display === 'none';
+  if(wasHidden) top.style.display = 'flex';
+  const pill = b.querySelector('.kyf-bin-pill'), r = pill.getBoundingClientRect(), t = top.getBoundingClientRect();
+  b.style.pointerEvents = 'none';
+  const dx = t.left + t.width/2 - (r.left + r.width/2), dy = t.top + t.height/2 - (r.top + r.height/2);
+  const lbl = b.querySelector('.kyf-bin-lbl'); if(lbl) lbl.style.opacity = '0';
+  const a = pill.animate([{transform:'translate(0,0) scale(1) rotate(0)',opacity:1},{transform:'translate('+dx*.9+'px,'+dy*.9+'px) scale(.45) rotate(8deg)',opacity:1,offset:.8},{transform:'translate('+dx+'px,'+dy+'px) scale(.35)',opacity:0}], {duration:800, easing:'cubic-bezier(.5,0,.3,1)', fill:'forwards'});
+  const done = () => {
+    b.remove();
+    top.style.transition = 'box-shadow .3s,border-color .3s'; top.style.boxShadow = '0 0 0 5px rgba(240,180,41,.3)'; top.style.borderColor = '#f0b429';
+    setTimeout(() => { top.style.boxShadow = ''; top.style.borderColor = ''; if(wasHidden){ try{ kyfCorbeilleRefreshBtn(); }catch(e){} if(getComputedStyle(top).display !== 'none' && !(window.kyfCorbeilleCount && kyfCorbeilleCount())) { /* garde l'état réel du bouton */ } } }, 1200);
+  };
+  a.onfinish = done; a.oncancel = done;
+}
 function kyfFinaEdit(i){ const R = window._finaRecap; if(!R) return; R.edit = i; kyfFinaRecapRender(); }
 function kyfFinaEditCancel(){ const R = window._finaRecap; if(!R) return; R.edit = null; kyfFinaRecapRender(); }
 function kyfFinaEditSave(i){
@@ -50516,7 +50611,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.99\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.100\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -77548,6 +77643,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.100 · 08/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Finary : quand vous retirez une ligne, elle file dans une corbeille à droite de la fenêtre (même icône que Keep Your Folio). Un clic l'ouvre : tout rétablir, tout supprimer en un clic, ou rétablir ligne par ligne. À la fin de l'import, la corbeille rejoint celle de la barre du haut.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.99 · 08/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Finary, modification d'une ligne (crayon) : un chevron en haut à droite de la ligne ouverte permet de la refermer (sans enregistrer), comme ANNULER.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.98 · 08/11/2026</div>
