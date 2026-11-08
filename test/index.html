@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.118
+  @version     : Beta 2.13.0.119
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -2331,6 +2331,7 @@ button.kyf-toggle-active[style],.kyf-seg button.kyf-toggle-active{background:#f0
 body.kyf-imp-contact #finaBin{bottom:176px!important}
 body.kyf-imp-contact #finaBinPanel{bottom:290px!important}
 @media (max-width:1250px){#impContactBtn{width:60px;right:10px}#impContactBtn .ic-pill{width:44px;height:44px;border-radius:12px}#impContactBtn .ic-lbl{display:none}body.kyf-imp-contact #finaBin{bottom:140px!important}body.kyf-imp-contact #finaBinPanel{bottom:240px!important}}
+#importStep2.imp-pp:not(.imp-read) :is(#importDestWrap,#importCptWrap,#importBrokerWrap,#importCashWrap,#importVerseWrap){display:none!important}
 #importRelevéModal.imp2p{width:min(1040px,96vw)!important;height:min(680px,92vh);max-height:none!important}
 #importRelevéModal.imp2p>div{padding:0!important;overflow:hidden!important;display:flex;flex-direction:column}
 #importRelevéModal.imp2p .imp-hdr{margin:0!important;padding:14px 18px;border-bottom:1px solid var(--border)}
@@ -5345,7 +5346,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.13.0.118</div>
+  <div class="kl-ver">Beta 2.13.0.119</div>
 </div>
 <script>
 (function(){
@@ -5512,7 +5513,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.118</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.119</span></div>
       </div>
     </div>
   </div>
@@ -7935,7 +7936,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.118</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.119</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -36569,6 +36570,7 @@ function importStep2GoBack(){
 
 function importGoToStep2(type){
   window._finaMode = false;
+  try{ const _s = document.getElementById('importStep2'); if(_s){ _s.classList.remove('imp-pp'); _s.classList.remove('imp-read'); } }catch(e){}
   try{ const s2 = document.getElementById('importStep2'); if(s2){ s2.style.removeProperty('--imp-left-w'); s2.classList.remove('fina-rail'); s2.classList.remove('fina-rec'); s2.classList.remove('fina-grp'); } ['finaRailBtn','finaRailTxt'].forEach(id => { const x = document.getElementById(id); if(x) x.remove(); }); }catch(e){}
   window._importContratPick = null; window._importContratAfterCreate = null;
   { const _ab = document.getElementById('importAllBtn'); if(_ab) _ab.style.display = 'none'; }
@@ -36745,8 +36747,16 @@ function importGoToStep2Maison(kind){
   document.getElementById('importFile').accept = '.xlsx,.xls,.csv';
 }
 
+// Portfolio Performance : le fichier ne dit ni le compte, ni le courtier, ni les espèces. Ces questions n'apparaissent qu'après la lecture du fichier (le bouton IMPORTER s'affiche), pas avant.
+function kyfImpPpWatch_(){
+  const b = document.getElementById('importConfirmBtn'), s2 = document.getElementById('importStep2'); if(!b || !s2) return;
+  const upd = () => { s2.classList.toggle('imp-read', b.style.display !== 'none'); };
+  if(!b._ppObs){ b._ppObs = new MutationObserver(upd); b._ppObs.observe(b, { attributes:true, attributeFilter:['style'] }); }
+  upd();
+}
 function importGoToStep2PP(){
   importGoToStep2('etf');
+  try{ document.getElementById('importStep2').classList.add('imp-pp'); kyfImpPpWatch_(); }catch(e){}   // Portfolio Performance : le compte, le courtier et les espèces ne se demandent qu'une fois le fichier lu
   // Explication repliée derrière « En savoir plus sur ce format », comme les autres formats (page ETF/Actions)
   document.getElementById('importStep2Hint').innerHTML = kyfImportHintHtml(
     "Export <b>Portfolio Performance</b> : Titres → Toutes les transactions → clic droit → Exporter. Keep Your Folio reconstruit la quantité et le PRU en rejouant l'historique des achats/ventes, avec la même logique de coût mobile que Portfolio Performance lui-même. Dividendes, splits et fusions ne figurent pas dans ce type d'export et ne sont donc pas repris.");
@@ -50722,7 +50732,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.118\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.119\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -77808,6 +77818,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.119 · 08/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Portfolio Performance : les questions « Destination (PEA, CTO...) », « Courtier », « Espèces » et « Total versé » (reprises de l'import PEA / CTO) ne s'affichent plus avant le choix du fichier ; elles apparaissent une fois le fichier lu, avec le bouton IMPORTER.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.118 · 08/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Contact : l'écran « Message envoyé » s'affiche maintenant seul et centré dans la fenêtre (il apparaissait sous le formulaire quand le contact était ouvert depuis l'import), avec une grande coche animée, un titre plus lisible et des boutons plus grands avec survol.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.117 · 08/11/2026</div>
