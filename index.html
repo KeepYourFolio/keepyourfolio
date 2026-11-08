@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.106
+  @version     : Beta 2.13.0.107
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5301,7 +5301,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.13.0.106</div>
+  <div class="kl-ver">Beta 2.13.0.107</div>
 </div>
 <script>
 (function(){
@@ -5468,7 +5468,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.106</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.107</span></div>
       </div>
     </div>
   </div>
@@ -7891,7 +7891,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.106</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.107</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -36866,21 +36866,48 @@ function kyfFinaCashPlan_(R){
 // PEE saisi sur Finary : un plan par compte (nom du compte, établissement en gestionnaire). Les fonds du plan, quand il y en a, gardent leurs parts
 // et leur valeur de part (valeur / quantité) ; un compte saisi à la main n'a qu'une valeur, reprise telle quelle. Un plan du même nom est mis à jour
 // (la valeur remplace l'ancienne, ses autres informations restent), jamais additionné.
+// Informations que Finary ne fournit pas (dates, abondement) : saisies facultativement dans le volet de droite, vides = inconnues (jamais 0 par défaut)
+function kyfFinaPlanNum_(x){ const t = String(x == null ? '' : x).trim(); if(!t) return null; const v = fiParseNum(t); return (isFinite(v) && v >= 0) ? v : null; }
+function kyfFinaPlanExtra_(S){ return { ouv: /^\d{4}-\d{2}-\d{2}$/.test(S.ouv || '') ? S.ouv : '', dispo: /^\d{4}-\d{2}-\d{2}$/.test(S.dispo || '') ? S.dispo : '', abo: kyfFinaPlanNum_(S.abo), taux: kyfFinaPlanNum_(S.taux), plaf: kyfFinaPlanNum_(S.plaf) }; }
+function kyfFinaPlanSet(kind, n, k, v){ const R = window._finaRecap; if(!R) return; R.plx = R.plx || { pee:{}, percol:{} }; (R.plx[kind][n] = R.plx[kind][n] || {})[k] = v; }
+function kyfFinaPlanFormHtml_(R, kind){
+  const pl = kind === 'pee' ? kyfFinaPeePlans_(R) : kyfFinaPercolPlans_(R); if(!pl.length) return '';
+  R.plx = R.plx || { pee:{}, percol:{} };
+  const fld = 'width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid var(--border2);color:var(--text);font-family:\'Inter\',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none';
+  const lab = (t, opt) => `<div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">${t}${opt ? ' <span style="opacity:.6">facultatif</span>' : ''}</div>`;
+  const cal = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
+  const dt = (n, k, lbl, v) => { const id = 'finaPl_' + kind + n + k; return `<div>${lab(lbl, 1)}<input type="hidden" id="${id}" value="${escapeHtml(v || '')}" onchange="kyfFinaPlanSet('${kind}',${n},'${k}',this.value)"><button type="button" id="${id}Btn" class="kyf-csel-btn" data-kyf-date="${id}" aria-haspopup="dialog" aria-expanded="false"><span id="${id}BtnLabel">${v ? peeDateFr(v) : 'JJ/MM/AAAA'}</span>${cal}</button></div>`; };
+  const tx = (n, k, lbl, v, ph, span, money) => `<div${span ? ' style="grid-column:span 2"' : ''}>${lab(lbl, 1)}<input type="text"${span ? '' : ' inputmode="decimal"'} value="${escapeHtml(v == null ? '' : String(v))}" placeholder="${ph}" oninput="kyfFinaPlanSet('${kind}',${n},'${k}',this.value)"${money ? ' onblur="kyfFormatPriceBlur(this)"' : ''} style="${fld}"></div>`;
+  const blocks = pl.map((p, n) => {
+    const S = R.plx[kind][n] || {}, g = S.gest != null ? S.gest : (p.gest || p.assureur || '');
+    return `<div style="${n ? 'margin-top:14px;' : ''}">` + (pl.length > 1 ? `<div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px">${escapeHtml(p.nom)}</div>` : '')
+      + `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">`
+      + tx(n, 'gest', kind === 'pee' ? 'GESTIONNAIRE' : 'ASSUREUR / GESTIONNAIRE', g, kind === 'pee' ? 'Amundi, Natixis...' : 'Société Générale...', true, false)
+      + dt(n, 'ouv', 'DATE D\'OUVERTURE', S.ouv)
+      + (kind === 'pee' ? dt(n, 'dispo', 'DISPONIBLE DÈS LE', S.dispo)
+          + tx(n, 'abo', 'DONT ABONDEMENT DE L\'ENTREPRISE (€)', S.abo, '2 000', true, true)
+          + tx(n, 'taux', 'TAUX D\'ABONDEMENT (%)', S.taux, '100', false, false)
+          + tx(n, 'plaf', 'PLAFOND ANNUEL ENTREPRISE (€)', S.plaf, '1 500', false, true) : '')
+      + `</div></div>`;
+  }).join('');
+  return `<div style="padding:14px 4px;margin-top:6px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)"><div style="font-size:10px;font-weight:800;letter-spacing:1.1px;color:var(--text3)">À COMPLÉTER</div><div style="font-size:10px;line-height:1.6;color:var(--text3);margin:4px 0 12px">Finary ne fournit pas ces informations. Renseignez-les maintenant si vous les avez, ou passez : vous pourrez toujours les ajouter plus tard en modifiant le plan.${kind === 'pee' ? ' Pour chaque fonds, le crayon permet d\'ajouter l\'ISIN.' : ''}</div>${blocks}</div>`;
+}
 function kyfFinaPeePlans_(R){
   const X = R.X, by = {}, ord = [];
   (R.groups.pee || []).forEach(i => { const c = R.rows[i], nom = String(c[X.acc]||c[X.nom]||'').trim().slice(0, 80) || 'PEE'; if(!by[nom]){ by[nom] = []; ord.push(nom); } by[nom].push(i); });
-  return ord.map(nom => {
+  return ord.map((nom, n) => {
     let val = 0, cost = 0, gest = ''; const fonds = [];
     by[nom].forEach(i => {
       const c = R.rows[i], v = fiParseNum(c[X.val]), q = fiParseNum(c[X.qty]), p = fiParseNum(c[X.pnl]);
       if(!gest && X.inst >= 0){ const t = String(c[X.inst]||'').trim(); if(t && t !== 'Default') gest = t.slice(0, 80); }
       val += v; cost += v - p;
-      if(fiFhCls(c[X.cls]) === 'security' && q > 0) fonds.push({ nom:String(c[X.nom]||'').trim().slice(0, 120), isin:'', tk:'', parts:q, vl:Math.round(v / q * 10000) / 10000 });
+      if(fiFhCls(c[X.cls]) === 'security' && q > 0) fonds.push({ nom:String(c[X.nom]||'').trim().slice(0, 120), isin:(R.isinOv && R.isinOv[i] && peeIsinOk(R.isinOv[i])) ? R.isinOv[i] : '', tk:'', parts:q, vl:Math.round(v / q * 10000) / 10000 });
       else if(fiFhCls(c[X.cls]) === 'fiat') fonds.push({ nom:'Espèces', isin:'', tk:'', parts:Math.round(v * 100) / 100, vl:1, _esp:1 });
     });
     const avecTitres = fonds.some(f => !f._esp);
     const fl = avecTitres ? fonds.map(f => ({ nom:f.nom, isin:f.isin, tk:f.tk, parts:f.parts, vl:f.vl })) : [];
-    return { nom, gest, valeur:Math.round(val * 100) / 100, versements:Math.max(0, Math.round(cost * 100) / 100), fonds:fl };
+    const S = (R.plx && R.plx.pee && R.plx.pee[n]) || {};
+    return Object.assign({ nom, gest: S.gest != null ? String(S.gest).trim().slice(0, 80) : gest, valeur:Math.round(val * 100) / 100, versements:Math.max(0, Math.round(cost * 100) / 100), fonds:fl }, kyfFinaPlanExtra_(S));
   });
 }
 // SCPI : en direct ou rangées dans une assurance vie / un PER. Finary indique l'enveloppe et le nom du compte : ils servent de choix par défaut,
@@ -36939,8 +36966,8 @@ async function kyfFinaPeeGo_(R){
   if(!ok) return;
   pl.forEach((p, k) => {
     const ex = d.find(x => String(x.nom||'').toLowerCase() === p.nom.toLowerCase());
-    if(ex){ ex.valeur = p.valeur; ex.versements = p.versements; if(p.gest && !ex.gestionnaire) ex.gestionnaire = p.gest; if(p.fonds.length){ ex.fonds = p.fonds; ex.vlDate = new Date().toISOString().slice(0, 10); } }
-    else { const it = { id:'pee_' + Date.now() + '_' + k, type:'pee', nom:p.nom, gestionnaire:p.gest, valeur:p.valeur, versements:p.versements, dateOuv:'', dateDispo:'', note:'Repris depuis Finary (FinaHack)' }; if(p.fonds.length){ it.fonds = p.fonds; it.vlDate = new Date().toISOString().slice(0, 10); } d.push(it); }
+    if(ex){ ex.valeur = p.valeur; ex.versements = p.versements; if(p.gest && !ex.gestionnaire) ex.gestionnaire = p.gest; if(p.ouv) ex.dateOuv = p.ouv; if(p.dispo) ex.dateDispo = p.dispo; if(p.abo != null) ex.abondement = p.abo; if(p.taux != null) ex.tauxAbo = p.taux; if(p.plaf != null) ex.plafondEnt = p.plaf; if(p.fonds.length){ ex.fonds = p.fonds; ex.vlDate = new Date().toISOString().slice(0, 10); } }
+    else { const it = { id:'pee_' + Date.now() + '_' + k, type:'pee', nom:p.nom, gestionnaire:p.gest, valeur:p.valeur, versements:p.versements, dateOuv:p.ouv || '', dateDispo:p.dispo || '', note:'Importé depuis Finary (FinaHack)' }; if(p.abo != null) it.abondement = p.abo; if(p.taux != null) it.tauxAbo = p.taux; if(p.plaf != null) it.plafondEnt = p.plaf; if(p.fonds.length){ it.fonds = p.fonds; it.vlDate = new Date().toISOString().slice(0, 10); } d.push(it); }
   });
   peeSave(d);
   try{ renderPee(); }catch(e){} try{ kyfPeeLateRefresh(); }catch(e){}
@@ -36951,10 +36978,11 @@ async function kyfFinaPeeGo_(R){
 function kyfFinaPercolPlans_(R){
   const X = R.X, by = {}, ord = [];
   (R.groups.percol || []).forEach(i => { const c = R.rows[i], nom = String(c[X.acc]||c[X.nom]||'').trim().slice(0, 80) || 'PERCOL'; if(!by[nom]){ by[nom] = []; ord.push(nom); } by[nom].push(i); });
-  return ord.map(nom => {
+  return ord.map((nom, n) => {
     let val = 0, cost = 0, ass = '';
     by[nom].forEach(i => { const c = R.rows[i], v = fiParseNum(c[X.val]), p = fiParseNum(c[X.pnl]); val += v; cost += v - p; if(!ass && X.inst >= 0){ const t = String(c[X.inst]||'').trim(); if(t && t !== 'Default') ass = t.slice(0, 80); } });
-    return { nom, assureur:ass, valeur:Math.round(val * 100) / 100, versements:Math.max(0, Math.round(cost * 100) / 100) };
+    const S = (R.plx && R.plx.percol && R.plx.percol[n]) || {};
+    return Object.assign({ nom, assureur: S.gest != null ? String(S.gest).trim().slice(0, 80) : ass, valeur:Math.round(val * 100) / 100, versements:Math.max(0, Math.round(cost * 100) / 100) }, kyfFinaPlanExtra_(S));
   });
 }
 async function kyfFinaPercolGo_(R){
@@ -36965,8 +36993,8 @@ async function kyfFinaPercolGo_(R){
   if(!ok) return;
   pl.forEach((p, k) => {
     const ex = d.find(x => isPc(x) && String(x.contratNom||'').toLowerCase() === p.nom.toLowerCase());
-    if(ex){ ex.valeur = p.valeur; ex.versements = p.versements; if(p.assureur && !ex.assureur) ex.assureur = p.assureur; }
-    else d.push({ id:Date.now().toString() + k, source:'manual', type:'per-col', contratNom:p.nom, assureur:p.assureur, dateOuv:'', versements:p.versements, rachats:0, versmentsAn:0, valeur:p.valeur, fondsEuros:0, uc:0, ucDansETF:false, fraisGestion:0, fraisArbitrage:0, fraisEntree:0, tauxFE:0, notes:'Repris depuis Finary (FinaHack)', titulaire:'', modeGestion:'libre', fraisPilotage:0 });
+    if(ex){ ex.valeur = p.valeur; ex.versements = p.versements; if(p.assureur && !ex.assureur) ex.assureur = p.assureur; if(p.ouv) ex.dateOuv = p.ouv; }
+    else d.push({ id:Date.now().toString() + k, source:'manual', type:'per-col', contratNom:p.nom, assureur:p.assureur, dateOuv:p.ouv || '', versements:p.versements, rachats:0, versmentsAn:0, valeur:p.valeur, fondsEuros:0, uc:0, ucDansETF:false, fraisGestion:0, fraisArbitrage:0, fraisEntree:0, tauxFE:0, notes:'Repris depuis Finary (FinaHack)', titulaire:'', modeGestion:'libre', fraisPilotage:0 });
   });
   avSave(d);
   try{ renderAV(); }catch(e){}
@@ -37035,7 +37063,7 @@ function kyfFinaLineHtml_(R, g, i){
     return `<div style="display:flex;align-items:center;gap:8px;padding:6px 0 6px 22px;border-top:1px solid var(--border)"><div style="flex:1;min-width:0"><div title="${escapeHtml(nom)}" style="font-size:11px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(nom)}</div><div style="font-size:10px;color:var(--text3);margin-top:1px">${fmt(v, 2)} € → ${escapeHtml(d.lbl)}</div></div><button type="button" onclick="kyfFinaDel(${i},this)" class="kyf-icon-btn" title="Retirer cette ligne de l'import" aria-label="Retirer" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;display:inline-flex;align-items:center">${KYF_ICONS.trash || '×'}</button></div>`;
   }
   const ib = 'background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;display:inline-flex;align-items:center';
-  const sec = ['etf','per','av'].indexOf(kyfFinaBase_(g)) >= 0;   // lignes de titres : recherche de l'ISIN / du ticker
+  const sec = ['etf','per','av','pee'].indexOf(kyfFinaBase_(g)) >= 0;   // lignes de titres : recherche de l'ISIN / du ticker
   const acts = '<div style="display:inline-flex;gap:2px;flex-shrink:0">'
     + (sec ? `<button type="button" onmousedown="event.preventDefault()" onclick="kyfFinaSearch(${i})" class="kyf-icon-btn" title="Chercher l'ISIN sur Google" aria-label="Chercher l'ISIN sur Google" style="${ib}" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text3)'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>`
         + `<button type="button" onmousedown="event.preventDefault()" onclick="kyfFinaIa(${i})" class="kyf-icon-btn" title="Demander l'ISIN au mode IA de Google" aria-label="Demander l'ISIN au mode IA de Google" style="${ib}" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text3)'"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 6.1L20 10l-6.1 1.9L12 18l-1.9-6.1L4 10l6.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></button>` : '')
@@ -37052,7 +37080,7 @@ function kyfFinaLineHtml_(R, g, i){
       + `<label style="font-size:9px;color:var(--text3)">NOM<input id="finaEdNom" value="${escapeHtml(nom)}" style="${inp}"></label>`
       + (bien ? `<label style="font-size:9px;color:var(--text3)">VALEUR (€)<input id="finaEdVal" value="${val}" inputmode="decimal" style="${inp}"></label>`
               : `<label style="font-size:9px;color:var(--text3)">QUANTITÉ<input id="finaEdQty" value="${qty}" inputmode="decimal" style="${inp}"></label><label style="font-size:9px;color:var(--text3)">PRU (€)<input id="finaEdPru" value="${pru}" inputmode="decimal" style="${inp}"></label>`)
-      + `</div><div style="display:flex;gap:6px;justify-content:flex-end;margin-top:8px">${btn('ANNULER', 'kyfFinaEditCancel()', false)}${btn('ENREGISTRER', 'kyfFinaEditSave(' + i + ')', true)}</div></div>`;
+      + `</div>` + (kyfFinaBase_(g) === 'pee' && !bien ? `<label style="display:block;font-size:9px;color:var(--text3);margin-top:6px">ISIN <span style="opacity:.6">facultatif, pour suivre la valeur de la part</span><input id="finaEdIsin" value="${escapeHtml((R.isinOv && R.isinOv[i]) || '')}" maxlength="12" placeholder="FR0000000000" style="${inp};text-transform:uppercase"></label>` : '') + `<div style="display:flex;gap:6px;justify-content:flex-end;margin-top:8px">${btn('ANNULER', 'kyfFinaEditCancel()', false)}${btn('ENREGISTRER', 'kyfFinaEditSave(' + i + ')', true)}</div></div>`;
   }
   const qty = fiParseNum(c[X.qty]), val = fiParseNum(c[X.val]), pnl = fiParseNum(c[X.pnl]);
   const sub = g === 'bien' ? fmt(val, 0) + ' €' : (fmtQty_(qty) + ' × ' + (qty > 0 && (val - pnl) > 0 ? fmt((val - pnl) / qty, 2) + ' €' : 'PRU inconnu'));
@@ -37114,6 +37142,7 @@ function kyfFinaRecapRender(){
       + `<div style="font-size:17px;font-weight:800;letter-spacing:-.3px;color:var(--text);margin-top:6px">${escapeHtml(cur.lbl)}</div>`
       + `<div style="font-size:11px;color:var(--text3);margin-top:3px">${curList.length} ligne(s)${det ? ' · ' + escapeHtml(det) : ''}</div></div>`
       + (cur.k === 'scpi' && !isDone && !isIgn ? kyfFinaScpiDestHtml_(R) : '')
+      + ((cur.k === 'pee' || cur.k === 'percol') && !isDone && !isIgn ? kyfFinaPlanFormHtml_(R, cur.k) : '')
       + `<div style="padding:4px 0">${curList.map(i => kyfFinaLineHtml_(R, cur.k, i)).join('')}</div>`
       + `<div style="position:sticky;bottom:0;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 4px;margin-top:10px;background:var(--bg2);border-top:1px solid var(--border)">`
       + (isDone ? `<span style="font-size:11px;font-weight:700;color:var(--green)">Ajouté à Keep Your Folio</span>`
@@ -37253,6 +37282,11 @@ function kyfFinaEditSave(i){
   const nom = kyfSafeCellText(String(v('finaEdNom')||'').trim(), 160);
   if(!nom) return;
   c[X.nom] = nom;
+  if(document.getElementById('finaEdIsin')){
+    const iv = String(v('finaEdIsin') || '').trim().toUpperCase();
+    if(iv && !peeIsinOk(iv)){ try{ showToast('ISIN invalide : 12 caractères, ex. FR0000120271.'); }catch(e){} return; }
+    R.isinOv = R.isinOv || {}; if(iv) R.isinOv[i] = iv; else delete R.isinOv[i];
+  }
   if(document.getElementById('finaEdVal')){
     const val = fiParseNum(v('finaEdVal')); if(val > 0) c[X.val] = String(val);
   } else {
@@ -50627,7 +50661,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.106\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.107\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -77659,6 +77693,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.107 · 08/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Finary, PEE et PERCOL : un cadre « À compléter » (facultatif, on peut passer) demande ce que Finary ne donne pas : gestionnaire, date d'ouverture, et pour le PEE la date de disponibilité et l'abondement de l'entreprise (versé, taux, plafond). Les lignes de fonds du PEE ont la recherche d'ISIN et un champ ISIN dans le crayon, pour suivre la valeur de la part. Tout est repris dans le plan créé, rien n'est inventé si laissé vide.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.106 · 08/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Finary : les notifications ne disent plus « PERCOL repris » (sans sens pour un nouvel utilisateur). Elles disent « PERCOL ajouté à Keep Your Folio » ou « mis à jour » s'il existait déjà, et de même pour l'épargne salariale, les espèces, livrets et SCPI.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.105 · 08/11/2026</div>
