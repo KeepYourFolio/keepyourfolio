@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.107
+  @version     : Beta 2.13.0.108
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5301,7 +5301,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.13.0.107</div>
+  <div class="kl-ver">Beta 2.13.0.108</div>
 </div>
 <script>
 (function(){
@@ -5468,7 +5468,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.107</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.108</span></div>
       </div>
     </div>
   </div>
@@ -7891,7 +7891,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.107</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.108</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -36214,7 +36214,8 @@ async function closeImportRelevé(){
   _importScpiRows = [];
   _importFondsEuroRows = [];
   _importEspecesRows = [];
-  if(window._finaRecap && window._finaRecap.binOn) kyfFinaBinEnd_(); else { const _fb = document.getElementById('finaBin'); if(_fb) _fb.remove(); }
+  { const _fd = document.getElementById('finaDoneBtn'); if(_fd) _fd.style.display = 'none'; }
+  if(window._finaRecap && window._finaRecap.binOn) setTimeout(kyfFinaBinEnd_, 450); else { const _fb = document.getElementById('finaBin'); if(_fb) _fb.remove(); }
   window._finaRecap = null; window._finaFrom = null; window._finaMode = false;
 }
 // Importer un relevé : bascule en deux volets dès que l'étape 2 est affichée (hors liste d'exchanges)
@@ -37098,7 +37099,6 @@ function kyfFinaRecapRender(){
   const nFait = LST.filter(g => !pend(g.k)).length;
   if(nFait > (R.prevFait || 0) || !R.sel || !LST.some(g => g.k === R.sel)){ const idx = LST.findIndex(g => g.k === R.sel); const nx = LST.slice(idx + 1).concat(LST.slice(0, idx + 1)).find(g => pend(g.k)); R.sel = nx ? nx.k : (LST[0] || {}).k; }
   R.prevFait = nFait;
-  if(LST.length && nFait === LST.length && R.binOn && !R.binEnding){ R.binEnding = true; setTimeout(kyfFinaBinEnd_, 1200); }
   try{   // fichier lu : la colonne « Fichier Finary » se replie en rail, un chevron la rouvre
     const s2 = document.getElementById('importStep2'); if(s2){
       const rail = !R.leftOpen;
@@ -37166,11 +37166,23 @@ function kyfFinaRecapRender(){
   document.getElementById('importConfirmBtn').style.display = 'none';
   const ab = document.getElementById('importAllBtn');
   if(ab) ab.style.display = (!R.queue && LST.some(g => pend(g.k))) ? '' : 'none';
+  const fd = document.getElementById('finaDoneBtn');   // terminer sans tout valider : dès qu'un compte est repris, le reste peut être laissé de côté
+  if(fd){ const any = LST.some(g => R.done[g.k]), left = LST.some(g => pend(g.k)); fd.style.display = any ? '' : 'none'; fd.style.background = left ? 'none' : '#f0b429'; fd.style.color = left ? 'var(--text2)' : '#000'; fd.style.border = left ? '1px solid var(--border2)' : 'none'; }
 }
 function kyfFinaScpiDestHtml_(R){
   const v = R.scpiDest || kyfFinaScpiDefault_(R), o = kyfFinaScpiOptions_(R).find(x => x.value === v) || { label:'En direct' };
   const chev = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polyline points="6 9 12 15 18 9"/></svg>';
   return `<div style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 4px;margin-top:6px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);font-size:11px;color:var(--text2)"><span style="font-weight:700;letter-spacing:.3px">Où sont ces SCPI ?</span><span><input type="hidden" id="finaScpiDest" value="${escapeHtml(v)}" onchange="kyfFinaScpiSet(this.value)"><button type="button" id="finaScpiDestBtn" class="kyf-csel-btn kyf-csel-sm" onclick="kyfCSelToggle('finaScpiDest')" onkeydown="kyfCSelKeydown(event,'finaScpiDest')" aria-haspopup="listbox" style="width:230px;padding:4px 10px;border-radius:6px"><span id="finaScpiDestBtnLabel">${escapeHtml(o.label)}</span>${chev}</button></span></div>`;
+}
+async function kyfFinaFinish(){
+  const R = window._finaRecap; if(!R) return;
+  const LST = kyfFinaList_(R), left = LST.filter(g => !R.done[g.k] && !(R.ign && R.ign[g.k]));
+  if(left.length){
+    const ok = await kyfAsk('Terminer l\'import maintenant ?\n' + (left.length > 1 ? left.length + ' comptes ne seront pas ajoutés' : '1 compte ne sera pas ajouté') + ' à Keep Your Folio : ' + left.map(g => g.lbl).join(', ') + '.', { ok:'Terminer', cancel:'Continuer l\'import' });
+    if(!ok || window._finaRecap !== R) return;
+  }
+  try{ if(window.kyfImpDraftDebug) await window.kyfImpDraftDebug.clear(); }catch(e){}
+  window._kyfCancel3 = true; closeImportRelevé();
 }
 function kyfFinaRail(){ const R = window._finaRecap; if(!R) return; R.leftOpen = !R.leftOpen; kyfFinaRecapRender(); }
 function kyfFinaSel(k){ const R = window._finaRecap; if(!R) return; R.sel = k; R.edit = null; kyfFinaRecapRender(); }
@@ -50661,7 +50673,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.107\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.108\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -77693,6 +77705,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.108 · 08/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Finary : (1) un bouton « TERMINER L'IMPORT » apparaît dès qu'un compte est repris, y compris après « Tout importer » : on n'est plus obligé de tout valider, les comptes laissés de côté ne sont simplement pas ajoutés (une confirmation les liste). (2) La corbeille de l'import ne part plus vers la corbeille du haut dès le dernier compte, mais seulement quand on arrive sur le tableau de bord.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.107 · 08/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Finary, PEE et PERCOL : un cadre « À compléter » (facultatif, on peut passer) demande ce que Finary ne donne pas : gestionnaire, date d'ouverture, et pour le PEE la date de disponibilité et l'abondement de l'entreprise (versé, taux, plafond). Les lignes de fonds du PEE ont la recherche d'ISIN et un champ ISIN dans le crayon, pour suivre la valeur de la part. Tout est repris dans le plan créé, rien n'est inventé si laissé vide.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.106 · 08/11/2026</div>
@@ -109721,6 +109735,7 @@ function orInlineEdit(id, td, currentVal){
       <button id="importPrevBtn" type="button" onclick="importStep2GoBack()" style="font-family:'Inter',sans-serif;font-size:9px;padding:8px 18px;border-radius:7px;cursor:pointer;border:1px solid var(--border2);background:none;color:var(--text3);transition:background .15s" onmouseover="this.style.background='var(--hov-bg)'" onmouseout="this.style.background='none'">‹ PRÉCÉDENT</button>
       <button onclick="kyfImportCancel()" style="font-family:'Inter',sans-serif;font-size:9px;padding:8px 18px;border-radius:7px;cursor:pointer;border:1px solid var(--border2);background:none;color:var(--text3);transition:background .15s" onmouseover="this.style.background='var(--hov-bg)'" onmouseout="this.style.background='none'">ANNULER</button>
       <button id="importConfirmBtn" onclick="importConfirm()" style="display:none;font-family:'Inter',sans-serif;font-size:9px;padding:8px 18px;border-radius:7px;cursor:pointer;font-weight:700;border:none;background:#f0b429;color:#000;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">IMPORTER</button>
+ <button id="finaDoneBtn" type="button" onclick="kyfFinaFinish()" class="kyf-fina-btn" style="display:none;font-family:'Inter',sans-serif;font-size:9px;padding:8px 18px;border-radius:7px;cursor:pointer;font-weight:700;border:none;background:#f0b429;color:#000">TERMINER L'IMPORT</button>
       <button id="importAllBtn" onclick="kyfFinaAll()" style="display:none;font-family:'Inter',sans-serif;font-size:9px;padding:8px 18px;border-radius:7px;cursor:pointer;font-weight:700;border:none;background:#f0b429;color:#000;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">TOUT IMPORTER</button>
     </div>
   </div>
