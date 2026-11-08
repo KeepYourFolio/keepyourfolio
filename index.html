@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.79
+  @version     : Beta 2.13.0.80
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -2319,6 +2319,7 @@ button.kyf-toggle-active[style],.kyf-seg button.kyf-toggle-active{background:#f0
 #finaRailTxt span.v{writing-mode:vertical-rl;transform:rotate(180deg);font-size:10px;font-weight:700;letter-spacing:1.4px;color:var(--text3);white-space:nowrap}
 #finaRailBtn{position:absolute;top:14px;z-index:3;width:28px;height:28px;border-radius:50%;border:none;padding:0;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;background:var(--kyf-chev-hover,rgba(255,255,255,.07));color:var(--text);transition:background .15s}
 #finaRailBtn svg{transition:transform .2s}
+.kyf-brk-it:hover,.kyf-brk-it.on{background:var(--hov-bg)!important;color:var(--accent)!important}
 .kyf-fina-it:hover,.kyf-fina-it:focus-visible{background:var(--hov-bg-soft)!important;outline:none}
 .kyf-hint-link{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .15s,filter .15s}
 .kyf-hint-link:hover,.kyf-hint-link:focus-visible{border-bottom-color:var(--accent);filter:brightness(1.15)}
@@ -5296,7 +5297,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.13.0.79</div>
+  <div class="kl-ver">Beta 2.13.0.80</div>
 </div>
 <script>
 (function(){
@@ -5460,7 +5461,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.79</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.80</span></div>
       </div>
     </div>
   </div>
@@ -7883,7 +7884,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.79</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.80</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -36183,6 +36184,11 @@ async function closeImportRelevé(){
     if(!ok){ window._kyfCancel3 = false; return; }
     _importResolutionInProgress = false; importDropzoneLock(); // fait sortir la boucle en cours à la prochaine itération
   }
+  if(window._finaHold && window._finaFrom){   // Import Finary compte par compte : la fenêtre et son fond restent en place, seul le contenu change (pas de retour furtif sur le site)
+    window._finaClosed = true;
+    _importScpiRows = []; _importFondsEuroRows = []; _importEspecesRows = [];
+    return;
+  }
   setTimeout(kyfAfterPop, 0);
   document.getElementById('importRelevéModal').style.display = 'none';
   { const _m = document.getElementById('importRelevéModal'); if(_m.dataset.w0 !== undefined) _m.style.width = _m.dataset.w0; }
@@ -36569,13 +36575,36 @@ function importGoToStep2(type){
 // Totaux du contrat choisi : préremplis avec ce qui est déjà enregistré, pour ne jamais effacer une valeur sans le vouloir
 // Courtier du compte : demandé à chaque import de positions vers un PEA, un PEA-PME ou un CTO, enregistré dans la fiche Comptes titres (clé kyf-ct-info).
 const KYF_IMPORT_BROKERS = ['Trade Republic','Boursorama','Fortuneo','Bourse Direct','Degiro','Interactive Brokers','Scalable Capital','Saxo Banque','EasyBourse','eToro','XTB','Revolut','Freedom24','Lynx','Swissquote','Bitpanda','Vanguard','Crédit Agricole','BNP Paribas','Société Générale','Crédit Mutuel','CIC','LCL','Caisse d\'Épargne','Banque Populaire','La Banque Postale','HSBC','ING','Boursobank','Crédit du Nord','Banque Palatine','Crédit Coopératif','Hello bank!','Bforbank','Monabanq','CCF'];
+// Liste des courtiers au format Keep Your Folio (remplace la liste du navigateur) : filtre à la frappe, clavier, survol discret
+let _brokerSel = -1;
+function kyfBrokerList_(){
+  const inp = document.getElementById('importBroker'), q = String(inp ? inp.value : '').trim().toLowerCase();
+  return KYF_IMPORT_BROKERS.filter(n => !q || n.toLowerCase().indexOf(q) >= 0).filter(n => n.toLowerCase() !== q);
+}
+function kyfBrokerDrop(){
+  const d = document.getElementById('importBrokerDrop'), inp = document.getElementById('importBroker'); if(!d || !inp) return;
+  const L = kyfBrokerList_(); _brokerSel = -1;
+  if(!L.length){ d.style.display = 'none'; inp.setAttribute('aria-expanded', 'false'); return; }
+  d.innerHTML = L.map((n, i) => `<div role="option" class="kyf-brk-it" data-i="${i}" onmousedown="event.preventDefault();kyfBrokerPick(${i})" style="padding:8px 10px;border-radius:6px;font-size:11px;font-weight:600;color:var(--text);cursor:pointer;transition:background .15s,color .15s">${escapeHtml(n)}</div>`).join('');
+  d.style.display = 'block'; inp.setAttribute('aria-expanded', 'true');
+}
+function kyfBrokerDropHide(){ const d = document.getElementById('importBrokerDrop'), inp = document.getElementById('importBroker'); if(d) d.style.display = 'none'; if(inp) inp.setAttribute('aria-expanded', 'false'); }
+function kyfBrokerPick(i){ const L = kyfBrokerList_(), inp = document.getElementById('importBroker'); if(inp && L[i]){ inp.value = L[i]; inp.style.outline = ''; } kyfBrokerDropHide(); }
+function kyfBrokerKey(e){
+  const d = document.getElementById('importBrokerDrop'); if(!d) return;
+  const its = d.querySelectorAll('.kyf-brk-it'), open = d.style.display !== 'none';
+  if(e.key === 'Escape'){ if(open){ e.stopPropagation(); kyfBrokerDropHide(); } return; }
+  if(e.key === 'ArrowDown' || e.key === 'ArrowUp'){
+    e.preventDefault(); if(!open){ kyfBrokerDrop(); return; }
+    _brokerSel = (_brokerSel + (e.key === 'ArrowDown' ? 1 : -1) + its.length) % its.length;
+    its.forEach((x, k) => x.classList.toggle('on', k === _brokerSel)); if(its[_brokerSel]) its[_brokerSel].scrollIntoView({ block:'nearest' });
+  } else if(e.key === 'Enter' && open && _brokerSel >= 0){ e.preventDefault(); kyfBrokerPick(_brokerSel); }
+}
 function kyfImportEnvKey(dest){ return dest === 'PEA-PME' ? 'PME' : (dest === 'CTO' ? 'CTO' : 'PEA'); }
 function kyfImportBrokerShow(on){
   const w = document.getElementById('importBrokerWrap'); if(!w) return;
   w.style.display = on ? 'block' : 'none';
   if(!on){ kyfImportVerseSync(); return; }
-  const dl = document.getElementById('importBrokerList');
-  if(dl && !dl.options.length){ KYF_IMPORT_BROKERS.forEach(n => { const o = document.createElement('option'); o.value = n; dl.appendChild(o); }); }
   const want = window._ctImportEnv;
   if(want) setTimeout(() => {   // import lancé depuis un compte de la page Comptes titres : on choisit ce compte
     const d = document.getElementById('importDest');
@@ -37137,9 +37166,11 @@ async function kyfFinaNext(){
   const orig = importConfirm;
   importConfirm = async function(){
     const R = window._finaRecap, from = window._finaFrom, origin = window._finaOrigin;
-    const r = await orig.apply(this, arguments);
+    window._finaHold = !!(R && from); window._finaClosed = false;
+    let r; try{ r = await orig.apply(this, arguments); } finally { window._finaHold = false; }
     try{
-      if(R && from && document.getElementById('importRelevéModal').style.display === 'none'){
+      if(R && from && (window._finaClosed || document.getElementById('importRelevéModal').style.display === 'none')){
+        window._finaClosed = false;
         R.done[from] = true;
         try{ if(window.kyfImpDraftDebug) await window.kyfImpDraftDebug.clear(); }catch(e){}   // l'import est terminé : pas de « reprise » proposée à la réouverture
         await openImportRelevé(origin);
@@ -50373,7 +50404,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.79\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.80\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -77405,6 +77436,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.80 · 08/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Finary : après chaque compte repris, la fenêtre et son fond restent en place (plus de retour furtif sur le site entre deux comptes), jusqu'à ce que tout soit validé. Import d'un relevé : la liste des courtiers (Trade Republic, Boursorama…) reprend le style Keep Your Folio au lieu de la liste noire du navigateur, avec filtre à la frappe et navigation au clavier.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.79 · 08/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Finary : le récapitulatif affiche en haut de la liste « X comptes validés sur Y », avec les comptes ignorés et une barre de progression en dégradé.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.78 · 08/11/2026</div>
@@ -109307,9 +109340,12 @@ function orInlineEdit(id, td, currentVal){
     <!-- Courtier du compte (PEA / PEA-PME / CTO) : obligatoire, il remplit la fiche Comptes titres -->
     <div id="importBrokerWrap" style="margin-bottom:12px;display:none">
       <div style="font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">COURTIER · OBLIGATOIRE</div>
-      <input id="importBroker" type="text" list="importBrokerList" maxlength="40" autocomplete="off" placeholder="Ex : Trade Republic, Boursorama, Fortuneo" aria-required="true"
-        oninput="this.style.outline=''" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none">
-      <datalist id="importBrokerList"></datalist>
+      <div style="position:relative">
+      <input id="importBroker" type="text" maxlength="40" autocomplete="off" placeholder="Ex : Trade Republic, Boursorama, Fortuneo" aria-required="true" role="combobox" aria-expanded="false" aria-controls="importBrokerDrop"
+        onfocus="kyfBrokerDrop()" onclick="kyfBrokerDrop()" onblur="setTimeout(kyfBrokerDropHide,160)" onkeydown="kyfBrokerKey(event)"
+        oninput="this.style.outline='';kyfBrokerDrop()" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none">
+      <div id="importBrokerDrop" role="listbox" style="display:none;position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;max-height:190px;overflow-y:auto;overscroll-behavior:contain;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;box-shadow:0 10px 28px rgba(0,0,0,.35);padding:4px"></div>
+      </div>
       <div style="font-size:9px;color:var(--text3);margin-top:5px;line-height:1.5;opacity:.85">Le nom de votre courtier remplit la fiche « Comptes titres » de ce compte. Vous pourrez le modifier à tout moment.</div>
     </div>
 
