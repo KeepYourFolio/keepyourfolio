@@ -649,7 +649,7 @@ html.onb main>section{gap:8px}@media (max-height:700px){.ppt{margin-top:8px}.ppt
 <script src="avf.js"></script><script src="qr.js"></script>
 <script>
 "use strict";
-var VER="3.104.0.7", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="3.104.0.8", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["groupe_projet","Projet"],["perecol_fonds","Fonds PERECOL"],["alerte_seuils","Seuils d’alerte"],["alerte_cible","Objectif de prix"],["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["renommage","Renommage"],["actif_valeur","Valeur d’un actif"],["etranger_nouveau","Avoir à l’étranger"],["etranger_valeur","Valeur d’un avoir à l’étranger"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["pe_placement","Nouveau placement"],["pe_maj","Mise à jour d’un placement"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -4870,6 +4870,74 @@ function tfres(F){
  h+='<details class="cd otc otd">'+sm("Comment lire ce résultat")+'<p class="hint" style="margin:0">Estimation indicative qui ne constitue pas un conseil fiscal. L’abattement s’impute d’abord sur la case 2CH, puis 2DH, puis les gains après 2017. Au-delà de 150 000 € de versements après le 27/09/2017, une partie des gains passe à 12,8 %. Les prélèvements sociaux (17,2 %) ne sont pas inclus. Vérifiez votre situation auprès de l’administration fiscale ou d’un professionnel.</p></details>';
  h+='<div class="otfoot"><button type="button" class="otgh" data-fs="1">Modifier mes données</button></div>';
  return h}
+/* ---------- onglet 4 : fiscalité PEA, CTO, crypto ---------- */
+var PK="kyfm-otfp";
+function pload(){var o=null;try{o=JSON.parse(localStorage.getItem(PK)||"null")}catch(e){}o=o&&typeof o==="object"?o:{};
+ return{e:["pea","cto","cry"].indexOf(o.e)>-1?o.e:"pea",pd:/^\d{4}-\d{2}-\d{2}$/.test(o.pd||"")?o.pd:"",pv:num(o.pv,0,1e10,0),pt:num(o.pt,0,1e10,0),pr:num(o.pr,0,1e10,0),cp:num(o.cp,0,1e10,0),cm:num(o.cm,0,1e10,0),cc:num(o.cc,0,1e10,0),cv:num(o.cv,0,1e10,0),ca:num(o.ca,0,1e10,0)}}
+function psave(o){try{localStorage.setItem(PK,JSON.stringify(o))}catch(e){}}
+function pok(P){return P.e==="pea"?(P.pd&&P.pv>0&&P.pr>0):P.e==="cto"?(P.cp>0||P.cm>0):(P.cc>0&&P.cv>0)}
+function pcalc(P){
+ var PS=0.186,IR=0.128,PFU=0.314,r={};
+ if(P.e==="pea"){var d=new Date(P.pd+"T00:00:00"),d5=new Date(d.getFullYear()+5,d.getMonth(),d.getDate()),now=new Date();
+  r.ap5=now>=d5;r.yrs=(now-d)/(365.25*864e5);r.err=P.pr>P.pv;
+  r.gain=P.pv-P.pt;r.part=P.pv>0?r.gain/P.pv*P.pr:0;var pp=Math.max(0,r.part);
+  r.ir=r.ap5?0:pp*IR;r.ps=pp*PS;r.tax=r.ir+r.ps;r.net=P.pr-r.tax}
+ else if(P.e==="cto"){r.net0=P.cp-P.cm;r.base=Math.max(0,r.net0);r.tax=r.base*PFU;r.net=r.net0-r.tax}
+ else{r.frac=P.cv>0?P.ca*P.cc/P.cv:0;r.pv=P.cc-r.frac;r.ex=P.cc<=305;r.base=r.ex?0:Math.max(0,r.pv);r.tax=r.base*PFU;r.err=P.cc>P.cv}
+ return r}
+function tp(){
+ var P=pload(),st=OT.ps||1;
+ var bar='<div class="otst" aria-hidden="true">'+[1,2].map(function(i){return '<i class="'+(i<st?"on":i===st?"cur":"")+'"></i>'}).join("")+'</div>';
+ var q=function(t,s2){return '<h3 class="otq">'+t+'</h3>'+(s2?'<p class="hint otqs">'+s2+'</p>':"")};
+ var opt=function(on,att,t,sub){return '<button type="button" class="otav'+(on?" on":"")+'" '+att+' aria-pressed="'+on+'"><span class="shr"><i></i></span><span class="otavt"><b>'+t+'</b><small>'+sub+'</small></span></button>'};
+ var fl=function(lab,f,v,hint,u){return '<label class="otf">'+lab+'<span class="otw"><input data-fp="'+f+'" inputmode="decimal" autocomplete="off" placeholder="0" value="'+(v?esc(String(v).replace(".",",")):"")+'"><em>'+(u||"€")+'</em></span>'+(hint?'<small class="otfh2">'+hint+'</small>':"")+'</label>'};
+ if(st>2)return '<div class="otflat">'+tpres(P)+'</div>';
+ var h=bar;
+ if(st===1){
+  h+=q("Quelle enveloppe ?","L’impôt dépend du type de compte où se trouve le gain.");
+  h+='<div class="otavl" style="margin-top:8px">'+opt(P.e==="pea",'data-fpe="pea"',"PEA ou PEA-PME","Retrait, règle des 5 ans")+opt(P.e==="cto",'data-fpe="cto"',"Compte-titres (CTO)","Plus-values de vente d’actions, ETF")+opt(P.e==="cry",'data-fpe="cry"',"Crypto-actifs","Vente contre des euros")+'</div>';
+ }else if(P.e==="pea"){
+  h+=q("Votre PEA et votre retrait","Seule la part de gain contenue dans le retrait est imposée.");
+  h+='<div class="cd otc"><div class="otg" style="grid-template-columns:1fr"><label class="otf">Date d’ouverture<span class="otw"><input type="date" data-fp="pd" value="'+esc(P.pd)+'" max="'+new Date().toISOString().slice(0,10)+'"></span></label>'+fl("Valeur actuelle du plan","pv",P.pv)+fl("Total versé depuis l’ouverture","pt",P.pt,"Vos versements, hors gains")+fl("Montant du retrait","pr",P.pr)+'</div></div>';
+ }else if(P.e==="cto"){
+  h+=q("Vos ventes de l’année","Reprenez le total des gains et des pertes réalisés sur votre CTO.");
+  h+='<div class="cd otc"><div class="otg" style="grid-template-columns:1fr">'+fl("Plus-values réalisées","cp",P.cp,"Somme des ventes gagnantes")+fl("Moins-values réalisées","cm",P.cm,"Somme des ventes perdantes, en positif")+'</div></div>';
+ }else{
+  h+=q("Votre cession de crypto","Seule la vente contre des euros est imposée, pas l’échange entre cryptos.");
+  h+='<div class="cd otc"><div class="otg" style="grid-template-columns:1fr">'+fl("Prix de la cession","cc",P.cc,"Ce que vous avez touché en euros")+fl("Valeur de tout votre portefeuille crypto","cv",P.cv,"Juste avant la vente, vente comprise")+fl("Total payé depuis le début","ca",P.ca,"Tous vos achats en euros, diminués des cessions passées")+'</div></div>';
+ }
+ var dis=st===2&&!pok(P);
+ h+='<div class="otfoot">'+(st>1?'<button type="button" class="otgh" data-ps="'+(st-1)+'">Retour</button>':"")+'<button type="button" class="otgo" data-pgo="1"'+(dis?" disabled":"")+' data-ps="'+(st+1)+'">'+(st===1?"Continuer":"Voir l’estimation")+'</button></div>';
+ return '<div class="otflat">'+h+'</div>'}
+function tpres(P){
+ var R=pcalc(P),rd=function(l,v,c){return '<div class="otfr3"><span>'+l+'</span><b'+(c?' style="color:'+c+'"':"")+'>'+v+'</b></div>'};
+ var h="",nt="";
+ if(P.e==="pea"){
+  h+='<div class="otsum"><span>PEA · '+(R.ap5?"5 ans révolus":"moins de 5 ans")+'</span><span>retrait '+eu(P.pr)+'</span></div>';
+  if(R.err)h+='<div class="cd otc"><p class="hint" style="margin:0">Le retrait dépasse la valeur du plan. Modifiez vos données.</p></div>';
+  else{
+   h+='<div class="cd otc"><small class="otk">Impôt estimé sur ce retrait</small><div class="othe" style="margin-top:4px"><b>'+eu(R.tax)+'</b></div><p class="hint" style="margin:6px 0 0">Vous touchez '+eu(R.net)+' net.</p></div>';
+   h+='<div class="cd otc"><small class="otk">Détail</small>'+rd("Ancienneté",R.yrs.toFixed(1).replace(".",",")+" an"+(R.yrs>=2?"s":""))+rd("Gain total du plan",(R.gain>=0?"+ ":"")+eu(R.gain))+rd("Part de gain dans le retrait",eu(Math.max(0,R.part)))+rd("Impôt sur le revenu (12,8 %)",R.ap5?"Exonéré":eu(R.ir),R.ap5?"#15803d":"")+rd("Prélèvements sociaux (18,6 %)",eu(R.ps))+'</div>';
+   if(!R.ap5)nt='Avant 5 ans, un retrait entraîne en principe la clôture du PEA, sauf cas prévus par la loi (licenciement, invalidité, retraite…). ';
+   if(R.gain<0)nt+='Le plan est en perte : aucun impôt sur ce retrait. ';
+  }
+ }else if(P.e==="cto"){
+  h+='<div class="otsum"><span>Compte-titres</span><span>gains nets '+eu(R.net0)+'</span></div>';
+  h+='<div class="cd otc"><small class="otk">Impôt estimé (flat tax 31,4 %)</small><div class="othe" style="margin-top:4px"><b>'+eu(R.tax)+'</b></div><p class="hint" style="margin:6px 0 0">'+(R.net0<=0?"Pas d’impôt : vos pertes compensent vos gains.":"Il vous reste "+eu(R.net)+" après impôt.")+'</p></div>';
+  h+='<div class="cd otc"><small class="otk">Détail</small>'+rd("Plus-values",eu(P.cp))+rd("Moins-values","− "+eu(P.cm))+rd("Base imposable",eu(R.base))+rd("Impôt sur le revenu (12,8 %)",eu(R.base*0.128))+rd("Prélèvements sociaux (18,6 %)",eu(R.base*0.186))+'</div>';
+  if(R.net0<0)nt='Une perte nette peut se reporter sur les 10 années suivantes, ce calcul ne le fait pas. ';
+ }else{
+  h+='<div class="otsum"><span>Crypto-actifs</span><span>cession '+eu(P.cc)+'</span></div>';
+  if(R.err)h+='<div class="cd otc"><p class="hint" style="margin:0">La valeur du portefeuille doit inclure la vente : elle ne peut pas être inférieure au prix de cession. Modifiez vos données.</p></div>';
+  else{
+   h+='<div class="cd otc"><small class="otk">Impôt estimé (flat tax 31,4 %)</small><div class="othe" style="margin-top:4px"><b>'+eu(R.tax)+'</b></div><p class="hint" style="margin:6px 0 0">'+(R.ex?"Cessions de l’année à 305 € ou moins : exonérées.":R.pv<=0?"Pas de plus-value sur cette cession.":"Plus-value imposable : "+eu(R.base)+".")+'</p></div>';
+   h+='<div class="cd otc"><small class="otk">Détail</small>'+rd("Prix de la cession",eu(P.cc))+rd("Part du coût d’achat",eu(R.frac))+rd("Plus-value",(R.pv>=0?"+ ":"")+eu(R.pv))+'</div>';
+   nt='Cas d’une seule cession dans l’année. Avec plusieurs, le coût d’achat restant se recalcule après chacune ; le seuil de 305 € porte sur le total des cessions de l’année. ';
+  }
+ }
+ h+='<details class="cd otc otd">'+sm("Comment lire ce résultat")+'<p class="hint" style="margin:0">'+nt+'Estimation indicative qui ne constitue pas un conseil fiscal. Taux utilisés : impôt sur le revenu 12,8 % et prélèvements sociaux 18,6 %, soit 31,4 % au total. Le PEA est exonéré d’impôt sur le revenu après 5 ans, mais pas de prélèvements sociaux. Pour la crypto, la plus-value se calcule sur l’ensemble du portefeuille (article 150 VH bis). Vérifiez votre situation auprès de l’administration fiscale ou d’un professionnel.</p></details>';
+ h+='<div class="otfoot"><button type="button" class="otgh" data-ps="1">Modifier mes données</button></div>';
+ return h}
 function cSheet(){if(g("cmsh"))return;var C=cload(),A=cands(C),ord=csel(C,A).map(function(r){return r.id}),MAXC=8;
  var it=function(r){return '<button type="button" class="shi'+(ord.indexOf(r.id)>-1?" on":"")+'" data-cid="'+esc(r.id)+'"><span class="shr"><i></i></span><span class="shw"><b>'+esc(r.nom)+'</b><small>'+(r.src==="mine"?"Dans votre suivi":r.src==="man"?"Saisi par vous":"Base")+' · gestion '+pcs(r.g)+'</small></span></button>'};
  var grp=function(t,L){return L.length?'<div class="cmg"><small class="otk cmsec">'+t+'</small>'+L.map(it).join("")+'</div>':""};
@@ -5005,15 +5073,15 @@ function css(){if(g("otcss"))return;var s=document.createElement("style");s.id="
  document.head.appendChild(s)}
 function nav(){var P=OTT.map(function(t){return '<button data-ot="'+t[0]+'"'+(OT.t===t[0]?' aria-current="page"':"")+'><span class="tbic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+t[4]+'</svg></span>'+t[1]+'</button>'}).join("");
  return '<nav class="tb otn t5 t4" aria-label="Navigation des outils"><div class="tbi"><span class="tbp" style="transform:translateX('+(OT.t-1)*100+'%)"></span>'+P+'</div></nav>'}
-function body(){var T=OTT[OT.t-1];return '<div class="fh2"><button class="bk" id="otbk" aria-label="Fermer les outils">'+I.back+'</button><div class="tt"><h2>'+esc(T[2])+'</h2><small>'+esc(OT.t===1?(OT.st>4?'Votre résultat':'Étape '+OT.st+' sur 4'):OT.t===2?(OT.cm!=="cmp"?'Base des contrats':(OT.cs||1)>4?'Votre comparaison':'Étape '+(OT.cs||1)+' sur 4'):OT.t===3?((OT.fs||1)>3?'Votre estimation':'Étape '+(OT.fs||1)+' sur 3'):T[3])+'</small></div></div><div class="sp2" aria-hidden="true"></div>'+(OT.t===2&&(OT.cm!=="cmp"||(OT.cs||1)<=1)?ctabs():"")+(OT.t===1?t1():OT.t===2?(OT.cm==="av"||OT.cm==="per"?t3():t2()):OT.t===3?tf():soon(OT.t))}
+function body(){var T=OTT[OT.t-1];return '<div class="fh2"><button class="bk" id="otbk" aria-label="Fermer les outils">'+I.back+'</button><div class="tt"><h2>'+esc(T[2])+'</h2><small>'+esc(OT.t===1?(OT.st>4?'Votre résultat':'Étape '+OT.st+' sur 4'):OT.t===2?(OT.cm!=="cmp"?'Base des contrats':(OT.cs||1)>4?'Votre comparaison':'Étape '+(OT.cs||1)+' sur 4'):OT.t===3?((OT.fs||1)>3?'Votre estimation':'Étape '+(OT.fs||1)+' sur 3'):OT.t===4?((OT.ps||1)>2?'Votre estimation':'Étape '+(OT.ps||1)+' sur 2'):T[3])+'</small></div></div><div class="sp2" aria-hidden="true"></div>'+(OT.t===2&&(OT.cm!=="cmp"||(OT.cs||1)<=1)?ctabs():"")+(OT.t===1?t1():OT.t===2?(OT.cm==="av"||OT.cm==="per"?t3():t2()):OT.t===3?tf():OT.t===4?tp():soon(OT.t))}
 function hsc(){var L=g("otl"),f=L&&L.querySelector(".fh2");if(f)f.classList.toggle("sc",L.scrollTop>6)}
 function paint(keep){var L=g("otl");if(!L)return;var y=L.scrollTop;L.innerHTML='<div class="otm">'+body()+"</div>"+nav();try{kfAll()}catch(e){}if(OT.t===1)t1res();if(OT.t===2)t2res();L.classList.add("otnt");L.scrollTop=keep?y:0;hsc();requestAnimationFrame(function(){requestAnimationFrame(function(){L.classList.remove("otnt")})})}
 function shut(){var L=g("otl");if(L)L.remove();OT.on=0;document.documentElement.style.overflow="";try{document.body.style.overflow=""}catch(e){}}
-function open(t){if(t)OT.t=t;if(g("otl"))return;OT.st=1;OT.cs=1;OT.fs=1;css();var L=document.createElement("div");L.id="otl";L.className="otl";L.setAttribute("role","dialog");L.setAttribute("aria-label","Outils");document.body.appendChild(L);OT.on=1;document.documentElement.style.overflow="hidden";paint(false);
- L.addEventListener("click",function(e){var t=e.target.closest&&e.target.closest("[data-ot],#otbk,[data-st],[data-chip],[data-cs],[data-cchip],[data-ctog],[data-crm],[data-cadd],[data-cpick],[data-fs],[data-fsit],[data-ftmi],[data-cm],[data-avf],[data-avs],[data-avp],[data-avmore],[data-avgo],[data-avsh]");if(!t)return;if(t.id==="otbk")return shut();
+function open(t){if(t)OT.t=t;if(g("otl"))return;OT.st=1;OT.cs=1;OT.fs=1;OT.ps=1;css();var L=document.createElement("div");L.id="otl";L.className="otl";L.setAttribute("role","dialog");L.setAttribute("aria-label","Outils");document.body.appendChild(L);OT.on=1;document.documentElement.style.overflow="hidden";paint(false);
+ L.addEventListener("click",function(e){var t=e.target.closest&&e.target.closest("[data-ot],#otbk,[data-st],[data-chip],[data-cs],[data-cchip],[data-ctog],[data-crm],[data-cadd],[data-cpick],[data-fs],[data-ps],[data-fpe],[data-fsit],[data-ftmi],[data-cm],[data-avf],[data-avs],[data-avp],[data-avmore],[data-avgo],[data-avsh]");if(!t)return;if(t.id==="otbk")return shut();
   if(t.getAttribute("data-cpick")){cSheet();return}
   if(t.getAttribute("data-avsh")){avSheet();return}
-  var fs=t.getAttribute("data-fs");if(fs){OT.fs=Math.max(1,Math.min(4,+fs));paint(false);return}
+  var ps0=t.getAttribute("data-ps");if(ps0){OT.ps=Math.max(1,Math.min(4,+ps0));paint(false);return}var pe0=t.getAttribute("data-fpe");if(pe0){var P1=pload();P1.e=pe0;psave(P1);paint(true);return}var fs=t.getAttribute("data-fs");if(fs){OT.fs=Math.max(1,Math.min(4,+fs));paint(false);return}
   var fi=t.getAttribute("data-fsit");if(fi){var F1=fload();F1.sit=+fi===9200?9200:4600;fsave(F1);paint(true);return}
   var ft=t.getAttribute("data-ftmi");if(ft){var F2=fload();F2.tmi=F2.tmi===+ft?null:+ft;fsave(F2);paint(true);return}
   var cm=t.getAttribute("data-cm");if(cm){OT.cm=cm;OT.avn=40;if(cm==="cmp")OT.cs=1;paint(false);return}
@@ -5040,6 +5108,7 @@ function open(t){if(t)OT.t=t;if(g("otl"))return;OT.st=1;OT.cs=1;OT.fs=1;css();va
  var tp=function(e){var c=e.target.closest&&e.target.closest("#otch");if(!c||!OT.d)return;var r=c.getBoundingClientRect();sel((e.clientX-r.left)/r.width*OT.d.n)};
  L.addEventListener("scroll",hsc,{passive:true});L.addEventListener("pointerdown",tp);L.addEventListener("pointermove",function(e){if(e.buttons||e.pointerType==="touch")tp(e)});
  L.addEventListener("input",function(e){var el=e.target;if(el&&el.getAttribute&&el.getAttribute("data-fa")){var F3=fload(),k=el.getAttribute("data-fa");if(["av","ap","uu","dh","ch"].indexOf(k)>-1){F3[k]=num(el.value,0,1e9,0);fsave(F3);var tm=g("otfatmi");if(tm)tm.hidden=!(F3.ch>0);var gb=document.querySelector("[data-fgo]");if(gb&&(OT.fs||1)===3)gb.disabled=!(F3.uu>0||F3.dh>0||F3.ch>0)}return}if(el&&el.id==="otavq"){OT.avq=el.value;OT.avn=40;var l2=g("otavl");if(l2)l2.innerHTML=avlist()}});
+ L.addEventListener("input",function(e){var el=e.target;if(el&&el.getAttribute&&el.getAttribute("data-fp")){var P3=pload(),k=el.getAttribute("data-fp");if(k==="pd"){P3.pd=/^\d{4}-\d{2}-\d{2}$/.test(el.value)?el.value:""}else if(["pv","pt","pr","cp","cm","cc","cv","ca"].indexOf(k)>-1)P3[k]=num(el.value,0,1e10,0);psave(P3);var gb=document.querySelector("[data-pgo]");if(gb&&(OT.ps||1)===2)gb.disabled=!pok(P3)}});
  L.addEventListener("change",function(e){var el=e.target;if(el&&el.id==="otcb"&&el.value){var C=cload(),A=cands(C),cur=csel(C,A).map(function(r){return r.id});if(cur.indexOf(el.value)<0&&cur.length<8)cur.push(el.value);C.sel=cur;csave(C);paint(true);return}if(el&&el.id==="otsel"){var O=load();O.sim=el.value;save(O);t1res()}})}
 /* icône « Outils » dans l'en-tête de Patrimoine, à gauche des autres boutons */
 function btn(){var o=g("otb");if(o)o.remove();if(typeof STATE==="undefined"||!STATE||S.v!=="pat")return;var t=g("th"),par=t&&t.parentNode;if(!par)return;
