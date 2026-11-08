@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.82
+  @version     : Beta 2.13.0.83
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5299,7 +5299,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.13.0.82</div>
+  <div class="kl-ver">Beta 2.13.0.83</div>
 </div>
 <script>
 (function(){
@@ -5463,7 +5463,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.82</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.83</span></div>
       </div>
     </div>
   </div>
@@ -7886,7 +7886,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.82</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.83</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -37568,7 +37568,7 @@ async function importHandleFile(input){
       // reconnue) est toujours conservé, avec la destination choisie
       // manuellement en repli.
       _importFinaHackBreakdown = null;
-      if(rows.length && kyfImportIsPer() && rows[0]._source !== 'finahack') kyfImportDetectCompartments(rows);
+      if(rows.length && kyfImportIsPer() && !window._finaFrom && !rows.some(r => r._source === 'finahack')) kyfImportDetectCompartments(rows);   // Finary ne sépare pas le déductible (C1) du non déductible (C1 bis) : rien n'est supposé
       if(rows.length && rows[0]._source === 'finahack'){
         const counts = {};
         rows.forEach(r => { counts[r._finaEnv] = (counts[r._finaEnv]||0) + 1; });
@@ -37971,6 +37971,13 @@ window._importChangedMode = 'update';
 // Le relevé Boursorama PER liste d'abord les supports du compartiment déductible (C1), puis les REPREND
 // dans le compartiment non déductible (C1 bis). Un même support qui revient = nouveau bloc. Rien n'est
 // deviné autrement : sans bloc répété, le compartiment reste « à préciser ». Toujours corrigeable ligne par ligne.
+// Quantité affichée à l'import : arrondie (plus de 812.0989999999999), espace des milliers, virgule décimale
+function kyfImpQty(q){
+  const n = typeof q === 'number' ? q : parseFloat(String(q == null ? '' : q).replace(/\s/g, '').replace(',', '.'));
+  if(!isFinite(n)) return escapeHtml(String(q == null ? '' : q));
+  const t = (Math.round(n * 1e6) / 1e6).toString().split('.');
+  return t[0].replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0') + (t[1] ? ',' + t[1] : '');
+}
 const KYF_PER_COMP = { '': 'À préciser', 'ev-ded': 'Déductible (C1)', 'ev-non-ded': 'Non déductible (C1 bis)' };
 function kyfImportIsPer(){
   if(_importType === 'per') return true;
@@ -37994,6 +38001,14 @@ function kyfImportDetectCompartments(rows){
   return maxBlk >= 1;
 }
 function kyfImportSetComp(list, idx, v){
+  if(list === 'all'){   // « Tout remplir » : même compartiment pour toutes les lignes d'un coup
+    [['resolved', _importPendingResolved], ['missing', _importPendingMissing]].forEach(([l, arr]) => arr.forEach((r, i) => {
+      if(document.getElementById('importComp' + l + i)) kyfCSelSetValue('importComp' + l + i, v, KYF_PER_COMP[v] || 'À préciser');
+      else { r._comp = v; r._compAuto = false; }
+    }));
+    const ba = document.getElementById('importCompall0Btn'); if(ba) ba.style.borderColor = v ? '' : 'var(--accent)';
+    return;
+  }
   const arr = list === 'missing' ? _importPendingMissing : _importPendingResolved;
   if(arr[idx]){ arr[idx]._comp = v; arr[idx]._compAuto = false; }
   const btn = document.getElementById('importComp' + list + idx + 'Btn'); if(btn) btn.style.borderColor = v ? '' : 'var(--accent)';
@@ -38011,14 +38026,19 @@ function kyfImportCompMenusInit(){
     kyfCSelBuildDrop(inp.id, Object.entries(KYF_PER_COMP).map(([value, label]) => ({value, label})));
   });
 }
+function kyfImportCompBulkHtml(){
+  return `<div style="display:flex;align-items:center;gap:10px;margin:0 0 8px;font-size:10px;color:var(--text2)"><span style="font-weight:700;letter-spacing:.3px">Même compartiment pour toutes les lignes</span>${kyfImportCompSelectHtml('all', 0, { _comp: '' })}</div>`;
+}
 function kyfImportCompBannerHtml(){
   const all = _importPendingResolved.concat(_importPendingMissing);
   if(!all.length) return '';
+  const fina = !!window._finaFrom || all.some(r => r._source === 'finahack');
+  if(fina && all.every(r => !r._comp)) return `<div style="display:flex;align-items:flex-start;gap:6px;font-size:10px;line-height:1.5;margin:0 0 8px;padding:5px 10px;border-radius:8px;color:var(--text2);background:rgba(240,180,41,.08);border:1px solid rgba(240,180,41,.3)"><span>Finary ne sépare pas les fonds déductibles (C1) des non déductibles (C1 bis) : rien n'est supposé. Choisissez le compartiment ligne par ligne, ou le même pour toutes les lignes d'un coup.</span></div>` + kyfImportCompBulkHtml();
   const auto = all.some(r => r._compAuto), none = all.every(r => !r._comp);
   const st = 'display:flex;align-items:flex-start;gap:6px;font-size:10px;line-height:1.5;margin:0 0 8px;padding:5px 10px;border-radius:8px;';
-  if(auto) return `<div style="${st}width:fit-content;max-width:100%;margin-top:8px;color:var(--text2);background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.3)" title="Compartiments déduits de l'ordre du relevé : 1er bloc = EV déductible (C1), suivants = EV non déductible (C1 bis). Corrigez ligne par ligne si besoin."><span>Compartiments détectés : <b>Déductible (C1)</b>, puis <b>Non déductible (C1 bis)</b>. Modifiables ligne par ligne.</span></div>`;
-  if(none) return `<div style="${st}color:var(--text2);background:rgba(240,180,41,.08);border:1px solid rgba(240,180,41,.3)"><span>Compartiment non détecté dans ce relevé. Indiquez-le ligne par ligne si vous le connaissez (déductible C1 ou non déductible C1 bis) : sinon laissez « À préciser », rien n'est supposé.</span></div>`;
-  return '';
+  if(auto) return `<div style="${st}width:fit-content;max-width:100%;margin-top:8px;color:var(--text2);background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.3)" title="Compartiments déduits de l'ordre du relevé : 1er bloc = EV déductible (C1), suivants = EV non déductible (C1 bis). Corrigez ligne par ligne si besoin."><span>Compartiments détectés : <b>Déductible (C1)</b>, puis <b>Non déductible (C1 bis)</b>. Modifiables ligne par ligne.</span></div>` + kyfImportCompBulkHtml();
+  if(none) return `<div style="${st}color:var(--text2);background:rgba(240,180,41,.08);border:1px solid rgba(240,180,41,.3)"><span>Compartiment non détecté dans ce relevé. Indiquez-le ligne par ligne si vous le connaissez (déductible C1 ou non déductible C1 bis) : sinon laissez « À préciser », rien n'est supposé.</span></div>` + kyfImportCompBulkHtml();
+  return kyfImportCompBulkHtml();
 }
 function kyfImportRowEnv(r){
   const dest = (document.getElementById('importDest') || {}).value;
@@ -38262,7 +38282,7 @@ function kyfImportAvPerHtml(){
       <div style="min-width:0"><div title="${escapeHtml(r.name)}" style="font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${dot}${escapeHtml(r.name)}${same ? '' : kyfImportBadgeHtml(_cls[i], r)}</div></div>
       ${per ? kyfImportCompSelectHtml('resolved', i, r) : ''}
       <div style="min-width:0;font-size:10px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><span onclick="importInlineTickerSearch(${i})" title="Cliquer pour corriger le ticker" style="cursor:pointer;color:var(--text2);text-decoration:underline dotted;text-underline-offset:2px">${escapeHtml(r.ticker)}</span>${r.isin ? ' · ' + escapeHtml(r.isin) : ''}</div>
-      <span class="import-row-qty" style="min-width:0;color:${r._needsPru?'var(--accent)':'var(--text2)'}">${escapeHtml(r.qty)}</span>
+      <span class="import-row-qty" style="min-width:0;color:${r._needsPru?'var(--accent)':'var(--text2)'}">${kyfImpQty(r.qty)}</span>
       <span class="import-row-qty" style="min-width:0;color:${r._needsPru?'var(--accent)':'var(--text2)'}">${r._needsPru ? 'PRU ?' : fmt(r.pru,2) + ' €'}</span>
       <span class="import-row-qty" style="min-width:0;font-weight:600;color:var(--text)">${money(r)}</span>
     </div>`;
@@ -38471,7 +38491,7 @@ function importRenderPreviewETF(){
       const _bd = kyfImportNonEtfBadge(_st, _st.ex ? fmt(_st.ex.valeur||0,0)+' €' : '', fmt(_st.nv||0,0)+' €');
       return `
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-family:'Inter',sans-serif;font-size:11px;color:var(--text2)">
-        <span>${escapeHtml(r.nom)}${_bd}</span><span style="color:var(--text3)">${escapeHtml(r.qty)} × ${fmt(r.pru,2)} €</span>
+        <span>${escapeHtml(r.nom)}${_bd}</span><span style="color:var(--text3)">${kyfImpQty(r.qty)} × ${fmt(r.pru,2)} €</span>
       </div>`; }).join('');
   }
   if(_importFondsEuroRows.length && !_isAvImp){
@@ -38593,7 +38613,7 @@ function importRenderPreviewOr(){
           <input type="checkbox" class="import-row-check" data-idx="${idx}" ${_cls[idx]==='same'?'':'checked'} onchange="importRowCheckChanged(this)" style="cursor:pointer;flex-shrink:0">
           <span style="color:var(--text2);min-width:0">${escapeHtml(r.produitLbl || metalLabel(r.metal))}${_cls[idx]==='same'?kyfImportBadgeHtml({kind:'same'}):''} <span style="color:var(--text3);font-size:10px">(${escapeHtml(metalLabel(r.metal))}${r.poids?' · '+escapeHtml(r.poids)+'g':''})</span></span>
         </span>
-        <span style="color:var(--text3);flex-shrink:0">${escapeHtml(r.qty)} × ${fmt(r.prixAchat,2)} €</span>
+        <span style="color:var(--text3);flex-shrink:0">${kyfImpQty(r.qty)} × ${fmt(r.prixAchat,2)} €</span>
       </div>`).join('');
   document.getElementById('importConfirmBtn').style.display = _importPendingResolved.length ? 'block' : 'none';
 }
@@ -50404,7 +50424,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.82\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.83\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -77436,6 +77456,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.83 · 08/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import PER depuis Finary : Finary ne sépare pas les fonds déductibles (C1) des non déductibles (C1 bis), donc rien n'est supposé (« À préciser ») et un message l'explique. Import PER : nouvelle option en haut « Même compartiment pour toutes les lignes » pour tout remplir en une fois. Import : les quantités sont arrondies et affichées avec l'espace des milliers (fini les 812.0989999999999).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.82 · 08/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Finary compte par compte : la liste des comptes (à gauche) et les lignes du compte (à droite) ont chacune leur propre ascenseur, au lieu d'un seul pour les deux colonnes ; le bouton « Valider et passer au suivant » reste toujours visible en bas.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.81 · 08/11/2026</div>
