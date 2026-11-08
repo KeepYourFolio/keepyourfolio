@@ -649,7 +649,7 @@ html.onb main>section{gap:8px}@media (max-height:700px){.ppt{margin-top:8px}.ppt
 <script src="avf.js"></script><script src="qr.js"></script>
 <script>
 "use strict";
-var VER="3.103.5.63", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="3.103.5.64", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["groupe_projet","Projet"],["perecol_fonds","Fonds PERECOL"],["alerte_seuils","Seuils d’alerte"],["alerte_cible","Objectif de prix"],["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["renommage","Renommage"],["actif_valeur","Valeur d’un actif"],["etranger_nouveau","Avoir à l’étranger"],["etranger_valeur","Valeur d’un avoir à l’étranger"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["pe_placement","Nouveau placement"],["pe_maj","Mise à jour d’un placement"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -4758,6 +4758,71 @@ function t1res(){
  h+='<details class="cd otc otd">'+sm("Comment lire ce résultat")+'<p class="hint" style="margin:0">Hypothèses : rendement brut identique chaque année, versement de départ la première année puis versement annuel au début de chaque année suivante. Frais d’entrée retirés de chaque versement, frais de gestion et d’arbitrage retirés en fin d’année. Frais des supports, impôts et prélèvements sociaux non inclus. Ce n’est ni une prévision ni un conseil.</p></details>';
  if(S.notes.length)h+='<p class="hint" style="margin:8px 0 0">'+S.notes.map(function(n){return"· "+esc(row.nom)+" : "+esc(n)}).join("<br>")+"</p>";
  res.innerHTML=h+back;sel(OT.y)}
+/* ---------- outil 2 : comparateur de frais (coût des frais en euros, sans rendement) ---------- */
+var CK="kyfm-otcmp";
+function cload(){var o=null;try{o=JSON.parse(localStorage.getItem(CK)||"null")}catch(e){}if(!o||typeof o!=="object")o={};
+ var man=(Array.isArray(o.man)?o.man:[]).filter(function(x){return x&&typeof x.nom==="string"&&x.nom.trim()&&num(x.g,0,100,null)!==null}).slice(0,6).map(function(x,i){return{id:String(x.id||"c"+i).replace(/[^A-Za-z0-9_-]/g,"").slice(0,30)||"c"+i,nom:x.nom.trim().slice(0,60),fe:num(x.fe,0,100,0),g:num(x.g,0,100,0),gfe:num(x.gfe,0,100,null),ar:num(x.ar,0,100,null)}});
+ return{m:num(o.m,0,1e9,10000),v:num(o.v,0,1e8,0),n:Math.round(num(o.n,1,60,10)),s:num(o.s,0,100,0),ac:Math.round(num(o.ac,0,52,0)),am:num(o.am,0,1e9,0),sel:Array.isArray(o.sel)?o.sel.filter(function(x){return typeof x==="string"}).slice(0,8):null,man:man}}
+function csave(o){try{localStorage.setItem(CK,JSON.stringify(o))}catch(e){}}
+function cands(C){var A=rows({fl:{fe:null,g:null,gfe:null,ar:null}}).filter(function(r){return r.id!=="free"});
+ C.man.forEach(function(c){A.push({id:"man:"+c.id,nom:c.nom,src:"man",fe:c.fe,g:c.g,gfe:c.gfe,ar:c.ar})});return A}
+function csel(C,A){var mine=A.filter(function(r){return r.src==="mine"}).map(function(r){return r.id}),ids=C.sel===null?mine:C.sel,M={};A.forEach(function(r){M[r.id]=r});
+ return ids.filter(function(i){return M[i]}).map(function(i){return M[i]})}
+function fld2(lab,f,v,u,ph){return '<label class="otf">'+lab+'<span class="otw"><input data-g="'+f+'" inputmode="decimal" autocomplete="off" value="'+esc(v==null?"":String(v).replace(".",","))+'"'+(ph?' placeholder="'+ph+'"':"")+'>'+(u?'<em>'+u+'</em>':"")+'</span></label>'}
+function t2(){
+ var C=cload(),A=cands(C),S=csel(C,A),st=OT.cs||1;
+ if(st>4)return '<div id="otres2" class="otflat"></div>';
+ var bar='<div class="otst" aria-hidden="true">'+[1,2,3,4].map(function(i){return '<i class="'+(i<st?"on":i===st?"cur":"")+'"></i>'}).join("")+'</div>';
+ var q=function(t,s){return '<h3 class="otq">'+t+'</h3>'+(s?'<p class="hint otqs">'+s+'</p>':"")};
+ var h=bar;
+ if(st===1){
+  h+=q("Quels contrats voulez-vous comparer ?","Vos contrats suivis, ceux de la base, ou un contrat que vous saisissez. Deux au minimum.");
+  var mine=A.filter(function(r){return r.src==="mine"}),ids=S.map(function(r){return r.id});
+  if(mine.length)h+='<small class="otk">VOS CONTRATS</small><div class="otchw">'+mine.map(function(r){var on=ids.indexOf(r.id)>-1;return '<button type="button" class="otch2'+(on?" on":"")+'" data-ctog="'+esc(r.id)+'" aria-pressed="'+on+'">'+esc(r.nom)+'</button>'}).join("")+'</div>';
+  var oth=S.filter(function(r){return r.src!=="mine"});
+  h+='<small class="otk" style="margin-top:'+(mine.length?22:0)+'px">CONTRATS CHOISIS</small>';
+  h+=oth.length?'<div class="otcl">'+oth.map(function(r){return '<div class="otcr"><span><b>'+esc(r.nom)+'</b><small>'+(r.src==="man"?"Saisi par vous":"Base du comparateur")+' · gestion '+pcs(r.g)+'</small></span><button type="button" class="otx" data-crm="'+esc(r.id)+'" aria-label="Retirer '+esc(r.nom)+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>'}).join("")+'</div>':'<p class="hint" style="margin:6px 0 0">'+(mine.length?"Aucun autre contrat pour l’instant.":"Aucun contrat pour l’instant.")+'</p>';
+  var full=S.length>=8;
+  h+='<div class="cd otc" style="margin-top:22px"><label class="otf">Ajouter un contrat de la base<select id="otcb"'+(full?" disabled":"")+'><option value="">Choisir un contrat</option>'+A.filter(function(r){return r.src==="base"}).map(function(r){return '<option value="'+esc(r.id)+'">'+esc(r.nom)+'</option>'}).join("")+'</select></label></div>';
+  h+='<details class="cd otc otd">'+sm("Un contrat que je saisis")+'<div class="otg" style="margin-bottom:14px"><label class="otf" style="grid-column:1/-1">Nom<span class="otw"><input id="cmN" type="text" maxlength="60" autocomplete="off"></span></label>'+fld2("Frais d’entrée","cmfe","","%","0")+fld2("Gestion UC","cmg","","%","0,60")+fld2("Gestion fonds €","cmgfe","","%","idem")+fld2("Arbitrage","cmar","","%","idem")+'</div><p class="hint" id="cmMsg" style="margin:0 0 10px"></p><button type="button" class="otgh" data-cadd="1" style="width:100%">Ajouter ce contrat</button></details>';
+  h+='<p class="hint" style="margin:14px 4px 0">'+(S.length<2?"Choisissez au moins 2 contrats pour comparer.":S.length+" contrats choisis"+(full?" (maximum atteint).":"."))+'</p>';
+ }else if(st===2){
+  h+=q("Combien versez-vous ?","Le même scénario est appliqué à tous les contrats.");
+  h+='<div class="cd otc"><div class="otg">'+fld2("Au départ","m",C.m,"€")+fld2("Chaque année","v",C.v,"€")+'</div></div>';
+ }else if(st===3){
+  h+=q("Sur combien de temps ?","Aucun rendement n’est supposé : c’est une comparaison de coûts.");
+  h+='<div class="cd otc"><small class="otk">DURÉE</small><div class="otbig"><button type="button" class="otrd" data-cchip="n:-1" aria-label="Un an de moins"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/></svg></button><div class="otbn"><b>'+C.n+'</b> <span>an'+(C.n>1?"s":"")+'</span></div><button type="button" class="otrd" data-cchip="n:+1" aria-label="Un an de plus"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><line x1="12" y1="5" x2="12" y2="19"/></svg></button></div>';
+  h+='<div class="otchs">'+[5,10,20,30].map(function(x){return '<button type="button" class="otch2'+(C.n===x?" on":"")+'" data-cchip="n:'+x+'">'+x+' ans</button>'}).join("")+'</div></div>';
+ }else{
+  h+=q("Pour affiner","Facultatif : vous pouvez passer directement au résultat.");
+  h+='<div class="cd otc"><small class="otk">RÉPARTITION</small><div class="otsl" style="margin-top:6px"><span id="otslb2"></span><input type="range" data-g="s" min="0" max="100" step="1" value="'+C.s+'" aria-label="Part en fonds euros"><div><small>Unités de compte</small><small>Fonds euros</small></div></div>';
+  h+='<details class="otd"'+(C.ac>0||C.am>0?" open":"")+'>'+sm("Arbitrages")+'<div class="otg">'+fld2("Arbitrages par an","ac",C.ac,"")+fld2("Montant moyen","am",C.am,"€")+'</div></details></div>';
+ }
+ var dis=st===1&&S.length<2;
+ h+='<div class="otfoot">'+(st>1?'<button type="button" class="otgh" data-cs="'+(st-1)+'">Retour</button>':"")+'<button type="button" class="otgo"'+(dis?' disabled':'')+' data-cs="'+(st+1)+'">'+(st===4?"Voir le résultat":"Continuer")+'</button></div>';
+ return '<div class="otflat">'+h+'</div>'}
+function t2res(){
+ var C=cload();
+ if((OT.cs||1)<=4){var sl=g("otslb2");if(sl)sl.textContent=(100-C.s)+" % unités de compte · "+C.s+" % fonds euros";return}
+ var res=g("otres2");if(!res)return;
+ var A=cands(C),S=csel(C,A),P={m:C.m,v:C.v,n:C.n,s:C.s,ac:C.ac,am:C.am};
+ var back='<div class="otfoot"><button type="button" class="otgh" data-cs="1">Modifier la comparaison</button></div>';
+ var L=S.map(function(r){return{r:r,c:calc(r,P)}}),ok=L.filter(function(x){return x.c.ok}).sort(function(a,b){return a.c.total-b.c.total}),ko=L.filter(function(x){return!x.c.ok});
+ if(ok.length<1){res.innerHTML='<div class="cd otc"><p class="hint" style="margin:0;text-align:center">Aucun contrat ne peut être calculé : '+ko.map(function(x){return esc(x.r.nom)+" ("+esc(x.c.why)+")"}).join(" ; ")+'</p></div>'+back;return}
+ var best=ok[0],worst=ok[ok.length-1],mx=worst.c.total||1,vers=P.m+P.v*(P.n-1);
+ var dot=function(c){return '<i class="otdt" style="background:'+c+'"></i>'},CE="#f0b429",CG="var(--acc)",CA="#f43f5e";
+ var h='<div class="otsum"><span>'+S.length+' contrats · '+P.n+' an'+(P.n>1?"s":"")+'</span><span>'+eu(P.m)+(P.v>0?" + "+eu(P.v)+"/an":"")+'</span></div>';
+ h+='<div class="cd otc"><small class="otk">Le moins cher</small><div class="othe" style="margin-top:2px"><b style="font-size:1.5rem;letter-spacing:-.5px;line-height:1.2">'+esc(best.r.nom)+'</b></div><div class="othe" style="margin-top:6px"><b>'+eu(best.c.total)+'</b><span class="otb" style="background:color-mix(in srgb,var(--acc) 16%,transparent);color:var(--acc)">de frais</span></div>';
+ h+='<p class="hint" style="margin:6px 0 0">'+(ok.length>1&&worst.c.total>best.c.total?'<b style="color:var(--ink)">'+eu(worst.c.total-best.c.total)+'</b> de moins que « '+esc(worst.r.nom)+' » sur '+P.n+' an'+(P.n>1?"s":"")+'.':ok.length>1?"Frais équivalents entre les contrats.":"Un seul contrat calculable.")+' '+eu(vers)+' versés au total.</p></div>';
+ h+='<div class="cd otc"><small class="otk">Classement par frais</small><div class="otrk">'+ok.map(function(x,i){var c=x.c,w=function(v){return v>0?'<div style="width:'+Math.max(.6,v/mx*100).toFixed(2)+'%;background:__C__;height:100%"></div>':""};
+  var bar='<div class="otbar" style="margin:8px 0 6px;height:12px">'+(c.entree>0?w(c.entree).replace("__C__",CE):"")+(c.gestion>0?w(c.gestion).replace("__C__",CG):"")+(c.arbitrage>0?w(c.arbitrage).replace("__C__",CA):"")+'</div>';
+  return '<div class="otfr otcp'+(i===0?" cur":"")+'"><div class="otfh"><b>'+(i+1)+'. '+esc(x.r.nom)+'</b><span>'+eu(c.total)+'</span></div>'+bar+'<small>Entrée '+eu(c.entree)+' · gestion '+eu(c.gestion)+(c.arbitrage>0?' · arbitrage '+eu(c.arbitrage):'')+(i>0?' · <b style="color:#f43f5e">+ '+eu(c.total-best.c.total)+'</b>':'')+'</small></div>'}).join("")+'</div>';
+ h+='<div class="otlg" style="margin-top:6px"><span>'+dot(CE)+'Frais d’entrée</span><span>'+dot(CG)+'Frais de gestion</span><span>'+dot(CA)+'Arbitrages</span></div></div>';
+ if(ko.length)h+='<div class="cd otc"><small class="otk">Non comparables</small>'+ko.map(function(x){return '<p class="hint" style="margin:6px 0 0"><b style="color:var(--ink)">'+esc(x.r.nom)+'</b> : '+esc(x.c.why)+'</p>'}).join("")+'</div>';
+ h+='<details class="cd otc otd">'+sm("Comment lire ce résultat")+'<p class="hint" style="margin:0">Frais de gestion calculés chaque année sur les sommes versées, sans rendement ni baisse de capital : c’est une comparaison de coûts, pas une prévision de performance. Frais d’entrée prélevés sur chaque versement. Les contrats de la base sont indicatifs : vérifiez toujours la notice. Les frais des supports eux-mêmes (fonds, ETF) ne sont pas inclus.</p></details>';
+ var nt=[];ok.forEach(function(x){x.c.notes.forEach(function(n){nt.push("· "+esc(x.r.nom)+" : "+esc(n))})});
+ if(nt.length)h+='<p class="hint" style="margin:8px 0 0">'+nt.join("<br>")+'</p>';
+ res.innerHTML=h+back}
 function soon(i){var T=OTT[i-1];return '<div class="cd otc" style="text-align:center;padding:26px 18px"><b style="font-size:1.05rem">'+esc(T[2])+'</b><p class="hint" style="margin:8px 0 0">Cet outil arrive bientôt dans l’appli. Il existe déjà sur ordinateur.</p></div>'}
 /* ---------- coque : fenêtre plein écran, barre du bas propre aux outils ---------- */
 function css(){if(g("otcss"))return;var s=document.createElement("style");s.id="otcss";s.textContent=
@@ -4799,24 +4864,38 @@ function css(){if(g("otcss"))return;var s=document.createElement("style");s.id="
  "#otres .otcn{font-size:2.1rem}#otres .otch{background:color-mix(in srgb,var(--ink) 4%,transparent);border-radius:18px;padding:10px 0 0}"+
  "#otres .otfr{background:color-mix(in srgb,var(--ink) 5%,transparent)}#otres .otfr.cur{background:color-mix(in srgb,var(--acc) 12%,transparent)}"+
  "#otres .otlg{font-size:.84rem}#otres .hint{font-size:.88rem}"+
+ ".otchw{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.otchw .otch2{flex:none;padding:0 16px}"+
+ ".otcl{margin-top:8px}.otcr{display:flex;align-items:center;gap:8px;min-height:58px;border-radius:16px;padding:6px 6px 6px 14px;margin-bottom:8px;background:color-mix(in srgb,var(--ink) 5%,transparent)}.otcr>span{flex:1;min-width:0}.otcr b{display:block;font-size:.95rem}.otcr small{color:var(--mut);font-size:.76rem}"+
+ ".otx{flex:none;width:44px;height:44px;border:0;background:none;color:var(--mut);border-radius:22px;display:flex;align-items:center;justify-content:center;cursor:pointer}.otx:hover{color:#f43f5e}"+
+ ".otgo:disabled{opacity:.45;cursor:default;filter:none}.otcp{margin-bottom:10px}.otrk{margin-top:12px}"+
  ".otbtn{color:var(--ink)}";
  document.head.appendChild(s)}
 function nav(){var P=OTT.map(function(t){return '<button data-ot="'+t[0]+'"'+(OT.t===t[0]?' aria-current="page"':"")+'><span class="tbic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+t[4]+'</svg></span>'+t[1]+'</button>'}).join("");
  return '<nav class="tb otn t5" aria-label="Navigation des outils"><div class="tbi"><span class="tbp" style="transform:translateX('+(OT.t-1)*100+'%)"></span>'+P+'</div></nav>'}
-function body(){var T=OTT[OT.t-1];return '<div class="fh2"><button class="bk" id="otbk" aria-label="Fermer les outils">'+I.back+'</button><div class="tt"><h2>'+esc(T[2])+'</h2><small>'+esc(OT.t===1?(OT.st>4?'Votre résultat':'Étape '+OT.st+' sur 4'):T[3])+'</small></div></div><div class="sp2" aria-hidden="true"></div>'+(OT.t===1?t1():soon(OT.t))}
+function body(){var T=OTT[OT.t-1];return '<div class="fh2"><button class="bk" id="otbk" aria-label="Fermer les outils">'+I.back+'</button><div class="tt"><h2>'+esc(T[2])+'</h2><small>'+esc(OT.t===1?(OT.st>4?'Votre résultat':'Étape '+OT.st+' sur 4'):OT.t===2?((OT.cs||1)>4?'Votre comparaison':'Étape '+(OT.cs||1)+' sur 4'):T[3])+'</small></div></div><div class="sp2" aria-hidden="true"></div>'+(OT.t===1?t1():OT.t===2?t2():soon(OT.t))}
 function hsc(){var L=g("otl"),f=L&&L.querySelector(".fh2");if(f)f.classList.toggle("sc",L.scrollTop>6)}
-function paint(keep){var L=g("otl");if(!L)return;var y=L.scrollTop;L.innerHTML='<div class="otm">'+body()+"</div>"+nav();try{kfAll()}catch(e){}if(OT.t===1)t1res();L.scrollTop=keep?y:0;hsc()}
+function paint(keep){var L=g("otl");if(!L)return;var y=L.scrollTop;L.innerHTML='<div class="otm">'+body()+"</div>"+nav();try{kfAll()}catch(e){}if(OT.t===1)t1res();if(OT.t===2)t2res();L.scrollTop=keep?y:0;hsc()}
 function shut(){var L=g("otl");if(L)L.remove();OT.on=0;document.documentElement.style.overflow="";try{document.body.style.overflow=""}catch(e){}}
-function open(t){if(t)OT.t=t;if(g("otl"))return;OT.st=1;css();var L=document.createElement("div");L.id="otl";L.className="otl";L.setAttribute("role","dialog");L.setAttribute("aria-label","Outils");document.body.appendChild(L);OT.on=1;document.documentElement.style.overflow="hidden";paint(false);
- L.addEventListener("click",function(e){var t=e.target.closest&&e.target.closest("[data-ot],#otbk,[data-st],[data-chip]");if(!t)return;if(t.id==="otbk")return shut();
+function open(t){if(t)OT.t=t;if(g("otl"))return;OT.st=1;OT.cs=1;css();var L=document.createElement("div");L.id="otl";L.className="otl";L.setAttribute("role","dialog");L.setAttribute("aria-label","Outils");document.body.appendChild(L);OT.on=1;document.documentElement.style.overflow="hidden";paint(false);
+ L.addEventListener("click",function(e){var t=e.target.closest&&e.target.closest("[data-ot],#otbk,[data-st],[data-chip],[data-cs],[data-cchip],[data-ctog],[data-crm],[data-cadd]");if(!t)return;if(t.id==="otbk")return shut();
+  var cs=t.getAttribute("data-cs");if(cs){OT.cs=Math.max(1,Math.min(5,+cs));paint(false);return}
+  var cc=t.getAttribute("data-cchip");if(cc){var C=cload(),pp=cc.split(":"),vv=pp[1];C.n=Math.round(num(vv.charAt(0)==="+"||vv.charAt(0)==="-"?C.n+parseFloat(vv):vv,1,60,C.n));csave(C);paint(true);return}
+  var ct=t.getAttribute("data-ctog");if(ct){var C2=cload(),A2=cands(C2),cur=csel(C2,A2).map(function(r){return r.id}),k=cur.indexOf(ct);if(k>-1)cur.splice(k,1);else if(cur.length<8)cur.push(ct);C2.sel=cur;csave(C2);paint(true);return}
+  var cr=t.getAttribute("data-crm");if(cr){var C3=cload(),A3=cands(C3),c3=csel(C3,A3).map(function(r){return r.id});C3.sel=c3.filter(function(i){return i!==cr});if(cr.indexOf("man:")===0){var mid=cr.slice(4);C3.man=C3.man.filter(function(m){return m.id!==mid})}csave(C3);paint(true);return}
+  if(t.getAttribute("data-cadd")){var C4=cload(),nm=(g("cmN")||{}).value||"",gg=num(document.querySelector('[data-g="cmg"]').value,0,100,null),msg=g("cmMsg");
+   if(!nm.trim()){if(msg)msg.textContent="Indiquez un nom.";return}if(gg===null){if(msg)msg.textContent="Le taux de gestion est obligatoire.";return}
+   if(C4.man.length>=6){if(msg)msg.textContent="6 contrats saisis au maximum.";return}
+   var q=function(k){return num(document.querySelector('[data-g="'+k+'"]').value,0,100,null)},id="c"+Date.now().toString(36),A4=cands(C4),cur4=csel(C4,A4).map(function(r){return r.id});
+   C4.man.push({id:id,nom:nm.trim().slice(0,60),fe:q("cmfe")==null?0:q("cmfe"),g:gg,gfe:q("cmgfe"),ar:q("cmar")});if(cur4.length<8)cur4.push("man:"+id);C4.sel=cur4;csave(C4);paint(true);return}
   var ds=t.getAttribute("data-st");if(ds){OT.st=Math.max(1,Math.min(5,+ds));paint(false);return}
   var dc=t.getAttribute("data-chip");if(dc){var p=dc.split(":"),O=load(),v=p[1];if(p[0]==="n")O.n=Math.round(num(v.charAt(0)==="+"||v.charAt(0)==="-"?O.n+parseFloat(v):v,1,60,O.n));else O.r=num(v,-50,100,O.r);save(O);paint(true);return}var n=+t.getAttribute("data-ot");if(n&&n!==OT.t){OT.t=n;paint(false)}});
- L.addEventListener("input",function(e){var el=e.target;if(!el||!el.getAttribute)return;var f=el.getAttribute("data-f");if(!f)return;var O=load(),v=el.value;
+ L.addEventListener("input",function(e){var el=e.target;if(!el||!el.getAttribute)return;var fg=el.getAttribute("data-g");if(fg){var C=cload(),vg=el.value;if(fg==="m")C.m=num(vg,0,1e9,C.m);else if(fg==="v")C.v=num(vg,0,1e8,C.v);else if(fg==="s")C.s=num(vg,0,100,C.s);else if(fg==="ac")C.ac=Math.round(num(vg,0,52,C.ac));else if(fg==="am")C.am=num(vg,0,1e9,C.am);else return;csave(C);t2res();return}
+  var f=el.getAttribute("data-f");if(!f)return;var O=load(),v=el.value;
   if(f.indexOf("fl.")===0)O.fl[f.slice(3)]=num(v,0,100,null);else if(f==="r")O.r=num(v,-50,100,null);else if(f==="ref")O.ref=num(v,0,100,null);else if(f==="n")O.n=Math.round(num(v,1,60,O.n));else if(f==="s")O.s=num(v,0,100,O.s);else if(f==="ac")O.ac=Math.round(num(v,0,52,O.ac));else if(f==="am")O.am=num(v,0,1e9,O.am);else if(f==="m")O.m=num(v,0,1e9,O.m);else if(f==="v")O.v=num(v,0,1e8,O.v);
   save(O);t1res()});
  var tp=function(e){var c=e.target.closest&&e.target.closest("#otch");if(!c||!OT.d)return;var r=c.getBoundingClientRect();sel((e.clientX-r.left)/r.width*OT.d.n)};
  L.addEventListener("scroll",hsc,{passive:true});L.addEventListener("pointerdown",tp);L.addEventListener("pointermove",function(e){if(e.buttons||e.pointerType==="touch")tp(e)});
- L.addEventListener("change",function(e){var el=e.target;if(el&&el.id==="otsel"){var O=load();O.sim=el.value;save(O);t1res()}})}
+ L.addEventListener("change",function(e){var el=e.target;if(el&&el.id==="otcb"&&el.value){var C=cload(),A=cands(C),cur=csel(C,A).map(function(r){return r.id});if(cur.indexOf(el.value)<0&&cur.length<8)cur.push(el.value);C.sel=cur;csave(C);paint(true);return}if(el&&el.id==="otsel"){var O=load();O.sim=el.value;save(O);t1res()}})}
 /* icône « Outils » dans l'en-tête de Patrimoine, à gauche des autres boutons */
 function btn(){var o=g("otb");if(o)o.remove();if(typeof STATE==="undefined"||!STATE||S.v!=="pat")return;var t=g("th"),par=t&&t.parentNode;if(!par)return;
  var bs=Array.prototype.slice.call(par.querySelectorAll(".th")).filter(function(x){return x.offsetWidth>0&&x.style.position!=="static"&&getComputedStyle(x).position==="absolute"}),lm=par.clientWidth;bs.forEach(function(x){if(x.offsetLeft<lm)lm=x.offsetLeft});
