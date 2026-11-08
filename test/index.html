@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.101
+  @version     : Beta 2.13.0.102
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -2341,6 +2341,7 @@ button.kyf-toggle-active[style],.kyf-seg button.kyf-toggle-active{background:#f0
 #importConfirmBtn,#importAllBtn,.kyf-fina-btn{transition:opacity .15s,box-shadow .15s}
 #importConfirmBtn:hover,#importAllBtn:hover,.kyf-fina-btn:hover,.kyf-draft-btn.is-main:hover,#importConfirmBtn:focus-visible,#importAllBtn:focus-visible,.kyf-fina-btn:focus-visible{opacity:.85;box-shadow:0 0 0 3px rgba(240,180,41,.28);outline:none}
 /* Récapitulatif d'import Finary : ligne de groupe cliquable, léger survol */
+.kyf-soft-btn{transition:background .15s}.kyf-soft-btn:hover,.kyf-soft-btn:focus-visible{background:var(--hov-bg)!important;outline:none}
 .kyf-fina-tg{border-radius:8px;padding:4px 6px;margin:-4px -6px;transition:background .15s}
 .kyf-fina-tg:hover,.kyf-fina-tg:focus-visible{background:var(--hov-bg);outline:none}
 .kyf-fina-tg:hover svg,.kyf-fina-tg:focus-visible svg{color:var(--accent)}
@@ -5300,7 +5301,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.13.0.101</div>
+  <div class="kl-ver">Beta 2.13.0.102</div>
 </div>
 <script>
 (function(){
@@ -5464,7 +5465,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.101</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.102</span></div>
       </div>
     </div>
   </div>
@@ -7887,7 +7888,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.101</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.102</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -37039,9 +37040,9 @@ function kyfFinaLineHtml_(R, g, i){
     const qty = fiParseNum(c[X.qty]), val = fiParseNum(c[X.val]), pnl = fiParseNum(c[X.pnl]);
     const pru = qty > 0 ? Math.round(((val - pnl) / qty) * 10000) / 10000 : 0;
     const bien = g === 'bien';
-    const btn = (lbl, fn, main) => `<button type="button" class="kyf-fina-btn" onclick="${fn}" style="font-family:'Inter',sans-serif;font-size:9px;padding:7px 14px;border-radius:7px;cursor:pointer;${main ? 'font-weight:700;border:none;background:#f0b429;color:#000' : 'border:1px solid var(--border2);background:none;color:var(--text3)'}">${lbl}</button>`;
+    const btn = (lbl, fn, main) => `<button type="button" class="${main ? 'kyf-fina-btn' : 'kyf-soft-btn'}" onclick="${fn}" style="font-family:'Inter',sans-serif;font-size:9px;padding:7px 14px;border-radius:7px;cursor:pointer;${main ? 'font-weight:700;border:none;background:#f0b429;color:#000' : 'border:1px solid var(--border2);background:none;color:var(--text3)'}">${lbl}</button>`;
     const head = `<div class="kyf-vh-head" role="button" tabindex="0" title="Refermer la ligne" aria-label="Refermer la ligne" onclick="kyfFinaEditCancel()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();kyfFinaEditCancel();}" style="margin:0 0 8px;letter-spacing:0"><span title="${escapeHtml(nom)}" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;font-weight:600;color:var(--text)">${escapeHtml(nom)}</span><span class="kyf-vh-chev" style="transform:rotate(180deg)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></span></div>`;
-    return `<div style="padding:8px 0 10px 22px;border-top:1px solid var(--border)">${head}<div style="display:grid;grid-template-columns:${bien ? '1fr 110px' : '1fr 80px 90px'};gap:6px;align-items:end">`
+    return `<div id="finaEditBox" style="padding:8px 0 10px 22px;border-top:1px solid var(--border)">${head}<div style="display:grid;grid-template-columns:${bien ? '1fr 110px' : '1fr 80px 90px'};gap:6px;align-items:end">`
       + `<label style="font-size:9px;color:var(--text3)">NOM<input id="finaEdNom" value="${escapeHtml(nom)}" style="${inp}"></label>`
       + (bien ? `<label style="font-size:9px;color:var(--text3)">VALEUR (€)<input id="finaEdVal" value="${val}" inputmode="decimal" style="${inp}"></label>`
               : `<label style="font-size:9px;color:var(--text3)">QUANTITÉ<input id="finaEdQty" value="${qty}" inputmode="decimal" style="${inp}"></label><label style="font-size:9px;color:var(--text3)">PRU (€)<input id="finaEdPru" value="${pru}" inputmode="decimal" style="${inp}"></label>`)
@@ -37110,13 +37111,22 @@ function kyfFinaRecapRender(){
       + `<div style="padding:4px 0">${curList.map(i => kyfFinaLineHtml_(R, cur.k, i)).join('')}</div>`
       + `<div style="position:sticky;bottom:0;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 4px;margin-top:10px;background:var(--bg2);border-top:1px solid var(--border)">`
       + (isDone ? `<span style="font-size:11px;font-weight:700;color:var(--green)">Repris dans Keep Your Folio</span>`
-        : `<button type="button" class="kyf-fina-btn" onclick="kyfFinaIgnore('${cur.k}')" style="${bt}border:1px solid var(--border2);background:none;color:var(--text2)">${isIgn ? 'RÉTABLIR CE COMPTE' : 'IGNORER CE COMPTE'}</button>`
+        : `<button type="button" class="kyf-soft-btn" onclick="kyfFinaIgnore('${cur.k}')" style="${bt}border:1px solid var(--border2);background:none;color:var(--text2)">${isIgn ? 'RÉTABLIR CE COMPTE' : 'IGNORER CE COMPTE'}</button>`
           + (isIgn ? '' : `<button type="button" class="kyf-fina-btn" onclick="kyfFinaGo('${cur.k}')" style="${bt}border:none;background:#f0b429;color:#000">${R.queue && nxt ? 'VALIDER ET PASSER AU SUIVANT' : 'IMPORTER CE COMPTE'}</button>`))
       + `</div>`;
   }
   const rowsHtml = `<div class="kyf-fina-split" style="display:flex;align-items:stretch;flex:1;min-height:0"><div class="kyf-fina-scroll" style="width:232px;flex-shrink:0;border-right:1px solid var(--border);padding:12px 10px;display:flex;flex-direction:column;gap:3px;background:rgba(255,255,255,0.015);overflow-y:auto;min-height:0">${cptHtml}${itemsHtml}${R.skipped.length ? `<div style="padding:10px 4px 4px;font-size:10px;line-height:1.6;color:var(--text3)"><div style="font-weight:700;color:var(--text2);margin-bottom:2px">Non repris par cet import</div>${R.skipped.map(k => `<div>${escapeHtml(k.lbl)} (${k.n}) : ${escapeHtml(k.why)}</div>`).join('')}</div>` : ''}</div><div class="kyf-fina-scroll" style="flex:1;min-width:0;padding:0 16px;display:flex;flex-direction:column;overflow-y:auto;min-height:0">${detailHtml}</div></div>`;
   st.innerHTML = KYF_CHECK_SVG + ' Fichier Finary lu : ' + (R.rows.length - 1) + ' ligne(s), dont ' + LST.reduce((t, g) => t + (R.groups[g.k]||[]).length, 0) + ' reprise(s) par Keep Your Folio. ' + (nFait ? nFait + ' compte(s) sur ' + LST.length + ' traité(s). ' : '') + 'Choisissez un compte à gauche, vérifiez ses lignes, puis validez-le : Keep Your Folio revient ici entre deux.';
+  const _sc0 = Array.from(pv.querySelectorAll('.kyf-fina-scroll')).map(e => e.scrollTop);
   pv.innerHTML = rowsHtml || '<div style="padding:12px 0;font-size:11px;color:var(--text3)">Aucune ligne importable trouvée dans ce fichier.</div>';
+  try{
+    const _sc = pv.querySelectorAll('.kyf-fina-scroll');
+    _sc.forEach((e, n) => { if(_sc0[n]) e.scrollTop = _sc0[n]; });
+    const ctr = (box, el) => { if(!box || !el) return; const b = box.getBoundingClientRect(), r = el.getBoundingClientRect(); const to = box.scrollTop + (r.top - b.top) - (b.height - r.height) / 2; box.scrollTo ? box.scrollTo({ top:Math.max(0, to), behavior:'smooth' }) : (box.scrollTop = Math.max(0, to)); };
+    if(R.lastSel !== R.sel){ R.lastSel = R.sel; ctr(_sc[0], _sc[0] && _sc[0].querySelector('.kyf-fina-it.on')); }
+    if(R.edit != null && R.lastEdit !== R.edit){ ctr(_sc[1], document.getElementById('finaEditBox')); }
+    R.lastEdit = R.edit;
+  }catch(e){}
   if(document.getElementById('finaScpiDest')){ kyfCSelEnsureDrop('finaScpiDest'); kyfCSelBuildDrop('finaScpiDest', kyfFinaScpiOptions_(R)); }
   document.getElementById('importConfirmBtn').style.display = 'none';
   const ab = document.getElementById('importAllBtn');
@@ -50611,7 +50621,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.101\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.102\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -77643,6 +77653,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.102 · 08/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Finary : la liste des comptes se centre automatiquement sur le compte en cours quand on enchaîne dossier par dossier, et la ligne qu'on ouvre en modification (crayon) se centre dans la fenêtre si elle était en bas. IGNORER CE COMPTE, RÉTABLIR CE COMPTE et ANNULER ont le même survol que ANNULER du bas de la fenêtre.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.101 · 08/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Corbeille de l'import Finary : les boutons RÉTABLIR et TOUT SUPPRIMER ont le même survol que ANNULER (fond qui s'éclaircit en douceur).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.100 · 08/11/2026</div>
