@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.64
+  @version     : Beta 2.13.0.65
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5260,7 +5260,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.13.0.64</div>
+  <div class="kl-ver">Beta 2.13.0.65</div>
 </div>
 <script>
 (function(){
@@ -5422,7 +5422,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.64</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.65</span></div>
       </div>
     </div>
   </div>
@@ -7845,7 +7845,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.64</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.65</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -35791,7 +35791,7 @@ function fiFinaHackHeaderOk(headerRow){
 function fiClassifyFinaHackEnvelope(virtualEnvelop, envelopeType, accountName){
   const fromText = s => {
     const v = String(s||'').toUpperCase();
-    if(/\bPER\b/.test(v)) return 'PER';
+    if(/\bPER\b|PERCOL|PER.?COL(LECTIF)?|\bPERCO\b/.test(v)) return 'PER';
     if(/\bPEA\b/.test(v)) return 'PEA';
     if(/\bCTO\b|COMPTE.?TITRE/.test(v)) return 'CTO';
     if(/ASSURANCE.?VIE|\bAV\b/.test(v)) return 'AV';
@@ -36672,6 +36672,8 @@ const KYF_FINA_GROUPS = [
   { k:'or',     lbl:'Or et métaux précieux' },
   { k:'scpi',   lbl:'SCPI' },
   { k:'bien',   lbl:'Bien immobilier' },
+  { k:'pee',    lbl:'Épargne salariale (PEE)' },
+  { k:'percol', lbl:'PERCOL' },
   { k:'cash',   lbl:'Espèces et livrets' }
 ];
 function kyfFinaRecapMode(){
@@ -36693,6 +36695,7 @@ function kyfFinaRows_(text){
 }
 // Colonnes du fichier, groupe de chaque ligne (mêmes règles que les lecteurs FinaHack), fichier relu après corrections
 function kyfFinaCols_(h){ const i = n => h.indexOf(n); return { nom:i('assetName'), cls:i('assetClass'), val:i('currentValue'), qty:i('quantity'), pnl:i('pnl_amount'), env:i('virtual_envelop'), et:i('envelopeType'), acc:i('accountName'), inst:i('institutionName') }; }
+function kyfFinaIsPercol_(c, X){ return /PERCOL|PER.?COL(LECTIF)?|\bPERCO\b/i.test([X.env>=0?c[X.env]:'', X.acc>=0?c[X.acc]:''].join(' ')); }
 function kyfFinaGroupOf_(c, X){
   const cls = fiFhCls(c[X.cls]), nom = String(c[X.nom]||'').trim();
   if(!nom) return '';
@@ -36702,14 +36705,20 @@ function kyfFinaGroupOf_(c, X){
     if(!(val > 0)) return '';
     return fiClassifyFinaHackEnvelope(X.env>=0?c[X.env]:'', X.et>=0?c[X.et]:'', X.acc>=0?c[X.acc]:'') === 'PER' ? 'per' : 'av';
   }
-  if(cls === 'fiat') return (val > 0 && String(c[X.et]||'').trim() !== 'crypto_wallet') ? 'cash' : '';   // les espèces d'un portefeuille crypto ne sont pas reprises
+  if(cls === 'fiat'){
+    if(!(val > 0) || String(c[X.et]||'').trim() === 'crypto_wallet') return '';   // les espèces d'un portefeuille crypto ne sont pas reprises
+    // Compte d'épargne salariale saisi à la main sur Finary (PEE, PERCOL) : jamais rangé dans les comptes courants
+    if(fiClassifyFinaHackEnvelope(X.env>=0?c[X.env]:'', X.et>=0?c[X.et]:'', X.acc>=0?c[X.acc]:'') === 'PEE') return 'pee';
+    if(kyfFinaIsPercol_(c, X)) return 'percol';
+    return 'cash';
+  }
   if(!(qty > 0)) return '';
   if(cls === 'crypto') return 'crypto';
   if(cls === 'Matières premières') return 'or';
   if(cls === 'scpi') return 'scpi';
   if(cls !== 'security') return '';
   const e = fiClassifyFinaHackEnvelope(X.env>=0?c[X.env]:'', X.et>=0?c[X.et]:'', X.acc>=0?c[X.acc]:'');
-  return e === 'PER' ? 'per' : (e === 'AV' ? 'av' : (e === 'PEE' ? '' : 'etf'));
+  return e === 'PER' ? 'per' : (e === 'AV' ? 'av' : (e === 'PEE' ? 'pee' : 'etf'));
 }
 function kyfFinaBuild_(R){
   const X = R.X, groups = {}, env = {}, classes = {};
@@ -36734,7 +36743,6 @@ function kyfFinaBuild_(R){
   (groups.etf || []).forEach(i => { const c = R.rows[i]; const e = fiClassifyFinaHackEnvelope(X.env>=0?c[X.env]:'', X.et>=0?c[X.et]:'', X.acc>=0?c[X.acc]:''); det.etf[e] = (det.etf[e]||0) + 1; });
   R.detail = { etf: ['PEA','CTO','AUTRE'].filter(e => det.etf[e]).map(e => (e === 'AUTRE' ? 'enveloppe à préciser' : e) + ' ' + det.etf[e]).join(', ') };
   R.skipped = [];
-  if(env.PEE) R.skipped.push({ n:env.PEE, lbl:'Épargne salariale (PEE)', why:'Keep Your Folio ne la reprend pas encore depuis un fichier : à saisir à la main dans Keep Your Folio.' });
   // Classes d'actifs que KYF ne sait pas lire : jamais ignorées en silence
   const KNOWN = ['security','fonds_euro','fiat','crypto','scpi','real_estate','Matières premières'];
   Object.keys(classes).filter(k => KNOWN.indexOf(k) < 0).forEach(k => R.skipped.push({ n:classes[k], lbl:'Type « ' + k + ' »', why:'type d’actif non reconnu par KYF : à saisir à la main.' }));
@@ -36763,6 +36771,66 @@ function kyfFinaCashPlan_(R){
     else pl[d.d] = Math.round((pl[d.d] + v)*100)/100;
   });
   return pl;
+}
+// PEE saisi sur Finary : un plan par compte (nom du compte, établissement en gestionnaire). Les fonds du plan, quand il y en a, gardent leurs parts
+// et leur valeur de part (valeur / quantité) ; un compte saisi à la main n'a qu'une valeur, reprise telle quelle. Un plan du même nom est mis à jour
+// (la valeur remplace l'ancienne, ses autres informations restent), jamais additionné.
+function kyfFinaPeePlans_(R){
+  const X = R.X, by = {}, ord = [];
+  (R.groups.pee || []).forEach(i => { const c = R.rows[i], nom = String(c[X.acc]||c[X.nom]||'').trim().slice(0, 80) || 'PEE'; if(!by[nom]){ by[nom] = []; ord.push(nom); } by[nom].push(i); });
+  return ord.map(nom => {
+    let val = 0, cost = 0, gest = ''; const fonds = [];
+    by[nom].forEach(i => {
+      const c = R.rows[i], v = fiParseNum(c[X.val]), q = fiParseNum(c[X.qty]), p = fiParseNum(c[X.pnl]);
+      if(!gest && X.inst >= 0){ const t = String(c[X.inst]||'').trim(); if(t && t !== 'Default') gest = t.slice(0, 80); }
+      val += v; cost += v - p;
+      if(fiFhCls(c[X.cls]) === 'security' && q > 0) fonds.push({ nom:String(c[X.nom]||'').trim().slice(0, 120), isin:'', tk:'', parts:q, vl:Math.round(v / q * 10000) / 10000 });
+      else if(fiFhCls(c[X.cls]) === 'fiat') fonds.push({ nom:'Espèces', isin:'', tk:'', parts:Math.round(v * 100) / 100, vl:1, _esp:1 });
+    });
+    const avecTitres = fonds.some(f => !f._esp);
+    const fl = avecTitres ? fonds.map(f => ({ nom:f.nom, isin:f.isin, tk:f.tk, parts:f.parts, vl:f.vl })) : [];
+    return { nom, gest, valeur:Math.round(val * 100) / 100, versements:Math.max(0, Math.round(cost * 100) / 100), fonds:fl };
+  });
+}
+async function kyfFinaPeeGo_(R){
+  const pl = kyfFinaPeePlans_(R), f = n => fmt(n, 2) + ' €'; if(!pl.length) return;
+  const d = peeLoad(), L = pl.map(p => { const ex = d.find(x => String(x.nom||'').toLowerCase() === p.nom.toLowerCase()); return 'PEE ' + p.nom + ' : ' + (ex ? f(ex.valeur || 0) + ' → ' : '') + f(p.valeur) + (p.fonds.length ? ' (' + p.fonds.length + ' fonds)' : ''); });
+  const ok = await kyfAsk('Reprendre ces plans d\'épargne salariale (PEE) ?\n' + L.join('\n') + '\nLa valeur remplace celle déjà saisie (jamais additionnée).', { ok:'Reprendre' });
+  if(!ok) return;
+  pl.forEach((p, k) => {
+    const ex = d.find(x => String(x.nom||'').toLowerCase() === p.nom.toLowerCase());
+    if(ex){ ex.valeur = p.valeur; ex.versements = p.versements; if(p.gest && !ex.gestionnaire) ex.gestionnaire = p.gest; if(p.fonds.length){ ex.fonds = p.fonds; ex.vlDate = new Date().toISOString().slice(0, 10); } }
+    else { const it = { id:'pee_' + Date.now() + '_' + k, type:'pee', nom:p.nom, gestionnaire:p.gest, valeur:p.valeur, versements:p.versements, dateOuv:'', dateDispo:'', note:'Repris depuis Finary (FinaHack)' }; if(p.fonds.length){ it.fonds = p.fonds; it.vlDate = new Date().toISOString().slice(0, 10); } d.push(it); }
+  });
+  peeSave(d);
+  try{ renderPee(); }catch(e){} try{ kyfPeeLateRefresh(); }catch(e){}
+  try{ showToast('Épargne salariale reprise.'); }catch(e){}
+  R.done.pee = true; kyfFinaRecapRender();
+}
+// PERCOL saisi sur Finary : un contrat PER collectif (type « per-col ») par compte, saisi en valeur ; un contrat du même nom est mis à jour (la valeur remplace l'ancienne).
+function kyfFinaPercolPlans_(R){
+  const X = R.X, by = {}, ord = [];
+  (R.groups.percol || []).forEach(i => { const c = R.rows[i], nom = String(c[X.acc]||c[X.nom]||'').trim().slice(0, 80) || 'PERCOL'; if(!by[nom]){ by[nom] = []; ord.push(nom); } by[nom].push(i); });
+  return ord.map(nom => {
+    let val = 0, cost = 0, ass = '';
+    by[nom].forEach(i => { const c = R.rows[i], v = fiParseNum(c[X.val]), p = fiParseNum(c[X.pnl]); val += v; cost += v - p; if(!ass && X.inst >= 0){ const t = String(c[X.inst]||'').trim(); if(t && t !== 'Default') ass = t.slice(0, 80); } });
+    return { nom, assureur:ass, valeur:Math.round(val * 100) / 100, versements:Math.max(0, Math.round(cost * 100) / 100) };
+  });
+}
+async function kyfFinaPercolGo_(R){
+  const pl = kyfFinaPercolPlans_(R), f = n => fmt(n, 2) + ' €'; if(!pl.length) return;
+  const d = avLoad(), isPc = x => x && ['per-col','per'].includes(x.type), L = pl.map(p => { const ex = d.find(x => isPc(x) && String(x.contratNom||'').toLowerCase() === p.nom.toLowerCase()); return 'PERCOL ' + p.nom + ' : ' + (ex ? f(ex.valeur || 0) + ' → ' : '') + f(p.valeur); });
+  const ok = await kyfAsk('Reprendre ces PERCOL ?\n' + L.join('\n') + '\nLa valeur remplace celle déjà saisie (jamais additionnée).', { ok:'Reprendre' });
+  if(!ok) return;
+  pl.forEach((p, k) => {
+    const ex = d.find(x => isPc(x) && String(x.contratNom||'').toLowerCase() === p.nom.toLowerCase());
+    if(ex){ ex.valeur = p.valeur; ex.versements = p.versements; if(p.assureur && !ex.assureur) ex.assureur = p.assureur; }
+    else d.push({ id:Date.now().toString() + k, source:'manual', type:'per-col', contratNom:p.nom, assureur:p.assureur, dateOuv:'', versements:p.versements, rachats:0, versmentsAn:0, valeur:p.valeur, fondsEuros:0, uc:0, ucDansETF:false, fraisGestion:0, fraisArbitrage:0, fraisEntree:0, tauxFE:0, notes:'Repris depuis Finary (FinaHack)', titulaire:'', modeGestion:'libre', fraisPilotage:0 });
+  });
+  avSave(d);
+  try{ renderAV(); }catch(e){}
+  try{ showToast('PERCOL repris.'); }catch(e){}
+  R.done.percol = true; kyfFinaRecapRender();
 }
 async function kyfFinaCashGo_(R){
   const pl = kyfFinaCashPlan_(R), L = [], f = n => fmt(n, 2) + ' €';
@@ -36900,6 +36968,8 @@ function kyfFinaGo(k){
     try{ if(k === 'scpi') scpiImportFinaryText(csv); else immoImportFinaryText(csv); }catch(e){}
     R.done[k] = true; kyfFinaRecapRender(); return;
   }
+  if(k === 'pee'){ kyfFinaPeeGo_(R); return; }
+  if(k === 'percol'){ kyfFinaPercolGo_(R); return; }
   importGoToStep2(base);
   window._finaFrom = k;
   // Contrat déjà créé dans KYF sous le même nom que le compte Finary : choisi d'office (sinon la destination reste à choisir)
@@ -36919,9 +36989,9 @@ async function kyfFinaAll(){
 }
 async function kyfFinaNext(){
   const R = window._finaRecap; if(!R || !R.all) return;
-  for(const k of ['scpi','bien','or','crypto','etf'].concat(kyfFinaList_(R).map(g => g.k).filter(x => kyfFinaBase_(x) === 'per' || kyfFinaBase_(x) === 'av').sort((a, b) => (kyfFinaBase_(a) === kyfFinaBase_(b) ? 0 : (kyfFinaBase_(a) === 'per' ? -1 : 1))))){
+  for(const k of ['scpi','bien','pee','percol','or','crypto','etf'].concat(kyfFinaList_(R).map(g => g.k).filter(x => kyfFinaBase_(x) === 'per' || kyfFinaBase_(x) === 'av').sort((a, b) => (kyfFinaBase_(a) === kyfFinaBase_(b) ? 0 : (kyfFinaBase_(a) === 'per' ? -1 : 1))))){
     if(!(R.groups[k]||[]).length || R.done[k]) continue;
-    if(k === 'scpi' || k === 'bien'){ kyfFinaGo(k); continue; }
+    if(k === 'scpi' || k === 'bien' || k === 'pee' || k === 'percol'){ await kyfFinaGo(k); continue; }
     try{ await kyfFinaGo(k); }catch(e){ R.all = false; return; }
     if((k === 'or' || k === 'crypto') && !_importResolutionInProgress && _importPendingResolved.length && !_importPendingMissing.length
        && document.getElementById('importConfirmBtn').style.display !== 'none'){
@@ -50173,7 +50243,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.64\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.65\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -77205,6 +77275,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.65 · 08/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Finary (FinaHack) : les comptes d'épargne salariale saisis à la main sur Finary ne tombent plus dans les comptes courants. Les PEE (avec leurs fonds, parts et valeur de part quand le fichier les donne) sont repris comme plans PEE, les PERCOL comme contrats PER collectifs. Les valeurs remplacent celles déjà saisies, jamais additionnées.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.64 · 08/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Tuto FinaHack : la fin est plus aérée, et « Astuce » et « Mode développeur » sont repliés derrière un chevron (même style que les autres chevrons de Keep Your Folio).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.63 · 08/11/2026</div>
