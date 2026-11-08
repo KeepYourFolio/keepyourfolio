@@ -649,7 +649,7 @@ html.onb main>section{gap:8px}@media (max-height:700px){.ppt{margin-top:8px}.ppt
 <script src="avf.js"></script><script src="qr.js"></script>
 <script>
 "use strict";
-var VER="3.103.5.62", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="3.103.5.63", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["groupe_projet","Projet"],["perecol_fonds","Fonds PERECOL"],["alerte_seuils","Seuils d’alerte"],["alerte_cible","Objectif de prix"],["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["renommage","Renommage"],["actif_valeur","Valeur d’un actif"],["etranger_nouveau","Avoir à l’étranger"],["etranger_valeur","Valeur d’un avoir à l’étranger"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["pe_placement","Nouveau placement"],["pe_maj","Mise à jour d’un placement"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -4715,8 +4715,8 @@ function t1(){
 function sel(y){
  var D=OT.d;if(!D)return;y=Math.max(0,Math.min(D.n,Math.round(y)));OT.y=y;
  var x=D.rows[y],px=D.X(y),m=g("otmk");if(!m)return;
- m.setAttribute("x1",px);m.setAttribute("x2",px);g("otmg").setAttribute("cx",px);g("otmg").setAttribute("cy",D.Y(x.gross));g("otmn").setAttribute("cx",px);g("otmn").setAttribute("cy",D.Y(x.net));
- g("otcy").textContent=y===0?"AU DÉPART":"APRÈS "+y+(y>1?" ANS":" AN");g("otcn").textContent=eu(x.net);g("otcg").textContent="au lieu de "+eu(x.gross)+" sans frais";g("otcf").textContent=x.fees>0?"− "+eu(x.fees):eu(0);g("otcx").textContent=y===0?"Départ":"Année "+y;
+ m.setAttribute("x1",px);m.setAttribute("x2",px);g("otmn").setAttribute("cx",px);g("otmn").setAttribute("cy",D.Y(x.net));
+ g("otcy").textContent=y===0?"AU DÉPART":"APRÈS "+y+(y>1?" ANS":" AN");g("otcn").textContent=eu(x.net);g("otcg").textContent="versé "+eu(x.vers)+(D.B?" · "+D.Bn+" : "+eu(D.B[y].net):"");g("otcf").textContent=x.fees>0?"− "+eu(x.fees):eu(0);g("otcx").textContent=y===0?"Départ":"Année "+y;
  var c=document.querySelectorAll(".otfr[data-y]");for(var i=0;i<c.length;i++)c[i].classList.toggle("cur",+c[i].getAttribute("data-y")===y);
 }
 function t1res(){
@@ -4731,32 +4731,31 @@ function t1res(){
  var back='<div class="otfoot"><button type="button" class="otgh" data-st="1">Modifier la simulation</button></div>';
  var rowB=O.ref!=null?{id:"ref",nom:"Contrat à "+String(O.ref).replace(".",",")+" %",src:"man",fe:0,g:O.ref,gfe:null,ar:0}:null,SB=rowB?sim(rowB,P):null,bOk=!!(SB&&SB.ok);
  if(!S.ok){res.innerHTML='<div class="cd otc"><p class="hint" style="margin:0;text-align:center">'+(S.needR?"Indiquez le rendement brut annuel que vous supposez pour lancer la simulation.":row.id==="free"?"Indiquez vos frais de gestion pour lancer la simulation.":"Données incomplètes pour ce contrat ("+esc(S.why)+").")+'</p></div>'+back;return}
- var lost=S.lost,forg=r2(S.lost-S.fees),hasF=forg>=1,gross=S.gross>0?S.gross:1;
- var seg=function(v,col){return v>0?'<div style="width:'+Math.max(.8,v/gross*100).toFixed(2)+'%;background:'+col+';height:100%"></div>':""},dot=function(c){return '<i class="otdt" style="background:'+c+'"></i>'};
+ var lost=S.lost,forg=r2(S.lost-S.fees),hasF=forg>=1;
+ var fin=S.rows[S.rows.length-1],vers=fin.vers,gains=Math.max(0,S.net-vers),tot=(vers+gains+S.fees)||1;
+ var seg=function(v,col){return v>0?'<div style="width:'+Math.max(.8,v/tot*100).toFixed(2)+'%;background:'+col+';height:100%"></div>':""},dot=function(c){return '<i class="otdt" style="background:'+c+'"></i>'};
  var h='<div class="otsum"><span>'+esc(row.nom)+'</span><span>'+pc(isN(O.r)?O.r:0)+' · '+O.n+' an'+(O.n>1?"s":"")+'</span></div>';
- h+='<div class="cd otc"><small class="otk">Les frais retirent</small><div class="othe"><b>'+eu(lost)+'</b>'+(S.gross>0&&lost>0?'<span class="otb">'+pc(lost/S.gross*100)+' du capital théorique</span>':"")+'</div>';
- h+='<p class="hint" style="margin:6px 0 0"><b style="color:var(--ink)">'+eu(S.gross)+'</b> avant frais (théorique) → <b style="color:var(--ink)">'+eu(S.net)+'</b> après frais</p>';
+ h+='<div class="cd otc"><small class="otk">Les frais vous coûtent</small><div class="othe"><b>'+eu(S.lost)+'</b>'+(S.net>0&&S.lost>0?'<span class="otb">'+pc(S.lost/S.net*100)+' du capital final</span>':"")+'</div>';
+ h+='<p class="hint" style="margin:6px 0 0">Capital final : <b style="color:var(--ink)">'+eu(S.net)+'</b> pour <b style="color:var(--ink)">'+eu(vers)+'</b> versés'+(hasF?'. Les frais ont aussi privé votre épargne de <b style="color:var(--ink)">'+eu(forg)+'</b> de rendement.':'.')+'</p>';
  if(SB){var dv=r2(SB.net-S.net);h+=SB.ok?'<div class="otcm">'+esc(row.nom)+" : capital <b>"+eu(S.net)+"</b>, frais <b>"+eu(S.fees)+"</b><br>"+esc(rowB.nom)+" : capital <b>"+eu(SB.net)+"</b>, frais <b>"+eu(SB.fees)+"</b><br>"+(Math.abs(dv)<1?"Écart négligeable.":dv>0?"Le contrat à "+String(O.ref).replace(".",",")+" % laisse <b>"+eu(dv)+"</b> de plus.":"Votre contrat laisse <b>"+eu(-dv)+"</b> de plus.")+"</div>":'<div class="otcm">Comparaison impossible : '+esc(SB.why)+"</div>"}
- h+='<div class="otbar">'+seg(S.net,"var(--acc)")+seg(S.fees,"#f43f5e")+(hasF?seg(forg,"#f0b429"):"")+'</div>';
- h+='<div class="otlg"><span>'+dot("var(--acc)")+"Capital après frais <b>"+eu(S.net)+"</b></span><span>"+dot("#f43f5e")+"Frais prélevés <b>"+eu(S.fees)+"</b></span>"+(hasF?"<span>"+dot("#f0b429")+"Rendement perdu <b>"+eu(forg)+"</b></span>":"")+"</div></div>";
- /* graphique qui se touche */
- var W=340,H=220,T=14,B=190,mx=Math.max.apply(null,S.rows.map(function(x){return Math.max(x.gross,x.net)}))||1,X=function(y){return y/O.n*W},Y=function(v){return B-v/mx*(B-T)};
- OT.d={n:O.n,rows:S.rows,X:X,Y:Y};if(OT.y==null||OT.y>O.n)OT.y=O.n;
+ h+='<div class="otbar">'+seg(vers,"color-mix(in srgb,var(--ink) 35%,transparent)")+seg(gains,"var(--acc)")+seg(S.fees,"#f43f5e")+'</div>';
+ h+='<div class="otlg"><span>'+dot("color-mix(in srgb,var(--ink) 35%,transparent)")+"Versé <b>"+eu(vers)+"</b></span><span>"+dot("var(--acc)")+"Gains après frais <b>"+eu(gains)+"</b></span><span>"+dot("#f43f5e")+"Frais prélevés <b>"+eu(S.fees)+"</b></span></div></div>"; /* graphique qui se touche */
+ var W=340,H=220,T=14,B=190,mx=Math.max.apply(null,S.rows.map(function(x){return x.net}).concat(bOk?SB.rows.map(function(x){return x.net}):[]))||1,X=function(y){return y/O.n*W},Y=function(v){return B-v/mx*(B-T)};
+ OT.d={n:O.n,rows:S.rows,X:X,Y:Y,B:bOk?SB.rows:null,Bn:rowB?rowB.nom:""};if(OT.y==null||OT.y>O.n)OT.y=O.n;
  var pts=function(f,rw){return(rw||S.rows).map(function(x){return X(x.y).toFixed(1)+","+Y(f(x)).toFixed(1)}).join(" ")};
  h+='<div class="cd otc"><div class="otch0"><div><small class="otk" id="otcy"></small><div class="otcn" id="otcn"></div><small class="otk" id="otcg" style="font-weight:500"></small></div><div style="text-align:right;flex:none"><small class="otk">FRAIS CUMULÉS</small><div class="otcf" id="otcf"></div></div></div>'
   +'<svg id="otch" viewBox="0 0 '+W+' '+H+'" class="otch" role="img" aria-label="Capital avant et après frais, année par année"><defs><linearGradient id="otgr" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--acc)" stop-opacity=".35"/><stop offset="100%" stop-color="var(--acc)" stop-opacity="0"/></linearGradient></defs>'
   +'<line x1="0" y1="'+B+'" x2="'+W+'" y2="'+B+'" stroke="var(--line)" stroke-width="1.5"/>'
   +'<polygon fill="url(#otgr)" points="0,'+B+' '+pts(function(x){return x.net})+' '+W+','+B+'"/>'
-  +'<polyline fill="none" stroke="var(--mut)" stroke-width="2" stroke-dasharray="5 5" stroke-linecap="round" stroke-linejoin="round" points="'+pts(function(x){return x.gross})+'"/>'
   +'<polyline fill="none" stroke="var(--acc)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" points="'+pts(function(x){return x.net})+'"/>'
   +(bOk?'<polyline fill="none" stroke="#a78bfa" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="'+pts(function(x){return x.net},SB.rows)+'"/>':"")
-  +'<line id="otmk" x1="0" y1="'+T+'" x2="0" y2="'+B+'" stroke="var(--ink)" stroke-width="1.5"/><circle id="otmg" r="5" cx="0" cy="0" fill="var(--card)" stroke="var(--mut)" stroke-width="2.5"/><circle id="otmn" r="7" cx="0" cy="0" fill="var(--acc)" stroke="var(--card)" stroke-width="3"/></svg>'
+  +'<line id="otmk" x1="0" y1="'+T+'" x2="0" y2="'+B+'" stroke="var(--ink)" stroke-width="1.5"/><circle id="otmn" r="7" cx="0" cy="0" fill="var(--acc)" stroke="var(--card)" stroke-width="3"/></svg>'
   +'<div class="otax"><span>Départ</span><span id="otcx" style="font-weight:800;color:var(--ink)"></span><span>Année '+O.n+'</span></div>'
-  +'<div class="otlg" style="margin-top:10px"><span><i class="otln" style="background:var(--acc)"></i>'+esc(row.nom)+'</span>'+(bOk?'<span><i class="otln" style="background:#a78bfa"></i>'+esc(rowB.nom)+'</span>':"")+'<span><i class="otln otdash"></i>Avant frais, théorique</span></div></div>';
+  +'<div class="otlg" style="margin-top:10px"><span><i class="otln" style="background:var(--acc)"></i>'+esc(row.nom)+'</span>'+(bOk?'<span><i class="otln" style="background:#a78bfa"></i>'+esc(rowB.nom)+'</span>':"")+'</div></div>';
  /* frise année par année */
  var stp=Math.max(1,Math.ceil(O.n/10)),ys=[];for(var y=stp;y<=O.n;y+=stp)ys.push(y);if(ys[ys.length-1]!==O.n)ys.push(O.n);
  h+='<div class="cd otc"><small class="otk">Année par année</small><div class="otfz">'+ys.map(function(y){var x=S.rows[y];return '<div class="otfr" data-y="'+y+'"><i class="otfd"></i><div class="otfh"><b>Année '+y+'</b><span>'+eu(x.net)+'</span></div><small>Frais cumulés : <b style="color:#f43f5e">− '+eu(x.fees)+'</b> · versé '+eu(x.vers)+'</small></div>'}).join("")+'</div></div>';
- h+='<details class="cd otc otd">'+sm("Comment lire ce résultat")+'<p class="hint" style="margin:0">« Avant frais » est un repère théorique : aucun contrat n’a des frais nuls. Hypothèses : rendement brut identique chaque année, versement de départ la première année puis versement annuel au début de chaque année suivante. Frais d’entrée retirés de chaque versement, frais de gestion et d’arbitrage retirés en fin d’année. Frais des supports, impôts et prélèvements sociaux non inclus. Ce n’est ni une prévision ni un conseil.</p></details>';
+ h+='<details class="cd otc otd">'+sm("Comment lire ce résultat")+'<p class="hint" style="margin:0">Hypothèses : rendement brut identique chaque année, versement de départ la première année puis versement annuel au début de chaque année suivante. Frais d’entrée retirés de chaque versement, frais de gestion et d’arbitrage retirés en fin d’année. Frais des supports, impôts et prélèvements sociaux non inclus. Ce n’est ni une prévision ni un conseil.</p></details>';
  if(S.notes.length)h+='<p class="hint" style="margin:8px 0 0">'+S.notes.map(function(n){return"· "+esc(row.nom)+" : "+esc(n)}).join("<br>")+"</p>";
  res.innerHTML=h+back;sel(OT.y)}
 function soon(i){var T=OTT[i-1];return '<div class="cd otc" style="text-align:center;padding:26px 18px"><b style="font-size:1.05rem">'+esc(T[2])+'</b><p class="hint" style="margin:8px 0 0">Cet outil arrive bientôt dans l’appli. Il existe déjà sur ordinateur.</p></div>'}
@@ -4764,7 +4763,7 @@ function soon(i){var T=OTT[i-1];return '<div class="cd otc" style="text-align:ce
 function css(){if(g("otcss"))return;var s=document.createElement("style");s.id="otcss";s.textContent=
  ".otl{position:fixed;inset:0;z-index:30;overflow-y:auto;overscroll-behavior:contain;background:radial-gradient(ellipse 70% 55% at 50% 0%,var(--g1) 0%,transparent 100%),radial-gradient(ellipse 60% 50% at 95% 10%,var(--g2) 0%,transparent 100%),radial-gradient(ellipse 55% 45% at 0% 90%,var(--g3) 0%,transparent 100%),var(--bg);padding-top:env(safe-area-inset-top,0)}"+
  ".otm{max-width:480px;margin:0 auto;padding:16px 16px calc(104px + env(safe-area-inset-bottom,0px))}"+
- ".otm .fh2{margin-bottom:6px}.otm .fh2::before{opacity:1!important}.otc .hint:empty{display:none}.otm .sp2{height:0}.otc{margin-bottom:12px}"+
+ ".otm .fh2{margin-bottom:6px}.otm .fh2::before{opacity:0!important;transition:opacity .2s}.otm .fh2.sc::before{opacity:1!important}.otc .hint:empty{display:none}.otm .sp2{height:0}.otc{margin-bottom:12px}"+
  ".otf{display:block;font-size:.82rem;font-weight:600;color:var(--mut)}.otf select{width:100%;margin-top:6px}"+
  ".otw{display:flex;align-items:baseline;gap:6px;margin-top:6px}.otw input{flex:1;min-width:0;width:100%}.otw em{font-style:normal;color:var(--mut);font-weight:700;font-size:.9rem}"+
  ".otg{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:end}.otg+.otsl,.otg+.otd{margin-top:16px}"+
@@ -4805,7 +4804,8 @@ function css(){if(g("otcss"))return;var s=document.createElement("style");s.id="
 function nav(){var P=OTT.map(function(t){return '<button data-ot="'+t[0]+'"'+(OT.t===t[0]?' aria-current="page"':"")+'><span class="tbic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+t[4]+'</svg></span>'+t[1]+'</button>'}).join("");
  return '<nav class="tb otn t5" aria-label="Navigation des outils"><div class="tbi"><span class="tbp" style="transform:translateX('+(OT.t-1)*100+'%)"></span>'+P+'</div></nav>'}
 function body(){var T=OTT[OT.t-1];return '<div class="fh2"><button class="bk" id="otbk" aria-label="Fermer les outils">'+I.back+'</button><div class="tt"><h2>'+esc(T[2])+'</h2><small>'+esc(OT.t===1?(OT.st>4?'Votre résultat':'Étape '+OT.st+' sur 4'):T[3])+'</small></div></div><div class="sp2" aria-hidden="true"></div>'+(OT.t===1?t1():soon(OT.t))}
-function paint(keep){var L=g("otl");if(!L)return;var y=L.scrollTop;L.innerHTML='<div class="otm">'+body()+"</div>"+nav();try{kfAll()}catch(e){}if(OT.t===1)t1res();L.scrollTop=keep?y:0}
+function hsc(){var L=g("otl"),f=L&&L.querySelector(".fh2");if(f)f.classList.toggle("sc",L.scrollTop>6)}
+function paint(keep){var L=g("otl");if(!L)return;var y=L.scrollTop;L.innerHTML='<div class="otm">'+body()+"</div>"+nav();try{kfAll()}catch(e){}if(OT.t===1)t1res();L.scrollTop=keep?y:0;hsc()}
 function shut(){var L=g("otl");if(L)L.remove();OT.on=0;document.documentElement.style.overflow="";try{document.body.style.overflow=""}catch(e){}}
 function open(t){if(t)OT.t=t;if(g("otl"))return;OT.st=1;css();var L=document.createElement("div");L.id="otl";L.className="otl";L.setAttribute("role","dialog");L.setAttribute("aria-label","Outils");document.body.appendChild(L);OT.on=1;document.documentElement.style.overflow="hidden";paint(false);
  L.addEventListener("click",function(e){var t=e.target.closest&&e.target.closest("[data-ot],#otbk,[data-st],[data-chip]");if(!t)return;if(t.id==="otbk")return shut();
@@ -4815,7 +4815,7 @@ function open(t){if(t)OT.t=t;if(g("otl"))return;OT.st=1;css();var L=document.cre
   if(f.indexOf("fl.")===0)O.fl[f.slice(3)]=num(v,0,100,null);else if(f==="r")O.r=num(v,-50,100,null);else if(f==="ref")O.ref=num(v,0,100,null);else if(f==="n")O.n=Math.round(num(v,1,60,O.n));else if(f==="s")O.s=num(v,0,100,O.s);else if(f==="ac")O.ac=Math.round(num(v,0,52,O.ac));else if(f==="am")O.am=num(v,0,1e9,O.am);else if(f==="m")O.m=num(v,0,1e9,O.m);else if(f==="v")O.v=num(v,0,1e8,O.v);
   save(O);t1res()});
  var tp=function(e){var c=e.target.closest&&e.target.closest("#otch");if(!c||!OT.d)return;var r=c.getBoundingClientRect();sel((e.clientX-r.left)/r.width*OT.d.n)};
- L.addEventListener("pointerdown",tp);L.addEventListener("pointermove",function(e){if(e.buttons||e.pointerType==="touch")tp(e)});
+ L.addEventListener("scroll",hsc,{passive:true});L.addEventListener("pointerdown",tp);L.addEventListener("pointermove",function(e){if(e.buttons||e.pointerType==="touch")tp(e)});
  L.addEventListener("change",function(e){var el=e.target;if(el&&el.id==="otsel"){var O=load();O.sim=el.value;save(O);t1res()}})}
 /* icône « Outils » dans l'en-tête de Patrimoine, à gauche des autres boutons */
 function btn(){var o=g("otb");if(o)o.remove();if(typeof STATE==="undefined"||!STATE||S.v!=="pat")return;var t=g("th"),par=t&&t.parentNode;if(!par)return;
