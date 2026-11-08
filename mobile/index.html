@@ -649,7 +649,7 @@ html.onb main>section{gap:8px}@media (max-height:700px){.ppt{margin-top:8px}.ppt
 <script src="avf.js"></script><script src="qr.js"></script>
 <script>
 "use strict";
-var VER="3.103.5.61", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="3.103.5.62", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["groupe_projet","Projet"],["perecol_fonds","Fonds PERECOL"],["alerte_seuils","Seuils d’alerte"],["alerte_cible","Objectif de prix"],["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["renommage","Renommage"],["actif_valeur","Valeur d’un actif"],["etranger_nouveau","Avoir à l’étranger"],["etranger_valeur","Valeur d’un avoir à l’étranger"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["pe_placement","Nouveau placement"],["pe_maj","Mise à jour d’un placement"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -4684,7 +4684,7 @@ function fld(lab,f,v,u,ph){return '<label class="otf">'+lab+'<span class="otw"><
 /* ---------- outil 1 : simulateur de frais ---------- */
 function t1(){
  var O=load(),R=rows(O),row=pick(O,R),free=row.id==="free",st=OT.st||1;
- if(st>4)return '<div id="otres"></div>';
+ if(st>4)return '<div id="otres" class="otflat"></div>';
  var bar='<div class="otst" aria-hidden="true">'+[1,2,3,4].map(function(i){return '<i class="'+(i<st?"on":i===st?"cur":"")+'"></i>'}).join("")+'</div>';
  var opts=R.map(function(r){var l=r.id==="free"?"Mon contrat : je saisis mes frais":(r.src==="mine"?"★ ":"")+r.nom;return '<option value="'+esc(r.id)+'"'+(r.id===row.id?" selected":"")+'>'+esc(l)+'</option>'}).join("");
  var q=function(t,s){return '<h3 class="otq">'+t+'</h3>'+(s?'<p class="hint otqs">'+s+'</p>':"")};
@@ -4786,7 +4786,7 @@ function css(){if(g("otcss"))return;var s=document.createElement("style");s.id="
  ".otsum{display:flex;justify-content:space-between;gap:10px;font-size:.8rem;font-weight:700;color:var(--mut);margin:2px 4px 10px}"+
  ".otch0{display:flex;justify-content:space-between;gap:10px}.otcn{font-size:1.9rem;font-weight:800;letter-spacing:-1px;margin-top:2px}.otcf{font-size:1.2rem;font-weight:800;color:#f43f5e;margin-top:6px}.otch{touch-action:pan-y;cursor:pointer}"+
  ".otfz{position:relative;padding-left:22px;margin-top:12px}.otfz::before{content:'';position:absolute;left:7px;top:10px;bottom:10px;width:3px;border-radius:2px;background:linear-gradient(180deg,var(--acc),color-mix(in srgb,var(--acc) 38%,var(--card)))}"+
- ".otfr{position:relative;border-radius:16px;padding:10px 12px;margin-bottom:8px;background:color-mix(in srgb,var(--ink) 4%,transparent);border:1.5px solid transparent}.otfr.cur{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 10%,transparent)}.otfd{position:absolute;left:-22px;top:15px;width:17px;height:17px;border-radius:50%;background:var(--acc);border:3px solid var(--card);box-sizing:border-box}.otfh{display:flex;justify-content:space-between;align-items:baseline}.otfh span{font-weight:800}.otfr small{color:var(--mut);font-size:.76rem}.otfr small b{font-weight:700}"+
+ ".otfr{position:relative;border-radius:16px;padding:10px 12px;margin-bottom:8px;background:color-mix(in srgb,var(--ink) 4%,transparent);border:1.5px solid transparent}.otfr.cur{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 10%,transparent)}.otfd{position:absolute;left:-22px;top:15px;width:17px;height:17px;border-radius:50%;background:var(--acc);border:3px solid var(--bg);box-sizing:border-box}.otfh{display:flex;justify-content:space-between;align-items:baseline}.otfh span{font-weight:800}.otfr small{color:var(--mut);font-size:.76rem}.otfr small b{font-weight:700}"+
  ".otflat .cd{background:none!important;box-shadow:none!important;border:0!important;padding:0!important;backdrop-filter:none!important;margin-bottom:22px}"+
  ".otflat .otf{font-size:.7rem;letter-spacing:.7px;text-transform:uppercase;font-weight:700;color:var(--mut)}"+
  ".otflat .otw{border-bottom:2px solid var(--acc);margin-top:2px}"+
@@ -4794,6 +4794,12 @@ function css(){if(g("otcss"))return;var s=document.createElement("style");s.id="
  ".otflat .otw em{font-size:1rem}"+
  ".otflat select{background-color:transparent!important;border-radius:0!important;border-width:0 0 2px 0!important;border-color:var(--ink)!important;font-weight:700;font-size:1.05rem;padding-left:0!important}"+
  ".otflat .otg{gap:26px 22px}.otflat .otd{border-top:0}"+
+ "#otres .cd{border-radius:0!important}#otres .cd+.cd,#otres .cd+details.cd{border-top:1px solid var(--line)!important;padding-top:22px!important}#otres #otcg{text-transform:none;letter-spacing:0;font-size:.82rem}"+
+ "#otres .otk{font-size:.7rem;letter-spacing:.7px;text-transform:uppercase;font-weight:700}"+
+ "#otres .othe b{font-size:2.7rem;letter-spacing:-1.5px}#otres .otbar{height:14px;margin:20px 0 14px}"+
+ "#otres .otcn{font-size:2.1rem}#otres .otch{background:color-mix(in srgb,var(--ink) 4%,transparent);border-radius:18px;padding:10px 0 0}"+
+ "#otres .otfr{background:color-mix(in srgb,var(--ink) 5%,transparent)}#otres .otfr.cur{background:color-mix(in srgb,var(--acc) 12%,transparent)}"+
+ "#otres .otlg{font-size:.84rem}#otres .hint{font-size:.88rem}"+
  ".otbtn{color:var(--ink)}";
  document.head.appendChild(s)}
 function nav(){var P=OTT.map(function(t){return '<button data-ot="'+t[0]+'"'+(OT.t===t[0]?' aria-current="page"':"")+'><span class="tbic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+t[4]+'</svg></span>'+t[1]+'</button>'}).join("");
@@ -4817,7 +4823,7 @@ function btn(){var o=g("otb");if(o)o.remove();if(typeof STATE==="undefined"||!ST
  var b=document.createElement("button");b.id="otb";b.className="th otbtn";b.type="button";b.setAttribute("aria-label","Ouvrir les outils : simulateur de frais, comparateurs, fiscalité");
  b.innerHTML='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.1L3 17.700V21h3.300l6.300-6.300a4 4 0 0 0 5.100-5.400l-2.600 2.600-2.400-.6-.6-2.400z"/></svg>';
  b.style.right=Math.max(0,par.clientWidth-lm+4)+"px";b.onclick=function(){open(1)};par.appendChild(b)}
-window.kyfOutils={open:open,close:shut,btn:btn};
+window.kyfOutils={open:open,close:shut};
 var r0=render;render=function(){var x=r0.apply(this,arguments);try{btn()}catch(e){}return x};
 })();
 
