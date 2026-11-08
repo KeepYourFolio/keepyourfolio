@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.105
+  @version     : Beta 2.13.0.106
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5301,7 +5301,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.13.0.105</div>
+  <div class="kl-ver">Beta 2.13.0.106</div>
 </div>
 <script>
 (function(){
@@ -5468,7 +5468,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.105</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.106</span></div>
       </div>
     </div>
   </div>
@@ -7891,7 +7891,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.105</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.106</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -36928,7 +36928,7 @@ function kyfFinaScpiGo_(R, csv){
   avPosSave(contratId, pos);
   try{ renderAV(); }catch(e){}
   try{ kyfTrackFirstAsset(); }catch(e){}
-  try{ showToast(it.length + ' SCPI reprise(s) dans le contrat.'); }catch(e){}
+  try{ showToast(it.length + (it.length > 1 ? ' SCPI ajoutées' : ' SCPI ajoutée') + ' au contrat.'); }catch(e){}
   R.done.scpi = true; kyfFinaRecapRender();
 }
 async function kyfFinaPeeGo_(R){
@@ -36944,7 +36944,7 @@ async function kyfFinaPeeGo_(R){
   });
   peeSave(d);
   try{ renderPee(); }catch(e){} try{ kyfPeeLateRefresh(); }catch(e){}
-  try{ showToast('Épargne salariale reprise.'); }catch(e){}
+  try{ showToast(nEx === pl.length ? 'Épargne salariale mise à jour.' : 'Épargne salariale ajoutée à Keep Your Folio.'); }catch(e){}
   R.done.pee = true; kyfFinaRecapRender();
 }
 // PERCOL saisi sur Finary : un contrat PER collectif (type « per-col ») par compte, saisi en valeur ; un contrat du même nom est mis à jour (la valeur remplace l'ancienne).
@@ -36970,7 +36970,7 @@ async function kyfFinaPercolGo_(R){
   });
   avSave(d);
   try{ renderAV(); }catch(e){}
-  try{ showToast('PERCOL repris.'); }catch(e){}
+  try{ showToast(nEx === pl.length ? 'PERCOL mis à jour.' : (pl.length > 1 ? pl.length + ' PERCOL ajoutés à Keep Your Folio.' : 'PERCOL ajouté à Keep Your Folio.')); }catch(e){}
   R.done.percol = true; kyfFinaRecapRender();
 }
 async function kyfFinaCashGo_(R){
@@ -36981,7 +36981,7 @@ async function kyfFinaCashGo_(R){
   pl.liv.forEach(l => L.push('Livret ' + l.type + (l.banque && l.banque !== l.type ? ' (' + l.banque + ')' : '') + ' : ' + f(l.solde)));
   if(!L.length) return;
   const hasEx = (pl.pea > 0 && getCashPea() > 0) || (pl.cto > 0 && getCashCto() > 0) || (pl.ccp > 0 && getCashCcp() > 0) || pl.liv.some(l => livLoad().some(x => x.type === l.type && String(x.banque||'').toLowerCase() === String(l.banque||'').toLowerCase()));
-  const ok = await kyfAsk('Reprendre ces espèces et livrets dans Keep Your Folio ?\n' + L.join('\n') + (hasEx ? '\nLes soldes déjà saisis dans Keep Your Folio sont remplacés par ceux de Finary.' : ''), { ok:'Reprendre' });
+  const ok = await kyfAsk('Ajouter ces espèces et livrets à Keep Your Folio ?\n' + L.join('\n') + (hasEx ? '\nLes soldes déjà saisis dans Keep Your Folio sont remplacés par ceux de Finary.' : ''), { ok: hasEx ? 'Mettre à jour' : 'Ajouter' });
   if(!ok) return;
   if(pl.pea > 0) setCashPea(pl.pea);
   if(pl.cto > 0) setCashCto(pl.cto);
@@ -36997,7 +36997,7 @@ async function kyfFinaCashGo_(R){
   }
   try{ renderLivrets(); }catch(e){}
   try{ renderCashKPI(); }catch(e){}
-  try{ showToast('Espèces et livrets repris.'); }catch(e){}
+  try{ showToast(hasEx ? 'Espèces et livrets mis à jour.' : 'Espèces et livrets ajoutés à Keep Your Folio.'); }catch(e){}
   R.done.cash = true; kyfFinaRecapRender();
 }
 function kyfFinaList_(R){
@@ -37095,7 +37095,7 @@ function kyfFinaRecapRender(){
                   : `<span style="width:8px;height:8px;border-radius:4px;background:var(--accent);flex-shrink:0;${R.wait[k] ? '' : 'opacity:.55'}"></span>`;
   const itemsHtml = LST.map(g => {
     const on = g.k === R.sel, list = R.groups[g.k], det = R.detail[g.k];
-    const sub = R.done[g.k] ? 'Repris' : R.ign[g.k] ? 'Ignoré' : (R.wait[g.k] ? 'En attente · ' : '') + list.length + ' ligne(s)';
+    const sub = R.done[g.k] ? 'Ajouté' : R.ign[g.k] ? 'Ignoré' : (R.wait[g.k] ? 'En attente · ' : '') + list.length + ' ligne(s)';
     return `<div role="button" tabindex="0" class="kyf-fina-it${on ? ' on' : ''}" onclick="kyfFinaSel('${g.k}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();kyfFinaSel('${g.k}')}" style="display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;border:1px solid ${on ? 'var(--accent)' : 'transparent'};background:${on ? 'rgba(240,180,41,.10)' : 'transparent'};transition:background .15s,border-color .15s${!pend(g.k) && !on ? ';opacity:.7' : ''}">`
       + dot(g.k) + `<div style="min-width:0;flex:1"><div style="font-size:12px;font-weight:${on ? 700 : 600};color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${escapeHtml(g.lbl)}">${escapeHtml(g.lbl)}</div><div style="font-size:10px;color:var(--text3);margin-top:1px">${escapeHtml(sub)}</div></div></div>`;
   }).join('');
@@ -37110,13 +37110,13 @@ function kyfFinaRecapRender(){
   if(cur){
     const det = R.detail[cur.k], isDone = !!R.done[cur.k], isIgn = !!R.ign[cur.k];
     const nxt = nPend > 1 || (nPend === 1 && !pend(cur.k));
-    detailHtml = `<div style="padding:16px 4px 8px"><div style="font-size:10px;font-weight:800;letter-spacing:1.1px;color:var(--text3)">${isDone ? 'COMPTE REPRIS' : isIgn ? 'COMPTE IGNORÉ' : R.wait[cur.k] ? 'COMPTE EN ATTENTE' : 'COMPTE À VALIDER'}</div>`
+    detailHtml = `<div style="padding:16px 4px 8px"><div style="font-size:10px;font-weight:800;letter-spacing:1.1px;color:var(--text3)">${isDone ? 'COMPTE AJOUTÉ' : isIgn ? 'COMPTE IGNORÉ' : R.wait[cur.k] ? 'COMPTE EN ATTENTE' : 'COMPTE À VALIDER'}</div>`
       + `<div style="font-size:17px;font-weight:800;letter-spacing:-.3px;color:var(--text);margin-top:6px">${escapeHtml(cur.lbl)}</div>`
       + `<div style="font-size:11px;color:var(--text3);margin-top:3px">${curList.length} ligne(s)${det ? ' · ' + escapeHtml(det) : ''}</div></div>`
       + (cur.k === 'scpi' && !isDone && !isIgn ? kyfFinaScpiDestHtml_(R) : '')
       + `<div style="padding:4px 0">${curList.map(i => kyfFinaLineHtml_(R, cur.k, i)).join('')}</div>`
       + `<div style="position:sticky;bottom:0;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 4px;margin-top:10px;background:var(--bg2);border-top:1px solid var(--border)">`
-      + (isDone ? `<span style="font-size:11px;font-weight:700;color:var(--green)">Repris dans Keep Your Folio</span>`
+      + (isDone ? `<span style="font-size:11px;font-weight:700;color:var(--green)">Ajouté à Keep Your Folio</span>`
         : `<button type="button" class="kyf-soft-btn" onclick="kyfFinaIgnore('${cur.k}')" style="${bt}border:1px solid var(--border2);background:none;color:var(--text2)">${isIgn ? 'RÉTABLIR CE COMPTE' : 'IGNORER CE COMPTE'}</button>`
           + (isIgn ? '' : `<button type="button" class="kyf-fina-btn" onclick="kyfFinaGo('${cur.k}')" style="${bt}border:none;background:#f0b429;color:#000">${R.queue && nxt ? 'VALIDER ET PASSER AU SUIVANT' : 'IMPORTER CE COMPTE'}</button>`))
       + `</div>`;
@@ -50627,7 +50627,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.105\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.106\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -77659,6 +77659,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.106 · 08/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Finary : les notifications ne disent plus « PERCOL repris » (sans sens pour un nouvel utilisateur). Elles disent « PERCOL ajouté à Keep Your Folio » ou « mis à jour » s'il existait déjà, et de même pour l'épargne salariale, les espèces, livrets et SCPI.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.105 · 08/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Finary, confirmation PERCOL / PEE / espèces : plus de « PERCOL PERCOL » en double, plus de phrase « remplace celle déjà saisie (jamais additionnée) » quand rien n'existe encore. Le message dit clairement « Ajouter à Keep Your Folio » (ligne marquée « nouveau ») ou « Mettre à jour » avec l'ancienne valeur → la nouvelle.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.104 · 08/11/2026</div>
