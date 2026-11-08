@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.123
+  @version     : Beta 2.13.0.124
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5346,7 +5346,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.13.0.123</div>
+  <div class="kl-ver">Beta 2.13.0.124</div>
 </div>
 <script>
 (function(){
@@ -5513,7 +5513,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.123</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.124</span></div>
       </div>
     </div>
   </div>
@@ -7936,7 +7936,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.123</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.124</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -36818,7 +36818,7 @@ function kyfFinaRecapMode(){
   const lb = document.getElementById('importFileLabel'); if(lb) lb.textContent = 'Cliquez pour choisir votre fichier Finary (FinaHack)';
   // Le récapitulatif n'est pas un import en cours : pas de « reprise » proposée pour lui
   try{ if(window.kyfImpDraftDebug) window.kyfImpDraftDebug.clear(); }catch(e){}
-  try{ document.querySelectorAll('#importRelevéModal .kyf-impdraft-banner').forEach(x => x.remove()); }catch(e){}
+  try{ document.querySelectorAll('#importRelevéModal .kyf-impdraft-banner:not(.kyf-finadraft-banner)').forEach(x => x.remove()); }catch(e){}
   if(window._finaRecap) kyfFinaRecapRender();
 }
 // Découpe en lignes en respectant les guillemets (un nom avec retour à la ligne ne casse plus la ligne) et les fins de ligne \r seules
@@ -37237,6 +37237,7 @@ async function kyfFinaFinish(){
     if(!ok || window._finaRecap !== R) return;
   }
   try{ if(window.kyfImpDraftDebug) await window.kyfImpDraftDebug.clear(); }catch(e){}
+  try{ if(window.kyfFinaDraft){ if(left.length) await window.kyfFinaDraft.save(R, left.length); else await window.kyfFinaDraft.clear(); } }catch(e){}   // comptes restants : l'import se reprend depuis la cloche
   const imported = LST.some(g => R.done[g.k]);
   window._kyfCancel3 = true; await closeImportRelevé();
   if(imported){   // import terminé : retour sur le tableau de bord, pas sur l'écran « Par quoi commencer ? » resté en dessous
@@ -48158,14 +48159,17 @@ function kyfDetectAnomalies(){
     const dt = ts => new Date(ts).toLocaleString('fr-FR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
     const mi = typeof window.kyfImpDraftInfo === 'function' ? window.kyfImpDraftInfo() : null;
     if(mi) items.push({ msg: 'Import non terminé : « ' + (mi.name || 'relevé') + ' » (' + dt(mi.ts) + ')', actions: [{ label: 'Reprendre', js: 'kyfDraftNotifResume()', main: true }, { label: 'Annuler', js: 'kyfDraftNotifCancel(\'imp\')' }] });
+    const mf = typeof window.kyfFinaDraft === 'object' && window.kyfFinaDraft ? window.kyfFinaDraft.info() : null;
+    if(mf) items.push({ msg: 'Import Finary non terminé : ' + mf.left + (mf.left > 1 ? ' comptes restants' : ' compte restant') + ' (' + dt(mf.ts) + ')', actions: [{ label: 'Reprendre', js: 'kyfFinaDraftNotifResume()', main: true }, { label: 'Annuler', js: 'kyfDraftNotifCancel(\'fina\')' }] });
     (typeof window.kyfDraftList === 'function' ? window.kyfDraftList() : []).forEach(d => items.push({ msg: 'Saisie non terminée dans « ' + d.n + ' » (' + dt(d.ts) + ').' + ((typeof window.kyfDraftCanResume === 'function' && window.kyfDraftCanResume(d.id)) ? '' : ' Rouvrez ce formulaire pour la reprendre.'), actions: ((typeof window.kyfDraftCanResume === 'function' && window.kyfDraftCanResume(d.id)) ? [{ label: 'Reprendre', js: 'kyfDraftNotifResumeForm(\'' + String(d.id).replace(/[^\w-]/g, '') + '\')', main: true }] : []).concat([{ label: 'Annuler', js: 'kyfDraftNotifCancel(\'' + String(d.id).replace(/[^\w-]/g, '') + '\')' }]) }));
   }catch(err){}
   return items;
 }
 async function kyfDraftNotifResume(){ try{ toggleNotifPanel(); }catch(e){} try{ await window.kyfImpDraftDebug.resume(); }catch(e){ console.warn('[KYF] reprise import:', e); } try{ updateNotifBadge(); }catch(e){} }
 function kyfDraftNotifResumeForm(id){ try{ toggleNotifPanel(); }catch(e){} try{ window.kyfDraftResume(id); }catch(e){} try{ updateNotifBadge(); }catch(e){} }
+async function kyfFinaDraftNotifResume(){ try{ toggleNotifPanel(); }catch(e){} try{ await window.kyfFinaDraft.resume(); }catch(e){ console.warn('[KYF] reprise import Finary:', e); } try{ updateNotifBadge(); }catch(e){} }
 async function kyfDraftNotifCancel(id){
-  try{ if(id === 'imp') await window.kyfImpDraftDebug.clear(); else window.kyfDraftDrop(id); }catch(e){}
+  try{ if(id === 'imp') await window.kyfImpDraftDebug.clear(); else if(id === 'fina') await window.kyfFinaDraft.clear(); else window.kyfDraftDrop(id); }catch(e){}
   try{ updateNotifBadge(); }catch(e){} try{ renderNotifContent(); }catch(e){}
 }
 
@@ -50732,7 +50736,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.123\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.124\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -55945,6 +55949,7 @@ async function resetAll(){
   if(!(await kyfAsk('TOUT EFFACER : toutes vos données Keep Your Folio seront supprimées (positions, transactions, crypto, historique, préférences), ainsi que les points de restauration de cet appareil. Cette action est irréversible.'))) return;
   kyfRpDeleteAll();
   try{ kyfImpDraftDeleteAll(); }catch(e){}
+  try{ window.kyfFinaDraft && window.kyfFinaDraft.deleteAll(); }catch(e){}
   const keys = Object.keys(localStorage).filter(k => 
     (k.startsWith('pea-') || k.startsWith('kyf-') || k.startsWith('cg-')) &&
     k !== 'kyf-beta-unlocked' && k !== 'kyf-sheets-url' && k !== 'kyf-bugfix-seen' && k !== 'kyf-last-page'
@@ -56268,6 +56273,68 @@ setTimeout(() => { try{ kyfRpTake('auto'); }catch(e){} }, 15000);
   window.kyfImpDraftDebug = { getMeta, resume, clear };
   window.kyfImpDraftInfo = () => { const m = getMeta(); if(!m || Date.now() - m.ts > MAX_AGE || shown(document.getElementById('importRelevéModal'))) return null; return m; };
   setTimeout(() => { try{ updateNotifBadge(); }catch(e){} }, 3000);
+})();
+
+// ── Reprise d'un import Finary (tout en un) arrêté avant la fin (2.13.0.124) ────
+// « Terminer l'import » alors qu'il reste des comptes à traiter : le récapitulatif (lignes du fichier, comptes déjà ajoutés,
+// ignorés, lignes supprimées, compléments PEE / PERCOL) est gardé dans IndexedDB, sur cet appareil seulement. La cloche propose de
+// reprendre ou d'annuler ; la copie est effacée quand tout est traité, au bout de 7 jours et par « Tout effacer ».
+(function(){
+  const DB = 'kyf-fina-draft', ST = 's', META = 'kyf-fina-draft-meta', MAX_AGE = 7 * 864e5;
+  const open = () => new Promise((res, rej) => { try{ const r = indexedDB.open(DB, 1); r.onupgradeneeded = () => { try{ r.result.createObjectStore(ST); }catch(e){} }; r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }catch(e){ rej(e); } });
+  const tx = (mode, fn) => open().then(db => new Promise((res, rej) => {
+    let rq; try{ const t = db.transaction(ST, mode); rq = fn(t.objectStore(ST));
+      t.oncomplete = () => { db.close(); res(rq && 'result' in rq ? rq.result : undefined); };
+      t.onerror = t.onabort = () => { try{ db.close(); }catch(e){} rej(t.error); };
+    }catch(e){ try{ db.close(); }catch(e2){} rej(e); }
+  }));
+  const getMeta = () => { try{ return JSON.parse(localStorage.getItem(META) || 'null'); }catch(e){ return null; } };
+  const setMeta = m => { try{ if(m) localStorage.setItem(META, JSON.stringify(m)); else localStorage.removeItem(META); }catch(e){} };
+  const shown = el => !!el && !!el.getClientRects().length && getComputedStyle(el).display !== 'none';
+  const upd = () => { try{ window._kyfDraftSig = null; if(typeof updateNotifBadge === 'function') updateNotifBadge(); }catch(e){} };
+  const clear = async () => { setMeta(null); try{ await tx('readwrite', s => s.clear()); }catch(e){} upd(); };
+  const plain = o => { try{ return JSON.parse(JSON.stringify(o || {})); }catch(e){ return {}; } };
+  async function save(R, left){
+    const rec = { ts: Date.now(), name: R.name || 'finary.csv', rows: R.rows, del: plain(R.del), gone: plain(R.gone), ign: plain(R.ign), done: plain(R.done),
+      plx: plain(R.plx), isinOv: plain(R.isinOv), scpiDest: R.scpiDest || null, origin: window._finaOrigin || 'etf' };
+    try{ await tx('readwrite', s => s.put(rec, 'cur')); setMeta({ ts: rec.ts, name: rec.name, left: left || 0 }); }catch(e){ console.warn('[KYF] copie import Finary :', e); }
+    upd();
+  }
+  async function resume(){
+    let rec; try{ rec = await tx('readonly', s => s.get('cur')); }catch(e){}
+    if(!rec || !rec.rows || !rec.rows.length){ await clear(); return false; }
+    await openImportRelevé(rec.origin || 'etf');
+    importGoToStep2Finary();
+    const R = window._finaRecap = { name: rec.name, rows: rec.rows, X: kyfFinaCols_(rec.rows[0].map(c => String(c || '').trim())), del: rec.del || {}, gone: rec.gone || {}, ign: rec.ign || {}, done: rec.done || {},
+      plx: rec.plx && rec.plx.pee ? rec.plx : { pee:{}, percol:{} }, isinOv: rec.isinOv || {}, scpiDest: rec.scpiDest || undefined, open: {}, edit: null };
+    kyfFinaBuild_(R);
+    if(Object.keys(R.del).some(k => !R.gone[k])) R.binOn = true;
+    kyfFinaRecapRender();
+    try{ if(R.binOn) kyfFinaBinShow_(R); }catch(e){}
+    document.querySelectorAll('#importRelevéModal .kyf-finadraft-banner').forEach(x => x.remove());
+    await clear();   // la copie ne sert qu'une fois : « Terminer » la recrée s'il reste des comptes
+    return true;
+  }
+  const info = () => { const m = getMeta(); if(!m) return null; if(Date.now() - m.ts > MAX_AGE){ clear(); return null; } if(shown(document.getElementById('importRelevéModal'))) return null; return m; };
+  // Même proposition en haut de la fenêtre d'import quand on la rouvre
+  setInterval(() => {
+    try{
+      const m = getMeta(), modal = document.getElementById('importRelevéModal');
+      if(!m || !shown(modal)) return;
+      const b0 = modal.querySelector('.kyf-finadraft-banner');
+      if(window._finaRecap){ if(b0) b0.remove(); return; }
+      if(b0) return;
+      const when = new Date(m.ts).toLocaleString('fr-FR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
+      const b = document.createElement('div'); b.className = 'kyf-impdraft-banner kyf-finadraft-banner';
+      const sp = document.createElement('span'); sp.textContent = 'Un import Finary n\'avait pas été terminé (' + when + ') : ' + m.left + (m.left > 1 ? ' comptes restent' : ' compte reste') + ' à traiter. Reprendre rouvre le récapitulatif là où vous l\'aviez laissé.'; b.appendChild(sp);
+      const mk = (txt, fn, main) => { const x = document.createElement('button'); x.type = 'button'; x.textContent = txt; x.className = 'kyf-draft-btn' + (main ? ' is-main' : ''); x.onclick = fn; return x; };
+      b.appendChild(mk('Reprendre', async () => { b.remove(); try{ await resume(); }catch(e){ console.warn('[KYF] reprise import Finary :', e); } }, true));
+      b.appendChild(mk('Ignorer', async () => { b.remove(); await clear(); }));
+      modal.insertBefore(b, modal.firstChild);
+    }catch(e){}
+  }, 1500);
+  window.kyfFinaDraft = { save, resume, clear, info, deleteAll: () => { setMeta(null); try{ indexedDB.deleteDatabase(DB); }catch(e){} } };
+  setTimeout(upd, 3200);
 })();
 
 
@@ -68267,7 +68334,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.30';
-const KYF_GUIDE_POUR = '2.13.0.122';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de Keep Your Folio
+const KYF_GUIDE_POUR = '2.13.0.124';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de Keep Your Folio
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -77830,7 +77897,9 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
-      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.123 · 08/11/2026</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.124 · 08/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Finary : si vous cliquez sur « Terminer l'import » alors qu'il reste des comptes à traiter, l'import est gardé sur cet appareil. La cloche affiche « Import Finary non terminé : N comptes restants » avec Reprendre et Annuler, et le même choix apparaît en haut de la fenêtre d'import. À la reprise, les comptes déjà ajoutés, ignorés et les lignes supprimées sont retrouvés.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.124 · 08/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Annonce : la bande demande un fichier Portfolio Performance anonymisé (faux noms et faux montants acceptés) pour fiabiliser l'import, à envoyer par mail ou via Contact.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.122 · 08/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import : le filtre s'appelle maintenant « Tout en un : Finary via FinaHack », pour dire clairement d'où vient le fichier. Le guide est ajusté.</div>
