@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.92
+  @version     : Beta 2.13.0.96
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -2321,6 +2321,7 @@ button.kyf-toggle-active[style],.kyf-seg button.kyf-toggle-active{background:#f0
 #finaRailTxt span.v{writing-mode:vertical-rl;transform:rotate(180deg);font-size:10px;font-weight:700;letter-spacing:1.4px;color:var(--text3);white-space:nowrap}
 #finaRailBtn{position:absolute;top:14px;z-index:3;width:28px;height:28px;border-radius:50%;border:none;padding:0;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;background:var(--kyf-chev-hover,rgba(255,255,255,.07));color:var(--text);transition:background .15s}
 #finaRailBtn svg{transition:transform .2s}
+.kyf-csel-btn{-webkit-user-select:none;user-select:none}
 .kyf-brk-it:hover,.kyf-brk-it.on{background:var(--hov-bg)!important;color:var(--accent)!important}
 .kyf-fina-it:hover,.kyf-fina-it:focus-visible{background:var(--hov-bg-soft)!important;outline:none}
 .kyf-hint-link{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .15s,filter .15s}
@@ -5299,7 +5300,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.13.0.92</div>
+  <div class="kl-ver">Beta 2.13.0.96</div>
 </div>
 <script>
 (function(){
@@ -5463,7 +5464,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.92</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.96</span></div>
       </div>
     </div>
   </div>
@@ -7886,7 +7887,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.92</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.96</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -36877,6 +36878,54 @@ function kyfFinaPeePlans_(R){
     return { nom, gest, valeur:Math.round(val * 100) / 100, versements:Math.max(0, Math.round(cost * 100) / 100), fonds:fl };
   });
 }
+// SCPI : en direct ou rangées dans une assurance vie / un PER. Finary indique l'enveloppe et le nom du compte : ils servent de choix par défaut,
+// modifiable dans le volet de droite avant d'importer.
+function kyfFinaScpiItems_(R){
+  const X = R.X;
+  return (R.groups.scpi || []).map(i => {
+    const c = R.rows[i], q = fiParseNum(c[X.qty]), v = fiParseNum(c[X.val]), pnl = fiParseNum(c[X.pnl]);
+    return { nom: String(c[X.nom] || '').trim().slice(0, 120), parts: q, valeur: v, pru: q > 0 && (v - pnl) > 0 ? Math.round((v - pnl) / q * 100) / 100 : 0,
+             env: String(c[X.et] || '').trim().toLowerCase(), acc: String(c[X.acc] || '').trim() };
+  }).filter(x => x.nom && x.parts > 0);
+}
+function kyfFinaScpiDefault_(R){
+  const it = kyfFinaScpiItems_(R), av = it.find(x => x.env === 'av' || x.env === 'per');
+  if(!av) return 'direct';
+  const norm = t => String(t || '').toLowerCase().replace(/\s+/g, ' ').trim();
+  const ex = avLoad().find(c => (av.env === 'per' ? String(c.type || '').startsWith('per') : c.type === 'av') && av.acc && norm(c.contratNom).indexOf(norm(av.acc)) === 0);
+  return ex ? ex.id : '__new' + av.env;
+}
+function kyfFinaScpiOptions_(R){
+  const it = kyfFinaScpiItems_(R), av = it.find(x => x.env === 'av' || x.env === 'per');
+  const o = [{ value: 'direct', label: 'En direct' }];
+  avLoad().filter(c => c.type === 'av' || String(c.type || '').startsWith('per')).forEach(c => o.push({ value: c.id, label: (c.type === 'av' ? 'Assurance vie · ' : 'PER · ') + (c.contratNom || c.assureur || 'Contrat') }));
+  o.push({ value: '__newav', label: 'Nouvelle assurance vie' + (av && av.env === 'av' && av.acc ? ' « ' + av.acc + ' »' : '') });
+  o.push({ value: '__newper', label: 'Nouveau PER' + (av && av.env === 'per' && av.acc ? ' « ' + av.acc + ' »' : '') });
+  return o;
+}
+function kyfFinaScpiSet(v){ const R = window._finaRecap; if(!R) return; R.scpiDest = v; }
+function kyfFinaScpiGo_(R, csv){
+  const dest = R.scpiDest || kyfFinaScpiDefault_(R);
+  if(dest === 'direct'){ try{ scpiImportFinaryText(csv); }catch(e){} R.done.scpi = true; kyfFinaRecapRender(); return; }
+  const it = kyfFinaScpiItems_(R); if(!it.length) return;
+  let contratId = dest;
+  if(/^__new/.test(dest)){
+    const type = /per$/.test(dest) ? 'per' : 'av', ref = it.find(x => x.env === type) || it[0];
+    const d = avLoad(), nc = { id:'av_' + Date.now(), type, contratNom: (ref.acc || (type === 'per' ? 'PER' : 'Assurance vie')).slice(0, 80), assureur:'', versements:0, dateOuv:'' };
+    d.push(nc); avSave(d); contratId = nc.id;
+  }
+  const pos = avPosLoad(contratId), key = t => String(t || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  it.forEach((x, k) => {
+    const ex = pos.find(p => p.type === 'immo' && key(p.nom) === key(x.nom));
+    if(ex){ ex.qty = x.parts; ex.pru = x.pru || ex.pru; ex.valeur = Math.round(x.valeur); }
+    else pos.push({ id: Date.now().toString() + '_' + k, type:'immo', ticker:'', nom:x.nom, pru:x.pru || 0, qty:x.parts, valeur:Math.round(x.valeur), tauxRendement:0, pays:'', secteurs:'', visual:'', visualShape:'diamond', visualBadge:true });
+  });
+  avPosSave(contratId, pos);
+  try{ renderAV(); }catch(e){}
+  try{ kyfTrackFirstAsset(); }catch(e){}
+  try{ showToast(it.length + ' SCPI reprise(s) dans le contrat.'); }catch(e){}
+  R.done.scpi = true; kyfFinaRecapRender();
+}
 async function kyfFinaPeeGo_(R){
   const pl = kyfFinaPeePlans_(R), f = n => fmt(n, 2) + ' €'; if(!pl.length) return;
   const d = peeLoad(), L = pl.map(p => { const ex = d.find(x => String(x.nom||'').toLowerCase() === p.nom.toLowerCase()); return 'PEE ' + p.nom + ' : ' + (ex ? f(ex.valeur || 0) + ' → ' : '') + f(p.valeur) + (p.fonds.length ? ' (' + p.fonds.length + ' fonds)' : ''); });
@@ -37054,9 +37103,10 @@ function kyfFinaRecapRender(){
     detailHtml = `<div style="padding:16px 4px 8px"><div style="font-size:10px;font-weight:800;letter-spacing:1.1px;color:var(--text3)">${isDone ? 'COMPTE REPRIS' : isIgn ? 'COMPTE IGNORÉ' : R.wait[cur.k] ? 'COMPTE EN ATTENTE' : 'COMPTE À VALIDER'}</div>`
       + `<div style="font-size:17px;font-weight:800;letter-spacing:-.3px;color:var(--text);margin-top:6px">${escapeHtml(cur.lbl)}</div>`
       + `<div style="font-size:11px;color:var(--text3);margin-top:3px">${curList.length} ligne(s)${det ? ' · ' + escapeHtml(det) : ''}</div></div>`
+      + (cur.k === 'scpi' && !isDone && !isIgn ? kyfFinaScpiDestHtml_(R) : '')
       + `<div style="padding:4px 0">${curList.map(i => kyfFinaLineHtml_(R, cur.k, i)).join('')}</div>`
       + `<div style="position:sticky;bottom:0;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 4px;margin-top:10px;background:var(--bg2);border-top:1px solid var(--border)">`
-      + (isDone ? `<span style="font-size:11px;font-weight:700;color:var(--green)">Déjà repris dans Keep Your Folio</span>`
+      + (isDone ? `<span style="font-size:11px;font-weight:700;color:var(--green)">Repris dans Keep Your Folio</span>`
         : `<button type="button" class="kyf-fina-btn" onclick="kyfFinaIgnore('${cur.k}')" style="${bt}border:1px solid var(--border2);background:none;color:var(--text2)">${isIgn ? 'RÉTABLIR CE COMPTE' : 'IGNORER CE COMPTE'}</button>`
           + (isIgn ? '' : `<button type="button" class="kyf-fina-btn" onclick="kyfFinaGo('${cur.k}')" style="${bt}border:none;background:#f0b429;color:#000">${R.queue && nxt ? 'VALIDER ET PASSER AU SUIVANT' : 'IMPORTER CE COMPTE'}</button>`))
       + `</div>`;
@@ -37064,9 +37114,15 @@ function kyfFinaRecapRender(){
   const rowsHtml = `<div class="kyf-fina-split" style="display:flex;align-items:stretch;flex:1;min-height:0"><div class="kyf-fina-scroll" style="width:232px;flex-shrink:0;border-right:1px solid var(--border);padding:12px 10px;display:flex;flex-direction:column;gap:3px;background:rgba(255,255,255,0.015);overflow-y:auto;min-height:0">${cptHtml}${itemsHtml}${R.skipped.length ? `<div style="padding:10px 4px 4px;font-size:10px;line-height:1.6;color:var(--text3)"><div style="font-weight:700;color:var(--text2);margin-bottom:2px">Non repris par cet import</div>${R.skipped.map(k => `<div>${escapeHtml(k.lbl)} (${k.n}) : ${escapeHtml(k.why)}</div>`).join('')}</div>` : ''}${nDel ? `<div style="padding:6px 4px 0;font-size:10px;color:var(--text3)">${nDel} ligne(s) retirée(s) de l'import. <button type="button" onclick="kyfFinaRestore()" class="kyf-hint-link" style="background:none;border:none;padding:0;font:inherit;font-size:10px;font-weight:600;cursor:pointer">Tout rétablir</button></div>` : ''}</div><div class="kyf-fina-scroll" style="flex:1;min-width:0;padding:0 16px;display:flex;flex-direction:column;overflow-y:auto;min-height:0">${detailHtml}</div></div>`;
   st.innerHTML = KYF_CHECK_SVG + ' Fichier Finary lu : ' + (R.rows.length - 1) + ' ligne(s), dont ' + LST.reduce((t, g) => t + (R.groups[g.k]||[]).length, 0) + ' reprise(s) par Keep Your Folio. ' + (nFait ? nFait + ' compte(s) sur ' + LST.length + ' traité(s). ' : '') + 'Choisissez un compte à gauche, vérifiez ses lignes, puis validez-le : Keep Your Folio revient ici entre deux.';
   pv.innerHTML = rowsHtml || '<div style="padding:12px 0;font-size:11px;color:var(--text3)">Aucune ligne importable trouvée dans ce fichier.</div>';
+  if(document.getElementById('finaScpiDest')){ kyfCSelEnsureDrop('finaScpiDest'); kyfCSelBuildDrop('finaScpiDest', kyfFinaScpiOptions_(R)); }
   document.getElementById('importConfirmBtn').style.display = 'none';
   const ab = document.getElementById('importAllBtn');
   if(ab) ab.style.display = (!R.queue && LST.some(g => pend(g.k))) ? '' : 'none';
+}
+function kyfFinaScpiDestHtml_(R){
+  const v = R.scpiDest || kyfFinaScpiDefault_(R), o = kyfFinaScpiOptions_(R).find(x => x.value === v) || { label:'En direct' };
+  const chev = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polyline points="6 9 12 15 18 9"/></svg>';
+  return `<div style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 4px;margin-top:6px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);font-size:11px;color:var(--text2)"><span style="font-weight:700;letter-spacing:.3px">Où sont ces SCPI ?</span><span><input type="hidden" id="finaScpiDest" value="${escapeHtml(v)}" onchange="kyfFinaScpiSet(this.value)"><button type="button" id="finaScpiDestBtn" class="kyf-csel-btn kyf-csel-sm" onclick="kyfCSelToggle('finaScpiDest')" onkeydown="kyfCSelKeydown(event,'finaScpiDest')" aria-haspopup="listbox" style="width:230px;padding:4px 10px;border-radius:6px"><span id="finaScpiDestBtnLabel">${escapeHtml(o.label)}</span>${chev}</button></span></div>`;
 }
 function kyfFinaRail(){ const R = window._finaRecap; if(!R) return; R.leftOpen = !R.leftOpen; kyfFinaRecapRender(); }
 function kyfFinaSel(k){ const R = window._finaRecap; if(!R) return; R.sel = k; R.edit = null; kyfFinaRecapRender(); }
@@ -37097,8 +37153,9 @@ function kyfFinaGo(k, forceId){
   const R = window._finaRecap; if(!R) return;
   if(k === 'cash'){ kyfFinaCashGo_(R); return; }
   const csv = kyfFinaCsv_(R, k), base = kyfFinaBase_(k);
-  if(k === 'scpi' || k === 'bien'){
-    try{ if(k === 'scpi') scpiImportFinaryText(csv); else immoImportFinaryText(csv); }catch(e){}
+  if(k === 'scpi'){ kyfFinaScpiGo_(R, csv); return; }
+  if(k === 'bien'){
+    try{ immoImportFinaryText(csv); }catch(e){}
     R.done[k] = true; kyfFinaRecapRender(); return;
   }
   if(k === 'pee'){ kyfFinaPeeGo_(R); return; }
@@ -37143,7 +37200,7 @@ async function kyfFinaAll(){
   const R = window._finaRecap; if(!R) return;
   R.queue = true; R.all = false; R.wait = R.wait || {};
   R.sel = null;
-  for(const k of ['scpi','bien']){ if((R.groups[k]||[]).length && !R.done[k]) { try{ kyfFinaGo(k); }catch(e){} } }
+  for(const k of ['bien']){ if((R.groups[k]||[]).length && !R.done[k]) { try{ kyfFinaGo(k); }catch(e){} } }
   kyfFinaList_(R).forEach(g => { if(!R.done[g.k] && !(R.ign && R.ign[g.k])) R.wait[g.k] = true; });
   R.sel = null; R.prevFait = Infinity;   // on repart du premier compte à valider
   kyfFinaRecapRender();
@@ -38128,7 +38185,7 @@ function kyfImportNonEtfBadge(st, oldTxt, newTxt){
   const b = 'font-size:9px;font-weight:700;letter-spacing:.3px;border-radius:4px;padding:1px 5px;margin-left:6px;white-space:nowrap;';
   if(st.kind === 'same') return '<span style="' + b + 'color:var(--text3);border:1px solid var(--border)">DÉJÀ PRÉSENTE</span>';
   if(st.kind === 'changed') return '<span style="' + b + 'color:var(--accent);border:1px solid var(--accent)">' + oldTxt + ' → ' + newTxt + '</span>';
-  return '<span style="' + b + 'color:var(--green);border:1px solid var(--green)">NOUVELLE</span>';
+  return '<span style="' + b + 'color:var(--green);border:1px solid var(--green)" title="Absente du contrat choisi : cette ligne sera ajoutée à l\'import">NOUVELLE</span>';
 }
 // 233 : lignes du contrat choisi qui ne figurent plus dans le fichier (arbitrage, vente). SCPI et fonds en euros ne sont jamais proposés (leur import a sa propre règle).
 function kyfImportAbsentes(){
@@ -38281,7 +38338,7 @@ function kyfImportAvPerHtml(){
   const gNew = idxs('new'), gChg = idxs('changed'), gSame = idxs('same');
   // SCPI et fonds en euros du relevé : rangés dans les mêmes onglets (nouvelle / modifiée / déjà présente), à la suite des fonds
   const _xt = [];
-  const _xRow = (ico, nom, det, st, o, n) => `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 4px;border-bottom:1px solid var(--border);font-size:11px;color:var(--text2);${st.kind==='same'?'opacity:.7;':''}"><span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><span style="font-weight:600;color:var(--text)">${escapeHtml(nom)}</span>${kyfImportNonEtfBadge(st, o, n)}<span style="font-size:9px;color:var(--text3);margin-left:6px">${ico}</span></span><span style="color:var(--text3);white-space:nowrap">${det}</span></div>`;
+  const _xRow = (ico, nom, det, st, o, n) => `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 4px;border-bottom:1px solid var(--border);font-size:11px;color:var(--text2);${st.kind==='same'?'opacity:.7;':''}"><span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:2.1;padding:2px 0"><span style="font-weight:600;color:var(--text)">${escapeHtml(nom)}</span>${kyfImportNonEtfBadge(st, o, n)}<span style="font-size:9px;color:var(--text3);margin-left:6px">${ico}</span></span><span style="color:var(--text3);white-space:nowrap">${det}</span></div>`;
   _importScpiRows.forEach(r => { const st = kyfImportScpiStatus(r); _xt.push({ kind: st.kind, html: _xRow('SCPI', r.nom || r.name, escapeHtml(r.qty) + ' × ' + fmt(r.pru,2) + ' € · ' + fmt(st.nv != null ? st.nv : (r.valMkt>0 ? r.valMkt : (r.pru||0)*(r.qty||0)),2) + ' €', st, st.ex ? fmt(st.ex.valeur||0,0)+' €' : '', fmt(st.nv||0,0)+' €') }); });
   if(_importFondsEuroRows.length){ const st = kyfImportFeStatus(); _xt.push({ kind: st.kind, html: _xRow('FONDS EN EUROS', _importFondsEuroRows[0].name || _importFondsEuroRows[0].nom || 'Fonds en euros', fmt(st.nv||0,2) + ' €', st, fmt(st.old||0,2)+' €', fmt(st.nv||0,2)+' €') }); }
   const _xk = k => _xt.filter(x => x.kind === k);
@@ -50456,7 +50513,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.92\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.96\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -77488,6 +77545,14 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.96 · 08/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Finary, SCPI : elles ne sont plus importées d'office « en direct ». Dans le volet de droite, « Où sont ces SCPI ? » propose En direct, un contrat d'assurance vie ou de PER existant, ou d'en créer un. Le choix par défaut suit l'enveloppe et le nom de compte indiqués par Finary (ex. Linxea SPIRIT 2 en assurance vie). En contrat, les SCPI deviennent des positions du contrat, mises à jour si elles y sont déjà.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.95 · 08/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import Finary compte par compte : un compte qui vient d'être repris affiche « Repris dans Keep Your Folio » (et non plus « Déjà repris », qui laissait croire qu'il existait avant l'import).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.94 · 08/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Aperçu d'import : le badge « NOUVELLE » (fonds en euros, SCPI…) n'est plus coupé en haut et en bas ; au survol, il explique que la ligne est absente du contrat choisi et sera ajoutée.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.93 · 08/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Menus déroulants Keep Your Folio : un clic gauche ailleurs referme le menu ouvert (sans fermer la fenêtre), et le texte du bouton n'est plus sélectionné en bleu au double-clic.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.92 · 08/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Import PER : « Tout sélectionner » est sur la même ligne que « Même compartiment pour toutes les lignes ».</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.91 · 08/11/2026</div>
@@ -97565,6 +97630,14 @@ function kyfCSelCloseAll(){
 }
 // Échap avec un menu KYF ouvert : ne ferme que le menu, jamais la popup ou le panneau derrière (phase de capture : passe avant les autres gestionnaires d'Échap)
 document.addEventListener('keydown', e => { if(e.key === 'Escape' && kyfCSelAnyOpen()){ Object.keys(window._kyfCSelPend || {}).forEach(kyfCSelCancelPending); kyfCSelCloseAll(); e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); } }, true);
+// Clic gauche ailleurs : ferme le menu KYF ouvert (sans fermer la fenêtre) ; un clic sur un bouton de menu ou dans la liste garde son rôle
+document.addEventListener('mousedown', e => {
+  if(e.button !== 0 || !kyfCSelAnyOpen()) return;
+  const t = e.target;
+  if(t && t.closest && t.closest('.kyf-csel-btn, [data-kyf-csel], [id$="Drop"]')) return;
+  try{ Object.keys(window._kyfCSelPend || {}).forEach(kyfCSelCancelPending); }catch(_){}
+  kyfCSelCloseAll();
+}, true);
 document.addEventListener('contextmenu', e => {
   // Toute liste de suggestions ouverte (courtier, recherche de ticker, listes de fenêtres) se ferme aussi au clic droit, sans fermer la fenêtre
   let other = false;
