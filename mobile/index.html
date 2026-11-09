@@ -710,7 +710,7 @@ document.addEventListener("click",function(e){var t=e.target;if(!t||!t.closest)r
  if(b=t.closest("[data-doff]")){var d=new Date();d.setDate(d.getDate()+ +b.getAttribute("data-doff"));pick(d.getFullYear(),d.getMonth()+1,d.getDate())}},true);
 function ro(){var L=document.querySelectorAll("input[type=date]:not([readonly])");for(var k=0;k<L.length;k++)L[k].setAttribute("readonly","")}
 try{new MutationObserver(ro).observe(document.documentElement,{childList:true,subtree:true})}catch(x){setInterval(ro,300)}ro()})();
-var VER="3.104.0.55", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="3.104.0.56", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["groupe_projet","Projet"],["perecol_fonds","Fonds PERECOL"],["alerte_seuils","Seuils d’alerte"],["alerte_cible","Objectif de prix"],["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["renommage","Renommage"],["actif_valeur","Valeur d’un actif"],["etranger_nouveau","Avoir à l’étranger"],["etranger_valeur","Valeur d’un avoir à l’étranger"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["pe_placement","Nouveau placement"],["pe_maj","Mise à jour d’un placement"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -3389,7 +3389,7 @@ function render(){MSGSEEN=0;autoPlan();bilanSnap();alSnap();if(S.v==="paquet")ev
       Object.keys(KP).forEach(function(k){if(kwMemeT(KP[k],x))ch+=`<button type="button" class="kwh kwp" data-kwd="${k}" aria-label="Retirer le mot ${esc(KP[k].mot)}">${esc(KP[k].mot)} ✕</button>`});
       var ad=S.kwadd===key;
       return `<div class="kwr"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><b>${esc(x.nom||x.ticker)}</b><small>${esc(x.ticker||x.isin)}</small></div><div class="kwt">${ch}<button type="button" class="kwh kwa" data-kwo="${i}" aria-expanded="${ad?"true":"false"}">+ mot</button></div>${warn?`<small class="kwwarn">Un mot est partagé avec un autre titre : l’appli vous demandera lequel.</small>`:""}${ad?`<div class="kwi"><input id="kwa" placeholder="Ajouter un mot (ex. pomme)" maxlength="30" autocomplete="off"><button type="button" class="p" data-kwk="${i}">Ajouter</button></div>`:""}</div>`}).join(""):`<p class="hint">Aucun titre pour l’instant. Cherchez-en un ci-dessus.</p>`;
-    S.kwlist=KL.slice(0,40);if(!S.kwauto&&!Object.keys(KP).length&&kwSheetOn()){S.kwauto=1;kwPull().then(function(n){if(n>0&&S.v==="reg_kw")render()})}
+    S.kwlist=KL.slice(0,40);if(!S.kwauto&&!Object.keys(KP).length&&kwSheetOn()){S.kwauto=1;(GTOK&&Date.now()<GEXP-60000?Promise.resolve(true):gRenouv()).then(function(ok){return ok?kwPull():-1}).then(function(n){if(n>0&&S.v==="reg_kw")render()})}
   }else if(v==="reg_ncv"){
     h+=regHead("Nettoyage des courbes","Affichage");
     var fdn=function(t){return t.slice(8)+"/"+t.slice(5,7)+"/"+t.slice(0,4)},sg=function(d){return(d>=0?"+":"−")+eur(Math.round(Math.abs(d)*100))},hmm=function(m){return p2(Math.floor(m/60))+" h "+p2(m%60)};
@@ -4575,7 +4575,8 @@ async function gOpsTab(){
 async function autoEnvoi(){
   if(AEB||!STATE||!autoOn()||(navigator.onLine===false)||Date.now()-AEF<60000)return;
   var q=ld("kyfm-evt",[]);if(!Array.isArray(q))q=[];var ad=ld(K.ops,[]).filter(function(x){return!x.st});if(!q.length&&!ad.length)return;
-  AEB=true;S.aut="Envoi vers Google en cours…";if(S.v==="paquet")render();
+  AEB=true;if(!(GTOK&&Date.now()<GEXP-60000)&&!(await gRenouv())){AEB=false;AEF=Date.now();S.aut="Google à reconnecter : l’envoi reprendra dès que vous vous reconnectez (Réglages).";if(S.v==="paquet")render();return}
+  S.aut="Envoi vers Google en cours…";if(S.v==="paquet")render();
   try{var base=await gOpsTab(),rows=[],iso=new Date().toISOString(),n=0;
     q.forEach(function(e){rows.push(["E-"+stamp()+hms()+"-"+rnd(8),new Date(e.ts).toISOString(),e.act,e.opid,e.act==="del"?"":JSON.stringify(evtOp(e.op)),"mobile","","",telNom()])});
     ad.slice(0,200).forEach(function(x){rows.push(["E-"+stamp()+hms()+"-"+rnd(8),iso,"add",x.id,JSON.stringify(evtOp(x)),"mobile","","",telNom()]);n++});
@@ -4586,7 +4587,7 @@ async function autoEnvoi(){
   AEB=false;if(S.v==="paquet")render();else autoPlan()}
 /* Statuts renvoyés par KYF PC (colonne G de l'onglet) : intégrée, à valider sur le PC, ignorée */
 async function evStatuts(){
-  if(!autoOn()||!STATE||Date.now()-EVT_ST<45000)return;EVT_ST=Date.now();
+  if(!autoOn()||!STATE||Date.now()-EVT_ST<45000)return;EVT_ST=Date.now();if(!(GTOK&&Date.now()<GEXP-60000)&&!(await gRenouv()))return;
   try{var f=await gGet("https://www.googleapis.com/drive/v3/files?q="+encodeURIComponent("name='"+G_SHEET+"' and mimeType='application/vnd.google-apps.spreadsheet' and trashed=false")+"&fields=files(id)&spaces=drive"),id=f.files&&f.files[0]&&f.files[0].id;
     if(!id||!/^[A-Za-z0-9_-]{20,100}$/.test(id))return;var d=await gGet("https://sheets.googleapis.com/v4/spreadsheets/"+id+"/values/"+G_OPS+"!A:H"),m={};
     (d.values||[]).slice(1).forEach(function(r){var op=r&&r[3],st=String(r&&r[6]||"");if(!op||!st)return;m[op]=st});
