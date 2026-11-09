@@ -710,7 +710,7 @@ document.addEventListener("click",function(e){var t=e.target;if(!t||!t.closest)r
  if(b=t.closest("[data-doff]")){var d=new Date();d.setDate(d.getDate()+ +b.getAttribute("data-doff"));pick(d.getFullYear(),d.getMonth()+1,d.getDate())}},true);
 function ro(){var L=document.querySelectorAll("input[type=date]:not([readonly])");for(var k=0;k<L.length;k++)L[k].setAttribute("readonly","")}
 try{new MutationObserver(ro).observe(document.documentElement,{childList:true,subtree:true})}catch(x){setInterval(ro,300)}ro()})();
-var VER="3.104.0.45", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="3.104.0.47", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["groupe_projet","Projet"],["perecol_fonds","Fonds PERECOL"],["alerte_seuils","Seuils d’alerte"],["alerte_cible","Objectif de prix"],["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["renommage","Renommage"],["actif_valeur","Valeur d’un actif"],["etranger_nouveau","Avoir à l’étranger"],["etranger_valeur","Valeur d’un avoir à l’étranger"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["pe_placement","Nouveau placement"],["pe_maj","Mise à jour d’un placement"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -3413,6 +3413,7 @@ function render(){MSGSEEN=0;autoPlan();bilanSnap();alSnap();if(S.v==="paquet")ev
     var gh=ld("gh",null),wd=ld("wd",null);
     h+=regHead("Liaison avec Keep Your Folio PC","Réglages");
     h+=`<div class="list"><button class="li" id="pci2" style="--k:var(--bl)"><span class="ic">${I.file}</span><span><b>Comment ça marche ?</b><small>Adresse de Keep Your Folio sur ordinateur, avec ou sans Google</small></span><span class="ch">${CHEV}</span></button><button class="li" id="fiy2" style="--k:var(--bl)"><span class="ic">${I.file}</span><span><b>Vous venez de Finary ?</b><small>Reprendre vos données sans tout ressaisir</small></span><span class="ch">${CHEV}</span></button></div>`;
+    h+=`<p class="gl">Nom de ce téléphone</p><div class="cd"><label>Nom affiché sur l’ordinateur<input id="telnom" type="text" autocomplete="off" maxlength="24" value="${esc(telNom())}"></label><small class="hint" style="margin:8px 0 0">Il accompagne vos opérations dans Keep Your Folio PC, pour savoir de quel téléphone elles viennent.</small></div>`;
     h+=`<details class="imd"><summary><b>Que récupère cette liaison ?</b><span class="ch">${CHEV}</span></summary><p class="hint" style="margin:6px 0 0">Récupère vos comptes, titres, famille et biens depuis Keep Your Folio PC. Avec Google, vos positions, vos valeurs et l’historique de la courbe sont repris aussi ; avec GitHub, WebDAV ou QR code, seuls les noms sont gardés.</p></details>`;
     h+=`<div class="list"><button class="li" data-det="1" style="--k:var(--bl)"><span class="ic">${I.file}</span><span><b>Données reçues de KYF</b><small>Voir le détail : titres, contrats, SCPI, plans DCA…</small></span><span class="ch">${CHEV}</span></button></div><p class="gl">Google (classeur KYF)</p><div class="list"><button class="li" id="goo" style="--k:var(--acc)"><span class="ic">${I.refresh}</span><span><b>${gLie()?"Synchroniser avec Keep Your Folio PC":"Se connecter avec Google"}</b><small style="white-space:normal">Lit le classeur « Keep Your Folio - Keep Your Folio »</small></span></button>${gLie()?`<button class="li" id="goff" style="--k:var(--mut)"><span class="ic">${LOCK}</span><span><b>Se déconnecter de Google</b><small>Les comptes déjà chargés restent</small></span></button>`:""}</div>`;
     h+=kdOpen("gh","GitHub (Gist chiffré)",gh&&gh.token?"Connecté":"")+(gh&&gh.token?`<div class="list"><button class="li" id="ghgo" style="--k:var(--acc)"><span class="ic">${I.refresh}</span><span><b>Actualiser depuis GitHub</b><small>Sauvegarde chiffrée de Keep Your Folio PC</small></span></button><button class="li" id="ghoff" style="--k:var(--mut)"><span class="ic">${LOCK}</span><span><b>Retirer GitHub</b><small>Efface le jeton de cet appareil</small></span></button></div>`:`<div class="cd">${pwField("ghtok","Jeton GitHub (permission « gist »)")}${pwField("ghpwd","Mot de passe de chiffrement Keep Your Folio")}<button class="p" id="ghok">Enregistrer et récupérer</button></div><p class="hint">Jeton : github.com, Settings, Developer settings, Personal access tokens, avec la seule permission « gist ». Le mot de passe de chiffrement est celui choisi dans Keep Your Folio PC pour la sauvegarde GitHub.</p>`)+"</details>";
@@ -4112,7 +4113,7 @@ Array.prototype.forEach.call(app.querySelectorAll("[data-by]"),function(b){b.onc
       if(t==="av_programme"){var j=parseInt(a.jour,10);if(!(j>=1&&j<=31)){msg="Le jour du mois va de 1 à 31.";return render()}op.freq=a.freq||"monthly";op.jour=j}
       if(t==="av_rachat"){if((a.ligne||"").trim())op.source=a.ligne.trim().slice(0,80)}
       else{if(a.deb){var L1=comptes().filter(function(c){return c.id===a.deb})[0];if(L1){op.compte_debit=L1.nom;op.compte_debit_id=L1.kyf||""}}
-        var rep=[],sum=0,bad=false;LG.slice(0,30).forEach(function(l,i){var p=(a.rep||{})[i];if(p&&String(p).trim()){var q=dec(p);if(q===null||+q<=0||+q>100)bad=true;else{rep.push({ligne:l.nom,pct:q});sum+=Number(q)}}});
+        var rep=[],sum=0,bad=false;LG.slice(0,30).forEach(function(l,i){var p=(a.rep||{})[i];if(p&&String(p).trim()){var q=dec(p);if(q===null||+q<=0||+q>100)bad=true;else{var tq=l.ticker&&qtLoad().q[l.ticker],cs=tq&&tq.p>0&&(!tq.c||tq.c==="EUR")?Math.round(tq.p*1e6)/1e6:0;rep.push(cs?{ligne:l.nom,pct:q,cours:cs}:{ligne:l.nom,pct:q});sum+=Number(q)}}});
         if(bad){msg="Pourcentage invalide dans la répartition.";return render()}
         if(rep.length&&Math.abs(sum-100)>0.01){msg="La répartition doit totaliser 100 % (actuellement "+(Math.round(sum*100)/100)+" %).";return render()}
         if(rep.length)op.repartition=rep;
@@ -4449,6 +4450,7 @@ Array.prototype.forEach.call(app.querySelectorAll("[data-by]"),function(b){b.onc
   if($("pinoff"))$("pinoff").onclick=function(){var sansBio=!bioActif();kAsk("Désactiver le code ?",sansBio?"L’appli ne s’ouvrira plus qu’avec votre phrase secrète. Elle va s’afficher : notez-la en lieu sûr.":"L’appli s’ouvrira avec l’empreinte ou la phrase secrète.","Désactiver",function(){pinOff();if(sansBio){S.phShow=PH;clearTimeout(S.phT);S.phT=setTimeout(function(){S.phShow=null;if(S.v==="reg_sec")render()},60000)}msg="Code à 4 chiffres désactivé.";msgOk=true;render()})};
   if(($("ul")||$("pdt"))&&bioActif()&&!S.bioTry&&!document.hidden&&!pinLockUntil()||($("pdt")&&bioActif()&&!S.bioTry&&!document.hidden))setTimeout(function(){if(($("ul")||$("pdt"))&&!S.bioTry&&!STATE)bioClic()},250);
   if($("bioemp"))$("bioemp").onclick=function(){bioGo(true)};
+  if($("telnom"))$("telnom").oninput=function(){telNomSet(this.value)};
   Array.prototype.forEach.call(app.querySelectorAll("[data-sw8]"),function(b){b.onclick=function(){var on=!sessOn();try{localStorage.setItem(SESSP,on?"1":"0")}catch(e){}if(on)sessSave();else sessClear();render()}});
   if($("bioon"))$("bioon").onclick=function(){bioGo(false)};
   function bioGo(emp){var b=$("bioon");if(b)b.disabled=true;bioActiver(emp).then(function(){msg=emp?"Empreinte ou visage activé : il déverrouille l’appli.":"Clé d’accès activée : elle déverrouille l’appli.";msgOk=true;render()}).catch(function(e){bioOff();msg=(e&&e.name==="NotAllowedError")?"Activation annulée.":(e&&e.message==="noprf")?"Ce téléphone ou ce gestionnaire de mots de passe ne gère pas ce mode. La phrase secrète reste utilisée.":"Activation impossible sur cet appareil.";msgOk=false;render()})};
@@ -4499,7 +4501,7 @@ async function envoyer(){
   var b=$("env");b.textContent="Chiffrement en cours…";b.disabled=true;
   try{
     var tot=0;o.forEach(function(x){tot+=x.montant_c});
-    var paq={v:1,format:"kyfops",paquet:"P-"+stamp()+"-"+hms().slice(0,4)+"-"+rnd(4),cree:new Date().toISOString(),appli:"Kyf-Mobile "+VER,n:o.length,total_c:tot,ops:o};
+    var paq={v:1,format:"kyfops",paquet:"P-"+stamp()+"-"+hms().slice(0,4)+"-"+rnd(4),cree:new Date().toISOString(),appli:"Kyf-Mobile "+VER,tel:telNom(),n:o.length,total_c:tot,ops:o};
     while(JSON.stringify(paq).length>350000&&paq.ops.length>1){paq.ops=paq.ops.slice(0,Math.ceil(paq.ops.length/2));o=paq.ops;paq.n=o.length;tot=0;o.forEach(function(x){tot+=x.montant_c});paq.total_c=tot}
     var fic=await chiffrer(paq,ph);
     S.fileTxt=JSON.stringify(fic);S.file=new File([S.fileTxt],paq.paquet+".kyfops",{type:"application/json"});S.fileMeta={paquet:paq.paquet,ids:o.map(function(x){return x.id}),n:o.length,total_c:tot,date:new Date().toISOString(),reste:o0.length-o.length};
@@ -4507,6 +4509,11 @@ async function envoyer(){
   render();
 }
 /* Envoi automatique vers Google (3.9) : chaque opération validée devient une ligne EN CLAIR dans l'onglet KYF_Mobile_Ops du classeur (comme les positions). KYF PC les lit à son lancement et les applique. */
+/* Nom du téléphone (3.104.0.47) : affiché dans Keep Your Folio PC. Les navigateurs ne donnent pas le vrai nom de l'appareil : nom déduit du modèle, modifiable dans Réglages > Liaison. */
+function telNet(x){return String(x||"").replace(/[<>"`&\u0000-\u001f]/g,"").replace(/\s+/g," ").trim().slice(0,24)}
+function telDef(){var ua=navigator.userAgent||"",m;if(/iPad/.test(ua))return"iPad";if(/iPhone/.test(ua))return"iPhone";if(/Android/.test(ua)){m=ua.match(/Android[^;)]*;\s*([^;)]+?)(?:\s+Build|[;)])/);var mo=m&&telNet(m[1]);return mo&&mo.length>2?mo:"Android"}return"Téléphone"}
+function telNom(){var x="";try{x=JSON.parse(localStorage.getItem("kyfm-telnom")||"\"\"")}catch(e){}return telNet(x)||telDef()}
+function telNomSet(v){try{localStorage.setItem("kyfm-telnom",JSON.stringify(telNet(v)))}catch(e){}}
 var G_OPS="KYF_Mobile_Ops",AEB=false,AET=0,AEF=0,EVT_ST=0;
 function autoOn(){return ld("kyfm-aut","1")!=="0"&&!!ld("grefresh",null)}
 function evtQ(act,x){var q=ld("kyfm-evt",[]);if(!Array.isArray(q))q=[];q.push({act:act,opid:x.id,op:act==="del"?null:x,ts:Date.now()});sv("kyfm-evt",q.slice(-500));AEF=0;autoPlan()}
@@ -4517,16 +4524,16 @@ async function gOpsTab(){
     id=f.files&&f.files[0]&&f.files[0].id;if(!id||!/^[A-Za-z0-9_-]{20,100}$/.test(id))throw new Error("g:nosheet");
   var base="https://sheets.googleapis.com/v4/spreadsheets/"+id,meta=await gGet(base+"?fields=sheets.properties.title"),ok=(meta.sheets||[]).some(function(x){return x.properties&&x.properties.title===G_OPS});
   if(!ok){await gSend("POST",base+":batchUpdate",{requests:[{addSheet:{properties:{title:G_OPS}}}]});
-    await gSend("PUT",base+"/values/"+G_OPS+"!A1:H1?valueInputOption=RAW",{values:[["event_id","ts","action","op_id","json","source","statut","ref"]]})}
+    await gSend("PUT",base+"/values/"+G_OPS+"!A1:I1?valueInputOption=RAW",{values:[["event_id","ts","action","op_id","json","source","statut","ref","appareil"]]})}
   return base}
 async function autoEnvoi(){
   if(AEB||!STATE||!autoOn()||(navigator.onLine===false)||Date.now()-AEF<60000)return;
   var q=ld("kyfm-evt",[]);if(!Array.isArray(q))q=[];var ad=ld(K.ops,[]).filter(function(x){return!x.st});if(!q.length&&!ad.length)return;
   AEB=true;S.aut="Envoi vers Google en cours…";if(S.v==="paquet")render();
   try{var base=await gOpsTab(),rows=[],iso=new Date().toISOString(),n=0;
-    q.forEach(function(e){rows.push(["E-"+stamp()+hms()+"-"+rnd(8),new Date(e.ts).toISOString(),e.act,e.opid,e.act==="del"?"":JSON.stringify(evtOp(e.op)),"mobile","",""])});
-    ad.slice(0,200).forEach(function(x){rows.push(["E-"+stamp()+hms()+"-"+rnd(8),iso,"add",x.id,JSON.stringify(evtOp(x)),"mobile","",""]);n++});
-    await gSend("POST",base+"/values/"+G_OPS+"!A:H:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS",{values:rows});
+    q.forEach(function(e){rows.push(["E-"+stamp()+hms()+"-"+rnd(8),new Date(e.ts).toISOString(),e.act,e.opid,e.act==="del"?"":JSON.stringify(evtOp(e.op)),"mobile","","",telNom()])});
+    ad.slice(0,200).forEach(function(x){rows.push(["E-"+stamp()+hms()+"-"+rnd(8),iso,"add",x.id,JSON.stringify(evtOp(x)),"mobile","","",telNom()]);n++});
+    await gSend("POST",base+"/values/"+G_OPS+"!A:I:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS",{values:rows});
     sv("kyfm-evt",[]);var o=ld(K.ops,[]),ids={};ad.slice(0,200).forEach(function(x){ids[x.id]=1});o.forEach(function(x){if(ids[x.id]&&!x.st){x.st="envoye";x.sent=iso}});sv(K.ops,o);
     S.aut="Synchronisé avec Google ("+rows.length+" mise"+(rows.length>1?"s":"")+" à jour). Keep Your Folio PC les applique à son lancement.";AEF=0;
   }catch(e){AEF=Date.now();S.aut="Envoi vers Google impossible pour l’instant ("+(String(e&&e.message||"").slice(0,60)||"erreur")+"). Nouvel essai dans une minute."}
