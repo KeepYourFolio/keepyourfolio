@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.139
+  @version     : Beta 2.13.0.140
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5350,7 +5350,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.13.0.139</div>
+  <div class="kl-ver">Beta 2.13.0.140</div>
 </div>
 <script>
 (function(){
@@ -5517,7 +5517,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.139</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.140</span></div>
       </div>
     </div>
   </div>
@@ -7940,7 +7940,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.139</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.140</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -12899,15 +12899,21 @@ function ctRenderLignes(E){   // lignes du compte affiché : poids, nom, valeur,
   if(!E.lignes.length){ box.style.display = 'none'; return; }
   box.style.display = '';
   const lp = E.lp, all = !!window._ctLgAll;
+  let sk = 'v', sd = 'd'; try{ const z = (localStorage.getItem('kyf-ct-sort') || 'v:d').split(':'); sk = z[0] === 'g' ? 'g' : 'v'; sd = z[1] === 'a' ? 'a' : 'd'; }catch(e){}
   const L = E.lignes.map(e => {
     const ok = !kyfEtfNoPrice(e, lp), v = ok ? getEval(e, lp[e.ticker]) : null, c = etfInvestOf(e);
     return { nom: e.name || e.ticker || '-', v: v, c: c, p: ok && E.val > 0 ? v / E.val * 100 : null, g: ok && c > 0 ? (v - c) / c * 100 : null, gp: ok && c > 0 ? v - c : null };
-  }).sort((a, b) => (b.v === null ? -1 : b.v) - (a.v === null ? -1 : a.v));
+  }).sort((a, b) => { const f = sk === 'g' ? 'g' : 'v', x = a[f], y = b[f]; if(x === null && y === null) return 0; if(x === null) return 1; if(y === null) return -1; return sd === 'a' ? x - y : y - x; });
   const mk = (cls, t, col) => { const d = document.createElement('span'); d.className = cls; d.textContent = t; if(col) d.style.color = col; return d; };
   const h = document.createElement('div'); h.className = 'ct-lg-h';
   const t1 = document.createElement('span'); const b = document.createElement('b'); b.textContent = 'LIGNES DU COMPTE'; t1.appendChild(b); t1.appendChild(document.createTextNode(' · ' + L.length));
   const nb = document.createElement('span'); nb.className = 'kyf-new-badge'; nb.setAttribute('data-new', 'ctlg'); nb.textContent = 'NOUVEAU'; nb.style.cssText = 'display:none;font-size:7px;font-weight:800;letter-spacing:.4px;padding:1px 4px;border-radius:999px;background:#f0b429;color:#000;pointer-events:none;vertical-align:middle;margin-left:6px'; t1.appendChild(nb); try{ kyfNewBadgesRefresh(); }catch(e){}
-  h.appendChild(t1); h.appendChild(document.createTextNode('Triées par valeur'));
+  h.appendChild(t1);
+  { const sb = document.createElement('button'); sb.type = 'button'; sb.className = 'kyf-ct-sort'; sb.style.cssText = 'background:none;border:0;padding:2px 4px;font:inherit;color:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:4px';
+    sb.textContent = 'Triées par ' + (sk === 'g' ? 'rendement' : 'valeur') + ' ' + (sd === 'a' ? '\u2191' : '\u2193');
+    sb.title = 'Changer le tri : valeur ou rendement, puis sens croissant ou décroissant'; sb.setAttribute('aria-label', 'Changer le tri des lignes du compte');
+    sb.onclick = () => { try{ localStorage.setItem('kyf-ct-sort', sk === 'v' && sd === 'd' ? 'g:d' : sk === 'g' && sd === 'd' ? 'g:a' : sk === 'g' && sd === 'a' ? 'v:a' : 'v:d'); }catch(e){} ctRender(); };
+    h.appendChild(sb); }
   { const rb = document.createElement('button'); rb.type = 'button'; rb.className = 'ct-btn kyf-ct-rep'; rb.style.cssText = 'padding:5px 12px;font-size:9px;min-height:0;letter-spacing:.5px'; rb.title = 'Anneau de répartition de ce compte : par type, par ligne';
     rb.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-1px;margin-right:5px"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>RÉPARTITION';
     rb.onclick = () => { const e0 = ctTabGet(), c0 = ctCptSel(e0); avRepOpen('ct:' + e0 + (c0 ? ':' + c0 : '')); }; h.appendChild(rb); }
@@ -50776,7 +50782,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.139\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.140\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -77939,6 +77945,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.140 · 10/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Comptes titres : la mention « Triées par valeur » devient un bouton. Un clic change le tri (valeur ou rendement, du plus haut au plus bas ou l’inverse). Assurance vie et PER : nouveau bouton « Trier par rendement » dans chaque contrat, pour voir d’un coup les meilleures et les moins bonnes lignes ; le rangement par type reste le choix par défaut. Idée d’un utilisateur.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.139 · 09/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PEE : la case « Compter le PEE dans mes totaux » reprend le style orange des autres cases de l’application, avec un libellé plus court.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.138 · 09/11/2026</div>
@@ -103558,6 +103566,7 @@ function avSummaryStrip(d, val, pv, pvPct, rach){
   if(!cells.length) return '';
   return `<div style="display:flex;flex-wrap:wrap;gap:8px;padding:12px 14px 6px">${cells.join('')}</div>`;
 }
+function avSortCycle(id){ try{ const k = 'kyf-av-sort-' + id, c = localStorage.getItem(k) || ''; if(c === '') localStorage.setItem(k, 'd'); else if(c === 'd') localStorage.setItem(k, 'a'); else localStorage.removeItem(k); }catch(e){} renderAV(); }
 function renderAV(){
   try{ kyfTypeCommSoon(); }catch(e){}
   window._avDotN = 0;   // le point NOUVEAU des lignes de fonds ne s'affiche qu'une fois par affichage
@@ -103772,13 +103781,18 @@ function renderAV(){
     const groupOrder = ['fe','etf','action','immo','fonds','obl','pe','dp','str'];
     const groupLabels = {fe:KYF_ICONS.euro+' FONDS EUROS', etf:KYF_ICONS.chart+' ETF & ACTIONS', action:KYF_ICONS.chart+' ETF & ACTIONS', immo:KYF_ICONS.building+' IMMOBILIER', fonds:KYF_ICONS.barchart+' FONDS GÉRÉS', pe:KYF_ICONS.briefcase+' PRIVATE EQUITY', dp:KYF_ICONS.landmark+' DETTE PRIVÉE', obl:KYF_ICONS.document+' OBLIGATIONS', str:KYF_ICONS.chart+' PRODUITS STRUCTURÉS'};
     const isPER = ['per','per-col','per-ob'].includes(d.type);
+    let _avSort = ''; try{ _avSort = localStorage.getItem('kyf-av-sort-' + d.id) || ''; }catch(e){}
+    groupLabels.rend = KYF_ICONS.chart + ' ' + (_avSort === 'a' ? 'DU MOINS BON AU MEILLEUR' : 'DU MEILLEUR AU MOINS BON');
 
     // Pour les PER : grouper aussi par compartiment
     const compartLabels = {'ev-ded':KYF_ICONS.arrowIn+' EV DÉDUCTIBLE','ev-non-ded':KYF_ICONS.arrowOut+' EV NON DÉDUCTIBLE','obligatoire':'OBLIGATOIRE','collectif':'COLLECTIF',null:'NON CLASSÉ'};
 
     const _avLk = kyfAvLinkedTk(d), _avLp = window._lp || {};
     const _pv = p => kyfAvPosValue(p, _avLk, _avLp);
+    const _avPerf = p => { const v = _pv(p).val; if(p.type === 'fe' && parseFloat(p.tauxRendement) > 0) return parseFloat(p.tauxRendement); const c = (parseFloat(p.pru) || 0) * (parseFloat(p.qty) || 0); return c > 0 && v > 0 ? (v - c) / c * 100 : null; };
+    const _avSortList = l => !_avSort ? l : l.slice().sort((a, b) => { const x = _avPerf(a), y = _avPerf(b); if(x === null && y === null) return 0; if(x === null) return 1; if(y === null) return -1; return _avSort === 'a' ? x - y : y - x; });
     function renderPosGroup(posList, groupKey){
+      posList = _avSortList(posList);
       if(!posList.length) return '';
       const label = groupLabels[groupKey] || groupKey;
       const groupTotal = posList.reduce((s,p)=>s+_pv(p).val,0);
@@ -103853,12 +103867,14 @@ function renderAV(){
       });
       posRows = '<div class="kyf-comp-wrap" data-kyf-contrat="' + escapeHtml(String(d.id)) + '">' + posRows + '</div>';
     } else {
-      // AV : grouper par type uniquement
-      groupOrder.forEach(gk=>{
+      // AV : grouper par type uniquement (ou une seule liste triée par rendement si l'utilisateur l'a demandé)
+      if(_avSort) posRows += renderPosGroup(positions, 'rend');
+      else groupOrder.forEach(gk=>{
         const gPos = positions.filter(p=>p.type===gk);
         if(gPos.length) posRows += renderPosGroup(gPos, gk);
       });
     }
+    if(positions.length > 2) posRows = `<div style="display:flex;justify-content:flex-end;padding:6px 4px 0"><button type="button" onclick="event.stopPropagation();avSortCycle('${d.id}')" title="Trier les lignes par rendement : du meilleur au moins bon, puis l'inverse, puis retour au rangement par type" aria-label="Trier les lignes du contrat par rendement" style="background:none;border:1px solid var(--border2);border-radius:8px;color:var(--text2);cursor:pointer;font:600 10px 'Inter',sans-serif;letter-spacing:.4px;padding:4px 10px;display:inline-flex;align-items:center;gap:5px">${_avSort === 'd' ? 'RENDEMENT \u2193' : _avSort === 'a' ? 'RENDEMENT \u2191' : 'TRIER PAR RENDEMENT'}</button></div>` + posRows;
 
     const isOpen = localStorage.getItem('kyf-av-card-open-'+d.id) !== '0'; // 2.9.0.43 : un favori s'ouvre par défaut, mais peut être replié (bouton Tout replier)
     const accentGrad = TYPE_GRADIENTS[d.type] || TYPE_GRADIENTS.av;
