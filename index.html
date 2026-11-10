@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.141
+  @version     : Beta 2.13.0.142
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5350,7 +5350,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.13.0.141</div>
+  <div class="kl-ver">Beta 2.13.0.142</div>
 </div>
 <script>
 (function(){
@@ -5517,7 +5517,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.141</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.142</span></div>
       </div>
     </div>
   </div>
@@ -7940,7 +7940,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.141</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.142</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -49300,6 +49300,18 @@ function downloadLogs(){
   a.click();
 }
 
+// Copie les messages de l'onglet affiché (tels quels, plus récents d'abord) pour les coller dans un message ou un rapport
+async function kyfCopyLogs(){
+  const btn = document.getElementById('notifCopyBtn'), lab = btn && btn.querySelector('span');
+  const say = t => { if(!lab) return; lab.textContent = t; clearTimeout(kyfCopyLogs._t); kyfCopyLogs._t = setTimeout(() => { lab.textContent = 'COPIER'; }, 1800); };
+  const noms = { errors:'ERREURS', warnings:'WARNINGS', infos:'INFOS', auto:'AUTO' };
+  const arr = noms[activeNotifTab] ? (logs[activeNotifTab] || []) : [];
+  if(!arr.length){ say('RIEN À COPIER'); return; }
+  const lignes = [...arr].reverse().map(e => '[' + e.ts + ']' + (e.source ? ' (' + e.source + ')' : '') + ' ' + String(kyfNotifShownMsg(e)).replace(KYF_SELF_HEAL_RE, '') + (e.n > 1 ? ' (x' + e.n + ')' : ''));
+  const txt = 'Keep Your Folio ' + (typeof kyfGetVersion === 'function' ? kyfGetVersion() : '') + ' · ' + noms[activeNotifTab] + ' (' + arr.length + ')\n' + lignes.join('\n');
+  say(await kyfCopyText(txt) ? 'COPIÉ' : 'ÉCHEC');
+}
+
 // ── Envoi des logs au support (Notifications → Contactez-nous) ─────────︄︋︅︉︄︆︄︊︄︍︃︂︃︆
 // SÉCURITÉ : les messages d'erreurs/warnings viennent de console.error/
 // console.warn interceptés PARTOUT dans l'app (voir plus bas) - impossible
@@ -50782,7 +50794,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.141\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.142\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -63130,7 +63142,7 @@ function contactDownloadCopy(){
 </div>
 <div id="notifOverlay" onclick="toggleNotifPanel()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999"></div>
 <div id="notifPanel" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
-  width:min(420px,90vw);max-height:80vh;z-index:10000;background:var(--bg2);
+  width:min(480px,92vw);max-height:80vh;z-index:10000;background:var(--bg2);
   border:1px solid var(--border2);border-radius:16px;padding:20px;
   font-family:'Inter',sans-serif;font-size:11px;color:var(--text);
   box-shadow:0 12px 48px rgba(0,0,0,0.4);flex-direction:column;overflow:hidden;isolation:isolate">
@@ -63144,10 +63156,10 @@ function contactDownloadCopy(){
     /* 5 onglets : largeur selon le contenu (plus de coupe d'AUTO), police et icônes réduites sur petit écran, défilement en dernier recours */
     #notifTabs{overflow-x:auto;scrollbar-width:none}
     #notifTabs::-webkit-scrollbar{display:none}
-    #notifPanel .notif-tab{flex:1 1 auto !important;min-width:0;white-space:nowrap;padding-left:2px !important;padding-right:2px !important}
+    #notifPanel .notif-tab{flex:1 1 auto !important;min-width:0;white-space:nowrap;padding-left:4px !important;padding-right:4px !important}
     @media (max-width:480px){ #notifPanel .notif-tab{font-size:10px !important;gap:2px !important} #notifPanel .notif-tab svg{display:none} }
   </style>
-  <div id="notifTabs" style="display:flex;gap:6px;border-bottom:1px solid var(--border);margin-bottom:10px">
+  <div id="notifTabs" style="display:flex;gap:clamp(8px,2.5vw,16px);border-bottom:1px solid var(--border);margin-bottom:10px">
     <button class="notif-tab kyf-ul active" id="ntab-errors"   onclick="showNotifTab('errors',this)"   style="flex:1;font-family:'Inter',sans-serif;font-size:11px;padding:8px 4px;background:none;border:none;border-bottom:0;color:var(--red);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> ERREURS <span id="nbadge-errors"></span></button>
     <button class="notif-tab kyf-ul"        id="ntab-warnings" onclick="showNotifTab('warnings',this)" style="flex:1;font-family:'Inter',sans-serif;font-size:11px;padding:8px 4px;background:none;border:none;border-bottom:0;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> WARNINGS <span id="nbadge-warnings"></span></button>
     <button class="notif-tab kyf-ul"        id="ntab-anomalies" onclick="showNotifTab('anomalies',this)" style="flex:1;font-family:'Inter',sans-serif;font-size:11px;padding:8px 4px;background:none;border:none;border-bottom:0;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#9b6dff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 2 3 7v6c0 5 4 9 9 9s9-4 9-9V7l-9-5z"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> ANOMALIES <span id="nbadge-anomalies"></span></button>
@@ -63161,6 +63173,7 @@ function contactDownloadCopy(){
   <!-- Actions -->
   <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
     <button onclick="clearLogs()" style="flex:1;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;background:none;border:1px solid var(--border2);color:var(--text3);padding:7px 10px;border-radius:8px;cursor:pointer;letter-spacing:.5px;transition:background .15s;display:inline-flex;align-items:center;justify-content:center;gap:5px" onmouseover="this.style.background='var(--hov-bg)'" onmouseout="this.style.background='none'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M8.5 6V4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2"/></svg> VIDER</button>
+    <button id="notifCopyBtn" onclick="kyfCopyLogs()" title="Copie les messages de l’onglet affiché, tels quels, pour les coller ailleurs" style="flex:1;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;background:none;border:1px solid var(--border2);color:var(--text3);padding:7px 10px;border-radius:8px;cursor:pointer;letter-spacing:.5px;transition:background .15s;display:inline-flex;align-items:center;justify-content:center;gap:5px" onmouseover="this.style.background='var(--hov-bg)'" onmouseout="this.style.background='none'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> <span>COPIER</span></button>
     <button onclick="downloadLogs()" style="flex:1;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;background:#f0b429;border:none;color:#000;padding:7px 10px;border-radius:8px;cursor:pointer;letter-spacing:.5px;transition:opacity .15s;display:inline-flex;align-items:center;justify-content:center;gap:5px" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> TÉLÉCHARGER</button>
     <button id="notifSupportBtn" onclick="kyfSendLogsToContact()" title="Joint un rapport de logs anonymisé (URLs, emails et montants masqués) au formulaire de contact" style="flex:1 1 100%;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;background:#f0b429;border:none;color:#000;padding:7px 10px;border-radius:8px;cursor:pointer;letter-spacing:.5px;transition:opacity .15s;display:inline-flex;align-items:center;justify-content:center;gap:5px" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg> ENVOYER AU SUPPORT</button>
     <div style="flex:1 1 100%;display:flex;align-items:center;justify-content:center;gap:5px;font-family:'Inter',sans-serif;font-size:9px;color:var(--text3);text-align:center;line-height:1.6">
@@ -77945,6 +77958,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.142 · 10/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Notifications : nouveau bouton « Copier » qui copie les messages de l’onglet affiché (erreurs, warnings, infos ou auto), tels quels, pour les coller dans un message ou un rapport. Les onglets du haut sont plus espacés et la fenêtre un peu plus large.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.141 · 10/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Suivi mensuel : les fonds de private equity, de dette privée et les produits structurés y entrent maintenant, même sans cours au jour le jour. Chaque mois, Keep Your Folio retient la valeur saisie (ou celle du dernier relevé) et en déduit le rendement cumulé et mensuel. Mettez la valeur à jour chaque mois pour un suivi fidèle. Idée d’un utilisateur.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.140 · 10/11/2026</div>
