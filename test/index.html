@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.142
+  @version     : Beta 2.13.0.143
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5350,7 +5350,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.13.0.142</div>
+  <div class="kl-ver">Beta 2.13.0.143</div>
 </div>
 <script>
 (function(){
@@ -5517,7 +5517,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.142</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.143</span></div>
       </div>
     </div>
   </div>
@@ -7940,7 +7940,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.142</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.143</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -44700,9 +44700,17 @@ async function kyfBourseOpen(t, dir){
   kyfBourseRender();
   if(willFetch){
     try{
-      const r = await fetch(KYF_HIST_URL + '?action=history&tickers=' + encodeURIComponent(t) + '&days=400&t=' + Date.now(), { signal: AbortSignal.timeout(30000), cache: 'no-store' });
-      if(!r.ok) throw new Error('HTTP ' + r.status);
-      const o = (((await r.json()) || {}).history || {})[t];
+      // 2.13.0.143 : on demande jusqu'à 10 ans ; si le serveur refuse ou échoue, paliers plus courts (5, 4, 3, 2 ans puis 400 jours)
+      let o = null, lastErr = '';
+      for(const dj of [3650, 1825, 1460, 1095, 730, 400]){
+        try{
+          const r = await fetch(KYF_HIST_URL + '?action=history&tickers=' + encodeURIComponent(t) + '&days=' + dj + '&t=' + Date.now(), { signal: AbortSignal.timeout(30000), cache: 'no-store' });
+          if(!r.ok){ lastErr = 'HTTP ' + r.status; continue; }
+          const o2 = (((await r.json()) || {}).history || {})[t];
+          if(o2 && typeof o2 === 'object' && Object.keys(o2).length > 1){ o = o2; break; }
+        }catch(e2){ lastErr = (e2 && e2.message) || String(e2); }
+      }
+      if(!o && lastErr) throw new Error(lastErr);
       if(o && typeof o === 'object'){
         const arr = Object.entries(o).filter(([d, x]) => /^\d{4}-\d{2}-\d{2}$/.test(d) && Number.isFinite(parseFloat(x)) && parseFloat(x) > 0).map(([d, x]) => [d, parseFloat(x)]).sort((a, b) => a[0] < b[0] ? -1 : 1);
         if(arr.length) _kyfBourseH[t] = { pts: arr, full: true };
@@ -44763,7 +44771,7 @@ function kyfBourseRender(){
       + (kyfBourseOpt('bourseTx') && !perecolIsFund(t) ? lg('<svg width="10" height="10"><circle cx="5" cy="5" r="4.5" fill="var(--green)"/></svg>', 'Achat') + lg('<svg width="10" height="10"><circle cx="5" cy="5" r="4.5" fill="var(--red)"/></svg>', 'Vente') : '')
       + (dv.length ? lg('<svg width="10" height="10"><path d="M5 0L10 5L5 10L0 5Z" fill="var(--blue)"/></svg>', 'Dividende') : '')
       + '<span>Pointillé gris : cours du début de période</span>' + (pru ? '<span style="color:var(--accent)">Pointillé orange : votre PRU</span>' : pru0 ? '<span style="color:var(--accent)">Votre PRU : ' + nf(pru0) + ' (hors du graphique)</span>' : '')
-      + (nOut ? '<span>' + nOut + ' opération' + (nOut > 1 ? 's' : '') + ' hors période</span>' : '') + (!H.full ? '<span>Historique partiel (100 jours)</span>' : '') + (nSpk.length ? '<span title="Un cours isolé, au moins 3 fois plus haut ou plus bas que la veille et le lendemain, est écarté de la courbe et des chiffres">' + nSpk.length + ' cours aberrant' + (nSpk.length > 1 ? 's' : '') + ' ignoré' + (nSpk.length > 1 ? 's' : '') + ' : ' + nSpk.map(x => fr(x[0]) + ' (' + nf(x[1]) + ')').join(', ') + '</span>' : '') + '</div>';
+      + (nOut ? '<span>' + nOut + ' opération' + (nOut > 1 ? 's' : '') + ' hors période</span>' : '') + (!H.full ? '<span>Historique partiel (100 jours)</span>' : '') + (H.full && H.pts.length > 1 ? '<span>Historique disponible depuis le ' + H.pts[0][0].slice(8, 10) + '/' + H.pts[0][0].slice(5, 7) + '/' + H.pts[0][0].slice(0, 4) + '</span>' : '') + (nSpk.length ? '<span title="Un cours isolé, au moins 3 fois plus haut ou plus bas que la veille et le lendemain, est écarté de la courbe et des chiffres">' + nSpk.length + ' cours aberrant' + (nSpk.length > 1 ? 's' : '') + ' ignoré' + (nSpk.length > 1 ? 's' : '') + ' : ' + nSpk.map(x => fr(x[0]) + ' (' + nf(x[1]) + ')').join(', ') + '</span>' : '') + '</div>';
   }
   if(perecolIsFund(t)){ body.innerHTML = h + perecolSourceHtml(t); return; }
   // Vos opérations sur ce titre
@@ -50794,7 +50802,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.142\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.143\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -77958,6 +77966,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.143 · 10/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Fenêtre Bourse : l’historique demandé va maintenant jusqu’à 10 ans (au lieu de 400 jours) ; si le serveur de cours refuse, l’application retente avec 5, 4, 3, 2 ans puis 400 jours. Le bouton MAX montre tout ce que le serveur fournit, et une mention indique la date de début de l’historique disponible.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.142 · 10/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Notifications : nouveau bouton « Copier » qui copie les messages de l’onglet affiché (erreurs, warnings, infos ou auto), tels quels, pour les coller dans un message ou un rapport. Les onglets du haut sont plus espacés et la fenêtre un peu plus large.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.141 · 10/11/2026</div>
