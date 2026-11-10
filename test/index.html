@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.13.0.144
+  @version     : Beta 2.13.0.145
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5350,7 +5350,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.13.0.144</div>
+  <div class="kl-ver">Beta 2.13.0.145</div>
 </div>
 <script>
 (function(){
@@ -5517,7 +5517,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.144</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.13.0.145</span></div>
       </div>
     </div>
   </div>
@@ -7940,7 +7940,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.13.0.144</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.13.0.145</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -24284,6 +24284,9 @@ function kyfAvLinesOf(d, claimed){
 }
 // Autres actifs : sa fonction est définie dans un script chargé plus bas ; au tout premier affichage elle n'existe pas encore (0), puis le total est recalculé à la fin du chargement
 function kyfAutresTotalSafe(){ try{ return typeof kyfAutresTotal === 'function' ? kyfAutresTotal() : 0; }catch(e){ return 0; } }
+// Ces fonctions sont définies dans un <script> plus loin : au tout début du chargement elles n'existent pas encore, on renvoie alors zéro (le rendu est refait dès la fin du chargement) au lieu de lever une erreur.
+function kyfPrvTotalSafe(){ try{ return typeof kyfPrvTotal === 'function' ? kyfPrvTotal() : 0; }catch(e){ return 0; } }
+function kyfPeeGTSafe(solo, per){ try{ return typeof kyfPeeGT === 'function' ? kyfPeeGT(solo, per) : { g: 0, inv: 0 }; }catch(e){ return { g: 0, inv: 0 }; } }
 window.addEventListener('load', () => { setTimeout(() => { try{ renderKPIs(window._lp || {}); }catch(e){} try{ kyfKpiApply(); }catch(e){} }, 300); });
 function renderKPIs(lp){
   // ATH indépendant des prix en direct : calculé uniquement à partir de
@@ -24395,7 +24398,7 @@ function renderKPIs(lp){
   // fetchAllPrices()) une fois le fichier entièrement chargé.
   const avGlobal      = typeof getAVTotal   === 'function' ? getAVTotal()   : 0;
   const immoGlobal    = typeof getImmoTotal === 'function' ? getImmoTotal() : 0;
-  const totalGlobal   = total + cryptoTotal + avGlobal + immoGlobal + kyfCrowdfundingTotal() + kyfPrvTotal() + kyfLivretsTotal() + kyfOrTotal() + kyfAutresTotalSafe();
+  const totalGlobal   = total + cryptoTotal + avGlobal + immoGlobal + kyfCrowdfundingTotal() + kyfPrvTotalSafe() + kyfLivretsTotal() + kyfOrTotal() + kyfAutresTotalSafe();
   window._kyfTotalGlobal = totalGlobal;   // TRA-011 : patrimoine global unique, repris par la page Immobilier
   let investiGlobal = investi + cryptoInvesti;
   // Gain net des positions = ETF/Actions + Crypto + contrats AV/PER dont le total investi est connu.
@@ -24448,7 +24451,7 @@ function renderKPIs(lp){
   window._kLiveImmoDette = (typeof getImmoNetTotal === 'function') ? Math.max(0, immoGlobal - getImmoNetTotal()) : 0;   // crédits immobiliers en cours, déduits seulement si le réglage est actif
   window._kLiveParts = [
     { l:'ETF & actions', v:total }, { l:'Cryptos', v:cryptoTotal - cryptoStables }, { l:'Stablecoins', v:cryptoStables }, { l:'Assurance vie / PER', v:avGlobal },
-    { l:'Immobilier', v:immoGlobal }, { l:'Crowdfunding', v:kyfCrowdfundingTotal() }, { l:'Private equity', v:kyfPrvTotal() }, { l:'Livrets', v:kyfLivretsTotal() }, { l:'Or & métaux', v:kyfOrTotal() }, { l:'Autres actifs', v:kyfAutresTotalSafe() }
+    { l:'Immobilier', v:immoGlobal }, { l:'Crowdfunding', v:kyfCrowdfundingTotal() }, { l:'Private equity', v:kyfPrvTotalSafe() }, { l:'Livrets', v:kyfLivretsTotal() }, { l:'Or & métaux', v:kyfOrTotal() }, { l:'Autres actifs', v:kyfAutresTotalSafe() }
   ];
   kyfRenderKLive();
   animateKpi('kGain',    gainUnknown ? '-' : (gain>=0?'+':'')+fmt(gain,2)+' €');
@@ -45159,8 +45162,8 @@ function renderETFTable(lp){
     ${showCol('cours')?'<td></td>':''}
     ${showCol('varje')?`<td class="${(()=>{ const h=((_solo || _per) ? null : window.PORTFOLIO_VARJ_EUR); if(h!==undefined&&h!==null) return h>=0?'up':'dn'; const v=_tt.reduce((s,e)=>{const p=lp[e.ticker];return s+(p&&p.change!==undefined?toEUR(p.change*kyfEtfHeldQty(e),p.currency||getTickerCurrency(e.ticker,p)):0);},0);const hasAny=_tt.some(e=>lp[e.ticker]&&lp[e.ticker].change!==undefined);return hasAny?(v>=0?'up':'dn'):''; })()}" style="font-weight:700">${(()=>{ const h=((_solo || _per) ? null : window.PORTFOLIO_VARJ_EUR); if(h!==undefined&&h!==null) return (h>=0?'+':'')+fmt(h,2)+' €'; const v=_tt.reduce((s,e)=>{const p=lp[e.ticker];return s+(p&&p.change!==undefined?toEUR(p.change*kyfEtfHeldQty(e),p.currency||getTickerCurrency(e.ticker,p)):0);},0);const hasAny=_tt.some(e=>lp[e.ticker]&&lp[e.ticker].change!==undefined);if(!hasAny) return '';return(v>=0?'+':'')+fmt(v,2)+' €'; })()}</td>`:''}
     ${showCol('tend')?'<td></td>':''}
-    ${showCol('gpe')?`<td title="${(()=>{const n=_tt.filter(e=>kyfEtfNoPrice(e,lp)).length;return (n&&_tt.some(e=>lp&&lp[e.ticker]))?kyfNoPriceMsg(n):'';})()}" class="${(()=>{const g=_tt.reduce((s,e)=>s+(kyfEtfNoPrice(e,lp)?0:getEval(e,lp[e.ticker])-(e.montant!==undefined?e.montant:e.pru*e.qty)),0)+kyfPeeGT(_solo,_per).g;return g>=0?'up':'dn';})()}">${(()=>{const g=_tt.reduce((s,e)=>s+(kyfEtfNoPrice(e,lp)?0:getEval(e,lp[e.ticker])-(e.montant!==undefined?e.montant:e.pru*e.qty)),0)+kyfPeeGT(_solo,_per).g;return(g>=0?'+':'')+fmt(g,2)+' €';})()}</td>`:''}
-    ${showCol('gpp')?`<td class="${(()=>{const t=_tt.reduce((s,e)=>s+(kyfEtfNoPrice(e,lp)?0:(e.montant!==undefined?e.montant:e.pru*e.qty)),0)+kyfPeeGT(_solo,_per).inv;const g=_tt.reduce((s,e)=>s+(kyfEtfNoPrice(e,lp)?0:getEval(e,lp[e.ticker])-(e.montant!==undefined?e.montant:e.pru*e.qty)),0)+kyfPeeGT(_solo,_per).g;return g>=0?'up':'dn';})()}">${(()=>{const t=_tt.reduce((s,e)=>s+(kyfEtfNoPrice(e,lp)?0:(e.montant!==undefined?e.montant:e.pru*e.qty)),0)+kyfPeeGT(_solo,_per).inv;const g=_tt.reduce((s,e)=>s+(kyfEtfNoPrice(e,lp)?0:getEval(e,lp[e.ticker])-(e.montant!==undefined?e.montant:e.pru*e.qty)),0)+kyfPeeGT(_solo,_per).g;if(!t||isNaN(g/t)) return '-';return(g>=0?'+':'')+((g/t)*100).toFixed(2)+' %';})()}</td>`:''}
+    ${showCol('gpe')?`<td title="${(()=>{const n=_tt.filter(e=>kyfEtfNoPrice(e,lp)).length;return (n&&_tt.some(e=>lp&&lp[e.ticker]))?kyfNoPriceMsg(n):'';})()}" class="${(()=>{const g=_tt.reduce((s,e)=>s+(kyfEtfNoPrice(e,lp)?0:getEval(e,lp[e.ticker])-(e.montant!==undefined?e.montant:e.pru*e.qty)),0)+kyfPeeGTSafe(_solo,_per).g;return g>=0?'up':'dn';})()}">${(()=>{const g=_tt.reduce((s,e)=>s+(kyfEtfNoPrice(e,lp)?0:getEval(e,lp[e.ticker])-(e.montant!==undefined?e.montant:e.pru*e.qty)),0)+kyfPeeGTSafe(_solo,_per).g;return(g>=0?'+':'')+fmt(g,2)+' €';})()}</td>`:''}
+    ${showCol('gpp')?`<td class="${(()=>{const t=_tt.reduce((s,e)=>s+(kyfEtfNoPrice(e,lp)?0:(e.montant!==undefined?e.montant:e.pru*e.qty)),0)+kyfPeeGTSafe(_solo,_per).inv;const g=_tt.reduce((s,e)=>s+(kyfEtfNoPrice(e,lp)?0:getEval(e,lp[e.ticker])-(e.montant!==undefined?e.montant:e.pru*e.qty)),0)+kyfPeeGTSafe(_solo,_per).g;return g>=0?'up':'dn';})()}">${(()=>{const t=_tt.reduce((s,e)=>s+(kyfEtfNoPrice(e,lp)?0:(e.montant!==undefined?e.montant:e.pru*e.qty)),0)+kyfPeeGTSafe(_solo,_per).inv;const g=_tt.reduce((s,e)=>s+(kyfEtfNoPrice(e,lp)?0:getEval(e,lp[e.ticker])-(e.montant!==undefined?e.montant:e.pru*e.qty)),0)+kyfPeeGTSafe(_solo,_per).g;if(!t||isNaN(g/t)) return '-';return(g>=0?'+':'')+((g/t)*100).toFixed(2)+' %';})()}</td>`:''}
     ${showCol('repartition')?`<td style="color:var(--text2);font-weight:700">${(_solo || _per) && _totalEval > 0 ? ((_tt.reduce((s,e)=>s+getEval(e,lp[e.ticker]),0)/_totalEval)*100).toFixed(2)+'%' : '100%'}</td>`:''}
     <td></td>
   </tr>`;
@@ -50802,7 +50805,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.144\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.13.0.145\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -51000,7 +51003,7 @@ function kyfSnapExtras(etfInvesti, cryptoInvesti){
   try{
     const spot = window._orSpotPrices || {};
     JSON.parse(localStorage.getItem('kyf-or')||'[]').forEach(d => { if(d.poids > 0 && spot[d.metal] > 0) orCost += parseFloat(d.prixAchat)||0; });
-    autres = liv + kyfOrTotal() + cf + kyfPrvTotal() + kyfAutresTotalSafe();
+    autres = liv + kyfOrTotal() + cf + kyfPrvTotalSafe() + kyfAutresTotalSafe();
   }catch(e){}
   try{
     // TRA-004 : même règle que le tableau de bord (investi net = versements - rachats, moins le coût des lignes du contrat déjà comptées dans ETF & Actions).
@@ -77966,6 +77969,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.145 · 10/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Démarrage : correction des deux avertissements « kyfPeeGT n’est pas défini » et « kyfPrvTotal n’est pas défini » qui apparaissaient dans les notifications au chargement. Ces calculs (PEE et private equity) peuvent maintenant être demandés avant la fin du chargement sans erreur ; l’affichage est refait avec les bonnes valeurs dès que tout est chargé.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.144 · 10/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance vie et PER : le classement par rendement tient maintenant compte des loyers des SCPI (mention « loyers inclus »), comme le pourcentage affiché sur la ligne. Toutes les lignes, quel que soit leur type de support, sont classées ensemble dans un seul ordre, du plus haut au plus bas ou l’inverse.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.13.0.143 · 10/11/2026</div>
