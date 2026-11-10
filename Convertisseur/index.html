@@ -6,7 +6,7 @@
   @description : Lit les relevés de courtier PDF entièrement dans le
                  navigateur (aucun envoi) et produit le fichier que le
                  Dashboard KYF importe.
-  @version     : v2.511
+  @version     : v2.512
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -122,6 +122,16 @@
   .content-narrow { max-width: 760px; margin: 0 auto; }
 
   /* Topbar */
+  /* v2.512 - Barre d'annonce sous la barre du haut (même style que celle du Dashboard) */
+  #convAnnonce { display: none; align-items: flex-start; gap: 8px; margin: 10px auto 0; width: fit-content; max-width: min(760px, calc(100vw - 24px)); box-sizing: border-box;
+    background: var(--idx-band-bg, rgba(46,53,80,0.55)); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--idx-band-border, rgba(255,255,255,0.10)); border-radius: 14px; padding: 7px 10px 7px 14px;
+    font-size: 11.5px; line-height: 1.45; color: var(--text2); }
+  #convAnnonce svg.ann-ic { flex-shrink: 0; margin-top: 1px; }
+  #convAnnonce b { color: var(--text); font-weight: 600; }
+  #convAnnonce button { background: none; border: none; color: var(--text3); cursor: pointer; padding: 0 0 0 2px; display: flex; align-items: center; flex-shrink: 0; margin-top: 1px; transition: color .15s; }
+  #convAnnonce button:hover, #convAnnonce button:focus-visible { color: #ff4560; }
+  html[data-theme="light"] #convAnnonce { background: rgba(240,180,41,0.14); border-color: rgba(240,180,41,0.45); color: #4c5a78; }
   .topbar {
     display: flex;
     align-items: center;
@@ -1460,12 +1470,27 @@
   </div>
 </div>
 
+<div id="convAnnonce" role="status">
+  <svg class="ann-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+  <span><b>Relevé Linxea :</b> envoyez le contrat en entier. Avec seulement la page 1, sans les tableaux, rien ne peut être lu et aucun résultat ne s’affiche.</span>
+  <button type="button" onclick="convCloseAnnonce()" aria-label="Fermer l’annonce"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+</div>
+<script>
+// v2.512 : annonce fermable, la fermeture est retenue (par texte d'annonce) sur cet appareil
+(function(){
+  var K = 'kyfconv-annonce-fermee', ID = 'linxea-page1-2026-11-10';
+  window.convCloseAnnonce = function(){ var e = document.getElementById('convAnnonce'); if(e) e.style.display = 'none'; try{ localStorage.setItem(K, ID); }catch(_){} };
+  var shown = true; try{ shown = localStorage.getItem(K) !== ID; }catch(_){}
+  if(shown){ var e = document.getElementById('convAnnonce'); if(e) e.style.display = 'flex'; }
+})();
+</script>
+
 <main>
   <div class="content-narrow">
   <div class="hero">
     <div class="hero-title">
     <h1>Convertisseur PDF <span>→ CSV</span> <span style="display:inline-block;background:#c99a06;color:#000;font-size:12px;font-weight:800;letter-spacing:.5px;padding:2px 8px;border-radius:6px;vertical-align:middle;">Bêta</span></h1>
-    <p>Détection automatique · v2.511 · Avis général sur le convertisseur</p>
+    <p>Détection automatique · v2.512 · Avis général sur le convertisseur</p>
     </div>
   </div>
 
@@ -2556,7 +2581,7 @@
 <script>
   /**
    * @file        KYF PDF to CSV - Convertisseur PDF intelligent
-   * @version     v2.511
+   * @version     v2.512
    * @description Convertisseur PDF → CSV pour KYF Dashboard.
    *              Détection automatique multi-courtiers, biffage pour les
    *              documents non reconnus (voir kyf_biffer_backend.gs).
@@ -2564,7 +2589,7 @@
    * @copyright   © 2026 Keep Your Folio (KYF) - keepyourfolio.fr
    * @license     AGPL-3.0-or-later
    */
-  console.log('%c Keep Your Folio %c PDF → CSV v2.511 %c keepyourfolio.fr ',
+  console.log('%c Keep Your Folio %c PDF → CSV v2.512 %c keepyourfolio.fr ',
     'background:#1a1f2e;color:#f0b429;font-weight:700;padding:4px 8px;border-radius:4px 0 0 4px',
     'background:#2563eb;color:#fff;font-weight:700;padding:4px 8px',
     'background:#1a1f2e;color:#aaa;padding:4px 8px;border-radius:0 4px 4px 0'
