@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.1.06
+  @version     : Beta 2.14.1.07
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5350,7 +5350,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.14.1.06</div>
+  <div class="kl-ver">Beta 2.14.1.07</div>
 </div>
 <script>
 (function(){
@@ -7937,7 +7937,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.1.06</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.1.07</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -50827,7 +50827,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.1.06\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.1.07\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -58889,6 +58889,7 @@ function cryptoLoad(){
 }
 
 function cryptoSave(){
+  try{ const rz = kyfCryRealiseCompute(); if(rz) cryptoState.realise = rz; }catch(e){}   // ventes réalisées : lu par KYF Mobile via le Sheet
   try{ localStorage.setItem(CRYPTO_KEY, JSON.stringify(cryptoState)); }catch(e){}
   // Invalider le cache intraday après toute modification crypto
   try{ onIntradayTransaction(); }catch(e){}
@@ -60904,6 +60905,31 @@ function cryptoPertesPage(dir){ _cryptoPertesPage=Math.max(0,_cryptoPertesPage+d
 function cryptoSwapsPage(dir){ _cryptoSwapsPage=Math.max(0,_cryptoSwapsPage+dir); renderCryptoSwaps(); }
 
 // ── Pertes ────────────────────────────────────────────────────────
+// Ventes réalisées (ventes + swaps crypto→stablecoin), construites une seule fois pour l'onglet PERTES
+// et pour l'export vers le Sheet / mobile (cryptoState.realise).
+function kyfCryRealiseRows(){
+  const opsVentes = (cryptoState.operations||[]).filter(o=>o.type==='vente').map(o=>{
+    const b = kyfCryVenteBilan(o);
+    const resultat  = b.aQualifier ? 0 : b.recupere - b.investi;
+    return { date: o.date||'-', nom: o.nom||'-', investi: b.investi, recupere: b.recupere, resultat, _op: true, id: o.id, _aq: b.aQualifier };
+  });
+  const opsSwaps = (cryptoState.operations||[]).filter(o=>o.type==='swap' && window._kyfSwapRealise && window._kyfSwapRealise[o.id]).map(o=>{
+    const r = window._kyfSwapRealise[o.id];
+    return { date: o.date||'-', nom: (o.nom||'-') + ' → ' + (o.nom2||''), investi: r.investi, recupere: r.recupere, resultat: r.recupere - r.investi, _op: true, id: o.id };
+  });
+  return { opsVentes, opsSwaps };
+}
+// Résumé des ventes réalisées, écrit dans pea-crypto-v1 (donc dans le Sheet) : le mobile ne peut pas
+// reconstituer ce calcul, il lit ces chiffres. Champ additif : une version plus ancienne l'ignore.
+function kyfCryRealiseCompute(){
+  try{
+    const { opsVentes, opsSwaps } = kyfCryRealiseRows();
+    const r2 = n => Math.round((Number(n)||0)*100)/100;
+    const rows = [...opsVentes, ...opsSwaps].filter(v=>!v._aq).map(v=>({ id:String(v.id||''), date:v.date, nom:v.nom, investi:r2(v.investi), recupere:r2(v.recupere), resultat:r2(v.resultat) }));
+    return { investi:r2(rows.reduce((a,v)=>a+v.investi,0)), recupere:r2(rows.reduce((a,v)=>a+v.recupere,0)), resultat:r2(rows.reduce((a,v)=>a+v.resultat,0)), n:rows.length, rows };
+  }catch(e){ return null; }
+}
+
 function renderCryptoPertes(){
   const tb = document.getElementById('cryptoPertesTbody'); if(!tb) return;
   const parseDateFR = d => { if(!d||d==='-'||d==='\u2014') return 0; if(/^\d{4}-\d{2}-\d{2}$/.test(d)) return new Date(d).getTime(); const p=d.split('/'); return p.length===3?new Date(p[2],p[1]-1,p[0]).getTime():0; };
@@ -60914,17 +60940,8 @@ function renderCryptoPertes(){
     resultat: p.perte !== undefined ? -p.perte : p.recupere - p.investi, _csv: true
   }));
 
-  // Ventes manuelles (opérations de type vente)
-  const opsVentes = (cryptoState.operations||[]).filter(o=>o.type==='vente').map(o=>{
-    const b = kyfCryVenteBilan(o);
-    const resultat  = b.aQualifier ? 0 : b.recupere - b.investi;
-    return { date: o.date||'-', nom: o.nom||'-', investi: b.investi, recupere: b.recupere, resultat, _op: true, id: o.id, _aq: b.aQualifier };
-  });
-
-  const opsSwaps = (cryptoState.operations||[]).filter(o=>o.type==='swap' && window._kyfSwapRealise && window._kyfSwapRealise[o.id]).map(o=>{
-    const r = window._kyfSwapRealise[o.id];
-    return { date: o.date||'-', nom: (o.nom||'-') + ' → ' + (o.nom2||''), investi: r.investi, recupere: r.recupere, resultat: r.recupere - r.investi, _op: true, id: o.id };
-  });
+  // Ventes manuelles (opérations de type vente) + swaps vers stablecoin : construits par kyfCryRealiseRows()
+  const { opsVentes, opsSwaps } = kyfCryRealiseRows();
   const all = [...csvPertes, ...opsVentes, ...opsSwaps].sort((a,b)=>parseDateFR(b.date)-parseDateFR(a.date));
   const total = all.reduce((s,v)=>s+(v._aq ? 0 : v.resultat), 0);
 
@@ -78007,6 +78024,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.1.07 · 11/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Crypto : les ventes réalisées (coût investi, montant récupéré, gain ou perte, swaps vers stablecoin compris) sont maintenant enregistrées avec vos données crypto et envoyées au Google Sheet, pour que Keep Your Folio Mobile compte vos pertes et gains passés dans l’investi et la performance, et affiche l’historique des ventes.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.1.06 · 11/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance vie / PER, Ajouter une position : un fonds déjà présent dans le contrat est maintenant reconnu même si le type est différent (Fonds géré, Obligations…) ou si la ligne existante a l’ISIN et la nouvelle le ticker (ou l’inverse), ou le même nom. Un message d’attention apparaît dès la saisie, et l’ajout à la ligne existante est proposé à l’enregistrement. Fenêtre Versements AV/PER : nouveau bouton « + NOUVEAU FONDS » dans l’onglet RÉPARTITION SUR LES LIGNES pour verser sur un fonds qui n’est pas encore dans le contrat, et texte d’explication corrigé.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.1.05 · 11/11/2026</div>
