@@ -6,7 +6,7 @@
   @description : Lit les relevés de courtier PDF entièrement dans le
                  navigateur (aucun envoi) et produit le fichier que le
                  Dashboard KYF importe.
-  @version     : v2.513
+  @version     : v2.514
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -1000,10 +1000,10 @@
   .footer-links a { color: var(--text3); text-decoration: none; transition: color .15s; }
   .footer-links a:hover { color: var(--accent); text-decoration: underline; }
   /* Texte de présentation sous l'outil (référencement : un texte lisible par les moteurs et les assistants IA). Sans numéro de version dans ce commentaire, pour que tools/bump_conv.py ne le renomme pas. */
-  .seo-guide { max-width: 760px; margin: 40px auto 0; padding: 24px 22px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg2); color: var(--text2); font-size: 13px; line-height: 1.75; }
+  .seo-guide { max-width: 760px; margin: 40px auto 0; padding: 24px 22px; border: 0; border-radius: 0; background: none; color: var(--text2); font-size: 13px; line-height: 1.75; }
   .seo-guide h2 { font-size: 18px; line-height: 1.35; color: var(--text); margin: 0; }
   /* Texte replié par défaut : seul le titre reste visible, avec une flèche (même style que « À savoir » du pied de page) */
-  .seo-guide { padding-top: 18px; padding-bottom: 18px; }
+  .seo-guide { padding: 18px 0; }
   .seo-sum { display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; width: fit-content; list-style: none; border-radius: 6px; padding: 3px 6px; margin: -3px -6px; transition: color .15s, background-color .15s; }
   .seo-sum::-webkit-details-marker { display: none; }
   .seo-sum svg.chevron { flex-shrink: 0; transition: transform .2s, color .15s; color: var(--text3); transform: rotate(-90deg); }
@@ -1490,7 +1490,7 @@
   <div class="hero">
     <div class="hero-title">
     <h1>Convertisseur PDF <span>→ CSV</span> <span style="display:inline-block;background:#c99a06;color:#000;font-size:12px;font-weight:800;letter-spacing:.5px;padding:2px 8px;border-radius:6px;vertical-align:middle;">Bêta</span></h1>
-    <p>Détection automatique · v2.513 · Avis général sur le convertisseur</p>
+    <p>Détection automatique · v2.514 · Avis général sur le convertisseur</p>
     </div>
   </div>
 
@@ -2493,7 +2493,7 @@
 
 
 <footer>
-  <div class="footer-notice" id="footerNotice">
+  <div class="footer-notice collapsed" id="footerNotice">
     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="11"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
     <div style="flex:1;min-width:0;">
       <div class="footer-notice-head" onclick="toggleFooterNotice()">
@@ -2581,7 +2581,7 @@
 <script>
   /**
    * @file        KYF PDF to CSV - Convertisseur PDF intelligent
-   * @version     v2.513
+   * @version     v2.514
    * @description Convertisseur PDF → CSV pour KYF Dashboard.
    *              Détection automatique multi-courtiers, biffage pour les
    *              documents non reconnus (voir kyf_biffer_backend.gs).
@@ -2589,7 +2589,7 @@
    * @copyright   © 2026 Keep Your Folio (KYF) - keepyourfolio.fr
    * @license     AGPL-3.0-or-later
    */
-  console.log('%c Keep Your Folio %c PDF → CSV v2.513 %c keepyourfolio.fr ',
+  console.log('%c Keep Your Folio %c PDF → CSV v2.514 %c keepyourfolio.fr ',
     'background:#1a1f2e;color:#f0b429;font-weight:700;padding:4px 8px;border-radius:4px 0 0 4px',
     'background:#2563eb;color:#fff;font-weight:700;padding:4px 8px',
     'background:#1a1f2e;color:#aaa;padding:4px 8px;border-radius:0 4px 4px 0'
@@ -2687,8 +2687,9 @@
     const collapsed = notice.classList.toggle('collapsed');
     localStorage.setItem('kyf-footer-notice-collapsed', collapsed ? '1' : '0');
   }
-  if (localStorage.getItem('kyf-footer-notice-collapsed') === '1') {
-    document.getElementById('footerNotice')?.classList.add('collapsed');
+  // Replié par défaut : il ne s'ouvre au chargement que si la personne l'a déplié elle-même (valeur « 0 »)
+  if (localStorage.getItem('kyf-footer-notice-collapsed') === '0') {
+    document.getElementById('footerNotice')?.classList.remove('collapsed');
   }
   // Restaurer le thème sauvegardé, sinon suivre le thème système
   const savedTheme = localStorage.getItem('kyf-theme');
