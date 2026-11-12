@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.1.10
+  @version     : Beta 2.14.1.11
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5350,7 +5350,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.14.1.10</div>
+  <div class="kl-ver">Beta 2.14.1.11</div>
 </div>
 <script>
 (function(){
@@ -7937,7 +7937,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.1.10</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.1.11</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -45054,7 +45054,7 @@ function renderETFTable(lp){
     const q = v => (Math.round((parseFloat(v)||0) * 1e4) / 1e4).toString().replace('.', ',');
     const tip = l.length > 1 ? 'Même titre sur ' + l.length + ' comptes : ' + l.map(y => _acctLab(y) + ' ' + q(y.qty)).join(' · ') + ' (total ' + q(l.reduce((a, y) => a + (parseFloat(y.qty)||0), 0)) + ')' : _acctLab(x);
     return `<span class="kyf-acct" title="${escapeHtml(tip)}" style="display:inline-flex;align-items:center;margin-left:auto;padding-left:6px;margin-right:8px;vertical-align:middle;flex-shrink:0">${shown.map((y, i) => _acctBadge(y, 10 - i, i > 0)).join('')}${more > 0 ? `<span style="margin-left:3px;font-size:9px;font-weight:700;color:var(--text3)">+${more}</span>` : ''}</span>`; };
-  const _acctShow = x => { const k = String(x.isin || x.ticker || '').toUpperCase(); return (_grouped || _solo) && !_multiCompte[k] ? '' : _acctStack(x); };   // nom du contrat AV / PER, rappelé sur ses lignes en vue mélangée
+  const _acctShow = x => { const k = String(x.isin || x.ticker || '').toUpperCase(), _ev = x.enveloppe || 'PEA'; return (_grouped || _solo) && !_multiCompte[k] && !(_grouped && !_solo && (_ev === 'AV' || _ev === 'PER')) ? '' : _acctStack(x); };   // nom du contrat AV / PER, rappelé sur ses lignes en vue mélangée
   let rows = '';
   let lastEnv = null;
   if(!_solo && !_grouped && kyfEnvList().length >= 2 && _fa.view.length){   // vue mélangée : la ligne de navigation entre comptes reste présente (menu des comptes + flèches)
@@ -50827,7 +50827,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.1.10\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.1.11\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -78024,6 +78024,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.1.11 · 12/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Portefeuille, vue par enveloppe : chaque ligne d’un contrat assurance vie ou PER affiche maintenant le petit logo de son contrat, et plus seulement les titres présents dans plusieurs comptes. Retour de Nicolas.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.1.10 · 11/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance vie / PER : les fenêtres « Modifier le contrat » et « Modifier la position » s’ouvrent maintenant d’un seul coup, déjà remplies, au lieu de s’afficher vides puis de se compléter une fraction de seconde plus tard.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.1.09 · 11/11/2026</div>
