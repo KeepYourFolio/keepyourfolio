@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.1.14
+  @version     : Beta 2.14.1.16
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5334,23 +5334,35 @@ html.kyf-load body{overflow:hidden}
 #kyfLoad .kl-tip svg{flex-shrink:0;margin-top:2px}
 #kyfLoad .kl-tt{font-size:10px;font-weight:800;letter-spacing:1.4px;color:var(--kl-gold);margin-bottom:6px}
 #kyfLoad .kl-tx{font-size:13px;line-height:1.6;color:var(--kl-body)}
+#kyfLoad .kl-core .kl-av{position:relative;width:84px;height:84px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:rgba(240,180,41,.18);color:var(--kl-gold);font-size:28px;font-weight:800;letter-spacing:0}
+#kyfLoad .kl-core .kl-av img{width:100%;height:100%;object-fit:cover;display:block}
+#kyfLoad .kl-hello{margin-top:18px;font-size:17px;font-weight:800;color:var(--kl-tx);text-align:center}
+#kyfLoad .kl-hello + .kl-word{margin-top:12px}
+#kyfLoad .kl-thx{margin-top:22px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px 12px;max-width:100%;text-align:center}
+#kyfLoad .kl-stack{display:flex}
+#kyfLoad .kl-stack span{width:26px;height:26px;margin-left:-7px;border-radius:50%;border:2px solid var(--kl-core);background:var(--kl-av);color:var(--kl-avf);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;box-sizing:border-box}
+#kyfLoad .kl-stack span:first-child{margin-left:0;background:rgba(240,180,41,.3);color:var(--kl-gold);box-shadow:0 0 0 2px var(--kl-gold)}
+#kyfLoad .kl-thx-t{font-size:11px;color:var(--kl-body)}
+#kyfLoad .kl-thx-a{font-size:11px;font-weight:700;color:var(--kl-gold);text-decoration:underline;cursor:pointer}
 #kyfLoad .kl-ver{position:absolute;left:0;right:0;bottom:22px;text-align:center;font-size:10px;font-weight:700;letter-spacing:1.2px;color:var(--kl-mut)}
 @keyframes klRing{0%{transform:scale(.7);opacity:.7}100%{transform:scale(1.5);opacity:0}}
 @keyframes klSpin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){#kyfLoad .kl-ring,#kyfLoad .kl-core svg{animation:none}}
 @media (max-width:520px){#kyfLoad .kl-tip{padding:14px 16px}#kyfLoad .kl-word{font-size:13px;letter-spacing:4px}}
-#kyfLoad{--kl-bg:#0d1220;--kl-tx:#e6ebf5;--kl-gold:#f0b429;--kl-core:#151b2e;--kl-bd:#2a3350;--kl-word:#9fb0d4;--kl-mut:#8ea0c4;--kl-c1:#1a2138;--kl-c2:#151b2e;--kl-body:#c8d2e8}
-#kyfLoad[data-kt="light"]{--kl-bg:#eef2fa;--kl-tx:#0f1a33;--kl-gold:#b87900;--kl-core:#ffffff;--kl-bd:#c3cee6;--kl-word:#4a5a85;--kl-mut:#55658e;--kl-c1:#ffffff;--kl-c2:#f3f6fc;--kl-body:#2c3b63}
+#kyfLoad{--kl-bg:#0d1220;--kl-tx:#e6ebf5;--kl-gold:#f0b429;--kl-core:#151b2e;--kl-bd:#2a3350;--kl-word:#9fb0d4;--kl-mut:#8ea0c4;--kl-c1:#1a2138;--kl-c2:#151b2e;--kl-body:#c8d2e8;--kl-av:#24304f;--kl-avf:#9db8f2}
+#kyfLoad[data-kt="light"]{--kl-bg:#eef2fa;--kl-tx:#0f1a33;--kl-gold:#b87900;--kl-core:#ffffff;--kl-bd:#c3cee6;--kl-word:#4a5a85;--kl-mut:#55658e;--kl-c1:#ffffff;--kl-c2:#f3f6fc;--kl-body:#2c3b63;--kl-av:#dbe6fa;--kl-avf:#2563b8}
 </style>
 <div id="kyfLoad" role="status" aria-live="polite" aria-label="Chargement de Keep Your Folio">
   <div class="kl-logo"><span class="kl-ring"></span><span class="kl-ring r2"></span>
-    <div class="kl-core"><svg width="96" height="96" viewBox="0 0 96 96" aria-hidden="true"><circle cx="48" cy="48" r="46" fill="none" stroke="var(--kl-gold)" stroke-width="3" stroke-linecap="round" stroke-dasharray="52 240"/></svg>KYF</div></div>
+    <div class="kl-core" id="klCore"><svg width="96" height="96" viewBox="0 0 96 96" aria-hidden="true"><circle cx="48" cy="48" r="46" fill="none" stroke="var(--kl-gold)" stroke-width="3" stroke-linecap="round" stroke-dasharray="52 240"/></svg>KYF</div></div>
+  <div class="kl-hello" id="klHello" style="display:none"></div>
   <div class="kl-word">KEEP<b>·</b>YOUR<b>·</b><b>FOLIO</b></div>
   <div class="kl-strip"><i style="background:#2f6fe0"></i><i style="background:#fff;box-shadow:0 0 0 1px rgba(120,130,160,.45)"></i><i style="background:#e0353f"></i></div>
   <div class="kl-sub">Préparation de votre tableau de bord</div>
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
-  <div class="kl-ver">Beta 2.14.1.14</div>
+  <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
+  <div class="kl-ver">Beta 2.14.1.16</div>
 </div>
 <script>
 (function(){
@@ -5360,12 +5372,26 @@ html.kyf-load body{overflow:hidden}
     if(man) th=localStorage.getItem('pea-theme')||'dark'; else th=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';
     if(th==='light') el.setAttribute('data-kt','light'); }catch(e){}
   try{ document.getElementById('klTx').textContent = P[Math.floor(Math.random()*P.length)]; }catch(e){}
+  // Utilisateur avec un profil : son avatar au cœur des vagues et « Bonjour », sinon l'écran reste tel quel
+  try{
+    var nom=(localStorage.getItem('kyf-profil-nom')||'').trim(), pic=localStorage.getItem('kyf-profil-avatar')||'';
+    if(nom){
+      var core=document.getElementById('klCore'), tn=core.lastChild; if(tn&&tn.nodeType===3) core.removeChild(tn);
+      var av=document.createElement('div'); av.className='kl-av'; var ini=nom.replace(/[^A-Za-zÀ-ÿ0-9]/g,'').slice(0,2).toUpperCase()||'?';
+      var iniFb=function(){ av.textContent=ini; };
+      if(pic){ var im=new Image(); im.alt=''; im.onerror=function(){ if(im.parentNode) im.parentNode.removeChild(im); iniFb(); }; im.src=pic; av.appendChild(im); } else iniFb();
+      core.appendChild(av);
+      var hl=document.getElementById('klHello'); hl.textContent='Bonjour '+nom; hl.style.display='';
+    }
+  }catch(e){}
+  // « Voir les remerciements » : le Guide (chapitre 15) s'ouvre dès que le chargement est fini
+  try{ document.getElementById('klThxA').addEventListener('click', function(ev){ ev.preventDefault(); window._klThx=true; this.textContent='Les remerciements s\u2019ouvrent à la fin du chargement'; this.style.pointerEvents='none'; }); }catch(e){}
   function out(){
     if(gone) return; gone=true;
     var w=Math.max(0, 900-(Date.now()-t0));
     setTimeout(function(){
       if(el) el.classList.add('kl-out');
-      setTimeout(function(){ h.classList.remove('kyf-load'); if(el&&el.parentNode) el.parentNode.removeChild(el); var c=document.getElementById('kyfLoadCss'); if(c&&c.parentNode) c.parentNode.removeChild(c); }, 480);
+      setTimeout(function(){ h.classList.remove('kyf-load'); if(el&&el.parentNode) el.parentNode.removeChild(el); var c=document.getElementById('kyfLoadCss'); if(c&&c.parentNode) c.parentNode.removeChild(c); if(window._klThx){ var n=0, tm=setInterval(function(){ n++; if(typeof openGuide==='function'){ clearInterval(tm); try{ openGuide(47); }catch(e){} } else if(n>20) clearInterval(tm); }, 300); } }, 480);
     }, w);
   }
   function ready(){ requestAnimationFrame(function(){ requestAnimationFrame(out); }); }
@@ -5408,6 +5434,38 @@ html.kyf-first body{overflow:hidden}
 #kyfSplash .ksp-values{display:flex;gap:8px;flex-wrap:wrap;font-size:9px;font-weight:800;letter-spacing:1px;color:var(--text3);border-top:1px solid var(--border);padding-top:clamp(14px,3vh,26px)}
 #kyfSplash .ksp-values i{font-style:normal;opacity:.6}
 #kyfSplash .ksp-ver{margin-left:auto;font-weight:700;letter-spacing:.6px;color:var(--text3)}
+/* 2.14.1.15 : popup 1 : remerciements (colonne de gauche), notes déplacées du popup 2, pastille Avis, chargement toujours visible */
+#kyfSplash .ksp-left{overflow-y:auto;scrollbar-width:thin}
+#kyfSplash .ksp-right{position:relative}
+#kyfSplash #kyfAvisPillS{position:absolute;top:clamp(20px,4vh,40px);right:clamp(20px,3vw,40px)}
+#kyfSplash .ksp-thx{margin-top:16px;padding-top:14px;border-top:1px solid var(--border)}
+#kyfSplash .ksp-thx-h{display:flex;align-items:center;gap:6px;font-size:9px;font-weight:800;letter-spacing:1.2px;color:var(--accent)}
+#kyfSplash .ksp-thx-main{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;margin:8px 0 8px}
+#kyfSplash .ksp-thx-gold{display:inline-block;padding:5px 13px;border-radius:999px;background:#f0b429;color:#000;font-size:13px;font-weight:800}
+#kyfSplash .ksp-thx-id{font-size:10px;color:var(--text3)}
+#kyfSplash .ksp-thx-list{display:flex;flex-wrap:wrap;gap:5px}
+#kyfSplash .ksp-thx-list span{padding:3px 9px;border-radius:999px;border:1px solid var(--border);font-size:10px;font-weight:600;color:var(--text2)}
+#kyfSplash .ksp-zero{width:fit-content;align-self:center}
+#kyfSplash .ksp-notes{display:grid;grid-template-columns:1.35fr 1fr;gap:12px;margin-top:6px;width:100%;max-width:680px}
+#kyfSplash .ksp-note{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:12px;border:1px solid rgba(240,180,41,.45);background:rgba(240,180,41,.10);min-width:0}
+#kyfSplash .ksp-note-ic{flex-shrink:0;color:#f0b429;margin-top:1px}
+[data-theme="light"] #kyfSplash .ksp-note-ic{color:#b45309}
+#kyfSplash .ksp-note b{display:block;font-size:11px;font-weight:800;letter-spacing:.3px;color:var(--text-hi)}
+#kyfSplash .ksp-note em{font-style:normal;margin-left:6px;padding:2px 7px;border-radius:999px;background:var(--bg3);font-size:8px;letter-spacing:.8px;color:var(--text3);font-weight:800}
+#kyfSplash .ksp-note p{margin:3px 0 0;font-size:11px;line-height:1.55;color:var(--text2)}
+#kyfSplash .ksp-note p.ksp-note-s{font-size:10px;color:var(--text3);margin-top:4px}
+#kyfSplash .ksp-ver a{color:var(--accent);text-decoration:underline;cursor:pointer}
+#kyfSplash:not(.ready) .ksp-ver a{opacity:.45;pointer-events:none}
+#kyfSplash .ksp-wait{position:relative;overflow:visible;padding:0;min-width:178px;justify-content:center;cursor:help}
+#kyfSplash .ksp-wait-fill{border-radius:7px;background:#f0b429;opacity:.85;animation:kspSlide 1.3s ease-in-out infinite}
+#kyfSplash .ksp-wait-txt{position:relative;display:inline-flex;align-items:center;gap:7px;padding:8px 18px;color:#000;font-size:9px;font-weight:700;letter-spacing:.3px}
+#kyfSplash .ksp-wait-clip{position:absolute;inset:0;overflow:hidden;border-radius:7px;pointer-events:none}
+#kyfSplash .ksp-wait-fill{width:35%;height:100%;display:block}
+#kyfSplash .ksp-why-tip{display:none;position:absolute;right:0;bottom:calc(100% + 12px);width:min(340px,80vw);padding:13px 15px;border-radius:12px;background:var(--bg2);border:1px solid var(--border2);box-shadow:0 14px 36px rgba(0,0,0,.35);font-size:11px;font-weight:500;letter-spacing:0;line-height:1.65;color:var(--text2);text-align:left;z-index:5}
+#kyfSplash .ksp-why-tip b{display:block;margin-bottom:3px;color:var(--text-hi);font-weight:800}
+#kyfSplash .ksp-wait:hover .ksp-why-tip,#kyfSplash .ksp-wait:focus .ksp-why-tip,#kyfSplash .ksp-wait:focus-visible .ksp-why-tip{display:block}
+@media (prefers-reduced-motion:reduce){#kyfSplash .ksp-wait-fill{animation:none;width:60%}}
+
 #kyfSplash .ksp-bar{height:3px;border-radius:2px;background:var(--border);overflow:hidden}
 #kyfSplash .ksp-bar b{display:block;height:3px;width:35%;border-radius:2px;background:#f0b429;animation:kspSlide 1.3s ease-in-out infinite}
 #kyfSplash.ready .ksp-bar{display:none}
@@ -5498,26 +5556,25 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
         <div style="color:var(--text3);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;margin-top:3px">Dashboard patrimonial</div>
         <div style="margin-top:4px"><div style="display:flex;gap:2px;width:48px"><div style="flex:1;height:2px;background:#0015FF;border-radius:1px"></div><div style="flex:1;height:2px;background:#FFFFFF;border:1px solid rgba(128,128,128,.25);border-radius:1px;box-sizing:border-box"></div><div style="flex:1;height:2px;background:#FF0000;border-radius:1px"></div></div></div>
       </div>
-      <div class="ksp-priv"><div class="ksp-priv-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div class="ksp-priv-eye">PRIVACY BY DESIGN</div><div class="ksp-priv-h">Local-first, par conception.</div><p class="ksp-priv-p">Keep Your Folio est conçu selon une approche <b>local-first</b> : vos données patrimoniales restent sous votre contrôle et sont traitées localement, dans ce navigateur, sur cet appareil.</p><p class="ksp-priv-p ksp-priv-p2">Aucune donnée sur vous ni votre portefeuille n'est jamais envoyée à un serveur Keep Your Folio. Si vous activez une sauvegarde (Google Sheets, GitHub, WebDAV ou un simple dossier local), elle part uniquement vers votre propre compte ou votre propre machine.</p><div class="ksp-priv-pts"><div class="ksp-pp"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg><div><b>Pas de publicité</b><span>Aucun tracker publicitaire.</span></div></div><div class="ksp-pp"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><path d="M4 4l16 16"/></svg><div><b>Pas de tracking</b><span>Pas de suivi de votre activité.</span></div></div><div class="ksp-pp"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/><path d="M3 3l18 18"/></svg><div><b>Pas de profilage</b><span>Votre patrimoine n'est pas exploité à des fins publicitaires.</span></div></div></div><p class="ksp-priv-note">Votre adresse email est facultative et n'est pas nécessaire au fonctionnement de Keep Your Folio.</p></div>
+      <div class="ksp-priv"><div class="ksp-priv-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div class="ksp-priv-eye">PRIVACY BY DESIGN</div><div class="ksp-priv-h">Local-first, par conception.</div><p class="ksp-priv-p">Keep Your Folio est conçu selon une approche <b>local-first</b> : vos données patrimoniales restent sous votre contrôle et sont traitées localement, dans ce navigateur, sur cet appareil.</p><p class="ksp-priv-p ksp-priv-p2">Aucune donnée sur vous ni votre portefeuille n'est jamais envoyée à un serveur Keep Your Folio. Si vous activez une sauvegarde (Google Sheets, GitHub, WebDAV ou un simple dossier local), elle part uniquement vers votre propre compte ou votre propre machine.</p><div class="ksp-priv-pts"><div class="ksp-pp"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg><div><b>Pas de publicité</b><span>Aucun tracker publicitaire.</span></div></div><div class="ksp-pp"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><path d="M4 4l16 16"/></svg><div><b>Pas de tracking</b><span>Pas de suivi de votre activité.</span></div></div><div class="ksp-pp"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/><path d="M3 3l18 18"/></svg><div><b>Pas de profilage</b><span>Votre patrimoine n'est pas exploité à des fins publicitaires.</span></div></div></div><p class="ksp-priv-note">Votre adresse email est facultative et n'est pas nécessaire au fonctionnement de Keep Your Folio.</p><div class="ksp-thx"><div class="ksp-thx-h"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>REMERCIEMENTS</div><div class="ksp-thx-main"><span class="ksp-thx-gold">GN37</span><span class="ksp-thx-id">NB50816 · forum Linxea</span></div><div class="ksp-thx-list"><span>Izidor</span><span>Sébastien M.</span><span>Guillaume</span><span>Pernelle M.</span></div></div></div>
     </div>
     <div class="ksp-right">
+      <div class="kyf-avis-pill" id="kyfAvisPillS" role="img" style="display:none"></div>
       <div style="display:flex;flex-direction:column;gap:clamp(16px,3.8vh,34px);align-items:flex-start">
         <div class="ksp-badge">ÉTAPE 1 SUR 3</div>
         <h1>Votre patrimoine.<br><span>Votre vision. Vos données.</span></h1>
         <p class="ksp-intro">KeepYourFolio est un tableau de bord patrimonial gratuit,<br>conçu pour centraliser et suivre votre patrimoine<br>dans un seul espace.</p>
         <div class="ksp-zero" role="note"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.4 9.3-8 11-4.6-1.7-8-6-8-11V5z"/><polyline points="9 12 11 14 15 10"/></svg><div><b>Aucun serveur. Aucune donnée personnelle collectée.</b><span>Rien de ce que vous saisissez ou importez ne quitte votre appareil : nous n'avons ni base de données, ni compte utilisateur.</span></div></div>
-        <div class="ksp-assets"><span>Investissements</span><i>·</i><span>Épargne</span><i>·</i><span>Crypto</span><i>·</i><span>Immobilier</span><i>·</i><span>Métaux précieux</span><i>·</i><span>SCPI</span><i>·</i><span>Dividendes</span><i>·</i><span>PERECOL</span><i>·</i><span>Comparateur de frais</span><i>·</i><span>Alertes de prix</span><i>·</i><span>Fiscalité</span><i>·</i><span>Communauté</span></div>
+        <div class="ksp-notes"><div class="ksp-note"><div class="ksp-note-ic" style="display:flex;gap:6px;align-items:flex-start"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-label="Apple" role="img"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-label="Android" role="img"><path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993.0004.5511-.4482.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1521-.5676.416.416 0 00-.5676.1521l-2.0223 3.503C15.5902 8.2439 13.8533 7.8508 12 7.8508s-3.5902.3931-5.1367 1.0989L4.841 5.4467a.4161.4161 0 00-.5677-.1521.4157.4157 0 00-.1521.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.761h24c-.3435-4.1021-2.6892-7.5743-6.1185-9.4396"/></svg></div><div><b>Version mobile : bientôt en bêta</b><p>Des versions webapp pour Apple* et Android arrivent prochainement, et une version Google Play Store sera publiée. En attendant, utilisez Keep Your Folio sur ordinateur pour la meilleure expérience.</p><p class="ksp-note-s">* Apple impose des restrictions aux développeurs : une version App Store n'est pas assurée.</p></div></div><div class="ksp-note" title="Cette version continue d'évoluer grâce aux retours des utilisateurs. N'hésitez pas à signaler les bugs et à proposer des améliorations."><div class="ksp-note-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h6M10 2v6.5L4.5 18a2 2 0 0 0 1.7 3h11.6a2 2 0 0 0 1.7-3L14 8.5V2"/></svg></div><div><b>BÊTA ACTIVE <em>VERSION PUBLIQUE</em></b><p>Des bugs existent, des fonctionnalités arrivent. <strong>Vos retours comptent.</strong></p></div></div></div>
       </div>
       <div style="display:flex;flex-direction:column;gap:clamp(16px,3.6vh,32px)">
-        <div class="ksp-bar" aria-hidden="true"><b></b></div>
-        <p class="ksp-why"><b>Pourquoi ce chargement ?</b> Keep Your Folio fonctionne entièrement dans votre navigateur, sans serveur : le programme complet (graphiques, calculs, outils d’import) se télécharge sur votre appareil, et c’est ce qui permet à vos données de rester chez vous. Une fois chargé, tout se passe sur votre appareil.</p>
         <div class="ksp-actions">
           <button type="button" class="ksp-demo" onclick="kyfSplashGo('demo')"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="7 4 20 12 7 20 7 4"/></svg>ESSAYER LA DÉMO</button>
           <button type="button" class="ksp-guide" onclick="kyfSplashGo('guide')">Découvrir le guide</button>
-          <span class="ksp-wait" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>CHARGEMENT…</span>
+          <span class="ksp-wait" role="status" tabindex="0" aria-describedby="kspWhy"><span class="ksp-wait-clip" aria-hidden="true"><i class="ksp-wait-fill"></i></span><span class="ksp-wait-txt">CHARGEMENT…<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span><span class="ksp-why-tip" id="kspWhy" role="tooltip"><b>Pourquoi ce chargement ?</b>Keep Your Folio fonctionne entièrement dans votre navigateur, sans serveur : le programme complet (graphiques, calculs, outils d’import) se télécharge sur votre appareil. C’est ce qui permet à vos données de rester chez vous.</span></span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">Beta 2.14.1.02</span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">BETA 2.14.1.16 · <a href="#" onclick="kyfSplashJournal();return false">NOUVEAUTÉS</a></span></div>
       </div>
     </div>
   </div>
@@ -7937,7 +7994,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.1.14</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.1.16</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -47006,7 +47063,7 @@ const AVIS_CACHE_KEY = 'kyf-avis-cache';
 function kyfAvisPillSet(data){
   const ok = data && data.total > 0 && data.moyenne > 0;
   const txt = ok ? data.moyenne.toFixed(1).replace('.', ',') + ' sur 5, ' + data.total + ' avis certifié' + (data.total > 1 ? 's' : '') : '';
-  ['kyfAvisPill', 'kyfAvisPillW'].forEach(id => {
+  ['kyfAvisPill', 'kyfAvisPillW', 'kyfAvisPillS'].forEach(id => {
     const el = document.getElementById(id); if(!el) return;
     el.textContent = '';
     if(!ok){ el.style.display = 'none'; return; }
@@ -50827,7 +50884,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.1.14\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.1.16\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -63518,16 +63575,6 @@ function contactDownloadCopy(){
       <button type="button" class="kyf-demo-btn" id="kyfWelcomeDemoBtn" onclick="kyfDemoStart()">ESSAYER LA DÉMO <span>&#8594;</span></button>
     </section>
 
-    <!-- ORDINATEUR CONSEILLÉ : pas encore de version mobile -->
-    <section class="kyf-device-card kyf-mobile-card" role="note">
-      <div class="kyf-device-icon" style="display:flex;gap:10px;align-items:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-label="Apple" role="img"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-label="Android" role="img"><path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993.0004.5511-.4482.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1521-.5676.416.416 0 00-.5676.1521l-2.0223 3.503C15.5902 8.2439 13.8533 7.8508 12 7.8508s-3.5902.3931-5.1367 1.0989L4.841 5.4467a.4161.4161 0 00-.5677-.1521.4157.4157 0 00-.1521.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.761h24c-.3435-4.1021-2.6892-7.5743-6.1185-9.4396"/></svg></div>
-      <div>
-        <strong>Version mobile : bientôt en bêta</strong>
-        <p>Des versions webapp pour Apple* et Android arrivent prochainement, et une version Google Play Store sera publiée. En attendant, utilisez Keep Your Folio sur ordinateur pour la meilleure expérience.</p>
-        <p style="font-size:11px;margin-top:6px;opacity:.85">* Apple impose des restrictions aux développeurs : une version App Store n'est pas assurée.</p>
-      </div>
-    </section>
-
     <!-- 4 FEATURE CARDS -->
     <section class="kyf-feature-grid">
 
@@ -63831,36 +63878,6 @@ function contactDownloadCopy(){
           </div>
         </div>
 
-      </div>
-
-    </section>
-
-
-    <!-- BETA -->
-    <section class="kyf-beta-card">
-
-      <div class="kyf-beta-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h6M10 2v6.5L4.5 18a2 2 0 0 0 1.7 3h11.6a2 2 0 0 0 1.7-3L14 8.5V2"/></svg>
-      </div>
-
-      <div class="kyf-beta-content">
-
-        <div class="kyf-beta-title">
-          <span>BÊTA ACTIVE</span>
-          <span class="kyf-beta-pill">VERSION PUBLIQUE</span>
-        </div>
-
-        <p>
-          Des bugs existent, des fonctionnalités arrivent.
-          <strong>Vos retours comptent.</strong>
-        </p>
-
-      </div>
-
-      <div class="kyf-beta-tooltip">
-        Cette version continue d'évoluer grâce aux retours
-        des utilisateurs. N'hésitez pas à signaler les bugs
-        et à proposer des améliorations.
       </div>
 
     </section>
@@ -67840,6 +67857,13 @@ const GUIDE_PAGES = [
             <div>
               <div style="font-size:13px;font-weight:700;color:var(--text)">Pernelle M.</div>
               <div style="font-size:12px;color:var(--text3);line-height:1.7">Audit de la sécurité OAuth · Aide sur le Convertisseur PDF→CSV</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:8px;background:rgba(240,180,41,0.08);border:1px solid rgba(240,180,41,0.35)">
+            <div style="flex-shrink:0;color:var(--accent)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--text)">GN37 <span style="color:var(--text3);font-weight:400">(NB50816)</span></div>
+              <div style="font-size:12px;color:var(--text3);line-height:1.7">Forum Linxea · Remerciements particuliers</div>
             </div>
           </div>
           <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid var(--border)">
@@ -74774,7 +74798,16 @@ function kyfSplashReady(){
   sp.classList.add('ready');
   return true;
 }
+// « Nouveautés » (ligne de version du popup 1) : ouvre l'historique des versions au-dessus de l'écran d'accueil
+function kyfSplashJournal(){
+  try{
+    ['infoPanel','infoOverlay'].forEach(id => { const e = document.getElementById(id); if(e) e.style.zIndex = '2147483000'; });
+    const p = document.getElementById('infoPanel'); if(p && p.style.display === 'none') toggleInfoPanel();
+    setTimeout(() => { const ch = document.getElementById('infoPanelChangelog'); if(!ch) return; if(ch.style.display === 'none' && ch.previousElementSibling) ch.previousElementSibling.click(); try{ ch.scrollIntoView({ block:'nearest' }); }catch(e){} }, 80);
+  }catch(e){}
+}
 function kyfSplashClose(){
+  ['infoPanel','infoOverlay'].forEach(id => { const e = document.getElementById(id); if(e) e.style.zIndex = ''; });
   const sp = document.getElementById('kyfSplash');
   document.documentElement.classList.remove('kyf-first');
   if(sp) sp.remove();
@@ -78024,6 +78057,10 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.1.16 · 12/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Écran de chargement : si un profil existe, son avatar prend la place de « KYF » au cœur des vagues, avec « Bonjour » et le prénom. Une ligne de remerciements avec un lien ouvre le Guide, chapitre 15, à la fin du chargement.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.1.15 · 12/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Écran de bienvenue (étape 1) : remerciements, pastille des avis en haut à droite, notes « Version mobile » et « Bêta active » déplacées depuis l’étape 2, chargement toujours visible dans le bouton avec son explication au survol, numéro de version avec lien vers les nouveautés. Guide : remerciement ajouté pour GN37 (NB50816) du forum Linxea.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.1.14 · 12/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Dividendes venus du téléphone : un dividende marqué « réinvesti », avec le nombre d’actions reçues, crée maintenant l’achat correspondant dans la position (PEA et CTO). Sans nombre d’actions ou sans position, il part en validation manuelle.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.1.13 · 12/11/2026</div>
