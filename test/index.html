@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.00
+  @version     : Beta 2.14.2.01
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5362,7 +5362,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.00</div>
+  <div class="kl-ver">Beta 2.14.2.01</div>
 </div>
 <script>
 (function(){
@@ -5574,7 +5574,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status" tabindex="0" aria-describedby="kspWhy"><span class="ksp-wait-clip" aria-hidden="true"><i class="ksp-wait-fill"></i></span><span class="ksp-wait-txt">CHARGEMENT…<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span><span class="ksp-why-tip" id="kspWhy" role="tooltip"><b>Pourquoi ce chargement ?</b>Keep Your Folio fonctionne entièrement dans votre navigateur, sans serveur : le programme complet (graphiques, calculs, outils d’import) se télécharge sur votre appareil. C’est ce qui permet à vos données de rester chez vous.</span></span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">BETA 2.14.2.00 · <a href="#" onclick="kyfSplashJournal();return false">NOUVEAUTÉS</a></span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">BETA 2.14.2.01 · <a href="#" onclick="kyfSplashJournal();return false">NOUVEAUTÉS</a></span></div>
       </div>
     </div>
   </div>
@@ -8001,7 +8001,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.00</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.01</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -12675,22 +12675,24 @@ function kyfCptComptes(env){
   l.forEach(x => {
     if(!x || typeof x !== 'object' || typeof x.id !== 'string' || !re.test(x.id) || vus[x.id] || out.length >= KYF_CTO_MAX) return;
     vus[x.id] = 1;
-    const o = { id: x.id, nom: (typeof x.nom === 'string' && x.nom.trim()) ? x.nom.trim().slice(0, 40) : C.nom + ' ' + x.id.slice(1),
+    const n0 = (typeof x.nom === 'string' && x.nom.trim()) ? x.nom.trim().slice(0, 40) : '';
+    const o = { id: x.id, nom: (n0 && !(x.id === un && n0 === C.nom + ' 1')) ? n0 : kyfCptNomDef(env, x.id),   // premier compte jamais renommé : « Mon PEA »
       etab: typeof x.etab === 'string' ? x.etab.slice(0, 40) : '', date: (typeof x.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(x.date)) ? x.date : '' };
     if(typeof x.titulaire === 'string' && x.titulaire) o.titulaire = x.titulaire.slice(0, 20);
     if(env === 'PEA'){ const v = parseFloat(x.verse); if(isFinite(v) && v > 0) o.verse = Math.round(v * 100) / 100; }
     out.push(o);
   });
-  if(!vus[un]) out.unshift({ id: un, nom: C.nom + ' 1', etab: '', date: '' });
+  if(!vus[un]) out.unshift({ id: un, nom: kyfCptNomDef(env, un), etab: '', date: '' });
   return out.slice(0, KYF_CTO_MAX);
 }
+function kyfCptNomDef(env, id){ const C = KYF_MC[env]; return id === C.pre + '1' ? 'Mon ' + C.nom : C.nom + ' ' + String(id).slice(1); }   // nom tant que le compte n'est pas renommé
 function kyfCptSave(env, l){ try{ localStorage.setItem(KYF_MC[env].key, JSON.stringify(l)); }catch(e){} }
 function kyfCptMulti(env){ return !!KYF_MC[env] && kyfCptComptes(env).length > 1; }
 function kyfCptOf(env, e){   // compte d'une ligne ou d'une opération ; inconnu ou absent : le premier compte
   const id = e && typeof e.compte === 'string' ? e.compte : '';
   return kyfCptComptes(env).some(c => c.id === id) ? id : kyfMcUn(env);
 }
-function kyfCptNom(id){ const env = kyfMcEnvOfId(id), c = kyfCptComptes(env).find(x => x.id === id); return c ? c.nom : KYF_MC[env].nom + ' 1'; }
+function kyfCptNom(id){ const env = kyfMcEnvOfId(id), c = kyfCptComptes(env).find(x => x.id === id); return c ? c.nom : kyfCptNomDef(env, kyfMcUn(env)); }
 function kyfCptLabel(e){   // libellé court d'une ligne : « PEA », ou le nom du compte quand il y en a plusieurs
   const env = (e && e.enveloppe) || 'PEA';
   return kyfMcEnv(env) && kyfCptMulti(env) ? kyfCptNom(kyfCptOf(env, e)) : env;
@@ -12748,11 +12750,41 @@ function ctCptSet(id, sens, focus){   // sens : +1 / -1 anime l'arrivée de la c
   if(h && sens && !calme){ h.classList.remove('ct-in-l', 'ct-in-r', 'ct-pile-in'); void h.offsetWidth; h.classList.add(sens > 0 ? 'ct-pile-in' : 'ct-in-l'); }
   if(focus){ const d = document.getElementById('ctDot_' + id) || document.getElementById('ctDeck'); try{ if(d) d.focus({ preventScroll: true }); }catch(e){} }
 }
-function ctCptAdd(){
-  const env = ctCptEnv(), C = KYF_MC[env], l = kyfCptComptes(env); if(l.length >= KYF_CTO_MAX) return;
-  let n = 2; while(l.some(c => c.id === C.pre + n)) n++;
-  l.push({ id: C.pre + n, nom: C.nom + ' ' + n, etab: '', date: '' }); kyfCptSave(env, l);
+// Noms proposés (2.14.2.01) : prénoms de la famille déclarée (« PEA de Sophie »), puis Madame, Monsieur, Enfant ; jamais un nom déjà pris
+function kyfCptNomSugg(env, sauf){
+  const C = KYF_MC[env], pris = kyfCptComptes(env).filter(c => c.id !== sauf).map(c => c.nom.toLowerCase()), out = [];
+  const add = t => { if(t && out.indexOf(t) < 0 && pris.indexOf(t.toLowerCase()) < 0 && out.length < 6) out.push(t); };
+  try{ if(kyfFamOn()) kyfFamLoad().forEach(m => { if(m.id !== 'ambre' && m.prenom) add(C.nom + ' de ' + m.prenom); }); }catch(e){}
+  ['Madame', 'Monsieur', 'Enfant'].forEach(x => add(C.nom + ' ' + x));
+  return out;
+}
+// Fenêtre « Nom du compte » : champ libre et propositions en pastilles (mêmes pastilles que « À qui »). Renvoie le nom, ou null si annulé.
+async function kyfCptNomAsk(env, id, actuel){
+  const C = KYF_MC[env], sug = kyfCptNomSugg(env, id);
+  const p = kyfDialog({ kind: 'input', q: 'Nom du ' + C.nom, d: 'Touchez une proposition ou tapez le nom de votre choix. Vous pourrez le changer à tout moment.', value: actuel || sug[0] || kyfCptNomDef(env, id), ok: actuel ? 'Renommer' : 'Créer', cancel: 'Annuler' });
+  const inp = document.getElementById('kyfDlgIn');
+  if(inp && sug.length){
+    const box = document.createElement('div'); box.setAttribute('role', 'group'); box.setAttribute('aria-label', 'Noms proposés'); box.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;margin-top:10px';
+    const paint = () => box.querySelectorAll('button').forEach(b => { const a = b.textContent === inp.value.trim();
+      b.style.cssText = 'cursor:pointer;font-family:inherit;padding:7px 14px;border-radius:7px;font-size:11px;font-weight:700;border:1px solid ' + (a ? 'var(--accent)' : 'var(--border2)') + ';background:' + (a ? 'rgba(77,159,255,0.12)' : 'rgba(255,255,255,0.04)') + ';color:' + (a ? 'var(--accent)' : 'var(--text3)') + ';transition:all .15s';
+      b.onmouseover = () => { if(!a) b.style.background = document.documentElement.getAttribute('data-theme') === 'light' ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.12)'; }; b.onmouseout = () => { if(!a) b.style.background = 'rgba(255,255,255,0.04)'; }; });
+    sug.forEach(t => { const b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.onclick = () => { inp.value = t; paint(); inp.focus(); }; box.appendChild(b); });
+    inp.addEventListener('input', paint); inp.parentNode.insertBefore(box, inp.nextSibling); paint();
+  }
+  const v = await p; if(v === null || v === undefined) return null;
+  return String(v).replace(/[<>"`\\\u0000-\u001f]/g, '').trim().slice(0, 40) || kyfCptNomDef(env, id);
+}
+async function ctCptAdd(){
+  const env = ctCptEnv(), C = KYF_MC[env], l0 = kyfCptComptes(env); if(l0.length >= KYF_CTO_MAX) return;
+  let n = 2; while(l0.some(c => c.id === C.pre + n)) n++;
+  const nom = await kyfCptNomAsk(env, C.pre + n, ''); if(nom === null) return;
+  const l = kyfCptComptes(env); if(l.length >= KYF_CTO_MAX || l.some(c => c.id === C.pre + n)) return;
+  l.push({ id: C.pre + n, nom: nom, etab: '', date: '' }); kyfCptSave(env, l);
   ctCptSet(C.pre + n);
+}
+async function ctCptRenommer(id){   // crayon de la carte
+  const env = kyfMcEnvOfId(id), nom = await kyfCptNomAsk(env, id, kyfCptNom(id)); if(nom === null) return;
+  const l = kyfCptComptes(env), c = l.find(x => x.id === id); if(!c) return; c.nom = nom; kyfCptSave(env, l); ctRender();
 }
 function ctCptLignes(id){ const env = kyfMcEnvOfId(id); return ETF.filter(e => e.enveloppe === env && kyfCptOf(env, e) === id).length; }
 function ctCptDel(){   // seulement un compte vide, et jamais le premier : aucune ligne ne peut se retrouver sans compte
@@ -12765,7 +12797,7 @@ function ctCptDel(){   // seulement un compte vide, et jamais le premier : aucun
 function ctOnNom(el){
   const env = ctCptEnv(), id = ctCptSel(env); if(!id) return;
   const v = el.value.trim().slice(0, 40), l = kyfCptComptes(env), c = l.find(x => x.id === id); if(!c) return;
-  c.nom = v || KYF_MC[env].nom + ' ' + id.slice(1); kyfCptSave(env, l); ctRender();
+  c.nom = v || kyfCptNomDef(env, id); kyfCptSave(env, l); ctRender();
 }
 // Pile de cartes (2.8.11.06) : la carte principale (#ctHero) devant, les autres comptes visibles derrière. Changer de carte : glisser, flèches
 // (affichées au survol) ou clavier. L'étoile marque la carte affichée à l'ouverture (« TOTAUX » tant qu'aucun favori).
@@ -13303,6 +13335,13 @@ function ctRenderHeroHead(env, cpt, tot){   // courtier connu : son nom en grand
       S.textContent = l.length + ' comptes' + (nb > 0 ? ' · ' + nb + (nb > 1 ? ' banques' : ' banque') + (inconnu > 0 ? ' renseignée' + (nb > 1 ? 's' : '') : '') : ''); } if(L){ L.textContent = ''; L.style.display = 'none'; L.dataset.logoKey = ''; } return; }
   if(T) T.textContent = e || nom || M.titre;
   if(S) S.textContent = (env === 'PEA' && kyfPeaJeune().actif) ? (e ? M.titre + ' jeune' : M.sous + ' (PEA jeune)') : (e ? (nom || M.titre) : M.sous);
+  if(cpt){   // 2.14.2.01 : crayon à côté du nom du compte pour le renommer
+    const cible = e ? S : T;
+    if(cible){ const b = document.createElement('button'); b.type = 'button'; b.className = 'kyf-icon-btn'; b.setAttribute('aria-label', 'Renommer ce compte'); b.title = 'Renommer';
+      b.style.cssText = 'background:none;border:none;padding:3px 5px;margin-left:6px;display:inline-flex;align-items:center;vertical-align:middle;cursor:pointer;color:rgba(255,255,255,0.85)';
+      b.innerHTML = '<svg width="' + (e ? 12 : 16) + '" height="' + (e ? 12 : 16) + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
+      b.onclick = ev => { ev.stopPropagation(); ctCptRenommer(cpt); }; cible.appendChild(b); }
+  }
   // Le logo n'est reconstruit que si l'établissement change : sinon chaque clic de la page le recréait et il clignotait
   if(L){ const cle = e ? String(e) : '';
     if(cle && L.dataset.logoKey === cle && L.firstChild){ L.style.display = 'inline-flex'; }
@@ -51041,7 +51080,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.00\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.01\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -68516,11 +68555,11 @@ const GUIDE_PAGES = [
         </div>
         <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px">
           <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="14" height="12" rx="2"/><path d="M20 8v8"/></svg> Plusieurs comptes CTO</div>
-          <div style="font-size:13px;color:var(--text2);line-height:1.9">Vous avez plusieurs CTO (chez deux courtiers, par exemple) ? Dans la fiche CTO, le bouton <strong style="color:var(--text)">Ajouter un compte CTO</strong> en crée un nouveau (6 au maximum). Les cartes forment alors une pile : <strong style="color:var(--text)">CTO TOTAUX</strong> devant (la somme de tous vos CTO), les comptes derrière. Pour passer de l'un à l'autre : glissez la carte, utilisez les flèches qui apparaissent quand vous la survolez, les touches ← et → du clavier, ou les points sous la pile.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">L'<strong style="color:var(--text)">étoile</strong> marque la carte affichée à l'ouverture ; sans favori, Keep Your Folio ouvre CTO TOTAUX. Chaque compte a son nom, son établissement et sa date d'ouverture, à régler dans le Détail du contrat.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Espèces</strong> : chaque compte a les siennes. Sur CTO TOTAUX, vous voyez et modifiez le total : CTO 1 prend la différence. Les achats, ventes, versements, retraits, dividendes et plans programmés touchent les espèces du compte concerné, sans jamais les faire passer sous zéro. Vos espèces d'avant restent à CTO 1.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Choisir le compte</strong> : « Ajouter une ligne », « Importer un relevé » et Transactions proposent le compte dès que vous avez plusieurs CTO, préchoisi d'après la carte affichée. Une ligne sans compte appartient à CTO 1. Dans Portefeuille et Transactions, une pastille indique le compte. Importer un relevé de plusieurs comptes ne modifie pas les espèces.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Supprimer</strong> : seulement un compte vide (sans ligne, sans transaction, sans espèces) ; CTO 1 ne se supprime pas. La page Fiscalité montre la part de chaque compte dans les ventes de l'année (le PFU reste calculé sur le total), et le rapport PDF « Comptes titres » détaille chaque compte. Les comptes, le favori et les espèces par compte font partie de vos sauvegardes et de votre synchronisation.</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.9">Vous avez plusieurs CTO (chez deux courtiers, par exemple) ? Dans la fiche CTO, le bouton <strong style="color:var(--text)">Ajouter un compte CTO</strong> en crée un nouveau (6 au maximum) : Keep Your Folio propose un nom (« CTO de » suivi d'un prénom de votre famille, Madame, Monsieur…) ou vous tapez le vôtre. Les cartes forment alors une pile : <strong style="color:var(--text)">CTO TOTAUX</strong> devant (la somme de tous vos CTO), les comptes derrière. Pour passer de l'un à l'autre : glissez la carte, utilisez les flèches qui apparaissent quand vous la survolez, les touches ← et → du clavier, ou les points sous la pile.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">L'<strong style="color:var(--text)">étoile</strong> marque la carte affichée à l'ouverture ; sans favori, Keep Your Folio ouvre CTO TOTAUX. Chaque compte a son nom, son établissement et sa date d'ouverture, à régler dans le Détail du contrat.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Espèces</strong> : chaque compte a les siennes. Sur CTO TOTAUX, vous voyez et modifiez le total : Mon CTO prend la différence. Les achats, ventes, versements, retraits, dividendes et plans programmés touchent les espèces du compte concerné, sans jamais les faire passer sous zéro. Vos espèces d'avant restent à Mon CTO.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Choisir le compte</strong> : « Ajouter une ligne », « Importer un relevé » et Transactions proposent le compte dès que vous avez plusieurs CTO, préchoisi d'après la carte affichée. Une ligne sans compte appartient à Mon CTO. Dans Portefeuille et Transactions, une pastille indique le compte. Importer un relevé de plusieurs comptes ne modifie pas les espèces.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px"><strong style="color:var(--text)">Supprimer</strong> : seulement un compte vide (sans ligne, sans transaction, sans espèces) ; Mon CTO ne se supprime pas. La page Fiscalité montre la part de chaque compte dans les ventes de l'année (le PFU reste calculé sur le total), et le rapport PDF « Comptes titres » détaille chaque compte. Les comptes, le favori et les espèces par compte font partie de vos sauvegardes et de votre synchronisation.</div>
         </div>
         <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px">
           <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="14" height="12" rx="2"/><path d="M20 8v8"/></svg> Plusieurs PEA</div>
-          <div style="font-size:13px;color:var(--text2);line-height:1.9">Chaque personne peut avoir son propre PEA (le vôtre, celui de votre conjoint…). Dans la fiche PEA, le bouton <strong style="color:var(--text)">Ajouter un PEA</strong> en crée un nouveau. Tout fonctionne comme pour plusieurs CTO : pile de cartes avec <strong style="color:var(--text)">PEA TOTAUX</strong>, étoile du favori, nom, établissement, espèces et choix du PEA dans « Ajouter une ligne », « Importer un relevé », Transactions et les versements ou retraits. Une ligne sans compte appartient à PEA 1.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">Chaque PEA a sa <strong style="color:var(--text)">date d'ouverture</strong> (règle des 5 ans), son <strong style="color:var(--text)">total versé</strong> et son plafond. La fiche fiscale du PEA porte sur un PEA à la fois : choisissez-le en haut de la carte. Le PEA jeune et le plafond commun avec le PEA-PME concernent PEA 1. Importer un relevé dans un PEA remplace les espèces de ce PEA seulement.</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.9">Chaque personne peut avoir son propre PEA (le vôtre, celui de votre conjoint…). Dans la fiche PEA, le bouton <strong style="color:var(--text)">Ajouter un PEA</strong> en crée un nouveau, avec un nom proposé (« PEA de » suivi d'un prénom de votre famille, PEA Madame, PEA Monsieur…) ou celui que vous tapez. Le crayon à côté du nom, sur la carte, le renomme à tout moment. Tout fonctionne comme pour plusieurs CTO : pile de cartes avec <strong style="color:var(--text)">PEA TOTAUX</strong>, étoile du favori, nom, établissement, espèces et choix du PEA dans « Ajouter une ligne », « Importer un relevé », Transactions et les versements ou retraits. Une ligne sans compte appartient à Mon PEA.</div><div style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:10px">Chaque PEA a sa <strong style="color:var(--text)">date d'ouverture</strong> (règle des 5 ans), son <strong style="color:var(--text)">total versé</strong> et son plafond. La fiche fiscale du PEA porte sur un PEA à la fois : choisissez-le en haut de la carte. Le PEA jeune et le plafond commun avec le PEA-PME concernent Mon PEA. Importer un relevé dans un PEA remplace les espèces de ce PEA seulement.</div>
         </div>
         <div style="padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px">
           <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Les 5 ans et le plafond de versement</div>
@@ -75259,7 +75298,7 @@ const KYF_NOUVEAUTES = {
   badge: ['avdonut', 'avdonutb', 'etranger', 'arbmulti', 'nueprop', 'kpichips', 'kpiset', 'autres', 'envvue', 'famille', 'avjrn', 'arb', 'immo', 'avref', 'avfrais', 'fraispg', 'avevo', 'avsuivi', 'dcaprix', 'ct', 'tend', 'tipstyle', 'ptf', 'pee', 'perecol', 'ctlg', 'vue', 'visite', 'clsvue'],   // clés des badges (une ou plusieurs ; tableau) ; clé du badge « Nouveau » (span .kyf-new-badge data-new="...") ; vide = aucun badge
   annonces: [
     { id: 'a-2026-11-13', date: '2026-11-13', items: [
-      { titre: 'Plusieurs PEA', version: '2.14.2.00', important: true, texte: 'Un PEA par personne : dans Comptes titres, fiche PEA, \u00ab Ajouter un PEA \u00bb crée par exemple celui de votre conjoint. Chaque PEA a ses lignes, ses espèces, sa date d\u2019ouverture, son total versé et son plafond. Vos lignes actuelles restent dans PEA 1.' },
+      { titre: 'Plusieurs PEA', version: '2.14.2.00', important: true, texte: 'Un PEA par personne : dans Comptes titres, fiche PEA, \u00ab Ajouter un PEA \u00bb crée par exemple celui de votre conjoint. Chaque PEA a ses lignes, ses espèces, sa date d\u2019ouverture, son total versé et son plafond. Vos lignes actuelles restent dans \u00ab Mon PEA \u00bb.' },
       { titre: 'Portefeuille : vue par classe', version: '2.14.2.00', texte: 'Donnez une classe à vos ETF (monétaire, obligataire, actions\u2026), comme pour les fonds gérés. La vue PAR CLASSE du Portefeuille additionne ETF et fonds de chaque classe et montre la part de chacune.' }
     ] },
     { id: 'a-2026-11-10', date: '2026-11-10', items: [
@@ -78244,8 +78283,10 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.01 · 13/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Noms des PEA et des CTO : à la création, Keep Your Folio propose un nom (« PEA de » suivi d'un prénom de votre famille, PEA Madame, PEA Monsieur, PEA Enfant) ou vous tapez le vôtre. Un crayon à côté du nom, sur la carte, le renomme. Le premier compte s'appelle « Mon PEA » ou « Mon CTO » tant que vous ne l'avez pas renommé.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.00 · 13/11/2026</div>
-      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Plusieurs PEA : un PEA par personne (le vôtre, celui de votre conjoint…). Dans la fiche PEA, « Ajouter un PEA » en crée un nouveau, avec ses lignes, ses espèces, sa date d'ouverture, son total versé et son plafond. Carte PEA TOTAUX, choix du PEA dans Ajouter une ligne, Importer un relevé, Transactions, versements et retraits, et sur la fiche fiscale. Une ligne sans compte reste dans PEA 1. Retour utilisateur.</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Plusieurs PEA : un PEA par personne (le vôtre, celui de votre conjoint…). Dans la fiche PEA, « Ajouter un PEA » en crée un nouveau, avec ses lignes, ses espèces, sa date d'ouverture, son total versé et son plafond. Carte PEA TOTAUX, choix du PEA dans Ajouter une ligne, Importer un relevé, Transactions, versements et retraits, et sur la fiche fiscale. Une ligne sans compte reste dans « Mon PEA ». Retour utilisateur.</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Classe des ETF : une ligne ETF (et un ETF de contrat) peut recevoir la même classe que les fonds gérés (monétaire, obligataire, actions…). Nouvelle vue PAR CLASSE dans Portefeuille : ETF et fonds réunis par classe, avec la part de chacune. Retour utilisateur.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.1.16 · 12/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Écran de chargement : si un profil existe, son avatar prend la place de « KYF » au cœur des vagues, avec « Bonjour » et le prénom. Une ligne de remerciements avec un lien ouvre le Guide, chapitre 15, à la fin du chargement.</div>
