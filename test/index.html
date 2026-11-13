@@ -12754,7 +12754,7 @@ function ctCptSet(id, sens, focus){   // sens : +1 / -1 anime l'arrivée de la c
 function kyfCptNomSugg(env, sauf){
   const C = KYF_MC[env], pris = kyfCptComptes(env).filter(c => c.id !== sauf).map(c => c.nom.toLowerCase()), out = [];
   const add = t => { if(t && out.indexOf(t) < 0 && pris.indexOf(t.toLowerCase()) < 0 && out.length < 6) out.push(t); };
-  try{ if(kyfFamOn()) kyfFamLoad().forEach(m => { if(m.id !== 'ambre' && m.prenom) add(C.nom + ' de ' + m.prenom); }); }catch(e){}
+  try{ if(kyfFamOn()) kyfFamLoad().forEach(m => { if(m.id !== 'ambre' && m.id !== 'bleu' && m.prenom) add(C.nom + ' de ' + m.prenom); });   /* « Moi » a déjà « Mon PEA » */ }catch(e){}
   ['Madame', 'Monsieur', 'Enfant'].forEach(x => add(C.nom + ' ' + x));
   return out;
 }
