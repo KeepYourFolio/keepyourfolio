@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.26
+  @version     : Beta 2.14.2.27
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5362,7 +5362,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.26</div>
+  <div class="kl-ver">Beta 2.14.2.27</div>
 </div>
 <script>
 (function(){
@@ -8005,7 +8005,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.26</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.27</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -12835,6 +12835,30 @@ async function ctCptRenommer(id){   // crayon de la carte
   try{ if(typeof kyfFamBarSync === 'function') kyfFamBarSync(); }catch(e){}
   try{ if(typeof renderETF === 'function') renderETF(); }catch(e){}
 }
+// 2.14.2.27 : « À qui » dans le détail du compte (plus seulement dans le crayon de la carte) ; le panneau s'appelle « Détail du compte » pour PEA / CTO
+function ctTiPaint(cpt){
+  const f = document.getElementById('ctFldTi'), w = document.getElementById('ctTiPills'), tt = document.getElementById('ctDetTitre'); if(tt) tt.textContent = 'Détail du compte';
+  if(!f || !w) return;
+  const ok = !!cpt && kyfFamOn() && typeof KYF_TITU === 'object' && Object.keys(KYF_TITU).length;
+  f.style.display = ok ? '' : 'none'; if(!ok) return;
+  const env = kyfMcEnvOfId(cpt), c = kyfCptComptes(env).find(x => x.id === cpt), cur = (c && c.titulaire) || '';
+  w.textContent = '';
+  [['', 'Personne', null]].concat(Object.keys(KYF_TITU).map(k => [k, KYF_TITU[k][0], KYF_TITU[k][1]])).forEach(x => {
+    const a = x[0] === cur, b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'radio'); b.setAttribute('aria-checked', a ? 'true' : 'false');
+    if(x[2]){ const d = document.createElement('span'); d.style.cssText = 'display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;background:' + x[2]; b.appendChild(d); }
+    b.appendChild(document.createTextNode(x[1]));
+    b.style.cssText = 'cursor:pointer;font-family:inherit;padding:7px 14px;border-radius:7px;font-size:11px;font-weight:700;border:1px solid ' + (a ? 'var(--accent)' : 'var(--border2)') + ';background:' + (a ? 'var(--accent)' : 'transparent') + ';color:' + (a ? '#000' : 'var(--text3)') + ';transition:background .15s,color .15s';
+    b.onmouseover = () => { if(!a) b.style.background = document.documentElement.getAttribute('data-theme') === 'light' ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.08)'; }; b.onmouseout = () => { if(!a) b.style.background = 'transparent'; };
+    b.onclick = () => {
+      const l = kyfCptComptes(env), c2 = l.find(y => y.id === cpt); if(!c2) return;
+      if(x[0]) c2.titulaire = x[0]; else delete c2.titulaire;
+      kyfCptSave(env, l); ctRender();
+      try{ if(typeof kyfFamBarSync === 'function') kyfFamBarSync(); }catch(e){}
+      try{ if(typeof renderETF === 'function') renderETF(); }catch(e){}
+    };
+    w.appendChild(b);
+  });
+}
 function ctCptLignes(id){ const env = kyfMcEnvOfId(id); return ETF.filter(e => e.enveloppe === env && kyfCptOf(env, e) === id).length; }
 function ctCptDel(){   // seulement un compte vide, et jamais le premier : aucune ligne ne peut se retrouver sans compte
   const env = ctCptEnv(), id = ctCptSel(env); if(!id || id === kyfMcUn(env) || ctCptLignes(id) > 0) return;
@@ -13057,10 +13081,11 @@ function ctBuild(root){
     +   '<div class="ct-secrow"><div class="ct-sec" id="ctSec"></div><div class="ct-sec" id="ctSec2" style="display:none"></div></div>'
     +   '<div class="ct-lg" id="ctLg" style="display:none"></div>'
     + '</div><div class="ct-right">'
-    +   '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><div id="ctDetHead" class="kyf-vh-head" role="button" tabindex="0" aria-expanded="false" aria-controls="ctDetBody" onclick="ctDetToggle()" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();ctDetToggle()}" style="font-size:15px;letter-spacing:0;color:var(--text)"><span>Détail du contrat</span><span class="kyf-vh-chev" style="transform:rotate(-90deg)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div><div class="ct-lbl">Mêmes données que Fiscalité et le cash</div></div>'
+    +   '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><div id="ctDetHead" class="kyf-vh-head" role="button" tabindex="0" aria-expanded="false" aria-controls="ctDetBody" onclick="ctDetToggle()" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();ctDetToggle()}" style="font-size:15px;letter-spacing:0;color:var(--text)"><span id="ctDetTitre">Détail du contrat</span><span class="kyf-vh-chev" style="transform:rotate(-90deg)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div><div class="ct-lbl">Mêmes données que Fiscalité et le cash</div></div>'
     +   '<div id="ctDetBody" style="display:none;flex-direction:column;gap:18px">'
     +   '<div class="ct-form">'
     +     '<div class="ct-fld" id="ctFldNom" style="display:none"><label for="ctF_nom">Nom du compte</label><input type="text" class="ct-in2" id="ctF_nom" maxlength="40" placeholder="Ex : CTO 2" autocomplete="off" onchange="ctOnNom(this)"></div>'
+    +     '<div class="ct-fld" id="ctFldTi" style="display:none"><span class="ct-fl">À qui</span><div id="ctTiPills" role="radiogroup" aria-label="Titulaire du compte" style="display:flex;flex-wrap:wrap;gap:8px"></div></div>'
     +     '<div class="ct-fld" id="ctFldEtab" style="position:relative"><label for="ctF_etab">Établissement</label><input type="text" class="ct-in2" id="ctF_etab" maxlength="40" placeholder="Ex : Trade Republic" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="ctEtabDrop" oninput="ctOnEtab(this);ctEtabShow()" onfocus="ctEtabShow()" onblur="ctEtabBlur(this)" onkeydown="ctEtabKey(event)"><div id="ctEtabDrop" role="listbox" style="display:none;position:absolute;left:0;right:0;top:100%;margin-top:2px;z-index:40;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.18);overflow:hidden"></div></div>'
     +     '<div class="ct-fld" id="ctFldDate"><span class="ct-fl">Date d\'ouverture</span><div><input type="hidden" id="ctF_date" onchange="ctOnDate()" value=""><button type="button" id="ctF_dateBtn" class="kyf-csel-btn" data-kyf-date="ctF_date" aria-haspopup="dialog" aria-expanded="false" style="width:auto;max-width:170px;font-size:12px;padding:9px 10px;min-height:40px"><span id="ctF_dateBtnLabel">JJ/MM/AAAA</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button></div></div>'
     +     '<div class="ct-fld" id="ctFldJeune" style="display:none"><span class="ct-fl">PEA jeune</span><label style="display:flex;align-items:center;gap:10px;cursor:pointer;min-height:40px"><span class="kyf-toggle"><input type="checkbox" id="ctF_jeune" onchange="ctOnJeune(this)"><span class="kyf-toggle-track"></span><span class="kyf-toggle-thumb"></span></span><span style="font-size:12px;color:var(--text2)">Majeur rattaché au foyer fiscal des parents</span></label></div>'
@@ -13265,6 +13290,7 @@ function ctRender(){
   // formulaire
   setIn('ctF_etab', info.etab || (cpt ? '' : ctEtabAuto(env)));
   show('ctFldEtab', !tot); show('ctFldDate', !tot); show('ctFldCash', true); show('ctFldNom', !!cpt); show('ctFldDel', !!cpt && cpt !== 'c1' && cpt !== 'p1');
+  ctTiPaint(cpt);
   if(cpt){ setIn('ctF_nom', kyfCtoNom(cpt)); const n = ctCptLignes(cpt), bd = document.getElementById('ctBtnDel'); if(bd) bd.disabled = n > 0; set('ctDelNote', n > 0 ? 'Ce compte contient ' + n + (n > 1 ? ' lignes' : ' ligne') + ' : déplacez-les ou supprimez-les d\'abord.' : ''); }
   try{ kyfDateSetValue('ctF_date', date, 'JJ/MM/AAAA'); }catch(e){}
   { const pj = kyfPeaJeune(), isPea = env === 'PEA' && !tot && (!cpt || cpt === 'p1');   // PEA jeune : seulement le premier PEA
@@ -51208,7 +51234,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.26\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.27\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -78497,6 +78523,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.27 · 15/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">COMPTES PEA / CTO : le champ « À qui » est maintenant aussi dans le panneau « Détail du compte » (sous Nom du compte), à côté de la suppression, et plus seulement dans le petit crayon de la carte.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.26 · 15/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">TOP ENTREPRISES : une même entreprise écrite de plusieurs façons (TSMC et Taiwan Semiconductor Mfg, Alphabet et Alphabet Googl ou Google...) est regroupée automatiquement, sans liste à tenir entreprise par entreprise sur une seule ligne.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.25 · 15/11/2026</div>
