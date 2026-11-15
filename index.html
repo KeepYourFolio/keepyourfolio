@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.27
+  @version     : Beta 2.14.2.28
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5362,7 +5362,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.27</div>
+  <div class="kl-ver">Beta 2.14.2.28</div>
 </div>
 <script>
 (function(){
@@ -8005,7 +8005,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.27</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.28</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -12860,12 +12860,40 @@ function ctTiPaint(cpt){
   });
 }
 function ctCptLignes(id){ const env = kyfMcEnvOfId(id); return ETF.filter(e => e.enveloppe === env && kyfCptOf(env, e) === id).length; }
-function ctCptDel(){   // seulement un compte vide, et jamais le premier : aucune ligne ne peut se retrouver sans compte
-  const env = ctCptEnv(), id = ctCptSel(env); if(!id || id === kyfMcUn(env) || ctCptLignes(id) > 0) return;
-  if(kyfCptCashOf(env, id) > 0){ try{ showToast('Ce compte a encore des espèces : mettez-les à zéro avant de le supprimer.'); }catch(e){} return; }
+async function ctCptDel(){   // jamais le premier compte ; un compte avec des lignes : on choisit de les déplacer ou de les supprimer (2.14.2.28)
+  const env = ctCptEnv(), id = ctCptSel(env); if(!id || id === kyfMcUn(env)) return;
+  const n = ctCptLignes(id), nom = kyfCptNom(id), cash = kyfCptCashOf(env, id);
   let tr = []; try{ tr = JSON.parse(localStorage.getItem('kyf-etf-transactions') || '[]'); }catch(e){}
-  if(Array.isArray(tr) && tr.some(t => t && t.enveloppe === env && t.compte === id)) return;
+  if(!Array.isArray(tr)) tr = [];
+  const nTr = tr.filter(t => t && t.enveloppe === env && t.compte === id).length;
+  if(n === 0 && nTr === 0 && !(cash > 0)){ kyfCptSave(env, kyfCptComptes(env).filter(c => c.id !== id)); ctCptSet('tot'); return; }
+  const autres = kyfCptComptes(env).filter(c => c.id !== id);
+  const parts = []; if(n > 0) parts.push(n + (n > 1 ? ' lignes' : ' ligne')); if(nTr > 0) parts.push(nTr + (nTr > 1 ? ' opérations' : ' opération')); if(cash > 0) parts.push('des espèces');
+  const pr = kyfDialog({ kind: 'confirm', q: 'Que faire de ce que contient « ' + nom + ' » ?', d: parts.join(', ') + ' : rien ne peut rester sans compte. Choisissez la destination ci-dessous.', ok: 'Continuer', cancel: 'Annuler' });
+  const ov = document.getElementById('kyfDlgOv'), bd = ov && ov.querySelector('.kyf-dlg-bd > div:last-child');
+  const sel = document.createElement('select'); sel.className = 'ct-in2'; sel.setAttribute('aria-label', 'Destination'); sel.style.cssText = 'margin-top:12px;width:100%;box-sizing:border-box';
+  autres.forEach(c => { const o = document.createElement('option'); o.value = 'mv:' + c.id; o.textContent = 'Déplacer vers « ' + kyfCptNom(c.id) + ' »'; sel.appendChild(o); });
+  const od = document.createElement('option'); od.value = 'del'; od.textContent = 'Supprimer aussi ce contenu'; sel.appendChild(od);
+  if(bd) bd.appendChild(sel);
+  let ch = 'del'; if(ov){ const g = ov.querySelector('[data-kyf-dlg="ok"]'); if(g) g.addEventListener('click', () => { ch = sel.value; }, true); }
+  const go = await pr; if(!go) return;
+  if(ch === 'del'){
+    if(!(await kyfAsk('Supprimer le compte « ' + nom + ' » et tout son contenu ?\n' + parts.join(', ') + ' seront supprimés. Cette action est irréversible.', { ok: 'Supprimer' }))) return;
+    for(let i = ETF.length - 1; i >= 0; i--){ const e = ETF[i]; if(e.enveloppe === env && kyfCptOf(env, e) === id) ETF.splice(i, 1); }
+    etfSave();
+    if(nTr) try{ localStorage.setItem('kyf-etf-transactions', JSON.stringify(tr.filter(t => !(t && t.enveloppe === env && t.compte === id)))); }catch(e){}
+    if(cash > 0) kyfCptCashSet(env, id, 0);
+  } else {
+    const to = ch.slice(3);
+    ETF.forEach(e => { if(e.enveloppe === env && kyfCptOf(env, e) === id) e.compte = to; }); etfSave();
+    if(nTr) try{ localStorage.setItem('kyf-etf-transactions', JSON.stringify(tr.map(t => (t && t.enveloppe === env && t.compte === id) ? Object.assign({}, t, { compte: to }) : t))); }catch(e){}
+    if(cash > 0){ kyfCptCashSet(env, id, 0); kyfCptCashAdjust(env, to, cash); }
+  }
   kyfCptSave(env, kyfCptComptes(env).filter(c => c.id !== id)); ctCptSet('tot');
+  try{ if(typeof loadEtfTransactions === 'function') loadEtfTransactions(); }catch(e){}
+  try{ renderETFTable(window._lp || {}); renderDonut(); renderKPIs(window._lp || {}); }catch(e){}
+  try{ if(typeof kyfFamBarSync === 'function') kyfFamBarSync(); }catch(e){}
+  try{ showToast(ch === 'del' ? 'Compte « ' + nom + ' » supprimé avec son contenu.' : 'Compte « ' + nom + ' » supprimé, son contenu a été déplacé.'); }catch(e){}
 }
 function ctOnNom(el){
   const env = ctCptEnv(), id = ctCptSel(env); if(!id) return;
@@ -13291,7 +13319,7 @@ function ctRender(){
   setIn('ctF_etab', info.etab || (cpt ? '' : ctEtabAuto(env)));
   show('ctFldEtab', !tot); show('ctFldDate', !tot); show('ctFldCash', true); show('ctFldNom', !!cpt); show('ctFldDel', !!cpt && cpt !== 'c1' && cpt !== 'p1');
   ctTiPaint(cpt);
-  if(cpt){ setIn('ctF_nom', kyfCtoNom(cpt)); const n = ctCptLignes(cpt), bd = document.getElementById('ctBtnDel'); if(bd) bd.disabled = n > 0; set('ctDelNote', n > 0 ? 'Ce compte contient ' + n + (n > 1 ? ' lignes' : ' ligne') + ' : déplacez-les ou supprimez-les d\'abord.' : ''); }
+  if(cpt){ setIn('ctF_nom', kyfCtoNom(cpt)); const n = ctCptLignes(cpt), bd = document.getElementById('ctBtnDel'); if(bd) bd.disabled = false; set('ctDelNote', n > 0 ? 'Ce compte contient ' + n + (n > 1 ? ' lignes' : ' ligne') + ' : vous choisirez de les déplacer vers un autre compte ou de les supprimer.' : ''); }
   try{ kyfDateSetValue('ctF_date', date, 'JJ/MM/AAAA'); }catch(e){}
   { const pj = kyfPeaJeune(), isPea = env === 'PEA' && !tot && (!cpt || cpt === 'p1');   // PEA jeune : seulement le premier PEA
     show('ctFldJeune', isPea); show('ctFldJeuneFin', isPea && pj.on);
@@ -51234,7 +51262,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.27\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.28\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -78523,6 +78551,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.28 · 15/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">COMPTES PEA / CTO : on peut maintenant supprimer un compte qui contient des lignes. Une fenêtre demande quoi en faire : les déplacer vers un autre compte (avec leurs opérations et espèces) ou tout supprimer. Le premier compte reste non supprimable.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.27 · 15/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">COMPTES PEA / CTO : le champ « À qui » est maintenant aussi dans le panneau « Détail du compte » (sous Nom du compte), à côté de la suppression, et plus seulement dans le petit crayon de la carte.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.26 · 15/11/2026</div>
