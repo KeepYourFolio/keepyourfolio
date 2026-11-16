@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.54
+  @version     : Beta 2.14.2.55
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -2434,6 +2434,8 @@ input[type=checkbox][style*="accent-color:var(--accent)"]:disabled,input.grp-chk
 .kyf-time-item{height:32px;display:flex;align-items:center;justify-content:center;font-size:15px;font-variant-numeric:tabular-nums;color:var(--text);opacity:.28;transition:opacity .12s}
 .kyf-time-item.near{opacity:.55}
 .kyf-time-item.sel{font-size:19px;font-weight:700;opacity:1}
+.kyf-time-col.act .kyf-time-item.sel{color:var(--accent)}
+.kyf-time-col{border-radius:8px}
 .kyf-time-item:not(.sel):hover{opacity:.9}
 .kyf-time-sep{font-size:19px;font-weight:700;color:var(--text);width:10px;text-align:center}
 .kyf-time-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;margin-top:8px}
@@ -5362,7 +5364,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.54</div>
+  <div class="kl-ver">Beta 2.14.2.55</div>
 </div>
 <script>
 (function(){
@@ -8013,7 +8015,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.54</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.55</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -51562,7 +51564,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.54\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.55\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -69975,6 +69977,13 @@ function kyfTimeStep(col, dir){
   }
   kyfTimeRender(animCols, dir);
 }
+// Une minute à la fois (Maj + flèches), avec report sur l'heure
+function kyfTimeStepMin1(dir){
+  if(!_kyfTime || !dir) return;
+  let t = _kyfTime.h * 60 + _kyfTime.m + dir; t = ((t % 1440) + 1440) % 1440;
+  const h = Math.floor(t / 60), m = t % 60;
+  kyfTimeApply(h, m); kyfTimeRender(dir > 0 ? ['m'] : ['m'], dir);
+}
 function kyfTimeColHTML(list, cur){
   const n = list.length;
   let idx = list.indexOf(cur); if(idx < 0) idx = 0;
@@ -70002,6 +70011,7 @@ function kyfTimeRender(animCol, dir){
       listEl.style.transform = 'none';
     }
   });
+  pop.querySelectorAll('.kyf-time-col').forEach(c => c.classList.toggle('act', c.dataset.col === _kyfTime.col));
   const chips = kyfTimeChipsFor(_kyfTime.fieldId);
   const cur = kyfTimeFmt(_kyfTime.h, _kyfTime.m);
   const chipsEl = pop.querySelector('.kyf-time-chips');
@@ -70018,16 +70028,17 @@ function kyfTimeEnsurePop(){
     + '<div class="kyf-time-col" data-col="h"><div class="kyf-time-list"></div></div>'
     + '<span class="kyf-time-sep">:</span>'
     + '<div class="kyf-time-col" data-col="m"><div class="kyf-time-list"></div></div></div>'
-    + '<div class="kyf-time-chips"></div><div class="kyf-time-foot">Heure locale</div>';
+    + '<div class="kyf-time-chips"></div><div class="kyf-time-foot">Heure locale · tapez 1640 · ← → colonne · ↑ ↓ ±5 min (Maj ±1) · Entrée</div>';
   document.body.appendChild(pop);
   pop.addEventListener('mousedown', e => e.preventDefault()); // le focus reste sur le champ
   pop.addEventListener('click', e => {
     const it = e.target.closest ? e.target.closest('.kyf-time-item') : null;
     if(it){
       const col = it.closest('.kyf-time-col');
-      if(col._moved){ col._moved = false; return; } // fin d'un glissement : pas de clic en plus
+      if(_kyfTime) _kyfTime.col = col.dataset.col;
+      if(col._moved){ col._moved = false; kyfTimeRender(); return; } // fin d'un glissement : pas de clic en plus
       const off = parseInt(it.dataset.off, 10);
-      if(off) kyfTimeStep(col.dataset.col, off);
+      if(off) kyfTimeStep(col.dataset.col, off); else kyfTimeRender();
       return;
     }
     const chip = e.target.closest ? e.target.closest('.kyf-time-chip') : null;
@@ -70048,7 +70059,7 @@ function kyfTimeEnsurePop(){
     // glisser (souris ou doigt) : un cran tous les 32 px
     let y0 = null, done = 0;
     colEl.addEventListener('pointerdown', e => {
-      y0 = e.clientY; done = 0; colEl._moved = false;
+      y0 = e.clientY; done = 0; colEl._moved = false; if(_kyfTime) _kyfTime.col = colEl.dataset.col;
       try{ colEl.setPointerCapture(e.pointerId); }catch(err){ /* non pris en charge : sans importance */ }
     });
     colEl.addEventListener('pointermove', e => {
@@ -70096,7 +70107,7 @@ function kyfTimeOpen(fieldId){
   if(!btn || !inp) return;
   kyfTimeClose();
   const t = kyfTimeParse(inp.value) || { h: 9, m: 30 };
-  _kyfTime = { fieldId, h: t.h, m: t.m, buf: '' };
+  _kyfTime = { fieldId, h: t.h, m: t.m, buf: '', col: 'm' };
   const pop = kyfTimeEnsurePop();
   kyfTimeRender();
   pop.style.display = 'block';
@@ -70152,7 +70163,12 @@ function kyfTimeKeydown(e, fieldId){
   }
   if(e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); kyfTimeClose(); return; }
   if(e.key === 'Enter'){ e.preventDefault(); kyfTimeCommitBuffer(); kyfTimeClose(); return; }
-  if(e.key === 'ArrowUp' || e.key === 'ArrowDown'){ e.preventDefault(); kyfTimeStep(e.shiftKey ? 'h' : 'm', e.key === 'ArrowDown' ? 1 : -1); return; }
+  if(e.key === 'ArrowLeft' || e.key === 'ArrowRight'){ e.preventDefault(); _kyfTime.col = e.key === 'ArrowLeft' ? 'h' : 'm'; kyfTimeRender(); return; }
+  if(e.key === 'ArrowUp' || e.key === 'ArrowDown'){
+    e.preventDefault(); const d = e.key === 'ArrowDown' ? 1 : -1;
+    if(_kyfTime.col === 'h') kyfTimeStep('h', d); else if(e.shiftKey) kyfTimeStepMin1(d); else kyfTimeStep('m', d);
+    return;
+  }
   if(e.key === 'PageUp' || e.key === 'PageDown'){ e.preventDefault(); kyfTimeStep('h', e.key === 'PageDown' ? 1 : -1); return; }
   if(/^[0-9]$/.test(e.key)){
     e.preventDefault();
@@ -78874,7 +78890,9 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
-                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.54 · 16/11/2026</div>
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.55 · 16/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">SÉLECTEUR D'HEURE : au clavier, les flèches gauche et droite choisissent la colonne (heures ou minutes, la colonne active est en couleur d'accent), haut et bas changent la valeur (de 5 minutes en 5 minutes, ou d'une minute avec Maj), et on peut toujours taper l'heure d'un coup (1640) puis Entrée. À la souris ou au pavé tactile, un clic sur un chiffre visible le choisit directement. Un rappel des touches est affiché sous l'horloge.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.54 · 16/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">DCA, PRIX À LA MINUTE : dans la fenêtre « Enregistrer DCA » (mode Automatique), un champ facultatif « Heure d'exécution » permet de récupérer le prix de la minute choisie (par exemple l'heure de la notification du courtier) au lieu de la clôture. Disponible pour les séances des 30 derniers jours environ ; sans heure, la règle habituelle s'applique (cours en direct le jour même, sinon clôture).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.53 · 16/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">CORBEILLE ET TÉLÉPHONE : quand vous supprimez sur le téléphone une opération déjà appliquée (achat, vente, dividende, versement), Keep Your Folio PC la retire comme avant, mais la met maintenant aussi dans sa corbeille : elle reste restaurable depuis le PC, avec la position et les espèces remises comme avant la suppression.</div>
