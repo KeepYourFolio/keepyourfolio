@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.56
+  @version     : Beta 2.14.2.57
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5364,7 +5364,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.56</div>
+  <div class="kl-ver">Beta 2.14.2.57</div>
 </div>
 <script>
 (function(){
@@ -8015,7 +8015,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.56</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.57</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -49405,7 +49405,12 @@ function kyfCorbeilleRestore(corbId){
   renderCorbeilleList();
 }
 async function kyfCorbeilleClear(){
-  if(!(await kyfAsk('Vider définitivement la corbeille ? Cette action est irréversible.'))) return;
+  if(window.kyfCorbLie && window.kyfCorbLie() && _corbTab === 'mobile'){
+    if(!(await kyfAsk('Vider définitivement la corbeille du mobile ? Le téléphone la videra aussi à sa prochaine ouverture. Cette action est irréversible.'))) return;
+    if(window.kyfCorbVider) await window.kyfCorbVider('mobile');
+    return;
+  }
+  if(!(await kyfAsk(window.kyfCorbLie && window.kyfCorbLie() ? 'Vider définitivement la corbeille du PC ? Cette action est irréversible.' : 'Vider définitivement la corbeille ? Cette action est irréversible.'))) return;
   kyfCorbeilleSave([]);
   renderCorbeilleList();
 }
@@ -49512,12 +49517,14 @@ function renderCorbeilleList(){
   if(lie && _corbTab === 'mobile'){
     const box2 = document.getElementById('corbeilleList');
     const cl = document.getElementById('corbeilleClearBtn'), ra = document.getElementById('corbeilleRestoreAllBtn');
-    if(cl) cl.style.display = 'none'; if(ra) ra.style.display = 'none';
+    if(ra) ra.style.display = 'none';
+    if(cl){ cl.textContent = 'VIDER LA CORBEILLE MOBILE'; cl.style.display = remMob.length ? '' : 'none'; }
     if(emptyMsg){ emptyMsg.textContent = 'Rien de supprimé sur le mobile.'; emptyMsg.style.display = remMob.length ? 'none' : 'block'; }
     box2.innerHTML = remMob.map(kyfCorbRemoteRow).join('');
     return;
   }
   if(emptyMsg) emptyMsg.textContent = 'Corbeille vide.';
+  { const c0 = document.getElementById('corbeilleClearBtn'); if(c0) c0.textContent = lie ? 'VIDER LA CORBEILLE PC' : 'VIDER LA CORBEILLE'; }
   const clearBtn = document.getElementById('corbeilleClearBtn');
   const restoreAllBtn = document.getElementById('corbeilleRestoreAllBtn');
   if(list.length === 0 && remPc.length){
@@ -51625,7 +51632,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.56\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.57\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -78951,7 +78958,9 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
-                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.56 · 16/11/2026</div>
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.57 · 16/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">CORBEILLE LIÉE : chaque onglet a son bouton, « Vider la corbeille PC » et « Vider la corbeille mobile », pour ne pas les confondre. Vider l'onglet Mobile depuis le PC vide aussi la corbeille du téléphone à sa prochaine ouverture.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.56 · 16/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">CORBEILLE LIÉE PC ET MOBILE : avec Google connecté, la corbeille a deux onglets, PC et Mobile. Chaque appareil dépose ses suppressions dans un onglet KYF_Corbeille de votre classeur et lit celles de l'autre. Un élément supprimé sur le téléphone peut être restauré depuis le PC (et l'inverse) : la demande part dans le classeur et l'autre appareil la traite à son prochain passage. Sans Google, la corbeille reste propre à chaque appareil, comme avant.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.55 · 16/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">SÉLECTEUR D'HEURE : au clavier, les flèches gauche et droite choisissent la colonne (heures ou minutes, la colonne active est en couleur d'accent), haut et bas changent la valeur (de 5 minutes en 5 minutes, ou d'une minute avec Maj), et on peut toujours taper l'heure d'un coup (1640) puis Entrée. À la souris ou au pavé tactile, un clic sur un chiffre visible le choisit directement. Un rappel des touches est affiché sous l'horloge.</div>
@@ -220506,6 +220515,9 @@ async function cbSync(){
     var loc = kyfCorbeilleLoad(), ren = false;
     loc.forEach(function(e){ if(!/^C-[A-Za-z0-9-]{6,60}$/.test(String(e.id))){ e.id = 'C-' + now.toString(36) + '-' + Math.random().toString(36).slice(2, 8); ren = true; } });
     if(ren){ try{ localStorage.setItem('kyf-corbeille', JSON.stringify(loc)); }catch(e){} }
+    // 0. corbeille vidée depuis l'autre appareil
+    var reste0 = loc.filter(function(e){ return !(byId[e.id] && byId[e.id].statut === 'vide'); });
+    if(reste0.length !== loc.length){ kyfCorbeilleSave(reste0); loc = reste0; }
     // 1. ce qui n'est pas encore dans le classeur
     loc.forEach(function(e){
       if(byId[e.id]) return;
@@ -220544,6 +220556,15 @@ async function cbSync(){
   finally{ _cb.busy = false; }
 }
 window.kyfCorbSync = cbSync;
+window.kyfCorbVider = async function(origine){
+  var x = _cb.remote.filter(function(z){ return z.origine === origine; }); if(!x.length) return;
+  var maj = x.map(function(z){ return { range: CORB_TAB + '!G' + z.ligne, values:[['vide']] }; });
+  try{
+    await kyfFetchAuth(shUrl('/values:batchUpdate'), { method:'POST', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify({ valueInputOption:'RAW', data:maj }) }, { timeoutMs:20000 });
+    _cb.remote = _cb.remote.filter(function(z){ return z.origine !== origine; });
+    try{ kyfCorbeilleRefreshBtn(); }catch(e){} renderCorbeilleList();
+  }catch(e){ try{ showToast('Corbeille non vidée, réessayez.'); }catch(_){} }
+};
 window.kyfCorbLie = function(){ return shOk(); };
 window.kyfCorbRemote = function(){ return _cb.remote; };
 window.kyfCorbReq = function(){ return _cb.req; };
