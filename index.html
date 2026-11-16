@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.63
+  @version     : Beta 2.14.2.65
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5364,7 +5364,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.63</div>
+  <div class="kl-ver">Beta 2.14.2.65</div>
 </div>
 <script>
 (function(){
@@ -8015,7 +8015,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.63</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.65</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -48437,6 +48437,46 @@ async function kyfVersionCheck(){
     if(kyfVerPlusRecent(m[1], mine)) kyfVersionBanner(m[1]);
   }catch(e){} finally { window._kyfVerBusy = false; }
 }
+// Recherche à la demande (Informations) : même lecture de l'en-tête que la vérification silencieuse, avec un retour dans tous les cas.
+async function kyfVersionManuel(){
+  const btn = document.getElementById('verCheckBtn'), lbl = document.getElementById('verCheckLbl'), msg = document.getElementById('verCheckMsg');
+  if(!btn || !lbl || !msg || btn.dataset.busy === '1') return;
+  if(btn.dataset.maj === '1'){ location.reload(); return; }
+  const say = (t, ton) => {
+    const ok = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:5px"><polyline points="20 6 9 17 4 12"/></svg>';
+    msg.textContent = t; msg.style.color = ton === 'ok' ? '#4ade80' : (ton === 'maj' ? '#f0b429' : 'var(--text-hi)');
+    if(ton === 'ok') msg.insertAdjacentHTML('afterbegin', ok);
+  };
+  const card = document.getElementById('verCard'), cmp = document.getElementById('verCmp');
+  try{
+    if(kyfAnalyticsEstLocal() || /\[kyfDemo:/.test(window.name || '')){ say('Vérification possible seulement depuis keepyourfolio.fr.'); return; }
+    if(navigator.onLine === false){ say('Vérification impossible : vous êtes hors ligne.'); return; }
+    const mine = (document.getElementById('versionBadge')?.textContent || '').replace(/[^0-9.]/g, '').replace(/^\.+|\.+$/g, '');
+    if(!mine){ say('Version actuelle introuvable.'); return; }
+    btn.dataset.busy = '1'; btn.style.opacity = '.6'; btn.style.cursor = 'default'; lbl.textContent = 'RECHERCHE…'; say('');
+    const ctl = new AbortController(), to = setTimeout(() => ctl.abort(), 8000);
+    let last = null;
+    try{
+      const r = await fetch(location.origin + location.pathname + '?kyfv=' + Date.now(), { cache:'no-store', signal:ctl.signal });
+      if(r.ok && r.body){
+        const rd = r.body.getReader(), dec = new TextDecoder(); let txt = '', m = null;
+        while(!m && txt.length < 20000){ const c = await rd.read(); if(c.done) break; txt += dec.decode(c.value, { stream:true }); m = /@version\s*:\s*Beta\s+([0-9.]+)/.exec(txt); }
+        try{ rd.cancel(); }catch(e){}
+        if(m) last = m[1];
+      }
+    }catch(e){}
+    clearTimeout(to);
+    try{ localStorage.setItem('kyf-ver-check', String(Date.now())); }catch(e){}
+    btn.dataset.busy = '0'; btn.style.opacity = '1'; btn.style.cursor = 'pointer';
+    if(!last){ lbl.textContent = 'CHERCHER UNE MISE À JOUR'; say('Vérification impossible pour le moment, réessayez plus tard.'); return; }
+    if(kyfVerPlusRecent(last, mine)){
+      lbl.textContent = 'ACTUALISER'; btn.dataset.maj = '1';
+      document.getElementById('verCmpOld').textContent = 'Beta ' + mine; document.getElementById('verCmpNew').textContent = 'Beta ' + last;
+      if(cmp) cmp.style.display = 'flex'; if(card) card.style.outline = '2px solid #f0b429';
+      say('Actualisez la page pour installer la nouvelle version.', 'maj');
+    } else { lbl.textContent = 'CHERCHER UNE MISE À JOUR'; say('Vous avez la dernière version', 'ok'); }
+  }catch(e){ btn.dataset.busy = '0'; btn.style.opacity = '1'; btn.style.cursor = 'pointer'; lbl.textContent = 'CHERCHER UNE MISE À JOUR'; say('Vérification impossible pour le moment.'); }
+}
 function kyfVersionBanner(nouvelle){
   try{
     if(document.getElementById('kyfVerBar')) return;
@@ -51635,7 +51675,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.63\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.65\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -78850,13 +78890,22 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
   </div>
 
   <!-- Version actuelle -->
-  <div style="background:linear-gradient(135deg,rgba(0,21,255,0.35) 0%,rgba(255,255,255,0.08) 50%,rgba(255,0,0,0.35) 100%);border-radius:8px;padding:10px 12px;margin-bottom:14px;outline:2px solid rgba(0,21,255,0.5)">
+  <div id="verCard" style="background:linear-gradient(135deg,rgba(0,21,255,0.35) 0%,rgba(255,255,255,0.08) 50%,rgba(255,0,0,0.35) 100%);border-radius:8px;padding:10px 12px;margin-bottom:14px;outline:2px solid rgba(0,21,255,0.5)">
     <div style="display:flex;align-items:center;justify-content:space-between">
       <span id="versionBadgeAbout" style="font-size:16px;font-weight:700;color:var(--text-hi)">Beta 2.3.9.72_open_import</span>
     </div>
     <div style="font-size:10px;color:var(--text3);margin-top:6px;line-height:1.7">
       KeepYourFolio - Dashboard patrimonial<br>
       PEA · Crypto · Bilan · Alertes
+    </div>
+    <div id="verCmp" style="display:none;margin-top:10px;align-items:center;gap:12px">
+      <div><div style="font-size:9px;font-weight:700;color:var(--text3)">VOTRE VERSION</div><div id="verCmpOld" style="font-size:14px;font-weight:700;color:var(--text3)"></div></div>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f0b429" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14 6 20 12 14 18"/></svg>
+      <div><div style="font-size:9px;font-weight:700;color:#f0b429">DISPONIBLE</div><div id="verCmpNew" style="font-size:16px;font-weight:700;color:var(--text-hi)"></div></div>
+    </div>
+    <div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <span id="verCheckMsg" role="status" style="font-size:10px;line-height:1.5;font-weight:700;color:var(--text-hi)"></span>
+      <button type="button" id="verCheckBtn" onclick="kyfVersionManuel()" style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:7px 12px;border-radius:8px;border:none;background:#f0b429;color:#000;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><polyline points="21 3 21 8 16 8"/><polyline points="3 21 3 16 8 16"/></svg><span id="verCheckLbl">CHERCHER UNE MISE À JOUR</span></button>
     </div>
   </div>
 
@@ -78984,7 +79033,11 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
-                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.63 · 16/11/2026</div>
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.65 · 16/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">INFORMATIONS : nouveau design du bouton « Chercher une mise à jour ». Petit bouton à droite du cadre ; quand une version est disponible, le cadre passe en contour jaune et montre « Votre version » puis « Disponible » avec les deux numéros, et le bouton devient « Actualiser ».</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.64 · 16/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">INFORMATIONS : un bouton « Chercher une mise à jour » dans le cadre de la version. Sans mise à jour, un message l'indique ; sinon il affiche le numéro de la nouvelle version et le bouton devient « Actualiser ». Rien n'est envoyé : seul l'en-tête de la page du site est lu.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.63 · 16/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PORTEFEUILLE, VUE PAR CLASSE : les boutons « Changer » sont alignés à droite sur toutes les lignes, même quand le nom est long (il passe à la ligne au lieu de pousser le bouton en dessous).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.62 · 16/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">QUOI DE NEUF : une annonce du 16/11 présente les améliorations DCA (cours en direct ou clôture selon la date, heure d'exécution, plus de doublon), les nouvelles classes d'actifs (private equity, dette privée, produits structurés, immobilier) et le versement sur fonds en euros sans estimation.</div>
