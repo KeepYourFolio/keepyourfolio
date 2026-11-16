@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.73
+  @version     : Beta 2.14.2.74
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5364,7 +5364,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.73</div>
+  <div class="kl-ver">Beta 2.14.2.74</div>
 </div>
 <script>
 (function(){
@@ -8015,7 +8015,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.73</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.74</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -27512,7 +27512,7 @@ const KYF_CLS_GROUPES = [
   { nom:'Taux et trésorerie', col:'#22d3ee', cl:['mon', 'obl', 'obd', 'fe'] },
   { nom:'Épargne de précaution', col:'#818cf8', cl:['prec'] },
   { nom:'Immobilier', col:'#4d9fff', cl:['immo', 'scpid', 'immod', 'rp'] },
-  { nom:'Diversifiants', col:'#e879f9', cl:['pa', 'mp', 'cry', 'cryd', 'pe', 'dp', 'str', 'orp', 'ppv'] },
+  { nom:'Diversifiants', lb:'Fonds divers', col:'#e879f9', cl:['pa', 'mp', 'cry', 'cryd', 'pe', 'dp', 'str', 'orp', 'ppv'] },
   { nom:'Autres', col:'#94a3b8', cl:['uc', 'nc', 'aut', 'etr'] }
 ];
 function kyfDonutKey(scope){ return scope === 'env' ? 'kyf-env-donut' : 'kyf-cls-donut'; }
@@ -27525,7 +27525,7 @@ function kyfClsDonutSwitch(det, scope){
 function kyfClsDonut2Html(rows, tot){
   if(!(tot > 0)) return '';
   const by = {}; rows.forEach(r => { by[r.key] = r; });
-  const grp = KYF_CLS_GROUPES.map(g => ({ nom:g.nom, col:g.col, cls:g.cl.map(k => by[k]).filter(Boolean) })).map(g => Object.assign(g, { val:g.cls.reduce((a, c) => a + c.val, 0) })).filter(g => g.val > 0);
+  const grp = KYF_CLS_GROUPES.map(g => ({ nom:g.nom, lb:g.lb, col:g.col, cls:g.cl.map(k => by[k]).filter(Boolean) })).map(g => Object.assign(g, { val:g.cls.reduce((a, c) => a + c.val, 0) })).filter(g => g.val > 0);
   const known = new Set(KYF_CLS_GROUPES.reduce((a, g) => a.concat(g.cl), [])), rest = rows.filter(r => !known.has(r.key));
   if(rest.length){ const g = grp.find(x => x.nom === 'Autres'); if(g){ g.cls = g.cls.concat(rest); g.val += rest.reduce((a, c) => a + c.val, 0); } else grp.push({ nom:'Autres', col:'#94a3b8', cls:rest, val:rest.reduce((a, c) => a + c.val, 0) }); }
   return kyfDonut2Html(grp, tot);
@@ -27537,9 +27537,9 @@ function kyfDonut2Svg(grp, tot, big){
   const arc = (a0, a1, ri, ro) => { const g = Math.min(GAP, (a1 - a0) / 3), x0 = a0 + g / 2, x1 = a1 - g / 2, big2 = (x1 - x0) > Math.PI ? 1 : 0, p0 = pt(ro, x0), p1 = pt(ro, x1), p2 = pt(ri, x1), p3 = pt(ri, x0);
     return 'M' + p0.map(v => v.toFixed(2)).join(',') + 'A' + ro + ',' + ro + ' 0 ' + big2 + ' 1 ' + p1.map(v => v.toFixed(2)).join(',') + 'L' + p2.map(v => v.toFixed(2)).join(',') + 'A' + ri + ',' + ri + ' 0 ' + big2 + ' 0 ' + p3.map(v => v.toFixed(2)).join(',') + 'Z'; };
   const pc = v => (v / tot * 100).toFixed(v / tot < 0.1 ? 1 : 0).replace('.', ',') + ' %';
-  const wrap = nm => { const w = String(nm).split(/\s+/), L = []; let c = ''; w.forEach(x => { if(c && (c + ' ' + x).length > 13){ L.push(c); c = x; } else c = c ? c + ' ' + x : x; }); if(c) L.push(c); return L.slice(0, 3); };
-  const label = (a0, a1, ri, ro, nm, pct, f, dark) => {   // nom + pourcentage dans le segment s'ils tiennent (à plat, sinon dans le sens du rayon) ; rien sinon
-    const mid = (a0 + a1) / 2, rm = (ri + ro) / 2, arcL = (a1 - a0) * rm, th = ro - ri, L = wrap(nm).concat([pct]);
+  const wrap = (nm, lim) => { const w = String(nm).split(/\s+/), L = []; let c = ''; w.forEach(x => { if(c && (c + ' ' + x).length > (lim || 13)){ L.push(c); c = x; } else c = c ? c + ' ' + x : x; }); if(c) L.push(c); return L.slice(0, 3); };
+  const label = (a0, a1, ri, ro, nm, pct, f, dark, lim) => {   // nom + pourcentage dans le segment s'ils tiennent (à plat, sinon dans le sens du rayon) ; rien sinon
+    const mid = (a0 + a1) / 2, rm = (ri + ro) / 2, arcL = (a1 - a0) * rm, th = ro - ri, L = wrap(nm, lim).concat([pct]);
     const w = Math.max.apply(null, L.map(x => x.length)) * f * 0.58 + 3, h = L.length * f * 1.15 + 2;
     let rot = null;
     if(arcL >= w && th >= h) rot = mid * 180 / Math.PI + ((mid > Math.PI / 2 && mid < Math.PI * 1.5) ? 180 : 0);
@@ -27554,7 +27554,7 @@ function kyfDonut2Svg(grp, tot, big){
   grp.forEach(g => {
     const g0 = a, g1 = a + g.val / tot * 2 * Math.PI - (full ? 0.0001 : 0);
     svg += '<path d="' + arc(g0, g1, R0, R1) + '" fill="' + g.col + '"><title>' + escapeHtml(g.nom + ' : ' + pc(g.val)) + '</title></path>';
-    if(big) lab += label(g0, g1, R0, R1, g.nom, pc(g.val), fs + 0.5);
+    if(big) lab += label(g0, g1, R0, R1, g.lb || g.nom, pc(g.val), fs + 0.5, false, g.lb ? 8 : 0);
     else if((g1 - g0) > 0.38){ const m = pt((R0 + R1) / 2, (g0 + g1) / 2); svg += '<text x="' + m[0].toFixed(1) + '" y="' + (m[1] + 3).toFixed(1) + '" text-anchor="middle" font-size="9" font-weight="700" fill="#14213d">' + escapeHtml(pc(g.val)) + '</text>'; }
     let b = g0; leg += '<div style="margin:0 0 9px"><div style="display:flex;align-items:center;gap:7px;font-size:' + (big ? 13 : 11) + 'px;font-weight:700;color:var(--text)"><i style="width:10px;height:10px;border-radius:3px;background:' + g.col + ';flex-shrink:0"></i><span style="flex:1;min-width:0">' + escapeHtml(g.nom) + '</span><span>' + pc(g.val) + '</span></div>';
     g.cls.forEach(c => {
@@ -51690,7 +51690,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.73\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.74\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -79052,6 +79052,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.74 · 16/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PORTEFEUILLE, PAR CLASSE : dans le camembert « Détaillé », le groupe « Diversifiants » affiche maintenant « Fonds divers » dans l'anneau du centre. La légende garde le nom « Diversifiants ».</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.73 · 16/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">CLASSES : dans un contrat AV / PER, les lignes « Action » ont maintenant le bouton « Changer » comme les fonds et les ETF. Une foncière cotée (GECINA, Mercialys) peut ainsi aller en Immobilier. Sans choix, elle reste en Actions.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.72 · 16/11/2026</div>
