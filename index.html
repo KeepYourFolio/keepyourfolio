@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.53
+  @version     : Beta 2.14.2.54
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5362,7 +5362,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.53</div>
+  <div class="kl-ver">Beta 2.14.2.54</div>
 </div>
 <script>
 (function(){
@@ -6348,6 +6348,14 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Section Mode 1 Auto -->
   <div id="dcaAutoSection" style="display:none;margin-bottom:12px">
+    <div style="margin-bottom:10px">
+      <div style="font-size:9px;color:var(--text3);letter-spacing:.5px;margin-bottom:6px">HEURE D'EXÉCUTION (FACULTATIF)</div>
+      <div style="position:relative;display:flex;gap:6px;align-items:center">
+        <button type="button" id="dcaCoursHeureBtn" class="kyf-csel-btn" data-kyf-time="dcaCoursHeure" aria-haspopup="dialog" aria-expanded="false" style="flex:1"><span id="dcaCoursHeureBtnLabel">Aucune</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button>
+        <button type="button" id="dcaCoursHeureClr" class="kyf-mini-btn" onclick="dcaHeureClear()" title="Retirer l'heure" aria-label="Retirer l'heure" style="display:none"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        <input type="hidden" id="dcaCoursHeure" value="" onchange="dcaFetchLabelRefresh()">
+      </div>
+    </div>
     <div style="font-size:9px;color:var(--text3);letter-spacing:.5px;margin-bottom:6px">RÉCUPÉRATION AUTOMATIQUE</div>
     <button onclick="dcaFetchAuto()" id="dcaFetchBtn" class="kyf-mini-btn kyf-mini-accent" style="width:100%;justify-content:center;padding:7px 10px;margin-bottom:8px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> RÉCUPÉRER LE COURS DE CLÔTURE</button>
     <div id="dcaAutoStatus" style="display:none;font-size:10px;color:var(--text3);
@@ -8005,7 +8013,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.53</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.54</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -25529,8 +25537,11 @@ async function dcaAutoFetch(plan, dateStr){
       // Mode 1 auto : jour d'exécution (la date, ou la prochaine séance si week-end ou férié) ; cours en direct si c'est aujourd'hui, sinon clôture de ce jour
       tradingDay = dcaExecDay(dateStr, plan.ticker);
       if(tradingDay > dcaTodayLocal()){ if(fetchBtn){ fetchBtn.disabled=false; fetchBtn.innerHTML=DCA_FETCH_BTN_HTML; } if(statusEl) statusEl.innerHTML=dcaIco('err','#ff4560')+'La séance du '+tradingDay.slice(8,10)+'/'+tradingDay.slice(5,7)+' n\u2019a pas encore eu lieu. Saisissez le cours manuellement.'; return; }
+      const _hh = (document.getElementById('dcaCoursHeure') || {}).value || '';
+      let _ir = null; if(/^\d\d:\d\d$/.test(_hh)) _ir = await fetchIntradayAt(plan.ticker, tradingDay, _hh);
       const _lv = window._lp && window._lp[plan.ticker];
-      if(tradingDay === dcaTodayLocal() && _lv && _lv.price > 0 && String(_lv.currency || 'EUR').toUpperCase() === 'EUR'){ price = _lv.price; source = 'Cours en direct'; }
+      if(_ir){ price = _ir.price; const _d = new Date(_ir.ts * 1000); source = 'Cours de ' + String(_d.getHours()).padStart(2,'0') + ':' + String(_d.getMinutes()).padStart(2,'0') + ' (Yahoo, à la minute)'; }
+      else if(tradingDay === dcaTodayLocal() && _lv && _lv.price > 0 && String(_lv.currency || 'EUR').toUpperCase() === 'EUR'){ price = _lv.price; source = 'Cours en direct'; }
       else { price = await fetchHistoricalClose(plan.ticker, tradingDay); source = 'Yahoo Finance'; }
     }
 
@@ -26268,6 +26279,7 @@ function openDCACours(planId){
   // Date par défaut = aujourd'hui
   const todayStr = new Date().toISOString().slice(0,10);
   kyfDateSetValue('dcaCoursDate', todayStr);
+  dcaHeureClear(true);
   setTimeout(dcaFetchLabelRefresh, 0);
 
   // Sections selon mode
@@ -26296,14 +26308,48 @@ function closeDCACours(){
 }
 
 // ── Quand la date change ──────────────────────────────────────
+function dcaHeureClear(silent){
+  const i = document.getElementById('dcaCoursHeure'), l = document.getElementById('dcaCoursHeureBtnLabel'), c = document.getElementById('dcaCoursHeureClr');
+  if(i) i.value = ''; if(l) l.textContent = 'Aucune'; if(c) c.style.display = 'none';
+  if(!silent) dcaFetchLabelRefresh();
+}
+// 2.14.2.54 : prix à la minute (Yahoo, bougies d'1 minute, environ 30 derniers jours) : dernière bougie cotée à l'heure choisie (heure locale), sinon la plus proche juste après
+async function fetchIntradayAt(ticker, dateStr, hhmm){
+  const target = Math.floor(new Date(dateStr + 'T' + hhmm + ':00').getTime() / 1000);
+  if(!isFinite(target)) return null;
+  const t = encodeURIComponent(ticker), p1 = target - 6 * 3600, p2 = target + 6 * 3600;
+  const parse = data => {
+    try{
+      const r = data && data.chart && data.chart.result && data.chart.result[0]; if(!r) return null;
+      const ts = r.timestamp || r.timestamps, cl = r.indicators && r.indicators.quote && r.indicators.quote[0] && r.indicators.quote[0].close; if(!ts || !cl) return null;
+      let before = null, after = null;
+      for(let i = 0; i < ts.length; i++){ if(!(cl[i] > 0)) continue; if(ts[i] <= target + 59){ before = { ts:ts[i], px:cl[i] }; } else if(!after){ after = { ts:ts[i], px:cl[i] }; } }
+      const pick = (before && target - before.ts <= 30 * 60) ? before : ((after && after.ts - target <= 10 * 60) ? after : null);
+      return pick ? { price: parseFloat(Number(pick.px).toFixed(4)), ts: pick.ts } : null;
+    }catch(e){ return null; }
+  };
+  const q = 'v8/finance/chart/' + t + '?period1=' + p1 + '&period2=' + p2 + '&interval=1m';
+  const bases = [await yahooUrl(q), await yahoo2Url(q)];
+  for(const u of bases){
+    try{ const ac = new AbortController(); setTimeout(() => ac.abort(), 7000); const r = await fetch(u, { signal:ac.signal }); if(!r.ok) continue; const res = parse(await r.json()); if(res) return res; }catch(e){}
+  }
+  if(KYF_ENV === 'hosted' || !kyfRelaysOn()) return null;
+  const hist = 'https://query1.finance.yahoo.com/' + q;
+  for(const proxy of ['https://api.allorigins.win/raw?url=', 'https://corsproxy.io/?', 'https://api.codetabs.com/v1/proxy?quest=']){
+    try{ const ac = new AbortController(); setTimeout(() => ac.abort(), 8000); const r = await fetch(proxy + encodeURIComponent(hist), { signal:ac.signal }); if(!r.ok) continue; const tx = await r.text(); if(!tx || tx[0] !== '{') continue; const res = parse(JSON.parse(tx)); if(res) return res; }catch(e){}
+  }
+  return null;
+}
 function dcaFetchLabelRefresh(){
   try{
     const b = document.getElementById('dcaFetchBtn'); if(!b || b.disabled) return;
     const ds = (document.getElementById('dcaCoursDate') || {}).value || '', pl = (typeof _dcaCoursPlan !== 'undefined') ? _dcaCoursPlan : null;
-    const live = pl && pl.type !== 'crypto' && ds && dcaExecDay(ds, pl.ticker) === dcaTodayLocal() && window._lp && window._lp[pl.ticker] && window._lp[pl.ticker].price > 0;
-    DCA_FETCH_BTN_HTML = DCA_FETCH_BTN_HTML.replace(/(<\/svg>\s*).*$/, '$1' + (live ? 'RÉCUPÉRER LE COURS EN DIRECT' : 'RÉCUPÉRER LE COURS DE CLÔTURE'));
+    const hh = (document.getElementById('dcaCoursHeure') || {}).value || '';
+    const clr = document.getElementById('dcaCoursHeureClr'); if(clr) clr.style.display = hh ? '' : 'none';
+    const live = !hh && pl && pl.type !== 'crypto' && ds && dcaExecDay(ds, pl.ticker) === dcaTodayLocal() && window._lp && window._lp[pl.ticker] && window._lp[pl.ticker].price > 0;
+    DCA_FETCH_BTN_HTML = DCA_FETCH_BTN_HTML.replace(/(<\/svg>\s*).*$/, '$1' + (hh ? 'RÉCUPÉRER LE COURS DE ' + hh : (live ? 'RÉCUPÉRER LE COURS EN DIRECT' : 'RÉCUPÉRER LE COURS DE CLÔTURE')));
     b.innerHTML = DCA_FETCH_BTN_HTML;
-    const h = document.getElementById('dcaAutoHint'); if(h) h.textContent = live ? 'Mode auto : cours en direct, la séance du jour n\u2019est pas close. Utilisez le mode Manuel pour votre prix exact.' : 'Mode auto : cours de clôture du jour d\u2019exécution (prochaine séance si week-end ou jour férié). Utilisez le mode Manuel pour votre prix exact.';
+    const h = document.getElementById('dcaAutoHint'); if(h) h.textContent = hh ? 'Mode auto : cours à la minute de l\u2019heure choisie (Yahoo, quelques minutes de décalage possibles). Utilisez le mode Manuel pour votre prix exact.' : live ? 'Mode auto : cours en direct, la séance du jour n\u2019est pas close. Utilisez le mode Manuel pour votre prix exact.' : 'Mode auto : cours de clôture du jour d\u2019exécution (prochaine séance si week-end ou jour férié). Utilisez le mode Manuel pour votre prix exact.';
   }catch(e){}
 }
 function dcaOnDateChange(){
@@ -51516,7 +51562,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.53\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.54\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -78828,7 +78874,9 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
-                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.53 · 16/11/2026</div>
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.54 · 16/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">DCA, PRIX À LA MINUTE : dans la fenêtre « Enregistrer DCA » (mode Automatique), un champ facultatif « Heure d'exécution » permet de récupérer le prix de la minute choisie (par exemple l'heure de la notification du courtier) au lieu de la clôture. Disponible pour les séances des 30 derniers jours environ ; sans heure, la règle habituelle s'applique (cours en direct le jour même, sinon clôture).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.53 · 16/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">CORBEILLE ET TÉLÉPHONE : quand vous supprimez sur le téléphone une opération déjà appliquée (achat, vente, dividende, versement), Keep Your Folio PC la retire comme avant, mais la met maintenant aussi dans sa corbeille : elle reste restaurable depuis le PC, avec la position et les espèces remises comme avant la suppression.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.52 · 16/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">DCA, PASTILLE ET « À SAISIR » : quand le vrai achat est déjà enregistré (saisi à la main ou venu du téléphone, même titre, même montant, à 4 jours près de l'échéance), le plan n'est plus compté « À saisir » : le numéro de la pastille Investissement / DCA diminue ou disparaît, et la prochaine échéance du mois reste bien proposée.</div>
