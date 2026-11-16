@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.51
+  @version     : Beta 2.14.2.53
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5362,7 +5362,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.51</div>
+  <div class="kl-ver">Beta 2.14.2.53</div>
 </div>
 <script>
 (function(){
@@ -8005,7 +8005,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.51</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.53</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -25727,9 +25727,25 @@ function dcaPlanMonthDates(p, y, m){
   const kept = ds.filter(d => !p.debut || d >= p.debut);
   return kept.length ? kept : ds;
 }
+// 2.14.2.52 : achats réels (saisis à la main ou venus du téléphone, hors DCA) qui tiennent lieu d'échéance : même titre, même montant (3 %), à 4 jours près
+function dcaRealTx(p){
+  if(!p || p.type === 'crypto' || !p.ticker) return [];
+  const tk = String(p.ticker).toUpperCase(), mt = Number(p.montant) || 0;
+  try{ return etfTransLoad().filter(t => t && t.type === 'achat' && t.src !== 'dca' && String(t.ticker || '').toUpperCase() === tk && Math.abs((Number(t.brut) || (Number(t.qty) * Number(t.prix)) || 0) - mt) <= Math.max(1, mt * .03)); }catch(e){ return []; }
+}
+function dcaRealCovers(T, dateStr){
+  const d = Date.parse(dateStr + 'T12:00:00Z');
+  return T.some(t => Math.abs(Date.parse(String(t.date) + 'T12:00:00Z') - d) <= 4 * 86400000);
+}
 function dcaPlanMonthCount(p, y, m){
   const pre = y + '-' + String(m + 1).padStart(2,'0');
-  return _dcaHistory.filter(h => h.planId === p.id && String(h.date).slice(0,7) === pre).length;
+  const H = _dcaHistory.filter(h => h.planId === p.id && String(h.date).slice(0,7) === pre);
+  let n = H.length;
+  try{
+    const T = dcaRealTx(p);
+    if(T.length) dcaPlanMonthDates(p, y, m).forEach(d => { if(!H.some(h => Math.abs(Date.parse(String(h.date) + 'T12:00:00Z') - Date.parse(d + 'T12:00:00Z')) <= 4 * 86400000) && dcaRealCovers(T, d)) n++; });
+  }catch(e){}
+  return n;
 }
 function dcaPlanJoursTxt(p){ return p.freq === 'semimonthly' ? 'le ' + p.jour + ' et le ' + (p.jour2 || 15) : 'le ' + p.jour; }
 function dcaFreqSync(){
@@ -25756,8 +25772,9 @@ function dcaPlanIsDue(p, today){
   }
   const last = _dcaHistory.find(h => h.planId === p.id);
   if(p.freq === 'weekly'){
-    if(!last) return true;
-    return today.getTime() - new Date(last.date + 'T00:00:00').getTime() >= 7 * 86400000;
+    let due7 = !last || today.getTime() - new Date(last.date + 'T00:00:00').getTime() >= 7 * 86400000;
+    if(due7){ try{ const T = dcaRealTx(p); if(T.length && dcaRealCovers(T, dcaPlanDueDate(p, today))) due7 = false; }catch(e){} }
+    return due7;
   }
   const step = ({ monthly:1, bimonthly:2, quarterly:3 })[p.freq] || 1;
   if(last){
@@ -25765,7 +25782,9 @@ function dcaPlanIsDue(p, today){
     if((today.getFullYear()*12 + today.getMonth()) - (ld.getFullYear()*12 + ld.getMonth()) < step) return false;
   }
   const dim = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
-  return today.getDate() >= Math.min(parseInt(p.jour) || 1, dim);
+  if(!(today.getDate() >= Math.min(parseInt(p.jour) || 1, dim))) return false;
+  try{ const T = dcaRealTx(p); if(T.length && dcaRealCovers(T, dcaPlanDueDate(p, today))) return false; }catch(e){}   // le vrai achat est déjà saisi : plus « À saisir »
+  return true;
 }
 let _dcaEditId = null;   // plan en cours de modification (null = création)
 function dcaEditUi(on){
@@ -51497,7 +51516,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.51\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.53\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -78809,7 +78828,11 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
-                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.51 · 16/11/2026</div>
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.53 · 16/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">CORBEILLE ET TÉLÉPHONE : quand vous supprimez sur le téléphone une opération déjà appliquée (achat, vente, dividende, versement), Keep Your Folio PC la retire comme avant, mais la met maintenant aussi dans sa corbeille : elle reste restaurable depuis le PC, avec la position et les espèces remises comme avant la suppression.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.52 · 16/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">DCA, PASTILLE ET « À SAISIR » : quand le vrai achat est déjà enregistré (saisi à la main ou venu du téléphone, même titre, même montant, à 4 jours près de l'échéance), le plan n'est plus compté « À saisir » : le numéro de la pastille Investissement / DCA diminue ou disparaît, et la prochaine échéance du mois reste bien proposée.</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.51 · 16/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">DCA, PRIX PROPOSÉ : quand l'échéance tombe un week-end ou un jour férié, le courtier exécute l'ordre à la séance suivante : Keep Your Folio prend maintenant la clôture de cette séance (avant, il prenait la veille, ce qui donnait un prix faux). Dans la fenêtre « Enregistrer DCA », si la date est aujourd'hui, le bouton propose le cours en direct ; sinon la clôture du jour d'exécution. Si la séance n'a pas encore eu lieu, il le dit et laisse saisir le cours à la main.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.50 · 16/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">DCA AUTOMATIQUE : quand vous avez déjà saisi le vrai achat (à la main ou depuis le téléphone) à quelques jours de l'échéance et pour le même montant, le DCA automatique n'en enregistre plus un deuxième à la reconnexion. Il le note dans le journal et laisse l'achat existant tel quel.</div>
@@ -219839,6 +219862,7 @@ async function maAppliquer(o){
       await confirmAddTransaction();
       var m = document.getElementById('modalAddTransaction'); try{ if(m && m.style.display !== 'none') closeAddTransaction(); }catch(e){}
       var nt = etfTransLoad().filter(function(t){ return !av[t.id] && t.type === o.type; });
+      try{ if(nt.length) kyfSbDcaBadgeRefresh(); }catch(e){}
       return nt.length ? { ok:true, ref:{ k:'trans', id:nt[nt.length - 1].id } } : { err:'Keep Your Folio n’a pas enregistré la transaction.' };
     }
     if(o.type === 'dividende'){
@@ -219999,7 +220023,8 @@ function maAnnuler(ref){
   try{
     if(ref.k === 'trans'){
       var all = etfTransLoad(), i = all.findIndex(function(t){ return String(t.id) === String(ref.id); }); if(i < 0) return false;
-      var tx = all[i], next = all.slice(); next.splice(i, 1); etfTransSave(next); kyfTradeRevert(tx); loadEtfTransactions(); try{ renderTransactions(); }catch(e){} try{ onIntradayTransaction(); }catch(e){}
+      var tx = all[i], next = all.slice(); next.splice(i, 1); etfTransSave(next); kyfTradeRevert(tx);
+      try{ kyfCorbeillePush('etfTransLoad', tx.id, i, Object.assign({}, tx, { _revert:true }), 'Transaction'); }catch(e){}   // 2.14.2.53 : retirée à la demande du téléphone, mais restaurable depuis la corbeille du PC loadEtfTransactions(); try{ renderTransactions(); }catch(e){} try{ onIntradayTransaction(); }catch(e){}
       return true;
     }
     if(ref.k === 'div'){
@@ -220007,6 +220032,7 @@ function maAnnuler(ref){
       var tx2 = d.reinvestTxId ? etfTransLoad().find(function(t){ return t.id === d.reinvestTxId; }) : null;
       if(tx2){ etfTransSave(etfTransLoad().filter(function(t){ return t.id !== tx2.id; })); kyfTradeRevert(tx2); loadEtfTransactions(); }
       try{ kyfDivCashUndo(d); }catch(e){}
+      try{ kyfCorbeillePush(divLoad.name, d.id, divLoad().findIndex(function(x){ return x.id === ref.id; }), d, 'Dividende'); }catch(e){}   // 2.14.2.53
       divSave(divLoad().filter(function(x){ return x.id !== ref.id; })); try{ renderDividendes(); }catch(e){}
       return true;
     }
@@ -220020,7 +220046,7 @@ function maAnnuler(ref){
     if(ref.k === 'avposnew') return avLigneCreationAnnuler(ref);
     if(ref.k === 'mvt'){
       var a = kyfCashMvts(), j = a.findIndex(function(m){ return m.id === ref.id; }); if(j < 0) return false;
-      var m = a[j]; kyfCashMvtReverse_(m); a.splice(j, 1); kyfCashMvtsSave(a); try{ renderCashKPI(); }catch(e){} try{ kyfCashMvtRefresh(); }catch(e){}
+      var m = a[j]; try{ kyfCorbeillePush('cashMvt', m.id, j, m, 'Mouvement ' + m.env); }catch(e){} kyfCashMvtReverse_(m); a.splice(j, 1); kyfCashMvtsSave(a); try{ renderCashKPI(); }catch(e){} try{ kyfCashMvtRefresh(); }catch(e){}
       return true;
     }
   }catch(e){}
