@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.32
+  @version     : Beta 2.14.2.33
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5362,7 +5362,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.32</div>
+  <div class="kl-ver">Beta 2.14.2.33</div>
 </div>
 <script>
 (function(){
@@ -8005,7 +8005,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.32</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.33</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -27300,7 +27300,7 @@ const KYF_CLS_VUE = [
   { key:'cry', label:'Crypto', color:'#ff4fa0' }, { key:'fe', label:'Fonds euros', color:'#06b6d4' }, { key:'immo', label:'Immobilier', color:'#4d9fff' },
   { key:'pe', label:'Private equity', color:'#e879f9' }, { key:'dp', label:'Dette privée', color:'#ff7a1a' }, { key:'str', label:'Produits structurés', color:'#2fc27a' },
   { key:'uc', label:'Unités de compte non détaillées', color:'#8891a0' }, { key:'nc', label:'À classer', color:'#94a3b8' },
-  { key:'prec', label:'Épargne de précaution', color:'#818cf8' }, { key:'scpid', label:'SCPI en direct', color:'#fb7185' }, { key:'rp', label:'Résidence principale', color:'#d6a45a' }
+  { key:'prec', label:'Épargne de précaution', color:'#818cf8' }, { key:'scpid', label:'SCPI en direct', color:'#fb7185' }, { key:'rp', label:'Résidence principale', color:'#d6a45a' }, { key:'immod', label:'Immobilier en direct', color:'#2b6cb0' }
 ];
 // Ajouts facultatifs au camembert (2.14.2.32, idée de Nicolas) : épargne de précaution (livrets cochés), SCPI en direct, résidence principale. Décochés par défaut.
 const KYF_CLS_EXTRA_KEY = 'kyf-cls-extra';
@@ -27311,6 +27311,7 @@ function kyfClsExtraLines(k){
   try{
     if(k === 'prec') livLoad().forEach(l => { if(l && l.precaution && kyfFamFiltreOk(l.titulaire)){ const v = (parseFloat(l.solde) || 0) * livPart(l); if(v > 0) out.push({ nom:String(l.banque || 'Livret') + ' · ' + String(l.type || ''), env:'Livrets', val:rd(v) }); } });
     if(k === 'scpid') scpiLoad().forEach(x => { if(x && x.enveloppe === 'direct' && kyfFamFiltreOk(x.titulaire)){ const v = parseFloat(x.valActuel) || 0; if(v > 0) out.push({ nom:String(x.nom || 'SCPI'), env:'SCPI en direct', val:v }); } });
+    if(k === 'immod') JSON.parse(localStorage.getItem('kyf-immo') || '[]').forEach(b => { if(b && b.statut !== 'proprio' && b.statut !== 'vendu' && kyfFamFiltreOk(b.titulaire)){ const v = parseFloat(b.valeur) || 0; if(v > 0) out.push({ nom:String(b.nom || 'Bien'), env:'Immobilier', val:v }); } });
     if(k === 'rp') JSON.parse(localStorage.getItem('kyf-immo') || '[]').forEach(b => { if(b && b.statut === 'proprio' && kyfFamFiltreOk(b.titulaire)){ const v = parseFloat(b.valeur) || 0; if(v > 0) out.push({ nom:String(b.nom || 'Résidence principale'), env:'Immobilier', val:v }); } });
   }catch(_){}
   return out;
@@ -27338,7 +27339,7 @@ function kyfClsData(){
       add(k, l.val, { src:'av', cid:d.id, pi:l.pi, nom:String(l.nom || ''), env:cn, mode: l.cl ? (l.auto ? 'auto' : 'choisie') : '', cur: l.auto ? '' : (l.cl || ''), auto: l.auto ? l.cl : '', peut:peut });
     });
   }); }catch(_){}
-  { const ex = kyfClsExtra(); ['prec', 'scpid', 'rp'].forEach(k => { if(ex[k]) kyfClsExtraLines(k).forEach(l => add(k, l.val, { src:'x', nom:l.nom, env:l.env, mode:'', cur:'', auto:'', peut:false })); }); }
+  { const ex = kyfClsExtra(); ['prec', 'scpid', 'immod', 'rp'].forEach(k => { if(ex[k]) kyfClsExtraLines(k).forEach(l => add(k, l.val, { src:'x', nom:l.nom, env:l.env, mode:'', cur:'', auto:'', peut:false })); }); }
   return KYF_CLS_VUE.filter(c => by[c.key]).map(c => ({ key:c.key, nom:c.label, col:c.color, val:by[c.key].val, n:by[c.key].items.length, auto:by[c.key].auto, items:by[c.key].items.sort((a, b) => b.val - a.val) }));
 }
 function kyfClsSet(i, k){   // classe d'une ligne, changée depuis la vue Par classe ('' : revenir à l'automatique)
@@ -27363,7 +27364,7 @@ function kyfClsRender(card){
     + '<div id="envFamBar" style="display:none;margin:0 0 14px"></div>';
   { const ex = kyfClsExtra();
     h += '<div role="group" aria-label="Ajouter au camembert" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 14px"><span style="font-size:9px;font-weight:700;letter-spacing:.6px;color:var(--text3)">AJOUTER AU CAMEMBERT</span>'
-      + [['prec', 'Épargne de précaution'], ['scpid', 'SCPI en direct'], ['rp', 'Résidence principale']].map(x => {
+      + [['prec', 'Épargne de précaution'], ['scpid', 'SCPI en direct'], ['immod', 'Immobilier en direct'], ['rp', 'Résidence principale']].map(x => {
           const on = !!ex[x[0]], n = on ? 0 : kyfClsExtraLines(x[0]).length;
           return '<button type="button" aria-pressed="' + on + '" onclick="kyfClsExtraToggle(\'' + x[0] + '\')" title="' + (on ? 'Retirer du camembert' : 'Ajouter au camembert') + '" style="display:inline-flex;align-items:center;gap:6px;font:700 10px Inter,sans-serif;padding:6px 11px;border-radius:99px;cursor:pointer;transition:background .15s,color .15s,border-color .15s;border:1px solid ' + (on ? '#f0b429' : 'var(--border2)') + ';background:' + (on ? '#f0b429' : 'transparent') + ';color:' + (on ? '#000' : 'var(--text2)') + '" onmouseover="if(this.getAttribute(\'aria-pressed\')!==\'true\')this.style.background=\'var(--hov-bg)\'" onmouseout="if(this.getAttribute(\'aria-pressed\')!==\'true\')this.style.background=\'transparent\'">'
             + (on ? '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>' : '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>') + x[1] + '</button>';
@@ -27371,6 +27372,7 @@ function kyfClsRender(card){
     const miss = [];
     if(ex.prec && !rows.some(r => r.key === 'prec')) miss.push('Aucun livret n\'est compté en épargne de précaution : ouvrez la fiche d\'un livret et cochez « Compter comme épargne de précaution ».');
     if(ex.scpid && !rows.some(r => r.key === 'scpid')) miss.push('Aucune SCPI en direct trouvée (les SCPI détenues dans un contrat sont déjà comptées avec le contrat).');
+    if(ex.immod && !rows.some(r => r.key === 'immod')) miss.push('Aucun bien immobilier en direct (hors résidence principale) : ajoutez-en un dans Immobilier.');
     if(ex.rp && !rows.some(r => r.key === 'rp')) miss.push('Aucune résidence principale : dans la fiche d\'un bien immobilier, choisissez le statut « Propriétaire occupant ».');
     if(miss.length) h += '<div style="margin:-6px 0 14px;font-size:10px;color:var(--text3);line-height:1.6">' + miss.map(escapeHtml).join('<br>') + '</div>'; }
   h += '<div style="display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap"><div style="flex:1 1 560px;min-width:0">';   // 2.14.2.05 : liste à gauche, anneau à droite (comme Par enveloppe)
@@ -51289,7 +51291,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.32\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.33\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -78578,6 +78580,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.33 · 16/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PORTEFEUILLE, PAR CLASSE (idée de Nicolas, 3/4) : l'immobilier se scinde. Nouveau bouton « Immobilier en direct » (biens hors résidence principale, SCPI à part), à côté de « Résidence principale » : la grosse somme de la résidence principale ne masque plus l'immobilier d'investissement.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.32 · 16/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PORTEFEUILLE, PAR CLASSE (idée de Nicolas, 2/4) : trois boutons « Ajouter au camembert » (Épargne de précaution, SCPI en direct, Résidence principale), décochés par défaut. L'épargne de précaution reprend les livrets cochés ; la résidence principale, les biens au statut « Propriétaire occupant ».</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.31 · 16/11/2026</div>
