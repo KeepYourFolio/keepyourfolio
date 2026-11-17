@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.74
+  @version     : Beta 2.14.2.75
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5364,7 +5364,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.74</div>
+  <div class="kl-ver">Beta 2.14.2.75</div>
 </div>
 <script>
 (function(){
@@ -8015,7 +8015,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.74</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.75</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -27512,7 +27512,7 @@ const KYF_CLS_GROUPES = [
   { nom:'Taux et trésorerie', col:'#22d3ee', cl:['mon', 'obl', 'obd', 'fe'] },
   { nom:'Épargne de précaution', col:'#818cf8', cl:['prec'] },
   { nom:'Immobilier', col:'#4d9fff', cl:['immo', 'scpid', 'immod', 'rp'] },
-  { nom:'Diversifiants', lb:'Fonds divers', col:'#e879f9', cl:['pa', 'mp', 'cry', 'cryd', 'pe', 'dp', 'str', 'orp', 'ppv'] },
+  { nom:'Diversifiants', col:'#e879f9', cl:['pa', 'mp', 'cry', 'cryd', 'pe', 'dp', 'str', 'orp', 'ppv'] },
   { nom:'Autres', col:'#94a3b8', cl:['uc', 'nc', 'aut', 'etr'] }
 ];
 function kyfDonutKey(scope){ return scope === 'env' ? 'kyf-env-donut' : 'kyf-cls-donut'; }
@@ -27525,7 +27525,7 @@ function kyfClsDonutSwitch(det, scope){
 function kyfClsDonut2Html(rows, tot){
   if(!(tot > 0)) return '';
   const by = {}; rows.forEach(r => { by[r.key] = r; });
-  const grp = KYF_CLS_GROUPES.map(g => ({ nom:g.nom, lb:g.lb, col:g.col, cls:g.cl.map(k => by[k]).filter(Boolean) })).map(g => Object.assign(g, { val:g.cls.reduce((a, c) => a + c.val, 0) })).filter(g => g.val > 0);
+  const grp = KYF_CLS_GROUPES.map(g => ({ nom:g.nom, col:g.col, cls:g.cl.map(k => by[k]).filter(Boolean) })).map(g => Object.assign(g, { val:g.cls.reduce((a, c) => a + c.val, 0) })).filter(g => g.val > 0);
   const known = new Set(KYF_CLS_GROUPES.reduce((a, g) => a.concat(g.cl), [])), rest = rows.filter(r => !known.has(r.key));
   if(rest.length){ const g = grp.find(x => x.nom === 'Autres'); if(g){ g.cls = g.cls.concat(rest); g.val += rest.reduce((a, c) => a + c.val, 0); } else grp.push({ nom:'Autres', col:'#94a3b8', cls:rest, val:rest.reduce((a, c) => a + c.val, 0) }); }
   return kyfDonut2Html(grp, tot);
@@ -27537,9 +27537,9 @@ function kyfDonut2Svg(grp, tot, big){
   const arc = (a0, a1, ri, ro) => { const g = Math.min(GAP, (a1 - a0) / 3), x0 = a0 + g / 2, x1 = a1 - g / 2, big2 = (x1 - x0) > Math.PI ? 1 : 0, p0 = pt(ro, x0), p1 = pt(ro, x1), p2 = pt(ri, x1), p3 = pt(ri, x0);
     return 'M' + p0.map(v => v.toFixed(2)).join(',') + 'A' + ro + ',' + ro + ' 0 ' + big2 + ' 1 ' + p1.map(v => v.toFixed(2)).join(',') + 'L' + p2.map(v => v.toFixed(2)).join(',') + 'A' + ri + ',' + ri + ' 0 ' + big2 + ' 0 ' + p3.map(v => v.toFixed(2)).join(',') + 'Z'; };
   const pc = v => (v / tot * 100).toFixed(v / tot < 0.1 ? 1 : 0).replace('.', ',') + ' %';
-  const wrap = (nm, lim) => { const w = String(nm).split(/\s+/), L = []; let c = ''; w.forEach(x => { if(c && (c + ' ' + x).length > (lim || 13)){ L.push(c); c = x; } else c = c ? c + ' ' + x : x; }); if(c) L.push(c); return L.slice(0, 3); };
-  const label = (a0, a1, ri, ro, nm, pct, f, dark, lim) => {   // nom + pourcentage dans le segment s'ils tiennent (à plat, sinon dans le sens du rayon) ; rien sinon
-    const mid = (a0 + a1) / 2, rm = (ri + ro) / 2, arcL = (a1 - a0) * rm, th = ro - ri, L = wrap(nm, lim).concat([pct]);
+  const wrap = nm => { const w = String(nm).split(/\s+/), L = []; let c = ''; w.forEach(x => { if(c && (c + ' ' + x).length > 13){ L.push(c); c = x; } else c = c ? c + ' ' + x : x; }); if(c) L.push(c); return L.slice(0, 3); };
+  const label = (a0, a1, ri, ro, nm, pct, f, dark) => {   // nom + pourcentage dans le segment s'ils tiennent (à plat, sinon dans le sens du rayon) ; rien sinon
+    const mid = (a0 + a1) / 2, rm = (ri + ro) / 2, arcL = (a1 - a0) * rm, th = ro - ri, L = wrap(nm).concat([pct]);
     const w = Math.max.apply(null, L.map(x => x.length)) * f * 0.58 + 3, h = L.length * f * 1.15 + 2;
     let rot = null;
     if(arcL >= w && th >= h) rot = mid * 180 / Math.PI + ((mid > Math.PI / 2 && mid < Math.PI * 1.5) ? 180 : 0);
@@ -27554,7 +27554,7 @@ function kyfDonut2Svg(grp, tot, big){
   grp.forEach(g => {
     const g0 = a, g1 = a + g.val / tot * 2 * Math.PI - (full ? 0.0001 : 0);
     svg += '<path d="' + arc(g0, g1, R0, R1) + '" fill="' + g.col + '"><title>' + escapeHtml(g.nom + ' : ' + pc(g.val)) + '</title></path>';
-    if(big) lab += label(g0, g1, R0, R1, g.lb || g.nom, pc(g.val), fs + 0.5, false, g.lb ? 8 : 0);
+    if(big) lab += label(g0, g1, R0, R1, g.nom, pc(g.val), fs + 0.5);
     else if((g1 - g0) > 0.38){ const m = pt((R0 + R1) / 2, (g0 + g1) / 2); svg += '<text x="' + m[0].toFixed(1) + '" y="' + (m[1] + 3).toFixed(1) + '" text-anchor="middle" font-size="9" font-weight="700" fill="#14213d">' + escapeHtml(pc(g.val)) + '</text>'; }
     let b = g0; leg += '<div style="margin:0 0 9px"><div style="display:flex;align-items:center;gap:7px;font-size:' + (big ? 13 : 11) + 'px;font-weight:700;color:var(--text)"><i style="width:10px;height:10px;border-radius:3px;background:' + g.col + ';flex-shrink:0"></i><span style="flex:1;min-width:0">' + escapeHtml(g.nom) + '</span><span>' + pc(g.val) + '</span></div>';
     g.cls.forEach(c => {
@@ -51690,7 +51690,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.74\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.75\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -79052,8 +79052,10 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
-                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.74 · 16/11/2026</div>
-      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PORTEFEUILLE, PAR CLASSE : dans le camembert « Détaillé », le groupe « Diversifiants » affiche maintenant « Fonds divers » dans l'anneau du centre. La légende garde le nom « Diversifiants ».</div>
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.75 · 17/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">KEEP YOUR FOLIO MOBILE : avec l'envoi automatique vers Google, une correction de quantité ou de prix de revient faite sur le téléphone est maintenant appliquée toute seule ici, sans validation. Elle reste annulable depuis le journal des opérations du mobile. Sans Google, elle arrive toujours dans les opérations à valider.</div>
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.74 · 17/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">KEEP YOUR FOLIO MOBILE : le changement de place de cotation d'une ligne PEA ou CTO (par exemple de Stuttgart vers Xetra) peut maintenant être fait depuis le téléphone. Avec l'envoi automatique vers Google, il est appliqué tout seul ici, comme un renommage. Sans Google, il arrive dans les opérations à valider. Le groupe, les plans DCA, les transactions et les dividendes de la ligne suivent le nouveau ticker.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.73 · 16/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">CLASSES : dans un contrat AV / PER, les lignes « Action » ont maintenant le bouton « Changer » comme les fonds et les ETF. Une foncière cotée (GECINA, Mercialys) peut ainsi aller en Immobilier. Sans choix, elle reste en Actions.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.72 · 16/11/2026</div>
@@ -218841,9 +218843,9 @@ var MAX_FIC = 512 * 1024, MAX_OPS = 200, MAX_IDS = 5000;
 var TYPES = ['achat','vente','dividende','versement','retrait','crypto_achat','crypto_vente','crypto_swap','crypto_transfert','crypto_frais',
   'livret_depot','livret_retrait','livret_interets','livret_dca','arbitrage','frais_av','av_versement','av_programme','av_rachat','av_valeur',
   'av_ligne_valeur','av_ligne_achat','av_ligne_creation','av_ligne_nouvelle','actif_nouveau','actif_valeur','immo_valeur','immo_loyer','or_achat','or_vente','crowd_projet','crowd_maj','pe_placement','pe_maj',
-  'scpi_achat','scpi_vente','scpi_dividende','scpi_maj','flux_recurrent','pee_versement','pee_retrait','dca_plan','cash_maj','renommage','position_corr','alerte_seuils','alerte_cible','groupe_projet','perecol_fonds','etranger_nouveau','etranger_valeur','livret_taux','fe_releve','livret_precaution'];
+  'scpi_achat','scpi_vente','scpi_dividende','scpi_maj','flux_recurrent','pee_versement','pee_retrait','dca_plan','cash_maj','renommage','position_corr','ticker_chg','alerte_seuils','alerte_cible','groupe_projet','perecol_fonds','etranger_nouveau','etranger_valeur','livret_taux','fe_releve','livret_precaution'];
 var ENVS = ['PEA','PEA-PME','CTO','AV','PER','Livret','Crypto','Or','Immobilier','Crowdfunding','Private equity','SCPI','Autres actifs','Avoirs à l\'étranger','Budget','PEE','DCA','Liquidités'];
-var LIB = { position_corr:'Correction de position', achat:'Achat', vente:'Vente', dividende:'Dividende', versement:'Versement', retrait:'Retrait', crypto_achat:'Achat crypto', crypto_vente:'Vente crypto',
+var LIB = { position_corr:'Correction de position', ticker_chg:'Changement de cotation', achat:'Achat', vente:'Vente', dividende:'Dividende', versement:'Versement', retrait:'Retrait', crypto_achat:'Achat crypto', crypto_vente:'Vente crypto',
   crypto_swap:'Échange crypto', crypto_transfert:'Transfert crypto', crypto_frais:'Frais crypto', livret_depot:'Dépôt livret', livret_retrait:'Retrait livret',
   livret_interets:'Intérêts livret', livret_dca:'Versement programmé livret', livret_taux:'Taux du livret', arbitrage:'Arbitrage', frais_av:'Frais AV', av_versement:'Versement AV', av_programme:'Versement programmé AV',
   av_rachat:'Rachat AV', av_valeur:'Valeur du contrat', av_ligne_valeur:'Valeur d’une ligne', av_ligne_achat:'Achat sur une ligne AV', av_ligne_creation:'Création d’une ligne AV', av_ligne_nouvelle:'Nouvelle ligne AV', actif_nouveau:'Nouvel actif',
@@ -218851,7 +218853,7 @@ var LIB = { position_corr:'Correction de position', achat:'Achat', vente:'Vente'
   crowd_maj:'Suivi crowdfunding', pe_placement:'Placement private equity', pe_maj:'Suivi private equity', scpi_achat:'Achat SCPI', scpi_vente:'Vente SCPI', scpi_dividende:'Dividende SCPI', scpi_maj:'Mise à jour SCPI', flux_recurrent:'Flux récurrent',
   pee_versement:'Versement PEE', pee_retrait:'Retrait PEE', dca_plan:'Plan DCA', cash_maj:'Solde de liquidités', renommage:'Renommage', etranger_nouveau:'Avoir à l’étranger', etranger_valeur:'Valeur d’un avoir à l’étranger', alerte_seuils:'Seuils d’alerte', alerte_cible:'Objectif de prix', groupe_projet:'Projet', perecol_fonds:'Fonds PERECOL', fe_releve:'Relevé fonds en euros', livret_precaution:'Épargne de précaution' };
 // Types que le bouton Valider sait ouvrir dans cette version (les autres restent à saisir à la main, puis Ignorer)
-var BRANCHES = { position_corr:1, etranger_nouveau:1, etranger_valeur:1, achat:1, vente:1, dividende:1, versement:1, retrait:1, renommage:1, alerte_seuils:1, alerte_cible:1, groupe_projet:1, perecol_fonds:1, fe_releve:1, livret_precaution:1, av_versement:1, av_ligne_achat:1, av_ligne_creation:1 };
+var BRANCHES = { position_corr:1, ticker_chg:1, etranger_nouveau:1, etranger_valeur:1, achat:1, vente:1, dividende:1, versement:1, retrait:1, renommage:1, alerte_seuils:1, alerte_cible:1, groupe_projet:1, perecol_fonds:1, fe_releve:1, livret_precaution:1, av_versement:1, av_ligne_achat:1, av_ligne_creation:1 };
 // Versements et retraits : seuls PEA et CTO ont des espèces suivies par KYF (le PEA-PME n'en a pas)
 function peutValider(o){ if(!BRANCHES[o.type]) return false; if(o.type === 'versement' || o.type === 'retrait') return o.enveloppe === 'PEA' || o.enveloppe === 'CTO'; return true; }
 var SVG = function(p, w){ return '<svg viewBox="0 0 24 24" width="' + (w || 16) + '" height="' + (w || 16) + '" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>'; };
@@ -218949,6 +218951,7 @@ function checkOp(o, i){
     if(typeof o.precaution !== 'boolean') return p + 'le champ precaution doit être vrai ou faux.';
     if(typeof o.compte_id !== 'string' || !/^[A-Za-z0-9_.-]{1,60}$/.test(o.compte_id)) return p + 'le livret visé est inconnu (champ compte_id).';
   }
+  if(o.type === 'ticker_chg'){ var tn = String(o.nouveau || '').toUpperCase(), to = String(o.ticker || '').toUpperCase(); if(!/^[A-Z0-9][A-Z0-9.\-]{0,19}$/.test(tn) || !to || tn === to) return p + 'le nouveau ticker est invalide ou identique à l\u2019ancien.'; if(['PEA','PEA-PME','CTO'].indexOf(o.enveloppe) < 0) return p + 'le changement de cotation ne concerne que les lignes PEA et CTO.'; }
   if(o.type === 'position_corr'){ var qc = Number(o.qty), pc = Number(o.prix); if(!(qc > 0 && qc < 1e12) || !(pc >= 0 && pc < 1e9) || !isFinite(qc) || !isFinite(pc)) return p + 'la quantité ou le prix de revient de la correction est invalide.'; if(typeof o.nom !== 'string' || !o.nom.trim() || /[<>"`]/.test(o.nom)) return p + 'le nom de la ligne à corriger est invalide.'; }
   if(o.type === 'renommage'){ if(['compte','ligne'].indexOf(o.cible) < 0) return p + 'le champ cible du renommage est invalide.'; if(typeof o.ancien !== 'string' || typeof o.nouveau !== 'string' || !o.ancien.trim() || !o.nouveau.trim() || o.ancien.length > 100 || o.nouveau.length > 100 || /[<>"`]/.test(o.ancien + o.nouveau)) return p + 'les champs ancien et nouveau du renommage sont invalides.'; }
   if(o.type === 'etranger_nouveau' || o.type === 'etranger_valeur'){
@@ -219065,7 +219068,7 @@ function recuClair(pq){
 function sNum(v){ return String(v == null ? '' : v).replace('.', ','); }
 function eur(c){ return (typeof fmt === 'function' ? fmt(c / 100, 2) : (c / 100).toFixed(2)) + ' €'; }
 function hors(o){ return !!(o.devise && o.devise !== 'EUR') && o.type !== 'etranger_nouveau' && o.type !== 'etranger_valeur'; }   // un avoir à l’étranger reste dans sa devise : ce n’est pas une opération à convertir
-function montantTxt(o){ if(o.type === 'position_corr') return String(o.qty).replace('.', ',') + ' × PRU ' + String(o.prix).replace('.', ',') + ' €'; if(o.type === 'fe_releve') return eur(o.valeur_c) + (o.mouv_c ? ' · mouvement ' + (o.mouv_c > 0 ? '+' : '') + eur(o.mouv_c) : ''); if(o.type === 'livret_precaution') return o.precaution ? 'Compte comme épargne de précaution' : 'Ne compte plus comme épargne de précaution'; if(o.type === 'livret_taux') return 'Taux ' + String(o.taux).replace('.', ',') + ' %' + (o.plafond != null ? ' · plafond ' + o.plafond + ' €' : ''); if(o.type === 'renommage') return String(o.ancien || '') + ' → ' + String(o.nouveau || ''); if(o.type === 'alerte_seuils') return 'ETF ' + o.seuil_etf + ' % · actions ' + o.seuil_action + ' % · crypto ' + o.seuil_crypto + ' %'; if(o.type === 'alerte_cible') return (o.suppr ? 'Suppression · ' : '') + (o.sens === 'up' ? '≥ ' : '≤ ') + o.prix + ' €'; if(o.type === 'perecol_fonds') return (o.suppr ? 'Retrait · ' : '') + String(o.nom || o.isin || '') + (!o.suppr && o.parts > 0 ? ' · ' + String(o.parts).replace('.', ',') + ' parts' + (o.invest_c > 0 ? ' · investi ' + eur(o.invest_c) : '') : ''); if(o.type === 'groupe_projet') return (o.suppr ? 'Suppression · ' : '') + String(o.nom || '') + ((o.lignes || []).length ? ' · ' + o.lignes.length + ' ligne' + (o.lignes.length > 1 ? 's' : '') : ''); return (hors(o) || o.type === 'etranger_nouveau' || o.type === 'etranger_valeur') ? (o.montant_c / 100).toFixed(2).replace('.', ',') + ' ' + o.devise : eur(o.montant_c); }
+function montantTxt(o){ if(o.type === 'ticker_chg') return String(o.ticker || '') + ' \u2192 ' + String(o.nouveau || ''); if(o.type === 'position_corr') return String(o.qty).replace('.', ',') + ' × PRU ' + String(o.prix).replace('.', ',') + ' €'; if(o.type === 'fe_releve') return eur(o.valeur_c) + (o.mouv_c ? ' · mouvement ' + (o.mouv_c > 0 ? '+' : '') + eur(o.mouv_c) : ''); if(o.type === 'livret_precaution') return o.precaution ? 'Compte comme épargne de précaution' : 'Ne compte plus comme épargne de précaution'; if(o.type === 'livret_taux') return 'Taux ' + String(o.taux).replace('.', ',') + ' %' + (o.plafond != null ? ' · plafond ' + o.plafond + ' €' : ''); if(o.type === 'renommage') return String(o.ancien || '') + ' → ' + String(o.nouveau || ''); if(o.type === 'alerte_seuils') return 'ETF ' + o.seuil_etf + ' % · actions ' + o.seuil_action + ' % · crypto ' + o.seuil_crypto + ' %'; if(o.type === 'alerte_cible') return (o.suppr ? 'Suppression · ' : '') + (o.sens === 'up' ? '≥ ' : '≤ ') + o.prix + ' €'; if(o.type === 'perecol_fonds') return (o.suppr ? 'Retrait · ' : '') + String(o.nom || o.isin || '') + (!o.suppr && o.parts > 0 ? ' · ' + String(o.parts).replace('.', ',') + ' parts' + (o.invest_c > 0 ? ' · investi ' + eur(o.invest_c) : '') : ''); if(o.type === 'groupe_projet') return (o.suppr ? 'Suppression · ' : '') + String(o.nom || '') + ((o.lignes || []).length ? ' · ' + o.lignes.length + ' ligne' + (o.lignes.length > 1 ? 's' : '') : ''); return (hors(o) || o.type === 'etranger_nouveau' || o.type === 'etranger_valeur') ? (o.montant_c / 100).toFixed(2).replace('.', ',') + ' ' + o.devise : eur(o.montant_c); }
 // Le compte cité par l'opération existe-t-il encore dans KYF ? (vérifiable pour les comptes titres et les contrats AV / PER)
 function compteManquant(o){
   if(!o.compte_id) return false;
@@ -219164,6 +219167,11 @@ async function valider(pi, oi, opt){
     var rpc = posCorrAppliquer(o);
     if(rpc.err){ try{ showToast(rpc.err); }catch(e){} return; }
     x.etat = 'validee'; x.montant_c_reel = 0; x.ref = rpc.ref || null; sv(QK, q); addId(o.id); maStatut(o.id, 'appliqué'); try{ showToast('Position corrigée : ' + o.nom); }catch(e){} rendu(); maj(); return;
+  }
+  if(o.type === 'ticker_chg'){
+    var rtc = tickerChgAppliquer(o);
+    if(rtc.err){ try{ showToast(rtc.err); }catch(e){} return; }
+    x.etat = 'validee'; x.montant_c_reel = 0; x.ref = rtc.ref || null; sv(QK, q); addId(o.id); maStatut(o.id, 'appliqué'); try{ showToast('Cotation changée : ' + o.ticker + ' \u2192 ' + o.nouveau); }catch(e){} rendu(); maj(); return;
   }
   if(o.type === 'renommage'){
     var rr = renomAppliquer(o);
@@ -219348,7 +219356,7 @@ async function annulerOp(pi, oi){
 }
 function ignorer(pi, oi){
   var q = queue(), x = q.paquets[pi] && q.paquets[pi].ops[oi]; if(!x || x.etat !== 'attente') return;
-  x.etat = 'ignoree'; sv(QK, q); if(x.op.type === 'renommage' || x.op.type === 'position_corr' || x.op.type === 'livret_taux' || x.op.type === 'etranger_nouveau' || x.op.type === 'etranger_valeur') maStatut(x.op.id, 'ignoré : refusé sur le PC'); rendu(); maj();
+  x.etat = 'ignoree'; sv(QK, q); if(x.op.type === 'renommage' || x.op.type === 'position_corr' || x.op.type === 'ticker_chg' || x.op.type === 'livret_taux' || x.op.type === 'etranger_nouveau' || x.op.type === 'etranger_valeur') maStatut(x.op.id, 'ignoré : refusé sur le PC'); rendu(); maj();
 }
 function retirer(pi){ var q = queue(); q.paquets.splice(pi, 1); sv(QK, q); rendu(); maj(); }
 
@@ -220054,7 +220062,8 @@ function maRef(ev, opid){
 function maMotif(o){
   if(!o || typeof o !== 'object') return 'Opération illisible.';
   var e = checkOp(o, 0); if(e) return e === 'TYPE' ? 'Type d’opération inconnu de cette version de Keep Your Folio.' : e;
-  if(o.type === 'position_corr') return posCorrLigne(o) ? 'Correction de la quantité et du prix de revient : à valider par vous.' : 'Ligne « ' + (o.nom || o.ticker || '') + ' » introuvable dans Keep Your Folio PC.';
+  if(o.type === 'position_corr') return posCorrLigne(o) ? '' : 'Ligne « ' + (o.nom || o.ticker || '') + ' » introuvable dans Keep Your Folio PC.';   // appliquée toute seule (annulable depuis le journal)
+  if(o.type === 'ticker_chg') return posCorrLigne(o) ? '' : 'Ligne « ' + (o.nom || o.ticker || '') + ' » introuvable dans Keep Your Folio PC.';   // appliqué tout seul
   if(o.type === 'renommage' || o.type === 'livret_taux') return '';   // appliqués tout seuls (en cas d’échec : file de validation)
   if(o.type === 'dividende' && o.reinvesti === true && (o.enveloppe === 'PEA' || o.enveloppe === 'CTO')){
     if(!(Number(o.qty_recue) > 0)) return 'Dividende réinvesti : indiquez le nombre d’actions reçues à la validation.';
@@ -220116,6 +220125,7 @@ async function maAppliquer(o){
   if(o && o.type === 'perecol_fonds') return perecolAppliquer(o);
   if(o && o.type === 'fe_releve') return feReleveAppliquer(o);
   if(o && o.type === 'renommage'){ var rrn = renomAppliquer(o); if(!rrn.ok) return rrn; return { ok:true, ref:{ k:'renom', cible:o.cible, ancien:String(o.nouveau || '').replace(/[<>"`&]/g, '').replace(/\s+/g, ' ').trim().slice(0, 60), nouveau:o.ancien, ticker:o.ticker || '', isin:o.isin || '' } }; }
+  if(o && o.type === 'ticker_chg') return tickerChgAppliquer(o);
   if(o && o.type === 'position_corr') return posCorrAppliquer(o);
   if(o && o.type === 'livret_taux') return livretTauxAppliquer(o);
   if(o && (o.type === 'etranger_nouveau' || o.type === 'etranger_valeur')) return etrAppliquer(o);
@@ -220325,6 +220335,7 @@ function maAnnuler(ref){
     if(ref.k === 'etr'){ var el = kyfEtrLoad(); if(!el.some(function(x){ return x.id === ref.id; })) return false; kyfEtrSave(kyfEtrClean(el.filter(function(x){ return x.id !== ref.id; }))); try{ kyfEtrRender(); }catch(_){} return true; }
     if(ref.k === 'etrval'){ var ev2 = kyfEtrLoad(), ec = ev2.find(function(x){ return x.id === ref.id; }); if(!ec) return false; ec.montant = ref.m; ec.devise = ref.d; ec.date = ref.t; kyfEtrSave(kyfEtrClean(ev2)); try{ kyfEtrRender(); }catch(_){} return true; }
     if(ref.k === 'poscorr') return posCorrAnnuler(ref);
+    if(ref.k === 'tkchg') return !!tickerChgAppliquer({ enveloppe:ref.o.enveloppe, ticker:ref.nouveau, isin:ref.o.isin, nom:ref.o.nom, ligne:ref.o.ligne, compte:ref.o.compte, compte_id:ref.o.compte_id, nouveau:ref.ancien }).ok;
     if(ref.k === 'renom') return !!renomAppliquer({ cible:ref.cible, ancien:ref.ancien, nouveau:ref.nouveau, ticker:ref.ticker, isin:ref.isin }).ok;
     if(ref.k === 'avdca') return avVersAnnuler(ref);
     if(ref.k === 'avpos') return avLigneAchatAnnuler(ref);
@@ -220519,6 +220530,17 @@ function posCorrAppliquer(o){
   }
   try{ renderPortfolio(); }catch(e){}
   return { ok:true, ref:ref };
+}
+// Changement de place de cotation d'une ligne PEA / CTO envoyé par le mobile : même chemin que le changement de ticker fait ici (etfTickerPick),
+// donc le groupe, les plans DCA, les transactions et les dividendes suivent le nouveau ticker.
+function tickerChgAppliquer(o){
+  var L = posCorrLigne(o); if(!L || L.k !== 'etf') return { err:'Ligne « ' + (o.nom || o.ticker || '') + ' » introuvable dans Keep Your Folio PC.' };
+  var nt = fiNormalizeTicker(o.nouveau), ot = String(L.p.ticker || ''), idx = ETF.indexOf(L.p);
+  if(!nt || idx < 0) return { err:'Nouveau ticker invalide.' };
+  if(nt.toUpperCase() === ot.toUpperCase()) return { ok:true, ref:null };
+  if(ETF.some(function(e){ return e !== L.p && String(e.ticker || '').toUpperCase() === nt.toUpperCase() && (e.enveloppe || 'PEA') === (L.p.enveloppe || 'PEA'); })) return { err:'Une ligne porte déjà le ticker ' + nt + ' dans ce compte.' };
+  try{ etfTickerPick(idx, nt, undefined); }catch(e){ return { err:'Changement impossible : ' + String(e && e.message || e).slice(0, 80) }; }
+  return { ok:true, ref:{ k:'tkchg', o:{ enveloppe:o.enveloppe, isin:o.isin || '', nom:o.nom || '', ligne:o.ligne || '', compte:o.compte || '', compte_id:o.compte_id || '' }, ancien:ot, nouveau:nt } };
 }
 function posCorrAnnuler(ref){
   try{
