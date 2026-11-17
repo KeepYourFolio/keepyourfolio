@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.80
+  @version     : Beta 2.14.2.82
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5364,7 +5364,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.80</div>
+  <div class="kl-ver">Beta 2.14.2.82</div>
 </div>
 <script>
 (function(){
@@ -8015,7 +8015,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.80</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.82</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -13347,7 +13347,7 @@ function ctRender(){
   setIn('ctF_etab', info.etab || (cpt ? '' : ctEtabAuto(env)));
   show('ctFldEtab', !tot); show('ctFldDate', !tot); show('ctFldCash', true); show('ctFldNom', !!cpt); const _un = !cpt && !tot;   // un seul compte dans l'enveloppe : c'est le premier
   show('ctFldDel', !!cpt || _un);
-  ctTiPaint(cpt);
+  ctTiPaint(cpt || (_un ? kyfMcUn(env) : null));   // 2.14.2.81 : « À qui » aussi quand l'enveloppe n'a qu'un seul compte
   if(cpt || _un){ if(cpt) setIn('ctF_nom', kyfCtoNom(cpt)); const n = ctCptLignes(cpt || kyfMcUn(env)), bd = document.getElementById('ctBtnDel'); const prem = _un || cpt === 'c1' || cpt === 'p1'; if(bd){ bd.disabled = false; bd.textContent = prem ? 'Vider ce compte' : 'Supprimer ce compte'; bd.onclick = prem ? ctCptVider : ctCptDel; } if(prem) set('ctDelNote', 'Le premier compte d\u2019une enveloppe ne peut pas être supprimé. Ce bouton efface toutes ses lignes, ses opérations et ses espèces pour repartir de zéro.'); else set('ctDelNote', n > 0 ? 'Ce compte contient ' + n + (n > 1 ? ' lignes' : ' ligne') + ' : vous choisirez de les déplacer vers un autre compte ou de les supprimer.' : ''); }
   try{ kyfDateSetValue('ctF_date', date, 'JJ/MM/AAAA'); }catch(e){}
   { const pj = kyfPeaJeune(), isPea = env === 'PEA' && !tot && (!cpt || cpt === 'p1');   // PEA jeune : seulement le premier PEA
@@ -51709,7 +51709,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.80\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.82\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -76121,7 +76121,9 @@ const KYF_NOUVEAUTES = {
   badge: ['avdonut', 'avdonutb', 'etranger', 'arbmulti', 'nueprop', 'kpichips', 'kpiset', 'autres', 'envvue', 'famille', 'avjrn', 'arb', 'immo', 'avref', 'avfrais', 'fraispg', 'avevo', 'avsuivi', 'dcaprix', 'ct', 'tend', 'tipstyle', 'ptf', 'pee', 'perecol', 'ctlg', 'vue', 'visite', 'clsvue'],   // clés des badges (une ou plusieurs ; tableau) ; clé du badge « Nouveau » (span .kyf-new-badge data-new="...") ; vide = aucun badge
   annonces: [
     { id: 'a-2026-11-17', date: '2026-11-17', items: [
-      { titre: 'Vider un compte PEA ou CTO', version: '2.14.2.80', important: true, texte: 'Le premier compte d\u2019une enveloppe ne peut pas \u00eatre supprim\u00e9 : il a maintenant un bouton \u00ab Vider ce compte \u00bb dans le Détail du compte. Il efface les lignes, les op\u00e9rations et les esp\u00e8ces, apr\u00e8s confirmation, et le compte reste, vide. Pratique pour repartir de z\u00e9ro, ou quand on n\u2019a qu\u2019un seul compte.' }
+      { titre: 'Vider un compte PEA ou CTO', version: '2.14.2.80', important: true, texte: 'Le premier compte d\u2019une enveloppe ne peut pas \u00eatre supprim\u00e9 : il a maintenant un bouton \u00ab Vider ce compte \u00bb dans le Détail du compte. Il efface les lignes, les op\u00e9rations et les esp\u00e8ces, apr\u00e8s confirmation, et le compte reste, vide. Pratique pour repartir de z\u00e9ro, ou quand on n\u2019a qu\u2019un seul compte.' },
+      { titre: 'Zones g\u00e9ographiques : une vue par membre', version: '2.14.2.77', important: true, texte: 'Un menu \u00ab Vue \u00bb en haut \u00e0 droite de la page affiche la famille enti\u00e8re ou un seul membre. Pour un membre, la carte, les pays, les secteurs, les entreprises et le d\u00e9tail se recalculent sur ses seules lignes, et chaque tuile indique aussi la part de la famille (\u00ab famille 58 % \u00bb). Le partage communautaire reste calcul\u00e9 sur la famille enti\u00e8re.' },
+      { titre: 'Top entreprises : moins de doublons', version: '2.14.2.76', texte: 'Une m\u00eame entreprise \u00e9crite de plusieurs fa\u00e7ons est regroup\u00e9e en une seule ligne : ICICI Bank (aussi \u00ab Cici Bank \u00bb) et TSMC (aussi \u00ab Taiwan Semiconductor TSMC \u00bb ou \u00ab Taiwan Semiconductor Manufacturing TSMC \u00bb).' }
     ] },
     { id: 'a-2026-11-16b', date: '2026-11-16', items: [
       { titre: 'Informations : chercher une mise à jour', version: '2.14.2.65', important: true, texte: 'Dans Informations, le cadre de la version a un bouton « Chercher une mise à jour ». Si vous êtes à jour, un message vous le dit. Sinon, le cadre montre votre version et la nouvelle, et le bouton devient « Actualiser » pour charger la dernière version.' },
@@ -79132,6 +79134,10 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.82 · 17/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">QUOI DE NEUF : l'annonce du 17/11 présente aussi la vue par membre des Zones géographiques et les nouveaux doublons regroupés du Top entreprises (ICICI Bank, TSMC).</div>
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.81 · 17/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">COMPTES PEA / CTO : le champ « À qui » du Détail du compte restait caché quand l'enveloppe n'avait qu'un seul compte (un PEA créé avant la version 2.14.2.00, par exemple), donc impossible de l'attribuer à un membre de la famille. Il s'affiche maintenant aussi dans ce cas. Retour d'un utilisateur sur le forum.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.80 · 17/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">QUOI DE NEUF : une annonce du 17/11 présente le bouton « Vider ce compte » (PEA et CTO), marquée importante.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.79 · 17/11/2026</div>
