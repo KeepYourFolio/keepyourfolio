@@ -989,7 +989,7 @@ document.addEventListener("click",function(e){try{var t=e.target&&e.target.close
     ;[].forEach.call(document.querySelectorAll(".shs:not([data-shx])"),function(sh){sh.setAttribute("data-shx","1");var bd=sh.previousElementSibling;if(!(bd&&bd.classList&&bd.classList.contains("shd")))return;
     })}
   try{new MutationObserver(fix).observe(document.documentElement,{childList:true,subtree:true})}catch(_){setInterval(fix,400)}fix()})();
-var VER="3.105.67", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="3.105.68", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["position_corr","Correction de position"],["ticker_chg","Changement de cotation"],["groupe_projet","Projet"],["perecol_fonds","Fonds PERECOL"],["alerte_seuils","Seuils d’alerte"],["alerte_cible","Objectif de prix"],["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_creation","Nouvelle ligne ETF, action, SCPI"],["av_ligne_achat","Achat sur une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["renommage","Renommage"],["livret_taux","Taux du livret"],["fe_releve","Relevé du fonds en euros"],["livret_precaution","Épargne de précaution"],["actif_valeur","Valeur d’un actif"],["etranger_nouveau","Avoir à l’étranger"],["etranger_valeur","Valeur d’un avoir à l’étranger"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["pe_placement","Nouveau placement"],["pe_maj","Mise à jour d’un placement"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -3530,22 +3530,13 @@ function kyfMktHtml(m){var mk=kyfMkt(m);if(!mk)return"";var st=kyfMktSt(mk);if(!
 /* 3.105.67 : pastille du fonds en euros, un grand € en relief sur une pièce dorée (SVG) */
 function kyfFeCoin(size){
   size = size||22;
-  const id = 'kfe' + Math.random().toString(36).slice(2,7);
-  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 48 48" role="img" aria-label="Fonds en euros" style="flex-shrink:0;display:block;filter:drop-shadow(0 '+(size>=30?2:1)+'px '+(size>=30?4:2)+'px rgba(120,60,4,.45))">'
-   + '<defs>'
-   + '<linearGradient id="'+id+'r" x1="0.15" y1="0" x2="0.85" y2="1"><stop offset="0" stop-color="#fff1b8"/><stop offset=".45" stop-color="#e8a81d"/><stop offset="1" stop-color="#8a4306"/></linearGradient>'
-   + '<radialGradient id="'+id+'f" cx=".32" cy=".26" r=".95"><stop offset="0" stop-color="#ffe9a0"/><stop offset=".5" stop-color="#f2b629"/><stop offset="1" stop-color="#b8650a"/></radialGradient>'
-   + '<linearGradient id="'+id+'e" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7a3a04"/><stop offset="1" stop-color="#4a2102"/></linearGradient>'
-   + '<linearGradient id="'+id+'g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".7"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>'
-   + '</defs>'
-   + '<circle cx="24" cy="24" r="23" fill="url(#'+id+'r)"/>'
-   + '<circle cx="24" cy="24" r="19.6" fill="url(#'+id+'f)" stroke="#fff3c4" stroke-opacity=".55" stroke-width=".8"/>'
-   + '<circle cx="24" cy="24" r="19.6" fill="none" stroke="#7a3a04" stroke-opacity=".35" stroke-width="1" transform="translate(.4 .6)" clip-path="none"/>'
-   + '<g fill="none" stroke-linecap="round" stroke-linejoin="round">'
-   + '<path d="M31.6 17.4a9.2 9.2 0 1 0 0 13.2M15 22h13.2M15 26h13.2" stroke="#fff0b0" stroke-opacity=".95" stroke-width="3.9" transform="translate(0 1.3)"/>'
-   + '<path d="M31.6 17.4a9.2 9.2 0 1 0 0 13.2M15 22h13.2M15 26h13.2" stroke="url(#'+id+'e)" stroke-width="3.6"/>'
-   + '</g>'
-   + '<path d="M7 20C9 9 17 4.5 25 4.5S40 9 41 20C34 14 14 14 7 20z" fill="url(#'+id+'g)"/>'
+  const id = 'kfe' + Math.random().toString(36).slice(2,7), D = "M26 594H136L134 661V699L136 738H26V839H144Q204 1356 653 1356Q754 1356 824.0 1348.0Q894 1340 979 1323L983 1038H894L866 1188Q782 1253 678 1253Q459 1253 430 839H714V738H427L424 667Q424 612 427 594H714V493H430Q447 285 515.5 184.0Q584 83 686 83Q812 83 884 163L912 328H1001L997 30Q835 -20 661 -20Q441 -20 308.0 112.5Q175 245 144 493H26Z", T = 'translate(10.565 41.477) scale(0.02616 -0.02616)';
+  let ext = '';
+  for(let i = 5; i >= 1; i--) ext += '<path d="'+D+'" fill="#7a3a04" transform="translate('+(10.565+i*0.2).toFixed(2)+' '+(41.477+i*0.32).toFixed(2)+') scale(0.02616 -0.02616)"/>';
+  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 48 48" role="img" aria-label="Fonds en euros" style="flex-shrink:0;display:block;filter:drop-shadow(0 '+(size>=30?2:1)+'px '+(size>=30?3:1.5)+'px rgba(90,44,2,.45))">'
+   + '<defs><linearGradient id="'+id+'g" x1="0" y1="1" x2="0.35" y2="0"><stop offset="0" stop-color="#fff3c0"/><stop offset=".45" stop-color="#f0b429"/><stop offset="1" stop-color="#a85a08"/></linearGradient></defs>'
+   + ext
+   + '<path d="'+D+'" fill="url(#'+id+'g)" stroke="#fff7d6" stroke-opacity=".7" stroke-width="14" transform="'+T+'"/>'
    + '</svg>';
 }
 function kyfIsFe(m){if(!m)return false;if(m.ty==='fe')return true;if(String(m.ticker||'').trim()||String(m.isin||'').trim())return false;var n=String(m.nom||'').toLowerCase().replace(/\s+/g,' ').trim();return /(^|[^a-zà-ÿ])fonds? (en )?euros?([^a-zà-ÿ]|$)|^fonds? €|^fe$/.test(n)}
