@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.94
+  @version     : Beta 2.14.2.95
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5364,7 +5364,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.94</div>
+  <div class="kl-ver">Beta 2.14.2.95</div>
 </div>
 <script>
 (function(){
@@ -8015,7 +8015,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.94</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.95</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -27582,7 +27582,7 @@ function kyfDonut2Svg(grp, tot, big){
   grp.forEach((g, gi) => {
     const g0 = a, g1 = a + g.val / tot * 2 * Math.PI - (full ? 0.0001 : 0);
     let gx = '';
-    if(big){ for(const ff of [fs + 0.5, fs - 0.5, fs - 1.5, fs - 2.5]){ gx = label(g0, g1, R0, R1, g.nom, pc(g.val), ff); if(gx) break; } }   // 2.14.2.92 : le nom du groupe se réduit pour tenir plutôt que de disparaître
+    if(big){ for(const ff of [fs + 0.5, fs - 0.5, fs - 1.5, fs - 2.5]){ gx = label(g0, g1, R0, R1, g.nom, pc(g.val), ff); if(gx) break; } if(!gx && g.val / tot >= 0.012) out.push({ a:(g0 + g1) / 2, nm:g.nom, p:pc(g.val), col:g.col }); }   // 2.14.2.92 : le nom du groupe se réduit pour tenir plutôt que de disparaître
     else if((g1 - g0) > 0.38){ const m = pt((R0 + R1) / 2, (g0 + g1) / 2); gx = '<text x="' + m[0].toFixed(1) + '" y="' + (m[1] + 3).toFixed(1) + '" text-anchor="middle" font-size="9" font-weight="700" fill="#14213d" style="pointer-events:none">' + escapeHtml(pc(g.val)) + '</text>'; }
     svg += seg('g', gi, g.nom, g.val, g.col, g0, g1, R0, R1, gx);
     let b = g0; leg += '<div style="margin:0 0 9px"><div onmouseenter="kyfD2LegHov(\'' + gid + '\',\'g\',' + gi + ',1);this.style.background=\'var(--hov-bg)\'" onmouseleave="kyfD2LegHov(\'' + gid + '\',\'g\',' + gi + ',0);this.style.background=\'none\'" style="cursor:default;border-radius:6px;transition:background .15s;display:flex;align-items:center;gap:7px;font-size:' + (big ? 13 : 11) + 'px;font-weight:700;color:var(--text)"><i style="width:10px;height:10px;border-radius:3px;background:' + g.col + ';flex-shrink:0"></i><span style="flex:1;min-width:0">' + escapeHtml(g.nom) + '</span><span>' + pc(g.val) + '</span></div>';
@@ -27633,7 +27633,8 @@ function kyfD2Hov(el, on){   // survol d'une tranche : elle sort, les autres s'e
 function kyfD2LegHov(gid, t, i, on){ const el = document.querySelector('.kyf-d2s[data-gid="' + gid + '"][data-t="' + t + '"][data-i="' + i + '"]'); if(el) kyfD2Hov(el, on); }
 // Vue agrandie (option B) : une tranche choisie montre ses lignes à droite, avec sa part dans la tranche et dans le total
 // 2.14.2.93 (idée de Nicolas) : SCPI, SCI ou OPCI ? Le nom d'une ligne vient du contrat et ne le dit pas toujours (« Épargne Pierre », « Altixia Cadence XII »). On le lit dans le nom, puis dans la base SCPI ; jamais inventé : sans certitude, aucune pastille.
-function kyfImmoTag(nom){
+function kyfImmoTag(nom, nat){
+  if(nat === 'scpi' || nat === 'sci' || nat === 'opci') return nat.toUpperCase();   // choisi à la main : toujours juste
   const n = String(nom || '');
   if(/\bopci\b/i.test(n)) return 'OPCI';
   if(/\bsci\b/i.test(n)) return 'SCI';
@@ -27641,7 +27642,7 @@ function kyfImmoTag(nom){
   try{ if(typeof kyfScpiDbFind === 'function' && kyfScpiDbFind(n)) return 'SCPI'; }catch(_){}
   return '';
 }
-function kyfImmoTagHtml(nom){ const t = kyfImmoTag(nom); return t ? ' <span style="display:inline-block;vertical-align:1px;margin-left:5px;padding:1px 6px;border-radius:6px;border:1px solid var(--border2);color:var(--text2);font-size:9px;font-weight:800;letter-spacing:.04em">' + t + '</span>' : ''; }
+function kyfImmoTagHtml(nom, nat){ const t = kyfImmoTag(nom, nat); return t ? ' <span style="display:inline-block;vertical-align:1px;margin-left:5px;padding:1px 6px;border-radius:6px;border:1px solid var(--border2);color:var(--text2);font-size:9px;font-weight:800;letter-spacing:.04em">' + t + '</span>' : ''; }
 function kyfD2PanelHtml(){
   const D = window._kyfD2, F = window._kyfD2Flat || [], j = window._kyfD2Sel, c = F[j]; if(!D) return '';
   const disc = document.body.classList.contains('kyf-discreet'), tot = D.tot, pf = v => (v >= 10 ? Math.round(v) : (Math.round(v * 10) / 10).toString().replace('.', ',')) + ' %';
@@ -27651,7 +27652,7 @@ function kyfD2PanelHtml(){
     let its = (c.items || []).filter(x => x.val > 0).sort((a, b) => b.val - a.val); const mx = 8;
     if(its.length > mx + 1 && !window._kyfD2All){ const rest = its.slice(mx); its = its.slice(0, mx).concat([{ nom:'Autres (' + rest.length + ' lignes)', val:rest.reduce((a, x) => a + x.val, 0), env:'', more:rest.length }]); }
     body = '<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;border-top:1px solid var(--border);padding-top:22px;margin-top:22px"><div style="font-size:20px;font-weight:800;color:var(--text)">' + escapeHtml(c.nom) + '</div><div style="font-size:13px;color:var(--text3)">' + pf(c.val / tot * 100) + ' du total' + (disc ? '' : ' · ' + fmt(c.val, 0) + ' €') + '</div></div>'
-      + (its.length ? '<div style="display:flex;flex-direction:column;gap:20px;margin-top:20px">' + its.map(x => x.more ? kyfD2MoreRow(x, c, tot, pf) : '<div><div style="display:flex;justify-content:space-between;gap:14px;font-size:13px;color:var(--text)"><span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + escapeHtml(x.nom + (x.env ? ' · ' + x.env : '')) + '">' + escapeHtml(x.nom) + (c.key === 'immo' ? kyfImmoTagHtml(x.nom) : '') + (x.env ? ' <span style="color:var(--text3);font-size:10px">' + escapeHtml(x.env) + '</span>' : '') + '</span><span style="flex-shrink:0"><b>' + pf(x.val / c.val * 100) + '</b> <span style="color:var(--text3)">· ' + pf(x.val / tot * 100) + ' du total</span></span></div><div style="height:6px;border-radius:3px;background:var(--border);margin-top:9px"><div style="width:' + Math.max(1.5, x.val / c.val * 100).toFixed(1) + '%;height:6px;border-radius:3px;background:' + c.col + '"></div></div></div>').join('') + (window._kyfD2All && its.length > mx + 1 ? '<button type="button" onclick="kyfD2More(0)" onmouseover="this.style.background=\'var(--hov-bg)\'" onmouseout="this.style.background=\'transparent\'" style="align-self:flex-start;display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 14px;border-radius:18px;border:1px solid var(--border2);background:transparent;color:var(--text2);font:700 12px Inter,sans-serif;cursor:pointer">Réduire<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>' : '') + '</div><div style="font-size:11px;line-height:1.5;color:var(--text3);margin-top:22px">La première part est celle dans la tranche choisie, la seconde celle dans tout le total.</div>'
+      + (its.length ? '<div style="display:flex;flex-direction:column;gap:20px;margin-top:20px">' + its.map(x => x.more ? kyfD2MoreRow(x, c, tot, pf) : '<div><div style="display:flex;justify-content:space-between;gap:14px;font-size:13px;color:var(--text)"><span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + escapeHtml(x.nom + (x.env ? ' · ' + x.env : '')) + '">' + escapeHtml(x.nom) + (c.key === 'immo' ? kyfImmoTagHtml(x.nom, x.nat) : '') + (x.env ? ' <span style="color:var(--text3);font-size:10px">' + escapeHtml(x.env) + '</span>' : '') + '</span><span style="flex-shrink:0"><b>' + pf(x.val / c.val * 100) + '</b> <span style="color:var(--text3)">· ' + pf(x.val / tot * 100) + ' du total</span></span></div><div style="height:6px;border-radius:3px;background:var(--border);margin-top:9px"><div style="width:' + Math.max(1.5, x.val / c.val * 100).toFixed(1) + '%;height:6px;border-radius:3px;background:' + c.col + '"></div></div></div>').join('') + (window._kyfD2All && its.length > mx + 1 ? '<button type="button" onclick="kyfD2More(0)" onmouseover="this.style.background=\'var(--hov-bg)\'" onmouseout="this.style.background=\'transparent\'" style="align-self:flex-start;display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 14px;border-radius:18px;border:1px solid var(--border2);background:transparent;color:var(--text2);font:700 12px Inter,sans-serif;cursor:pointer">Réduire<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>' : '') + '</div><div style="font-size:11px;line-height:1.5;color:var(--text3);margin-top:22px">La première part est celle dans la tranche choisie, la seconde celle dans tout le total.</div>'
         : '<div style="font-size:12px;color:var(--text3);margin-top:12px">Le détail ligne par ligne n\'est pas disponible pour cette tranche.</div>');
   }
   return '<div style="display:flex;flex-wrap:wrap;gap:10px">' + chips + '</div>' + body;
@@ -27706,7 +27707,7 @@ function kyfClsData(){
     D.lines.forEach(l => {
       const t = l.type, peut = (t === 'fonds' || t === 'etf') && l.pi != null;   // 2.14.2.73 : une action d'un contrat peut aussi changer de classe (foncière cotée : Immobilier)
       const k = t === 'fonds' ? (l.cl || 'nc') : t === 'etf' ? (l.cl || (l.ac ? 'act' : (l.pi == null ? 'uc' : 'nc'))) : (['fe','immo','obl','pe','dp','str'].indexOf(t) >= 0 ? t : 'nc');
-      add(k, l.val, { src:'av', cid:d.id, pi:l.pi, nom:String(l.nom || ''), env:cn, mode: l.cl ? (l.auto ? 'auto' : 'choisie') : '', cur: l.auto ? '' : (l.cl || ''), auto: l.auto ? l.cl : '', peut:peut });
+      add(k, l.val, { src:'av', cid:d.id, pi:l.pi, nom:String(l.nom || ''), env:cn, mode: l.cl ? (l.auto ? 'auto' : 'choisie') : '', cur: l.auto ? '' : (l.cl || ''), auto: l.auto ? l.cl : '', peut:peut, nat:l.nat || '' });
     });
   }); }catch(_){}
   { const ex = kyfClsExtra(); ['prec', 'scpid', 'immod', 'rp', 'cryd', 'orp', 'ppv', 'aut', 'etr'].forEach(k => { if(ex[k]) kyfClsExtraLines(k).forEach(l => add(k, l.val, { src:'x', nom:l.nom, env:l.env, mode:'', cur:'', auto:'', peut:false })); }); }
@@ -51870,7 +51871,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.94\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.95\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -79295,6 +79296,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.95 · 18/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">ASSURANCE VIE / PER (idée de Nicolas) : une ligne SCPI / SCI / OPCI peut maintenant recevoir sa nature (SCPI, SCI ou OPCI) à l'ajout ou à la modification ; la pastille du camembert détaillé l'utilise en priorité. Si le nom d'une tranche du centre ne tient vraiment pas dans l'anneau, il est affiché à l'extérieur avec un petit trait.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.94 · 18/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">CAMEMBERT DÉTAILLÉ (idée de Nicolas) : la ligne « Autres (n lignes) » s'ouvre d'un clic et affiche toutes les lignes regroupées ; un bouton « Réduire » la referme.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.93 · 18/11/2026</div>
@@ -90646,7 +90649,7 @@ function kyfRepData(id){   // lignes { nom, type, val, comp } d'un contrat ou d'
   if(c){
     const lp = window._lp || {}, linked = kyfAvLinkedTk(c), pos = avPosLoad(c.id), lines = [];
     pos.forEach((p, pi) => { const v = kyfAvPosValue(p, linked, lp).val; if(v > 0){ const ma = (p.type === 'fonds' || p.type === 'etf' || p.type === 'action') ? kyfFclOk(p.classe) : '', au = (!ma && (p.type === 'fonds' || p.type === 'etf')) ? kyfClsAuto(p.nom || p.ticker) : '';   // 2.14.2.02 : classe automatique d'après le nom
-      lines.push({ nom: p.nom || p.ticker || 'Support', type: p.type === 'action' ? 'etf' : p.type, val: v, comp: p.compartiment || '', cl: ma || au, auto: !!au, ac: p.type === 'action', pi: pi }); } });
+      lines.push({ nom: p.nom || p.ticker || 'Support', type: p.type === 'action' ? 'etf' : p.type, val: v, comp: p.compartiment || '', cl: ma || au, auto: !!au, ac: p.type === 'action', pi: pi, nat: p.nat || '' }); } });
     const fe = parseFloat(c.fondsEuros) || 0;
     if(!pos.some(p => p.type === 'fe') && fe > 0) lines.push({ nom: 'Fonds en euros', type: 'fe', val: fe, comp: '' });
     if(!pos.length && (parseFloat(c.uc) || 0) > 0) lines.push({ nom: 'Unités de compte', type: 'etf', val: parseFloat(c.uc) || 0, comp: '' });
@@ -103464,6 +103467,7 @@ function openAddAVPos(contratId){
   document.getElementById('avPosContratLabel').textContent = contrat ? (contrat.contratNom||contrat.assureur) : '';
   document.getElementById('avPosRowCompartiment').style.display = isPER ? '' : 'none';
   document.getElementById('avPosType').value    = 'fe';
+  { const _nt = document.getElementById('avPosNat'); if(_nt) _nt.value = ''; }
   { const _cl = document.getElementById('avPosClasse'); if(_cl) _cl.value = ''; }
   const si = document.getElementById('avPosSearchInput'); if(si) si.value = '';
   document.getElementById('avPosTicker').value  = '';
@@ -103847,6 +103851,7 @@ function avPosTypeChange(){
       : 'Ce type n\'a pas de cours coté : il reste dans ce contrat, à la valeur du relevé.'; }
   document.getElementById('avPosRowPRUQty').style.display = (isCoté || isImmo || isFonds) ? 'grid' : 'none';
   document.getElementById('avPosRowTaux').style.display   = (isFE || isImmo) ? '' : 'none';
+  { const _rn = document.getElementById('avPosRowNat'); if(_rn) _rn.style.display = isImmo ? '' : 'none'; }   // 2.14.2.95 : SCPI, SCI ou OPCI (idée de Nicolas)
   { const _rf = document.getElementById('avPosRowFraisSousc'); if(_rf) _rf.style.display = isImmo ? '' : 'none'; }
   { const _rl = document.getElementById('avPosRowLoyersAnt'); if(_rl) _rl.style.display = isImmo ? '' : 'none'; }
   { const _rc = document.getElementById('avPosRowCapInv'); if(_rc) _rc.style.display = isImmo ? '' : 'none'; }
@@ -104472,6 +104477,7 @@ function saveAVPos(){
   const loyersAntA = (type === 'immo' && isFinite(_laA) && _laA > 0) ? Math.round(_laA * 100) / 100 : 0;
   const _ciA = parseFloat(String((document.getElementById('avPosCapInv') || {}).value || '').replace(/\s/g, '').replace(',', '.'));
   const capInvA = (type === 'immo' && isFinite(_ciA) && _ciA > 0) ? Math.round(_ciA * 100) / 100 : 0;
+  const _natV = String((document.getElementById('avPosNat') || {}).value || ''), natA = (type === 'immo' && ['scpi', 'sci', 'opci'].indexOf(_natV) >= 0) ? _natV : '';
   const editId  = document.getElementById('avPosEditIdH').value;
 
   if(!nom && !ticker){ alert('Saisissez un nom ou un ticker.'); return; }
@@ -104491,7 +104497,8 @@ function saveAVPos(){
     tauxRendement: taux,
     fraisSousc: fraisSouscA,
     loyersAnt: loyersAntA,
-    capInvesti: capInvA
+    capInvesti: capInvA,
+    nat: natA
   };
   pos.classe = (type === 'fonds' || type === 'etf') ? kyfFclOk((document.getElementById('avPosClasse') || {}).value) : '';
   const _typeManual = !!window.__avPosTypeTouched && kyfFondsLike(type);
@@ -104566,6 +104573,7 @@ function editAVPos(contratId, posId){
     document.getElementById('avPosModalTitle').innerHTML = KYF_ICONS.edit + ' MODIFIER LA POSITION';
     document.getElementById('avPosType').value   = pos.type||'fe';
     { const _cl = document.getElementById('avPosClasse'); if(_cl) _cl.value = kyfFclOk(pos.classe); }
+    { const _nt = document.getElementById('avPosNat'); if(_nt) _nt.value = pos.nat || ''; }
     document.getElementById('avPosTicker').value = pos.ticker||'';
     document.getElementById('avPosNom').value    = pos.nom||'';
     document.getElementById('avPosNom').dataset.auto = '';   // nom enregistré : jamais effacé ni remplacé automatiquement
@@ -107943,6 +107951,15 @@ function orInlineEdit(id, td, currentVal){
       <input id="avPosCapInv" type="number" min="0" step="1" data-kyf-spin="1" placeholder="Ex. 4 100"
         style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none">
       <div id="avPosCapNote" style="display:none;position:absolute;left:0;right:0;z-index:6;margin:4px 0 0;padding:10px 14px;border-radius:8px;background:linear-gradient(rgba(77,159,255,0.10),rgba(77,159,255,0.10)),var(--bg2);border:1px solid rgba(77,159,255,0.3);box-shadow:0 8px 24px rgba(0,0,0,0.25);box-sizing:border-box;font-family:'Inter',sans-serif;font-size:10px;font-weight:400;letter-spacing:0;color:var(--text2);line-height:1.7">Ce que vous avez réellement payé à l'achat, frais d'entrée inclus. Il remplace « PRU × parts » comme base du rendement : le PRU et les parts restent ceux du relevé de l'assureur, et les frais ne sont pas retirés une seconde fois.</div>
+    </div>
+    <div id="avPosRowNat" style="display:none;position:relative">
+      <div style="display:flex;align-items:center;gap:4px;font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">NATURE DU SUPPORT <span style="opacity:.5">facultatif</span></div>
+      <select id="avPosNat" style="width:100%;box-sizing:border-box;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:7px 10px;border-radius:6px;outline:none">
+        <option value="">Détection automatique</option>
+        <option value="scpi">SCPI</option>
+        <option value="sci">SCI</option>
+        <option value="opci">OPCI</option>
+      </select>
     </div>
     <div id="avPosRowFraisSousc" style="display:none;position:relative">
       <div style="display:flex;align-items:center;gap:4px;font-size:9px;color:var(--text3);margin-bottom:4px;letter-spacing:.5px">FRAIS DE SOUSCRIPTION SCPI (%) <span style="opacity:.5">facultatif</span><button type="button" class="ct-ibtn" onclick="(function(){var n=document.getElementById('avPosFrNote');if(n)n.style.display=n.style.display==='block'?'none':'block'})()" title="Plus d'informations" aria-label="Plus d'informations"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></button></div>
