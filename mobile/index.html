@@ -800,6 +800,11 @@ button:not(.p):not(.pk):not(.tba):not(.vkb):not(.hdi):not(.bk):not(.dpd):not(.tb
 .tbi button{transition:transform .38s cubic-bezier(.34,1.56,.64,1)}
 button.p:active{transform:scale(.97);transition:transform .09s ease-out}button.p{transition:transform .38s cubic-bezier(.34,1.56,.64,1),filter .15s}
 @media (prefers-reduced-motion:reduce){button,.li,.tile,.wh,.ilr,.itbb,.exr,.pko,.tbi button{transition:none!important}button:active,.li:active,.tile:active,.wh:active,.ilr:active,.itbb:active,.exr:active,.pko:active{transform:none!important}}
+/* 3.105.36 : les lignes des listes arrivent l'une après l'autre quand on change d'écran (8 premières) */
+@keyframes lst{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.scr .li:nth-child(-n+8),.scr .ilr:nth-child(-n+12),.scr .exr:nth-child(-n+8){animation:lst .32s cubic-bezier(.2,.8,.2,1) both}
+.scr .li:nth-child(2),.scr .ilr:nth-child(2),.scr .exr:nth-child(2){animation-delay:30ms}.scr .li:nth-child(3),.scr .ilr:nth-child(3),.scr .exr:nth-child(3){animation-delay:60ms}.scr .li:nth-child(4),.scr .ilr:nth-child(4),.scr .exr:nth-child(4){animation-delay:90ms}.scr .li:nth-child(5),.scr .ilr:nth-child(5),.scr .exr:nth-child(5){animation-delay:120ms}.scr .li:nth-child(6),.scr .ilr:nth-child(6),.scr .exr:nth-child(6){animation-delay:150ms}.scr .li:nth-child(7),.scr .ilr:nth-child(7),.scr .exr:nth-child(7){animation-delay:180ms}.scr .li:nth-child(8),.scr .ilr:nth-child(8),.scr .exr:nth-child(8){animation-delay:210ms}
+@media (prefers-reduced-motion:reduce){.scr .li,.scr .ilr,.scr .exr{animation:none!important}}
 </style>
 </head>
 <body>
@@ -868,7 +873,7 @@ try{new MutationObserver(ro).observe(document.documentElement,{childList:true,su
 function run(){T=0;var B=document.querySelectorAll("#bk");for(var j=1;j<B.length;j++)if(B[0].onclick&&!B[j].onclick)B[j].onclick=B[0].onclick;var L=document.querySelectorAll("button.swr");for(var i=0;i<L.length;i++){var b=L[i],f=b.firstElementChild;if(!f||f.classList.contains("ic"))continue;var t=(b.querySelector("b")||{}).textContent||"",p=DF;for(var k=0;k<M.length;k++)if(M[k][0].test(t)){p=M[k][1];break}var sp=document.createElement("span");sp.className="ic";sp.style.setProperty("--k","var(--acc)");sp.innerHTML='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>';b.insertBefore(sp,f)}}
 function q(){if(!T)T=setTimeout(run,0)}
 try{new MutationObserver(q).observe(document.documentElement,{childList:true,subtree:true})}catch(x){setInterval(run,400)}run()})();
-var VER="3.105.35", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="3.105.36", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["position_corr","Correction de position"],["ticker_chg","Changement de cotation"],["groupe_projet","Projet"],["perecol_fonds","Fonds PERECOL"],["alerte_seuils","Seuils d’alerte"],["alerte_cible","Objectif de prix"],["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_creation","Nouvelle ligne ETF, action, SCPI"],["av_ligne_achat","Achat sur une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["renommage","Renommage"],["livret_taux","Taux du livret"],["fe_releve","Relevé du fonds en euros"],["livret_precaution","Épargne de précaution"],["actif_valeur","Valeur d’un actif"],["etranger_nouveau","Avoir à l’étranger"],["etranger_valeur","Valeur d’un avoir à l’étranger"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["pe_placement","Nouveau placement"],["pe_maj","Mise à jour d’un placement"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -1122,6 +1127,17 @@ function intraAgg(P3){var av=intraAv(),G={},B=[],ref=0,ORD=["PEA","PEA-PME","CTO
   var pts=intraPts(),lp=null;for(var k=pts.length-1;k>=0;k--){if(pts[k].val!==0||k===0){lp=pts[k];break}}
   var sum=0;Object.keys(G).forEach(function(e){sum+=G[e].n});
   return{av:av,G:G,B:B,ref:ref,ORD:ORD,cur:lp?lp.val+(av&&isFinite(lp.valC)?lp.valC:0):sum,live:!!lp}}
+var NRP={},NRT=[];
+function numRoll(){   /* 3.105.36 : le grand montant (patrimoine, comptes) défile vers sa nouvelle valeur au lieu de changer d'un coup */
+  NRT.forEach(function(t){cancelAnimationFrame(t)});NRT=[];
+  var red=window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches;
+  [].forEach.call(document.querySelectorAll(".p3n"),function(el,ix){
+    var a=el.querySelector("span"),b=el.querySelector("small");if(!a||!b)return;
+    var v=parseFloat((a.textContent+b.textContent).replace(/[^\d,\-−]/g,"").replace("−","-").replace(",","."));if(!isFinite(v))return;
+    var k=S.v+"|"+ix,o=NRP[k];NRP[k]=v;if(o===undefined||red||Math.abs(o-v)<.005)return;
+    var t0=performance.now(),D=Math.min(900,350+Math.abs(v-o)/Math.max(1,Math.abs(v))*4000);
+    var step=function(n){var q=Math.min(1,(n-t0)/D),e=1-Math.pow(1-q,3),c=o+(v-o)*e,pp=eurP(Math.round(c*100));a.textContent=pp.i;b.textContent=pp.c+" €";if(q<1)NRT.push(requestAnimationFrame(step))};
+    var pp0=eurP(Math.round(o*100));a.textContent=pp0.i;b.textContent=pp0.c+" €";NRT.push(requestAnimationFrame(step))})}
 var ILRP={};
 function ilrFlash(){   /* 3.105.34 : une ligne du tableau dont le chiffre change se remet en avant un court instant */
   var rs=document.querySelectorAll(".ilr[data-ilr]"),red=window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches;
@@ -5421,7 +5437,7 @@ if(nv){go("actdt");return}if(!d.ds){d.ds=1;msg="";render();try{window.scrollTo(0
     S.d={type:t,ticker:m.ticker||"",isin:m.isin||"",nom:m.nom||"",inconnu:!(m.ticker||m.isin),q:m.ticker||m.nom||"",env:m.env,cpt:c||null,pre:true,fromLn:true,date:today()};go("montant")}});
   if($("la-courbe"))$("la-courbe").onclick=function(){var ac=(S.d&&S.d.ac)||"",L=patSel(ac).LS,m=L[S.lsh]&&L[S.lsh].m;if(!m)return;var k=astKey(m),ks=L.map(function(x){return astKey(x.m)}).filter(Boolean);S.lsh=null;render();astOpen(k,ks)};
   if($("la-autre"))$("la-autre").onclick=function(){var ac=(S.d&&S.d.ac)||"",L=patSel(ac).LS,m=L[S.lsh]&&L[S.lsh].m;if(!m)return;var c=comptes().filter(function(y){return y.nom===ac})[0];S.lsh=null;lnOrg(ac);if(m.env==="Crypto"){S.d={env:"Crypto",cpt:c||null,pre:true,fromLn:true,type:"crypto_achat"};go("titre");return}S.d={env:m.env,cpt:c||null,pre:true,fromLn:true};go("ops")};
-  try{ibgRoll()}catch(e){}try{ilrFlash()}catch(e){}
+  try{ibgRoll()}catch(e){}try{ilrFlash()}catch(e){}try{numRoll()}catch(e){}
   if($("env"))$("env").onclick=envoyer;
   if($("autt"))$("autt").onclick=function(){if(autoOn()&&!S.autcf){S.autcf=1;render();return}S.autcf=0;sv("kyfm-aut",autoOn()?"0":"1");AEF=0;S.aut=null;render()};if($("autn"))$("autn").onclick=function(){S.autcf=0;render()};
   if($("shr"))$("shr").onclick=partager;
