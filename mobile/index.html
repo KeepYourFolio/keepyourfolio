@@ -904,7 +904,7 @@ try{new MutationObserver(q).observe(document.documentElement,{childList:true,sub
     var h=sh.querySelector(".shh");if(h&&h.querySelector("button"))return;
     var b=document.createElement("button");b.type="button";b.className="shx";b.setAttribute("aria-label","Fermer");b.innerHTML=X;b.onclick=function(e){e.stopPropagation();if(bd.onclick)bd.click();else bd.dispatchEvent(new MouseEvent("click",{bubbles:true}))};sh.insertBefore(b,sh.firstChild)})}
   try{new MutationObserver(fix).observe(document.documentElement,{childList:true,subtree:true})}catch(_){setInterval(fix,400)}fix()})();
-var VER="3.105.43", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="3.105.44", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["position_corr","Correction de position"],["ticker_chg","Changement de cotation"],["groupe_projet","Projet"],["perecol_fonds","Fonds PERECOL"],["alerte_seuils","Seuils d’alerte"],["alerte_cible","Objectif de prix"],["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_creation","Nouvelle ligne ETF, action, SCPI"],["av_ligne_achat","Achat sur une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["renommage","Renommage"],["livret_taux","Taux du livret"],["fe_releve","Relevé du fonds en euros"],["livret_precaution","Épargne de précaution"],["actif_valeur","Valeur d’un actif"],["etranger_nouveau","Avoir à l’étranger"],["etranger_valeur","Valeur d’un avoir à l’étranger"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["pe_placement","Nouveau placement"],["pe_maj","Mise à jour d’un placement"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -944,21 +944,24 @@ function kyfPut(h){var id=KEEPID;KEEPID=null;
 /* 3.105.39 : changement d'écran en pile de cartes (option F). L'écran qui arrive glisse de droite par-dessus, l'ancien se réduit en reculant ;
    au retour la carte repart à droite. Retour aussi en glissant depuis le bord gauche. */
 var KDIR="",KGX=0,KTR=0;
+/* le fond d'écran (dégradé) est dessiné derrière la page : pendant la transition, la carte qui bouge reprend le même dégradé, sinon le côté droit sautait */
+function kyfBgSet(el,sy,fx){var g="";try{g=getComputedStyle(document.body,"::before").backgroundImage}catch(_){}
+  el.style.backgroundColor="var(--bg)";if(g&&g!=="none"){el.style.backgroundImage=g;el.style.backgroundRepeat="no-repeat";el.style.backgroundSize="100% calc("+(fx?"100%":"100vh")+" + 200px)";el.style.backgroundPosition="0 "+(fx?0:sy)+"px"}}
 function kyfSwap(h){var d=KDIR,gx=KGX;KDIR="";KGX=0;
   var red=window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches;
   if(!d||red||KTR||!app.firstElementChild||!/<section class="scr["\s]/.test(h)||/<section class="scr sx/.test(h)||!app.animate){app.innerHTML=h;return}
   if(gx){app.style.transition="";app.style.transform="";app.style.boxShadow="";app.style.zIndex="";app.style.position="";app.style.background=""}
   var sy=window.scrollY||0,g=document.createElement("div");g.className="kfg";g.setAttribute("aria-hidden","true");g.inert=true;
   var w=document.createElement("div");w.style.cssText="position:absolute;left:0;right:0;top:0;width:100%;transform:translateY("+(-sy)+"px)";w.innerHTML=app.innerHTML;g.appendChild(w);
-  g.style.cssText="position:fixed;inset:0;overflow:hidden;background:var(--bg);pointer-events:none;z-index:"+(d==="f"?40:60)+";transform-origin:50% 50%";
-  [].forEach.call(g.querySelectorAll("[id]"),function(e){e.removeAttribute("id")});
+  g.style.cssText="position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:"+(d==="f"?40:60)+";transform-origin:50% 50%";
+  kyfBgSet(g,0,1);[].forEach.call(g.querySelectorAll("[id]"),function(e){e.removeAttribute("id")});
   document.body.appendChild(g);app.innerHTML=h;
   /* la page qui arrive ne rejoue pas son fondu d'apparition : on lui retire sa classe d'animation (sinon elle clignotait à la fin du glissement) */
   [].forEach.call(app.querySelectorAll("section.scr"),function(e){e.classList.remove("scr","sx");e.classList.add("kfs")});KTR=1;
   var de=document.documentElement,ox=de.style.overflowX;de.style.overflowX="hidden";
   var ez="cubic-bezier(.2,.8,.2,1)",T=440,sh="-18px 0 34px rgba(0,0,0,.45)",done=0,
   fin=function(){if(done)return;done=1;try{g.remove()}catch(e){}app.classList.remove("kft");app.style.cssText=app.getAttribute("data-kfs")||"";app.removeAttribute("data-kfs");de.style.overflowX=ox;KTR=0};
-  app.setAttribute("data-kfs",app.style.cssText||"");app.style.background="var(--bg)";app.style.position="relative";app.style.willChange="transform";
+  app.setAttribute("data-kfs",app.style.cssText||"");kyfBgSet(app,sy,0);app.style.position="relative";app.style.willChange="transform";
   var a1,a2;
   if(d==="f"){app.style.zIndex="41";
     a1=app.animate([{transform:"translateX(104%)",borderRadius:"28px",boxShadow:sh},{transform:"none",borderRadius:"0px",boxShadow:"0 0 0 rgba(0,0,0,0)"}],{duration:T,easing:ez});
@@ -973,7 +976,7 @@ function kyfSwap(h){var d=KDIR,gx=KGX;KDIR="";KGX=0;
   document.addEventListener("touchstart",function(e){on=false;go=false;if(e.touches.length!==1)return;var t=e.touches[0];if(t.clientX>24||!ok(e))return;x0=t.clientX;y0=t.clientY;t0=Date.now();dx=0;go=true},{passive:true});
   document.addEventListener("touchmove",function(e){if(!go)return;var t=e.touches[0],mx=t.clientX-x0,my=t.clientY-y0;
     if(!on){if(Math.abs(my)>Math.abs(mx)&&Math.abs(my)>10){go=false;return}if(mx>8)on=true;else return}
-    if(e.cancelable)e.preventDefault();dx=Math.max(0,mx);app.style.transition="none";app.style.transform="translateX("+dx+"px)";app.style.boxShadow="-18px 0 34px rgba(0,0,0,.45)";app.style.background="var(--bg)";app.style.position="relative";app.style.zIndex="41"},{passive:false});
+    if(e.cancelable)e.preventDefault();dx=Math.max(0,mx);app.style.transition="none";app.style.transform="translateX("+dx+"px)";app.style.boxShadow="-18px 0 34px rgba(0,0,0,.45)";kyfBgSet(app,window.scrollY||0,0);app.style.position="relative";app.style.zIndex="41"},{passive:false});
   function fin(){if(!go)return;go=false;if(!on)return;on=false;var v=dx/Math.max(1,Date.now()-t0),W=window.innerWidth;
     if(dx>W*.3||(v>.55&&dx>40)){var bk=document.getElementById("bk");KGX=dx;try{if(navigator.vibrate)navigator.vibrate(6)}catch(_){}if(bk)bk.click();setTimeout(function(){if(!KTR){KGX=0;app.style.transition="";app.style.transform="";app.style.boxShadow="";app.style.zIndex="";app.style.position="";app.style.background=""}},450)}
     else{var a=app.animate([{transform:"translateX("+dx+"px)"},{transform:"none"}],{duration:300,easing:"cubic-bezier(.34,1.56,.64,1)"});a.onfinish=function(){app.style.transition="";app.style.transform="";app.style.boxShadow="";app.style.zIndex="";app.style.position="";app.style.background=""}}}
