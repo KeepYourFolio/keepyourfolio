@@ -997,7 +997,7 @@ document.addEventListener("click",function(e){try{var t=e.target&&e.target.close
     ;[].forEach.call(document.querySelectorAll(".shs:not([data-shx])"),function(sh){sh.setAttribute("data-shx","1");var bd=sh.previousElementSibling;if(!(bd&&bd.classList&&bd.classList.contains("shd")))return;
     })}
   try{new MutationObserver(fix).observe(document.documentElement,{childList:true,subtree:true})}catch(_){setInterval(fix,400)}fix()})();
-var VER="3.105.92", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="3.105.93", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["position_corr","Correction de position"],["ticker_chg","Changement de cotation"],["groupe_projet","Projet"],["perecol_fonds","Fonds PERECOL"],["alerte_seuils","Seuils d’alerte"],["alerte_cible","Objectif de prix"],["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_creation","Nouvelle ligne ETF, action, SCPI"],["av_ligne_achat","Achat sur une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["renommage","Renommage"],["livret_taux","Taux du livret"],["fe_releve","Relevé du fonds en euros"],["livret_precaution","Épargne de précaution"],["actif_valeur","Valeur d’un actif"],["etranger_nouveau","Avoir à l’étranger"],["etranger_valeur","Valeur d’un avoir à l’étranger"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["pe_placement","Nouveau placement"],["pe_maj","Mise à jour d’un placement"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -2098,9 +2098,9 @@ async function bioCle(res){var raw=res&&res.prf&&res.prf.results&&res.prf.result
   var b=await crypto.subtle.importKey("raw",raw,"HKDF",false,["deriveKey"]);
   return crypto.subtle.deriveKey({name:"HKDF",hash:"SHA-256",salt:new Uint8Array(0),info:new TextEncoder().encode("kyf-mobile-bio-v1")},b,{name:"AES-GCM",length:256},false,["encrypt","decrypt"])}
 function idb(){return new Promise(function(ok,ko){var r=indexedDB.open("kyfm-bio",1);r.onupgradeneeded=function(){r.result.createObjectStore("k")};r.onsuccess=function(){ok(r.result)};r.onerror=function(){ko(r.error)}})}
-async function idbPutK(k,v){var d=await idb();return new Promise(function(ok,ko){var t=d.transaction("k","readwrite");t.objectStore("k").put(v,k);t.oncomplete=ok;t.onerror=function(){ko(t.error)}})}
-async function idbGetK(k){var d=await idb();return new Promise(function(ok,ko){var q=d.transaction("k").objectStore("k").get(k);q.onsuccess=function(){ok(q.result)};q.onerror=function(){ko(q.error)}})}
-async function idbDelK(k){var d=await idb();return new Promise(function(ok,ko){var t=d.transaction("k","readwrite");t.objectStore("k").delete(k);t.oncomplete=ok;t.onerror=function(){ko(t.error)}})}
+async function idbPutK(k,v){var d=await idb();return new Promise(function(ok,ko){var t=d.transaction("k","readwrite");t.objectStore("k").put(v,k);t.oncomplete=function(){d.close();ok()};t.onerror=function(){d.close();ko(t.error)}})}
+async function idbGetK(k){var d=await idb();return new Promise(function(ok,ko){var q=d.transaction("k").objectStore("k").get(k);q.onsuccess=function(){var v=q.result;d.close();ok(v)};q.onerror=function(){d.close();ko(q.error)}})}
+async function idbDelK(k){var d=await idb();return new Promise(function(ok,ko){var t=d.transaction("k","readwrite");t.objectStore("k").delete(k);t.oncomplete=function(){d.close();ok()};t.onerror=function(){d.close();ko(t.error)}})}
 function idbRaz(){return new Promise(function(ok){try{var q=indexedDB.deleteDatabase("kyfm-bio");q.onsuccess=q.onerror=q.onblocked=function(){ok()}}catch(e){ok()}})}
 function idbPut(v){return idbPutK("cle",v).catch(function(){return idbRaz().then(function(){return idbPutK("cle",v)})})}
 function idbGet(){return idbGetK("cle")}
@@ -2113,10 +2113,13 @@ async function bioActiver(emp){
   if(!emp&&ext.prf&&ext.prf.enabled){try{var key=await bioCle(await bioLire(id,salt));
     var ct=new Uint8Array(await crypto.subtle.encrypt({name:"AES-GCM",iv:iv},key,new TextEncoder().encode(PH)));
     rec={v:1,kind:emp?"emp":"key",mode:"prf",id:b64(id),salt:b64(salt),iv:b64(iv),ct:b64(ct)}}catch(e){if(e&&e.name==="NotAllowedError")throw e}}
-  if(!rec){/* repli : le gestionnaire ne fournit pas de secret propre. L'empreinte (ou le verrou) doit être validée, puis une clé gardée sur l'appareil, non exportable, ouvre la phrase. */
-    var k2=await crypto.subtle.generateKey({name:"AES-GCM",length:256},false,["encrypt","decrypt"]);
-    var ct2=new Uint8Array(await crypto.subtle.encrypt({name:"AES-GCM",iv:iv},k2,new TextEncoder().encode(PH)));
-    await idbPut(k2);rec={v:1,kind:emp?"emp":"key",mode:"dev",id:b64(id),salt:b64(salt),iv:b64(iv),ct:b64(ct2)}}
+  if(!rec){/* repli : le gestionnaire ne fournit pas de secret propre. L'empreinte (ou le verrou) doit être validée, puis une clé gardée sur l'appareil, non exportable, ouvre la phrase.
+     3.105.93 : la clé est relue et testée tout de suite ; si le stockage du téléphone la rend différente (vieux état, base bloquée), on repart d'une base neuve et on réessaie une fois. */
+    for(var tr=0;tr<2&&!rec;tr++){try{
+      var k2=await crypto.subtle.generateKey({name:"AES-GCM",length:256},false,["encrypt","decrypt"]);
+      var ct2=new Uint8Array(await crypto.subtle.encrypt({name:"AES-GCM",iv:iv},k2,new TextEncoder().encode(PH)));
+      await idbPut(k2);var kv0=await idbGet();if(!kv0)throw new Error("cle");await crypto.subtle.decrypt({name:"AES-GCM",iv:iv},kv0,ct2);
+      rec={v:1,kind:emp?"emp":"key",mode:"dev",id:b64(id),salt:b64(salt),iv:b64(iv),ct:b64(ct2)}}catch(e){if(tr)throw e;await idbRaz()}}}
   if(rec.mode==="dev"){var kv=await idbGet();if(!kv)throw new Error("cle");await crypto.subtle.decrypt({name:"AES-GCM",iv:iv},kv,unb64(rec.ct))}
   localStorage.setItem(BIO,JSON.stringify(rec))}
 async function bioLire(id,salt){
