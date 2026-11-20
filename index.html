@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.102
+  @version     : Beta 2.14.2.103
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5376,7 +5376,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.102</div>
+  <div class="kl-ver">Beta 2.14.2.103</div>
 </div>
 <script>
 (function(){
@@ -6090,6 +6090,10 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
     <button type="button" onclick="closeSharePopup()" class="kyf-modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
   <div style="display:flex;flex-direction:column;gap:7px">
+    <button type="button" onclick="kyfShImgOpen()" class="share-row" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;border:1px solid var(--accent);background:rgba(255,255,255,0.05);color:var(--text);cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;text-align:left">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12A9 9 0 1 1 12 3v9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/></svg>
+      <span style="display:flex;flex-direction:column;gap:1px"><span>Image de mon portefeuille</span><span style="font-size:9px;font-weight:400;color:var(--text3)">Double donut en pourcentages, ou exemple fictif</span></span>
+    </button>
     <button id="shareNativeBtn" onclick="kyfShareNative()" class="share-row" style="display:none;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;border:1px solid var(--border2);background:rgba(255,255,255,0.05);color:var(--text);cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;text-align:left">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.5" x2="15.4" y2="6.5"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/></svg>
       Partager (WhatsApp, Instagram, TikTok...)
@@ -6130,6 +6134,45 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
   <div style="font-size:9px;color:var(--text3);margin-top:14px;line-height:1.6;text-align:center">Instagram et TikTok n'ont pas de lien de partage direct. Passez par « Partager » (bouton du haut, mobile) pour les atteindre.</div>
 </div>
 <div id="shareOverlay" onclick="closeSharePopup()" style="display:none;position:fixed;inset:0;z-index:10011;background:rgba(0,0,0,0.6)"></div>
+
+<!-- IMAGE DE PARTAGE -->
+<div id="shImgOverlay" oncontextmenu="return false" style="display:none;position:fixed;inset:0;z-index:10013;background:rgba(0,0,0,0.6)"></div>
+<div id="shImgModal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(1060px,96vw);max-height:94vh;z-index:10014;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;font-family:'Inter',sans-serif;font-size:11px;color:var(--text);box-shadow:0 8px 40px rgba(0,0,0,0.35);flex-direction:column;overflow:hidden">
+  <style>
+    #shImgModal .shi-seg{display:inline-flex;border:1px solid var(--border2);border-radius:9px;padding:3px;gap:2px;background:var(--btn-secondary-bg)}
+    #shImgModal .shi-seg button{font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:.04em;padding:7px 14px;border-radius:7px;border:none;background:transparent;color:var(--text2);cursor:pointer;transition:background .15s}
+    #shImgModal .shi-seg button:hover{background:var(--hov-bg)}
+    #shImgModal .shi-seg button.on{background:var(--accent);color:#000}
+    #shImgModal .shi-b{font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:9px 16px;border-radius:8px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;transition:background .15s;display:inline-flex;align-items:center;gap:7px}
+    #shImgModal .shi-b:hover{background:var(--hov-bg)}
+    #shImgModal .shi-p{border:none;background:#f0b429;color:#000}
+    #shImgModal .shi-p:hover{background:#f0b429;opacity:.85}
+  </style>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border)">
+    <span style="color:var(--text-hi);font-weight:700;font-size:13px;letter-spacing:1px">IMAGE À PARTAGER</span>
+    <button type="button" onclick="kyfShImgClose()" class="kyf-modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;min-height:0;overflow-y:auto">
+    <div style="flex:1 1 560px;min-width:0;padding:18px 20px;display:flex;flex-direction:column;gap:10px">
+      <canvas id="shImgCv" width="1200" height="630" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--border2);display:block"></canvas>
+      <div id="shImgEmpty" style="display:none;font-size:10px;color:var(--text2);line-height:1.6">Aucune position à répartir pour l’instant : l’aperçu reste sur l’exemple fictif.</div>
+    </div>
+    <div style="flex:0 1 300px;min-width:240px;padding:18px 20px;display:flex;flex-direction:column;gap:16px;border-left:1px solid var(--border)">
+      <div><div style="font-size:9px;font-weight:700;letter-spacing:.5px;color:var(--text3);margin-bottom:7px">DONNÉES</div>
+        <div class="shi-seg"><button type="button" id="shImgBtnF" class="on" onclick="kyfShImgMode('fictif')">FICTIF</button><button type="button" id="shImgBtnR" onclick="kyfShImgMode('reel')">RÉEL</button></div></div>
+      <div id="shImgNote" style="font-size:10px;color:var(--text2);line-height:1.6;border-left:3px solid var(--accent);padding-left:10px"></div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:auto">
+        <button type="button" class="shi-b shi-p" onclick="kyfShImgCopy(this)"><span>COPIER L’IMAGE</span></button>
+        <button type="button" class="shi-b" onclick="kyfShImgSave()"><span>ENREGISTRER L’IMAGE</span></button>
+        <div style="font-size:9px;font-weight:700;letter-spacing:.5px;color:var(--text3);margin-top:6px">PUIS PUBLIER SUR</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <button type="button" class="shi-b" onclick="kyfShareTo('x')">X</button><button type="button" class="shi-b" onclick="kyfShareTo('facebook')">Facebook</button><button type="button" class="shi-b" onclick="kyfShareTo('linkedin')">LinkedIn</button><button type="button" class="shi-b" onclick="kyfShareTo('reddit')">Reddit</button><button type="button" class="shi-b" onclick="kyfShareTo('whatsapp')">WhatsApp</button>
+        </div>
+        <div style="font-size:9px;color:var(--text3);line-height:1.6">Enregistrez ou copiez l’image, puis ajoutez-la à votre message : les réseaux n’acceptent pas l’image par lien.</div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- DCA ADD PLAN MODAL -->
 <div id="dcaAddOverlay" onclick="closeDCAModal()" style="display:none;position:fixed;inset:0;z-index:9993;background:rgba(0,0,0,0.6)"></div>
@@ -8027,7 +8070,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.102</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.103</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -48854,6 +48897,121 @@ function kyfShareTo(platform){
   window.open(target, '_blank', 'noopener,noreferrer,width=600,height=600');
 }
 
+// ── IMAGE DE PARTAGE (double donut) ───────────────────────────
+// Mode FICTIF par défaut : portefeuille d'exemple détaillé, jamais lié aux vraies données. Le mot FICTIF est dessiné dans l'image elle-même (bandeau + motif répété),
+// donc impossible à retirer sans abîmer les graphiques. Mode RÉEL : pourcentages seulement, aucun montant.
+let _shImgMode = 'fictif';
+const KYF_SH_COL = ['#b45309','#1d4ed8','#0a6a43','#f5b41a','#7c3aed','#0e7490','#be123c','#64748b'];
+const KYF_SH_FICT = {
+  classes: [['Actions',46],['Obligations',12],['Immobilier',14],['Crypto',6],['Or et métaux',5],['Liquidités',9],['Private equity',4],['Autres',4]],
+  envs: [['PEA',28],['Assurance vie',24],['CTO',17],['Livrets',10],['PER',9],['Crypto',6],['Immobilier direct',6]]
+};
+function kyfShImgReal(){
+  const cl = {}, en = {}, lp = window._lp || {};
+  const add = (o, k, v) => { v = parseFloat(v) || 0; if(v > 0) o[k] = (o[k] || 0) + v; };
+  try{
+    ETF.filter(e => e.qty > 0).forEach(e => {
+      const v = getEval(e, lp[e.ticker]), ct = (typeof kyfEtfIsCt === 'function') && kyfEtfIsCt(e), env = String(e.enveloppe || '').toUpperCase();
+      add(cl, ct ? 'Assurance vie / PER' : 'ETF / Actions', v);
+      add(en, ct ? (env === 'PER' ? 'PER' : 'Assurance vie') : (env === 'PEA' ? 'PEA' : (env === 'CTO' ? 'CTO' : 'Autres comptes')), v);
+    });
+  }catch(e){}
+  try{ JSON.parse(localStorage.getItem('kyf-av') || '[]').forEach(d => { const v = (typeof avContratValue === 'function') ? avContratValue(d) : (parseFloat(d.fondsEuros) || 0) + (d.ucDansETF ? 0 : (parseFloat(d.uc) || 0)); add(cl, 'Assurance vie / PER', v); add(en, ['per','per-col','per-ob'].includes(d.type) ? 'PER' : 'Assurance vie', v); }); }catch(e){}
+  try{
+    kyfGrpItems().filter(x => x.c !== 'etf' && x.c !== 'av').forEach(x => {
+      const m = { cry:['Crypto','Crypto'], stb:['Crypto','Crypto'], liv:['Livrets d’épargne','Livrets'], cash:['Liquidités','Liquidités'], or:['Or et métaux','Or et métaux'], imm:['Immobilier','Immobilier direct'], scpi:['Immobilier','SCPI'], sci:['Immobilier','SCI'], cf:['Immobilier','Crowdfunding'], pe:['Placements privés','Placements privés'] }[x.c] || ['Autres','Autres'];
+      add(cl, m[0], x.val); add(en, m[1], x.val);
+    });
+  }catch(e){}
+  const norm = o => {
+    const a = Object.entries(o).sort((x,y) => y[1] - x[1]), t = a.reduce((s,x) => s + x[1], 0);
+    if(!(t > 0)) return [];
+    let r = a.map(x => [x[0], x[1] / t * 100]);
+    if(r.length > 8){ const rest = r.slice(7).reduce((s,x) => s + x[1], 0); r = r.slice(0,7).concat([['Autres', rest]]); }
+    return r;
+  };
+  return { classes: norm(cl), envs: norm(en) };
+}
+function kyfShImgFmt(p){ return (p >= 10 || Math.abs(p - Math.round(p)) < 0.05 ? String(Math.round(p)) : (Math.round(p * 10) / 10).toFixed(1).replace('.', ',')) + ' %'; }
+function kyfShImgDraw(cv, mode){
+  const W = 1200, H = 630, c = cv.getContext('2d'), INK = '#1b2540', MUT = '#55627f';
+  cv.width = W; cv.height = H;
+  const d = mode === 'fictif' ? KYF_SH_FICT : kyfShImgReal();
+  c.fillStyle = '#f4f6fb'; c.fillRect(0, 0, W, H);
+  c.fillStyle = mode === 'fictif' ? '#b42828' : INK; c.fillRect(0, 0, W, 46);
+  c.fillStyle = '#fff'; c.font = '800 17px Inter, Arial, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
+  c.fillText(mode === 'fictif' ? 'PORTEFEUILLE FICTIF · DONNÉES D’EXEMPLE · AUCUN PATRIMOINE RÉEL' : 'MON PORTEFEUILLE · EN POURCENTAGES, AUCUN MONTANT', W / 2, 24);
+  const blocks = [[300, 'PAR CLASSE D’ACTIFS', d.classes], [900, 'PAR ENVELOPPE', d.envs]];
+  blocks.forEach(([cx, title, data]) => {
+    c.fillStyle = INK; c.font = '800 19px Inter, Arial, sans-serif'; c.textAlign = 'center'; c.fillText(title, cx, 86);
+    const cy = 238, R = 112, r0 = 68; let a0 = -Math.PI / 2;
+    data.forEach((x, i) => {
+      const a1 = a0 + x[1] / 100 * Math.PI * 2, gap = data.length > 1 ? Math.min(0.018, (x[1] / 100 * Math.PI * 2) / 4) : 0;
+      c.beginPath(); c.arc(cx, cy, R, a0 + gap, a1 - gap); c.arc(cx, cy, r0, a1 - gap, a0 + gap, true); c.closePath();
+      c.fillStyle = KYF_SH_COL[i % 8]; c.fill(); a0 = a1;
+    });
+    c.fillStyle = INK; c.font = '800 34px Inter, Arial, sans-serif'; c.fillText(String(data.length), cx, cy - 6);
+    c.fillStyle = MUT; c.font = '700 13px Inter, Arial, sans-serif'; c.fillText(title.indexOf('CLASSE') >= 0 ? 'CLASSES' : 'ENVELOPPES', cx, cy + 20);
+    c.textAlign = 'left';
+    data.forEach((x, i) => {
+      const col = i % 2, row = Math.floor(i / 2), lx = cx - 262 + col * 270, ly = 398 + row * 42;
+      c.fillStyle = KYF_SH_COL[i % 8]; c.beginPath(); c.arc(lx + 7, ly, 7, 0, Math.PI * 2); c.fill();
+      c.fillStyle = INK; c.font = '600 18px Inter, Arial, sans-serif'; c.textAlign = 'left'; c.fillText(x[0], lx + 22, ly, 160);
+      c.font = '800 18px Inter, Arial, sans-serif'; c.textAlign = 'right'; c.fillText(kyfShImgFmt(x[1]), lx + 252, ly);
+    });
+  });
+  c.textAlign = 'center'; c.fillStyle = MUT; c.font = '600 16px Inter, Arial, sans-serif';
+  c.fillText('Keep Your Folio · keepyourfolio.fr · gratuit, sans compte, vos données restent chez vous', W / 2, 604);
+  if(mode === 'fictif'){
+    c.save(); c.font = '800 52px Inter, Arial, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
+    for(let y = 60, k = 0; y < H + 120; y += 110, k++) for(let x = -40 + (k % 2) * 140; x < W + 100; x += 280){
+      c.save(); c.translate(x, y); c.rotate(-24 * Math.PI / 180);
+      c.fillStyle = 'rgba(180,40,40,.17)'; c.strokeStyle = 'rgba(180,40,40,.30)'; c.lineWidth = 1.4; c.fillText('FICTIF', 0, 0); c.strokeText('FICTIF', 0, 0); c.restore();
+    }
+    c.restore();
+  }
+}
+function kyfShImgOpen(){
+  closeSharePopup();
+  document.getElementById('shImgOverlay').style.display = 'block';
+  document.getElementById('shImgModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  kyfShImgRender();
+}
+function kyfShImgClose(){
+  document.getElementById('shImgOverlay').style.display = 'none';
+  document.getElementById('shImgModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+function kyfShImgMode(m){ _shImgMode = m; kyfShImgRender(); }
+function kyfShImgRender(){
+  const cv = document.getElementById('shImgCv'); if(!cv) return;
+  const reel = _shImgMode === 'reel', d = reel ? kyfShImgReal() : null;
+  document.getElementById('shImgBtnF').classList.toggle('on', !reel);
+  document.getElementById('shImgBtnR').classList.toggle('on', reel);
+  const note = document.getElementById('shImgNote');
+  if(note) note.innerHTML = reel ? 'Mode réel : pourcentages seulement, aucun montant ni nom de ligne ne sort de l’appli.' : 'Mode fictif : un portefeuille d’exemple. Le mot FICTIF est incrusté dans l’image, répété sur toute la surface : impossible à enlever sans abîmer les graphiques. Vos vraies données ne sont pas utilisées.';
+  if(reel && (!d.classes.length)){
+    kyfShImgDraw(cv, 'fictif'); document.getElementById('shImgEmpty').style.display = 'block'; _shImgMode = 'fictif'; document.getElementById('shImgBtnF').classList.add('on'); document.getElementById('shImgBtnR').classList.remove('on'); return;
+  }
+  document.getElementById('shImgEmpty').style.display = 'none';
+  kyfShImgDraw(cv, _shImgMode);
+}
+function kyfShImgBlob(){ return new Promise(ok => document.getElementById('shImgCv').toBlob(ok, 'image/png')); }
+async function kyfShImgCopy(btn){
+  const lab = btn.querySelector('span'), orig = lab.textContent;
+  try{
+    const b = await kyfShImgBlob();
+    if(!(navigator.clipboard && window.ClipboardItem)) throw new Error('clip');
+    await navigator.clipboard.write([new ClipboardItem({ 'image/png': b })]);
+    lab.textContent = 'IMAGE COPIÉE'; setTimeout(() => { lab.textContent = orig; }, 1800);
+  }catch(e){ kyfShImgSave(); }
+}
+async function kyfShImgSave(){
+  const b = await kyfShImgBlob(), u = URL.createObjectURL(b), a = document.createElement('a');
+  a.href = u; a.download = 'keep-your-folio-' + _shImgMode + '.png'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000);
+}
+
 // ── RECHERCHE GLOBALE (Ctrl+K) ───────────────────────────────
 // v1 : pages/menus (source unique = le DOM de la sidebar, toujours à
 // jour) + 4 catégories de données parmi les plus consultées
@@ -51900,7 +52058,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.102\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.103\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -79325,6 +79483,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.103 · 20/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PARTAGER : nouveau bouton « Image de mon portefeuille » (idée de Nicolas). Une image 1200 x 630 avec le double donut par classe d'actifs et par enveloppe, en pourcentages, à copier ou enregistrer puis à poster sur les réseaux. Deux modes : FICTIF (par défaut, portefeuille d'exemple détaillé, le mot FICTIF est incrusté dans l'image en bandeau et en motif répété) et RÉEL (pourcentages seulement, aucun montant ni nom de ligne). Vos vraies données ne servent jamais au mode fictif.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.102 · 20/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">POPUP VERSEMENTS AV/PER, onglet Répartition : plus aucune ligne cochée par défaut. Un en-tête discret ajoute une case pour tout cocher ou tout décocher (avec le compteur « n sur N ») et un champ de recherche pour retrouver une ligne vite, avec une petite croix pour l'effacer et réécrire. La case agit sur les lignes affichées.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.101 · 20/11/2026</div>
