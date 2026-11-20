@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.103
+  @version     : Beta 2.14.2.104
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5376,7 +5376,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.103</div>
+  <div class="kl-ver">Beta 2.14.2.104</div>
 </div>
 <script>
 (function(){
@@ -8070,7 +8070,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.103</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.104</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -48898,75 +48898,68 @@ function kyfShareTo(platform){
 }
 
 // ── IMAGE DE PARTAGE (double donut) ───────────────────────────
+// Même camembert à deux anneaux que PORTEFEUILLE > PAR CLASSE / PAR ENVELOPPE > DÉTAILLÉ (kyfDonut2Svg), dessiné entier dans l'image.
 // Mode FICTIF par défaut : portefeuille d'exemple détaillé, jamais lié aux vraies données. Le mot FICTIF est dessiné dans l'image elle-même (bandeau + motif répété),
-// donc impossible à retirer sans abîmer les graphiques. Mode RÉEL : pourcentages seulement, aucun montant.
-let _shImgMode = 'fictif';
-const KYF_SH_COL = ['#b45309','#1d4ed8','#0a6a43','#f5b41a','#7c3aed','#0e7490','#be123c','#64748b'];
-const KYF_SH_FICT = {
-  classes: [['Actions',46],['Obligations',12],['Immobilier',14],['Crypto',6],['Or et métaux',5],['Liquidités',9],['Private equity',4],['Autres',4]],
-  envs: [['PEA',28],['Assurance vie',24],['CTO',17],['Livrets',10],['PER',9],['Crypto',6],['Immobilier direct',6]]
-};
-function kyfShImgReal(){
-  const cl = {}, en = {}, lp = window._lp || {};
-  const add = (o, k, v) => { v = parseFloat(v) || 0; if(v > 0) o[k] = (o[k] || 0) + v; };
+// donc impossible à retirer sans abîmer les graphiques. Mode RÉEL : pourcentages seulement, aucun montant (le centre affiche 100 %).
+let _shImgMode = 'fictif', _shImgJob = null;
+function kyfShImgGrp(scope, mode){
+  if(mode === 'fictif'){
+    const sh = (col, i, n) => (typeof kyfShade === 'function') ? (n > 1 ? kyfShade(col, 0.12 + 0.5 * i / n) : kyfShade(col, 0.2)) : col;
+    const mk = (nom, col, arr) => ({ nom:nom, col:col, val:arr.reduce((a, x) => a + x[1], 0), cls:arr.map((x, i) => ({ nom:x[0], col:sh(col, i, arr.length), val:x[1] })) });
+    const g = scope === 'env'
+      ? [mk('PEA', '#4d9fff', [['ETF Monde', 20], ['ETF Émergents', 8]]), mk('CTO', '#a78bfa', [['Actions', 12], ['ETF', 5]]), mk('Assurance vie', '#fb923c', [['Fonds euros', 10], ['UC actions', 14]]), mk('PER', '#14b8a6', [['UC diversifiées', 9]]), mk('Livrets', '#818cf8', [['Livrets', 10]]), mk('Crypto', '#e879f9', [['Crypto', 6]]), mk('Immobilier direct', '#2563eb', [['Immobilier', 6]])]
+      : [mk('Actions', '#f0b429', [['ETF Monde', 28], ['Europe', 10], ['Émergents', 8]]), mk('Taux et trésorerie', '#22d3ee', [['Fonds euros', 10], ['Obligations', 6], ['Monétaire', 4]]), mk('Épargne de précaution', '#818cf8', [['Livrets', 8]]), mk('Immobilier', '#4d9fff', [['SCPI', 7], ['Immobilier coté', 5]]), mk('Diversifiants', '#e879f9', [['Crypto', 4], ['Or et métaux', 3], ['Private equity', 2]]), mk('Autres', '#94a3b8', [['Autres actifs', 5]])];
+    return { grp:g, tot:100 };
+  }
   try{
-    ETF.filter(e => e.qty > 0).forEach(e => {
-      const v = getEval(e, lp[e.ticker]), ct = (typeof kyfEtfIsCt === 'function') && kyfEtfIsCt(e), env = String(e.enveloppe || '').toUpperCase();
-      add(cl, ct ? 'Assurance vie / PER' : 'ETF / Actions', v);
-      add(en, ct ? (env === 'PER' ? 'PER' : 'Assurance vie') : (env === 'PEA' ? 'PEA' : (env === 'CTO' ? 'CTO' : 'Autres comptes')), v);
-    });
-  }catch(e){}
-  try{ JSON.parse(localStorage.getItem('kyf-av') || '[]').forEach(d => { const v = (typeof avContratValue === 'function') ? avContratValue(d) : (parseFloat(d.fondsEuros) || 0) + (d.ucDansETF ? 0 : (parseFloat(d.uc) || 0)); add(cl, 'Assurance vie / PER', v); add(en, ['per','per-col','per-ob'].includes(d.type) ? 'PER' : 'Assurance vie', v); }); }catch(e){}
-  try{
-    kyfGrpItems().filter(x => x.c !== 'etf' && x.c !== 'av').forEach(x => {
-      const m = { cry:['Crypto','Crypto'], stb:['Crypto','Crypto'], liv:['Livrets d’épargne','Livrets'], cash:['Liquidités','Liquidités'], or:['Or et métaux','Or et métaux'], imm:['Immobilier','Immobilier direct'], scpi:['Immobilier','SCPI'], sci:['Immobilier','SCI'], cf:['Immobilier','Crowdfunding'], pe:['Placements privés','Placements privés'] }[x.c] || ['Autres','Autres'];
-      add(cl, m[0], x.val); add(en, m[1], x.val);
-    });
-  }catch(e){}
-  const norm = o => {
-    const a = Object.entries(o).sort((x,y) => y[1] - x[1]), t = a.reduce((s,x) => s + x[1], 0);
-    if(!(t > 0)) return [];
-    let r = a.map(x => [x[0], x[1] / t * 100]);
-    if(r.length > 8){ const rest = r.slice(7).reduce((s,x) => s + x[1], 0); r = r.slice(0,7).concat([['Autres', rest]]); }
-    return r;
-  };
-  return { classes: norm(cl), envs: norm(en) };
+    if(scope === 'env'){
+      const rows = kyfEnvUnifData(), tot = rows.reduce((a, r) => a + r.val, 0); if(!(tot > 0)) return null;
+      const cats = kyfEnvCats(rows);
+      return { grp:cats.map(c => ({ nom:c.nom, col:c.col, val:c.val, cls:c.children.slice().sort((a, b) => b.val - a.val).map((x, i, A) => ({ nom:x.nom, col:A.length > 1 ? kyfShade(c.col, 0.12 + 0.5 * i / A.length) : kyfShade(c.col, 0.2), val:x.val })) })).filter(g => g.val > 0), tot:tot };
+    }
+    const rows = kyfClsData(), tot = rows.reduce((a, r) => a + r.val, 0); if(!(tot > 0)) return null;
+    const by = {}; rows.forEach(r => { by[r.key] = r; });
+    const grp = KYF_CLS_GROUPES.map(g => ({ nom:g.nom, col:g.col, cls:g.cl.map(k => by[k]).filter(Boolean) })).map(g => Object.assign(g, { val:g.cls.reduce((a, c) => a + c.val, 0) })).filter(g => g.val > 0);
+    const known = new Set(KYF_CLS_GROUPES.reduce((a, g) => a.concat(g.cl), [])), rest = rows.filter(r => !known.has(r.key));
+    if(rest.length){ const g = grp.find(x => x.nom === 'Autres'); if(g){ g.cls = g.cls.concat(rest); g.val += rest.reduce((a, c) => a + c.val, 0); } else grp.push({ nom:'Autres', col:'#94a3b8', cls:rest, val:rest.reduce((a, c) => a + c.val, 0) }); }
+    return { grp:grp, tot:tot };
+  }catch(e){ return null; }
 }
-function kyfShImgFmt(p){ return (p >= 10 || Math.abs(p - Math.round(p)) < 0.05 ? String(Math.round(p)) : (Math.round(p * 10) / 10).toFixed(1).replace('.', ',')) + ' %'; }
-function kyfShImgDraw(cv, mode){
+function kyfShImgHas(){ return !!(kyfShImgGrp('cls', 'reel') && kyfShImgGrp('env', 'reel')); }
+function kyfShImgSvgImg(d){
+  return new Promise(ok => {
+    const was = document.body.classList.contains('kyf-discreet'), saveFlat = window._kyfD2Flat;
+    document.body.classList.add('kyf-discreet');   // centre : « 100 % » au lieu du montant
+    let R; try{ R = kyfDonut2Svg(d.grp, d.tot, true); }finally{ if(!was) document.body.classList.remove('kyf-discreet'); window._kyfD2Flat = saveFlat; }
+    R.vb = '0 0 ' + R.size + ' ' + R.size;   // anneaux entiers, sans les étiquettes extérieures (elles rétrécissent le dessin)
+    const vb = R.vb.split(' ').map(Number), svg = String(R.svg).replace(/<polyline[^>]*\/><text[^>]*>[^<]*<\/text>/g, '').replace(/var\(--text3\)/g, '#7a859f').replace(/var\(--text2\)/g, '#55627f').replace(/var\(--text\)/g, '#1b2540');
+    const x = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="' + R.vb + '" width="' + (vb[2] * 2) + '" height="' + (vb[3] * 2) + '" font-family="Inter, Arial, sans-serif">' + svg + '</svg>';
+    const im = new Image(); im.onload = () => ok({ im:im, w:vb[2], h:vb[3] }); im.onerror = () => ok(null);
+    im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(x);
+  });
+}
+async function kyfShImgDraw(cv, mode){
   const W = 1200, H = 630, c = cv.getContext('2d'), INK = '#1b2540', MUT = '#55627f';
+  const blocks = [[300, 'PAR CLASSE D’ACTIFS', 'cls'], [900, 'PAR ENVELOPPE', 'env']];
+  const imgs = await Promise.all(blocks.map(b => { const d = kyfShImgGrp(b[2], mode); return d ? kyfShImgSvgImg(d) : Promise.resolve(null); }));
   cv.width = W; cv.height = H;
-  const d = mode === 'fictif' ? KYF_SH_FICT : kyfShImgReal();
   c.fillStyle = '#f4f6fb'; c.fillRect(0, 0, W, H);
   c.fillStyle = mode === 'fictif' ? '#b42828' : INK; c.fillRect(0, 0, W, 46);
   c.fillStyle = '#fff'; c.font = '800 17px Inter, Arial, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
   c.fillText(mode === 'fictif' ? 'PORTEFEUILLE FICTIF · DONNÉES D’EXEMPLE · AUCUN PATRIMOINE RÉEL' : 'MON PORTEFEUILLE · EN POURCENTAGES, AUCUN MONTANT', W / 2, 24);
-  const blocks = [[300, 'PAR CLASSE D’ACTIFS', d.classes], [900, 'PAR ENVELOPPE', d.envs]];
-  blocks.forEach(([cx, title, data]) => {
-    c.fillStyle = INK; c.font = '800 19px Inter, Arial, sans-serif'; c.textAlign = 'center'; c.fillText(title, cx, 86);
-    const cy = 238, R = 112, r0 = 68; let a0 = -Math.PI / 2;
-    data.forEach((x, i) => {
-      const a1 = a0 + x[1] / 100 * Math.PI * 2, gap = data.length > 1 ? Math.min(0.018, (x[1] / 100 * Math.PI * 2) / 4) : 0;
-      c.beginPath(); c.arc(cx, cy, R, a0 + gap, a1 - gap); c.arc(cx, cy, r0, a1 - gap, a0 + gap, true); c.closePath();
-      c.fillStyle = KYF_SH_COL[i % 8]; c.fill(); a0 = a1;
-    });
-    c.fillStyle = INK; c.font = '800 34px Inter, Arial, sans-serif'; c.fillText(String(data.length), cx, cy - 6);
-    c.fillStyle = MUT; c.font = '700 13px Inter, Arial, sans-serif'; c.fillText(title.indexOf('CLASSE') >= 0 ? 'CLASSES' : 'ENVELOPPES', cx, cy + 20);
-    c.textAlign = 'left';
-    data.forEach((x, i) => {
-      const col = i % 2, row = Math.floor(i / 2), lx = cx - 262 + col * 270, ly = 398 + row * 42;
-      c.fillStyle = KYF_SH_COL[i % 8]; c.beginPath(); c.arc(lx + 7, ly, 7, 0, Math.PI * 2); c.fill();
-      c.fillStyle = INK; c.font = '600 18px Inter, Arial, sans-serif'; c.textAlign = 'left'; c.fillText(x[0], lx + 22, ly, 160);
-      c.font = '800 18px Inter, Arial, sans-serif'; c.textAlign = 'right'; c.fillText(kyfShImgFmt(x[1]), lx + 252, ly);
-    });
+  blocks.forEach((b, i) => {
+    c.fillStyle = INK; c.font = '800 19px Inter, Arial, sans-serif'; c.textAlign = 'center'; c.fillText(b[1], b[0], 78);
+    const o = imgs[i]; if(!o) return;
+    const bw = 570, bh = 482, k = Math.min(bw / o.w, bh / o.h), w = o.w * k, h = o.h * k;
+    c.drawImage(o.im, b[0] - w / 2, 96 + (bh - h) / 2, w, h);
   });
   c.textAlign = 'center'; c.fillStyle = MUT; c.font = '600 16px Inter, Arial, sans-serif';
-  c.fillText('Keep Your Folio · keepyourfolio.fr · gratuit, sans compte, vos données restent chez vous', W / 2, 604);
+  c.fillText('Keep Your Folio · keepyourfolio.fr · gratuit, sans compte, vos données restent chez vous', W / 2, 606);
   if(mode === 'fictif'){
     c.save(); c.font = '800 52px Inter, Arial, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
     for(let y = 60, k = 0; y < H + 120; y += 110, k++) for(let x = -40 + (k % 2) * 140; x < W + 100; x += 280){
       c.save(); c.translate(x, y); c.rotate(-24 * Math.PI / 180);
-      c.fillStyle = 'rgba(180,40,40,.17)'; c.strokeStyle = 'rgba(180,40,40,.30)'; c.lineWidth = 1.4; c.fillText('FICTIF', 0, 0); c.strokeText('FICTIF', 0, 0); c.restore();
+      c.fillStyle = 'rgba(180,40,40,.11)'; c.strokeStyle = 'rgba(180,40,40,.26)'; c.lineWidth = 1.4; c.fillText('FICTIF', 0, 0); c.strokeText('FICTIF', 0, 0); c.restore();
     }
     c.restore();
   }
@@ -48986,18 +48979,16 @@ function kyfShImgClose(){
 function kyfShImgMode(m){ _shImgMode = m; kyfShImgRender(); }
 function kyfShImgRender(){
   const cv = document.getElementById('shImgCv'); if(!cv) return;
-  const reel = _shImgMode === 'reel', d = reel ? kyfShImgReal() : null;
+  let reel = _shImgMode === 'reel';
+  if(reel && !kyfShImgHas()){ reel = false; _shImgMode = 'fictif'; const e = document.getElementById('shImgEmpty'); if(e) e.style.display = 'block'; }
+  else { const e = document.getElementById('shImgEmpty'); if(e) e.style.display = 'none'; }
   document.getElementById('shImgBtnF').classList.toggle('on', !reel);
   document.getElementById('shImgBtnR').classList.toggle('on', reel);
   const note = document.getElementById('shImgNote');
-  if(note) note.innerHTML = reel ? 'Mode réel : pourcentages seulement, aucun montant ni nom de ligne ne sort de l’appli.' : 'Mode fictif : un portefeuille d’exemple. Le mot FICTIF est incrusté dans l’image, répété sur toute la surface : impossible à enlever sans abîmer les graphiques. Vos vraies données ne sont pas utilisées.';
-  if(reel && (!d.classes.length)){
-    kyfShImgDraw(cv, 'fictif'); document.getElementById('shImgEmpty').style.display = 'block'; _shImgMode = 'fictif'; document.getElementById('shImgBtnF').classList.add('on'); document.getElementById('shImgBtnR').classList.remove('on'); return;
-  }
-  document.getElementById('shImgEmpty').style.display = 'none';
-  kyfShImgDraw(cv, _shImgMode);
+  if(note) note.innerHTML = reel ? 'Mode r\u00e9el : le m\u00eame camembert \u00e0 deux anneaux que dans Portefeuille, en pourcentages seulement. Aucun montant ne sort de l\u2019appli.' : 'Mode fictif : un portefeuille d\u2019exemple. Le mot FICTIF est incrust\u00e9 dans l\u2019image, r\u00e9p\u00e9t\u00e9 sur toute la surface : impossible \u00e0 enlever sans ab\u00eemer les graphiques. Vos vraies donn\u00e9es ne sont pas utilis\u00e9es.';
+  _shImgJob = kyfShImgDraw(cv, _shImgMode);
 }
-function kyfShImgBlob(){ return new Promise(ok => document.getElementById('shImgCv').toBlob(ok, 'image/png')); }
+async function kyfShImgBlob(){ try{ await _shImgJob; }catch(e){} return new Promise(ok => document.getElementById('shImgCv').toBlob(ok, 'image/png')); }
 async function kyfShImgCopy(btn){
   const lab = btn.querySelector('span'), orig = lab.textContent;
   try{
@@ -52058,7 +52049,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.103\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.104\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -79483,6 +79474,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.104 · 20/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PARTAGER, IMAGE DU PORTEFEUILLE : l'image reprend maintenant le vrai camembert à deux anneaux de PORTEFEUILLE (PAR CLASSE et PAR ENVELOPPE, vue DÉTAILLÉ), entier et sans montant (le centre affiche 100 %). Même rendu en mode fictif (exemple détaillé, FICTIF incrusté) et en mode réel.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.103 · 20/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PARTAGER : nouveau bouton « Image de mon portefeuille » (idée de Nicolas). Une image 1200 x 630 avec le double donut par classe d'actifs et par enveloppe, en pourcentages, à copier ou enregistrer puis à poster sur les réseaux. Deux modes : FICTIF (par défaut, portefeuille d'exemple détaillé, le mot FICTIF est incrusté dans l'image en bandeau et en motif répété) et RÉEL (pourcentages seulement, aucun montant ni nom de ligne). Vos vraies données ne servent jamais au mode fictif.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.102 · 20/11/2026</div>
