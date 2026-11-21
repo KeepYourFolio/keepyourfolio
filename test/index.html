@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.158
+  @version     : Beta 2.14.2.159
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5381,7 +5381,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.158</div>
+  <div class="kl-ver">Beta 2.14.2.159</div>
 </div>
 <script>
 (function(){
@@ -8085,7 +8085,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.158</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.159</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -27439,14 +27439,14 @@ function kyfEnvUnifData(){
   }); }catch(_){}
   rows.forEach(r => { if(r.kind === 'titres') r.gain = r.inv > 0 ? r.val - r.inv : null; });
   const ex = kyfEnvExtra();   // ajouts facultatifs (idée de Nicolas) : épargne de précaution, SCPI et immobilier en direct, résidence principale, crypto
-  ['prec', 'scpid', 'immod', 'rp', 'orp', 'ppv', 'aut', 'etr'].forEach(k => { if(ex[k]) kyfClsExtraLines(k).forEach(l => rows.push({ kind:'extra', env:k, nom:l.nom, val:l.val, inv:0, gain:null, n:0, tis:{}, col:KYF_ENV_CATCOL[k] })); });
+  ['prec', 'pee', 'scpid', 'immod', 'rp', 'orp', 'ppv', 'aut', 'etr'].forEach(k => { if(ex[k]) kyfClsExtraLines(k).forEach(l => rows.push({ kind:'extra', env:k, nom:l.nom, val:l.val, inv:0, gain:null, n:0, tis:{}, col:KYF_ENV_CATCOL[k] })); });
   if(ex.cry){ try{ const v = kyfCryValeur(); if(v > 0 && kyfFamFiltreOk(kyfCryTitu())) rows.push({ kind:'extra', env:'cry', nom:'Crypto', val:v, inv:0, gain:null, n:0, tis:{}, col:KYF_ENV_CATCOL.cry }); }catch(_){} }
-  const ord2 = ord.concat(['prec', 'scpid', 'immod', 'rp', 'cry', 'orp', 'ppv', 'aut', 'etr']);
+  const ord2 = ord.concat(['prec', 'pee', 'scpid', 'immod', 'rp', 'cry', 'orp', 'ppv', 'aut', 'etr']);
   rows.sort((a, b) => (ord2.indexOf(a.env) - ord2.indexOf(b.env)) || (b.val - a.val));
   return rows;
 }
-const KYF_ENV_CATCOL = { PEA:'#4d9fff', 'PEA-PME':'#38bdf8', CTO:'#a78bfa', AV:'#fb923c', PER:'#14b8a6', PEE:'#f472b6', prec:'#818cf8', scpid:'#fb7185', immod:'#2b6cb0', rp:'#d6a45a', cry:'#ff4fa0' , orp:'#e6b422', ppv:'#a855f7', aut:'#78716c', etr:'#34d399'};
-const KYF_ENV_CATNOM = { PEA:'PEA', 'PEA-PME':'PEA-PME', CTO:'CTO', AV:'AV', PER:'PER', PEE:'PEE', prec:'Épargne de précaution', scpid:'SCPI en direct', immod:'Immobilier en direct', rp:'Résidence principale', cry:'Crypto' , orp:"Or et métaux", ppv:"Placements privés", aut:"Autres actifs", etr:"Avoirs à l'étranger"};
+const KYF_ENV_CATCOL = { PEA:'#4d9fff', 'PEA-PME':'#38bdf8', CTO:'#a78bfa', AV:'#fb923c', PER:'#14b8a6', PEE:'#f472b6', pee:'#f472b6', prec:'#818cf8', scpid:'#fb7185', immod:'#2b6cb0', rp:'#d6a45a', cry:'#ff4fa0' , orp:'#e6b422', ppv:'#a855f7', aut:'#78716c', etr:'#34d399'};
+const KYF_ENV_CATNOM = { PEA:'PEA', 'PEA-PME':'PEA-PME', CTO:'CTO', AV:'AV', PER:'PER', PEE:'PEE', pee:'PEE', prec:'Épargne de précaution', scpid:'SCPI en direct', immod:'Immobilier en direct', rp:'Résidence principale', cry:'Crypto' , orp:"Or et métaux", ppv:"Placements privés", aut:"Autres actifs", etr:"Avoirs à l'étranger"};
 const KYF_ENV_EXTRA_KEY = 'kyf-env-extra';
 function kyfEnvExtra(){ try{ const o = JSON.parse(localStorage.getItem(KYF_ENV_EXTRA_KEY) || '{}'); return (o && typeof o === 'object') ? o : {}; }catch(_){ return {}; } }
 function kyfEnvExtraToggle(k){ const o = kyfEnvExtra(); if(o[k]) delete o[k]; else o[k] = 1; try{ localStorage.setItem(KYF_ENV_EXTRA_KEY, JSON.stringify(o)); }catch(_){} kyfEnvUnifRender(); }
@@ -27455,8 +27455,8 @@ function kyfEnvCatToggle(k){ window._kyfEnvCat = window._kyfEnvCat || {}; window
 function kyfEnvPills(){ return kyfCamHtml('env', 18); }
 // Menu « Ajouter au camembert » (2.14.2.47) : liste déroulante à cases à cocher, avec « Tout sélectionner » et navigation au clavier (flèches, Début, Fin, Espace ou Entrée, Échap).
 const KYF_CAM_ITEMS = {
-  cls:[['prec', 'Épargne de précaution'], ['scpid', 'SCPI en direct'], ['immod', 'Immobilier en direct'], ['rp', 'Résidence principale'], ['cryd', 'Crypto'], ['orp', 'Or et métaux'], ['ppv', 'Placements privés'], ['aut', 'Autres actifs'], ['etr', "Avoirs à l'étranger"]],
-  env:[['prec', 'Épargne de précaution'], ['scpid', 'SCPI en direct'], ['immod', 'Immobilier en direct'], ['rp', 'Résidence principale'], ['cry', 'Crypto'], ['orp', 'Or et métaux'], ['ppv', 'Placements privés'], ['aut', 'Autres actifs'], ['etr', "Avoirs à l'étranger"]]
+  cls:[['prec', 'Épargne de précaution'], ['pee', 'PEE (épargne salariale)'], ['scpid', 'SCPI en direct'], ['immod', 'Immobilier en direct'], ['rp', 'Résidence principale'], ['cryd', 'Crypto'], ['orp', 'Or et métaux'], ['ppv', 'Placements privés'], ['aut', 'Autres actifs'], ['etr', "Avoirs à l'étranger"]],
+  env:[['prec', 'Épargne de précaution'], ['pee', 'PEE (épargne salariale)'], ['scpid', 'SCPI en direct'], ['immod', 'Immobilier en direct'], ['rp', 'Résidence principale'], ['cry', 'Crypto'], ['orp', 'Or et métaux'], ['ppv', 'Placements privés'], ['aut', 'Autres actifs'], ['etr', "Avoirs à l'étranger"]]
 };
 function kyfCamGet(scope){ return scope === 'cls' ? kyfClsExtra() : kyfEnvExtra(); }
 function kyfCamStore(scope, o){ try{ localStorage.setItem(scope === 'cls' ? KYF_CLS_EXTRA_KEY : KYF_ENV_EXTRA_KEY, JSON.stringify(o)); }catch(_){} }
@@ -27584,7 +27584,7 @@ const KYF_CLS_VUE = [
   { key:'cry', label:'Crypto', color:'#ff4fa0' }, { key:'fe', label:'Fonds euros', color:'#06b6d4' }, { key:'immo', label:'Immobilier', color:'#4d9fff' },
   { key:'pe', label:'Private equity', color:'#e879f9' }, { key:'dp', label:'Dette privée', color:'#ff7a1a' }, { key:'str', label:'Produits structurés', color:'#2fc27a' },
   { key:'uc', label:'Unités de compte non détaillées', color:'#8891a0' }, { key:'nc', label:'À classer', color:'#94a3b8' },
-  { key:'prec', label:'Épargne de précaution', color:'#818cf8' }, { key:'scpid', label:'SCPI en direct', color:'#fb7185' }, { key:'rp', label:'Résidence principale', color:'#d6a45a' }, { key:'immod', label:'Immobilier en direct', color:'#2b6cb0' }, { key:'cryd', label:'Crypto en direct', color:'#ec4899' }, { key:'orp', label:"Or et métaux", color:'#e6b422' }, { key:'ppv', label:"Placements privés", color:'#a855f7' }, { key:'aut', label:"Autres actifs", color:'#78716c' }, { key:'etr', label:"Avoirs à l'étranger", color:'#34d399' }
+  { key:'prec', label:'Épargne de précaution', color:'#818cf8' }, { key:'pee', label:'PEE (épargne salariale)', color:'#f472b6' }, { key:'scpid', label:'SCPI en direct', color:'#fb7185' }, { key:'rp', label:'Résidence principale', color:'#d6a45a' }, { key:'immod', label:'Immobilier en direct', color:'#2b6cb0' }, { key:'cryd', label:'Crypto en direct', color:'#ec4899' }, { key:'orp', label:"Or et métaux", color:'#e6b422' }, { key:'ppv', label:"Placements privés", color:'#a855f7' }, { key:'aut', label:"Autres actifs", color:'#78716c' }, { key:'etr', label:"Avoirs à l'étranger", color:'#34d399' }
 ];
 // Ajouts facultatifs au camembert (2.14.2.32, idée de Nicolas) : épargne de précaution (livrets cochés), SCPI en direct, résidence principale. Décochés par défaut.
 const KYF_CLS_EXTRA_KEY = 'kyf-cls-extra';
@@ -27594,6 +27594,7 @@ function kyfClsExtraLines(k){
   const out = [], rd = x => Math.round(x * 100) / 100;
   try{
     if(k === 'prec') livLoad().forEach(l => { if(l && l.precaution && kyfFamFiltreOk(l.titulaire)){ const v = (parseFloat(l.solde) || 0) * livPart(l); if(v > 0) out.push({ nom:String(l.banque || 'Livret') + ' · ' + String(l.type || ''), env:'Livrets', val:rd(v) }); } });
+    if(k === 'pee'){ try{ peeLoad().forEach(p => { if(p && kyfFamFiltreOk(p.titulaire)){ const v = parseFloat(p.valeur) || 0; if(v > 0) out.push({ nom:String(p.nom || 'PEE'), env:'PEE', val:rd(v) }); } }); }catch(_){} }   // 2.14.2.159 : PEE ajoutable au camembert
     if(k === 'scpid') scpiLoad().forEach(x => { if(x && x.enveloppe === 'direct' && kyfFamFiltreOk(x.titulaire)){ const v = parseFloat(x.valActuel) || 0; if(v > 0) out.push({ nom:String(x.nom || 'SCPI'), env:'SCPI en direct', val:v }); } });
     if(k === 'immod') JSON.parse(localStorage.getItem('kyf-immo') || '[]').forEach(b => { if(b && b.statut !== 'proprio' && b.statut !== 'vendu' && kyfFamFiltreOk(b.titulaire)){ const v = parseFloat(b.valeur) || 0; if(v > 0) out.push({ nom:String(b.nom || 'Bien'), env:'Immobilier', val:v }); } });
     if(k === 'cryd'){ const v = kyfCryValeur(); if(v > 0 && kyfFamFiltreOk(kyfCryTitu())) out.push({ nom:'Crypto', env:'Crypto', val:Math.round(v * 100) / 100 }); }
@@ -27612,7 +27613,7 @@ const KYF_CLS_GROUPES = [
   { nom:'Épargne de précaution', col:'#818cf8', cl:['prec'] },
   { nom:'Immobilier', col:'#4d9fff', cl:['immo', 'scpid', 'immod', 'rp'] },
   { nom:'Diversifiants', col:'#e879f9', cl:['pa', 'mp', 'cry', 'cryd', 'pe', 'dp', 'str', 'orp', 'ppv'] },
-  { nom:'Autres', col:'#94a3b8', cl:['uc', 'nc', 'aut', 'etr'] }
+  { nom:'Autres', col:'#94a3b8', cl:['uc', 'nc', 'pee', 'aut', 'etr'] }
 ];
 function kyfDonutKey(scope){ return scope === 'env' ? 'kyf-env-donut' : 'kyf-cls-donut'; }
 function kyfClsDonutMode(scope){ try{ return localStorage.getItem(kyfDonutKey(scope)) === 'detail' ? 'detail' : 'simple'; }catch(_){ return 'simple'; } }
@@ -27808,7 +27809,7 @@ function kyfClsData(){
       add(k, l.val, { src:'av', cid:d.id, pi:l.pi, nom:String(l.nom || ''), env:cn, mode: l.cl ? (l.auto ? 'auto' : 'choisie') : '', cur: l.auto ? '' : (l.cl || ''), auto: l.auto ? l.cl : '', peut:peut, nat:l.nat || '' });
     });
   }); }catch(_){}
-  { const ex = kyfClsExtra(); ['prec', 'scpid', 'immod', 'rp', 'cryd', 'orp', 'ppv', 'aut', 'etr'].forEach(k => { if(ex[k]) kyfClsExtraLines(k).forEach(l => add(k, l.val, { src:'x', nom:l.nom, env:l.env, mode:'', cur:'', auto:'', peut:false })); }); }
+  { const ex = kyfClsExtra(); ['prec', 'pee', 'scpid', 'immod', 'rp', 'cryd', 'orp', 'ppv', 'aut', 'etr'].forEach(k => { if(ex[k]) kyfClsExtraLines(k).forEach(l => add(k, l.val, { src:'x', nom:l.nom, env:l.env, mode:'', cur:'', auto:'', peut:false })); }); }
   const nomCl = c => {   // 2.14.2.83 : « Immobilier » seul laissait croire à un bien en direct ; on dit d'où viennent les lignes
     if(c.key !== 'immo') return c.label;
     const it = by.immo.items, av = it.filter(x => x.src === 'av').length;
@@ -27916,7 +27917,7 @@ function kyfEnvDetHtml(r, fam, only){
   return '<tr class="kyf-env-det"><td colspan="' + cols + '" style="padding:2px 10px 12px ' + (r._ind ? 64 : 38) + 'px">' + body + '</td></tr>';
 }
 function kyfEnvOpen(kind){
-  if(String(kind).slice(0, 2) === 'x:'){ const pg = { prec:'livrets', scpid:'immo-scpi', immod:'immobilier', rp:'immobilier', cry:'crypto', orp:'or', ppv:'immo-crowdfunding', aut:'autres', etr:'etranger' }[String(kind).slice(2)]; if(pg){ try{ showPage(pg, null); }catch(_){} } return; }
+  if(String(kind).slice(0, 2) === 'x:'){ const pg = { prec:'livrets', pee:'portfolio', scpid:'immo-scpi', immod:'immobilier', rp:'immobilier', cry:'crypto', orp:'or', ppv:'immo-crowdfunding', aut:'autres', etr:'etranger' }[String(kind).slice(2)]; if(pg){ try{ showPage(pg, null); }catch(_){} } return; }
   if(kind === 'assurance'){ try{ showPage('assurance', null); }catch(_){} return; }
   try{ localStorage.setItem(KYF_ENV_VUE_KEY, 'pos'); }catch(_){} kyfEnvUnifRender();
 }
@@ -49212,7 +49213,7 @@ function kyfShImgTypes(mode){   // tous les types d'actifs, en % du patrimoine s
     try{
       const by = {}, put = (nom, col, items) => { const v = items.reduce((a, x) => a + (x.val || 0), 0); if(!(v > 0)) return; const b = by[nom] || (by[nom] = { nom:nom, col:col, val:0, lines:[] }); b.val += v; items.forEach(x => { if(x.val > 0) b.lines.push({ nom:String(x.nom || nom), val:x.val }); }); };
       kyfClsData().forEach(r => put(r.nom, r.col, r.items));
-      const ex = kyfClsExtra(); ['prec', 'scpid', 'immod', 'rp', 'cryd', 'orp', 'ppv', 'aut', 'etr'].forEach(k => { if(ex[k]) return; const vu = KYF_CLS_VUE.find(c => c.key === k) || {}; put(vu.label || k, vu.color || '#94a3b8', kyfClsExtraLines(k)); });
+      const ex = kyfClsExtra(); ['prec', 'pee', 'scpid', 'immod', 'rp', 'cryd', 'orp', 'ppv', 'aut', 'etr'].forEach(k => { if(ex[k]) return; const vu = KYF_CLS_VUE.find(c => c.key === k) || {}; put(vu.label || k, vu.color || '#94a3b8', kyfClsExtraLines(k)); });
       out = Object.keys(by).map(k => by[k]); const tot = out.reduce((a, x) => a + x.val, 0); if(!(tot > 0)) return null;
       out.forEach(b => { b.lines.forEach(l => { l.val = l.val / b.val * 100; }); b.val = b.val / tot * 100; });
     }catch(e){ return null; }
@@ -52457,7 +52458,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.158\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.159\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -80198,6 +80199,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.159 · 22/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Portefeuille, vues « Par enveloppe » et « Par classe » : le PEE peut maintenant s’ajouter au camembert (menu « Ajouter au camembert », ligne « PEE (épargne salariale) »), comme la crypto, l’or ou les SCPI en direct. Avant, il manquait dans la liste : le total de ces vues ne pouvait pas rejoindre celui de l’allocation du tableau de bord. Signalé par un testeur.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.158 · 21/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Journal des opérations : les couleurs des états suivent maintenant le thème (vert, rouge et doré de Keep Your Folio) au lieu de teintes fixes trop claires sur fond clair, sur PC comme sur mobile.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.157 · 21/11/2026</div>
