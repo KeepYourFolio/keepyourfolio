@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.125
+  @version     : Beta 2.14.2.126
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5378,7 +5378,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.125</div>
+  <div class="kl-ver">Beta 2.14.2.126</div>
 </div>
 <script>
 (function(){
@@ -8081,7 +8081,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.125</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.126</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -52395,7 +52395,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.125\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.126\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -53281,6 +53281,11 @@ function kyfStableValAt(st, date, ops){
   return q0 > 0 ? v * kyfStableQtyAt(st, date, ops) / q0 : v;
 }
 // Historiques de cours pour reconstituer des séances (ETF/Actions via GAS, crypto via CoinGecko). Partagé par le rattrapage et le recalcul.
+// Historique crypto du jour gardé sur cet appareil : CoinGecko refuse souvent des appels rapprochés, une crypto déjà obtenue n'est pas redemandée
+// au clic suivant (la reconstitution progresse à chaque essai au lieu de repartir de zéro).
+const KYF_CG_CACHE_KEY = 'kyf-cg-hist-cache-v1';
+function kyfCgCacheGet(tk){ try{ const o = JSON.parse(localStorage.getItem(KYF_CG_CACHE_KEY) || '{}'), v = o[tk]; return (v && v.day === kyfParisNow().date && v.d && Object.keys(v.d).length) ? v.d : null; }catch(e){ return null; } }
+function kyfCgCacheSet(tk, d){ try{ const o = JSON.parse(localStorage.getItem(KYF_CG_CACHE_KEY) || '{}'); const day = kyfParisNow().date; Object.keys(o).forEach(k => { if(!o[k] || o[k].day !== day) delete o[k]; }); o[tk] = { day, d }; localStorage.setItem(KYF_CG_CACHE_KEY, JSON.stringify(o)); }catch(e){} }
 async function kyfCatchupFetchHistories(){
     const etfTickers = ETF.map(e => e.ticker).filter(Boolean);
     try { kyfEtfGhosts(etfTransLoad()).forEach(g => etfTickers.push(g.ticker)); } catch(e) {}   // R11 : lignes entièrement vendues, pour valoriser les jours où elles étaient détenues
@@ -53341,6 +53346,7 @@ async function kyfCatchupFetchHistories(){
       try {
         // Appels séquentiels avec délai pour éviter le rate limit CoinGecko
         for (const p of cryptoPositions) {
+          const _cg = kyfCgCacheGet(p.ticker); if(_cg){ cryptoHistory[p.ticker] = _cg; continue; }
           try {
             const cgHistUrl = coingeckoUrl('coins/' + p.ticker + '/market_chart?vs_currency=eur&days=90&interval=daily');
             // CoinGecko saturé : la réponse 429 n'a parfois pas d'en-tête d'accès, le navigateur lève alors une erreur réseau (pas de statut).
@@ -53363,6 +53369,7 @@ async function kyfCatchupFetchHistories(){
               const date = new Date(ts).toISOString().slice(0, 10);
               cryptoHistory[p.ticker][date] = price;
             });
+            kyfCgCacheSet(p.ticker, cryptoHistory[p.ticker]);
             console.log('[KYF Catchup] Crypto', p.ticker, '→', Object.keys(cryptoHistory[p.ticker]).length, 'jours');
             // Délai entre chaque coin pour éviter le rate limit
             await new Promise(res => setTimeout(res, 2500));
@@ -53377,6 +53384,7 @@ async function kyfCatchupFetchHistories(){
             if(!r3.ok) continue;
             const d3 = await r3.json(); cryptoHistory[p.ticker] = {};
             (d3.prices || []).forEach(([ts, price]) => { cryptoHistory[p.ticker][new Date(ts).toISOString().slice(0, 10)] = price; });
+            kyfCgCacheSet(p.ticker, cryptoHistory[p.ticker]);
           }catch(e){ console.warn('[KYF Catchup] Crypto 2e passe', p.ticker, e.message); }
         }
         console.log('[KYF Catchup] Crypto history chargé:', Object.keys(cryptoHistory).length, 'coins');
@@ -79926,6 +79934,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.126 · 21/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Reconstitution des jours vides : l’historique d’une crypto obtenu le jour même est gardé sur l’appareil. Si CoinGecko en refuse une, un nouveau clic ne redemande que celle qui manque : la reconstitution progresse à chaque essai.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.125 · 21/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Reconstitution des jours vides : une crypto restée sans historique (limite CoinGecko) est redemandée dans une deuxième passe après une pause. Un titre sans historique (ex. Elbit EB2.SG, Stuttgart) est redemandé avec une profondeur décroissante (2 ans, 1 an, 4 mois, 1 mois), car une place peu échangée refuse parfois les longues périodes.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.124 · 21/11/2026</div>
