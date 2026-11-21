@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.133
+  @version     : Beta 2.14.2.134
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5378,7 +5378,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.133</div>
+  <div class="kl-ver">Beta 2.14.2.134</div>
 </div>
 <script>
 (function(){
@@ -8081,7 +8081,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.133</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.134</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -52395,7 +52395,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.133\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.134\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -53038,6 +53038,7 @@ function kyfIncompleteSnapDates(list){
     const opDates = ops.map(o => (typeof kyfCryptoOpDateISO === 'function' && o) ? kyfCryptoOpDateISO(o.date) : '').filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d));
     for(let i = 0; i < list.length; i++){
       if(Array.isArray(list[i]._etfMissing) && list[i]._etfMissing.length){ out.add(list[i].date); continue; }   // cours d'un ETF manquant (séance reconstituée)
+      if(Array.isArray(list[i]._cryMissing) && list[i]._cryMissing.length){ out.add(list[i].date); continue; }   // cours d'une crypto manquant (séance reconstituée)
       if(cry(list[i])) continue;
       let j = i - 1; while(j >= 0 && !cry(list[j])) j--;
       let k = i + 1; while(k < list.length && !cry(list[k])) k++;
@@ -53049,7 +53050,7 @@ function kyfIncompleteSnapDates(list){
   return out;
 }
 function kyfIncReason(incs){
-  const etf = incs.filter(x => Array.isArray(x._etfMissing) && x._etfMissing.length), cry = incs.length - etf.length;
+  const etf = incs.filter(x => Array.isArray(x._etfMissing) && x._etfMissing.length), cry = incs.length - etf.length;   // (_cryMissing : crypto)
   const tk = [...new Set(etf.flatMap(x => x._etfMissing))].map(t => String(t).replace(/[<>&"]/g, '')).join(', ');
   const a = etf.length ? 'le cours historique de ' + tk + ' manquait ce jour-là (aucun cours inventé)' : '';
   const b = cry ? 'les cryptos manquaient ce jour-là' : '';
@@ -53409,6 +53410,12 @@ async function kyfCatchupFetchHistories(){
 // n'a pas (encore) la barre du jour. Rien n'est inventé : un cours réellement enregistré par Keep Your Folio, ou rien.
 // Une séance réelle plus récente (10 jours) a un vrai cours enregistré pour ce titre : l'historique de la source a donc du retard sur ce titre
 // (fonds ou place peu échangée), ce n'est pas un trou de données. Le dernier cours connu peut alors être reporté, signalé « cours reporté » dans le détail.
+function kyfWeekdaysBetween_(from, to){
+  if(!from) return 99;
+  let n = 0, t = Date.parse(from + 'T12:00:00Z'); const end = Date.parse(to + 'T12:00:00Z');
+  while(t < end){ t += 864e5; const w = new Date(t).getUTCDay(); if(w !== 0 && w !== 6) n++; if(n > 20) break; }
+  return n;
+}
 function kyfEtfHasLaterRealPx_(ticker, date){
   try{
     const k = String(ticker || '').toUpperCase();
@@ -53478,7 +53485,7 @@ function kyfCatchupBuildSnap(date, c){
     if (!price && etfLastKnown[e.ticker]){
       let _lastBar = ''; try{ if(history){ const _ks = Object.keys(history); for(let q = 0; q < _ks.length; q++) if(_ks[q] > _lastBar) _lastBar = _ks[q]; } }catch(_){}
       let _closed = false; try{ _closed = kyfMarketsClosedOn(date); }catch(_){}
-      if(_closed || (_lastBar && _lastBar >= date) || kyfEtfHasLaterRealPx_(e.ticker, date)) price = etfLastKnown[e.ticker];
+      if(_closed || (_lastBar && _lastBar >= date) || (kyfEtfHasLaterRealPx_(e.ticker, date) && kyfWeekdaysBetween_(_lastBar, date) <= 1)) price = etfLastKnown[e.ticker];   // retard d'un jour max toléré (valeur liquidative décalée) ; au-delà : cours manquant, jamais de cours périmé
     }
     if (!price && _qAt.get(e) > 0){
       const _cv = kyfEtfCarryValue_(e.ticker, date, _qAt.get(e), d0 => kyfEtfQtyAt(e, d0, _etfTr));   // week-end : valeur de la dernière clôture réelle
@@ -53514,6 +53521,7 @@ function kyfCatchupBuildSnap(date, c){
     const history = cryptoHistory[p.ticker];
     let price = history && history[date] ? history[date] : null;
     if (!price && c.strict && kyfCryQtyAt(p, date, _cryOps) > 0) (c.missing = c.missing || []).push(p.ticker);   // recalcul : jamais de cours inventé
+    if (!price && kyfCryQtyAt(p, date, _cryOps) > 0) (c.cryFallback = c.cryFallback || []).push(p.ticker);   // cours de repli (cours d'aujourd'hui) : la séance sera marquée incomplète, jamais présentée comme vraie
     if (!price) price = kyfCryPriceForSnap(p.ticker) || p.pru || 0;
     cryptoTotal += price * kyfCryQtyAt(p, date, _cryOps);
   });
@@ -53560,6 +53568,7 @@ function kyfCatchupBuildSnap(date, c){
   // Un ETF sans aucun cours historique est valorisé par un cours de repli (valeur d'évaluation ou PRU) : la séance est alors signalée,
   // exclue du journal, au lieu de montrer un total faux (incident du 12/10/2026 : -3 000 € sur les séances du week-end)
   if(c.fallback && c.fallback.length) snap._etfMissing = [...new Set(c.fallback)]; else snap._etfOk = true;
+  if(c.cryFallback && c.cryFallback.length) snap._cryMissing = [...new Set(c.cryFallback)];   // cours crypto du jour absent (source hors service) : séance incomplète, recalculée par le bouton RECONSTITUER
   return snap;
 }
 // Recalcul des séances jugées incomplètes (cryptos absentes ce jour-là) avec les cours de clôture et les quantités de l'époque.
@@ -80056,6 +80065,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.134 · 21/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">AUDIT absence (PC absent plusieurs jours) : si CoinGecko était hors service pendant le rattrapage automatique, les jours reconstitués recevaient le cours crypto d’aujourd’hui (crypto « plate ») enregistré comme vrai, et le bouton RECONSTITUER ne les rattrapait pas. Ces séances sont maintenant marquées incomplètes (cours crypto manquant), écartées du calendrier et des statistiques, et recalculées par le bouton dès que les cours reviennent.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.133 · 21/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">GUIDE mis à jour : Historique &amp; Snapshots explique maintenant le Détail du jour, le bouton RECONSTITUER, le « cours reporté », les séances incomplètes et le changement de ticker ; Partager Keep Your Folio décrit « Image de mon portefeuille » (neuf vues, FICTIF / RÉEL, CSV). Vérifié : le Journal des séances et la Heatmap lisent les mêmes séances et donnent les mêmes écarts.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.132 · 21/11/2026</div>
