@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.129
+  @version     : Beta 2.14.2.130
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5378,7 +5378,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.129</div>
+  <div class="kl-ver">Beta 2.14.2.130</div>
 </div>
 <script>
 (function(){
@@ -8081,7 +8081,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.129</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.130</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -52395,7 +52395,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.129\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.130\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -53430,11 +53430,12 @@ function kyfCatchupBuildSnap(date, c){
   const { etfHistory, cryptoHistory, etfLastKnown, cryptoPositions } = c, _etfTr = c.etfTr, _cryOps = c.cryOps;
   // Calculer valorisation ETF ce jour-là
   let etfTotal = 0;
-  const _qAt = new Map();
+  const _qAt = new Map(), _ep = {};   // _ep : cours et valeur de chaque ligne ce jour-là ([cours, valeur €, 1 si cours reporté]), pour le Détail du jour du Heatmap
   ETF.forEach(e => {
     _qAt.set(e, kyfEtfQtyAt(e, date, _etfTr));
     const history = etfHistory[e.ticker];
     let price = history && history[date] ? history[date] : null;
+    const _own = !!price;
     // Fallback : dernier prix connu, seulement si le jour n'a pas de cotation (week-end, férié) ou si l'historique a des clôtures APRÈS ce jour
     // (titre sans échange ce jour-là). Sans clôture du jour ni après, la source n'a pas encore le cours : reporter celui de la veille ferait un jour
     // plat (-0,20 % au lieu de -2 %) puis tout le mouvement le jour suivant. Le cours reste alors manquant, la séance est refusée ou signalée.
@@ -53445,7 +53446,7 @@ function kyfCatchupBuildSnap(date, c){
     }
     if (!price && _qAt.get(e) > 0){
       const _cv = kyfEtfCarryValue_(e.ticker, date, _qAt.get(e), d0 => kyfEtfQtyAt(e, d0, _etfTr));   // week-end : valeur de la dernière clôture réelle
-      if(_cv !== null){ etfTotal += _cv; return; }
+      if(_cv !== null){ etfTotal += _cv; if(e.ticker) _ep[e.ticker] = [null, parseFloat(_cv.toFixed(2)), 1]; return; }
     }
     if (!price && c.strict && _qAt.get(e) > 0) (c.missing = c.missing || []).push(e.ticker);   // recalcul : jamais de cours inventé
     if (!price && _qAt.get(e) > 0) (c.fallback = c.fallback || []).push(e.ticker);   // cours de repli utilisé : la séance sera marquée incomplète
@@ -53454,6 +53455,7 @@ function kyfCatchupBuildSnap(date, c){
     if (!price) price = kyfEtfBase(e) ? kyfEtfBase(e) / (e.qty || 1) : e.pru;
     if (price && _realPx) etfLastKnown[e.ticker] = price; // mémoriser pour le prochain jour (jamais un cours de repli : sinon le jour suivant le prendrait pour un vrai cours)
     etfTotal += (price || 0) * _qAt.get(e);
+    if(e.ticker && _qAt.get(e) > 0) _ep[e.ticker] = _own && _realPx ? [price, parseFloat(((price || 0) * _qAt.get(e)).toFixed(2))] : [price || null, parseFloat(((price || 0) * _qAt.get(e)).toFixed(2)), 1];
   });
   // R11 (N27) : lignes entièrement vendues depuis (absentes de ETF). Jamais de cours inventé : sans cours, ou si le journal est incohérent, la séance est signalée incomplète.
   let _ghInv = 0;
@@ -53504,6 +53506,7 @@ function kyfCatchupBuildSnap(date, c){
   // Indices - on ne peut pas les récupérer rétroactivement sans GAS dédié
   // On laisse indices: {} pour les snapshots de rattrapage
   const snap = {
+    _etfp:        _ep,
     _cgv:         2,   // cours crypto rangés à leur date de clôture (les séances reconstituées avant la 2.14.2.128 étaient décalées d'un jour)
     date,
     ts:           Date.parse(date + 'T12:00:00Z'),   // midi UTC du jour de la séance (lancé entre 0 h et 2 h, l'heure réelle tombait la veille en UTC)
@@ -54890,6 +54893,59 @@ function kyfHmFillSync(){
   b.style.display = n ? 'inline-flex' : 'none';
   const l = b.querySelector('span'); if(l) l.textContent = 'RECONSTITUER ' + n + ' JOUR' + (n > 1 ? 'S' : '');
 }
+// ── Heatmap : Détail du jour (clic sur une case) : pour chaque ligne, cours de la veille, cours du jour, variation, pour voir ce qui explique le % du calendrier ──
+function kyfHmDay(ds){
+  try{
+    const mode = _heatmapMode === 'total' ? 'total' : 'etf';
+    const all = getSnapshotsAll(), i = all.findIndex(x => x.date === ds);
+    if(i < 1){ showToast('Pas de séance précédente pour comparer ce jour.'); return; }
+    const cur = all[i], prev = all[i - 1], dl = kyfSnapDelta(prev, cur, mode), pct = dl.base > 0 ? dl.varEur / dl.base * 100 : 0;
+    const E = x => String(x == null ? '' : x).replace(/[<>&"']/g, ''), fe = n => (n == null || !isFinite(n)) ? '—' : fmt(n, 2) + ' €', fp = n => (n == null || !isFinite(n)) ? '—' : (n >= 0 ? '+' : '') + n.toFixed(2).replace('.', ',') + ' %';
+    const fx = d => { const t = new Date(d + 'T12:00:00'); return ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'][t.getDay()] + ' ' + t.getDate() + ' ' + ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'][t.getMonth()] + ' ' + t.getFullYear(); };
+    const kind = s => s._catchup ? 'reconstituée (~)' : (s._prov ? 'en cours' : 'réelle');
+    const A = prev._etfp || null, B = cur._etfp || null;
+    let rows = '';
+    if(A && B){
+      const ks = [...new Set(Object.keys(A).concat(Object.keys(B)))];
+      ks.map(t => ({ t, a: A[t], b: B[t] })).sort((x, y) => Math.abs((y.b ? y.b[1] : 0) - (y.a ? y.a[1] : 0)) - Math.abs((x.b ? x.b[1] : 0) - (x.a ? x.a[1] : 0))).forEach(r => {
+        const va = r.a ? r.a[1] : null, vb = r.b ? r.b[1] : null, pa = r.a ? r.a[0] : null, pb = r.b ? r.b[0] : null;
+        let v = (va > 0 && vb != null) ? (vb / va - 1) * 100 : null, note = '';
+        if(pa > 0 && pb > 0 && va > 0 && vb > 0){ const qa = va / pa, qb = vb / pb; if(Math.abs(qb / qa - 1) > 0.005){ note = 'quantité modifiée (achat ou vente)'; v = (pb / pa - 1) * 100; } else v = (pb / pa - 1) * 100; }
+        if(!r.a) note = 'ligne nouvelle'; else if(!r.b) note = 'ligne absente ce jour-là';
+        if((r.b && r.b[2]) || (r.a && r.a[2])) note += (note ? ' · ' : '') + 'cours reporté (pas de clôture ce jour-là)';
+        else if(pa != null && pb != null && pa === pb && va > 0) note += (note ? ' · ' : '') + 'cours identique à la veille';
+        const col = v == null ? 'var(--text3)' : v > 0.005 ? 'var(--green)' : v < -0.005 ? 'var(--red)' : 'var(--text2)';
+        rows += '<tr><td style="padding:6px 8px;border-bottom:1px solid var(--border);font-weight:600;color:var(--text)">' + E(r.t) + (note ? '<div style="font-weight:400;font-size:9px;color:var(--text3);margin-top:1px">' + E(note) + '</div>' : '') + '</td>'
+          + '<td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:right;color:var(--text2)">' + (pa != null ? fmt(pa, 2) : '—') + '</td>'
+          + '<td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:right;color:var(--text2)">' + (pb != null ? fmt(pb, 2) : '—') + '</td>'
+          + '<td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:right;font-weight:700;color:' + col + '">' + fp(v) + '</td>'
+          + '<td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:right;color:var(--text2)">' + fe(vb) + '</td></tr>';
+      });
+    }
+    const noDet = !(A && B) ? '<div style="margin:10px 0 0;padding:9px 12px;border-radius:8px;background:rgba(240,180,41,.10);border:1px solid rgba(240,180,41,.35);font-size:11px;color:var(--text2);line-height:1.6">Le détail par ligne n’est pas enregistré pour ' + (!A && !B ? 'ces deux séances' : (!A ? 'la séance de la veille' : 'cette séance')) + ' (séance reconstituée par une ancienne version). Le bouton RECONSTITUER sous le calendrier la recalcule avec le détail.</div>' : '';
+    const cryLine = mode === 'total' ? '<div style="margin-top:8px;font-size:11px;color:var(--text2)">Crypto : ' + fe(prev.crypto) + ' → ' + fe(cur.crypto) + ' (' + fp((prev.crypto > 0) ? ((cur.crypto || 0) / prev.crypto - 1) * 100 : null) + ')</div>' : '';
+    const old = document.getElementById('hmDayOv'); if(old) old.remove();
+    const ov = document.createElement('div'); ov.id = 'hmDayOv';
+    ov.style.cssText = 'position:fixed;inset:0;z-index:9999990;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:18px;overscroll-behavior:contain';
+    ov.oncontextmenu = e => e.preventDefault();   // ni clic droit ni clic sur le fond ne ferment la fenêtre
+    ov.innerHTML = '<div role="dialog" aria-modal="true" aria-label="Détail du jour" style="background:var(--bg2);border:1px solid var(--border2);border-radius:14px;box-shadow:0 18px 60px rgba(0,0,0,.5);width:min(640px,100%);max-height:calc(100vh - 36px);display:flex;flex-direction:column;font-family:Inter,sans-serif">'
+      + '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:14px 16px 8px"><div><div style="font-size:9px;font-weight:700;letter-spacing:.6px;color:var(--text3)">DÉTAIL DU JOUR · ' + (mode === 'total' ? 'AVEC CRYPTO' : 'ETF/ACTIONS') + '</div><div style="font-size:15px;font-weight:700;color:var(--text);margin-top:2px">' + fx(ds) + '</div></div>'
+      + '<button type="button" id="hmDayX" class="kyf-mini-btn" style="flex:none">FERMER</button></div>'
+      + '<div style="padding:0 16px 14px;overflow:auto">'
+      + '<div style="display:flex;flex-wrap:wrap;gap:6px 18px;font-size:11px;color:var(--text2);margin:2px 0 8px"><span>Veille : <b style="color:var(--text)">' + fx(prev.date).slice(0, 12) + '</b> (' + kind(prev) + ')</span><span>Jour : <b style="color:var(--text)">séance ' + kind(cur) + '</b></span></div>'
+      + '<div style="display:flex;flex-wrap:wrap;gap:6px 24px;padding:10px 12px;border-radius:10px;background:var(--btn-secondary-bg);font-size:11px;color:var(--text2)"><span>Valeur veille <b style="color:var(--text)">' + fe(dl.base) + '</b></span><span>Valeur jour <b style="color:var(--text)">' + fe(dl.val) + '</b></span><span>Variation hors apports <b style="color:' + (dl.varEur >= 0 ? 'var(--green)' : 'var(--red)') + '">' + (dl.varEur >= 0 ? '+' : '') + fe(dl.varEur) + ' (' + fp(pct) + ')</b></span></div>'
+      + (rows ? '<table style="width:100%;border-collapse:collapse;font-size:11px;margin-top:10px"><thead><tr style="color:var(--text3);font-size:9px;letter-spacing:.5px"><th style="text-align:left;padding:4px 8px">LIGNE</th><th style="text-align:right;padding:4px 8px">COURS VEILLE</th><th style="text-align:right;padding:4px 8px">COURS JOUR</th><th style="text-align:right;padding:4px 8px">VARIATION</th><th style="text-align:right;padding:4px 8px">VALEUR JOUR</th></tr></thead><tbody>' + rows + '</tbody></table>' : '')
+      + noDet + cryLine
+      + '<div style="margin-top:10px;font-size:10px;color:var(--text3);line-height:1.6">Le pourcentage du calendrier est la variation de valeur entre les deux séances, hors versements et achats. Les cours sont ceux enregistrés à chaque séance, dans la devise de cotation.</div>'
+      + '</div></div>';
+    document.body.appendChild(ov);
+    const prevOv = document.body.style.overflow; document.body.style.overflow = 'hidden';
+    const close = () => { try{ ov.remove(); }catch(_){} document.body.style.overflow = prevOv; document.removeEventListener('keydown', esc, true); };
+    const esc = e => { if(e.key === 'Escape'){ e.stopPropagation(); close(); } };
+    document.addEventListener('keydown', esc, true);
+    document.getElementById('hmDayX').onclick = close;
+  }catch(e){ try{ showToast('Détail indisponible pour ce jour.'); }catch(_){} }
+}
 async function kyfHmFillGaps(){
   if(window._kyfRecalcRunning) return;
   const gaps = kyfHmGapDates(); if(!gaps.length){ kyfHmFillSync(); return; }
@@ -55219,7 +55275,9 @@ function renderHeatmapCalendar(){
         : specWithSession ? d + '<span aria-hidden="true" style="position:absolute;top:-5px;right:-2px;width:13px;height:13px;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:1;filter:drop-shadow(0 0 1px var(--bg2))">' + (spec.icon || '') + '</span>'
         : isCatch ? d + '<span style="color:#f0b429;font-weight:700;margin-left:1px">~</span>'
         : d;
-      daysHtml += '<div '+tip+' onmouseenter="showHmTip(event,this)" onmouseleave="hideHmTip()" style="'+finalStyle+'">'+cellContent+'</div>';
+      const _clk = (v !== undefined && !isWe && !isBefore && !isBase) ? ' onclick="kyfHmDay(\''+_ds+'\')" role="button" tabindex="0" onkeydown="if(event.key===\'Enter\')kyfHmDay(\''+_ds+'\')"' : '';
+      if(_clk) finalStyle += 'cursor:pointer;';
+      daysHtml += '<div '+tip+_clk+' onmouseenter="showHmTip(event,this)" onmouseleave="hideHmTip()" style="'+finalStyle+'">'+cellContent+'</div>';
     }
 
       const mTip = mMonthly && mMonthly.gainBrutPct
@@ -79951,6 +80009,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.130 · 21/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">NOUVEAU Heatmap : un clic sur un jour du calendrier ouvre le DÉTAIL DU JOUR : valeur de la veille et du jour, variation hors apports, et pour chaque ligne le cours de la veille, le cours du jour et la variation. Une ligne dont le cours n’a pas bougé ou a été reporté est signalée. Les séances reconstituées enregistrent maintenant ce détail (le bouton RECONSTITUER recalcule les anciennes).</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.129 · 21/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Heatmap · exactitude : une séance reconstituée reportait le cours de la veille quand la source n’avait pas encore la clôture du jour (jour plat, par exemple -0,20 % au lieu de -2 %, puis tout le mouvement le jour suivant). Le report n’est plus permis que pour un jour sans cotation (week-end, férié) ou si des clôtures existent après. Sinon le cours est déclaré manquant. Le bouton RECONSTITUER recalcule toutes les séances reconstituées par une ancienne version.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.128 · 21/11/2026</div>
