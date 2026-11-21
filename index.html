@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.115
+  @version     : Beta 2.14.2.116
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5378,7 +5378,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.115</div>
+  <div class="kl-ver">Beta 2.14.2.116</div>
 </div>
 <script>
 (function(){
@@ -8081,7 +8081,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.115</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.116</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -49241,13 +49241,20 @@ async function kyfShImgDraw(cv, mode, view){
   });
   c.restore(); kyfShImgMark(c, W, H, mode);
 }
+// Navigateurs plus anciens (Safari avant 16, Firefox avant 112) : pas de roundRect sur le canvas, l'image restait vide
+try{ if(typeof CanvasRenderingContext2D !== 'undefined' && !CanvasRenderingContext2D.prototype.roundRect){
+  CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r){ r = Math.max(0, Math.min(Array.isArray(r) ? (r[0] || 0) : (r || 0), w / 2, h / 2)); this.moveTo(x + r, y); this.arcTo(x + w, y, x + w, y + h, r); this.arcTo(x + w, y + h, x, y + h, r); this.arcTo(x, y + h, x, y, r); this.arcTo(x, y, x + w, y, r); this.closePath(); };
+} }catch(e){}
 function kyfShImgOpen(){
   try{ kyfNewBadgeSeen('shimg'); }catch(e){}
   closeSharePopup();
   document.getElementById('shImgOverlay').style.display = 'block';
   document.getElementById('shImgModal').style.display = 'flex';
   document.body.style.overflow = 'hidden';
-  kyfShImgRender();
+  try{ kyfShImgRender(); }catch(e){ kyfShImgFail(e); }
+}
+function kyfShImgFail(e){   // une erreur ne laisse plus une fenêtre muette : elle est écrite sous l'aperçu (et dans la console)
+  try{ console.error('[KYF image]', e); const m = document.getElementById('shImgEmpty'); if(m){ m.style.display = 'block'; m.textContent = 'L’image n’a pas pu être dessinée : ' + String(e && e.message || e).slice(0, 160) + ' (navigateur : ' + String(navigator.userAgent).slice(0, 90) + ')'; } }catch(x){}
 }
 function kyfShImgClose(){
   document.getElementById('shImgOverlay').style.display = 'none';
@@ -49267,7 +49274,7 @@ function kyfShImgRender(){
   if(note) note.innerHTML = reel ? 'Mode r\u00e9el : tes vraies donn\u00e9es, en pourcentages seulement. Aucun montant ne sort de l\u2019appli. Dans FOCUS, le nom des lignes de l\u2019actif choisi appara\u00eet : v\u00e9rifie-le avant de publier.' : 'Mode fictif : un portefeuille d\u2019exemple. Le mot FICTIF est incrust\u00e9 dans l\u2019image, r\u00e9p\u00e9t\u00e9 sur toute la surface : impossible \u00e0 enlever sans ab\u00eemer les graphiques. Vos vraies donn\u00e9es ne sont pas utilis\u00e9es.';
   { const vs = document.getElementById('shImgViewSel'); if(vs) vs.value = _shImgView; }
   kyfShImgFocusSync();
-  _shImgJob = kyfShImgDraw(cv, _shImgMode, _shImgView);
+  _shImgJob = kyfShImgDraw(cv, _shImgMode, _shImgView); _shImgJob.catch(kyfShImgFail);
 }
 async function kyfShImgBlob(){ try{ await _shImgJob; }catch(e){} return new Promise(ok => document.getElementById('shImgCv').toBlob(ok, 'image/png')); }
 async function kyfShImgCopy(btn){
@@ -52361,7 +52368,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.115\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.116\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -79844,6 +79851,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.116 · 21/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PARTAGER, IMAGE DU PORTEFEUILLE : plus robuste sur les navigateurs anciens (Safari avant 16, Firefox avant 112 : les coins arrondis manquaient et l’image restait vide) ; en cas d’erreur, la fenêtre l’écrit sous l’aperçu avec le nom du navigateur au lieu de rester muette.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.115 · 21/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Heatmap : un bouton RECONSTITUER LES JOURS VIDES apparaît sous le calendrier quand des jours de semaine n’ont pas de séance (cases grises « Pas de séance »). Il les recalcule avec les cours de clôture, comme le recalcul des séances incomplètes : jamais de cours inventé, un jour sans cours reste vide, et les jours reconstitués portent le signe « ~ ».</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.114 · 21/11/2026</div>
