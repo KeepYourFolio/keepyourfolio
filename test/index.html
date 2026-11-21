@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.130
+  @version     : Beta 2.14.2.131
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5378,7 +5378,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.130</div>
+  <div class="kl-ver">Beta 2.14.2.131</div>
 </div>
 <script>
 (function(){
@@ -8081,7 +8081,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.130</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.131</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -52395,7 +52395,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.130\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.131\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -53404,6 +53404,26 @@ async function kyfCatchupFetchHistories(){
 // Week-end / jour férié (toutes les bourses détenues fermées) sans cours historique pour une ligne : sa valeur est celle de la dernière séance réelle
 // figée (clôture enregistrée par KYF, _etfp), à condition que la quantité n'ait pas changé et que tous les jours entre les deux soient fermés.
 // Rien d'inventé : c'est la valeur réellement enregistrée ce jour-là. Sinon null (la séance reste signalée incomplète).
+// Clôture d'un jour D lue dans la PREMIÈRE séance réelle qui suit, quand tous les jours entre D (exclu) et cette séance (inclus) sont fermés : les cours
+// enregistrés ce jour-là sont alors la dernière clôture, donc celle de D (ex. vendredi lu dans la séance du samedi). Sert quand la source d'historique
+// n'a pas (encore) la barre du jour. Rien n'est inventé : un cours réellement enregistré par Keep Your Folio, ou rien.
+function kyfEtfNextRealPx_(ticker, date){
+  try{
+    const k = String(ticker || '').toUpperCase();
+    const idx = JSON.parse(localStorage.getItem('kyf-snapshots-index') || '[]').filter(d => d > date).sort();
+    for(let i = 0; i < idx.length && i < 5; i++){
+      const d = idx[i];
+      for(let t = Date.parse(date + 'T12:00:00Z') + 86400000; t <= Date.parse(d + 'T12:00:00Z'); t += 86400000){ if(!kyfMarketsClosedOn(new Date(t).toISOString().slice(0, 10))) return null; }
+      const snap = kyfSnapStored(d);
+      if(!snap || snap._catchup || !snap._etfp) continue;   // séance réelle seulement
+      const key = Object.keys(snap._etfp).find(x => String(x).toUpperCase() === k);
+      const v = key ? snap._etfp[key] : null;
+      if(Array.isArray(v) && v[0] > 0 && !v[2]) return v[0];
+      return null;
+    }
+  }catch(e){}
+  return null;
+}
 function kyfEtfCarryValue_(ticker, date, qtyAtDate, qtyAtFn){
   try{
     if(!(qtyAtDate > 0) || !kyfMarketsClosedOn(date)) return null;
@@ -53435,7 +53455,8 @@ function kyfCatchupBuildSnap(date, c){
     _qAt.set(e, kyfEtfQtyAt(e, date, _etfTr));
     const history = etfHistory[e.ticker];
     let price = history && history[date] ? history[date] : null;
-    const _own = !!price;
+    let _own = !!price;
+    if(!price && _qAt.get(e) > 0){ const _nx = kyfEtfNextRealPx_(e.ticker, date); if(_nx > 0){ price = _nx; _own = true; } }   // clôture lue dans la séance réelle qui suit (jour fermé entre les deux)
     // Fallback : dernier prix connu, seulement si le jour n'a pas de cotation (week-end, férié) ou si l'historique a des clôtures APRÈS ce jour
     // (titre sans échange ce jour-là). Sans clôture du jour ni après, la source n'a pas encore le cours : reporter celui de la veille ferait un jour
     // plat (-0,20 % au lieu de -2 %) puis tout le mouvement le jour suivant. Le cours reste alors manquant, la séance est refusée ou signalée.
@@ -53507,7 +53528,7 @@ function kyfCatchupBuildSnap(date, c){
   // On laisse indices: {} pour les snapshots de rattrapage
   const snap = {
     _etfp:        _ep,
-    _cgv:         2,   // cours crypto rangés à leur date de clôture (les séances reconstituées avant la 2.14.2.128 étaient décalées d'un jour)
+    _cgv:         3,   // 3 : cours crypto à leur date de clôture, cours ETF jamais reportés d'un jour ouvré, détail par ligne (_etfp) ; les séances reconstituées avant sont recalculées par le bouton
     date,
     ts:           Date.parse(date + 'T12:00:00Z'),   // midi UTC du jour de la séance (lancé entre 0 h et 2 h, l'heure réelle tombait la veille en UTC)
     valorisation: parseFloat(etfTotal.toFixed(2)),
@@ -54879,7 +54900,7 @@ function kyfHmGapDates(){
       d.setDate(d.getDate() - 1); const ds = d.toISOString().slice(0, 10);
       if(ds < first || ds < lim) break;
       const w = d.getDay(); if(w === 0 || w === 6) continue;
-      const _sn = kyfSnapStored(ds), _stale = !!(_sn && _sn._catchup && !_sn._cgv);   // séance reconstituée avant les corrections de cours (crypto décalée d'un jour, cours de la veille reporté)
+      const _sn = kyfSnapStored(ds), _stale = !!(_sn && _sn._catchup && (_sn._cgv || 0) < 3);   // séance reconstituée avant les corrections de cours (crypto décalée d'un jour, cours de la veille reporté)
       if(_stale){ out.push(ds); continue; }
       if(have.has(ds) || kyfNoSessionOn(ds)) continue;   // « have » = séances visibles du Heatmap : une séance enregistrée mais écartée (incomplète ou à 0 €) laisse aussi une case grise
       out.push(ds);
@@ -80009,6 +80030,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.131 · 21/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Heatmap · exactitude : quand l’historique n’a pas la clôture d’un jour (vendredi 20 : ETF à 105 007 € au lieu de 102 173 €, soit -2,7 % invisibles), la reconstitution lit désormais les cours dans la séance réelle qui suit, si tous les jours entre les deux sont fermés (vendredi lu dans la séance du samedi). Les séances reconstituées par les versions précédentes sont recalculées par le bouton RECONSTITUER. Aucun cours inventé.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.130 · 21/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">NOUVEAU Heatmap : un clic sur un jour du calendrier ouvre le DÉTAIL DU JOUR : valeur de la veille et du jour, variation hors apports, et pour chaque ligne le cours de la veille, le cours du jour et la variation. Une ligne dont le cours n’a pas bougé ou a été reporté est signalée. Les séances reconstituées enregistrent maintenant ce détail (le bouton RECONSTITUER recalcule les anciennes).</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.129 · 21/11/2026</div>
