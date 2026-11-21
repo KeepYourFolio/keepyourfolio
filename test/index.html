@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.120
+  @version     : Beta 2.14.2.121
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5378,7 +5378,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.120</div>
+  <div class="kl-ver">Beta 2.14.2.121</div>
 </div>
 <script>
 (function(){
@@ -8081,7 +8081,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.120</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.121</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -22409,9 +22409,18 @@ function kyfScopeNote(id){
   try{
     if(['heatmap','historique'].indexOf(id)<0) return;
     var pg=document.getElementById('page-'+id); if(!pg||pg.querySelector(':scope>.kyf-scope-note')) return;
-    var d=document.createElement('div'); d.className='kyf-scope-note';
+    // Point info (comme Bilan Annuel) : le texte reste caché tant qu'on ne clique pas sur le « i » placé à droite du fil d'Ariane
+    var d=document.createElement('div'); d.className='kyf-scope-note'; d.id='scopeNote-'+id; d.style.display='none';
+    d.style.cssText+=";display:none;margin:0 0 14px;padding:10px 14px;border-radius:8px;background:rgba(77,159,255,0.07);border:1px solid rgba(77,159,255,0.2);width:fit-content;max-width:100%;box-sizing:border-box;font-size:10px;color:var(--text2);line-height:1.6";
     d.textContent="Cette page suit vos ETF, actions et cryptos, jour après jour. Livrets, assurance vie, immobilier, SCPI, SCI et or n'y figurent pas : ils n'ont pas d'historique daté.";
     var c=pg.querySelector(':scope>.kyf-crumb'); if(c) c.insertAdjacentElement('afterend',d); else pg.insertBefore(d,pg.firstChild);
+    var b=document.createElement('button'); b.type='button'; b.className='kyf-scope-info'; b.title='Ce que suit cette page'; b.setAttribute('aria-expanded','false'); b.setAttribute('aria-controls',d.id); b.setAttribute('aria-label','Ce que suit cette page');
+    b.style.cssText='display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;margin-left:8px;border-radius:50%;border:none;background:transparent;color:var(--text3);cursor:pointer;padding:0;transition:background .15s,color .15s';
+    b.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+    b.onclick=function(){ var o=d.style.display==='none'; d.style.display=o?'block':'none'; b.setAttribute('aria-expanded',o?'true':'false'); b.style.color=o?'var(--accent)':'var(--text3)'; };
+    b.onmouseover=function(){ b.style.background=(typeof kyfChevronHoverBg==='function'?kyfChevronHoverBg():'rgba(255,255,255,.08)'); b.style.color='var(--accent)'; };
+    b.onmouseout=function(){ b.style.background='transparent'; if(d.style.display==='none') b.style.color='var(--text3)'; };
+    if(c) c.appendChild(b); else d.style.display='block';
   }catch(_){}
 }
 // R04 étape 3 : donnée déjà stockée mais de forme illisible (liste attendue, nombre attendu...). Le code des pages l'ignore et affiche
@@ -52368,7 +52377,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.120\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.121\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -53288,7 +53297,11 @@ async function kyfCatchupFetchHistories(){
         for (const p of cryptoPositions) {
           try {
             const cgHistUrl = coingeckoUrl('coins/' + p.ticker + '/market_chart?vs_currency=eur&days=90&interval=daily');
-            const r = await fetch(cgHistUrl, { signal: AbortSignal.timeout(15000), cache: 'no-store' });
+            let r = await fetch(cgHistUrl, { signal: AbortSignal.timeout(15000), cache: 'no-store' });
+            for(let essai = 0; !r.ok && (r.status === 429 || r.status >= 500) && essai < 2; essai++){   // limite de requêtes CoinGecko : on patiente puis on réessaie (jusqu'à 2 fois)
+              await new Promise(res => setTimeout(res, 4000 * (essai + 1)));
+              r = await fetch(cgHistUrl, { signal: AbortSignal.timeout(15000), cache: 'no-store' });
+            }
             if (!r.ok) {
               console.warn('[KYF Catchup] Crypto', p.ticker, 'HTTP', r.status);
               continue;
@@ -79851,6 +79864,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.121 · 21/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Heatmap et Historique : le texte « Cette page suit vos ETF, actions et cryptos… » passe derrière un point info (« i » à droite du fil d’Ariane), comme sur Bilan Annuel. Reconstitution des jours vides : si CoinGecko limite les requêtes, KYF patiente et réessaie (jusqu’à 2 fois) au lieu d’abandonner ; l’actif sans cours est nommé dans le message.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.120 · 21/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Heatmap : quand la reconstitution des jours vides échoue, le message nomme l’actif dont le cours de clôture manque.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.119 · 21/11/2026</div>
