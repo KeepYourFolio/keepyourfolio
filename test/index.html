@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.149
+  @version     : Beta 2.14.2.150
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5381,7 +5381,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.149</div>
+  <div class="kl-ver">Beta 2.14.2.150</div>
 </div>
 <script>
 (function(){
@@ -8085,7 +8085,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.149</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.150</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -52457,7 +52457,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.149\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.150\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -53679,6 +53679,37 @@ async function kyfRecalcIncompleteSnaps(){
   finally{ window._kyfRecalcRunning = false; }
   const fmt = l => l.map(d => d.slice(8, 10) + '/' + d.slice(5, 7)).join(', ');
   try{ showToast((done.length ? (done.length > 1 ? 'Séances recalculées : ' : 'Séance recalculée : ') + fmt(done) + '. ' : '') + (refused.length ? 'Cours de clôture indisponibles pour ' + fmt(refused) + ' : séance laissée incomplète.' : '')); }catch(e){}
+}
+// 2.14.2.150 : séances reconstituées récentes recalculées avec les quantités ACTUELLES des lignes (après un recalage de PER ou d'assurance vie,
+// elles gardaient les anciennes parts : creux faux sur la courbe). Cours de clôture réels uniquement, jamais de cours inventé : un jour dont un cours
+// manque reste tel quel. Seules les séances reconstituées des `jours` derniers jours sont touchées, jamais une séance réelle.
+async function kyfRecalcCatchupRecent(jours){
+  if(window._kyfRecalcRunning) return { done: [], refused: [] };
+  const today = kyfParisNow().date, lim = new Date(Date.parse(today + 'T12:00:00Z') - (jours || 14) * 86400000).toISOString().slice(0, 10);
+  const dates = getSnapshotsAll().filter(sn => sn._catchup === true && sn.date >= lim && sn.date < today).map(sn => sn.date).sort();
+  if(!dates.length) return { done: [], refused: [] };
+  const cs = (typeof cryptoState !== 'undefined') ? cryptoState : null, hasCry = !!(cs && Array.isArray(cs.positions) && cs.positions.length);
+  if(hasCry && kyfCryDisappeared()) return { done: [], refused: dates };
+  window._kyfRecalcRunning = true;
+  const done = [], refused = [];
+  try{
+    const h = await kyfCatchupFetchHistories();
+    let etfTr = []; try{ etfTr = etfTransLoad(); }catch(e){}
+    const cryOps = (cs && cs.operations) ? cs.operations : [];
+    for(const date of dates){
+      const lk = {};
+      ETF.forEach(e => { const hh = h.etfHistory[e.ticker]; if(!hh) return; const ds = Object.keys(hh).filter(d => d <= date).sort(); if(ds.length) lk[e.ticker] = hh[ds[ds.length - 1]]; });
+      const ctx = { etfHistory: h.etfHistory, cryptoHistory: h.cryptoHistory, etfLastKnown: lk, cryptoPositions: h.cryptoPositions, etfTr, cryOps, strict: true, missing: [] };
+      const snap = kyfCatchupBuildSnap(date, ctx);
+      if(ctx.missing.length || (hasCry && !((snap.crypto || 0) > 0))){ refused.push(date); continue; }
+      snap._recalc = true;
+      try{ localStorage.setItem('kyf-snapshot-' + date, JSON.stringify(snap)); done.push(date); }catch(e){ refused.push(date); continue; }
+      try{ kyfPushSnapshotOAuth(snap).catch(() => {}); }catch(e){}
+    }
+    if(done.length){ try{ refreshAfterCatchup(); }catch(e){} try{ renderHeatmap(); }catch(e){} }
+  }catch(e){ dates.forEach(d => { if(!done.includes(d) && !refused.includes(d)) refused.push(d); }); }
+  finally{ window._kyfRecalcRunning = false; }
+  return { done, refused };
 }
 async function catchUpSnapshots() {
   const today   = kyfParisNow().date;
@@ -80167,6 +80198,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.150 · 21/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Recaler les positions : les jours reconstitués des 14 derniers jours sont recalculés avec les nouvelles parts, ce qui supprime le faux creux sur la courbe. Seules les séances reconstituées sont touchées, jamais une séance réelle, et un jour dont un cours manque reste tel quel.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.149 · 21/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Recaler les positions : si des versements confirmés sont comptés « non affectés » dans la valeur du contrat, une case permet de les retirer, car leurs parts sont déjà dans les chiffres de l’assureur. Le total investi ne change pas.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.148 · 21/11/2026</div>
@@ -91852,6 +91885,8 @@ function avRecalApply(){
   try{ renderDCA(); }catch(_){} try{ kyfSbDcaBadgeRefresh(); }catch(_){}
   try{ showToast(ch.length + ' ligne' + (ch.length > 1 ? 's' : '') + ' recalée' + (ch.length > 1 ? 's' : '') + (nv ? ' · ' + nv + ' versement' + (nv > 1 ? 's' : '') + ' marqué' + (nv > 1 ? 's' : '') + ' validé' + (nv > 1 ? 's' : '') : '') + (nna ? ' · ' + fmt(nna, 2) + ' € non affectés retirés de la valeur' : '') + '.'); }catch(_){}
   try{ addLog('infos', 'Positions du contrat « ' + (c.contratNom || '') + ' » recalées sur les chiffres de l\'assureur (' + ch.length + ' ligne(s)).', 'AV'); }catch(_){}
+  // les jours reconstitués récents reprennent les nouvelles parts (en arrière-plan, sans bloquer)
+  try{ if(typeof kyfRecalcCatchupRecent === 'function') kyfRecalcCatchupRecent(14).then(r => { if(r && r.done.length){ try{ showToast('Courbe mise à jour : ' + r.done.length + ' jour' + (r.done.length > 1 ? 's' : '') + ' reconstitué' + (r.done.length > 1 ? 's' : '') + ' recalculé' + (r.done.length > 1 ? 's' : '') + '.'); }catch(_){} } }).catch(() => {}); }catch(_){}
 }
 function avRepOpen(id){
   const D = kyfRepData(id); if(!D) return;
