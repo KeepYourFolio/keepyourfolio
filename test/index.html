@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.139
+  @version     : Beta 2.14.2.140
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -858,6 +858,9 @@ body.kyf-kpop-open .kpi{pointer-events:none}
 #ioPanel .av-wrap{width:100%}#ioPanel .av-side{width:50%;flex:1 1 50%;min-width:0}#ioPanel .av-main{flex:1 1 50%}
 #livJournalModal .av-wrap{width:100%}
 #livJournalModal .av-side{width:340px;padding:18px 20px 14px}
+#livJournalModal .av-side{transition:width .25s ease,padding .25s ease,opacity .2s ease;overflow-x:hidden}
+#livJournalModal.lj-min .av-side{width:0!important;padding-left:0!important;padding-right:0!important;border-right-width:0!important;opacity:0;pointer-events:none;overflow:hidden}
+@media (prefers-reduced-motion:reduce){#livJournalModal .av-side{transition:none}}
 .ljr{display:flex;align-items:center;gap:12px;padding:9px 8px;border-radius:9px;transition:background .15s}
 .ljr:hover{background:var(--hov-bg)}
 .ljr-dots{background:none;border:1px solid transparent;color:var(--text3);cursor:pointer;width:28px;height:28px;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;letter-spacing:1px;padding:0;transition:background .15s,color .15s,border-color .15s}
@@ -5378,7 +5381,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.139</div>
+  <div class="kl-ver">Beta 2.14.2.140</div>
 </div>
 <script>
 (function(){
@@ -7129,7 +7132,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
     </span>
   </div>
   <div class="av-body">
-    <div class="av-side" style="padding:18px 18px 14px">
+    <div class="av-side" id="livJournalSide" style="padding:18px 18px 14px">
 <input type="hidden" id="livJournalCompteId" value="">
   <input type="file" id="livJournalCsvInput" accept=".csv,.pdf,application/pdf" style="display:none" onchange="importLivretCsv(this.files[0])">
   <div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Ajouter des mouvements</div>
@@ -7186,7 +7189,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   
 <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px">
-  <span style="display:flex;align-items:baseline;gap:8px"><span style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px">Mouvements du compte</span><span id="livJournalCount" style="font-size:9px;color:var(--text3)"></span></span>
+  <span style="display:flex;align-items:center;gap:10px"><button type="button" id="livJSideBtn" class="ljp" onclick="livJournalSideToggle()" aria-expanded="false" aria-controls="livJournalSide" title="Ajouter des mouvements : importer un relevé ou saisie manuelle" style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span id="livJSideLbl">Ajouter</span></button><span style="display:flex;align-items:baseline;gap:8px"><span style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px">Mouvements du compte</span><span id="livJournalCount" style="font-size:9px;color:var(--text3)"></span></span></span>
   <span id="livJournalFilters" style="display:flex;gap:5px"></span>
 </div>
 <div id="livJournalNav" style="display:none;align-items:center;gap:8px;margin-bottom:6px">
@@ -8081,7 +8084,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.139</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.140</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -52453,7 +52456,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.139\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.140\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -80157,6 +80160,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.140 · 21/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Journal d’un livret : le volet de gauche (importer un relevé, saisie manuelle) est réduit à l’ouverture, les mouvements prennent toute la place. Le bouton « Ajouter », à côté de « Mouvements du compte », le déplie ; « Masquer » le replie.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.139 · 21/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Un achat saisi sur le téléphone avec « Payé depuis » un livret (ex. DCA Trade Republic) est maintenant bien payé par ce livret sur le PC : son solde baisse du montant de l’achat, et les espèces du compte titres ne bougent pas. Avant, le choix du livret était ignoré. Si le solde du livret ne couvre pas l’achat, l’opération reste à valider à la main avec un message clair.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.138 · 21/11/2026</div>
@@ -88710,7 +88715,18 @@ const LIV_TX_KEY = 'kyf-livrets-transactions';
 function livTxLoad(){ try{ return JSON.parse(localStorage.getItem(LIV_TX_KEY)||'[]'); }catch(e){ return []; } }
 function livTxSave(list){ localStorage.setItem(LIV_TX_KEY, JSON.stringify(list)); }
 
+// Journal d'un livret : le volet d'ajout (importer un relevé, saisie manuelle) est réduit à l'ouverture pour laisser toute la place aux mouvements ; le bouton « Ajouter » le déplie, et il se replie avec le même bouton
+function livJournalSideSet(open){
+  const m = document.getElementById('livJournalModal'); if(!m) return;
+  m.classList.toggle('lj-min', !open);
+  const b = document.getElementById('livJSideBtn'), l = document.getElementById('livJSideLbl');
+  if(b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
+  if(l) l.textContent = open ? 'Masquer' : 'Ajouter';
+  if(b) b.classList.toggle('on', !!open);
+}
+function livJournalSideToggle(){ const m = document.getElementById('livJournalModal'); livJournalSideSet(!!(m && m.classList.contains('lj-min'))); }
 function openLivretJournal(compteId){
+  livJournalSideSet(false);
   try{ if(typeof kyfCashMvtCss_==='function') kyfCashMvtCss_(); }catch(_){}
   const compte = livLoad().find(c=>c.id===compteId);
   document.getElementById('livJournalCompteId').value = compteId;
@@ -89508,6 +89524,7 @@ function addLivretTransaction(){
 }
 // Modifier une opération du journal : on reprend ses valeurs dans la saisie manuelle
 function livJournalEdit(id){
+  try{ livJournalSideSet(true); }catch(e){}   // la modification se fait dans le volet de gauche : on le déplie
   const t = livTxLoad().find(x => x.id === id); if(!t || t.src) return;
   window._livJEditId = id; window._livJEditPrev = parseFloat(t.amount) || 0;
   { const m = document.getElementById('livJournalSoldeMsg'); if(m) m.style.display = 'none'; }
