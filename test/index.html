@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.134
+  @version     : Beta 2.14.2.136
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5378,7 +5378,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.134</div>
+  <div class="kl-ver">Beta 2.14.2.136</div>
 </div>
 <script>
 (function(){
@@ -8081,7 +8081,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.134</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.136</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -52395,7 +52395,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.134\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.136\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -53110,9 +53110,22 @@ function getSnapshotsAll(opts){
   const _fixCatchup = s => {
     if(s && s._catchup && s.av === undefined && s.immo === undefined){
       if(_avImmo === null){ try{ _avImmo = (typeof getAVTotal==='function'?getAVTotal():0) + (typeof getImmoTotal==='function'?getImmoTotal():0); }catch(e){ _avImmo = 0; } }
-      return { ...s, total: parseFloat(((s.total||0) + _avImmo).toFixed(2)) };
+      return { ...s, total: parseFloat(((s.total||0) + _avImmo).toFixed(2)), autres: _autresAt(s.date) };
     }
     return s;
+  };
+  // Séance reconstituée : elle ne contient que ETF et crypto. Les autres actifs (livrets, PER...) sont ceux de la séance réelle la plus proche (la veille ou, à défaut, le lendemain),
+  // sinon la courbe du patrimoine plonge de leur montant tous les jours reconstitués
+  let _realA = null;
+  const _autresAt = date => {
+    if(_realA === null){
+      _realA = [];
+      idx.forEach(d => { try{ const x = JSON.parse(localStorage.getItem('kyf-snapshot-' + d) || 'null'); if(x && !x._catchup && x.autres > 0) _realA.push([d, x.autres]); }catch(e){} });
+      _realA.sort((a, b) => a[0].localeCompare(b[0]));
+    }
+    if(!_realA.length) return 0;
+    let r = null; for(const x of _realA){ if(x[0] <= date) r = x; else break; }
+    return (r || _realA[0])[1];
   };
   const _all = idx.map(date=>{
     try { return JSON.parse(localStorage.getItem('kyf-snapshot-'+date)||'null'); } catch(e){ return null; }
@@ -60690,6 +60703,7 @@ function cryptoLoad(){
 
 function cryptoSave(){
   try{ const rz = kyfCryRealiseCompute(); if(rz) cryptoState.realise = rz; }catch(e){}   // ventes réalisées : lu par KYF Mobile via le Sheet
+  try{ const _old = JSON.parse(localStorage.getItem(CRYPTO_KEY) || 'null'); kyfSnapStaleFrom_((_old && _old.operations) || [], cryptoState.operations || [], x => { const d = kyfCryptoOpDateISO(x && x.date); return /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : ''; }); }catch(e){}
   try{ localStorage.setItem(CRYPTO_KEY, JSON.stringify(cryptoState)); }catch(e){}
   // Invalider le cache intraday après toute modification crypto
   try{ onIntradayTransaction(); }catch(e){}
@@ -66753,7 +66767,27 @@ let _transType = 'achat'; // 'achat' | 'vente'
 function etfTransLoad(){
   try { return JSON.parse(localStorage.getItem(ETF_TRANS_KEY) || '[]'); } catch(e){ return []; }
 }
-function etfTransSave(data){ localStorage.setItem(ETF_TRANS_KEY, JSON.stringify(data)); }
+// Une opération datée dans le passé (achat oublié, opération du mobile reçue après le rattrapage) change les quantités des séances déjà reconstituées :
+// on les marque périmées (_cgv 0), le bouton RECONSTITUER les recalcule. Les séances réelles, enregistrées le jour même, ne sont jamais touchées.
+function kyfSnapStaleFrom_(oldArr, newArr, dateOf){
+  try{
+    const sig = x => JSON.stringify(x), so = new Set((oldArr || []).map(sig)), sn = new Set((newArr || []).map(sig));
+    let min = '';
+    (oldArr || []).forEach(x => { if(!sn.has(sig(x))){ const d = dateOf(x); if(d && (!min || d < min)) min = d; } });
+    (newArr || []).forEach(x => { if(!so.has(sig(x))){ const d = dateOf(x); if(d && (!min || d < min)) min = d; } });
+    if(!min) return;
+    const idx = JSON.parse(localStorage.getItem('kyf-snapshots-index') || '[]');
+    idx.forEach(d => {
+      if(d < min) return;
+      const k = 'kyf-snapshot-' + d, sn2 = JSON.parse(localStorage.getItem(k) || 'null');
+      if(sn2 && sn2._catchup && (sn2._cgv || 0) >= 3){ sn2._cgv = 0; localStorage.setItem(k, JSON.stringify(sn2)); }
+    });
+  }catch(e){}
+}
+function etfTransSave(data){
+  try{ kyfSnapStaleFrom_(JSON.parse(localStorage.getItem(ETF_TRANS_KEY) || '[]'), data, x => { const d = kyfCryptoOpDateISO(x && x.date); return /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : ''; }); }catch(e){}
+  localStorage.setItem(ETF_TRANS_KEY, JSON.stringify(data));
+}
 
 // ── Peupler ACHATS/VENTES depuis localStorage ─────────────────
 function loadEtfTransactions(){
@@ -80065,6 +80099,10 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.136 · 21/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">AUDIT absence : les jours reconstitués n’avaient pas les autres actifs (livrets, PER...) : la courbe du patrimoine plongeait de leur montant (30 000 € sur mon test) sur toute la période d’absence. Ils reprennent maintenant ceux de la séance réelle la plus proche, sur le PC comme sur le mobile.</div>
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.135 · 21/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">AUDIT absence : une opération datée dans le passé (achat oublié, opération du mobile reçue après le rattrapage) laissait les séances déjà reconstituées sans cette quantité, sans que le bouton RECONSTITUER ne le voie (4 800 € d’écart sur mon test). Ces séances sont maintenant marquées périmées dès que l’opération est enregistrée, et le bouton les recalcule.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.134 · 21/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">AUDIT absence (PC absent plusieurs jours) : si CoinGecko était hors service pendant le rattrapage automatique, les jours reconstitués recevaient le cours crypto d’aujourd’hui (crypto « plate ») enregistré comme vrai, et le bouton RECONSTITUER ne les rattrapait pas. Ces séances sont maintenant marquées incomplètes (cours crypto manquant), écartées du calendrier et des statistiques, et recalculées par le bouton dès que les cours reviennent.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.133 · 21/11/2026</div>
