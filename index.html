@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.104
+  @version     : Beta 2.14.2.105
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5376,7 +5376,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.104</div>
+  <div class="kl-ver">Beta 2.14.2.105</div>
 </div>
 <script>
 (function(){
@@ -6158,6 +6158,8 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
       <div id="shImgEmpty" style="display:none;font-size:10px;color:var(--text2);line-height:1.6">Aucune position à répartir pour l’instant : l’aperçu reste sur l’exemple fictif.</div>
     </div>
     <div style="flex:0 1 300px;min-width:240px;padding:18px 20px;display:flex;flex-direction:column;gap:16px;border-left:1px solid var(--border)">
+      <div><div style="font-size:9px;font-weight:700;letter-spacing:.5px;color:var(--text3);margin-bottom:7px">VUE</div>
+        <div class="shi-seg" style="display:flex"><button type="button" id="shImgV_donut" class="on" style="flex:1" onclick="kyfShImgView('donut')">DONUT</button><button type="button" id="shImgV_carte" style="flex:1" onclick="kyfShImgView('carte')">CARTE</button></div></div>
       <div><div style="font-size:9px;font-weight:700;letter-spacing:.5px;color:var(--text3);margin-bottom:7px">DONNÉES</div>
         <div class="shi-seg"><button type="button" id="shImgBtnF" class="on" onclick="kyfShImgMode('fictif')">FICTIF</button><button type="button" id="shImgBtnR" onclick="kyfShImgMode('reel')">RÉEL</button></div></div>
       <div id="shImgNote" style="font-size:10px;color:var(--text2);line-height:1.6;border-left:3px solid var(--accent);padding-left:10px"></div>
@@ -8070,7 +8072,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.104</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.105</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -48925,7 +48927,6 @@ function kyfShImgGrp(scope, mode){
     return { grp:grp, tot:tot };
   }catch(e){ return null; }
 }
-function kyfShImgHas(){ return !!(kyfShImgGrp('cls', 'reel') && kyfShImgGrp('env', 'reel')); }
 function kyfShImgSvgImg(d){
   return new Promise(ok => {
     const was = document.body.classList.contains('kyf-discreet'), saveFlat = window._kyfD2Flat;
@@ -48938,31 +48939,103 @@ function kyfShImgSvgImg(d){
     im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(x);
   });
 }
-async function kyfShImgDraw(cv, mode){
-  const W = 1200, H = 630, c = cv.getContext('2d'), INK = '#1b2540', MUT = '#55627f';
-  const blocks = [[300, 'PAR CLASSE D’ACTIFS', 'cls'], [900, 'PAR ENVELOPPE', 'env']];
-  const imgs = await Promise.all(blocks.map(b => { const d = kyfShImgGrp(b[2], mode); return d ? kyfShImgSvgImg(d) : Promise.resolve(null); }));
-  cv.width = W; cv.height = H;
+const KYF_SHI_VIEWS = [['donut', 'DOUBLE DONUT'], ['carte', 'CARTE DU MONDE']];
+let _shImgView = 'donut';
+function kyfShImgLogo(c, x, y, k){   // le vrai logo de la barre latérale (Keep · Your · Folio, ambre, drapeau tricolore dessous), version fond clair
+  c.save(); c.textBaseline = 'alphabetic'; c.textAlign = 'left'; const A = '#d97706';
+  const seg = (t, sz, wt, col, ls) => { c.font = wt + ' ' + sz + 'px "Space Grotesk", Inter, Arial, sans-serif'; c.letterSpacing = ls + 'px'; c.fillStyle = col; c.fillText(t, x, y); x += c.measureText(t).width; };
+  const dot = () => { x += 5 * k; c.fillStyle = A; c.beginPath(); c.arc(x + 2 * k, y - 4 * k, 2 * k, 0, 7); c.fill(); x += 4 * k + 5 * k; };
+  const x0 = x;
+  seg('KEEP', 11 * k, 400, '#7a90b8', 2 * k); dot(); seg('YOUR', 11 * k, 300, '#1a2440', 2 * k); dot(); seg('FOLIO', 16 * k, 700, A, 1 * k);
+  const w = x - x0; c.letterSpacing = '0px';
+  const by = y + 9 * k, bw = (w * 0.34 - 4 * k) / 3, bx = x0 + 28 * k;
+  [['#0015FF', 0], ['#FFFFFF', 1], ['#FF0000', 2]].forEach(a => { c.fillStyle = a[0]; c.fillRect(bx + a[1] * (bw + 2 * k), by, bw, 2.5 * k); if(a[0] === '#FFFFFF'){ c.strokeStyle = 'rgba(128,128,128,.4)'; c.lineWidth = 1; c.strokeRect(bx + a[1] * (bw + 2 * k), by, bw, 2.5 * k); } });
+  c.restore();
+}
+function kyfShImgFrame(c, W, H, mode, title){
+  const INK = '#1b2540', MUT = '#55627f';
   c.fillStyle = '#f4f6fb'; c.fillRect(0, 0, W, H);
   c.fillStyle = mode === 'fictif' ? '#b42828' : INK; c.fillRect(0, 0, W, 46);
   c.fillStyle = '#fff'; c.font = '800 17px Inter, Arial, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
   c.fillText(mode === 'fictif' ? 'PORTEFEUILLE FICTIF · DONNÉES D’EXEMPLE · AUCUN PATRIMOINE RÉEL' : 'MON PORTEFEUILLE · EN POURCENTAGES, AUCUN MONTANT', W / 2, 24);
-  blocks.forEach((b, i) => {
-    c.fillStyle = INK; c.font = '800 19px Inter, Arial, sans-serif'; c.textAlign = 'center'; c.fillText(b[1], b[0], 78);
-    const o = imgs[i]; if(!o) return;
-    const bw = 570, bh = 482, k = Math.min(bw / o.w, bh / o.h), w = o.w * k, h = o.h * k;
-    c.drawImage(o.im, b[0] - w / 2, 96 + (bh - h) / 2, w, h);
-  });
-  c.textAlign = 'center'; c.fillStyle = MUT; c.font = '600 16px Inter, Arial, sans-serif';
-  c.fillText('Keep Your Folio · keepyourfolio.fr · gratuit, sans compte, vos données restent chez vous', W / 2, 606);
-  if(mode === 'fictif'){
-    c.save(); c.font = '800 52px Inter, Arial, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
-    for(let y = 60, k = 0; y < H + 120; y += 110, k++) for(let x = -40 + (k % 2) * 140; x < W + 100; x += 280){
-      c.save(); c.translate(x, y); c.rotate(-24 * Math.PI / 180);
-      c.fillStyle = 'rgba(180,40,40,.11)'; c.strokeStyle = 'rgba(180,40,40,.26)'; c.lineWidth = 1.4; c.fillText('FICTIF', 0, 0); c.strokeText('FICTIF', 0, 0); c.restore();
-    }
-    c.restore();
+  kyfShImgLogo(c, 36, 84, 1.7);
+  c.fillStyle = INK; c.font = '800 20px Inter, Arial, sans-serif'; c.textAlign = 'right'; c.textBaseline = 'alphabetic'; c.fillText(title, W - 36, 86);
+  c.fillStyle = '#d97706'; c.fillRect(W - 36 - 54, 96, 54, 3);
+  c.textAlign = 'center'; c.fillStyle = MUT; c.font = '600 16px Inter, Arial, sans-serif'; c.textBaseline = 'middle';
+  c.fillText('Keep Your Folio · keepyourfolio.fr · gratuit, sans compte, vos données restent chez vous', W / 2, 612);
+}
+function kyfShImgMark(c, W, H, mode){
+  if(mode !== 'fictif') return;
+  c.save(); c.font = '800 52px Inter, Arial, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
+  for(let y = 60, k = 0; y < H + 120; y += 110, k++) for(let x = -40 + (k % 2) * 140; x < W + 100; x += 280){
+    c.save(); c.translate(x, y); c.rotate(-24 * Math.PI / 180);
+    c.fillStyle = 'rgba(180,40,40,.11)'; c.strokeStyle = 'rgba(180,40,40,.26)'; c.lineWidth = 1.4; c.fillText('FICTIF', 0, 0); c.strokeText('FICTIF', 0, 0); c.restore();
   }
+  c.restore();
+}
+function kyfShImgGeo(mode){   // { pct:{code:%}, nd } ; réel = Répartition géographique, fictif = exemple
+  if(mode === 'fictif') return { pct:{ US:38, FR:14, JP:6.5, GB:5, DE:4, CN:4, CH:3.2, CA:3, IN:2.8, AU:2.2, TW:2, KR:1.8, NL:1.6, BR:1.4, SE:1.1, ES:1, IT:0.9, ZA:0.6, MX:0.5, SA:0.4 }, nd:0 };
+  try{
+    const D = kyfGeoCompute(kyfGeoVue()); if(!(D.tot > 0) || !Object.keys(D.byC).length) return null;
+    const pct = {}; Object.keys(D.byC).forEach(i => { if(D.byC[i] > 0) pct[i] = D.byC[i] / D.tot * 100; });
+    return Object.keys(pct).length ? { pct:pct, nd:D.nd / D.tot * 100 } : null;
+  }catch(e){ return null; }
+}
+let _shImgPaths = null;
+function kyfShImgMapLib(){   // les contours viennent du script de carte déjà embarqué (lecture du texte, sans l'exécuter)
+  if(_shImgPaths) return _shImgPaths;
+  const el = document.getElementById('kyfLib-jsvectormap-world'); if(!el) return null;
+  const P = {}, re = /([A-Z]{2}):\{path:"([^"]+)",name:"([^"]*)"\}/g; let m;
+  while((m = re.exec(el.textContent))) P[m[1]] = { path:m[2], name:m[3] };
+  return Object.keys(P).length ? (_shImgPaths = P) : null;
+}
+function kyfShImgHas(view){
+  if(view === 'carte') return !!kyfShImgGeo('reel');
+  return !!(kyfShImgGrp('cls', 'reel') && kyfShImgGrp('env', 'reel'));
+}
+async function kyfShImgDraw(cv, mode, view){
+  const W = 1200, H = 630, c = cv.getContext('2d'), INK = '#1b2540', MUT = '#55627f';
+  cv.width = W; cv.height = H;
+  if(view === 'carte'){
+    kyfShImgFrame(c, W, H, mode, 'RÉPARTITION GÉOGRAPHIQUE');
+    const G = kyfShImgGeo(mode), P = kyfShImgMapLib(); if(!G || !P) return;
+    const pct = G.pct, max = Math.max.apply(null, Object.keys(pct).map(i => pct[i]));
+    const lo = [243, 220, 170], hi = [180, 83, 9], k = 1090 / 900, ox = 55, oy = 112;
+    c.save(); c.translate(ox, oy); c.scale(k, k); c.lineJoin = 'round';
+    Object.keys(P).forEach(code => {
+      const v = pct[code], f = v > 0 ? Math.pow(v / max, 0.5) : -1;
+      c.fillStyle = f < 0 ? '#dfe4ee' : 'rgb(' + [0, 1, 2].map(n => Math.round(lo[n] + (hi[n] - lo[n]) * f)).join(',') + ')';
+      c.strokeStyle = '#f4f6fb'; c.lineWidth = 0.5;
+      const p = new Path2D(P[code].path); c.fill(p); c.stroke(p);
+    });
+    c.restore();
+    const top = Object.keys(pct).sort((a, b) => pct[b] - pct[a]).slice(0, 5);
+    const bx = 40, by = 418, bw = 270, bh = 28 + top.length * 26;
+    c.fillStyle = 'rgba(255,255,255,.92)'; c.strokeStyle = '#d5dbe8'; c.lineWidth = 1.2;
+    c.beginPath(); c.roundRect(bx, by, bw, bh, 12); c.fill(); c.stroke();
+    c.textBaseline = 'middle'; c.textAlign = 'left'; c.fillStyle = MUT; c.font = '800 11px Inter, Arial, sans-serif'; c.letterSpacing = '1px'; c.fillText('TOP 5 DES PAYS', bx + 16, by + 18); c.letterSpacing = '0px';
+    top.forEach((code, i) => {
+      const y = by + 44 + i * 26, f = Math.pow(pct[code] / max, 0.5), nm = (typeof KYF_GEO_CM !== 'undefined' && KYF_GEO_CM[code]) ? KYF_GEO_CM[code].n : (P[code] ? P[code].name : code);
+      c.fillStyle = 'rgb(' + [0, 1, 2].map(n => Math.round(lo[n] + (hi[n] - lo[n]) * f)).join(',') + ')'; c.beginPath(); c.arc(bx + 22, y, 6, 0, 7); c.fill();
+      c.fillStyle = INK; c.font = '600 15px Inter, Arial, sans-serif'; c.textAlign = 'left'; c.fillText(nm, bx + 38, y);
+      c.textAlign = 'right'; c.font = '800 15px Inter, Arial, sans-serif'; c.fillText(kyfGeoPct(pct[code], 1), bx + bw - 16, y);
+    });
+    const lx = W - 300, ly = 590, g = c.createLinearGradient(lx, 0, lx + 160, 0); g.addColorStop(0, 'rgb(' + lo.join(',') + ')'); g.addColorStop(1, 'rgb(' + hi.join(',') + ')');
+    c.fillStyle = g; c.beginPath(); c.roundRect(lx, ly - 5, 160, 10, 5); c.fill();
+    c.fillStyle = MUT; c.font = '600 12px Inter, Arial, sans-serif'; c.textAlign = 'right'; c.fillText('peu', lx - 8, ly); c.textAlign = 'left'; c.fillText('beaucoup exposé', lx + 170, ly);
+    kyfShImgMark(c, W, H, mode); return;
+  }
+  const blocks = [[300, 'PAR CLASSE D’ACTIFS', 'cls'], [900, 'PAR ENVELOPPE', 'env']];
+  const imgs = await Promise.all(blocks.map(b => { const d = kyfShImgGrp(b[2], mode); return d ? kyfShImgSvgImg(d) : Promise.resolve(null); }));
+  cv.width = W; cv.height = H;
+  kyfShImgFrame(c, W, H, mode, 'MA RÉPARTITION');
+  blocks.forEach((b, i) => {
+    c.fillStyle = INK; c.font = '800 17px Inter, Arial, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'alphabetic'; c.fillText(b[1], b[0], 134);
+    const o = imgs[i]; if(!o) return;
+    const bw = 570, bh = 430, k = Math.min(bw / o.w, bh / o.h), w = o.w * k, h = o.h * k;
+    c.drawImage(o.im, b[0] - w / 2, 146 + (bh - h) / 2, w, h);
+  });
+  kyfShImgMark(c, W, H, mode);
 }
 function kyfShImgOpen(){
   closeSharePopup();
@@ -48977,16 +49050,18 @@ function kyfShImgClose(){
   document.body.style.overflow = '';
 }
 function kyfShImgMode(m){ _shImgMode = m; kyfShImgRender(); }
+function kyfShImgView(v){ _shImgView = v; kyfShImgRender(); }
 function kyfShImgRender(){
   const cv = document.getElementById('shImgCv'); if(!cv) return;
   let reel = _shImgMode === 'reel';
-  if(reel && !kyfShImgHas()){ reel = false; _shImgMode = 'fictif'; const e = document.getElementById('shImgEmpty'); if(e) e.style.display = 'block'; }
+  if(reel && !kyfShImgHas(_shImgView)){ reel = false; _shImgMode = 'fictif'; const e = document.getElementById('shImgEmpty'); if(e) e.style.display = 'block'; }
   else { const e = document.getElementById('shImgEmpty'); if(e) e.style.display = 'none'; }
   document.getElementById('shImgBtnF').classList.toggle('on', !reel);
   document.getElementById('shImgBtnR').classList.toggle('on', reel);
   const note = document.getElementById('shImgNote');
   if(note) note.innerHTML = reel ? 'Mode r\u00e9el : le m\u00eame camembert \u00e0 deux anneaux que dans Portefeuille, en pourcentages seulement. Aucun montant ne sort de l\u2019appli.' : 'Mode fictif : un portefeuille d\u2019exemple. Le mot FICTIF est incrust\u00e9 dans l\u2019image, r\u00e9p\u00e9t\u00e9 sur toute la surface : impossible \u00e0 enlever sans ab\u00eemer les graphiques. Vos vraies donn\u00e9es ne sont pas utilis\u00e9es.';
-  _shImgJob = kyfShImgDraw(cv, _shImgMode);
+  KYF_SHI_VIEWS.forEach(v => { const b = document.getElementById('shImgV_' + v[0]); if(b) b.classList.toggle('on', v[0] === _shImgView); });
+  _shImgJob = kyfShImgDraw(cv, _shImgMode, _shImgView);
 }
 async function kyfShImgBlob(){ try{ await _shImgJob; }catch(e){} return new Promise(ok => document.getElementById('shImgCv').toBlob(ok, 'image/png')); }
 async function kyfShImgCopy(btn){
@@ -49000,7 +49075,7 @@ async function kyfShImgCopy(btn){
 }
 async function kyfShImgSave(){
   const b = await kyfShImgBlob(), u = URL.createObjectURL(b), a = document.createElement('a');
-  a.href = u; a.download = 'keep-your-folio-' + _shImgMode + '.png'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000);
+  a.href = u; a.download = 'keep-your-folio-' + _shImgView + '-' + _shImgMode + '.png'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000);
 }
 
 // ── RECHERCHE GLOBALE (Ctrl+K) ───────────────────────────────
@@ -52049,7 +52124,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.104\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.105\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -79474,6 +79549,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.105 · 21/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PARTAGER, IMAGE DU PORTEFEUILLE : nouvelle vue CARTE DU MONDE (la répartition géographique, pays colorés du clair au foncé, top 5 des pays, en pourcentages). Le vrai logo Keep Your Folio (Keep · Your · Folio en ambre, drapeau dessous) figure maintenant sur chaque image. Le mot FICTIF reste incrusté en mode fictif.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.104 · 20/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PARTAGER, IMAGE DU PORTEFEUILLE : l'image reprend maintenant le vrai camembert à deux anneaux de PORTEFEUILLE (PAR CLASSE et PAR ENVELOPPE, vue DÉTAILLÉ), entier et sans montant (le centre affiche 100 %). Même rendu en mode fictif (exemple détaillé, FICTIF incrusté) et en mode réel.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.103 · 20/11/2026</div>
