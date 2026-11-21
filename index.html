@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.107
+  @version     : Beta 2.14.2.108
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5376,7 +5376,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.107</div>
+  <div class="kl-ver">Beta 2.14.2.108</div>
 </div>
 <script>
 (function(){
@@ -8077,7 +8077,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.107</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.108</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -27638,7 +27638,8 @@ function kyfDonut2Svg(grp, tot, big){
   // 2.14.2.84 : même rendu que les autres anneaux (dégradé radial, tranche qui sort au survol, les autres s'estompent, nom et montant au centre)
   const seg = (t, i, nm, v, col, a0, a1, ri, ro, extra) => {
     const m = (a0 + a1) / 2, sh = v / tot, off = sh > 0.999 ? 0 : (sh < 0.02 ? 4 : 14);
-    return '<g class="kyf-d2s' + (t === 'c' && big && window._kyfD2Sel === i ? ' sel' : '') + '" data-gid="' + gid + '" data-t="' + t + '" data-i="' + i + '" data-n="' + escapeHtml(nm) + '" data-v="' + v + '" data-p="' + pc(v) + '" data-c="' + col + '" style="--tx:' + (off * Math.sin(m)).toFixed(1) + 'px;--ty:' + (-off * Math.cos(m)).toFixed(1) + 'px" onmouseenter="kyfD2Hov(this,1)" onmouseleave="kyfD2Hov(this,0)"' + (t === 'c' && big ? ' onclick="event.stopPropagation();kyfD2Pick(' + i + ')"' : '') + '><path d="' + arc(a0, a1, ri, ro) + '" fill="' + gref(col) + '"><title>' + escapeHtml(nm + ' : ' + pc(v)) + '</title></path>' + (extra || '') + '</g>';
+    const hit = '<path d="' + arc(a0, a1, ri, ro) + '" fill="#000" fill-opacity="0" style="pointer-events:all"/>';   // zone de survol FIXE : la tranche bouge, pas la zone (sinon, au bord, la tranche s'éloigne du curseur, le survol saute et l'animation clignote)
+    return '<g class="kyf-d2w" onmouseenter="kyfD2Hov(this.querySelector(\'.kyf-d2s\'),1)" onmouseleave="kyfD2Hov(this.querySelector(\'.kyf-d2s\'),0)"' + (t === 'c' && big ? ' onclick="event.stopPropagation();kyfD2Pick(' + i + ')" style="cursor:pointer"' : '') + '>' + hit + '<g class="kyf-d2s' + (t === 'c' && big && window._kyfD2Sel === i ? ' sel' : '') + '" data-gid="' + gid + '" data-t="' + t + '" data-i="' + i + '" data-n="' + escapeHtml(nm) + '" data-v="' + v + '" data-p="' + pc(v) + '" data-c="' + col + '" style="--tx:' + (off * Math.sin(m)).toFixed(1) + 'px;--ty:' + (-off * Math.cos(m)).toFixed(1) + 'px"><path d="' + arc(a0, a1, ri, ro) + '" fill="' + gref(col) + '"><title>' + escapeHtml(nm + ' : ' + pc(v)) + '</title></path>' + (extra || '') + '</g></g>';
   };
   const full = grp.length === 1;
   grp.forEach((g, gi) => {
@@ -27660,9 +27661,9 @@ function kyfDonut2Svg(grp, tot, big){
   });
   if(out.length){
     const H = fs + 3, side = { 1:[], '-1':[] };
-    out.forEach(o => { const e = pt(R3 + 16, o.a); o.x = e[0]; o.y = e[1]; side[Math.sin(o.a) >= 0 ? 1 : -1].push(o); });
+    out.forEach(o => { const e = pt(R3 + 40, o.a); o.x = e[0]; o.y = e[1]; side[Math.sin(o.a) >= 0 ? 1 : -1].push(o); });
     [1, -1].forEach(sd => { let py = -1e9; side[sd].sort((u, v) => u.y - v.y).forEach(o => { if(o.y < py + H) o.y = py + H; py = o.y; }); });
-    out.forEach(o => { const sd = Math.sin(o.a) >= 0 ? 1 : -1, p0 = pt(R3 + 2, o.a), tx = o.x + sd * 6;
+    out.forEach(o => { const sd = Math.sin(o.a) >= 0 ? 1 : -1, p0 = pt(R3 + 4, o.a), tx = o.x + sd * 6;
       lab += '<polyline points="' + p0[0].toFixed(1) + ',' + p0[1].toFixed(1) + ' ' + o.x.toFixed(1) + ',' + o.y.toFixed(1) + ' ' + (o.x + sd * 4).toFixed(1) + ',' + o.y.toFixed(1) + '" fill="none" stroke="' + o.col + '" stroke-width="1.4"/>'
         + '<text x="' + tx.toFixed(1) + '" y="' + (o.y + fs * 0.35).toFixed(1) + '" text-anchor="' + (sd > 0 ? 'start' : 'end') + '" font-size="' + fs + '" font-weight="700" fill="var(--text2)">' + escapeHtml(o.nm + ' ' + o.p) + '</text>'; });
   }
@@ -27670,7 +27671,7 @@ function kyfDonut2Svg(grp, tot, big){
   const defM = disc ? '100 %' : fmt(tot, 0) + ' €';
   const ctr = '<text data-role="cm" data-def="' + escapeHtml(defM) + '" data-fs="' + (big ? 22 : 15) + '" x="' + C + '" y="' + (C - 2) + '" text-anchor="middle" font-size="' + (big ? 22 : 15) + '" font-weight="700" fill="var(--text)" style="pointer-events:none">' + escapeHtml(defM) + '</text><text data-role="cs" data-def="TOTAL" x="' + C + '" y="' + (C + (big ? 18 : 13)) + '" text-anchor="middle" font-size="' + (big ? 10 : 8) + '" letter-spacing="1" fill="var(--text3)" style="pointer-events:none">TOTAL</text>';
   const defs = '<defs>' + Object.keys(gdef).map(col => '<radialGradient id="' + gdef[col] + '" gradientUnits="userSpaceOnUse" cx="' + C + '" cy="' + C + '" r="' + R3 + '"><stop offset=".3" stop-color="' + col + '" stop-opacity=".5"/><stop offset="1" stop-color="' + col + '" stop-opacity="1"/></radialGradient>').join('') + '</defs>';
-  return { svg:defs + svg + lab + ctr, gid:gid, leg:leg, size:C * 2, vb: big ? (out.length ? '-150 -8 ' + (C * 2 + 300) + ' ' + (C * 2 + 16) : '0 0 ' + C * 2 + ' ' + C * 2) : '0 0 ' + C * 2 + ' ' + C * 2 };
+  return { svg:defs + svg + lab + ctr, gid:gid, leg:leg, size:C * 2, vb: big ? (out.length ? '-200 -46 ' + (C * 2 + 400) + ' ' + (C * 2 + 92) : '0 0 ' + C * 2 + ' ' + C * 2) : '0 0 ' + C * 2 + ' ' + C * 2 };
 }
 function kyfD2Css(){
   if(document.getElementById('kyfD2Css')) return;
@@ -52322,7 +52323,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.107\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.108\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -79747,6 +79748,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.108 · 21/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PORTEFEUILLE, camembert à deux anneaux : plus de clignotement quand le curseur est au bord d’une tranche (la zone de survol ne bouge plus avec la tranche qui sort). En vue agrandie, les noms posés autour du camembert (Private equity, Or et métaux, Diversifiants…) sont éloignés pour que la tranche qui sort ne les recouvre plus.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.107 · 21/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">PARTAGER, IMAGE DU PORTEFEUILLE : deux vues pour tous les types d’actifs. TYPES D’ACTIFS classe tout le patrimoine suivi (actions, immobilier, SCPI, fonds euros, livrets, crypto, or, private equity, avoirs à l’étranger, autres actifs, crowdfunding) en pourcentages, même ceux non cochés dans le camembert. FOCUS choisit un type et montre sa composition ligne par ligne, en pourcentages.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.106 · 21/11/2026</div>
