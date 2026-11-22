@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.170
+  @version     : Beta 2.14.2.171
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5382,7 +5382,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.170</div>
+  <div class="kl-ver">Beta 2.14.2.171</div>
 </div>
 <script>
 (function(){
@@ -8086,7 +8086,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.170</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.171</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -22196,12 +22196,6 @@ function kyfSidebarPrefsToggleGroup(key){
 }
 // Clic sur la ligne Widget Intraday (dans les 3s ou apres) : le surlignage
 // s'arrete tout de suite, la ligne reste affichee tant que le popup est ouvert.
-// 2.14.2.170 : « Affichage des menus » est replié par défaut ; tout lien qui mène à une case de ce bloc le déplie d'abord
-function kyfAffMenusOpen(on){
-  const b = document.getElementById('kyfAffMenusBody'), h = document.getElementById('kyfAffMenusHd'); if(!b || !h) return;
-  b.style.display = on ? '' : 'none'; h.setAttribute('aria-expanded', on ? 'true' : 'false');
-}
-function kyfAffMenusToggle(){ const h = document.getElementById('kyfAffMenusHd'); kyfAffMenusOpen(!(h && h.getAttribute('aria-expanded') === 'true')); }
 function kyfSbpIntradayRowTouched(){
   clearTimeout(window._kyfSbpIntradayFlashTimer);
   const row = document.getElementById('sidebarPrefIntradayRow');
@@ -22212,7 +22206,6 @@ function kyfSbpIntradayRowTouched(){
 function openSidebarPrefsFromIntradayWidget(){
   window._kyfSbpFromIntradayWidget = true;
   openSidebarPrefs();
-  kyfAffMenusOpen(true);
   const row = document.getElementById('sidebarPrefIntradayRow');
   if(row && row.scrollIntoView) row.scrollIntoView({block:'nearest'});
 }
@@ -52549,7 +52542,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.170\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.171\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -56258,10 +56251,12 @@ async function kyfCryptoDonCopy(btn){
 .ed-prev-toggle{display:none;align-items:center;gap:7px;padding:8px 12px;margin-right:10px;border-radius:10px;background:var(--btn-secondary-bg);border:1px solid var(--border2);color:var(--text2);font:600 11px 'Inter',sans-serif;cursor:pointer;white-space:nowrap}
 .ed-prev-toggle:hover{border-color:var(--accent);color:var(--accent)}
 .ed-aff-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:22px}
-.kyf-aff-hd{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;box-sizing:border-box;cursor:pointer;background:none;border-top:0;border-left:0;border-right:0;text-align:left;font-family:inherit;transition:color .15s}
-.kyf-aff-hd:hover,.kyf-aff-hd:focus-visible{color:var(--accent);outline:none}
-.kyf-aff-chev{flex-shrink:0;transition:transform .25s ease}
-.kyf-aff-hd[aria-expanded="true"] .kyf-aff-chev{transform:rotate(180deg)}
+#edAffSub{display:none}
+#edAffSub.open{display:flex;flex-direction:column;gap:2px}
+@media(max-width:899px){#edAffSub.open{display:contents}}
+@media(min-width:900px){#edTabs #edAffSub .ed-tab{padding:8px 12px 8px 38px;font-size:11.5px}}
+.ed-tab .ed-tab-chev{margin-left:auto;flex-shrink:0;transition:transform .25s ease}
+.ed-tab[aria-expanded="true"] .ed-tab-chev{transform:rotate(180deg)}
 @media(min-width:900px){.ed-aff-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start}}
 .ed-aff-col{min-width:0}
 .ed-api-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:0}
@@ -56805,10 +56800,22 @@ function toggleEditor(){
   if(edOpen){ if(!_loadSavedStyleCalled){ loadSavedStyle(); } syncSliders(); kyfColorSchemeSync(); kyfDensitySync(); loadSavedFont(); loadEditorBg(); initSheetsInput(); const efs=localStorage.getItem('pea-ed-fontsize'); if(efs) applyEditorFontSize(parseInt(efs)); }
 }
 
+// 2.14.2.171 : Affichage est un menu à flèche (comme la sidebar) : Menus, puis Autres réglages (barre du haut, sources de cours, rappels)
+function kyfEdAffOpen(on){
+  const sub = document.getElementById('edAffSub'), par = document.getElementById('edAffParent'); if(!sub || !par) return;
+  sub.classList.toggle('open', !!on); par.setAttribute('aria-expanded', on ? 'true' : 'false');
+}
+function kyfEdAffNav(){
+  const sub = document.getElementById('edAffSub'); if(!sub) return;
+  if(sub.classList.contains('open')){ kyfEdAffOpen(false); return; }
+  kyfEdAffOpen(true);
+  showEdTab('affichage', document.querySelector('#edAffSub .ed-tab'));
+}
 function showEdTab(name,btn){
+  if(name === 'affichage' || name === 'affichage2') kyfEdAffOpen(true);
   if(name === 'kpi'){ try{ kyfKpiSetFill(); kyfKpiChipFill(); kyfNewBadgeSeen('kpiset'); }catch(e){} }
-  if(name === 'affichage'){ try{ kyfAffichagePrep(); kyfRelaysSync(); }catch(e){ console.warn('[KYF] affichage', e); } }
-  { const _ep = document.getElementById('edPanel'); if(_ep) _ep.classList.toggle('ed-api-wide', name === 'api' || name === 'affichage'); }   // onglet Google et avancé : pas d'aperçu en direct, la place sert aux modes avancés
+  if(name === 'affichage' || name === 'affichage2'){ try{ kyfAffichagePrep(); kyfRelaysSync(); }catch(e){ console.warn('[KYF] affichage', e); } }
+  { const _ep = document.getElementById('edPanel'); if(_ep) _ep.classList.toggle('ed-api-wide', name === 'api' || name === 'affichage' || name === 'affichage2'); }   // onglet Google et avancé : pas d'aperçu en direct, la place sert aux modes avancés
   if(name==='donuts'){ window._edDnForce=true; setTimeout(function(){try{edPreviewDraw()}catch(e){}},60); }
   document.querySelectorAll('.ed-tab-content').forEach(t=>{ if(t) t.style.display='none'; });
   document.querySelectorAll('.ed-tab').forEach(t=>t.classList.remove('active'));
@@ -56859,7 +56866,7 @@ function kyfEdReturnBack(kind){
 
 
 // ══ STUDIO PARAMÈTRES : recherche de réglages (Ctrl K) et aperçu en direct ══
-const ED_TAB_NAMES = { couleurs:'Apparence', immo:'Immobilier', typo:'Police', tableaux:'Tableaux et cartes', charts:'Graphiques', donuts:'Donuts', themes:'Tooltip et thèmes', kpi:'Cartes KPI', affichage:'Affichage', api:'Google et avancé', raccourcis:'Raccourcis' };
+const ED_TAB_NAMES = { couleurs:'Apparence', immo:'Immobilier', typo:'Police', tableaux:'Tableaux et cartes', charts:'Graphiques', donuts:'Donuts', themes:'Tooltip et thèmes', kpi:'Cartes KPI', affichage:'Affichage, menus', affichage2:'Affichage, autres réglages', api:'Google et avancé', raccourcis:'Raccourcis' };
 let _edIndex = null, _edResults = [], _edAct = -1;
 const edNorm = t => String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 function edBuildIndex(){
@@ -56891,7 +56898,6 @@ function edSearchGo(i){
   const r = _edResults[i]; if(!r) return;
   const btn = document.querySelector('.ed-tab[onclick*="\'' + r.tab + '\'"]');
   showEdTab(r.tab, btn);
-  try{ if(r.el && r.el.closest && r.el.closest('#kyfAffMenusBody')) kyfAffMenusOpen(true); }catch(e){}
   const box = document.getElementById('edSearchRes'); if(box) box.style.display = 'none';
   const inp = document.getElementById('edSearch'); if(inp){ inp.value = ''; inp.blur(); }
   setTimeout(() => {
@@ -77757,7 +77763,7 @@ function kyfNewOpenPref(){
   ['kyfNewModal', 'kyfNewOverlay'].forEach(id => { const e = document.getElementById(id); if(e) e.remove(); });
   document.body.style.overflow = '';
   document.removeEventListener('keydown', kyfNewKey_);
-  try{ openSidebarPrefs(); kyfAffMenusOpen(true); }catch(e){}
+  try{ openSidebarPrefs(); }catch(e){}
   setTimeout(function(){
     const row = document.getElementById('sbpNewRow'); if(!row) return;
     try{ row.scrollIntoView({ block:'center' }); }catch(e){}
@@ -79144,7 +79150,11 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
     <button class="ed-tab kyf-ul" onclick="showEdTab('themes',this)" title="Tooltip et thèmes"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span class="ed-tab-lbl">Tooltip et thèmes</span><span class="kyf-new-badge" data-new="tipstyle" title="Nouveau" style="display:none;font-size:0;width:8px;height:8px;min-width:8px;padding:0;border-radius:50%;background:#f0b429;pointer-events:none;flex-shrink:0;margin-left:6px"></span></button>
     <button class="ed-tab kyf-ul" onclick="showEdTab('kpi',this)" title="KPI"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg><span class="ed-tab-lbl">Cartes KPI</span><span class="kyf-new-badge" data-new="kpiset" style="display:none;margin-left:8px;flex-shrink:0;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;pointer-events:none">NOUVEAU</span></button>
     <button class="ed-tab kyf-ul" onclick="showEdTab('immo',this)" title="Immobilier" style="position:relative"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><polyline points="9 21 9 12 15 12 15 21"/></svg><span class="ed-tab-lbl">Immobilier</span><span class="kyf-new-badge" data-new="immo" style="display:none;margin-left:8px;flex-shrink:0;font-size:8px;font-weight:800;letter-spacing:.6px;padding:2px 6px;border-radius:999px;background:#f0b429;color:#000;pointer-events:none">NOUVEAU</span></button>
-    <button class="ed-tab kyf-ul" onclick="showEdTab('affichage',this)" title="Affichage des menus"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg><span class="ed-tab-lbl">Affichage</span></button>
+    <button class="ed-tab kyf-ul" id="edAffParent" aria-expanded="false" aria-controls="edAffSub" onclick="kyfEdAffNav()" title="Affichage"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg><span class="ed-tab-lbl">Affichage</span><svg class="ed-tab-chev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
+    <div id="edAffSub">
+      <button class="ed-tab kyf-ul" onclick="showEdTab('affichage',this)" title="Affichage des menus"><span class="ed-tab-lbl">Menus</span></button>
+      <button class="ed-tab kyf-ul" onclick="showEdTab('affichage2',this)" title="Barre du haut, sources de cours, rappels"><span class="ed-tab-lbl">Autres réglages</span></button>
+    </div>
     <button class="ed-tab kyf-ul" onclick="showEdTab('api',this)" title="Options avancées"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><span class="ed-tab-lbl">Google et avancé</span><span class="kyf-new-badge" data-new="dcaprix" style="display:none;flex-shrink:0;font-size:7.5px;font-weight:800;letter-spacing:.3px;padding:2px 5px;border-radius:999px;background:#f0b429;color:#000;pointer-events:none;margin-left:-7px">NOUVEAU</span></button>
     <button class="ed-tab kyf-ul" onclick="showEdTab('raccourcis',this)" title="Raccourcis clavier"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="10" x2="6.01" y2="10"/><line x1="10" y1="10" x2="10.01" y2="10"/><line x1="14" y1="10" x2="14.01" y2="10"/><line x1="18" y1="10" x2="18.01" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/></svg><span class="ed-tab-lbl">Raccourcis</span></button>
     <button class="ed-tab kyf-ul" id="edTabConvertisseur" onclick="window.open('https://keepyourfolio.fr/Convertisseur/','_blank','noopener')" title="Convertisseur PDF vers CSV (s'ouvre dans un nouvel onglet)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/><polyline points="12.5 12.5 15 15 12.5 17.5"/></svg><span class="ed-tab-lbl">Convertisseur PDF</span></button>
@@ -79562,8 +79572,7 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
 
     <!-- ── ONGLET AFFICHAGE (ex popup « Personnaliser l'affichage ») ── -->
     <div id="edTab-affichage" class="ed-tab-content" style="display:none">
-      <button type="button" id="kyfAffMenusHd" class="ed-section kyf-aff-hd" aria-expanded="false" aria-controls="kyfAffMenusBody" onclick="kyfAffMenusToggle()" style="margin-top:2px"><span>AFFICHAGE DES MENUS</span><svg class="kyf-aff-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
-      <div id="kyfAffMenusBody" style="display:none">
+      <div class="ed-section" style="margin-top:2px">AFFICHAGE DES MENUS</div>
       <div style="font-size:10px;color:var(--text3);line-height:1.6;margin:0 0 14px">Décochez pour retirer un menu de la sidebar ou la barre d'indices (clic droit sur un menu dans la sidebar pour un raccourci direct, avec confirmation). Vos données existantes ne sont pas supprimées, juste masquées.</div>
       <div class="ed-aff-grid">
         <div class="ed-aff-col">
@@ -79806,8 +79815,11 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
     </div>
         </div>
       </div>
-      </div>
-      <div class="ed-section" style="margin-top:22px">BARRE DU HAUT</div>
+    </div>
+
+    <!-- ── ONGLET AFFICHAGE, AUTRES RÉGLAGES (barre du haut, sources de cours, rappels) ── -->
+    <div id="edTab-affichage2" class="ed-tab-content" style="display:none">
+      <div class="ed-section" style="margin-top:2px">BARRE DU HAUT</div>
       <div style="font-size:10px;color:var(--text3);line-height:1.6;margin:0 0 12px">Les boutons Sauvegarder et Restaurer sont masqués par défaut. Vous pouvez toujours sauvegarder et restaurer depuis Mon compte, Export / Import avancé (avec mot de passe si vous le souhaitez). Un avertissement s'affiche quand vous les activez.</div>
       <div style="display:flex;flex-direction:column;gap:8px;max-width:520px">
         <label style="display:flex;align-items:flex-start;gap:9px;cursor:pointer;font-size:11px;color:var(--text2);padding:9px 11px;border-radius:7px;background:rgba(255,255,255,0.02);border:1px solid var(--border);transition:background .15s" onmouseover="this.style.background='var(--hov-bg)'" onmouseout="this.style.background='rgba(255,255,255,0.02)'">
@@ -80408,6 +80420,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.171 · 22/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Paramètres : Affichage devient un menu à flèche, comme la sidebar. Il ouvre deux pages : Menus (affichage des menus) et Autres réglages (barre du haut, sources de cours, rappels). Le chevron dans la page est retiré.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.170 · 22/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Paramètres, Affichage : le bloc « Affichage des menus » est replié par défaut sous un chevron. Il se déplie tout seul quand on arrive sur l'une de ses cases (recherche de réglage, widget Intraday, notification Quoi de neuf).</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.169 · 22/11/2026</div>
