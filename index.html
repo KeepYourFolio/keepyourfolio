@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.222
+  @version     : Beta 2.14.2.223
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5386,7 +5386,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.222</div>
+  <div class="kl-ver">Beta 2.14.2.223</div>
 </div>
 <script>
 (function(){
@@ -8102,7 +8102,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.222</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.223</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -27505,16 +27505,15 @@ function kyfEnvCatToggle(k){ window._kyfEnvCat = window._kyfEnvCat || {}; window
 function kyfEnvPills(){ return kyfCamHtml('env', 18); }
 // Menu « Ajouter au camembert » (2.14.2.47) : liste déroulante à cases à cocher, avec « Tout sélectionner » et navigation au clavier (flèches, Début, Fin, Espace ou Entrée, Échap).
 const KYF_CAM_ITEMS = {
-  cls:[['prec', 'Épargne de précaution'], ['pee', 'PEE (épargne salariale)'], ['scpid', 'SCPI en direct'], ['immod', 'Immobilier en direct'], ['rp', 'Résidence principale'], ['cryd', 'Crypto'], ['orp', 'Or et métaux'], ['ppv', 'Placements privés'], ['aut', 'Autres actifs'], ['etr', "Avoirs à l'étranger"]],
+  cls:[['PEA', 'PEA'], ['PEA-PME', 'PEA-PME'], ['CTO', 'CTO'], ['AV', 'Assurance-vie'], ['PER', 'PER'], ['prec', 'Épargne de précaution'], ['pee', 'PEE (épargne salariale)'], ['scpid', 'SCPI en direct'], ['immod', 'Immobilier en direct'], ['rp', 'Résidence principale'], ['cryd', 'Crypto'], ['orp', 'Or et métaux'], ['ppv', 'Placements privés'], ['aut', 'Autres actifs'], ['etr', "Avoirs à l'étranger"]],
   env:[['PEA', 'PEA'], ['PEA-PME', 'PEA-PME'], ['CTO', 'CTO'], ['AV', 'Assurance-vie'], ['PER', 'PER'], ['prec', 'Épargne de précaution'], ['pee', 'PEE (épargne salariale)'], ['scpid', 'SCPI en direct'], ['immod', 'Immobilier en direct'], ['rp', 'Résidence principale'], ['cry', 'Crypto'], ['orp', 'Or et métaux'], ['ppv', 'Placements privés'], ['aut', 'Autres actifs'], ['etr', "Avoirs à l'étranger"]]
 };
 const KYF_ENV_BASE = ['PEA', 'PEA-PME', 'CTO', 'AV', 'PER'];   // visibles par défaut ; on les masque via « hide_X »
 function kyfCamGet(scope){
-  if(scope === 'cls') return kyfClsExtra();
-  const o = kyfEnvExtra(); KYF_ENV_BASE.forEach(k => { if(!o['hide_' + k]) o[k] = 1; }); return o;
+  const o = scope === 'cls' ? kyfClsExtra() : kyfEnvExtra(); KYF_ENV_BASE.forEach(k => { if(!o['hide_' + k]) o[k] = 1; }); return o;
 }
 function kyfCamStore(scope, o){
-  if(scope !== 'cls'){ o = Object.assign({}, o); KYF_ENV_BASE.forEach(k => { if(o[k]) delete o['hide_' + k]; else o['hide_' + k] = 1; delete o[k]; }); }
+  { o = Object.assign({}, o); KYF_ENV_BASE.forEach(k => { if(o[k]) delete o['hide_' + k]; else o['hide_' + k] = 1; delete o[k]; }); }
   try{ localStorage.setItem(scope === 'cls' ? KYF_CLS_EXTRA_KEY : KYF_ENV_EXTRA_KEY, JSON.stringify(o)); }catch(_){}
 }
 function kyfCamHtml(scope, mb){
@@ -27848,8 +27847,9 @@ function kyfClsData(){
   const lp = window._lp || {}, by = {};
   const add = (k, v, it) => { if(!(v > 0)) return; const b = by[k] || (by[k] = { val:0, auto:0, items:[] }); b.val += v; if(it.mode === 'auto') b.auto++; it.val = v; b.items.push(it); };
   let cl = { claimed: new Set(), by: {} }; try{ cl = kyfAvClaim(); }catch(_){}
+  const hid = kyfClsExtra(), hidEnv = en => { const u = String(en || '').toUpperCase(); const k = /PEA.?PME/.test(u) ? 'PEA-PME' : /^PEA/.test(u) ? 'PEA' : /^(CTO|COMPTE.?TITRE)/.test(u) ? 'CTO' : ''; return !!(k && hid['hide_' + k]); };   // 2.14.2.223 : PEA, PEA-PME, CTO, AV, PER décochables dans « Ajouter au camembert »
   (Array.isArray(ETF) ? ETF : []).forEach(e => {
-    if(!e || !(e.qty > 0) || cl.claimed.has(e) || kyfEtfIsCt(e) || !kyfFamFiltreOk(kyfFamTiOf(e))) return;
+    if(!e || !(e.qty > 0) || cl.claimed.has(e) || kyfEtfIsCt(e) || !kyfFamFiltreOk(kyfFamTiOf(e)) || hidEnv(e.enveloppe)) return;
     let isEtf = true; try{ isEtf = kyfGeoIsEtf(e); }catch(_){}
     const ma = kyfFclOk(e.classe), au = (!ma && isEtf) ? kyfClsAuto(e.name || e.ticker) : '', k = ma || au || (isEtf ? 'nc' : 'act');
     let v = 0; try{ v = getEval(e, lp[e.ticker]); }catch(_){}
@@ -27858,6 +27858,7 @@ function kyfClsData(){
   });
   try{ avLoad().forEach(d => {
     if(!kyfFamFiltreOk(d.titulaire)) return;
+    if(hid['hide_' + (String(d.type || 'AV').toUpperCase() === 'PER' ? 'PER' : (String(d.type || 'AV').toUpperCase() === 'AV' ? 'AV' : '-'))]) return;
     const D = kyfRepData(d.id); if(!D) return;
     const cn = String(d.type || 'AV').toUpperCase() + ' · ' + (d.contratNom || d.assureur || 'Contrat');
     D.lines.forEach(l => {
@@ -27891,7 +27892,7 @@ function kyfClsRender(card){
   const chev = o => '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--text3)"><polyline points="' + (o ? '6 9 12 15 18 9' : '9 6 15 12 9 18') + '"/></svg>';
   const badge = m => m === 'auto' ? '<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;background:rgba(132,204,22,0.18);color:var(--green)">auto</span>'
     : m === 'choisie' ? '<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;background:var(--hov-bg);color:var(--text2)">choisie</span>' : '';
-  let h = '<div class="card-title" style="margin-bottom:20px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap"><span>PAR CLASSE · ETF ET FONDS RÉUNIS' + (Object.keys(kyfClsExtra()).length ? ' ET AJOUTS' : '') + '</span>'
+  let h = '<div class="card-title" style="margin-bottom:20px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap"><span>PAR CLASSE · ETF ET FONDS RÉUNIS' + (Object.keys(kyfClsExtra()).filter(k => k.indexOf('hide_') !== 0).length ? ' ET AJOUTS' : '') + '</span>'
     + '<span style="display:flex;align-items:baseline;gap:10px;letter-spacing:0;text-transform:none"><span style="font-size:11px;font-weight:400;color:var(--text3)">Total</span><span style="font-family:\'Space Grotesk\',sans-serif;font-size:24px;font-weight:700;color:var(--text)">' + fmt(tot, 0) + ' €</span></span></div>'
     + '<div id="envFamBar" style="display:none;margin:0 0 14px"></div>';
   { const ex = kyfClsExtra();
@@ -52619,7 +52620,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.222\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.223\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -80520,7 +80521,7 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
-                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.222 · 23/11/2026</div><div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Calendrier : un champ permet de taper la date (JJ/MM/AAAA). Portefeuille par enveloppe : PEA, PEA-PME, CTO, assurance-vie et PER se cochent et se décochent dans « Ajouter au camembert ».</div><div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.221 · 22/11/2026</div>
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.223 · 23/11/2026</div><div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Portefeuille par classe : PEA, PEA-PME, CTO, assurance-vie et PER se cochent et se décochent dans « Ajouter au camembert », comme dans Par enveloppe.</div><div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.222 · 23/11/2026</div><div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Calendrier : un champ permet de taper la date (JJ/MM/AAAA). Portefeuille par enveloppe : PEA, PEA-PME, CTO, assurance-vie et PER se cochent et se décochent dans « Ajouter au camembert ».</div><div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.221 · 22/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Opérations du téléphone : la pastille et la petite fenêtre ne comptent plus les anciens « paquets » chiffrés restés dans l’onglet KYF_Mobile_Paquets du classeur (ancien système, remplacé par la réception automatique). Seules comptent les opérations du Journal, donc plus de faux « à vérifier » quand tout est traité.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.220 · 22/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Journal des opérations du téléphone : l’avis jaune « paquets à ouvrir » et son bouton sont retirés, pour garder l’écran sobre. Le Journal ne garde que le bouton « Vider les bloquées et refusées ».</div>
