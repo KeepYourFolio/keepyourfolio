@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.225
+  @version     : Beta 2.14.2.226
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5386,7 +5386,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.225</div>
+  <div class="kl-ver">Beta 2.14.2.226</div>
 </div>
 <script>
 (function(){
@@ -8102,7 +8102,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.225</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.226</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -46274,7 +46274,7 @@ function renderETFTable(lp){
       ${showCol('investi')?`<td style="font-weight:500;letter-spacing:0.3px;cursor:pointer" onclick="etfInlineEdit(${ETF.indexOf(e)}, this, 'montant', ${kyfJsNum(invest)}, {type:'number', step:'0.01', min:0, width:'100px'})"><span>${fmt(invest,2)} €</span></td>`:''}
       ${showCol('pru')?`<td style="cursor:pointer" onclick="etfInlineEdit(${ETF.indexOf(e)}, this, 'pru', ${kyfJsNum(e.pru)}, {type:'number', step:'0.001', min:0, width:'90px'})"><span>${fmt(e.pru,3)}</span></td>`:''}
       ${showCol('qte')?`<td style="cursor:pointer" onclick="etfInlineEdit(${ETF.indexOf(e)}, this, 'qty', ${kyfJsNum(e.qty)}, {type:'number', step:'1', min:0, width:'80px'})"><span>${kyfQteTxt(e.qty) || '-'}</span></td>`:''}
-      ${showCol('eval')?(fxMiss?`<td style="color:var(--text2)" title="${kyfEscAttrStale(kyfFxNote(p.currency || getTickerCurrency(e.ticker, p)))}">indisponible</td>`:(noVal?`<td style="color:var(--text2)" title="Cours indisponible : valeur non calculée">indisponible</td>`:`<td>${fmt(evalV,2)} €</td>`)):''}
+      ${showCol('eval')?(fxMiss?`<td style="color:var(--text2)" title="${kyfEscAttrStale(kyfFxNote(p.currency || getTickerCurrency(e.ticker, p)))}">indisponible</td>`:(noVal?`<td style="color:var(--text2)${(!hasLive&&!e.contratId)?';cursor:pointer':''}" title="${(!hasLive&&!e.contratId)?'Cours indisponible : cliquez pour saisir la valeur de la ligne':'Cours indisponible : valeur non calculée'}"${(!hasLive&&!e.contratId)?` onclick="etfInlineEdit(${ETF.indexOf(e)}, this, 'evalBase', 0, {type:'number', step:'0.01', min:0, width:'110px'})"`:''}><span>indisponible</span></td>`:((!hasLive&&!e.contratId&&kyfEtfBase(e)>0)?`<td style="cursor:pointer" title="Valeur saisie à la main : cliquez pour la modifier" onclick="etfInlineEdit(${ETF.indexOf(e)}, this, 'evalBase', ${kyfJsNum(kyfEtfBase(e))}, {type:'number', step:'0.01', min:0, width:'110px'})"><span>${fmt(evalV,2)} €</span></td>`:`<td>${fmt(evalV,2)} €</td>`))):''}
       ${showCol('cours')?`<td id="cours-${String(e.ticker||'').replace(/[^a-zA-Z0-9]/g,'_')}" style="white-space:nowrap;text-align:center">${hasLive?`
         <div style="font-weight:700;color:var(--text)"${kyfVolTitle(p)?` title="${kyfEscAttrStale(kyfVolTitle(p))}"`:''}>${fmt(p.price,3)} ${getCurrencySymbol(p.currency||getTickerCurrency(e.ticker,p))}</div>
         <div style="font-size:10px;margin-top:2px;display:flex;align-items:center;justify-content:center;${kyfMktStHtml(e.ticker,p)?'flex-wrap:wrap;':''}font-weight:${p.pct>=0?'700':'400'};${p.pct>=0?'color:var(--green)':'color:var(--red)'}">
@@ -52667,7 +52667,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.225\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.226\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -80568,7 +80568,7 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
-                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.225 · 24/11/2026</div><div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Rendement par actif : chaque ligne montre sa place gagnée ou perdue depuis la veille (flèche, nombre de places, « 4 › 2 »), NOUVEAU pour une ligne arrivée dans le classement, et la ligne n° 1 affiche « depuis 10 sem. » (jours, semaines, ans) avec une couronne. Le classement est gardé sur cet appareil, par catégorie, et se remplit à partir de ce jour. Les gains sont tous du même vert et les pertes du même rouge (podium, liste, barres, crypto comprise).</div>
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.226 · 24/11/2026</div><div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">ETF &amp; Actions : une ligne sans cours (certificat, produit sans ticker Yahoo) affiche « indisponible » : un clic sur la case permet de saisir sa valeur à la main, modifiable ensuite de la même façon. Assurance vie / PER : un fonds suivi par un ticker du type FR0010148981.PA ou LU0054578231-USD.LU, dont le cours direct est introuvable, est maintenant suivi par son ISIN. Retour d’un utilisateur du forum.</div><div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.225 · 24/11/2026</div><div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Rendement par actif : chaque ligne montre sa place gagnée ou perdue depuis la veille (flèche, nombre de places, « 4 › 2 »), NOUVEAU pour une ligne arrivée dans le classement, et la ligne n° 1 affiche « depuis 10 sem. » (jours, semaines, ans) avec une couronne. Le classement est gardé sur cet appareil, par catégorie, et se remplit à partir de ce jour. Les gains sont tous du même vert et les pertes du même rouge (podium, liste, barres, crypto comprise).</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.224 · 23/11/2026</div><div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance vie / PER : CHOIX LIBRE propose aussi les plans PEE (tout coché donne le même total que TOUS). Le camembert retombe sur le total des chiffres du haut : le PEE compté y apparaît, et ce qui n'a pas de détail s'affiche en « Non détaillé » au lieu de disparaître. Retour d'un utilisateur du forum.</div><div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.223 · 23/11/2026</div><div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Portefeuille par classe : PEA, PEA-PME, CTO, assurance-vie et PER se cochent et se décochent dans « Ajouter au camembert », comme dans Par enveloppe.</div><div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.222 · 23/11/2026</div><div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Calendrier : un champ permet de taper la date (JJ/MM/AAAA). Portefeuille par enveloppe : PEA, PEA-PME, CTO, assurance-vie et PER se cochent et se décochent dans « Ajouter au camembert ».</div><div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.221 · 22/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Opérations du téléphone : la pastille et la petite fenêtre ne comptent plus les anciens « paquets » chiffrés restés dans l’onglet KYF_Mobile_Paquets du classeur (ancien système, remplacé par la réception automatique). Seules comptent les opérations du Journal, donc plus de faux « à vérifier » quand tout est traité.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.220 · 22/11/2026</div>
@@ -104378,7 +104378,9 @@ function kyfAvSupportType(name, catTxt){
 }
 // 2.9.0.41 : un support remonte dans le Portefeuille (et suit le cours du jour) s'il est ETF / Action avec un ticker, OU s'il est « Fonds géré » / « Obligations » avec un ticker Yahoo de fonds (0P…).
 // Le type du support ne change pas. Un fonds suivi par son ISIN (StatsAVie) n'est pas concerné : son « ticker » est l'ISIN.
-function kyfAvFundTk(tk){ const t = String(tk||'').trim(); return /^0P[A-Z0-9]{6,}(\.[A-Z]{1,3})?$/i.test(t) || (/^[A-Z0-9]{2,12}\.[A-Z]{1,3}$/i.test(t) && !kyfIsISINShape(t)); }   // 2.14.2.166 : ticker Morningstar (0P…) ou ticker de cotation à suffixe de place (YF5J.F), comme un ticker d'ETF
+function kyfAvFundTk(tk){ const t = String(tk||'').trim(); return /^0P[A-Z0-9]{6,}(\.[A-Z]{1,3})?$/i.test(t) || (/^[A-Z0-9]{2,12}(-[A-Z]{3})?\.[A-Z]{1,3}$/i.test(t) && !kyfIsISINShape(t)); }
+// 2.14.2.226 : ISIN caché dans un ticker de cotation (FR0010148981.PA, LU0054578231-USD.LU) : sert de repli quand le cours direct est introuvable
+function kyfAvIsinOfTk(tk){ const m = /^([A-Z]{2}[A-Z0-9]{9}[0-9])(?:-[A-Z]{3})?(?:\.[A-Z]{1,3})?$/i.exec(String(tk || '').trim()); return m ? m[1].toUpperCase() : ''; }   // 2.14.2.166 : ticker Morningstar (0P…) ou ticker de cotation à suffixe de place (YF5J.F), comme un ticker d'ETF
 function kyfAvPfLine(p){ return !!(p && p.ticker && (p.type === 'etf' || p.type === 'action' || ((p.type === 'fonds' || p.type === 'obl') && kyfAvFundTk(p.ticker)))); }
 // 2.12.1.20 : ligne dont le cours se retrouve par l'ISIN : un fonds, ou un ETF / une action importé(e) avec l'ISIN comme ticker (sans ticker Yahoo, pas de cours en direct)
 function kyfFondsTrack(p){ return !!(p && p.ticker && (kyfFondsLike(p.type) || ((p.type === 'etf' || p.type === 'action') && kyfIsISINShape(p.ticker)))); }
@@ -105475,7 +105477,10 @@ async function avPosFondsValeur(pos){
   if(!pos || !pos.ticker) return { ok:false, msg:'Aucun ISIN enregistré pour ce fonds.' };
   if(kyfAvFundTk(pos.ticker)){   // 2.14.2.166 : ticker de cotation : cours direct (la source des fonds ne connaît que les ISIN)
     const _fb = await kyfFondsFallbackValeur_(pos);
-    return _fb > 0 ? { ok:true, valeur:_fb } : { ok:false, msg:'Cours introuvable pour ce ticker (ou écart de plus de 50 % avec la valeur connue) : vérifiez-le.' };
+    if(_fb > 0) return { ok:true, valeur:_fb };
+    const _is = kyfAvIsinOfTk(pos.ticker);   // 2.14.2.226 : pas de cours direct : on suit le fonds par son ISIN (source des fonds)
+    if(!_is) return { ok:false, msg:'Cours introuvable pour ce ticker (ou écart de plus de 50 % avec la valeur connue) : vérifiez-le.' };
+    pos = Object.assign({}, pos, { ticker: _is });
   }
   try {
     const resp = await fetch(GAS_STATSAVIE_ + '?action=prix_fonds&isin=' + encodeURIComponent(pos.ticker));
