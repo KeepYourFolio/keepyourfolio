@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.2.224
+  @version     : Beta 2.14.2.225
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5386,7 +5386,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.2.224</div>
+  <div class="kl-ver">Beta 2.14.2.225</div>
 </div>
 <script>
 (function(){
@@ -8102,7 +8102,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.2.224</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.2.225</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -46422,6 +46422,48 @@ function setPerfByAssetFilter(cat){
   renderPerfByAssetGrouped();
 }
 
+// 2.14.2.225 : évolution des places du « Rendement par actif » (comme sur le mobile). On garde sur cet appareil, par catégorie, le classement du dernier jour passé (noms de lignes) et la date d'arrivée de la ligne n° 1.
+function kyfPerfRkState(rows){
+  try{
+    const dt = new Date(), t = dt.getFullYear() + '-' + ('0' + (dt.getMonth() + 1)).slice(-2) + '-' + ('0' + dt.getDate()).slice(-2);
+    const o = JSON.parse(localStorage.getItem('kyf-perf-rk') || 'null') || {};
+    // Rendu partiel (cours pas encore arrivés) : on ne touche à rien, sauf si ça dure
+    if(o.n && rows.length < o.n * 0.8 && (o.skip || 0) < 3){ o.skip = (o.skip || 0) + 1; localStorage.setItem('kyf-perf-rk', JSON.stringify(o)); return o; }
+    o.skip = 0; o.n = rows.length;
+    if(o.d !== t){ if(o.cur) o.ref = o.cur; o.d = t; }
+    const cur = {}, t1 = o.t1 || {};
+    ['all', 'ETF', 'Crypto', 'SCPI', 'Immo', 'Or'].forEach(c => {
+      const L = (c === 'all' ? rows : rows.filter(r => r.cat === c)).slice().sort((a, b) => b.gpp - a.gpp).map(r => r.nom);
+      cur[c] = L;
+      if(L.length){ if(!t1[c] || t1[c].n !== L[0]) t1[c] = { n:L[0], s:t }; } else delete t1[c];
+    });
+    o.cur = cur; o.t1 = t1;
+    localStorage.setItem('kyf-perf-rk', JSON.stringify(o));
+    return o;
+  }catch(e){ return null; }
+}
+function kyfPerfRkDur(sd){
+  try{
+    if(!sd) return '';
+    const p = sd.split('-'), a = new Date(+p[0], +p[1] - 1, +p[2], 12), n = new Date(), b = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 12), d = Math.round((b - a) / 864e5);
+    if(d < 2) return '';
+    if(d < 14) return d + ' j';
+    if(d < 365) return Math.floor(d / 7) + ' sem.';
+    if(d < 548) return '1 an';
+    if(d < 730) return '1,5 an';
+    return Math.floor(d / 365) + ' ans';
+  }catch(e){ return ''; }
+}
+function kyfPerfRkChip(name, i, ref){
+  // ref = classement de la veille dans la même catégorie (noms) ; pas de ref = pas de pastille
+  if(!ref || !ref.length) return '';
+  const p = ref.indexOf(name);
+  if(p < 0) return '<span style="font-size:9px;font-weight:800;color:var(--accent);border:1px solid var(--accent);border-radius:99px;padding:1px 7px;white-space:nowrap">NOUVEAU</span>';
+  const d = p - i;
+  if(!d) return '';
+  const up = d > 0, c = up ? 'var(--green)' : 'var(--red)';
+  return '<span title="Place d\'hier : ' + (p + 1) + '" style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:800;white-space:nowrap;color:' + c + '"><svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="' + (up ? 'M12 4l9 15H3z' : 'M12 20L3 5h18z') + '"/></svg>' + Math.abs(d) + '<span style="color:var(--text3);font-weight:600">' + (p + 1) + ' \u203a ' + (i + 1) + '</span></span>';
+}
 function renderPerfByAssetGrouped(){
   const el = document.getElementById('perfByAssetTable');
   if(!el) return;
@@ -46439,6 +46481,8 @@ function renderPerfByAssetGrouped(){
 
   const filtered = (_perfByAssetFilter === 'all' ? rows : rows.filter(r=>r.cat===_perfByAssetFilter))
     .slice().sort((a,b) => b.gpp - a.gpp);
+  const _rkSt = kyfPerfRkState(rows), _rkRef = _rkSt && _rkSt.ref ? _rkSt.ref[_perfByAssetFilter] : null;
+  const _rkDur = _rkSt && _rkSt.t1 && _rkSt.t1[_perfByAssetFilter] ? kyfPerfRkDur(_rkSt.t1[_perfByAssetFilter].s) : '';
 
   let html = `<div style="display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px">${filterPills}</div>`;
 
@@ -46501,6 +46545,7 @@ function renderPerfByAssetGrouped(){
       html += `<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;background:${podiumBg[i]};border:1px solid ${podiumBorder[i]}">
         <span style="display:inline-flex;flex-shrink:0">${medals[i]}</span>
         <span style="flex:1;min-width:0;font-family:'Inter',sans-serif;font-size:12px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(r.nom)}</span>
+        <span style="display:flex;align-items:center;gap:8px;flex-shrink:0">${i === 0 && _rkDur ? `<span title="En tête depuis ${_rkDur}" style="display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:800;color:#1a1300;background:var(--accent);border-radius:99px;padding:2px 8px;white-space:nowrap"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18h18M4 8l4.5 4L12 5l3.5 7L20 8l-1.5 10h-13z"/></svg>depuis ${_rkDur}</span>` : ''}${kyfPerfRkChip(r.nom, i, _rkRef)}</span>
         <div style="text-align:right;flex-shrink:0">
           <div style="font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:${color}">${sign}${r.gpp.toFixed(1)}%</div>
           <div style="font-size:9px;color:var(--text3)">${sign}${fmt(r.gpe,0)} €</div>
@@ -46521,15 +46566,16 @@ function renderPerfByAssetGrouped(){
     'Or':     'linear-gradient(90deg,#b8860b,#D4AF37)',
     'Immo':   'linear-gradient(90deg,#4c1d95,#6D28D9)',
   };
-  const negGradient = 'linear-gradient(90deg,#c81e3a,#ff4560)';
+  const posGradient = 'linear-gradient(90deg,color-mix(in srgb,var(--green) 68%,#000),var(--green))';
+  const negGradient = 'linear-gradient(90deg,color-mix(in srgb,var(--red) 68%,#000),var(--red))';
   const rest = filtered.slice(3);
   if(rest.length){
     const maxAbs = Math.max(...rest.map(r=>Math.abs(r.gpp)), 1);
     html += `<div style="display:flex;flex-direction:column;gap:7px">`;
     rest.forEach((r,i)=>{
       const cc = catColors[r.cat]||'var(--text3)';
-      const color = r.gpp >= 0 ? cc : 'var(--red)';
-      const barGrad = r.gpp >= 0 ? (catGradients[r.cat]||'linear-gradient(90deg,var(--text3),var(--text2))') : negGradient;
+      const color = r.gpp >= 0 ? 'var(--green)' : 'var(--red)';
+      const barGrad = r.gpp >= 0 ? posGradient : negGradient;
       const sign  = r.gpp >= 0 ? '+' : '';
       const widthPct = Math.max(4, Math.abs(r.gpp)/maxAbs*100);
       html += `<div style="display:flex;align-items:center;gap:8px">
@@ -46539,6 +46585,7 @@ function renderPerfByAssetGrouped(){
           <div style="height:100%;width:${widthPct}%;background:${barGrad};border-radius:4px"></div>
         </div>
         <span style="width:48px;flex-shrink:0;text-align:right;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;color:${color}">${sign}${r.gpp.toFixed(1)}%</span>
+        <span style="width:74px;flex-shrink:0">${kyfPerfRkChip(r.nom, i + 3, _rkRef)}</span>
       </div>`;
     });
     html += `</div>`;
@@ -52620,7 +52667,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.224\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.2.225\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -80521,6 +80568,7 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.225 · 24/11/2026</div><div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Rendement par actif : chaque ligne montre sa place gagnée ou perdue depuis la veille (flèche, nombre de places, « 4 › 2 »), NOUVEAU pour une ligne arrivée dans le classement, et la ligne n° 1 affiche « depuis 10 sem. » (jours, semaines, ans) avec une couronne. Le classement est gardé sur cet appareil, par catégorie, et se remplit à partir de ce jour. Les gains sont tous du même vert et les pertes du même rouge (podium, liste, barres, crypto comprise).</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.224 · 23/11/2026</div><div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Assurance vie / PER : CHOIX LIBRE propose aussi les plans PEE (tout coché donne le même total que TOUS). Le camembert retombe sur le total des chiffres du haut : le PEE compté y apparaît, et ce qui n'a pas de détail s'affiche en « Non détaillé » au lieu de disparaître. Retour d'un utilisateur du forum.</div><div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.223 · 23/11/2026</div><div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Portefeuille par classe : PEA, PEA-PME, CTO, assurance-vie et PER se cochent et se décochent dans « Ajouter au camembert », comme dans Par enveloppe.</div><div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.222 · 23/11/2026</div><div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Calendrier : un champ permet de taper la date (JJ/MM/AAAA). Portefeuille par enveloppe : PEA, PEA-PME, CTO, assurance-vie et PER se cochent et se décochent dans « Ajouter au camembert ».</div><div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.221 · 22/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Opérations du téléphone : la pastille et la petite fenêtre ne comptent plus les anciens « paquets » chiffrés restés dans l’onglet KYF_Mobile_Paquets du classeur (ancien système, remplacé par la réception automatique). Seules comptent les opérations du Journal, donc plus de faux « à vérifier » quand tout est traité.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.2.220 · 22/11/2026</div>
