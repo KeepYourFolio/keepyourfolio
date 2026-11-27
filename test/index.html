@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.14.3.89
+  @version     : Beta 2.14.3.90
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5400,7 +5400,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.14.3.89</div>
+  <div class="kl-ver">Beta 2.14.3.90</div>
 </div>
 <script>
 (function(){
@@ -5616,7 +5616,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status" tabindex="0" aria-describedby="kspWhy"><span class="ksp-wait-clip" aria-hidden="true"><i class="ksp-wait-fill"></i></span><span class="ksp-wait-txt">CHARGEMENT…<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span><span class="ksp-why-tip" id="kspWhy" role="tooltip"><b>Pourquoi ce chargement ?</b>Keep Your Folio fonctionne entièrement dans votre navigateur, sans serveur : le programme complet (graphiques, calculs, outils d’import) se télécharge sur votre appareil. C’est ce qui permet à vos données de rester chez vous.</span></span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">BETA 2.14.3.89 · <a href="#" onclick="kyfSplashJournal();return false">NOUVEAUTÉS</a></span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">BETA 2.14.3.90 · <a href="#" onclick="kyfSplashJournal();return false">NOUVEAUTÉS</a></span></div>
       </div>
     </div>
   </div>
@@ -8116,7 +8116,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.14.3.89</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.14.3.90</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -18191,11 +18191,22 @@ function kyfIntradayHoldsAsia_(){
 }
 function kyfIntradayUpdAns_(){ try{ return JSON.parse(localStorage.getItem('kyf-intraday-upd13a') || 'null'); }catch(e){ return null; } }
 // Bloc « Mise à jour du script » (dans le cadre Intraday, à la place de la courbe) : reste affiché tant que la personne n'a pas répondu puis touché OK.
+function kyfIntradayTutoMode_(m){ window._kyfIntradayTutoMode = m; kyfIntradayTutoSync_(); }
+// Tuto de l'Intraday : installation (pas de script) ou mise à jour (script déjà en place), au choix de la personne
+function kyfIntradayTutoSync_(){
+  try{
+    const i = document.getElementById('intradayTutoInstall'), u = document.getElementById('intradayTutoUpdate'); if(!i || !u) return;
+    const has = !!KYF_INTRADAY_URL, m = window._kyfIntradayTutoMode || (has ? 'maj' : 'new');
+    const showU = m === 'maj';
+    i.style.display = showU ? 'none' : ''; u.style.display = showU ? '' : 'none';
+    const b = document.getElementById('intradayTutoToUpd'); if(b) b.style.display = has ? 'inline-flex' : 'none';
+  }catch(e){}
+}
 function kyfIntradayVerTag_(){
   try{ const t = document.getElementById('intradayVerTag'); if(t){ const v = window._kyfIntradayVer; const x = v ? 'script v' + v : ''; if(t.textContent !== x) t.textContent = x; } }catch(e){}
 }
 function kyfIntradayUpdModalMaybe_(){
-  try{ kyfIntradayVerTag_(); }catch(e){}
+  try{ kyfIntradayVerTag_(); kyfIntradayTutoSync_(); }catch(e){}
   try{
     const m = document.getElementById('intradayUpdInline'); if(!m) return;
     const need = !!KYF_INTRADAY_URL && !kyfIntradayUpdAns_() && !!window._kyfIntradayVer && !kyfIntradayVerAtLeast_(window._kyfIntradayVer, '1.3');
@@ -18296,6 +18307,7 @@ async function pushIntradayPositions(){
   }
 }
 function openIntradayCodeModal(){
+  try{ const w = document.getElementById('intradayCodeIdWarn'); if(w) w.style.display = KYF_INTRADAY_URL ? 'block' : 'none'; }catch(e){}
   const el = document.getElementById('intradayCodeContent');
   if(el) el.textContent = KYF_INTRADAY_GAS_CODE;
   document.getElementById('intradayCodeModal').style.display = 'flex';
@@ -53063,7 +53075,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.3.89\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.14.3.90\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -77999,8 +78011,11 @@ document.addEventListener('DOMContentLoaded', function(){
 // Pour annoncer une nouveauté : AJOUTER EN TÊTE de KYF_NOUVEAUTES.annonces une annonce { id, date (AAAA-MM-JJ), items }. Pas d'annonce = rien d'affiché, quel que soit le nombre de pushes.
 // Chaque utilisateur voit une seule fois les annonces qu'il n'a pas encore vues (les plus récentes d'abord, 5 au plus, 7 jours au plus). Un nouvel utilisateur (écran de bienvenue pas encore vu) ne voit rien : tout est nouveau pour lui.
 const KYF_NOUVEAUTES = {
-  badge: ['intraasie', 'arbprog', 'avdonut', 'avdonutb', 'etranger', 'arbmulti', 'nueprop', 'kpichips', 'kpiset', 'autres', 'envvue', 'famille', 'avjrn', 'arb', 'immo', 'avref', 'avfrais', 'fraispg', 'avevo', 'avsuivi', 'dcaprix', 'ct', 'tend', 'tipstyle', 'ptf', 'pee', 'perecol', 'ctlg', 'vue', 'visite', 'clsvue', 'shimg', 'georap', 'acctpast'],   // clés des badges (une ou plusieurs ; tableau) ; clé du badge « Nouveau » (span .kyf-new-badge data-new="...") ; vide = aucun badge
+  badge: ['intramaj', 'intraasie', 'arbprog', 'avdonut', 'avdonutb', 'etranger', 'arbmulti', 'nueprop', 'kpichips', 'kpiset', 'autres', 'envvue', 'famille', 'avjrn', 'arb', 'immo', 'avref', 'avfrais', 'fraispg', 'avevo', 'avsuivi', 'dcaprix', 'ct', 'tend', 'tipstyle', 'ptf', 'pee', 'perecol', 'ctlg', 'vue', 'visite', 'clsvue', 'shimg', 'georap', 'acctpast'],   // clés des badges (une ou plusieurs ; tableau) ; clé du badge « Nouveau » (span .kyf-new-badge data-new="...") ; vide = aucun badge
   annonces: [
+    { id: 'a-2026-11-27c', date: '2026-11-27', items: [
+      { titre: 'Tuto de mise à jour du script Intraday', version: '2.14.3.90', texte: 'Dans Paramètres, Google et avancé, Intraday : si vous avez déjà le script, le tuto devient « Comment mettre à jour le script » (sans refaire toute l\'installation). Un lien permet de repasser au tuto de première installation.' }
+    ] },
     { id: 'a-2026-11-27b', date: '2026-11-27', items: [
       { titre: 'Script Intraday v1.3 (facultatif) : valeurs asiatiques', version: '2.14.3.84', texte: 'Si vous suivez des valeurs asiatiques (Hong Kong, Chine, Japon…), une mise à jour facultative du script Intraday relève la courbe dès 2 h 30 au lieu de 9 h. Un petit bloc remplace la courbe dans le cadre Intraday : choisissez « Je ferai la mise à jour » ou « Je n\'ai pas d\'action étrangère », puis OK. Le script se retrouve ensuite dans Paramètres, Google et avancé, Intraday. Sans mise à jour, tout continue de fonctionner comme avant.' }
     ] },
@@ -78337,7 +78352,7 @@ function kyfAvisPromoOn_(){
 // Une pastille NOUVEAU ne vit que 48 heures après la date de sortie de sa fonction (ou jusqu'à ce qu'on ouvre le bouton concerné).
 // Chaque clé de KYF_NOUVEAUTES.badge DOIT avoir sa date ici ; sans date, la pastille est éteinte (un utilisateur ne doit jamais voir un arc-en-ciel de NOUVEAU).
 const KYF_NEW_BADGE_HOURS = 48;
-const KYF_NEW_BADGE_DATES = { intraasie:'2026-11-27', arbprog:'2026-11-26', avdonut:'2026-11-05', avdonutb:'2026-11-05', etranger:'2026-11-05', arbmulti:'2026-10-30', nueprop:'2026-10-30', kpichips:'2026-10-30', kpiset:'2026-10-29', autres:'2026-10-29', envvue:'2026-10-28', famille:'2026-10-28', avjrn:'2026-10-28', perecol:'2026-11-06', visite:'2026-11-07', shimg:'2026-11-21', georap:'2026-11-22', acctpast:'2026-11-27' };
+const KYF_NEW_BADGE_DATES = { intramaj:'2026-11-27', intraasie:'2026-11-27', arbprog:'2026-11-26', avdonut:'2026-11-05', avdonutb:'2026-11-05', etranger:'2026-11-05', arbmulti:'2026-10-30', nueprop:'2026-10-30', kpichips:'2026-10-30', kpiset:'2026-10-29', autres:'2026-10-29', envvue:'2026-10-28', famille:'2026-10-28', avjrn:'2026-10-28', perecol:'2026-11-06', visite:'2026-11-07', shimg:'2026-11-21', georap:'2026-11-22', acctpast:'2026-11-27' };
 function kyfNewBadgesExpire_(){
   try{
     const now = Date.now();
@@ -80652,6 +80667,24 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       </div>
 
       <div style="padding:10px 12px;border-radius:8px;background:rgba(0,212,170,0.06);border:1px solid rgba(0,212,170,0.2);margin-bottom:10px;font-family:'Inter',sans-serif;font-size:11px;color:var(--text3);line-height:1.9">
+        <div id="intradayTutoUpdate" style="display:none">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <span style="display:flex;align-items:center;gap:5px;font-weight:700;color:var(--text2)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> COMMENT METTRE À JOUR LE SCRIPT<span class="kyf-new-badge" data-new="intramaj" style="display:none;flex-shrink:0;font-size:7.5px;font-weight:800;letter-spacing:.3px;padding:2px 5px;border-radius:999px;background:#f0b429;color:#000;pointer-events:none;margin-left:4px">NOUVEAU</span></span>
+          <button type="button" onclick="kyfIntradayTutoMode_('new')" style="display:inline-flex;align-items:center;font-family:'Inter',sans-serif;font-size:9px;font-weight:600;padding:2px 0;background:none;border:0;color:var(--text3);text-decoration:underline;cursor:pointer;transition:color .15s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">Première installation ?</button>
+        </div>
+        <div>Pas besoin de nouveau Google Sheet ni de nouvelle URL : on remplace seulement le code dans votre projet existant.</div>
+        <div>1. Ouvrez votre Google Sheet <strong>Keep Your Folio - INTRADAY</strong>, puis <strong>Extensions → Apps Script</strong></div>
+        <div style="background:rgba(255,69,96,0.08);border-left:3px solid #ff4560;padding:6px 9px;border-radius:4px;margin:4px 0;display:flex;gap:7px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#ff4560" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span><strong>2. IMPORTANT : gardez votre ID.</strong> Dans l'éditeur, repérez la ligne <code style="background:rgba(255,255,255,0.08);padding:1px 4px;border-radius:3px">SPREADSHEET_ID</code> et <strong>copiez votre ID</strong> (entre les guillemets) <strong>avant</strong> de coller le nouveau code : il l'efface. Sans lui, le script ne fonctionne plus.<br><span style="color:var(--text3)">Astuce : le presse-papier ne garde qu'un seul élément. Sur <strong>Windows</strong>, activez l'historique du presse-papier (touche <strong>Windows + V</strong>) : vous retrouverez à la fois votre ID et le script copiés. Sur <strong>Mac</strong>, collez d'abord votre ID dans une note le temps de remplacer le code.</span></span></div>
+        <div>3. Copiez le nouveau code via le bouton ci-dessous, puis collez-le dans l'éditeur en <strong>remplaçant tout le contenu</strong></div>
+        <div style="margin:6px 0">
+          <button type="button" onclick="openIntradayCodeModal()" style="display:inline-flex;align-items:center;gap:4px;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;padding:7px 14px;border-radius:8px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;transition:background .15s" onmouseover="this.style.background='var(--hov-bg)';this.style.color='var(--text)'" onmouseout="this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)'"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Voir / Copier le script GAS</button>
+        </div>
+        <div style="background:rgba(255,69,96,0.08);border-left:3px solid #ff4560;padding:6px 9px;border-radius:4px;margin:4px 0;display:flex;gap:7px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#ff4560" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>4. <strong>Remettez votre ID</strong> à la place de <code style="background:rgba(255,255,255,0.08);padding:1px 4px;border-radius:3px">VOTRE_SPREADSHEET_ID_ICI</code>, entre guillemets (Windows + V pour le retrouver), puis <strong>Enregistrer le projet</strong>. Oublier cette étape est la cause n°1 des erreurs.</span></div>
+        <div>5. <strong>Déployer → Gérer les déploiements</strong>, crayon (Modifier) sur votre déploiement, Version : <strong>Nouvelle version</strong>, puis <strong>Déployer</strong></div>
+        <div>6. Rien d'autre à faire : l'URL reste la même et le déclencheur aussi (un seul, sur <strong>kyfIntradayTick</strong>)</div>
+        <div style="background:rgba(0,212,170,0.1);border-left:3px solid var(--green);padding:4px 8px;border-radius:4px;margin:2px 0">7. Vérifiez : le numéro de version du script s'affiche dans le titre du cadre Intraday (« script v1.3 »)</div>
+      </div>
+        <div id="intradayTutoInstall">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
           <span style="display:flex;align-items:center;gap:5px;font-weight:700;color:var(--text2)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg> COMMENT ACTIVER L'INTRADAY</span>
           <button onclick="openIntradayTutoModal()" style="display:inline-flex;align-items:center;gap:4px;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;padding:5px 10px;border-radius:6px;border:1px solid var(--border2);background:var(--btn-secondary-bg);color:var(--text2);cursor:pointer;transition:background .15s" onmouseover="this.style.background='var(--hov-bg)';this.style.color='var(--text)'" onmouseout="this.style.background='var(--btn-secondary-bg)';this.style.color='var(--text2)'"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> Tuto avec captures</button>
@@ -80676,6 +80709,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
         <div>15. Fonction : <strong>kyfIntradayTick</strong> (et non installerMonDeclencheur) · Source : <strong>Déclencheur horaire</strong> → <strong>Intervalle en minutes</strong> → <strong>Toutes les 5 minutes</strong> → <strong>Enregistrer</strong></div>
         <div>16. (Optionnel) Dans le menu de gauche, l'icône <strong style="display:inline-flex;align-items:center;gap:3px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Déclencheurs</strong> permet de vérifier qu'il n'y a <strong>qu'un seul</strong> déclencheur, sur <strong>kyfIntradayTick</strong>, toutes les 5 minutes</div>
         <div style="background:rgba(0,212,170,0.1);border-left:3px solid var(--green);padding:4px 8px;border-radius:4px;margin:2px 0">17. Collez l'URL copiée à l'étape 13 dans le champ ci-dessous, puis cliquez sur <strong>Enregistrer</strong></div>
+        <div style="margin-top:6px"><button type="button" id="intradayTutoToUpd" onclick="kyfIntradayTutoMode_('maj')" style="display:none;display:inline-flex;align-items:center;font-family:'Inter',sans-serif;font-size:9px;font-weight:600;padding:2px 0;background:none;border:0;color:var(--text3);text-decoration:underline;cursor:pointer;transition:color .15s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">J'ai déjà le script : voir la mise à jour</button></div>
+        </div>
 
         <div style="border-top:1px solid var(--border);margin-top:10px;padding-top:10px">
           <div onclick="kyfToggleTutoFaq('Cols')" onmouseenter="document.getElementById('tutoFaqArrowCols').style.color='var(--accent)';document.getElementById('tutoFaqArrowCols').style.background=kyfChevronHoverBg()" onmouseleave="document.getElementById('tutoFaqArrowCols').style.color='var(--text3)';document.getElementById('tutoFaqArrowCols').style.background='transparent'" style="display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;user-select:none">
@@ -81051,6 +81086,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+                  <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.3.90 &middot; 27/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Intraday, Paramètres : un tuto « Comment mettre à jour le script » s’affiche quand le script est déjà en place (garder son ID, coller le nouveau code, nouvelle version du déploiement). Un lien permet de revenir au tuto de première installation, et inversement.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.3.89 &middot; 27/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Cadre Intraday : le numéro de version du script est affiché plus petit et plus discret.</div>
                   <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.14.3.88 &middot; 27/11/2026</div>
@@ -114562,6 +114599,7 @@ function orInlineEdit(id, td, currentVal){
     <button type="button" onclick="closeIntradayCodeModal()" class="kyf-modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
 
+  <div id="intradayCodeIdWarn" style="display:none;margin:12px 18px 0;padding:7px 10px;border-radius:6px;background:rgba(255,69,96,0.08);border-left:3px solid #ff4560;font-family:'Inter',sans-serif;font-size:10px;line-height:1.6;color:var(--text2)"><strong style="color:var(--text)">Mise à jour : gardez votre ID.</strong> Avant de coller ce code, copiez votre <code>SPREADSHEET_ID</code> depuis votre script actuel (Windows + V ouvre l'historique du presse-papier), puis remettez-le à la place de VOTRE_SPREADSHEET_ID_ICI.</div>
   <div style="flex:1;overflow-y:auto;padding:14px 18px">
     <pre id="intradayCodeContent" style="margin:0;font-family:'Inter',sans-serif;font-size:10px;line-height:1.6;color:var(--text2);white-space:pre-wrap;word-break:break-word"></pre>
   </div>
