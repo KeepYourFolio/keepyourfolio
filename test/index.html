@@ -222713,7 +222713,7 @@ function maj(){
   pastille(b, nt); if(document.getElementById('kyfMobPop')) popRendu();
 }
 // ---------- 2.14.2.202 : connexion Mobile et PC, pastille de la barre du haut + fenêtre récapitulatif ----------
-var ETAT_TON = { ok:'var(--green)', busy:'var(--blue)', warn:'#f0b429', err:'var(--red)' };
+var ETAT_TON = { ok:'var(--kyf-sync-ok)', busy:'var(--blue)', warn:'#f0b429', err:'#f43f5e' };   // mêmes couleurs que l'anneau Sheets
 function etatConn(){
   var ns = 0, v = 0, e = 0, lim = Date.now() - 7 * 864e5, lie = false, tot = 0, blk = {}, L = [];   // 2.14.2.221 : les anciens paquets chiffrés (_sh.n) ne comptent plus
   try{ lie = shOk(); }catch(x){}
@@ -222734,7 +222734,7 @@ function pastille(b, nt){
   var E = etatConn(), bt = document.getElementById('mobileBtn'); if(!bt || !b) return;
   if(E.s === 'off'){ bt.style.boxShadow = ''; b.style.display = 'none'; b.textContent = ''; return; }
   var col = ETAT_TON[E.s];
-  bt.style.boxShadow = '0 0 0 2px ' + col; bt.style.borderRadius = '50%';
+  bt.style.boxShadow = '0 0 0 1px var(--topbar-bg), 0 0 0 3px ' + col; bt.style.borderRadius = '50%';   // même diamètre et même épaisseur que l'anneau Sheets (inset -3px, 2px)
   b.style.display = 'inline-flex'; b.style.alignItems = 'center'; b.style.justifyContent = 'center'; b.style.background = col; b.style.color = E.s === 'warn' ? '#000' : '#fff';
   var ic = E.s === 'ok' ? '<path d="M5 12.5l4.5 4.5L19 7.5"/>' : E.s === 'busy' ? '<path d="M12 3a9 9 0 1 0 9 9"/>' : E.s === 'warn' ? '<path d="M12 6v8M12 18h.01"/>' : '<path d="M6 6l12 12M18 6L6 18"/>';
   b.innerHTML = '<svg class="' + (E.s === 'busy' ? 'kyf-spin' : '') + '" viewBox="0 0 24 24" width="9" height="9" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ic + '</svg>';
