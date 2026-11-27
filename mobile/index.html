@@ -1036,7 +1036,7 @@ document.addEventListener("click",function(e){try{var t=e.target&&e.target.close
     ;[].forEach.call(document.querySelectorAll(".shs:not([data-shx])"),function(sh){sh.setAttribute("data-shx","1");var bd=sh.previousElementSibling;if(!(bd&&bd.classList&&bd.classList.contains("shd")))return;
     })}
   try{new MutationObserver(fix).observe(document.documentElement,{childList:true,subtree:true})}catch(_){setInterval(fix,400)}fix()})();
-var VER="3.109.1", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
+var VER="3.110.0", K={ops:"kyfm-ops",phrase:"kyfm-phrase",tick:"kyfm-tickers",last:"kyfm-last",frais:"kyfm-frais",fam:"kyfm-fam",pour:"kyfm-pour",theme:"kyfm-theme",rec:"kyfm-rec",base:"kyfm-base",lastc:"kyfm-lastc",cpt:"kyfm-comptes",delay:"kyfm-delay",voice:"kyfm-voice",noms:"kyfm-noms",act:"kyfm-actifs",sent:"kyfm-envois",famon:"kyfm-famon"};
 var TYPES=[["position_corr","Correction de position"],["plan_prog","Plan progressif"],["ticker_chg","Changement de cotation"],["groupe_projet","Projet"],["perecol_fonds","Fonds PERECOL"],["alerte_seuils","Seuils d’alerte"],["alerte_cible","Objectif de prix"],["achat","Acheter"],["vente","Vendre"],["dividende","Dividende"],["versement","Versement"],["retrait","Retrait"],["crypto_achat","Achat crypto"],["crypto_vente","Vente crypto"],["livret_depot","Dépôt livret"],["livret_retrait","Retrait livret"],["livret_virement","Virement entre livrets"],["arbitrage","Arbitrage"],["frais_av","Frais AV"],["av_versement","Versement AV ou PER"],["av_programme","Versement programmé"],["av_rachat","Rachat"],["av_valeur","Valeur du contrat"],["av_ligne_valeur","Valeur d’une ligne"],["av_ligne_creation","Nouvelle ligne ETF, action, SCPI"],["av_ligne_achat","Achat sur une ligne"],["av_ligne_nouvelle","Nouvelle ligne manuelle"],["livret_interets","Intérêts livret"],["actif_nouveau","Nouvel actif"],["renommage","Renommage"],["livret_taux","Taux du livret"],["fe_releve","Relevé du fonds en euros"],["livret_precaution","Épargne de précaution"],["actif_valeur","Valeur d’un actif"],["etranger_nouveau","Avoir à l’étranger"],["etranger_valeur","Valeur d’un avoir à l’étranger"],["crypto_swap","Swap crypto"],["crypto_transfert","Transfert crypto"],["crypto_frais","Frais crypto"],["immo_valeur","Valeur d’un bien"],["immo_loyer","Loyer d’un bien"],["or_achat","Achat d’or ou de métal"],["or_vente","Vente d’or ou de métal"],["crowd_projet","Nouveau projet"],["crowd_maj","Mise à jour d’un projet"],["pe_placement","Nouveau placement"],["pe_maj","Mise à jour d’un placement"],["scpi_achat","Achat de parts de SCPI"],["scpi_vente","Vente de parts de SCPI"],["scpi_dividende","Dividende de SCPI"],["scpi_maj","Mise à jour d’une SCPI"],["flux_recurrent","Flux récurrent"],["pee_versement","Versement PEE"],["pee_retrait","Retrait PEE"],["dca_plan","Plan DCA"],["cash_maj","Solde de liquidités"],["livret_dca","Versement programmé livret"],["solde_corr","Corriger le solde"]];
 var CRP=[["BTC","Bitcoin"],["ETH","Ethereum"],["SOL","Solana"],["USDC","USD Coin"],["USDT","Tether"],["DAI","Dai"],["EURC","Euro Coin"],["BNB","BNB"],["XRP","XRP"],["ADA","Cardano"],["DOGE","Dogecoin"],["LINK","Chainlink"],["DOT","Polkadot"],["AVAX","Avalanche"],["LTC","Litecoin"],["TRX","Tron"],["XLM","Stellar"],["ATOM","Cosmos"],["UNI","Uniswap"],["NEAR","Near"],["SHIB","Shiba Inu"],["XMR","Monero"]].map(function(a){return{ticker:a[0],isin:"",nom:a[1]}});
 var AVEC_TITRE=["achat","vente","dividende","crypto_achat","crypto_vente"];
@@ -3116,7 +3116,7 @@ async function lireNatif(file){
   catch(e){return""}}
 
 /* ===== Import de texte : écran, ouverture du formulaire, partage entrant ===== */
-var PART=null;
+var PART=null,GOTO=null;
 function dcChip(k,id){var t=k==="h"?"sûr":k==="m"?"à vérifier":k==="s"?"saisi":"à compléter",col=(k==="h"||k==="s")?"--gn":k==="m"?"--wn":"--mut";
   return `<span class="dd" style="--k:var(${col})"><i></i>${t}</span>`}
 function docHtml(){
@@ -3184,6 +3184,12 @@ function ouvrirDoc(){
 /* Partage entrant (Android, appli installée) : le service worker garde le contenu en mémoire,
    la page le réclame une seule fois. Rien n'est écrit dans le stockage. Tant que le coffre est
    verrouillé, le texte reste en mémoire dans PART et s'affiche après le déverrouillage. */
+/* Raccourcis de l'icône (appui long, Android) : ?go=pat|cpt|voix. La destination reste en mémoire
+   (rien n'est écrit) et s'applique après le déverrouillage du coffre. Valeur inconnue : ignorée. */
+function recevoirRaccourci(){
+  var m=/[?&]go=([a-z]+)(&|$)/.exec(location.search);if(!m)return;
+  try{history.replaceState(null,"",location.pathname)}catch(e){}
+  if(m[1]==="pat"||m[1]==="cpt"||m[1]==="voix")GOTO=m[1]}
 function recevoirPartage(){
   if(!/[?&]partage=1(&|$)/.test(location.search))return;
   try{history.replaceState(null,"",location.pathname)}catch(e){}
@@ -4240,6 +4246,7 @@ function render(){if(cmpHold()){CMPRD=true;return}try{bioReAsk()}catch(_){}MSGSE
   var o=ld(K.ops,[]),v=S.v;tabsSet();if(STATE&&patOn()&&v==="home"&&!S._seen){S._seen=1;S.v=v="pat"}
   if(STATE&&!S._bret&&(v==="home"||v==="pat")){S._bret=1;try{if(bretOk()){bretSave();S.v=v="bret"}}catch(_){}}
   if(STATE&&PART){var pp=PART;PART=null;if(Date.now()-pp.ts<300000){S.dt=pp.t||"";S.dtn="";S.dfrom="home";S.v=v="doc";msg="Texte reçu par partage : vérifiez-le avant d’envoyer.";msgOk=false;if(!pp.t&&pp.f&&pp.f.length){S.dr=null;setTimeout(function(){lancerOcr(pp.f)},0)}else analyserDoc()}}
+  if(STATE&&GOTO){var gt=GOTO;GOTO=null;if(gt==="voix"){S.d=Object.assign({},S.d,{vfrom:"home"});S.vt="";S.vr=null;S.vexo=false;S.vstep=0;S.v=v="voix"}else if(patOn()){S.v=v=gt}else{S.v=v="home"}}
   if(!STATE&&v!=="phrase"&&v!=="unlock")v=localStorage.getItem(KV)?"unlock":"phrase";
   if(!STATE&&v==="unlock"&&!localStorage.getItem(KV))v="phrase";
   var flow=cmpFull()||(patOn()&&v==="releve")||v==="bret"||v==="div"||v==="fisc"||v==="bil"||v==="alr"||v==="hm"||v==="gz"||v==="se"||v==="js"||v==="bud"||v==="pj"||v==="pjn"||v==="perc"||v==="perf"||v==="or"||v==="cptd"||v==="geoed"||v==="pos"||v==="pos_e"||v==="lv"||v==="voix"||v==="doc"||v==="pdfi"||v==="ex"||v==="ops"||v==="cpre"||v==="titre"||v==="compte"||v==="compte_new"||v==="bienv"||v==="tourc"||v==="tour"||v==="pcinfo"||v==="finary"||v==="lwiz"||v==="nom1"||v==="fam1"||v==="pc1"||v==="contact"||v==="reg_sec"||v==="reg_aff"||v==="reg_ges"||v==="reg_src"||v==="reg_det"||v==="reg_app"||v==="reg_faq"||v==="reg_guide"||v==="reg_quiz"||v==="qr_send"||v==="qr_scan"||v==="reg_don"||v==="div"||v==="fisc"||v==="reg_cor"||v==="reg_jrn"||v==="reg_prof"||v==="reg_bak"||v==="reg_frs"||v==="reg_frs_e"||v==="phrase_chg"||v==="arb"||v==="avp"||v==="actif"||v==="actd"||v==="actdt"||v==="etr"||v==="etrf"||v==="cr"||v==="montant"||v==="confirm",lv0=S.lv,cur=TABS.indexOf(v),prev=(S.ti==null||cur<0)?cur:S.ti,an=(cmpFull()!==CMPLV)?"scr":((v!==lv0&&!((v==="reg_src"||v==="reg_det")&&(lv0==="reg_src"||lv0==="reg_det")))?((cur>-1&&TABS.indexOf(lv0)>-1)?"scr sx":"scr"):"");CMPLV=cmpFull();S.lv=v;if(cur>-1)S.ti=cur;
@@ -6543,7 +6550,7 @@ setTimeout(function(){try{if(!/^https:$|^http:$/.test(location.protocol)||sessio
     var fin=function(){location.reload()};
     Promise.all([navigator.serviceWorker?navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister()}))}):0,window.caches?caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k)}))}):0]).then(fin,fin)}).catch(function(){})}catch(e){}},2500);
 document.addEventListener("visibilitychange",function(){if(!document.hidden){AEF=0;autoPlan()}});
-Promise.all([sessRestore(),document.readyState==="loading"?new Promise(function(ok){document.addEventListener("DOMContentLoaded",ok)}):0]).then(function(){navRestore();recevoirPartage();render();try{var pm=sessionStorage.getItem("kyfm-ptr");if(pm){sessionStorage.removeItem("kyfm-ptr");setTimeout(function(){kToast(pm)},500)}}catch(e){}});
+Promise.all([sessRestore(),document.readyState==="loading"?new Promise(function(ok){document.addEventListener("DOMContentLoaded",ok)}):0]).then(function(){navRestore();recevoirPartage();recevoirRaccourci();render();try{var pm=sessionStorage.getItem("kyfm-ptr");if(pm){sessionStorage.removeItem("kyfm-ptr");setTimeout(function(){kToast(pm)},500)}}catch(e){}});
 
 /* Filet de sécurité : page vide -> proposer de recharger proprement (données conservées) */
 (function(){var errs=[];window.addEventListener("error",function(e){errs.push((e.message||"")+(e.lineno?" l."+e.lineno:""))});window.addEventListener("unhandledrejection",function(e){errs.push(String(e.reason&&e.reason.message||e.reason||""))});
