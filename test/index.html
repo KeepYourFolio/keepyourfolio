@@ -2205,6 +2205,9 @@ tr.kyf-row-sel td{background:rgba(240,180,41,0.08);background:color-mix(in srgb,
 .avEvoFItem.on .v{color:#000;opacity:.75}
 @media (max-width:760px){.avEvoFWrap{grid-template-columns:1fr}.avEvoFList{padding-right:0;border-right:none;padding-bottom:12px;border-bottom:1px solid var(--border)}}
 .kbFav{display:inline-flex;align-items:center;gap:6px;font:700 9px Inter,sans-serif;letter-spacing:.4px;padding:6px 10px;border:1px solid var(--border2);border-radius:8px;background:none;color:var(--text3);cursor:pointer;transition:background .15s,color .15s}
+/* pastille du nombre de favoris : orange en thème sombre, jaune en thème clair */
+.kyf-fav-n{background:#ff9f1c}
+[data-theme="light"] .kyf-fav-n{background:#f0b429}
 .kbFav:hover{background:var(--hov-bg);color:var(--text)}
 .kbFav[aria-pressed=true]{color:var(--text);border-color:#f0b429}
 .kbFav:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -45613,7 +45616,7 @@ function kyfFavBar(kind, total, favCount){
   }
   if(b){
     b.style.display = 'inline-flex';
-    b.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="${ui.only?'#f0b429':'none'}" stroke="${ui.only?'#f0b429':'currentColor'}" stroke-width="2" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span style="position:absolute;top:-6px;right:-6px;min-width:14px;height:14px;box-sizing:border-box;padding:0 3px;border-radius:7px;background:var(--accent);color:#000;font-size:8px;font-weight:800;line-height:14px;text-align:center;letter-spacing:0">${favCount > 99 ? '99+' : favCount}</span>`;
+    b.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="${ui.only?'#f0b429':'none'}" stroke="${ui.only?'#f0b429':'currentColor'}" stroke-width="2" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span class="kyf-fav-n" style="position:absolute;top:-6px;right:-6px;min-width:14px;height:14px;box-sizing:border-box;padding:0 3px;border-radius:7px;color:#000;font-size:8px;font-weight:800;line-height:14px;text-align:center;letter-spacing:0">${favCount > 99 ? '99+' : favCount}</span>`;
     b.style.borderColor = ui.only ? 'rgba(77,159,255,0.6)' : 'rgba(77,159,255,0.3)';   // même style que les boutons Vue (œil) et Aide ; actif = fond bleu plus marqué + étoile pleine
     b.style.color = 'var(--text2)';
     b.style.background = ui.only ? 'rgba(77,159,255,0.18)' : 'rgba(77,159,255,0.06)';
