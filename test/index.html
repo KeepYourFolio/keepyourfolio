@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.15.1.11
+  @version     : Beta 2.15.1.13
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5401,7 +5401,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.15.1.11</div>
+  <div class="kl-ver">Beta 2.15.1.13</div>
 </div>
 <script>
 (function(){
@@ -5617,7 +5617,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status" tabindex="0" aria-describedby="kspWhy"><span class="ksp-wait-clip" aria-hidden="true"><i class="ksp-wait-fill"></i></span><span class="ksp-wait-txt">CHARGEMENT…<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span><span class="ksp-why-tip" id="kspWhy" role="tooltip"><b>Pourquoi ce chargement ?</b>Keep Your Folio fonctionne entièrement dans votre navigateur, sans serveur : le programme complet (graphiques, calculs, outils d’import) se télécharge sur votre appareil. C’est ce qui permet à vos données de rester chez vous.</span></span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">BETA 2.15.1.11 · <a href="#" onclick="kyfSplashJournal();return false">NOUVEAUTÉS</a></span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">BETA 2.15.1.13 · <a href="#" onclick="kyfSplashJournal();return false">NOUVEAUTÉS</a></span></div>
       </div>
     </div>
   </div>
@@ -8117,7 +8117,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.15.1.11</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.15.1.13</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -24411,26 +24411,46 @@ function renderBilanPeriode(){
   if(cv && typeof Chart !== 'undefined'){
     const d = chartDefaults(), v0 = r.serie[0];
     const yPad = Math.max((Math.max.apply(null, r.serie) - Math.min.apply(null, r.serie)) * 0.45, Math.abs(v0) * 0.004);   // marge au-dessus et au-dessous de la courbe : la bulle y trouve sa place
-    try{ Chart.Tooltip.positioners.bpAway = function(items, ev){
-      if(!items.length) return false;
-      const ca = this.chart.chartArea, p = items[0].element, X = Math.min(Math.max(p.x, ca.left + 80), ca.right - 80);
-      let hi = Infinity, lo = -Infinity;   // plus haut / plus bas de la courbe sous la bulle (en pixels)
-      this.chart.getDatasetMeta(0).data.forEach(q => { if(Math.abs(q.x - X) <= 85){ hi = Math.min(hi, q.y); lo = Math.max(lo, q.y); } });
-      const placeHaut = hi - ca.top, placeBas = ca.bottom - lo;   // place libre en haut / en bas
-      const haut = placeHaut >= placeBas;   // bulle en haut si c'est là qu'il y a le plus de place libre
-      this.options.yAlign = haut ? 'top' : 'bottom';
-      return { x: X, y: haut ? ca.top + 2 : ca.bottom - 2 };
-    }; }catch(e){}
+
     const lbl = r.dates.map(x => bpFr_(x));
     const axT = t => ({ display:true, text:t, color:getCSSVar('--text3'), font:{ size:10, family:'Inter', weight:'600' } });
-    charts.bp = new Chart(cv.getContext('2d'), { type:'line',
+    const bpHover = { id:'bpHover',
+      afterEvent(ch, args){
+        const e = args.event; if(!e) return;
+        const old = ch._bpIdx;
+        if(e.type === 'mouseout') ch._bpIdx = null;
+        else if(e.type === 'mousemove'){ const el = ch.getElementsAtEventForMode(e, 'index', { intersect:false }, false); ch._bpIdx = el.length ? el[0].index : null; }
+        if(old !== ch._bpIdx) args.changed = true;
+      },
+      afterDatasetsDraw(ch){
+        const i = ch._bpIdx; if(i === null || i === undefined) return;
+        const pt = ch.getDatasetMeta(0).data[i]; if(!pt) return;
+        const c = ch.ctx, ca = ch.chartArea, v = r.serie[i], dd = v - v0;
+        const bg = (typeof getTipBg === 'function') ? getTipBg() : 'rgba(8,12,20,0.9)', tx = (typeof getTipTextColor === 'function') ? getTipTextColor() : '#fff', bc = (typeof getTipBorderColor === 'function') ? getTipBorderColor() : '#f0b429';
+        const rr = (x, y, w, h, rad) => { c.beginPath(); c.moveTo(x + rad, y); c.arcTo(x + w, y, x + w, y + h, rad); c.arcTo(x + w, y + h, x, y + h, rad); c.arcTo(x, y + h, x, y, rad); c.arcTo(x, y, x + w, y, rad); c.closePath(); };
+        c.save();
+        c.setLineDash([3, 4]); c.strokeStyle = 'rgba(240,180,41,0.7)'; c.lineWidth = 1; c.beginPath(); c.moveTo(pt.x, ca.top); c.lineTo(pt.x, ca.bottom); c.stroke(); c.setLineDash([]);
+        c.fillStyle = 'rgba(240,180,41,0.22)'; c.beginPath(); c.arc(pt.x, pt.y, 9, 0, 6.2832); c.fill();
+        c.fillStyle = '#f0b429'; c.strokeStyle = bg; c.lineWidth = 2; c.beginPath(); c.arc(pt.x, pt.y, 4.5, 0, 6.2832); c.fill(); c.stroke();
+        // pastille de date sur l'axe
+        c.font = '700 11px Inter, sans-serif'; c.textBaseline = 'middle'; c.textAlign = 'center';
+        const dt = r.dates[i] ? bpFr_(r.dates[i]) : '', dw = c.measureText(dt).width + 18, dx = Math.min(Math.max(pt.x - dw / 2, ca.left - 6), ch.width - dw - 2), dy = ca.bottom + 5;
+        rr(dx, dy, dw, 18, 9); c.fillStyle = '#f0b429'; c.fill(); c.fillStyle = '#14161b'; c.fillText(dt, dx + dw / 2, dy + 9.5);
+        // valeur et écart, à côté du point
+        const t1 = fmt(v, 0) + ' €', t2 = (dd >= 0 ? '+' : '') + fmt(dd, 0) + ' € depuis le début';
+        c.font = '700 12px Inter, sans-serif'; const w1 = c.measureText(t1).width; c.font = '500 11px Inter, sans-serif'; const w2 = c.measureText(t2).width;
+        const bw = w1 + w2 + 34, bh = 24; let bx = pt.x + 14, by = pt.y - bh - 12;
+        if(bx + bw > ch.width - 4) bx = pt.x - 14 - bw;
+        if(by < ca.top) by = pt.y + 12;
+        rr(bx, by, bw, bh, 7); c.fillStyle = bg; c.fill(); c.strokeStyle = bc; c.lineWidth = 1; c.stroke();
+        c.textAlign = 'left'; c.font = '700 12px Inter, sans-serif'; c.fillStyle = '#f0b429'; c.fillText(t1, bx + 10, by + bh / 2 + .5);
+        c.font = '500 11px Inter, sans-serif'; c.fillStyle = dd >= 0 ? '#4ade80' : '#ff6b7a'; c.fillText(t2, bx + 10 + w1 + 14, by + bh / 2 + .5);
+        c.restore();
+      } };
+    charts.bp = new Chart(cv.getContext('2d'), { plugins:[bpHover], type:'line',
       data:{ labels:lbl, datasets:[{ label:'Valeur des placements', data:r.serie, borderColor:'#f0b429', backgroundColor:'rgba(240,180,41,0.10)', fill:true, borderWidth:2.5, tension:0.25, pointRadius:r.serie.length > 40 ? 0 : 3, pointHoverRadius:5, pointBackgroundColor:'#f0b429' }] },
-      options:{ ...d, plugins:{ ...d.plugins, legend:{ display:false }, tooltip:{ ...d.plugins.tooltip, position:'bpAway', caretSize:0, padding:7, cornerRadius:8, displayColors:false, titleFont:{ family:'Inter', size:11, weight:'700' }, bodyFont:{ family:'Inter', size:11 }, callbacks:{
-        title: it => it[0].label,
-        label: c => fmt(c.parsed.y, 0) + ' €',
-        afterLabel: c => (c.parsed.y - v0 >= 0 ? '+' : '') + fmt(c.parsed.y - v0, 0) + ' € depuis le début'
-      } } },
-        scales:{ x:{ ...d.scales.x, title:axT('Date'), ticks:{ ...d.scales.x.ticks, maxTicksLimit:5, maxRotation:0, autoSkip:true } },
+      options:{ ...d, plugins:{ ...d.plugins, legend:{ display:false }, tooltip:{ enabled:false } },
+        layout:{ padding:{ bottom:6 } }, scales:{ x:{ ...d.scales.x, title:axT('Date'), ticks:{ ...d.scales.x.ticks, maxTicksLimit:5, maxRotation:0, autoSkip:true } },
                  y:{ ...d.scales.y, suggestedMin: Math.min.apply(null, r.serie) - yPad, suggestedMax: Math.max.apply(null, r.serie) + yPad, title:{ ...axT('Valeur de vos placements (€)'), display: cv.parentNode.clientHeight >= 170 }, ticks:{ ...d.scales.y.ticks, maxTicksLimit:5, callback:v => fmt(v, 0) + ' €' } } } } });
   }
 }
@@ -24538,6 +24558,7 @@ function renderBilanPerf(){
   const ac=document.getElementById('annualChart'); if(!ac) return;
   const gainNetData = bdChart.map(b => b.gainNetPct !== null && b.gainNetPct !== undefined ? Math.round(b.gainNetPct*10000)/100 : null);
 
+  const scaleBottomOff = ch => Math.round(ch.scales.x.height + 18);   // juste sous le nom de l'année
   const annualTooltipPlugin = {
     id:'annualTooltip',
     afterEvent(chart, args){
@@ -24606,13 +24627,13 @@ function renderBilanPerf(){
   charts.annual=new Chart(ac.getContext('2d'),{type:'bar',data:{labels,datasets:[
     {label:'Perf marché %',data:evolData,
       backgroundColor(ctx){
-        const {ctx:c,chartArea}=ctx.chart; if(!chartArea) return kyfSc('rgba(0,212,170,.5)');
+        const {ctx:c,chartArea}=ctx.chart; if(!chartArea) return kyfSc('rgba(0,212,170,.4)');
         const g=c.createLinearGradient(0,chartArea.top,0,chartArea.bottom);
-        if(evolData[ctx.dataIndex]<0){ g.addColorStop(0,kyfSc('rgba(255,130,130,0.90)')); g.addColorStop(0.3,kyfSc('rgba(255,69,96,0.75)')); g.addColorStop(1,kyfSc('rgba(160,20,40,0.40)')); return g; }
-        g.addColorStop(0,kyfSc('rgba(80,255,210,0.90)')); g.addColorStop(0.3,kyfSc('rgba(0,212,170,0.75)')); g.addColorStop(1,kyfSc('rgba(0,120,100,0.40)'));
+        if(evolData[ctx.dataIndex]<0){ g.addColorStop(0,kyfSc('rgba(255,130,130,0.55)')); g.addColorStop(0.3,kyfSc('rgba(255,69,96,0.45)')); g.addColorStop(1,kyfSc('rgba(160,20,40,0.25)')); return g; }
+        g.addColorStop(0,kyfSc('rgba(80,255,210,0.55)')); g.addColorStop(0.3,kyfSc('rgba(0,212,170,0.45)')); g.addColorStop(1,kyfSc('rgba(0,120,100,0.25)'));
         return g;
       },
-      borderColor(ctx){ return evolData[ctx.dataIndex]<0?kyfSc('rgba(255,160,160,0.5)'):kyfSc('rgba(120,255,220,0.5)'); },borderWidth:1,borderSkipped:false,borderRadius:3,yAxisID:'y'},
+      borderColor(ctx){ return evolData[ctx.dataIndex]<0?kyfSc('rgba(255,160,160,0.4)'):kyfSc('rgba(120,255,220,0.4)'); },borderWidth:1,borderSkipped:false,borderRadius:3,yAxisID:'y'},
     {label:'Gain net %',data:gainNetData,
       backgroundColor(ctx){
         const {ctx:c,chartArea}=ctx.chart; if(!chartArea) return 'rgba(77,159,255,.7)';
@@ -24625,14 +24646,29 @@ function renderBilanPerf(){
       },
       borderColor(ctx){ const val=gainNetData[ctx.dataIndex]; return val>=0?(kyfSc('rgba(0,212,170,0)')!=='rgba(0,212,170,0)'?'rgba(210,190,255,0.5)':'rgba(160,210,255,0.5)'):kyfSc('rgba(255,160,160,0.5)'); },
       borderWidth:1,borderSkipped:false,borderRadius:3,yAxisID:'y'},
-    {label:'Écart €',data:ecartData,type:'line',borderColor:'#f0b429',backgroundColor:'transparent',borderWidth:2,tension:0.3,pointRadius:4,yAxisID:'y2'},
+    {label:'Gain en €',data:ecartData,type:'line',borderColor:'#f0b429',backgroundColor:'transparent',showLine:false,pointRadius:0,pointHoverRadius:0,yAxisID:'y2'},
   ]},options:{...d,plugins:{...d.plugins,
-    legend:{display:true,position:'top',labels:{color:getCSSVar('--text2'),font:{size:9,family:'Inter'}}},
+    legend:{display:true,position:'top',labels:{color:getCSSVar('--text2'),font:{size:11,family:'Inter'},padding:18,filter:it=>it.datasetIndex<2}},
     tooltip:{enabled:false},
     annualTooltip:{}
   },
-    scales:{x:{...d.scales.x},y:{...d.scales.y,ticks:{...d.scales.y.ticks,callback:v=>(Math.round(v*100)/100).toLocaleString('fr-FR')+'%'}},y2:{type:'linear',position:'right',ticks:{color:getCSSVar('--text3'),font:{size:9},callback:v=>fmt(v,0)+'€'},grid:{display:false}}}}
-  ,plugins:[annualTooltipPlugin]});
+    layout:{padding:{top:6,bottom:50}},
+    scales:{x:{...d.scales.x,ticks:{...d.scales.x.ticks,font:{size:12,family:'Inter',weight:'600'},padding:8}},
+      y:{...d.scales.y,grace:'14%',grid:{color:c=>c.tick&&c.tick.value===0?kyfSc('rgba(150,165,195,0.85)'):'rgba(150,165,195,0.14)',lineWidth:c=>c.tick&&c.tick.value===0?2:1},ticks:{...d.scales.y.ticks,callback:v=>(v>0?'+':'')+(Math.round(v*100)/100).toLocaleString('fr-FR')+' %'}},
+      y2:{type:'linear',display:false}}}
+  ,plugins:[annualTooltipPlugin,{id:'annLabels',afterDatasetsDraw(ch){
+    const c=ch.ctx; c.save(); c.textAlign='center';
+    [0,1].forEach(di=>{ if(!ch.isDatasetVisible(di)) return; ch.getDatasetMeta(di).data.forEach((bar,i)=>{
+      const v=ch.data.datasets[di].data[i]; if(v===null||v===undefined) return;
+      const neg=v<0; c.font='700 11px Inter, sans-serif'; c.fillStyle=neg?'#ff6b7a':'#3ecf8e';
+      c.fillText((v>0?'+':'')+fmt(v,2)+' %',bar.x,neg?bar.y+14:bar.y-6); }); });
+    const m=ch.getDatasetMeta(0), cs=ch.scales.x;
+    ecartData.forEach((e,i)=>{ if(e===null||e===undefined||!m.data[i]) return;
+      const x=(m.data[i].x+(ch.getDatasetMeta(1).data[i]?ch.getDatasetMeta(1).data[i].x:m.data[i].x))/2, y=ch.chartArea.bottom+scaleBottomOff(ch), t=(e>=0?'+':'')+fmt(e,0)+' €';
+      c.font='700 11px Inter, sans-serif'; const w=c.measureText(t).width+20;
+      c.beginPath(); c.roundRect(x-w/2,y-10,w,20,10); c.fillStyle='rgba(128,140,170,0.14)'; c.fill(); c.strokeStyle='rgba(128,140,170,0.35)'; c.lineWidth=1; c.stroke();
+      c.fillStyle=e<0?'#ff6b7a':'#3ecf8e'; c.textBaseline='middle'; c.fillText(t,x,y+.5); });
+    c.restore(); }}]});
   const latest=bd[bd.length-1];
   const kv=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
   // KPIs dynamiques
@@ -53494,7 +53530,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.15.1.11\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.15.1.13\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -71582,7 +71618,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.36';
-const KYF_GUIDE_POUR = '2.15.1.11';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de Keep Your Folio
+const KYF_GUIDE_POUR = '2.15.1.13';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de Keep Your Folio
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -81602,6 +81638,10 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.15.1.13 &middot; 28/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Bilan Annuel · PERFORMANCE ANNUELLE : nouveau visuel. Ligne du zéro bien marquée, gains en vert au-dessus et pertes en rouge au-dessous, pourcentage écrit au bout de chaque barre, plus d'air autour du graphique. Le point jaune « Écart € » disparaît : le gain ou la perte en euros de l'année est écrit dans une pastille sous l'année (« Gain en € » dans la bulle de survol).</div>
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.15.1.12 &middot; 28/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Performance de date à date : au survol, le point de la courbe reste visible (trait pointillé et halo), la date s'affiche en pastille sur l'axe et la valeur avec l'écart depuis le début juste à côté du point.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.15.1.11 &middot; 28/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Informations : le bouton « Chercher une mise à jour » reste toujours à droite du cadre de la version, même quand le message est long (« Vérification impossible… »).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.15.1.10 &middot; 28/11/2026</div>
