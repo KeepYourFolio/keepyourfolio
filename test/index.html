@@ -3,7 +3,7 @@
   @file        : KYF_SHARE_beta_2_12_2_03.html
   @application : Keep Your Folio (KYF)
   @description : Dashboard de suivi de portefeuille financier
-  @version     : Beta 2.15.1.42
+  @version     : Beta 2.15.1.43
   @author      : Keep Your Folio
   @copyright   : © 2026 Keep Your Folio (KYF).
   @license     : SPDX-License-Identifier: AGPL-3.0-or-later
@@ -5402,7 +5402,7 @@ html.kyf-load body{overflow:hidden}
   <div class="kl-tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--kl-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
     <div><div class="kl-tt">LA PROMESSE DE KEEP</div><div class="kl-tx" id="klTx"></div></div></div>
   <div class="kl-thx"><div class="kl-stack" aria-hidden="true"><span>GN</span><span>IZ</span><span>SM</span><span>GU</span><span>PM</span></div><span class="kl-thx-t">Merci à GN37 et à tous ceux qui font vivre Keep Your Folio</span><a class="kl-thx-a" id="klThxA" href="#">Voir les remerciements &#8594;</a></div>
-  <div class="kl-ver">Beta 2.15.1.42</div>
+  <div class="kl-ver">Beta 2.15.1.43</div>
 </div>
 <script>
 (function(){
@@ -5618,7 +5618,7 @@ html.kyf-first #modalOnboardingChoice{animation:kspFade .45s cubic-bezier(.16,1,
           <span class="ksp-wait" role="status" tabindex="0" aria-describedby="kspWhy"><span class="ksp-wait-clip" aria-hidden="true"><i class="ksp-wait-fill"></i></span><span class="ksp-wait-txt">CHARGEMENT…<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span><span class="ksp-why-tip" id="kspWhy" role="tooltip"><b>Pourquoi ce chargement ?</b>Keep Your Folio fonctionne entièrement dans votre navigateur, sans serveur : le programme complet (graphiques, calculs, outils d’import) se télécharge sur votre appareil. C’est ce qui permet à vos données de rester chez vous.</span></span>
           <button type="button" class="ksp-start" onclick="kyfSplashNext()">ÉTAPE SUIVANTE<span>&#8594;</span></button>
         </div>
-        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">BETA 2.15.1.42 · <a href="#" onclick="kyfSplashJournal();return false">NOUVEAUTÉS</a></span></div>
+        <div class="ksp-values"><span>GRATUIT</span><i>·</i><span>SANS PUBLICITÉ</span><i>·</i><span>SANS ABONNEMENT</span><i>·</i><span>LOCAL-FIRST</span><span class="ksp-ver">BETA 2.15.1.43 · <a href="#" onclick="kyfSplashJournal();return false">NOUVEAUTÉS</a></span></div>
       </div>
     </div>
   </div>
@@ -8118,7 +8118,7 @@ html.kyf-pop-open .card, html.kyf-pop-open .kpi, html.kyf-pop-open #sidebar, htm
 
   <!-- Micro-footer sidebar -->
   <div id="sbFooter">
-    <span id="versionBadge" class="sbf-version">Beta 2.15.1.42</span>
+    <span id="versionBadge" class="sbf-version">Beta 2.15.1.43</span>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo" title="Essayer Keep Your Folio avec des données fictives : vos vraies données ne sont pas touchées"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Essayer la démo</a>
     <a href="#" onclick="openContactForm();return false;" class="sbf-contact" title="Contact &amp; Bugs">Contact &amp; Bugs</a>
     <a href="#" onclick="kyfDemoAsk();return false;" class="sbf-demo-mini" title="Essayer la démo (données fictives)" aria-label="Essayer la démo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></a>
@@ -35077,7 +35077,8 @@ function setRecCalSize(size){
 function setChartH(wrapperId, h, btnPrefix){
   const wrap = document.getElementById(wrapperId);
   if(!wrap) return;
-  if(wrapperId === 'annualWrap'){ const k = {180:270, 320:320, 380:380}; if(k[h]) h = k[h]; }   // Performance annuelle : plus de hauteur, plus d'air
+  if(wrapperId === 'annualWrap'){ const k = {180:270, 320:320, 380:380}; if(k[h]) h = k[h]; }
+  if(wrapperId === 'allTimeWrap' && h === 180) h = 260;   // Évolution annuelle : le petit format était trop bas, la courbe y était écrasée   // Performance annuelle : plus de hauteur, plus d'air
   wrap.style.height = h + 'px';
   localStorage.setItem('kyf-chart-h-' + wrapperId, h);
   // Mettre à jour les boutons S/M/L
@@ -35086,7 +35087,7 @@ function setChartH(wrapperId, h, btnPrefix){
     b.style.background = 'var(--btn-secondary-bg)';
     b.style.color = 'var(--text2)';
   });
-  const sizes = {180:'s', 270:'s', 320:'m', 380:'l'};
+  const sizes = {180:'s', 260:'s', 270:'s', 320:'m', 380:'l'};
   const active = document.getElementById(btnPrefix + '-' + (sizes[h]||'m'));
   if(active){ active.classList.add('kyf-toggle-active'); active.style.background = '#f0b429'; active.style.color = '#000'; }
   // Forcer le re-render du chart Chart.js associé
@@ -48292,7 +48293,7 @@ function renderSectors(){
 // BILAN - ALL TIME CHART
 // ════════════════════════════════════════════════════════════════
 
-// ── ÉVOLUTION ANNUELLE : courbe continue d'année en année (2.15.1.42) ──
+// ── ÉVOLUTION ANNUELLE : courbe continue d'année en année (2.15.1.43) ──
 function atMode_(){ if(!window._atMode){ let m = 'cont'; try{ m = localStorage.getItem('kyf-at-mode') || 'cont'; }catch(e){} window._atMode = m === 'reset' ? 'reset' : 'cont'; } return window._atMode; }
 function atSetMode(m){ window._atMode = m === 'reset' ? 'reset' : 'cont'; try{ localStorage.setItem('kyf-at-mode', window._atMode); }catch(e){} try{ kyfNewBadgeSeen('evolcontinue'); }catch(e){} renderAllTimeChart(); }
 function atStyleBtns_(){
@@ -48639,7 +48640,7 @@ function renderAllTimeChart(){
     options: {
       ...d,
       parsing: false,
-      layout: { padding: { top: 60 } },
+      layout: { padding: { top: 54 } },
       plugins: {
         ...d.plugins,
         legend: { display:true, position:'bottom', labels:{ color:getCSSVar('--text2'), font:{size:11,family:'Inter'}, padding:16, usePointStyle:true } },
@@ -48654,7 +48655,8 @@ function renderAllTimeChart(){
             callback: v => { if(!_monthMode) return _dayLbl(v); const m = MONTH_START.indexOf(v); return m >= 0 ? months[m] : ''; }
           }
         },
-        y: { ...d.scales.y,
+        y: { ...d.scales.y, bounds: 'data', grace: '6%',
+          afterBuildTicks: ax => { const rg = ax.max - ax.min, raw = rg / 4.5, mag = Math.pow(10, Math.floor(Math.log10(raw))), st = ([1, 2, 2.5, 5, 10].find(m => m * mag >= raw) || 10) * mag, t = []; for(let v = Math.ceil(ax.min / st) * st; v <= ax.max + st * 1e-6; v += st) t.push({ value: Math.round(v * 1e6) / 1e6 }); if(t.length) ax.ticks = t; },
           ticks: { ...d.scales.y.ticks, callback: function(v){ const dec = (this.max - this.min) < 2 ? 2 : 1; return (v>=0?'+':'')+v.toFixed(dec)+'%'; } },   // petite amplitude (début de suivi) : 2 décimales, sinon graduations en double
           grid: { ...d.scales.y.grid, color: ctx => ctx.tick.value===0?'rgba(255,255,255,0.4)':'rgba(255,255,255,0.04)', lineWidth: ctx => ctx.tick.value===0?1.5:1 }
         }
@@ -53772,7 +53774,7 @@ try{ kyfVersionCheckInit(); }catch(e){}
 apiLoadAndDisplay();
 // ── Copyright ────────────────────────────────────────────────────
 console.log(
-  '%c© 2026 Keep Your Folio (KYF) : Beta 2.15.1.42\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
+  '%c© 2026 Keep Your Folio (KYF) : Beta 2.15.1.43\n%cLogiciel libre sous licence AGPL-3.0.⁠​‌​​‌​‌‌​‌​‌‌​​‌​‌​​​‌‌​​‌​​‌​‌​​‌​​‌‌​‌​​‌‌​​‌​​​‌‌​‌‌​⁠',
   'color:#f0b429;font-weight:700;font-size:13px;padding:4px 0',
   'color:#6a80a8;font-size:10px'
 );
@@ -71867,7 +71869,7 @@ const GUIDE_PAGES = [
 // KYF_GUIDE_VERSION : numéro du guide (1.0, 1.1...), à incrémenter à chaque mise à jour du contenu.
 // KYF_GUIDE_POUR : numéro de version de KYF que le guide décrit (ex. 2.8.6.12). À mettre à jour en même temps, après avoir relu les changelogs depuis cette version.
 const KYF_GUIDE_VERSION = '1.37';
-const KYF_GUIDE_POUR = '2.15.1.42';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de Keep Your Folio
+const KYF_GUIDE_POUR = '2.15.1.43';    // dernière version relue à la main ; l'affichage, lui, suit automatiquement la version de Keep Your Folio
 function kyfGuideVersionLine_(){
   let site = ''; try{ site = (document.getElementById('versionBadge') || {}).textContent || ''; }catch(e){}
   site = String(site).replace(/^\s*Beta\s*/i, '').trim();
@@ -78784,7 +78786,7 @@ const KYF_NOUVEAUTES = {
   badge: ['sbbilan', 'perfperiode2', 'perfannuelle', 'evolcontinue', 'perfperiode', 'restvers', 'intramaj', 'intraasie', 'arbprog', 'avdonut', 'avdonutb', 'etranger', 'arbmulti', 'nueprop', 'kpichips', 'kpiset', 'autres', 'envvue', 'famille', 'avjrn', 'arb', 'immo', 'avref', 'avfrais', 'fraispg', 'avevo', 'avsuivi', 'dcaprix', 'ct', 'tend', 'tipstyle', 'ptf', 'pee', 'perecol', 'ctlg', 'vue', 'visite', 'clsvue', 'shimg', 'georap', 'acctpast'],   // clés des badges (une ou plusieurs ; tableau) ; clé du badge « Nouveau » (span .kyf-new-badge data-new="...") ; vide = aucun badge
   annonces: [
     { id: 'a-2026-11-28d', date: '2026-11-28', items: [
-      { titre: 'Refonte complète de la page Bilan annuel', version: '2.15.1.42', important: true, texte: 'La page Bilan annuel a été entièrement repensée. Évolution annuelle : une seule courbe qui continue d\'année en année (faites glisser la zone jaune sous la courbe ou cliquez sur une année ; le bouton « Années superposées » garde l\'ancienne vue). Performance annuelle : graphique plus aéré, infobulle compacte, « Perf. des actifs » et « Gain net » en vert ou rouge. Date à date : choisissez deux dates et voyez ce que vos placements ont rapporté, versements retirés. Tous les chiffres de performance utilisent maintenant la même méthode (le gain net) et se correspondent partout. « YTD » devient « en cours ».' }
+      { titre: 'Refonte complète de la page Bilan annuel', version: '2.15.1.43', important: true, texte: 'La page Bilan annuel a été entièrement repensée. Évolution annuelle : une seule courbe qui continue d\'année en année (faites glisser la zone jaune sous la courbe ou cliquez sur une année ; le bouton « Années superposées » garde l\'ancienne vue). Performance annuelle : graphique plus aéré, infobulle compacte, « Perf. des actifs » et « Gain net » en vert ou rouge. Date à date : choisissez deux dates et voyez ce que vos placements ont rapporté, versements retirés. Tous les chiffres de performance utilisent maintenant la même méthode (le gain net) et se correspondent partout. « YTD » devient « en cours ».' }
     ] },
     { id: 'a-2026-11-28b', date: '2026-11-28', items: [
       { titre: 'Performance de date à date', version: '2.15.1.01', texte: 'Dans Bilan Annuel, le bouton « Date à date » (à côté de la vue ETF / Actions) vous laisse choisir deux dates (ou un raccourci : 1 mois, 6 mois, depuis le 1er janvier...) et affiche ce que vos placements ont réellement rapporté sur cette période, versements retirés. Idée proposée par un utilisateur du forum.' }
@@ -81890,6 +81892,8 @@ document.addEventListener('DOMContentLoaded', renderCashKPI);
       style="display:none;font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);
       line-height:1.9;max-height:260px;overflow-y:auto;padding-right:6px;padding-bottom:14px;
       scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+      <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.15.1.43 &middot; 28/11/2026</div>
+      <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Évolution annuelle : en vue Années superposées, l'axe des % est resserré sur la courbe (repères ronds, ligne 0 conservée) au lieu de -5 / +5 %, donc plus de relief ; le petit format S est un peu plus haut (260 px au lieu de 180).</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.15.1.42 &middot; 28/11/2026</div>
       <div style="color:var(--text2);font-size:11px;line-height:1.6;margin-top:2px">Évolution annuelle, vue Années superposées : plus d'espace entre l'infobulle et la courbe.</div>
       <div style="color:var(--accent);font-weight:700;font-size:11px;margin-top:6px">&#9656; Beta 2.15.1.41 &middot; 28/11/2026</div>
